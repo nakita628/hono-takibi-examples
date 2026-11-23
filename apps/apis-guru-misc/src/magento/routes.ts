@@ -12,7 +12,7 @@ type CatalogDataCategoryTreeInterfaceType = {
 }
 
 const CatalogDataProductRenderFormattedPriceInfoExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\Catalog\\Api\\Data\\ProductRender\\FormattedPriceInfoInterface',
@@ -33,7 +33,7 @@ type CatalogDataProductRenderFormattedPriceInfoInterfaceType = {
 }
 
 const MsrpDataProductRenderMsrpPriceInfoExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\Msrp\\Api\\Data\\ProductRender\\MsrpPriceInfoInterface',
@@ -105,7 +105,7 @@ const CatalogDataProductRenderPriceInfoInterfaceSchema: z.ZodType<CatalogDataPro
     .openapi('CatalogDataProductRenderPriceInfoInterface')
 
 const WeeeDataProductRenderWeeeAdjustmentAttributeExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\Weee\\Api\\Data\\ProductRender\\WeeeAdjustmentAttributeInterface',
@@ -222,486 +222,26 @@ type CatalogDataProductRenderPriceInfoInterfaceType = {
   special_price: number
 }
 
-type CustomerDataOptionInterfaceType = {
-  label: string
-  options?: CustomerDataOptionInterfaceType[]
-  value?: string
-}
-
-type FrameworkCriteriaInterfaceType = {
-  criteria_list: FrameworkCriteriaInterfaceType[]
-  filters: string[]
-  limit: string[]
-  mapper_interface_name: string
-  orders: string[]
-}
-
-const GiftMessageDataMessageExtensionInterfaceSchema = z
+const FrameworkAttributeInterfaceSchema = z
   .object({
-    entity_id: z.string().exactOptional(),
-    entity_type: z.string().exactOptional(),
-    wrapping_add_printed_card: z.boolean().exactOptional(),
-    wrapping_allow_gift_receipt: z.boolean().exactOptional(),
-    wrapping_id: z.int().exactOptional(),
+    attribute_code: z.string().openapi({ description: 'Attribute code' }),
+    value: z.string().openapi({ description: 'Attribute value' }),
   })
   .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\GiftMessage\\Api\\Data\\MessageInterface',
-    required: [],
+    description: 'Interface for custom attribute value.',
+    required: ['attribute_code', 'value'],
   })
-  .openapi('GiftMessageDataMessageExtensionInterface')
+  .openapi('FrameworkAttributeInterface')
 
-const GiftMessageDataMessageInterfaceSchema = z
-  .object({
-    customer_id: z.int().exactOptional().openapi({ description: 'Customer ID. Otherwise, null.' }),
-    extension_attributes: GiftMessageDataMessageExtensionInterfaceSchema.exactOptional(),
-    gift_message_id: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'Gift message ID. Otherwise, null.' }),
-    message: z.string().openapi({ description: 'Message text.' }),
-    recipient: z.string().openapi({ description: 'Recipient name.' }),
-    sender: z.string().openapi({ description: 'Sender name.' }),
-  })
+const BundleDataOptionExtensionInterfaceSchema = z
+  .looseObject({})
   .openapi({
-    description: 'Interface MessageInterface',
-    required: ['sender', 'recipient', 'message'],
+    description: 'ExtensionInterface class for @see \\Magento\\Bundle\\Api\\Data\\OptionInterface',
   })
-  .openapi('GiftMessageDataMessageInterface')
-
-const SalesDataOrderItemExtensionInterfaceSchema = z
-  .object({
-    gift_message: GiftMessageDataMessageInterfaceSchema.exactOptional(),
-    gw_base_price: z.string().exactOptional(),
-    gw_base_price_invoiced: z.string().exactOptional(),
-    gw_base_price_refunded: z.string().exactOptional(),
-    gw_base_tax_amount: z.string().exactOptional(),
-    gw_base_tax_amount_invoiced: z.string().exactOptional(),
-    gw_base_tax_amount_refunded: z.string().exactOptional(),
-    gw_id: z.string().exactOptional(),
-    gw_price: z.string().exactOptional(),
-    gw_price_invoiced: z.string().exactOptional(),
-    gw_price_refunded: z.string().exactOptional(),
-    gw_tax_amount: z.string().exactOptional(),
-    gw_tax_amount_invoiced: z.string().exactOptional(),
-    gw_tax_amount_refunded: z.string().exactOptional(),
-    invoice_text_codes: z.array(z.string()).exactOptional(),
-    tax_codes: z.array(z.string()).exactOptional(),
-    vertex_tax_codes: z.array(z.string()).exactOptional(),
-  })
-  .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\Sales\\Api\\Data\\OrderItemInterface',
-    required: [],
-  })
-  .openapi('SalesDataOrderItemExtensionInterface')
-
-const BundleDataBundleOptionExtensionInterfaceSchema = z
-  .object({})
-  .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\Bundle\\Api\\Data\\BundleOptionInterface',
-  })
-  .openapi('BundleDataBundleOptionExtensionInterface')
-
-const BundleDataBundleOptionInterfaceSchema = z
-  .object({
-    extension_attributes: BundleDataBundleOptionExtensionInterfaceSchema.exactOptional(),
-    option_id: z.int().openapi({ description: 'Bundle option id.' }),
-    option_qty: z.int().openapi({ description: 'Bundle option quantity.' }),
-    option_selections: z.array(z.int()).openapi({ description: 'Bundle option selection ids.' }),
-  })
-  .openapi({
-    description: 'Interface BundleOptionInterface',
-    required: ['option_id', 'option_qty', 'option_selections'],
-  })
-  .openapi('BundleDataBundleOptionInterface')
-
-const ConfigurableProductDataConfigurableItemOptionValueExtensionInterfaceSchema = z
-  .object({})
-  .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\ConfigurableProduct\\Api\\Data\\ConfigurableItemOptionValueInterface',
-  })
-  .openapi('ConfigurableProductDataConfigurableItemOptionValueExtensionInterface')
-
-const ConfigurableProductDataConfigurableItemOptionValueInterfaceSchema = z
-  .object({
-    extension_attributes:
-      ConfigurableProductDataConfigurableItemOptionValueExtensionInterfaceSchema.exactOptional(),
-    option_id: z.string().openapi({ description: 'Option SKU' }),
-    option_value: z.int().exactOptional().openapi({ description: 'Item id' }),
-  })
-  .openapi({
-    description: 'Interface ConfigurableItemOptionValueInterface',
-    required: ['option_id'],
-  })
-  .openapi('ConfigurableProductDataConfigurableItemOptionValueInterface')
-
-const FrameworkDataImageContentInterfaceSchema = z
-  .object({
-    base64_encoded_data: z.string().openapi({ description: 'Media data (base64 encoded content)' }),
-    name: z.string().openapi({ description: 'Image name' }),
-    type: z.string().openapi({ description: 'MIME type' }),
-  })
-  .openapi({
-    description: 'Image Content data interface',
-    required: ['base64_encoded_data', 'type', 'name'],
-  })
-  .openapi('FrameworkDataImageContentInterface')
-
-const CatalogDataCustomOptionExtensionInterfaceSchema = z
-  .object({ file_info: FrameworkDataImageContentInterfaceSchema.exactOptional() })
-  .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\Catalog\\Api\\Data\\CustomOptionInterface',
-    required: [],
-  })
-  .openapi('CatalogDataCustomOptionExtensionInterface')
-
-const CatalogDataCustomOptionInterfaceSchema = z
-  .object({
-    extension_attributes: CatalogDataCustomOptionExtensionInterfaceSchema.exactOptional(),
-    option_id: z.string().openapi({ description: 'Option id' }),
-    option_value: z.string().openapi({ description: 'Option value' }),
-  })
-  .openapi({
-    description: 'Interface CustomOptionInterface',
-    required: ['option_id', 'option_value'],
-  })
-  .openapi('CatalogDataCustomOptionInterface')
-
-const DownloadableDataDownloadableOptionInterfaceSchema = z
-  .object({
-    downloadable_links: z.array(z.int()).openapi({ description: 'The list of downloadable links' }),
-  })
-  .openapi({ description: 'Downloadable Option', required: ['downloadable_links'] })
-  .openapi('DownloadableDataDownloadableOptionInterface')
-
-const GiftCardDataGiftCardOptionExtensionInterfaceSchema = z
-  .object({})
-  .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\GiftCard\\Api\\Data\\GiftCardOptionInterface',
-  })
-  .openapi('GiftCardDataGiftCardOptionExtensionInterface')
-
-const GiftCardDataGiftCardOptionInterfaceSchema = z
-  .object({
-    custom_giftcard_amount: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Gift card open amount value.' }),
-    extension_attributes: GiftCardDataGiftCardOptionExtensionInterfaceSchema.exactOptional(),
-    giftcard_amount: z.string().openapi({ description: 'Gift card amount.' }),
-    giftcard_message: z.string().exactOptional().openapi({ description: 'Giftcard message.' }),
-    giftcard_recipient_email: z.string().openapi({ description: 'Gift card recipient email.' }),
-    giftcard_recipient_name: z.string().openapi({ description: 'Gift card recipient name.' }),
-    giftcard_sender_email: z.string().openapi({ description: 'Gift card sender email.' }),
-    giftcard_sender_name: z.string().openapi({ description: 'Gift card sender name.' }),
-  })
-  .openapi({
-    description: 'Interface GiftCardOptionInterface',
-    required: [
-      'giftcard_amount',
-      'giftcard_sender_name',
-      'giftcard_recipient_name',
-      'giftcard_sender_email',
-      'giftcard_recipient_email',
-    ],
-  })
-  .openapi('GiftCardDataGiftCardOptionInterface')
-
-const CatalogDataProductOptionExtensionInterfaceSchema = z
-  .object({
-    bundle_options: z.array(BundleDataBundleOptionInterfaceSchema).exactOptional(),
-    configurable_item_options: z
-      .array(ConfigurableProductDataConfigurableItemOptionValueInterfaceSchema)
-      .exactOptional(),
-    custom_options: z.array(CatalogDataCustomOptionInterfaceSchema).exactOptional(),
-    downloadable_option: DownloadableDataDownloadableOptionInterfaceSchema.exactOptional(),
-    giftcard_item_option: GiftCardDataGiftCardOptionInterfaceSchema.exactOptional(),
-  })
-  .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\Catalog\\Api\\Data\\ProductOptionInterface',
-    required: [],
-  })
-  .openapi('CatalogDataProductOptionExtensionInterface')
-
-const CatalogDataProductOptionInterfaceSchema = z
-  .object({
-    extension_attributes: CatalogDataProductOptionExtensionInterfaceSchema.exactOptional(),
-  })
-  .openapi({ description: 'Product option interface', required: [] })
-  .openapi('CatalogDataProductOptionInterface')
-
-type SalesDataOrderItemInterfaceType = {
-  additional_data?: string
-  amount_refunded?: number
-  applied_rule_ids?: string
-  base_amount_refunded?: number
-  base_cost?: number
-  base_discount_amount?: number
-  base_discount_invoiced?: number
-  base_discount_refunded?: number
-  base_discount_tax_compensation_amount?: number
-  base_discount_tax_compensation_invoiced?: number
-  base_discount_tax_compensation_refunded?: number
-  base_original_price?: number
-  base_price?: number
-  base_price_incl_tax?: number
-  base_row_invoiced?: number
-  base_row_total?: number
-  base_row_total_incl_tax?: number
-  base_tax_amount?: number
-  base_tax_before_discount?: number
-  base_tax_invoiced?: number
-  base_tax_refunded?: number
-  base_weee_tax_applied_amount?: number
-  base_weee_tax_applied_row_amnt?: number
-  base_weee_tax_disposition?: number
-  base_weee_tax_row_disposition?: number
-  created_at?: string
-  description?: string
-  discount_amount?: number
-  discount_invoiced?: number
-  discount_percent?: number
-  discount_refunded?: number
-  discount_tax_compensation_amount?: number
-  discount_tax_compensation_canceled?: number
-  discount_tax_compensation_invoiced?: number
-  discount_tax_compensation_refunded?: number
-  event_id?: number
-  ext_order_item_id?: string
-  extension_attributes?: z.infer<typeof SalesDataOrderItemExtensionInterfaceSchema>
-  free_shipping?: number
-  gw_base_price?: number
-  gw_base_price_invoiced?: number
-  gw_base_price_refunded?: number
-  gw_base_tax_amount?: number
-  gw_base_tax_amount_invoiced?: number
-  gw_base_tax_amount_refunded?: number
-  gw_id?: number
-  gw_price?: number
-  gw_price_invoiced?: number
-  gw_price_refunded?: number
-  gw_tax_amount?: number
-  gw_tax_amount_invoiced?: number
-  gw_tax_amount_refunded?: number
-  is_qty_decimal?: number
-  is_virtual?: number
-  item_id?: number
-  locked_do_invoice?: number
-  locked_do_ship?: number
-  name?: string
-  no_discount?: number
-  order_id?: number
-  original_price?: number
-  parent_item?: SalesDataOrderItemInterfaceType
-  parent_item_id?: number
-  price?: number
-  price_incl_tax?: number
-  product_id?: number
-  product_option?: z.infer<typeof CatalogDataProductOptionInterfaceSchema>
-  product_type?: string
-  qty_backordered?: number
-  qty_canceled?: number
-  qty_invoiced?: number
-  qty_ordered?: number
-  qty_refunded?: number
-  qty_returned?: number
-  qty_shipped?: number
-  quote_item_id?: number
-  row_invoiced?: number
-  row_total?: number
-  row_total_incl_tax?: number
-  row_weight?: number
-  sku: string
-  store_id?: number
-  tax_amount?: number
-  tax_before_discount?: number
-  tax_canceled?: number
-  tax_invoiced?: number
-  tax_percent?: number
-  tax_refunded?: number
-  updated_at?: string
-  weee_tax_applied?: string
-  weee_tax_applied_amount?: number
-  weee_tax_applied_row_amount?: number
-  weee_tax_disposition?: number
-  weee_tax_row_disposition?: number
-  weight?: number
-}
-
-const SalesDataTransactionExtensionInterfaceSchema = z
-  .object({})
-  .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\Sales\\Api\\Data\\TransactionInterface',
-  })
-  .openapi('SalesDataTransactionExtensionInterface')
-
-type SalesDataTransactionInterfaceType = {
-  additional_information?: string[]
-  child_transactions: SalesDataTransactionInterfaceType[]
-  created_at: string
-  extension_attributes?: z.infer<typeof SalesDataTransactionExtensionInterfaceSchema>
-  is_closed: number
-  order_id: number
-  parent_id?: number
-  parent_txn_id: string
-  payment_id: number
-  transaction_id: number
-  txn_id: string
-  txn_type: string
-}
-
-const SalesRuleDataConditionExtensionInterfaceSchema = z
-  .object({})
-  .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\SalesRule\\Api\\Data\\ConditionInterface',
-  })
-  .openapi('SalesRuleDataConditionExtensionInterface')
-
-type SalesRuleDataConditionInterfaceType = {
-  aggregator_type?: string
-  attribute_name?: string
-  condition_type: string
-  conditions?: SalesRuleDataConditionInterfaceType[]
-  extension_attributes?: z.infer<typeof SalesRuleDataConditionExtensionInterfaceSchema>
-  operator: string
-  value: string
-}
-
-const AnalyticsDataLinkInterfaceSchema = z
-  .object({ initialization_vector: z.string(), url: z.string() })
-  .openapi({
-    description:
-      'Interface LinkInterface Represents link with collected data and initialized vector for decryption.',
-    required: ['url', 'initialization_vector'],
-  })
-  .openapi('AnalyticsDataLinkInterface')
-
-const AsynchronousOperationsDataBulkSummaryExtensionInterfaceSchema = z
-  .object({})
-  .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\AsynchronousOperations\\Api\\Data\\BulkSummaryInterface',
-  })
-  .openapi('AsynchronousOperationsDataBulkSummaryExtensionInterface')
-
-const AsynchronousOperationsDataSummaryOperationStatusInterfaceSchema = z
-  .object({
-    error_code: z.int().openapi({ description: 'Error code' }),
-    id: z.int().openapi({ description: 'Id' }),
-    result_message: z.string().openapi({ description: 'Result message' }),
-    status: z.int().openapi({ description: 'Operation status' }),
-  })
-  .openapi({
-    description:
-      "Getter Class OperationsStatusInterface Instead of OperationInterface this class don't provide all operation data and not responsive to set any data, just to get operation data without serialized_data and result_serialized_data",
-    required: ['id', 'status', 'result_message', 'error_code'],
-  })
-  .openapi('AsynchronousOperationsDataSummaryOperationStatusInterface')
-
-const AsynchronousOperationsDataBulkOperationsStatusInterfaceSchema = z
-  .object({
-    bulk_id: z.string().openapi({ description: 'Bulk uuid' }),
-    description: z.string().openapi({ description: 'Bulk description' }),
-    extension_attributes:
-      AsynchronousOperationsDataBulkSummaryExtensionInterfaceSchema.exactOptional(),
-    operation_count: z
-      .int()
-      .openapi({ description: 'Total number of operations scheduled in scope of this bulk' }),
-    operations_list: z
-      .array(AsynchronousOperationsDataSummaryOperationStatusInterfaceSchema)
-      .openapi({ description: 'List of operation with statuses (short data).' }),
-    start_time: z.string().openapi({ description: 'Bulk scheduled time' }),
-    user_id: z.int().openapi({ description: 'User id' }),
-  })
-  .openapi({
-    description:
-      'Interface BulkStatusInterface Bulk summary data with list of operations items summary data.',
-    required: [
-      'operations_list',
-      'bulk_id',
-      'description',
-      'start_time',
-      'user_id',
-      'operation_count',
-    ],
-  })
-  .openapi('AsynchronousOperationsDataBulkOperationsStatusInterface')
-
-const AsynchronousOperationsDataOperationExtensionInterfaceSchema = z
-  .object({})
-  .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\AsynchronousOperations\\Api\\Data\\OperationInterface',
-  })
-  .openapi('AsynchronousOperationsDataOperationExtensionInterface')
-
-const AsynchronousOperationsDataDetailedOperationStatusInterfaceSchema = z
-  .object({
-    bulk_uuid: z.string().openapi({ description: 'Bulk uuid' }),
-    error_code: z.int().openapi({ description: 'Error code' }),
-    extension_attributes:
-      AsynchronousOperationsDataOperationExtensionInterfaceSchema.exactOptional(),
-    id: z.int().openapi({ description: 'Id' }),
-    result_message: z.string().openapi({ description: 'Result message' }),
-    result_serialized_data: z.string().openapi({ description: 'Serialized Data' }),
-    serialized_data: z.string().openapi({ description: 'Data' }),
-    status: z.int().openapi({ description: 'Operation status' }),
-    topic_name: z.string().openapi({ description: 'Queue Topic' }),
-  })
-  .openapi({
-    description: '',
-    required: [
-      'result_serialized_data',
-      'id',
-      'bulk_uuid',
-      'topic_name',
-      'serialized_data',
-      'status',
-      'result_message',
-      'error_code',
-    ],
-  })
-  .openapi('AsynchronousOperationsDataDetailedOperationStatusInterface')
-
-const AsynchronousOperationsDataDetailedBulkOperationsStatusInterfaceSchema = z
-  .object({
-    bulk_id: z.string().openapi({ description: 'Bulk uuid' }),
-    description: z.string().openapi({ description: 'Bulk description' }),
-    extension_attributes:
-      AsynchronousOperationsDataBulkSummaryExtensionInterfaceSchema.exactOptional(),
-    operation_count: z
-      .int()
-      .openapi({ description: 'Total number of operations scheduled in scope of this bulk' }),
-    operations_list: z
-      .array(AsynchronousOperationsDataDetailedOperationStatusInterfaceSchema)
-      .openapi({ description: 'Operations list.' }),
-    start_time: z.string().openapi({ description: 'Bulk scheduled time' }),
-    user_id: z.int().openapi({ description: 'User id' }),
-  })
-  .openapi({
-    description:
-      'Interface BulkStatusInterface Bulk summary data with list of operations items full data.',
-    required: [
-      'operations_list',
-      'bulk_id',
-      'description',
-      'start_time',
-      'user_id',
-      'operation_count',
-    ],
-  })
-  .openapi('AsynchronousOperationsDataDetailedBulkOperationsStatusInterface')
+  .openapi('BundleDataOptionExtensionInterface')
 
 const BundleDataLinkExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'ExtensionInterface class for @see \\Magento\\Bundle\\Api\\Data\\LinkInterface',
   })
@@ -729,13 +269,6 @@ const BundleDataLinkInterfaceSchema = z
   })
   .openapi('BundleDataLinkInterface')
 
-const BundleDataOptionExtensionInterfaceSchema = z
-  .object({})
-  .openapi({
-    description: 'ExtensionInterface class for @see \\Magento\\Bundle\\Api\\Data\\OptionInterface',
-  })
-  .openapi('BundleDataOptionExtensionInterface')
-
 const BundleDataOptionInterfaceSchema = z
   .object({
     extension_attributes: BundleDataOptionExtensionInterfaceSchema.exactOptional(),
@@ -753,313 +286,8 @@ const BundleDataOptionInterfaceSchema = z
   .openapi({ description: 'Interface OptionInterface', required: [] })
   .openapi('BundleDataOptionInterface')
 
-const BundleDataOptionTypeExtensionInterfaceSchema = z
-  .object({})
-  .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\Bundle\\Api\\Data\\OptionTypeInterface',
-  })
-  .openapi('BundleDataOptionTypeExtensionInterface')
-
-const BundleDataOptionTypeInterfaceSchema = z
-  .object({
-    code: z.string().openapi({ description: 'Type code' }),
-    extension_attributes: BundleDataOptionTypeExtensionInterfaceSchema.exactOptional(),
-    label: z.string().openapi({ description: 'Type label' }),
-  })
-  .openapi({ description: 'Interface OptionTypeInterface', required: ['label', 'code'] })
-  .openapi('BundleDataOptionTypeInterface')
-
-const CatalogDataBasePriceExtensionInterfaceSchema = z
-  .object({})
-  .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\Catalog\\Api\\Data\\BasePriceInterface',
-  })
-  .openapi('CatalogDataBasePriceExtensionInterface')
-
-const CatalogDataBasePriceInterfaceSchema = z
-  .object({
-    extension_attributes: CatalogDataBasePriceExtensionInterfaceSchema.exactOptional(),
-    price: z.number().openapi({ description: 'Price.' }),
-    sku: z.string().openapi({ description: 'SKU.' }),
-    store_id: z.int().openapi({ description: 'Store id.' }),
-  })
-  .openapi({ description: 'Price interface.', required: ['price', 'store_id', 'sku'] })
-  .openapi('CatalogDataBasePriceInterface')
-
-const FrameworkAttributeInterfaceSchema = z
-  .object({
-    attribute_code: z.string().openapi({ description: 'Attribute code' }),
-    value: z.string().openapi({ description: 'Attribute value' }),
-  })
-  .openapi({
-    description: 'Interface for custom attribute value.',
-    required: ['attribute_code', 'value'],
-  })
-  .openapi('FrameworkAttributeInterface')
-
-const CatalogDataEavAttributeExtensionInterfaceSchema = z
-  .object({})
-  .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\Catalog\\Api\\Data\\EavAttributeInterface',
-  })
-  .openapi('CatalogDataEavAttributeExtensionInterface')
-
-const EavDataAttributeFrontendLabelInterfaceSchema = z
-  .object({
-    label: z.string().exactOptional().openapi({ description: 'Option label' }),
-    store_id: z.int().exactOptional().openapi({ description: 'Store id' }),
-  })
-  .openapi({ description: 'Interface AttributeFrontendLabelInterface', required: [] })
-  .openapi('EavDataAttributeFrontendLabelInterface')
-
-const EavDataAttributeOptionLabelInterfaceSchema = z
-  .object({
-    label: z.string().exactOptional().openapi({ description: 'Option label' }),
-    store_id: z.int().exactOptional().openapi({ description: 'Store id' }),
-  })
-  .openapi({ description: 'Interface AttributeOptionLabelInterface', required: [] })
-  .openapi('EavDataAttributeOptionLabelInterface')
-
-const EavDataAttributeOptionInterfaceSchema = z
-  .object({
-    is_default: z.boolean().exactOptional().openapi({ description: 'Default' }),
-    label: z.string().openapi({ description: 'Option label' }),
-    sort_order: z.int().exactOptional().openapi({ description: 'Option order' }),
-    store_labels: z
-      .array(EavDataAttributeOptionLabelInterfaceSchema)
-      .exactOptional()
-      .openapi({ description: 'Option label for store scopes' }),
-    value: z.string().openapi({ description: 'Option value' }),
-  })
-  .openapi({ description: 'Created from:', required: ['label', 'value'] })
-  .openapi('EavDataAttributeOptionInterface')
-
-const EavDataAttributeValidationRuleInterfaceSchema = z
-  .object({
-    key: z.string().openapi({ description: 'Object key' }),
-    value: z.string().openapi({ description: 'Object value' }),
-  })
-  .openapi({
-    description: 'Interface AttributeValidationRuleInterface',
-    required: ['key', 'value'],
-  })
-  .openapi('EavDataAttributeValidationRuleInterface')
-
-const CatalogDataCategoryAttributeInterfaceSchema = z
-  .object({
-    apply_to: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Apply to value for the element' }),
-    attribute_code: z.string().openapi({ description: 'Code of the attribute.' }),
-    attribute_id: z.int().exactOptional().openapi({ description: 'Id of the attribute.' }),
-    backend_model: z.string().exactOptional().openapi({ description: 'Backend model' }),
-    backend_type: z.string().exactOptional().openapi({ description: 'Backend type.' }),
-    custom_attributes: z
-      .array(FrameworkAttributeInterfaceSchema)
-      .exactOptional()
-      .openapi({ description: 'Custom attributes values.' }),
-    default_frontend_label: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Frontend label for default store' }),
-    default_value: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Default value for the element.' }),
-    entity_type_id: z.string().openapi({ description: 'Entity type id' }),
-    extension_attributes: CatalogDataEavAttributeExtensionInterfaceSchema.exactOptional(),
-    frontend_class: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Frontend class of attribute' }),
-    frontend_input: z.string().openapi({ description: 'HTML for input element.' }),
-    frontend_labels: z
-      .array(EavDataAttributeFrontendLabelInterfaceSchema)
-      .openapi({ description: 'Frontend label for each store' }),
-    is_comparable: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The attribute can be compared on the frontend' }),
-    is_filterable: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'It used in layered navigation' }),
-    is_filterable_in_grid: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'It is filterable in catalog product grid' }),
-    is_filterable_in_search: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'It is used in search results layered navigation' }),
-    is_html_allowed_on_front: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'The HTML tags are allowed on the frontend' }),
-    is_required: z.boolean().openapi({ description: 'Attribute is required.' }),
-    is_searchable: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The attribute can be used in Quick Search' }),
-    is_unique: z.string().exactOptional().openapi({ description: 'This is a unique attribute' }),
-    is_used_for_promo_rules: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The attribute can be used for promo rules' }),
-    is_used_in_grid: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'It is used in catalog product grid' }),
-    is_user_defined: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Current attribute has been defined by a user.' }),
-    is_visible: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Attribute is visible on frontend.' }),
-    is_visible_in_advanced_search: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The attribute can be used in Advanced Search' }),
-    is_visible_in_grid: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'It is visible in catalog product grid' }),
-    is_visible_on_front: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The attribute is visible on the frontend' }),
-    is_wysiwyg_enabled: z.boolean().exactOptional().openapi({ description: 'WYSIWYG flag' }),
-    note: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The note attribute for the element.' }),
-    options: z
-      .array(EavDataAttributeOptionInterfaceSchema)
-      .exactOptional()
-      .openapi({ description: 'Options of the attribute (key => value pairs for select)' }),
-    position: z.int().exactOptional().openapi({ description: 'Position' }),
-    scope: z.string().exactOptional().openapi({ description: 'Attribute scope' }),
-    source_model: z.string().exactOptional().openapi({ description: 'Source model' }),
-    used_for_sort_by: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'It is used for sorting in product listing' }),
-    used_in_product_listing: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The attribute can be used in product listing' }),
-    validation_rules: z
-      .array(EavDataAttributeValidationRuleInterfaceSchema)
-      .exactOptional()
-      .openapi({ description: 'Validation rules.' }),
-  })
-  .openapi({
-    description: '',
-    required: [
-      'attribute_code',
-      'frontend_input',
-      'entity_type_id',
-      'is_required',
-      'frontend_labels',
-    ],
-  })
-  .openapi('CatalogDataCategoryAttributeInterface')
-
-const FrameworkFilterSchema = z
-  .object({
-    condition_type: z.string().exactOptional().openapi({ description: 'Condition type' }),
-    field: z.string().openapi({ description: 'Field' }),
-    value: z.string().openapi({ description: 'Value' }),
-  })
-  .openapi({
-    description: 'Filter which can be used by any methods from service layer.',
-    required: ['field', 'value'],
-  })
-  .openapi('FrameworkFilter')
-
-const FrameworkSearchFilterGroupSchema = z
-  .object({
-    filters: z
-      .array(FrameworkFilterSchema)
-      .exactOptional()
-      .openapi({ description: 'A list of filters in this group' }),
-  })
-  .openapi({ description: 'Groups two or more filters together using a logical OR', required: [] })
-  .openapi('FrameworkSearchFilterGroup')
-
-const FrameworkSortOrderSchema = z
-  .object({
-    direction: z.string().openapi({ description: 'Sorting direction.' }),
-    field: z.string().openapi({ description: 'Sorting field.' }),
-  })
-  .openapi({ description: 'Data object for sort order.', required: ['field', 'direction'] })
-  .openapi('FrameworkSortOrder')
-
-const FrameworkSearchCriteriaInterfaceSchema = z
-  .object({
-    current_page: z.int().exactOptional().openapi({ description: 'Current page.' }),
-    filter_groups: z
-      .array(FrameworkSearchFilterGroupSchema)
-      .openapi({ description: 'A list of filter groups.' }),
-    page_size: z.int().exactOptional().openapi({ description: 'Page size.' }),
-    sort_orders: z
-      .array(FrameworkSortOrderSchema)
-      .exactOptional()
-      .openapi({ description: 'Sort order.' }),
-  })
-  .openapi({ description: 'Search criteria interface.', required: ['filter_groups'] })
-  .openapi('FrameworkSearchCriteriaInterface')
-
-const CatalogDataCategoryAttributeSearchResultsInterfaceSchema = z
-  .object({
-    items: z
-      .array(CatalogDataCategoryAttributeInterfaceSchema)
-      .openapi({ description: 'Attributes list.' }),
-    search_criteria: FrameworkSearchCriteriaInterfaceSchema,
-    total_count: z.int().openapi({ description: 'Total count.' }),
-  })
-  .openapi({ description: '', required: ['items', 'search_criteria', 'total_count'] })
-  .openapi('CatalogDataCategoryAttributeSearchResultsInterface')
-
-const CatalogDataCategoryExtensionInterfaceSchema = z
-  .object({})
-  .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\Catalog\\Api\\Data\\CategoryInterface',
-  })
-  .openapi('CatalogDataCategoryExtensionInterface')
-
-const CatalogDataCategoryInterfaceSchema = z
-  .object({
-    available_sort_by: z.array(z.string()).exactOptional(),
-    children: z.string().exactOptional(),
-    created_at: z.string().exactOptional(),
-    custom_attributes: z
-      .array(FrameworkAttributeInterfaceSchema)
-      .exactOptional()
-      .openapi({ description: 'Custom attributes values.' }),
-    extension_attributes: CatalogDataCategoryExtensionInterfaceSchema.exactOptional(),
-    id: z.int().exactOptional(),
-    include_in_menu: z.boolean().exactOptional(),
-    is_active: z.boolean().exactOptional().openapi({ description: 'Whether category is active' }),
-    level: z.int().exactOptional().openapi({ description: 'Category level' }),
-    name: z.string().exactOptional().openapi({ description: 'Category name' }),
-    parent_id: z.int().exactOptional().openapi({ description: 'Parent category ID' }),
-    path: z.string().exactOptional(),
-    position: z.int().exactOptional().openapi({ description: 'Category position' }),
-    updated_at: z.string().exactOptional(),
-  })
-  .openapi({ description: '', required: [] })
-  .openapi('CatalogDataCategoryInterface')
-
 const CatalogDataCategoryLinkExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\Catalog\\Api\\Data\\CategoryLinkInterface',
@@ -1075,373 +303,8 @@ const CatalogDataCategoryLinkInterfaceSchema = z
   .openapi({ description: '', required: ['category_id'] })
   .openapi('CatalogDataCategoryLinkInterface')
 
-const CatalogDataCategoryProductLinkExtensionInterfaceSchema = z
-  .object({})
-  .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\Catalog\\Api\\Data\\CategoryProductLinkInterface',
-  })
-  .openapi('CatalogDataCategoryProductLinkExtensionInterface')
-
-const CatalogDataCategoryProductLinkInterfaceSchema = z
-  .object({
-    category_id: z.string().openapi({ description: 'Category id' }),
-    extension_attributes: CatalogDataCategoryProductLinkExtensionInterfaceSchema.exactOptional(),
-    position: z.int().exactOptional(),
-    sku: z.string().exactOptional(),
-  })
-  .openapi({ description: '', required: ['category_id'] })
-  .openapi('CatalogDataCategoryProductLinkInterface')
-
-const CatalogDataCategorySearchResultsInterfaceSchema = z
-  .object({
-    items: z.array(CatalogDataCategoryInterfaceSchema).openapi({ description: 'Categories' }),
-    search_criteria: FrameworkSearchCriteriaInterfaceSchema,
-    total_count: z.int().openapi({ description: 'Total count.' }),
-  })
-  .openapi({ description: '', required: ['items', 'search_criteria', 'total_count'] })
-  .openapi('CatalogDataCategorySearchResultsInterface')
-
-const CatalogDataCategoryTreeInterfaceSchema: z.ZodType<CatalogDataCategoryTreeInterfaceType> = z
-  .lazy(() =>
-    z
-      .object({
-        children_data: z.array(CatalogDataCategoryTreeInterfaceSchema),
-        id: z.int().exactOptional(),
-        is_active: z.boolean().openapi({ description: 'Whether category is active' }),
-        level: z.int().openapi({ description: 'Category level' }),
-        name: z.string().openapi({ description: 'Category name' }),
-        parent_id: z.int().openapi({ description: 'Parent category ID' }),
-        position: z.int().openapi({ description: 'Category position' }),
-        product_count: z.int().openapi({ description: 'Product count' }),
-      })
-      .openapi({
-        description: '',
-        required: [
-          'parent_id',
-          'name',
-          'is_active',
-          'position',
-          'level',
-          'product_count',
-          'children_data',
-        ],
-      }),
-  )
-  .openapi('CatalogDataCategoryTreeInterface')
-
-const CatalogDataCostExtensionInterfaceSchema = z
-  .object({})
-  .openapi({
-    description: 'ExtensionInterface class for @see \\Magento\\Catalog\\Api\\Data\\CostInterface',
-  })
-  .openapi('CatalogDataCostExtensionInterface')
-
-const CatalogDataCostInterfaceSchema = z
-  .object({
-    cost: z.number().openapi({ description: 'Cost value.' }),
-    extension_attributes: CatalogDataCostExtensionInterfaceSchema.exactOptional(),
-    sku: z.string().openapi({ description: 'SKU.' }),
-    store_id: z.int().openapi({ description: 'Store id.' }),
-  })
-  .openapi({ description: 'Cost interface.', required: ['cost', 'store_id', 'sku'] })
-  .openapi('CatalogDataCostInterface')
-
-const CatalogDataPriceUpdateResultExtensionInterfaceSchema = z
-  .object({})
-  .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\Catalog\\Api\\Data\\PriceUpdateResultInterface',
-  })
-  .openapi('CatalogDataPriceUpdateResultExtensionInterface')
-
-const CatalogDataPriceUpdateResultInterfaceSchema = z
-  .object({
-    extension_attributes: CatalogDataPriceUpdateResultExtensionInterfaceSchema.exactOptional(),
-    message: z
-      .string()
-      .openapi({
-        description:
-          'Error message, that contains description of error occurred during price update.',
-      }),
-    parameters: z
-      .array(z.string())
-      .openapi({
-        description: 'Parameters, that could be displayed in error message placeholders.',
-      }),
-  })
-  .openapi({
-    description: 'Interface returned in case of incorrect price passed to efficient price API.',
-    required: ['message', 'parameters'],
-  })
-  .openapi('CatalogDataPriceUpdateResultInterface')
-
-const CatalogDataProductAttributeInterfaceSchema = z
-  .object({
-    apply_to: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Apply to value for the element' }),
-    attribute_code: z.string().openapi({ description: 'Code of the attribute.' }),
-    attribute_id: z.int().exactOptional().openapi({ description: 'Id of the attribute.' }),
-    backend_model: z.string().exactOptional().openapi({ description: 'Backend model' }),
-    backend_type: z.string().exactOptional().openapi({ description: 'Backend type.' }),
-    custom_attributes: z
-      .array(FrameworkAttributeInterfaceSchema)
-      .exactOptional()
-      .openapi({ description: 'Custom attributes values.' }),
-    default_frontend_label: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Frontend label for default store' }),
-    default_value: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Default value for the element.' }),
-    entity_type_id: z.string().openapi({ description: 'Entity type id' }),
-    extension_attributes: CatalogDataEavAttributeExtensionInterfaceSchema.exactOptional(),
-    frontend_class: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Frontend class of attribute' }),
-    frontend_input: z.string().openapi({ description: 'HTML for input element.' }),
-    frontend_labels: z
-      .array(EavDataAttributeFrontendLabelInterfaceSchema)
-      .openapi({ description: 'Frontend label for each store' }),
-    is_comparable: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The attribute can be compared on the frontend' }),
-    is_filterable: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'It used in layered navigation' }),
-    is_filterable_in_grid: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'It is filterable in catalog product grid' }),
-    is_filterable_in_search: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'It is used in search results layered navigation' }),
-    is_html_allowed_on_front: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'The HTML tags are allowed on the frontend' }),
-    is_required: z.boolean().openapi({ description: 'Attribute is required.' }),
-    is_searchable: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The attribute can be used in Quick Search' }),
-    is_unique: z.string().exactOptional().openapi({ description: 'This is a unique attribute' }),
-    is_used_for_promo_rules: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The attribute can be used for promo rules' }),
-    is_used_in_grid: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'It is used in catalog product grid' }),
-    is_user_defined: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Current attribute has been defined by a user.' }),
-    is_visible: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Attribute is visible on frontend.' }),
-    is_visible_in_advanced_search: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The attribute can be used in Advanced Search' }),
-    is_visible_in_grid: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'It is visible in catalog product grid' }),
-    is_visible_on_front: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The attribute is visible on the frontend' }),
-    is_wysiwyg_enabled: z.boolean().exactOptional().openapi({ description: 'WYSIWYG flag' }),
-    note: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The note attribute for the element.' }),
-    options: z
-      .array(EavDataAttributeOptionInterfaceSchema)
-      .exactOptional()
-      .openapi({ description: 'Options of the attribute (key => value pairs for select)' }),
-    position: z.int().exactOptional().openapi({ description: 'Position' }),
-    scope: z.string().exactOptional().openapi({ description: 'Attribute scope' }),
-    source_model: z.string().exactOptional().openapi({ description: 'Source model' }),
-    used_for_sort_by: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'It is used for sorting in product listing' }),
-    used_in_product_listing: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The attribute can be used in product listing' }),
-    validation_rules: z
-      .array(EavDataAttributeValidationRuleInterfaceSchema)
-      .exactOptional()
-      .openapi({ description: 'Validation rules.' }),
-  })
-  .openapi({
-    description: '',
-    required: [
-      'attribute_code',
-      'frontend_input',
-      'entity_type_id',
-      'is_required',
-      'frontend_labels',
-    ],
-  })
-  .openapi('CatalogDataProductAttributeInterface')
-
-const FrameworkDataVideoContentInterfaceSchema = z
-  .object({
-    media_type: z.string().openapi({ description: 'MIME type' }),
-    video_description: z.string().openapi({ description: 'Video Description' }),
-    video_metadata: z.string().openapi({ description: 'Metadata' }),
-    video_provider: z.string().openapi({ description: 'Provider' }),
-    video_title: z.string().openapi({ description: 'Title' }),
-    video_url: z.string().openapi({ description: 'Video URL' }),
-  })
-  .openapi({
-    description: 'Video Content data interface',
-    required: [
-      'media_type',
-      'video_provider',
-      'video_url',
-      'video_title',
-      'video_description',
-      'video_metadata',
-    ],
-  })
-  .openapi('FrameworkDataVideoContentInterface')
-
-const CatalogDataProductAttributeMediaGalleryEntryExtensionInterfaceSchema = z
-  .object({ video_content: FrameworkDataVideoContentInterfaceSchema.exactOptional() })
-  .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\Catalog\\Api\\Data\\ProductAttributeMediaGalleryEntryInterface',
-    required: [],
-  })
-  .openapi('CatalogDataProductAttributeMediaGalleryEntryExtensionInterface')
-
-const CatalogDataProductAttributeMediaGalleryEntryInterfaceSchema = z
-  .object({
-    content: FrameworkDataImageContentInterfaceSchema.exactOptional(),
-    disabled: z.boolean().openapi({ description: 'If gallery entry is hidden from product page' }),
-    extension_attributes:
-      CatalogDataProductAttributeMediaGalleryEntryExtensionInterfaceSchema.exactOptional(),
-    file: z.string().exactOptional().openapi({ description: 'File path' }),
-    id: z.int().exactOptional().openapi({ description: 'Gallery entry ID' }),
-    label: z.string().openapi({ description: 'Gallery entry alternative text' }),
-    media_type: z.string().openapi({ description: 'Media type' }),
-    position: z.int().openapi({ description: 'Gallery entry position (sort order)' }),
-    types: z
-      .array(z.string())
-      .openapi({ description: 'Gallery entry image types (thumbnail, image, small_image etc)' }),
-  })
-  .openapi({ description: '', required: ['media_type', 'label', 'position', 'disabled', 'types'] })
-  .openapi('CatalogDataProductAttributeMediaGalleryEntryInterface')
-
-const CatalogDataProductAttributeSearchResultsInterfaceSchema = z
-  .object({
-    items: z
-      .array(CatalogDataProductAttributeInterfaceSchema)
-      .openapi({ description: 'Attributes list.' }),
-    search_criteria: FrameworkSearchCriteriaInterfaceSchema,
-    total_count: z.int().openapi({ description: 'Total count.' }),
-  })
-  .openapi({ description: '', required: ['items', 'search_criteria', 'total_count'] })
-  .openapi('CatalogDataProductAttributeSearchResultsInterface')
-
-const CatalogDataProductAttributeTypeExtensionInterfaceSchema = z
-  .object({})
-  .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\Catalog\\Api\\Data\\ProductAttributeTypeInterface',
-  })
-  .openapi('CatalogDataProductAttributeTypeExtensionInterface')
-
-const CatalogDataProductAttributeTypeInterfaceSchema = z
-  .object({
-    extension_attributes: CatalogDataProductAttributeTypeExtensionInterfaceSchema.exactOptional(),
-    label: z.string().openapi({ description: 'Type label' }),
-    value: z.string().openapi({ description: 'Value' }),
-  })
-  .openapi({ description: '', required: ['value', 'label'] })
-  .openapi('CatalogDataProductAttributeTypeInterface')
-
-const CatalogDataProductCustomOptionExtensionInterfaceSchema = z
-  .object({ vertex_flex_field: z.string().exactOptional() })
-  .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\Catalog\\Api\\Data\\ProductCustomOptionInterface',
-    required: [],
-  })
-  .openapi('CatalogDataProductCustomOptionExtensionInterface')
-
-const CatalogDataProductCustomOptionValuesInterfaceSchema = z
-  .object({
-    option_type_id: z.int().exactOptional().openapi({ description: 'Option type id' }),
-    price: z.number().openapi({ description: 'Price' }),
-    price_type: z.string().openapi({ description: 'Price type' }),
-    sku: z.string().exactOptional().openapi({ description: 'Sku' }),
-    sort_order: z.int().openapi({ description: 'Sort order' }),
-    title: z.string().openapi({ description: 'Option title' }),
-  })
-  .openapi({ description: '', required: ['title', 'sort_order', 'price', 'price_type'] })
-  .openapi('CatalogDataProductCustomOptionValuesInterface')
-
-const CatalogDataProductCustomOptionInterfaceSchema = z
-  .object({
-    extension_attributes: CatalogDataProductCustomOptionExtensionInterfaceSchema.exactOptional(),
-    file_extension: z.string().exactOptional(),
-    image_size_x: z.int().exactOptional(),
-    image_size_y: z.int().exactOptional(),
-    is_require: z.boolean().openapi({ description: 'Is require' }),
-    max_characters: z.int().exactOptional(),
-    option_id: z.int().exactOptional().openapi({ description: 'Option id' }),
-    price: z.number().exactOptional().openapi({ description: 'Price' }),
-    price_type: z.string().exactOptional().openapi({ description: 'Price type' }),
-    product_sku: z.string().openapi({ description: 'Product SKU' }),
-    sku: z.string().exactOptional().openapi({ description: 'Sku' }),
-    sort_order: z.int().openapi({ description: 'Sort order' }),
-    title: z.string().openapi({ description: 'Option title' }),
-    type: z.string().openapi({ description: 'Option type' }),
-    values: z.array(CatalogDataProductCustomOptionValuesInterfaceSchema).exactOptional(),
-  })
-  .openapi({
-    description: '',
-    required: ['product_sku', 'title', 'type', 'sort_order', 'is_require'],
-  })
-  .openapi('CatalogDataProductCustomOptionInterface')
-
-const CatalogDataProductCustomOptionTypeExtensionInterfaceSchema = z
-  .object({})
-  .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\Catalog\\Api\\Data\\ProductCustomOptionTypeInterface',
-  })
-  .openapi('CatalogDataProductCustomOptionTypeExtensionInterface')
-
-const CatalogDataProductCustomOptionTypeInterfaceSchema = z
-  .object({
-    code: z.string().openapi({ description: 'Option type code' }),
-    extension_attributes:
-      CatalogDataProductCustomOptionTypeExtensionInterfaceSchema.exactOptional(),
-    group: z.string().openapi({ description: 'Option type group' }),
-    label: z.string().openapi({ description: 'Option type label' }),
-  })
-  .openapi({ description: '', required: ['label', 'code', 'group'] })
-  .openapi('CatalogDataProductCustomOptionTypeInterface')
-
 const ConfigurableProductDataOptionExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\ConfigurableProduct\\Api\\Data\\OptionInterface',
@@ -1449,7 +312,7 @@ const ConfigurableProductDataOptionExtensionInterfaceSchema = z
   .openapi('ConfigurableProductDataOptionExtensionInterface')
 
 const ConfigurableProductDataOptionValueExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\ConfigurableProduct\\Api\\Data\\OptionValueInterface',
@@ -1480,7 +343,7 @@ const ConfigurableProductDataOptionInterfaceSchema = z
   .openapi('ConfigurableProductDataOptionInterface')
 
 const DownloadableDataLinkExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\Downloadable\\Api\\Data\\LinkInterface',
@@ -1488,7 +351,7 @@ const DownloadableDataLinkExtensionInterfaceSchema = z
   .openapi('DownloadableDataLinkExtensionInterface')
 
 const DownloadableDataFileContentExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\Downloadable\\Api\\Data\\File\\ContentInterface',
@@ -1532,7 +395,7 @@ const DownloadableDataLinkInterfaceSchema = z
   .openapi('DownloadableDataLinkInterface')
 
 const DownloadableDataSampleExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\Downloadable\\Api\\Data\\SampleInterface',
@@ -1554,7 +417,7 @@ const DownloadableDataSampleInterfaceSchema = z
   .openapi('DownloadableDataSampleInterface')
 
 const GiftCardDataGiftcardAmountExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\GiftCard\\Api\\Data\\GiftcardAmountInterface',
@@ -1577,7 +440,7 @@ const GiftCardDataGiftcardAmountInterfaceSchema = z
   .openapi('GiftCardDataGiftcardAmountInterface')
 
 const CatalogInventoryDataStockItemExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\CatalogInventory\\Api\\Data\\StockItemInterface',
@@ -1675,6 +538,112 @@ const CatalogDataProductExtensionInterfaceSchema = z
   })
   .openapi('CatalogDataProductExtensionInterface')
 
+const FrameworkDataImageContentInterfaceSchema = z
+  .object({
+    base64_encoded_data: z.string().openapi({ description: 'Media data (base64 encoded content)' }),
+    name: z.string().openapi({ description: 'Image name' }),
+    type: z.string().openapi({ description: 'MIME type' }),
+  })
+  .openapi({
+    description: 'Image Content data interface',
+    required: ['base64_encoded_data', 'type', 'name'],
+  })
+  .openapi('FrameworkDataImageContentInterface')
+
+const FrameworkDataVideoContentInterfaceSchema = z
+  .object({
+    media_type: z.string().openapi({ description: 'MIME type' }),
+    video_description: z.string().openapi({ description: 'Video Description' }),
+    video_metadata: z.string().openapi({ description: 'Metadata' }),
+    video_provider: z.string().openapi({ description: 'Provider' }),
+    video_title: z.string().openapi({ description: 'Title' }),
+    video_url: z.string().openapi({ description: 'Video URL' }),
+  })
+  .openapi({
+    description: 'Video Content data interface',
+    required: [
+      'media_type',
+      'video_provider',
+      'video_url',
+      'video_title',
+      'video_description',
+      'video_metadata',
+    ],
+  })
+  .openapi('FrameworkDataVideoContentInterface')
+
+const CatalogDataProductAttributeMediaGalleryEntryExtensionInterfaceSchema = z
+  .object({ video_content: FrameworkDataVideoContentInterfaceSchema.exactOptional() })
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\Catalog\\Api\\Data\\ProductAttributeMediaGalleryEntryInterface',
+    required: [],
+  })
+  .openapi('CatalogDataProductAttributeMediaGalleryEntryExtensionInterface')
+
+const CatalogDataProductAttributeMediaGalleryEntryInterfaceSchema = z
+  .object({
+    content: FrameworkDataImageContentInterfaceSchema.exactOptional(),
+    disabled: z.boolean().openapi({ description: 'If gallery entry is hidden from product page' }),
+    extension_attributes:
+      CatalogDataProductAttributeMediaGalleryEntryExtensionInterfaceSchema.exactOptional(),
+    file: z.string().exactOptional().openapi({ description: 'File path' }),
+    id: z.int().exactOptional().openapi({ description: 'Gallery entry ID' }),
+    label: z.string().openapi({ description: 'Gallery entry alternative text' }),
+    media_type: z.string().openapi({ description: 'Media type' }),
+    position: z.int().openapi({ description: 'Gallery entry position (sort order)' }),
+    types: z
+      .array(z.string())
+      .openapi({ description: 'Gallery entry image types (thumbnail, image, small_image etc)' }),
+  })
+  .openapi({ description: '', required: ['media_type', 'label', 'position', 'disabled', 'types'] })
+  .openapi('CatalogDataProductAttributeMediaGalleryEntryInterface')
+
+const CatalogDataProductCustomOptionExtensionInterfaceSchema = z
+  .object({ vertex_flex_field: z.string().exactOptional() })
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\Catalog\\Api\\Data\\ProductCustomOptionInterface',
+    required: [],
+  })
+  .openapi('CatalogDataProductCustomOptionExtensionInterface')
+
+const CatalogDataProductCustomOptionValuesInterfaceSchema = z
+  .object({
+    option_type_id: z.int().exactOptional().openapi({ description: 'Option type id' }),
+    price: z.number().openapi({ description: 'Price' }),
+    price_type: z.string().openapi({ description: 'Price type' }),
+    sku: z.string().exactOptional().openapi({ description: 'Sku' }),
+    sort_order: z.int().openapi({ description: 'Sort order' }),
+    title: z.string().openapi({ description: 'Option title' }),
+  })
+  .openapi({ description: '', required: ['title', 'sort_order', 'price', 'price_type'] })
+  .openapi('CatalogDataProductCustomOptionValuesInterface')
+
+const CatalogDataProductCustomOptionInterfaceSchema = z
+  .object({
+    extension_attributes: CatalogDataProductCustomOptionExtensionInterfaceSchema.exactOptional(),
+    file_extension: z.string().exactOptional(),
+    image_size_x: z.int().exactOptional(),
+    image_size_y: z.int().exactOptional(),
+    is_require: z.boolean().openapi({ description: 'Is require' }),
+    max_characters: z.int().exactOptional(),
+    option_id: z.int().exactOptional().openapi({ description: 'Option id' }),
+    price: z.number().exactOptional().openapi({ description: 'Price' }),
+    price_type: z.string().exactOptional().openapi({ description: 'Price type' }),
+    product_sku: z.string().openapi({ description: 'Product SKU' }),
+    sku: z.string().exactOptional().openapi({ description: 'Sku' }),
+    sort_order: z.int().openapi({ description: 'Sort order' }),
+    title: z.string().openapi({ description: 'Option title' }),
+    type: z.string().openapi({ description: 'Option type' }),
+    values: z.array(CatalogDataProductCustomOptionValuesInterfaceSchema).exactOptional(),
+  })
+  .openapi({
+    description: '',
+    required: ['product_sku', 'title', 'type', 'sort_order', 'is_require'],
+  })
+  .openapi('CatalogDataProductCustomOptionInterface')
+
 const CatalogDataProductLinkExtensionInterfaceSchema = z
   .object({ qty: z.number().exactOptional() })
   .openapi({
@@ -1758,342 +727,59 @@ const CatalogDataProductInterfaceSchema = z
   .openapi({ description: '', required: ['sku'] })
   .openapi('CatalogDataProductInterface')
 
-const CatalogDataProductLinkAttributeExtensionInterfaceSchema = z
-  .object({})
-  .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\Catalog\\Api\\Data\\ProductLinkAttributeInterface',
-  })
-  .openapi('CatalogDataProductLinkAttributeExtensionInterface')
-
-const CatalogDataProductLinkAttributeInterfaceSchema = z
+const FrameworkFilterSchema = z
   .object({
-    code: z.string().openapi({ description: 'Attribute code' }),
-    extension_attributes: CatalogDataProductLinkAttributeExtensionInterfaceSchema.exactOptional(),
-    type: z.string().openapi({ description: 'Attribute type' }),
+    condition_type: z.string().exactOptional().openapi({ description: 'Condition type' }),
+    field: z.string().openapi({ description: 'Field' }),
+    value: z.string().openapi({ description: 'Value' }),
   })
-  .openapi({ description: '', required: ['code', 'type'] })
-  .openapi('CatalogDataProductLinkAttributeInterface')
-
-const CatalogDataProductLinkTypeExtensionInterfaceSchema = z
-  .object({})
   .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\Catalog\\Api\\Data\\ProductLinkTypeInterface',
+    description: 'Filter which can be used by any methods from service layer.',
+    required: ['field', 'value'],
   })
-  .openapi('CatalogDataProductLinkTypeExtensionInterface')
+  .openapi('FrameworkFilter')
 
-const CatalogDataProductLinkTypeInterfaceSchema = z
+const FrameworkSearchFilterGroupSchema = z
   .object({
-    code: z.int().openapi({ description: 'Link type code' }),
-    extension_attributes: CatalogDataProductLinkTypeExtensionInterfaceSchema.exactOptional(),
-    name: z.string().openapi({ description: 'Link type name' }),
-  })
-  .openapi({ description: '', required: ['code', 'name'] })
-  .openapi('CatalogDataProductLinkTypeInterface')
-
-const CatalogDataProductRenderButtonExtensionInterfaceSchema = z
-  .object({})
-  .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\Catalog\\Api\\Data\\ProductRender\\ButtonInterface',
-  })
-  .openapi('CatalogDataProductRenderButtonExtensionInterface')
-
-const CatalogDataProductRenderButtonInterfaceSchema = z
-  .object({
-    extension_attributes: CatalogDataProductRenderButtonExtensionInterfaceSchema.exactOptional(),
-    post_data: z.string().openapi({ description: 'Post data' }),
-    required_options: z
-      .boolean()
-      .openapi({ description: 'Flag whether a product has options or not' }),
-    url: z.string().openapi({ description: 'Url, needed to add product to cart' }),
-  })
-  .openapi({
-    description:
-      'Button interface. This interface represents all manner of product buttons: add to cart, add to compare, etc... The buttons describes by this interface should have interaction with backend',
-    required: ['post_data', 'url', 'required_options'],
-  })
-  .openapi('CatalogDataProductRenderButtonInterface')
-
-const CatalogDataProductRenderExtensionInterfaceSchema = z
-  .object({
-    review_html: z.string().exactOptional(),
-    wishlist_button: CatalogDataProductRenderButtonInterfaceSchema.exactOptional(),
-  })
-  .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\Catalog\\Api\\Data\\ProductRenderInterface',
-    required: [],
-  })
-  .openapi('CatalogDataProductRenderExtensionInterface')
-
-const CatalogDataProductRenderImageExtensionInterfaceSchema = z
-  .object({})
-  .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\Catalog\\Api\\Data\\ProductRender\\ImageInterface',
-  })
-  .openapi('CatalogDataProductRenderImageExtensionInterface')
-
-const CatalogDataProductRenderImageInterfaceSchema = z
-  .object({
-    code: z.string().openapi({ description: 'Image code' }),
-    extension_attributes: CatalogDataProductRenderImageExtensionInterfaceSchema.exactOptional(),
-    height: z.number().openapi({ description: 'Image height' }),
-    label: z.string().openapi({ description: 'Image label' }),
-    resized_height: z.number().openapi({ description: 'Resize height' }),
-    resized_width: z.number().openapi({ description: 'Resize width' }),
-    url: z.string().openapi({ description: 'Image url' }),
-    width: z.number().openapi({ description: 'Image width in px' }),
-  })
-  .openapi({
-    description:
-      'Product Render image interface. Represents physical characteristics of image, that can be used in product listing or product view',
-    required: ['url', 'code', 'height', 'width', 'label', 'resized_width', 'resized_height'],
-  })
-  .openapi('CatalogDataProductRenderImageInterface')
-
-const CatalogDataProductRenderInterfaceSchema = z
-  .object({
-    add_to_cart_button: CatalogDataProductRenderButtonInterfaceSchema,
-    add_to_compare_button: CatalogDataProductRenderButtonInterfaceSchema,
-    currency_code: z
-      .string()
-      .openapi({ description: 'Current or desired currency code to product' }),
-    extension_attributes: CatalogDataProductRenderExtensionInterfaceSchema,
-    id: z.int().openapi({ description: 'Product identifier' }),
-    images: z
-      .array(CatalogDataProductRenderImageInterfaceSchema)
-      .openapi({ description: 'Enough information, that needed to render image on front' }),
-    is_salable: z
-      .string()
-      .openapi({ description: 'Information about product saleability (In Stock)' }),
-    name: z.string().openapi({ description: 'Product name' }),
-    price_info: CatalogDataProductRenderPriceInfoInterfaceSchema,
-    store_id: z
-      .int()
-      .openapi({ description: 'Information about current store id or requested store id' }),
-    type: z
-      .string()
-      .openapi({ description: 'Product type. Such as bundle, grouped, simple, etc...' }),
-    url: z.string().openapi({ description: 'Product url' }),
-  })
-  .openapi({
-    description:
-      'Represents Data Object which holds enough information to render product This information is put into part as Add To Cart or Add to Compare Data or Price Data',
-    required: [
-      'add_to_cart_button',
-      'add_to_compare_button',
-      'price_info',
-      'images',
-      'url',
-      'id',
-      'name',
-      'type',
-      'is_salable',
-      'store_id',
-      'currency_code',
-      'extension_attributes',
-    ],
-  })
-  .openapi('CatalogDataProductRenderInterface')
-
-const CatalogDataProductRenderSearchResultsInterfaceSchema = z
-  .object({
-    items: z
-      .array(CatalogDataProductRenderInterfaceSchema)
-      .openapi({ description: 'List of products rendered information' }),
-  })
-  .openapi({ description: 'Dto that holds render information about products', required: ['items'] })
-  .openapi('CatalogDataProductRenderSearchResultsInterface')
-
-const CatalogDataProductSearchResultsInterfaceSchema = z
-  .object({
-    items: z.array(CatalogDataProductInterfaceSchema).openapi({ description: 'Attributes list.' }),
-    search_criteria: FrameworkSearchCriteriaInterfaceSchema,
-    total_count: z.int().openapi({ description: 'Total count.' }),
-  })
-  .openapi({ description: '', required: ['items', 'search_criteria', 'total_count'] })
-  .openapi('CatalogDataProductSearchResultsInterface')
-
-const CatalogDataProductTypeExtensionInterfaceSchema = z
-  .object({})
-  .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\Catalog\\Api\\Data\\ProductTypeInterface',
-  })
-  .openapi('CatalogDataProductTypeExtensionInterface')
-
-const CatalogDataProductTypeInterfaceSchema = z
-  .object({
-    extension_attributes: CatalogDataProductTypeExtensionInterfaceSchema.exactOptional(),
-    label: z.string().openapi({ description: 'Product type label' }),
-    name: z.string().openapi({ description: 'Product type code' }),
-  })
-  .openapi({ description: 'Product type details', required: ['name', 'label'] })
-  .openapi('CatalogDataProductTypeInterface')
-
-const CatalogDataProductWebsiteLinkInterfaceSchema = z
-  .object({ sku: z.string(), website_id: z.int().openapi({ description: 'Website ids' }) })
-  .openapi({ description: '', required: ['sku', 'website_id'] })
-  .openapi('CatalogDataProductWebsiteLinkInterface')
-
-const CatalogDataSpecialPriceExtensionInterfaceSchema = z
-  .object({})
-  .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\Catalog\\Api\\Data\\SpecialPriceInterface',
-  })
-  .openapi('CatalogDataSpecialPriceExtensionInterface')
-
-const CatalogDataSpecialPriceInterfaceSchema = z
-  .object({
-    extension_attributes: CatalogDataSpecialPriceExtensionInterfaceSchema.exactOptional(),
-    price: z.number().openapi({ description: 'Product special price value.' }),
-    price_from: z
-      .string()
-      .openapi({ description: 'Start date for special price in Y-m-d H:i:s format.' }),
-    price_to: z
-      .string()
-      .openapi({ description: 'End date for special price in Y-m-d H:i:s format.' }),
-    sku: z.string().openapi({ description: 'SKU of product, that contains special price value.' }),
-    store_id: z.int().openapi({ description: 'ID of store, that contains special price value.' }),
-  })
-  .openapi({
-    description:
-      'Product Special Price Interface is used to encapsulate data that can be processed by efficient price API.',
-    required: ['price', 'store_id', 'sku', 'price_from', 'price_to'],
-  })
-  .openapi('CatalogDataSpecialPriceInterface')
-
-const CatalogDataTierPriceExtensionInterfaceSchema = z
-  .object({})
-  .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\Catalog\\Api\\Data\\TierPriceInterface',
-  })
-  .openapi('CatalogDataTierPriceExtensionInterface')
-
-const CatalogDataTierPriceInterfaceSchema = z
-  .object({
-    customer_group: z.string().openapi({ description: 'Customer group.' }),
-    extension_attributes: CatalogDataTierPriceExtensionInterfaceSchema.exactOptional(),
-    price: z.number().openapi({ description: 'Tier price.' }),
-    price_type: z.string().openapi({ description: 'Tier price type.' }),
-    quantity: z.number().openapi({ description: 'Quantity.' }),
-    sku: z.string().openapi({ description: 'SKU.' }),
-    website_id: z.int().openapi({ description: 'Website id.' }),
-  })
-  .openapi({
-    description: 'Tier price interface.',
-    required: ['price', 'price_type', 'website_id', 'sku', 'customer_group', 'quantity'],
-  })
-  .openapi('CatalogDataTierPriceInterface')
-
-const FrameworkCriteriaInterfaceSchema: z.ZodType<FrameworkCriteriaInterfaceType> = z
-  .lazy(() =>
-    z
-      .object({
-        criteria_list: z
-          .array(FrameworkCriteriaInterfaceSchema)
-          .openapi({ description: 'Criteria objects added to current Composite Criteria' }),
-        filters: z.array(z.string()).openapi({ description: 'List of filters' }),
-        limit: z.array(z.string()).openapi({ description: 'Limit' }),
-        mapper_interface_name: z
-          .string()
-          .openapi({ description: 'Associated Mapper Interface name' }),
-        orders: z.array(z.string()).openapi({ description: 'Ordering criteria' }),
-      })
-      .openapi({
-        description: 'Interface CriteriaInterface',
-        required: ['mapper_interface_name', 'criteria_list', 'filters', 'orders', 'limit'],
-      }),
-  )
-  .openapi('FrameworkCriteriaInterface')
-
-const CatalogInventoryStockItemCriteriaInterfaceSchema = z
-  .object({
-    criteria_list: z
-      .array(FrameworkCriteriaInterfaceSchema)
-      .openapi({ description: 'Criteria objects added to current Composite Criteria' }),
-    filters: z.array(z.string()).openapi({ description: 'List of filters' }),
-    limit: z.array(z.string()).openapi({ description: 'Limit' }),
-    mapper_interface_name: z.string().openapi({ description: 'Associated Mapper Interface name' }),
-    orders: z.array(z.string()).openapi({ description: 'Ordering criteria' }),
-  })
-  .openapi({
-    description: 'Interface StockItemCriteriaInterface',
-    required: ['mapper_interface_name', 'criteria_list', 'filters', 'orders', 'limit'],
-  })
-  .openapi('CatalogInventoryStockItemCriteriaInterface')
-
-const CatalogInventoryDataStockItemCollectionInterfaceSchema = z
-  .object({
-    items: z.array(CatalogInventoryDataStockItemInterfaceSchema).openapi({ description: 'Items' }),
-    search_criteria: CatalogInventoryStockItemCriteriaInterfaceSchema,
-    total_count: z.int().openapi({ description: 'Total count.' }),
-  })
-  .openapi({
-    description: 'Interface StockItemCollectionInterface',
-    required: ['items', 'search_criteria', 'total_count'],
-  })
-  .openapi('CatalogInventoryDataStockItemCollectionInterface')
-
-const CatalogInventoryDataStockStatusExtensionInterfaceSchema = z
-  .object({})
-  .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\CatalogInventory\\Api\\Data\\StockStatusInterface',
-  })
-  .openapi('CatalogInventoryDataStockStatusExtensionInterface')
-
-const CatalogInventoryDataStockStatusInterfaceSchema = z
-  .object({
-    extension_attributes: CatalogInventoryDataStockStatusExtensionInterfaceSchema.exactOptional(),
-    product_id: z.int(),
-    qty: z.int(),
-    stock_id: z.int(),
-    stock_item: CatalogInventoryDataStockItemInterfaceSchema,
-    stock_status: z.int(),
-  })
-  .openapi({
-    description: 'Interface StockStatusInterface',
-    required: ['product_id', 'stock_id', 'qty', 'stock_status', 'stock_item'],
-  })
-  .openapi('CatalogInventoryDataStockStatusInterface')
-
-const CheckoutAgreementsDataAgreementExtensionInterfaceSchema = z
-  .object({})
-  .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\CheckoutAgreements\\Api\\Data\\AgreementInterface',
-  })
-  .openapi('CheckoutAgreementsDataAgreementExtensionInterface')
-
-const CheckoutAgreementsDataAgreementInterfaceSchema = z
-  .object({
-    agreement_id: z.int().openapi({ description: 'Agreement ID.' }),
-    checkbox_text: z.string().openapi({ description: 'Agreement checkbox text.' }),
-    content: z.string().openapi({ description: 'Agreement content.' }),
-    content_height: z
-      .string()
+    filters: z
+      .array(FrameworkFilterSchema)
       .exactOptional()
-      .openapi({ description: 'Agreement content height. Otherwise, null.' }),
-    extension_attributes: CheckoutAgreementsDataAgreementExtensionInterfaceSchema.exactOptional(),
-    is_active: z.boolean().openapi({ description: 'Agreement status.' }),
-    is_html: z.boolean().openapi({ description: '* true - HTML. * false - plain text.' }),
-    mode: z.int().openapi({ description: 'The agreement applied mode.' }),
-    name: z.string().openapi({ description: 'Agreement name.' }),
+      .openapi({ description: 'A list of filters in this group' }),
   })
-  .openapi({
-    description: 'Interface AgreementInterface',
-    required: ['agreement_id', 'name', 'content', 'checkbox_text', 'is_active', 'is_html', 'mode'],
+  .openapi({ description: 'Groups two or more filters together using a logical OR', required: [] })
+  .openapi('FrameworkSearchFilterGroup')
+
+const FrameworkSortOrderSchema = z
+  .object({
+    direction: z.string().openapi({ description: 'Sorting direction.' }),
+    field: z.string().openapi({ description: 'Sorting field.' }),
   })
-  .openapi('CheckoutAgreementsDataAgreementInterface')
+  .openapi({ description: 'Data object for sort order.', required: ['field', 'direction'] })
+  .openapi('FrameworkSortOrder')
+
+const FrameworkSearchCriteriaInterfaceSchema = z
+  .object({
+    current_page: z.int().exactOptional().openapi({ description: 'Current page.' }),
+    filter_groups: z
+      .array(FrameworkSearchFilterGroupSchema)
+      .openapi({ description: 'A list of filter groups.' }),
+    page_size: z.int().exactOptional().openapi({ description: 'Page size.' }),
+    sort_orders: z
+      .array(FrameworkSortOrderSchema)
+      .exactOptional()
+      .openapi({ description: 'Sort order.' }),
+  })
+  .openapi({ description: 'Search criteria interface.', required: ['filter_groups'] })
+  .openapi('FrameworkSearchCriteriaInterface')
+
+type CatalogDataProductSearchResultsInterfaceType = {
+  items: z.infer<typeof CatalogDataProductInterfaceSchema>[]
+  search_criteria: z.infer<typeof FrameworkSearchCriteriaInterfaceSchema>
+  total_count: number
+}
 
 const CheckoutDataPaymentDetailsExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\Checkout\\Api\\Data\\PaymentDetailsInterface',
@@ -2182,7 +868,7 @@ const QuoteDataTotalsExtensionInterfaceSchema = z
   .openapi('QuoteDataTotalsExtensionInterface')
 
 const NegotiableQuoteDataNegotiableQuoteItemTotalsExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\NegotiableQuote\\Api\\Data\\NegotiableQuoteItemTotalsInterface',
@@ -2395,7 +1081,38 @@ const QuoteDataTotalSegmentInterfaceSchema = z
   .openapi({ description: 'Interface TotalsInterface', required: ['code', 'value'] })
   .openapi('QuoteDataTotalSegmentInterface')
 
-const QuoteDataTotalsInterfaceSchema = z
+type QuoteDataTotalsInterfaceType = {
+  base_currency_code?: string
+  base_discount_amount?: number
+  base_grand_total?: number
+  base_shipping_amount?: number
+  base_shipping_discount_amount?: number
+  base_shipping_incl_tax?: number
+  base_shipping_tax_amount?: number
+  base_subtotal?: number
+  base_subtotal_incl_tax?: number
+  base_subtotal_with_discount?: number
+  base_tax_amount?: number
+  coupon_code?: string
+  discount_amount?: number
+  extension_attributes?: z.infer<typeof QuoteDataTotalsExtensionInterfaceSchema>
+  grand_total?: number
+  items?: z.infer<typeof QuoteDataTotalsItemInterfaceSchema>[]
+  items_qty?: number
+  quote_currency_code?: string
+  shipping_amount?: number
+  shipping_discount_amount?: number
+  shipping_incl_tax?: number
+  shipping_tax_amount?: number
+  subtotal?: number
+  subtotal_incl_tax?: number
+  subtotal_with_discount?: number
+  tax_amount?: number
+  total_segments: z.infer<typeof QuoteDataTotalSegmentInterfaceSchema>[]
+  weee_tax_applied_amount: number
+}
+
+const QuoteDataTotalsInterfaceSchema: z.ZodType<QuoteDataTotalsInterfaceType> = z
   .object({
     base_currency_code: z.string().exactOptional().openapi({ description: 'Base currency code' }),
     base_discount_amount: z
@@ -2490,25 +1207,284 @@ const QuoteDataTotalsInterfaceSchema = z
   })
   .openapi('QuoteDataTotalsInterface')
 
-const CheckoutDataPaymentDetailsInterfaceSchema = z
-  .object({
-    extension_attributes: CheckoutDataPaymentDetailsExtensionInterfaceSchema.exactOptional(),
-    payment_methods: z.array(QuoteDataPaymentMethodInterfaceSchema),
-    totals: QuoteDataTotalsInterfaceSchema,
-  })
-  .openapi({
-    description: 'Interface PaymentDetailsInterface',
-    required: ['payment_methods', 'totals'],
-  })
-  .openapi('CheckoutDataPaymentDetailsInterface')
+type CheckoutDataPaymentDetailsInterfaceType = {
+  extension_attributes?: z.infer<typeof CheckoutDataPaymentDetailsExtensionInterfaceSchema>
+  payment_methods: z.infer<typeof QuoteDataPaymentMethodInterfaceSchema>[]
+  totals: z.infer<typeof QuoteDataTotalsInterfaceSchema>
+}
 
-const CheckoutDataShippingInformationExtensionInterfaceSchema = z
-  .object({})
+type CustomerDataOptionInterfaceType = {
+  label: string
+  options?: CustomerDataOptionInterfaceType[]
+  value?: string
+}
+
+type FrameworkCriteriaInterfaceType = {
+  criteria_list: FrameworkCriteriaInterfaceType[]
+  filters: string[]
+  limit: string[]
+  mapper_interface_name: string
+  orders: string[]
+}
+
+const NegotiableQuoteDataNegotiableQuoteExtensionInterfaceSchema = z
+  .looseObject({})
   .openapi({
     description:
-      'ExtensionInterface class for @see \\Magento\\Checkout\\Api\\Data\\ShippingInformationInterface',
+      'ExtensionInterface class for @see \\Magento\\NegotiableQuote\\Api\\Data\\NegotiableQuoteInterface',
   })
-  .openapi('CheckoutDataShippingInformationExtensionInterface')
+  .openapi('NegotiableQuoteDataNegotiableQuoteExtensionInterface')
+
+const NegotiableQuoteDataNegotiableQuoteInterfaceSchema = z
+  .object({
+    applied_rule_ids: z.string().openapi({ description: 'Quote rules.' }),
+    base_negotiated_total_price: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Quote negotiated total price in base currency.' }),
+    base_original_total_price: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Quote original total price in base currency.' }),
+    creator_id: z.int().openapi({ description: 'Quote creator id.' }),
+    creator_type: z.int().openapi({ description: 'Quote creator type.' }),
+    deleted_sku: z.string().openapi({ description: 'Deleted products sku.' }),
+    email_notification_status: z.int().openapi({ description: 'Email notification status.' }),
+    expiration_period: z.string().openapi({ description: 'Expiration period.' }),
+    extension_attributes:
+      NegotiableQuoteDataNegotiableQuoteExtensionInterfaceSchema.exactOptional(),
+    has_unconfirmed_changes: z.boolean().openapi({ description: 'Has unconfirmed changes.' }),
+    is_address_draft: z.boolean().openapi({ description: 'Is address draft.' }),
+    is_customer_price_changed: z.boolean().openapi({ description: 'Customer price changes.' }),
+    is_regular_quote: z.boolean().openapi({ description: 'Is regular quote.' }),
+    is_shipping_tax_changed: z.boolean().openapi({ description: 'Shipping tax changes.' }),
+    negotiated_price_type: z.int().openapi({ description: 'Negotiated price type.' }),
+    negotiated_price_value: z.number().openapi({ description: 'Negotiated price value.' }),
+    negotiated_total_price: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Quote negotiated total price.' }),
+    notifications: z.int().openapi({ description: 'Quote notifications.' }),
+    original_total_price: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Quote original total price.' }),
+    quote_id: z.int().openapi({ description: 'Negotiable quote ID.' }),
+    quote_name: z.string().openapi({ description: 'Negotiable quote name.' }),
+    shipping_price: z.number().openapi({ description: 'Proposed shipping price.' }),
+    status: z.string().openapi({ description: 'Negotiable quote status.' }),
+  })
+  .openapi({
+    description: 'Interface NegotiableQuoteInterface',
+    required: [
+      'quote_id',
+      'is_regular_quote',
+      'status',
+      'negotiated_price_type',
+      'negotiated_price_value',
+      'shipping_price',
+      'quote_name',
+      'expiration_period',
+      'email_notification_status',
+      'has_unconfirmed_changes',
+      'is_shipping_tax_changed',
+      'is_customer_price_changed',
+      'notifications',
+      'applied_rule_ids',
+      'is_address_draft',
+      'deleted_sku',
+      'creator_id',
+      'creator_type',
+    ],
+  })
+  .openapi('NegotiableQuoteDataNegotiableQuoteInterface')
+
+const QuoteDataShippingAssignmentExtensionInterfaceSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\Quote\\Api\\Data\\ShippingAssignmentInterface',
+  })
+  .openapi('QuoteDataShippingAssignmentExtensionInterface')
+
+const NegotiableQuoteDataNegotiableQuoteItemExtensionInterfaceSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\NegotiableQuote\\Api\\Data\\NegotiableQuoteItemInterface',
+  })
+  .openapi('NegotiableQuoteDataNegotiableQuoteItemExtensionInterface')
+
+const NegotiableQuoteDataNegotiableQuoteItemInterfaceSchema = z
+  .object({
+    extension_attributes:
+      NegotiableQuoteDataNegotiableQuoteItemExtensionInterfaceSchema.exactOptional(),
+    item_id: z.int().openapi({ description: 'Quote item id' }),
+    original_discount_amount: z
+      .number()
+      .openapi({ description: 'Quote item original discount amount' }),
+    original_price: z.number().openapi({ description: 'Quote item original price' }),
+    original_tax_amount: z.number().openapi({ description: 'Quote item original tax amount' }),
+  })
+  .openapi({
+    description: 'Interface CompanyQuoteConfigInterface',
+    required: ['item_id', 'original_price', 'original_tax_amount', 'original_discount_amount'],
+  })
+  .openapi('NegotiableQuoteDataNegotiableQuoteItemInterface')
+
+const QuoteDataCartItemExtensionInterfaceSchema = z
+  .object({
+    negotiable_quote_item: NegotiableQuoteDataNegotiableQuoteItemInterfaceSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'ExtensionInterface class for @see \\Magento\\Quote\\Api\\Data\\CartItemInterface',
+    required: [],
+  })
+  .openapi('QuoteDataCartItemExtensionInterface')
+
+const BundleDataBundleOptionExtensionInterfaceSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\Bundle\\Api\\Data\\BundleOptionInterface',
+  })
+  .openapi('BundleDataBundleOptionExtensionInterface')
+
+const BundleDataBundleOptionInterfaceSchema = z
+  .object({
+    extension_attributes: BundleDataBundleOptionExtensionInterfaceSchema.exactOptional(),
+    option_id: z.int().openapi({ description: 'Bundle option id.' }),
+    option_qty: z.int().openapi({ description: 'Bundle option quantity.' }),
+    option_selections: z.array(z.int()).openapi({ description: 'Bundle option selection ids.' }),
+  })
+  .openapi({
+    description: 'Interface BundleOptionInterface',
+    required: ['option_id', 'option_qty', 'option_selections'],
+  })
+  .openapi('BundleDataBundleOptionInterface')
+
+const ConfigurableProductDataConfigurableItemOptionValueExtensionInterfaceSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\ConfigurableProduct\\Api\\Data\\ConfigurableItemOptionValueInterface',
+  })
+  .openapi('ConfigurableProductDataConfigurableItemOptionValueExtensionInterface')
+
+const ConfigurableProductDataConfigurableItemOptionValueInterfaceSchema = z
+  .object({
+    extension_attributes:
+      ConfigurableProductDataConfigurableItemOptionValueExtensionInterfaceSchema.exactOptional(),
+    option_id: z.string().openapi({ description: 'Option SKU' }),
+    option_value: z.int().exactOptional().openapi({ description: 'Item id' }),
+  })
+  .openapi({
+    description: 'Interface ConfigurableItemOptionValueInterface',
+    required: ['option_id'],
+  })
+  .openapi('ConfigurableProductDataConfigurableItemOptionValueInterface')
+
+const CatalogDataCustomOptionExtensionInterfaceSchema = z
+  .object({ file_info: FrameworkDataImageContentInterfaceSchema.exactOptional() })
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\Catalog\\Api\\Data\\CustomOptionInterface',
+    required: [],
+  })
+  .openapi('CatalogDataCustomOptionExtensionInterface')
+
+const CatalogDataCustomOptionInterfaceSchema = z
+  .object({
+    extension_attributes: CatalogDataCustomOptionExtensionInterfaceSchema.exactOptional(),
+    option_id: z.string().openapi({ description: 'Option id' }),
+    option_value: z.string().openapi({ description: 'Option value' }),
+  })
+  .openapi({
+    description: 'Interface CustomOptionInterface',
+    required: ['option_id', 'option_value'],
+  })
+  .openapi('CatalogDataCustomOptionInterface')
+
+const DownloadableDataDownloadableOptionInterfaceSchema = z
+  .object({
+    downloadable_links: z.array(z.int()).openapi({ description: 'The list of downloadable links' }),
+  })
+  .openapi({ description: 'Downloadable Option', required: ['downloadable_links'] })
+  .openapi('DownloadableDataDownloadableOptionInterface')
+
+const GiftCardDataGiftCardOptionExtensionInterfaceSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\GiftCard\\Api\\Data\\GiftCardOptionInterface',
+  })
+  .openapi('GiftCardDataGiftCardOptionExtensionInterface')
+
+const GiftCardDataGiftCardOptionInterfaceSchema = z
+  .object({
+    custom_giftcard_amount: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Gift card open amount value.' }),
+    extension_attributes: GiftCardDataGiftCardOptionExtensionInterfaceSchema.exactOptional(),
+    giftcard_amount: z.string().openapi({ description: 'Gift card amount.' }),
+    giftcard_message: z.string().exactOptional().openapi({ description: 'Giftcard message.' }),
+    giftcard_recipient_email: z.string().openapi({ description: 'Gift card recipient email.' }),
+    giftcard_recipient_name: z.string().openapi({ description: 'Gift card recipient name.' }),
+    giftcard_sender_email: z.string().openapi({ description: 'Gift card sender email.' }),
+    giftcard_sender_name: z.string().openapi({ description: 'Gift card sender name.' }),
+  })
+  .openapi({
+    description: 'Interface GiftCardOptionInterface',
+    required: [
+      'giftcard_amount',
+      'giftcard_sender_name',
+      'giftcard_recipient_name',
+      'giftcard_sender_email',
+      'giftcard_recipient_email',
+    ],
+  })
+  .openapi('GiftCardDataGiftCardOptionInterface')
+
+const QuoteDataProductOptionExtensionInterfaceSchema = z
+  .object({
+    bundle_options: z.array(BundleDataBundleOptionInterfaceSchema).exactOptional(),
+    configurable_item_options: z
+      .array(ConfigurableProductDataConfigurableItemOptionValueInterfaceSchema)
+      .exactOptional(),
+    custom_options: z.array(CatalogDataCustomOptionInterfaceSchema).exactOptional(),
+    downloadable_option: DownloadableDataDownloadableOptionInterfaceSchema.exactOptional(),
+    giftcard_item_option: GiftCardDataGiftCardOptionInterfaceSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\Quote\\Api\\Data\\ProductOptionInterface',
+    required: [],
+  })
+  .openapi('QuoteDataProductOptionExtensionInterface')
+
+const QuoteDataProductOptionInterfaceSchema = z
+  .object({ extension_attributes: QuoteDataProductOptionExtensionInterfaceSchema.exactOptional() })
+  .openapi({ description: 'Product option interface', required: [] })
+  .openapi('QuoteDataProductOptionInterface')
+
+const QuoteDataCartItemInterfaceSchema = z
+  .object({
+    extension_attributes: QuoteDataCartItemExtensionInterfaceSchema.exactOptional(),
+    item_id: z.int().exactOptional().openapi({ description: 'Item ID. Otherwise, null.' }),
+    name: z.string().exactOptional().openapi({ description: 'Product name. Otherwise, null.' }),
+    price: z.number().exactOptional().openapi({ description: 'Product price. Otherwise, null.' }),
+    product_option: QuoteDataProductOptionInterfaceSchema.exactOptional(),
+    product_type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Product type. Otherwise, null.' }),
+    qty: z.number().openapi({ description: 'Product quantity.' }),
+    quote_id: z.string().openapi({ description: 'Quote id.' }),
+    sku: z.string().exactOptional().openapi({ description: 'Product SKU. Otherwise, null.' }),
+  })
+  .openapi({ description: 'Interface CartItemInterface', required: ['qty', 'quote_id'] })
+  .openapi('QuoteDataCartItemInterface')
 
 const QuoteDataAddressExtensionInterfaceSchema = z
   .object({
@@ -2572,6 +1548,3347 @@ const QuoteDataAddressInterfaceSchema = z
   })
   .openapi('QuoteDataAddressInterface')
 
+const QuoteDataShippingExtensionInterfaceSchema = z
+  .looseObject({})
+  .openapi({
+    description: 'ExtensionInterface class for @see \\Magento\\Quote\\Api\\Data\\ShippingInterface',
+  })
+  .openapi('QuoteDataShippingExtensionInterface')
+
+const QuoteDataShippingInterfaceSchema = z
+  .object({
+    address: QuoteDataAddressInterfaceSchema,
+    extension_attributes: QuoteDataShippingExtensionInterfaceSchema.exactOptional(),
+    method: z.string().openapi({ description: 'Shipping method' }),
+  })
+  .openapi({ description: 'Interface ShippingInterface', required: ['address', 'method'] })
+  .openapi('QuoteDataShippingInterface')
+
+type QuoteDataShippingAssignmentInterfaceType = {
+  extension_attributes?: z.infer<typeof QuoteDataShippingAssignmentExtensionInterfaceSchema>
+  items: z.infer<typeof QuoteDataCartItemInterfaceSchema>[]
+  shipping: z.infer<typeof QuoteDataShippingInterfaceSchema>
+}
+
+const QuoteDataShippingAssignmentInterfaceSchema: z.ZodType<QuoteDataShippingAssignmentInterfaceType> =
+  z
+    .object({
+      extension_attributes: QuoteDataShippingAssignmentExtensionInterfaceSchema.exactOptional(),
+      items: z.array(QuoteDataCartItemInterfaceSchema),
+      shipping: QuoteDataShippingInterfaceSchema,
+    })
+    .openapi({
+      description: 'Interface ShippingAssignmentInterface',
+      required: ['shipping', 'items'],
+    })
+    .openapi('QuoteDataShippingAssignmentInterface')
+
+type QuoteDataCartExtensionInterfaceType = {
+  amazon_order_reference_id?: string
+  negotiable_quote?: z.infer<typeof NegotiableQuoteDataNegotiableQuoteInterfaceSchema>
+  shipping_assignments?: z.infer<typeof QuoteDataShippingAssignmentInterfaceSchema>[]
+}
+
+const QuoteDataCurrencyExtensionInterfaceSchema = z
+  .looseObject({})
+  .openapi({
+    description: 'ExtensionInterface class for @see \\Magento\\Quote\\Api\\Data\\CurrencyInterface',
+  })
+  .openapi('QuoteDataCurrencyExtensionInterface')
+
+const QuoteDataCurrencyInterfaceSchema = z
+  .object({
+    base_currency_code: z.string().exactOptional().openapi({ description: 'Base currency code' }),
+    base_to_global_rate: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base currency to global currency rate' }),
+    base_to_quote_rate: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base currency to quote currency rate' }),
+    extension_attributes: QuoteDataCurrencyExtensionInterfaceSchema.exactOptional(),
+    global_currency_code: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Global currency code' }),
+    quote_currency_code: z.string().exactOptional().openapi({ description: 'Quote currency code' }),
+    store_currency_code: z.string().exactOptional().openapi({ description: 'Store currency code' }),
+    store_to_base_rate: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Store currency to base currency rate' }),
+    store_to_quote_rate: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Store currency to quote currency rate' }),
+  })
+  .openapi({ description: 'Interface CurrencyInterface', required: [] })
+  .openapi('QuoteDataCurrencyInterface')
+
+const CustomerDataAddressExtensionInterfaceSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\Customer\\Api\\Data\\AddressInterface',
+  })
+  .openapi('CustomerDataAddressExtensionInterface')
+
+const CustomerDataRegionExtensionInterfaceSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\Customer\\Api\\Data\\RegionInterface',
+  })
+  .openapi('CustomerDataRegionExtensionInterface')
+
+const CustomerDataRegionInterfaceSchema = z
+  .object({
+    extension_attributes: CustomerDataRegionExtensionInterfaceSchema.exactOptional(),
+    region: z.string().openapi({ description: 'Region' }),
+    region_code: z.string().openapi({ description: 'Region code' }),
+    region_id: z.int().openapi({ description: 'Region id' }),
+  })
+  .openapi({
+    description: 'Customer address region interface.',
+    required: ['region_code', 'region', 'region_id'],
+  })
+  .openapi('CustomerDataRegionInterface')
+
+const CustomerDataAddressInterfaceSchema = z
+  .object({
+    city: z.string().exactOptional().openapi({ description: 'City name' }),
+    company: z.string().exactOptional().openapi({ description: 'Company' }),
+    country_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Country code in ISO_3166-2 format' }),
+    custom_attributes: z
+      .array(FrameworkAttributeInterfaceSchema)
+      .exactOptional()
+      .openapi({ description: 'Custom attributes values.' }),
+    customer_id: z.int().exactOptional().openapi({ description: 'Customer ID' }),
+    default_billing: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'If this address is default billing address' }),
+    default_shipping: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'If this address is default shipping address.' }),
+    extension_attributes: CustomerDataAddressExtensionInterfaceSchema.exactOptional(),
+    fax: z.string().exactOptional().openapi({ description: 'Fax number' }),
+    firstname: z.string().exactOptional().openapi({ description: 'First name' }),
+    id: z.int().exactOptional().openapi({ description: 'ID' }),
+    lastname: z.string().exactOptional().openapi({ description: 'Last name' }),
+    middlename: z.string().exactOptional().openapi({ description: 'Middle name' }),
+    postcode: z.string().exactOptional().openapi({ description: 'Postcode' }),
+    prefix: z.string().exactOptional().openapi({ description: 'Prefix' }),
+    region: CustomerDataRegionInterfaceSchema.exactOptional(),
+    region_id: z.int().exactOptional().openapi({ description: 'Region ID' }),
+    street: z.array(z.string()).exactOptional().openapi({ description: 'Street' }),
+    suffix: z.string().exactOptional().openapi({ description: 'Suffix' }),
+    telephone: z.string().exactOptional().openapi({ description: 'Telephone number' }),
+    vat_id: z.string().exactOptional().openapi({ description: 'Vat id' }),
+  })
+  .openapi({ description: 'Customer address interface.', required: [] })
+  .openapi('CustomerDataAddressInterface')
+
+const CompanyDataCompanyCustomerExtensionInterfaceSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\Company\\Api\\Data\\CompanyCustomerInterface',
+  })
+  .openapi('CompanyDataCompanyCustomerExtensionInterface')
+
+const CompanyDataCompanyCustomerInterfaceSchema = z
+  .object({
+    company_id: z.int().exactOptional().openapi({ description: 'Company ID.' }),
+    customer_id: z.int().exactOptional().openapi({ description: 'Customer ID.' }),
+    extension_attributes: CompanyDataCompanyCustomerExtensionInterfaceSchema.exactOptional(),
+    job_title: z.string().exactOptional().openapi({ description: 'Get job title.' }),
+    status: z.int().exactOptional().openapi({ description: 'Customer status.' }),
+    telephone: z.string().exactOptional().openapi({ description: 'Get telephone.' }),
+  })
+  .openapi({ description: 'Extended customer custom attributes interface.', required: [] })
+  .openapi('CompanyDataCompanyCustomerInterface')
+
+const CustomerDataCustomerExtensionInterfaceSchema = z
+  .object({
+    amazon_id: z.string().exactOptional(),
+    company_attributes: CompanyDataCompanyCustomerInterfaceSchema.exactOptional(),
+    is_subscribed: z.boolean().exactOptional(),
+    vertex_customer_code: z.string().exactOptional(),
+  })
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\Customer\\Api\\Data\\CustomerInterface',
+    required: [],
+  })
+  .openapi('CustomerDataCustomerExtensionInterface')
+
+const CustomerDataCustomerInterfaceSchema = z
+  .object({
+    addresses: z
+      .array(CustomerDataAddressInterfaceSchema)
+      .exactOptional()
+      .openapi({ description: 'Customer addresses.' }),
+    confirmation: z.string().exactOptional().openapi({ description: 'Confirmation' }),
+    created_at: z.string().exactOptional().openapi({ description: 'Created at time' }),
+    created_in: z.string().exactOptional().openapi({ description: 'Created in area' }),
+    custom_attributes: z
+      .array(FrameworkAttributeInterfaceSchema)
+      .exactOptional()
+      .openapi({ description: 'Custom attributes values.' }),
+    default_billing: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Default billing address id' }),
+    default_shipping: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Default shipping address id' }),
+    disable_auto_group_change: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Disable auto group change flag.' }),
+    dob: z.string().exactOptional().openapi({ description: 'Date of birth' }),
+    email: z.string().openapi({ description: 'Email address' }),
+    extension_attributes: CustomerDataCustomerExtensionInterfaceSchema.exactOptional(),
+    firstname: z.string().openapi({ description: 'First name' }),
+    gender: z.int().exactOptional().openapi({ description: 'Gender' }),
+    group_id: z.int().exactOptional().openapi({ description: 'Group id' }),
+    id: z.int().exactOptional().openapi({ description: 'Customer id' }),
+    lastname: z.string().openapi({ description: 'Last name' }),
+    middlename: z.string().exactOptional().openapi({ description: 'Middle name' }),
+    prefix: z.string().exactOptional().openapi({ description: 'Prefix' }),
+    store_id: z.int().exactOptional().openapi({ description: 'Store id' }),
+    suffix: z.string().exactOptional().openapi({ description: 'Suffix' }),
+    taxvat: z.string().exactOptional().openapi({ description: 'Tax Vat' }),
+    updated_at: z.string().exactOptional().openapi({ description: 'Updated at time' }),
+    website_id: z.int().exactOptional().openapi({ description: 'Website id' }),
+  })
+  .openapi({ description: 'Customer interface.', required: ['email', 'firstname', 'lastname'] })
+  .openapi('CustomerDataCustomerInterface')
+
+const QuoteDataCartExtensionInterfaceSchema: z.ZodType<QuoteDataCartExtensionInterfaceType> = z
+  .object({
+    amazon_order_reference_id: z.string().exactOptional(),
+    negotiable_quote: NegotiableQuoteDataNegotiableQuoteInterfaceSchema.exactOptional(),
+    shipping_assignments: z.array(QuoteDataShippingAssignmentInterfaceSchema).exactOptional(),
+  })
+  .openapi({
+    description: 'ExtensionInterface class for @see \\Magento\\Quote\\Api\\Data\\CartInterface',
+    required: [],
+  })
+  .openapi('QuoteDataCartExtensionInterface')
+
+type QuoteDataCartInterfaceType = {
+  billing_address?: z.infer<typeof QuoteDataAddressInterfaceSchema>
+  converted_at?: string
+  created_at?: string
+  currency?: z.infer<typeof QuoteDataCurrencyInterfaceSchema>
+  customer: z.infer<typeof CustomerDataCustomerInterfaceSchema>
+  customer_is_guest?: boolean
+  customer_note?: string
+  customer_note_notify?: boolean
+  customer_tax_class_id?: number
+  extension_attributes?: z.infer<typeof QuoteDataCartExtensionInterfaceSchema>
+  id: number
+  is_active?: boolean
+  is_virtual?: boolean
+  items?: z.infer<typeof QuoteDataCartItemInterfaceSchema>[]
+  items_count?: number
+  items_qty?: number
+  orig_order_id?: number
+  reserved_order_id?: string
+  store_id: number
+  updated_at?: string
+}
+
+const QuoteDataCartInterfaceSchema: z.ZodType<QuoteDataCartInterfaceType> = z
+  .object({
+    billing_address: QuoteDataAddressInterfaceSchema.exactOptional(),
+    converted_at: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Cart conversion date and time. Otherwise, null.' }),
+    created_at: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Cart creation date and time. Otherwise, null.' }),
+    currency: QuoteDataCurrencyInterfaceSchema.exactOptional(),
+    customer: CustomerDataCustomerInterfaceSchema,
+    customer_is_guest: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'For guest customers, false for logged in customers' }),
+    customer_note: z.string().exactOptional().openapi({ description: 'Notice text' }),
+    customer_note_notify: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Customer notification flag' }),
+    customer_tax_class_id: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Customer tax class ID.' }),
+    extension_attributes: QuoteDataCartExtensionInterfaceSchema.exactOptional(),
+    id: z.int().openapi({ description: 'Cart/quote ID.' }),
+    is_active: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Active status flag value. Otherwise, null.' }),
+    is_virtual: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Virtual flag value. Otherwise, null.' }),
+    items: z
+      .array(QuoteDataCartItemInterfaceSchema)
+      .exactOptional()
+      .openapi({ description: 'Array of items. Otherwise, null.' }),
+    items_count: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'Number of different items or products in the cart. Otherwise, null.',
+      }),
+    items_qty: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Total quantity of all cart items. Otherwise, null.' }),
+    orig_order_id: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Original order ID. Otherwise, null.' }),
+    reserved_order_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Reserved order ID. Otherwise, null.' }),
+    store_id: z.int().openapi({ description: 'Store identifier' }),
+    updated_at: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Cart last update date and time. Otherwise, null.' }),
+  })
+  .openapi({ description: 'Interface CartInterface', required: ['id', 'customer', 'store_id'] })
+  .openapi('QuoteDataCartInterface')
+
+type QuoteDataCartSearchResultsInterfaceType = {
+  items: z.infer<typeof QuoteDataCartInterfaceSchema>[]
+  search_criteria: z.infer<typeof FrameworkSearchCriteriaInterfaceSchema>
+  total_count: number
+}
+
+const SalesDataOrderAddressExtensionInterfaceSchema = z
+  .object({ checkout_fields: z.array(FrameworkAttributeInterfaceSchema).exactOptional() })
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\Sales\\Api\\Data\\OrderAddressInterface',
+    required: [],
+  })
+  .openapi('SalesDataOrderAddressExtensionInterface')
+
+const SalesDataOrderAddressInterfaceSchema = z
+  .object({
+    address_type: z.string().openapi({ description: 'Address type.' }),
+    city: z.string().openapi({ description: 'City.' }),
+    company: z.string().exactOptional().openapi({ description: 'Company.' }),
+    country_id: z.string().openapi({ description: 'Country ID.' }),
+    customer_address_id: z.int().exactOptional().openapi({ description: 'Country address ID.' }),
+    customer_id: z.int().exactOptional().openapi({ description: 'Customer ID.' }),
+    email: z.string().exactOptional().openapi({ description: 'Email address.' }),
+    entity_id: z.int().exactOptional().openapi({ description: 'Order address ID.' }),
+    extension_attributes: SalesDataOrderAddressExtensionInterfaceSchema.exactOptional(),
+    fax: z.string().exactOptional().openapi({ description: 'Fax number.' }),
+    firstname: z.string().openapi({ description: 'First name.' }),
+    lastname: z.string().openapi({ description: 'Last name.' }),
+    middlename: z.string().exactOptional().openapi({ description: 'Middle name.' }),
+    parent_id: z.int().exactOptional().openapi({ description: 'Parent ID.' }),
+    postcode: z.string().openapi({ description: 'Postal code.' }),
+    prefix: z.string().exactOptional().openapi({ description: 'Prefix.' }),
+    region: z.string().exactOptional().openapi({ description: 'Region.' }),
+    region_code: z.string().exactOptional().openapi({ description: 'Region code.' }),
+    region_id: z.int().exactOptional().openapi({ description: 'Region ID.' }),
+    street: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Array of any street values. Otherwise, null.' }),
+    suffix: z.string().exactOptional().openapi({ description: 'Suffix.' }),
+    telephone: z.string().openapi({ description: 'Telephone number.' }),
+    vat_id: z.string().exactOptional().openapi({ description: 'VAT ID.' }),
+    vat_is_valid: z.int().exactOptional().openapi({ description: 'VAT-is-valid flag value.' }),
+    vat_request_date: z.string().exactOptional().openapi({ description: 'VAT request date.' }),
+    vat_request_id: z.string().exactOptional().openapi({ description: 'VAT request ID.' }),
+    vat_request_success: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'VAT-request-success flag value.' }),
+  })
+  .openapi({
+    description:
+      'Order address interface. An order is a document that a web store issues to a customer. Magento generates a sales order that lists the product items, billing and shipping addresses, and shipping and payment methods. A corresponding external document, known as a purchase order, is emailed to the customer.',
+    required: [
+      'address_type',
+      'city',
+      'country_id',
+      'firstname',
+      'lastname',
+      'postcode',
+      'telephone',
+    ],
+  })
+  .openapi('SalesDataOrderAddressInterface')
+
+const TaxDataAppliedTaxRateExtensionInterfaceSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\Tax\\Api\\Data\\AppliedTaxRateInterface',
+  })
+  .openapi('TaxDataAppliedTaxRateExtensionInterface')
+
+const TaxDataAppliedTaxRateInterfaceSchema = z
+  .object({
+    code: z.string().exactOptional().openapi({ description: 'Code' }),
+    extension_attributes: TaxDataAppliedTaxRateExtensionInterfaceSchema.exactOptional(),
+    percent: z.number().exactOptional().openapi({ description: 'Tax Percent' }),
+    title: z.string().exactOptional().openapi({ description: 'Title' }),
+  })
+  .openapi({ description: 'Applied tax rate interface.', required: [] })
+  .openapi('TaxDataAppliedTaxRateInterface')
+
+const TaxDataOrderTaxDetailsAppliedTaxExtensionInterfaceSchema = z
+  .object({ rates: z.array(TaxDataAppliedTaxRateInterfaceSchema).exactOptional() })
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\Tax\\Api\\Data\\OrderTaxDetailsAppliedTaxInterface',
+    required: [],
+  })
+  .openapi('TaxDataOrderTaxDetailsAppliedTaxExtensionInterface')
+
+const TaxDataOrderTaxDetailsAppliedTaxInterfaceSchema = z
+  .object({
+    amount: z.number().openapi({ description: 'Tax amount' }),
+    base_amount: z.number().openapi({ description: 'Tax amount in base currency' }),
+    code: z.string().exactOptional().openapi({ description: 'Code' }),
+    extension_attributes: TaxDataOrderTaxDetailsAppliedTaxExtensionInterfaceSchema.exactOptional(),
+    percent: z.number().exactOptional().openapi({ description: 'Tax Percent' }),
+    title: z.string().exactOptional().openapi({ description: 'Title' }),
+  })
+  .openapi({
+    description: 'Interface OrderTaxDetailsAppliedTaxInterface',
+    required: ['amount', 'base_amount'],
+  })
+  .openapi('TaxDataOrderTaxDetailsAppliedTaxInterface')
+
+const CompanyDataCompanyOrderExtensionInterfaceSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\Company\\Api\\Data\\CompanyOrderInterface',
+  })
+  .openapi('CompanyDataCompanyOrderExtensionInterface')
+
+const CompanyDataCompanyOrderInterfaceSchema = z
+  .object({
+    company_id: z.int().exactOptional().openapi({ description: 'Company ID.' }),
+    company_name: z.string().exactOptional().openapi({ description: 'Company name.' }),
+    extension_attributes: CompanyDataCompanyOrderExtensionInterfaceSchema.exactOptional(),
+    order_id: z.int().exactOptional().openapi({ description: 'Order ID.' }),
+  })
+  .openapi({
+    description:
+      'Order company extension attributes interface. Adds new company attributes to orders.',
+    required: [],
+  })
+  .openapi('CompanyDataCompanyOrderInterface')
+
+const GiftCardAccountDataGiftCardInterfaceSchema = z
+  .object({
+    amount: z.number().openapi({ description: 'Amount' }),
+    base_amount: z.number().openapi({ description: 'Base Amount' }),
+    code: z.string().openapi({ description: 'Code' }),
+    id: z.int().openapi({ description: 'Id' }),
+  })
+  .openapi({ description: 'Gift Card data', required: ['id', 'code', 'amount', 'base_amount'] })
+  .openapi('GiftCardAccountDataGiftCardInterface')
+
+const GiftMessageDataMessageExtensionInterfaceSchema = z
+  .object({
+    entity_id: z.string().exactOptional(),
+    entity_type: z.string().exactOptional(),
+    wrapping_add_printed_card: z.boolean().exactOptional(),
+    wrapping_allow_gift_receipt: z.boolean().exactOptional(),
+    wrapping_id: z.int().exactOptional(),
+  })
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\GiftMessage\\Api\\Data\\MessageInterface',
+    required: [],
+  })
+  .openapi('GiftMessageDataMessageExtensionInterface')
+
+const GiftMessageDataMessageInterfaceSchema = z
+  .object({
+    customer_id: z.int().exactOptional().openapi({ description: 'Customer ID. Otherwise, null.' }),
+    extension_attributes: GiftMessageDataMessageExtensionInterfaceSchema.exactOptional(),
+    gift_message_id: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Gift message ID. Otherwise, null.' }),
+    message: z.string().openapi({ description: 'Message text.' }),
+    recipient: z.string().openapi({ description: 'Recipient name.' }),
+    sender: z.string().openapi({ description: 'Sender name.' }),
+  })
+  .openapi({
+    description: 'Interface MessageInterface',
+    required: ['sender', 'recipient', 'message'],
+  })
+  .openapi('GiftMessageDataMessageInterface')
+
+const TaxDataOrderTaxDetailsItemExtensionInterfaceSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\Tax\\Api\\Data\\OrderTaxDetailsItemInterface',
+  })
+  .openapi('TaxDataOrderTaxDetailsItemExtensionInterface')
+
+const TaxDataOrderTaxDetailsItemInterfaceSchema = z
+  .object({
+    applied_taxes: z
+      .array(TaxDataOrderTaxDetailsAppliedTaxInterfaceSchema)
+      .exactOptional()
+      .openapi({ description: 'Applied taxes' }),
+    associated_item_id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'Associated item id if this item is associated with another item, null otherwise',
+      }),
+    extension_attributes: TaxDataOrderTaxDetailsItemExtensionInterfaceSchema.exactOptional(),
+    item_id: z.int().exactOptional().openapi({ description: 'Item id if this item is a product' }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Type (shipping, product, weee, gift wrapping, etc)' }),
+  })
+  .openapi({ description: 'Interface OrderTaxDetailsItemInterface', required: [] })
+  .openapi('TaxDataOrderTaxDetailsItemInterface')
+
+const PaymentDataPaymentAdditionalInfoInterfaceSchema = z
+  .object({
+    key: z.string().openapi({ description: 'Object key' }),
+    value: z.string().openapi({ description: 'Object value' }),
+  })
+  .openapi({ description: 'Payment additional info interface.', required: ['key', 'value'] })
+  .openapi('PaymentDataPaymentAdditionalInfoInterface')
+
+const SalesDataShippingAssignmentExtensionInterfaceSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\Sales\\Api\\Data\\ShippingAssignmentInterface',
+  })
+  .openapi('SalesDataShippingAssignmentExtensionInterface')
+
+const SalesDataOrderItemInterfaceSchema: z.ZodType<SalesDataOrderItemInterfaceType> = z
+  .lazy(() =>
+    z
+      .object({
+        additional_data: z.string().exactOptional().openapi({ description: 'Additional data.' }),
+        amount_refunded: z.number().exactOptional().openapi({ description: 'Amount refunded.' }),
+        applied_rule_ids: z.string().exactOptional().openapi({ description: 'Applied rule IDs.' }),
+        base_amount_refunded: z
+          .number()
+          .exactOptional()
+          .openapi({ description: 'Base amount refunded.' }),
+        base_cost: z.number().exactOptional().openapi({ description: 'Base cost.' }),
+        base_discount_amount: z
+          .number()
+          .exactOptional()
+          .openapi({ description: 'Base discount amount.' }),
+        base_discount_invoiced: z
+          .number()
+          .exactOptional()
+          .openapi({ description: 'Base discount invoiced.' }),
+        base_discount_refunded: z
+          .number()
+          .exactOptional()
+          .openapi({ description: 'Base discount refunded.' }),
+        base_discount_tax_compensation_amount: z
+          .number()
+          .exactOptional()
+          .openapi({ description: 'Base discount tax compensation amount.' }),
+        base_discount_tax_compensation_invoiced: z
+          .number()
+          .exactOptional()
+          .openapi({ description: 'Base discount tax compensation invoiced.' }),
+        base_discount_tax_compensation_refunded: z
+          .number()
+          .exactOptional()
+          .openapi({ description: 'Base discount tax compensation refunded.' }),
+        base_original_price: z
+          .number()
+          .exactOptional()
+          .openapi({ description: 'Base original price.' }),
+        base_price: z.number().exactOptional().openapi({ description: 'Base price.' }),
+        base_price_incl_tax: z
+          .number()
+          .exactOptional()
+          .openapi({ description: 'Base price including tax.' }),
+        base_row_invoiced: z
+          .number()
+          .exactOptional()
+          .openapi({ description: 'Base row invoiced.' }),
+        base_row_total: z.number().exactOptional().openapi({ description: 'Base row total.' }),
+        base_row_total_incl_tax: z
+          .number()
+          .exactOptional()
+          .openapi({ description: 'Base row total including tax.' }),
+        base_tax_amount: z.number().exactOptional().openapi({ description: 'Base tax amount.' }),
+        base_tax_before_discount: z
+          .number()
+          .exactOptional()
+          .openapi({ description: 'Base tax before discount.' }),
+        base_tax_invoiced: z
+          .number()
+          .exactOptional()
+          .openapi({ description: 'Base tax invoiced.' }),
+        base_tax_refunded: z
+          .number()
+          .exactOptional()
+          .openapi({ description: 'Base tax refunded.' }),
+        base_weee_tax_applied_amount: z
+          .number()
+          .exactOptional()
+          .openapi({ description: 'Base WEEE tax applied amount.' }),
+        base_weee_tax_applied_row_amnt: z
+          .number()
+          .exactOptional()
+          .openapi({ description: 'Base WEEE tax applied row amount.' }),
+        base_weee_tax_disposition: z
+          .number()
+          .exactOptional()
+          .openapi({ description: 'Base WEEE tax disposition.' }),
+        base_weee_tax_row_disposition: z
+          .number()
+          .exactOptional()
+          .openapi({ description: 'Base WEEE tax row disposition.' }),
+        created_at: z.string().exactOptional().openapi({ description: 'Created-at timestamp.' }),
+        description: z.string().exactOptional().openapi({ description: 'Description.' }),
+        discount_amount: z.number().exactOptional().openapi({ description: 'Discount amount.' }),
+        discount_invoiced: z
+          .number()
+          .exactOptional()
+          .openapi({ description: 'Discount invoiced.' }),
+        discount_percent: z.number().exactOptional().openapi({ description: 'Discount percent.' }),
+        discount_refunded: z
+          .number()
+          .exactOptional()
+          .openapi({ description: 'Discount refunded.' }),
+        discount_tax_compensation_amount: z
+          .number()
+          .exactOptional()
+          .openapi({ description: 'Discount tax compensation amount.' }),
+        discount_tax_compensation_canceled: z
+          .number()
+          .exactOptional()
+          .openapi({ description: 'Discount tax compensation canceled.' }),
+        discount_tax_compensation_invoiced: z
+          .number()
+          .exactOptional()
+          .openapi({ description: 'Discount tax compensation invoiced.' }),
+        discount_tax_compensation_refunded: z
+          .number()
+          .exactOptional()
+          .openapi({ description: 'Discount tax compensation refunded.' }),
+        event_id: z.int().exactOptional().openapi({ description: 'Event ID.' }),
+        ext_order_item_id: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'External order item ID.' }),
+        extension_attributes: SalesDataOrderItemExtensionInterfaceSchema.exactOptional(),
+        free_shipping: z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Free-shipping flag value.' }),
+        gw_base_price: z.number().exactOptional().openapi({ description: 'GW base price.' }),
+        gw_base_price_invoiced: z
+          .number()
+          .exactOptional()
+          .openapi({ description: 'GW base price invoiced.' }),
+        gw_base_price_refunded: z
+          .number()
+          .exactOptional()
+          .openapi({ description: 'GW base price refunded.' }),
+        gw_base_tax_amount: z
+          .number()
+          .exactOptional()
+          .openapi({ description: 'GW base tax amount.' }),
+        gw_base_tax_amount_invoiced: z
+          .number()
+          .exactOptional()
+          .openapi({ description: 'GW base tax amount invoiced.' }),
+        gw_base_tax_amount_refunded: z
+          .number()
+          .exactOptional()
+          .openapi({ description: 'GW base tax amount refunded.' }),
+        gw_id: z.int().exactOptional().openapi({ description: 'GW ID.' }),
+        gw_price: z.number().exactOptional().openapi({ description: 'GW price.' }),
+        gw_price_invoiced: z
+          .number()
+          .exactOptional()
+          .openapi({ description: 'GW price invoiced.' }),
+        gw_price_refunded: z
+          .number()
+          .exactOptional()
+          .openapi({ description: 'GW price refunded.' }),
+        gw_tax_amount: z.number().exactOptional().openapi({ description: 'GW tax amount.' }),
+        gw_tax_amount_invoiced: z
+          .number()
+          .exactOptional()
+          .openapi({ description: 'GW tax amount invoiced.' }),
+        gw_tax_amount_refunded: z
+          .number()
+          .exactOptional()
+          .openapi({ description: 'GW tax amount refunded.' }),
+        is_qty_decimal: z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Is-quantity-decimal flag value.' }),
+        is_virtual: z.int().exactOptional().openapi({ description: 'Is-virtual flag value.' }),
+        item_id: z.int().exactOptional().openapi({ description: 'Item ID.' }),
+        locked_do_invoice: z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Locked DO invoice flag value.' }),
+        locked_do_ship: z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Locked DO ship flag value.' }),
+        name: z.string().exactOptional().openapi({ description: 'Name.' }),
+        no_discount: z.int().exactOptional().openapi({ description: 'No-discount flag value.' }),
+        order_id: z.int().exactOptional().openapi({ description: 'Order ID.' }),
+        original_price: z.number().exactOptional().openapi({ description: 'Original price.' }),
+        parent_item: SalesDataOrderItemInterfaceSchema.exactOptional(),
+        parent_item_id: z.int().exactOptional().openapi({ description: 'Parent item ID.' }),
+        price: z.number().exactOptional().openapi({ description: 'Price.' }),
+        price_incl_tax: z.number().exactOptional().openapi({ description: 'Price including tax.' }),
+        product_id: z.int().exactOptional().openapi({ description: 'Product ID.' }),
+        product_option: CatalogDataProductOptionInterfaceSchema.exactOptional(),
+        product_type: z.string().exactOptional().openapi({ description: 'Product type.' }),
+        qty_backordered: z
+          .number()
+          .exactOptional()
+          .openapi({ description: 'Quantity backordered.' }),
+        qty_canceled: z.number().exactOptional().openapi({ description: 'Quantity canceled.' }),
+        qty_invoiced: z.number().exactOptional().openapi({ description: 'Quantity invoiced.' }),
+        qty_ordered: z.number().exactOptional().openapi({ description: 'Quantity ordered.' }),
+        qty_refunded: z.number().exactOptional().openapi({ description: 'Quantity refunded.' }),
+        qty_returned: z.number().exactOptional().openapi({ description: 'Quantity returned.' }),
+        qty_shipped: z.number().exactOptional().openapi({ description: 'Quantity shipped.' }),
+        quote_item_id: z.int().exactOptional().openapi({ description: 'Quote item ID.' }),
+        row_invoiced: z.number().exactOptional().openapi({ description: 'Row invoiced.' }),
+        row_total: z.number().exactOptional().openapi({ description: 'Row total.' }),
+        row_total_incl_tax: z
+          .number()
+          .exactOptional()
+          .openapi({ description: 'Row total including tax.' }),
+        row_weight: z.number().exactOptional().openapi({ description: 'Row weight.' }),
+        sku: z.string().openapi({ description: 'SKU.' }),
+        store_id: z.int().exactOptional().openapi({ description: 'Store ID.' }),
+        tax_amount: z.number().exactOptional().openapi({ description: 'Tax amount.' }),
+        tax_before_discount: z
+          .number()
+          .exactOptional()
+          .openapi({ description: 'Tax before discount.' }),
+        tax_canceled: z.number().exactOptional().openapi({ description: 'Tax canceled.' }),
+        tax_invoiced: z.number().exactOptional().openapi({ description: 'Tax invoiced.' }),
+        tax_percent: z.number().exactOptional().openapi({ description: 'Tax percent.' }),
+        tax_refunded: z.number().exactOptional().openapi({ description: 'Tax refunded.' }),
+        updated_at: z.string().exactOptional().openapi({ description: 'Updated-at timestamp.' }),
+        weee_tax_applied: z.string().exactOptional().openapi({ description: 'WEEE tax applied.' }),
+        weee_tax_applied_amount: z
+          .number()
+          .exactOptional()
+          .openapi({ description: 'WEEE tax applied amount.' }),
+        weee_tax_applied_row_amount: z
+          .number()
+          .exactOptional()
+          .openapi({ description: 'WEEE tax applied row amount.' }),
+        weee_tax_disposition: z
+          .number()
+          .exactOptional()
+          .openapi({ description: 'WEEE tax disposition.' }),
+        weee_tax_row_disposition: z
+          .number()
+          .exactOptional()
+          .openapi({ description: 'WEEE tax row disposition.' }),
+        weight: z.number().exactOptional().openapi({ description: 'Weight.' }),
+      })
+      .openapi({
+        description:
+          'Order item interface. An order is a document that a web store issues to a customer. Magento generates a sales order that lists the product items, billing and shipping addresses, and shipping and payment methods. A corresponding external document, known as a purchase order, is emailed to the customer.',
+        required: ['sku'],
+      }),
+  )
+  .openapi('SalesDataOrderItemInterface')
+
+const TemandoShippingDataCollectionPointOrderCollectionPointInterfaceSchema = z
+  .object({
+    city: z.string(),
+    collection_point_id: z.string(),
+    country: z.string(),
+    name: z.string(),
+    postcode: z.string(),
+    recipient_address_id: z.int(),
+    region: z.string(),
+    street: z.array(z.string()),
+  })
+  .openapi({
+    description: 'Temando Order Collection Point Interface – Order Details/Fulfillment',
+    required: [
+      'recipient_address_id',
+      'collection_point_id',
+      'name',
+      'country',
+      'region',
+      'postcode',
+      'city',
+      'street',
+    ],
+  })
+  .openapi('TemandoShippingDataCollectionPointOrderCollectionPointInterface')
+
+const TemandoShippingDataOrderShippingExperienceInterfaceSchema = z
+  .object({ code: z.string(), cost: z.number(), label: z.string() })
+  .openapi({
+    description:
+      'Temando Shipping Experience Interface Local representation of a shipping rate in checkout. A set of shipping experiences is the result of creating an order at the Temando platform. (!) Needs to reside in Api namespace because selected shipping experience is exposed to public as a ShippingInterface extension attribute.',
+    required: ['label', 'code', 'cost'],
+  })
+  .openapi('TemandoShippingDataOrderShippingExperienceInterface')
+
+const SalesDataShippingExtensionInterfaceSchema = z
+  .object({
+    collection_point:
+      TemandoShippingDataCollectionPointOrderCollectionPointInterfaceSchema.exactOptional(),
+    ext_order_id: z.string().exactOptional(),
+    shipping_experience: TemandoShippingDataOrderShippingExperienceInterfaceSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'ExtensionInterface class for @see \\Magento\\Sales\\Api\\Data\\ShippingInterface',
+    required: [],
+  })
+  .openapi('SalesDataShippingExtensionInterface')
+
+const SalesDataTotalExtensionInterfaceSchema = z
+  .looseObject({})
+  .openapi({
+    description: 'ExtensionInterface class for @see \\Magento\\Sales\\Api\\Data\\TotalInterface',
+  })
+  .openapi('SalesDataTotalExtensionInterface')
+
+const SalesDataTotalInterfaceSchema = z
+  .object({
+    base_shipping_amount: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base shipping amount.' }),
+    base_shipping_canceled: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base shipping canceled.' }),
+    base_shipping_discount_amount: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base shipping discount amount.' }),
+    base_shipping_discount_tax_compensation_amnt: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base shipping discount tax compensation amount.' }),
+    base_shipping_incl_tax: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base shipping including tax.' }),
+    base_shipping_invoiced: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base shipping invoiced.' }),
+    base_shipping_refunded: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base shipping refunded.' }),
+    base_shipping_tax_amount: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base shipping tax amount.' }),
+    base_shipping_tax_refunded: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base shipping tax refunded.' }),
+    extension_attributes: SalesDataTotalExtensionInterfaceSchema.exactOptional(),
+    shipping_amount: z.number().exactOptional().openapi({ description: 'Shipping amount.' }),
+    shipping_canceled: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Shipping canceled amount.' }),
+    shipping_discount_amount: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Shipping discount amount.' }),
+    shipping_discount_tax_compensation_amount: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Shipping discount tax compensation amount.' }),
+    shipping_incl_tax: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Shipping including tax amount.' }),
+    shipping_invoiced: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Shipping invoiced amount.' }),
+    shipping_refunded: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Shipping refunded amount.' }),
+    shipping_tax_amount: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Shipping tax amount.' }),
+    shipping_tax_refunded: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Shipping tax refunded amount.' }),
+  })
+  .openapi({ description: 'Interface TotalInterface', required: [] })
+  .openapi('SalesDataTotalInterface')
+
+const SalesDataShippingInterfaceSchema = z
+  .object({
+    address: SalesDataOrderAddressInterfaceSchema.exactOptional(),
+    extension_attributes: SalesDataShippingExtensionInterfaceSchema.exactOptional(),
+    method: z.string().exactOptional().openapi({ description: 'Shipping method' }),
+    total: SalesDataTotalInterfaceSchema.exactOptional(),
+  })
+  .openapi({ description: 'Interface ShippingInterface', required: [] })
+  .openapi('SalesDataShippingInterface')
+
+type SalesDataShippingAssignmentInterfaceType = {
+  extension_attributes?: z.infer<typeof SalesDataShippingAssignmentExtensionInterfaceSchema>
+  items: z.infer<typeof SalesDataOrderItemInterfaceSchema>[]
+  shipping: z.infer<typeof SalesDataShippingInterfaceSchema>
+  stock_id?: number
+}
+
+const SalesDataShippingAssignmentInterfaceSchema: z.ZodType<SalesDataShippingAssignmentInterfaceType> =
+  z
+    .object({
+      extension_attributes: SalesDataShippingAssignmentExtensionInterfaceSchema.exactOptional(),
+      items: z
+        .array(SalesDataOrderItemInterfaceSchema)
+        .openapi({ description: 'Order items of shipping assignment' }),
+      shipping: SalesDataShippingInterfaceSchema,
+      stock_id: z.int().exactOptional().openapi({ description: 'Stock id' }),
+    })
+    .openapi({
+      description: 'Interface ShippingAssignmentInterface',
+      required: ['shipping', 'items'],
+    })
+    .openapi('SalesDataShippingAssignmentInterface')
+
+type SalesDataOrderExtensionInterfaceType = {
+  amazon_order_reference_id?: string
+  applied_taxes?: z.infer<typeof TaxDataOrderTaxDetailsAppliedTaxInterfaceSchema>[]
+  base_customer_balance_amount?: number
+  base_customer_balance_invoiced?: number
+  base_customer_balance_refunded?: number
+  base_customer_balance_total_refunded?: number
+  base_gift_cards_amount?: number
+  base_gift_cards_invoiced?: number
+  base_gift_cards_refunded?: number
+  base_reward_currency_amount?: number
+  company_order_attributes?: z.infer<typeof CompanyDataCompanyOrderInterfaceSchema>
+  converting_from_quote?: boolean
+  customer_balance_amount?: number
+  customer_balance_invoiced?: number
+  customer_balance_refunded?: number
+  customer_balance_total_refunded?: number
+  gift_cards?: z.infer<typeof GiftCardAccountDataGiftCardInterfaceSchema>[]
+  gift_cards_amount?: number
+  gift_cards_invoiced?: number
+  gift_cards_refunded?: number
+  gift_message?: z.infer<typeof GiftMessageDataMessageInterfaceSchema>
+  gw_add_card?: string
+  gw_allow_gift_receipt?: string
+  gw_base_price?: string
+  gw_base_price_incl_tax?: string
+  gw_base_price_invoiced?: string
+  gw_base_price_refunded?: string
+  gw_base_tax_amount?: string
+  gw_base_tax_amount_invoiced?: string
+  gw_base_tax_amount_refunded?: string
+  gw_card_base_price?: string
+  gw_card_base_price_incl_tax?: string
+  gw_card_base_price_invoiced?: string
+  gw_card_base_price_refunded?: string
+  gw_card_base_tax_amount?: string
+  gw_card_base_tax_invoiced?: string
+  gw_card_base_tax_refunded?: string
+  gw_card_price?: string
+  gw_card_price_incl_tax?: string
+  gw_card_price_invoiced?: string
+  gw_card_price_refunded?: string
+  gw_card_tax_amount?: string
+  gw_card_tax_invoiced?: string
+  gw_card_tax_refunded?: string
+  gw_id?: string
+  gw_items_base_price?: string
+  gw_items_base_price_incl_tax?: string
+  gw_items_base_price_invoiced?: string
+  gw_items_base_price_refunded?: string
+  gw_items_base_tax_amount?: string
+  gw_items_base_tax_invoiced?: string
+  gw_items_base_tax_refunded?: string
+  gw_items_price?: string
+  gw_items_price_incl_tax?: string
+  gw_items_price_invoiced?: string
+  gw_items_price_refunded?: string
+  gw_items_tax_amount?: string
+  gw_items_tax_invoiced?: string
+  gw_items_tax_refunded?: string
+  gw_price?: string
+  gw_price_incl_tax?: string
+  gw_price_invoiced?: string
+  gw_price_refunded?: string
+  gw_tax_amount?: string
+  gw_tax_amount_invoiced?: string
+  gw_tax_amount_refunded?: string
+  item_applied_taxes?: z.infer<typeof TaxDataOrderTaxDetailsItemInterfaceSchema>[]
+  payment_additional_info?: z.infer<typeof PaymentDataPaymentAdditionalInfoInterfaceSchema>[]
+  reward_currency_amount?: number
+  reward_points_balance?: number
+  shipping_assignments?: z.infer<typeof SalesDataShippingAssignmentInterfaceSchema>[]
+}
+
+const SalesDataOrderExtensionInterfaceSchema: z.ZodType<SalesDataOrderExtensionInterfaceType> = z
+  .object({
+    amazon_order_reference_id: z.string().exactOptional(),
+    applied_taxes: z.array(TaxDataOrderTaxDetailsAppliedTaxInterfaceSchema).exactOptional(),
+    base_customer_balance_amount: z.number().exactOptional(),
+    base_customer_balance_invoiced: z.number().exactOptional(),
+    base_customer_balance_refunded: z.number().exactOptional(),
+    base_customer_balance_total_refunded: z.number().exactOptional(),
+    base_gift_cards_amount: z.number().exactOptional(),
+    base_gift_cards_invoiced: z.number().exactOptional(),
+    base_gift_cards_refunded: z.number().exactOptional(),
+    base_reward_currency_amount: z.number().exactOptional(),
+    company_order_attributes: CompanyDataCompanyOrderInterfaceSchema.exactOptional(),
+    converting_from_quote: z.boolean().exactOptional(),
+    customer_balance_amount: z.number().exactOptional(),
+    customer_balance_invoiced: z.number().exactOptional(),
+    customer_balance_refunded: z.number().exactOptional(),
+    customer_balance_total_refunded: z.number().exactOptional(),
+    gift_cards: z.array(GiftCardAccountDataGiftCardInterfaceSchema).exactOptional(),
+    gift_cards_amount: z.number().exactOptional(),
+    gift_cards_invoiced: z.number().exactOptional(),
+    gift_cards_refunded: z.number().exactOptional(),
+    gift_message: GiftMessageDataMessageInterfaceSchema.exactOptional(),
+    gw_add_card: z.string().exactOptional(),
+    gw_allow_gift_receipt: z.string().exactOptional(),
+    gw_base_price: z.string().exactOptional(),
+    gw_base_price_incl_tax: z.string().exactOptional(),
+    gw_base_price_invoiced: z.string().exactOptional(),
+    gw_base_price_refunded: z.string().exactOptional(),
+    gw_base_tax_amount: z.string().exactOptional(),
+    gw_base_tax_amount_invoiced: z.string().exactOptional(),
+    gw_base_tax_amount_refunded: z.string().exactOptional(),
+    gw_card_base_price: z.string().exactOptional(),
+    gw_card_base_price_incl_tax: z.string().exactOptional(),
+    gw_card_base_price_invoiced: z.string().exactOptional(),
+    gw_card_base_price_refunded: z.string().exactOptional(),
+    gw_card_base_tax_amount: z.string().exactOptional(),
+    gw_card_base_tax_invoiced: z.string().exactOptional(),
+    gw_card_base_tax_refunded: z.string().exactOptional(),
+    gw_card_price: z.string().exactOptional(),
+    gw_card_price_incl_tax: z.string().exactOptional(),
+    gw_card_price_invoiced: z.string().exactOptional(),
+    gw_card_price_refunded: z.string().exactOptional(),
+    gw_card_tax_amount: z.string().exactOptional(),
+    gw_card_tax_invoiced: z.string().exactOptional(),
+    gw_card_tax_refunded: z.string().exactOptional(),
+    gw_id: z.string().exactOptional(),
+    gw_items_base_price: z.string().exactOptional(),
+    gw_items_base_price_incl_tax: z.string().exactOptional(),
+    gw_items_base_price_invoiced: z.string().exactOptional(),
+    gw_items_base_price_refunded: z.string().exactOptional(),
+    gw_items_base_tax_amount: z.string().exactOptional(),
+    gw_items_base_tax_invoiced: z.string().exactOptional(),
+    gw_items_base_tax_refunded: z.string().exactOptional(),
+    gw_items_price: z.string().exactOptional(),
+    gw_items_price_incl_tax: z.string().exactOptional(),
+    gw_items_price_invoiced: z.string().exactOptional(),
+    gw_items_price_refunded: z.string().exactOptional(),
+    gw_items_tax_amount: z.string().exactOptional(),
+    gw_items_tax_invoiced: z.string().exactOptional(),
+    gw_items_tax_refunded: z.string().exactOptional(),
+    gw_price: z.string().exactOptional(),
+    gw_price_incl_tax: z.string().exactOptional(),
+    gw_price_invoiced: z.string().exactOptional(),
+    gw_price_refunded: z.string().exactOptional(),
+    gw_tax_amount: z.string().exactOptional(),
+    gw_tax_amount_invoiced: z.string().exactOptional(),
+    gw_tax_amount_refunded: z.string().exactOptional(),
+    item_applied_taxes: z.array(TaxDataOrderTaxDetailsItemInterfaceSchema).exactOptional(),
+    payment_additional_info: z
+      .array(PaymentDataPaymentAdditionalInfoInterfaceSchema)
+      .exactOptional(),
+    reward_currency_amount: z.number().exactOptional(),
+    reward_points_balance: z.int().exactOptional(),
+    shipping_assignments: z.array(SalesDataShippingAssignmentInterfaceSchema).exactOptional(),
+  })
+  .openapi({
+    description: 'ExtensionInterface class for @see \\Magento\\Sales\\Api\\Data\\OrderInterface',
+    required: [],
+  })
+  .openapi('SalesDataOrderExtensionInterface')
+
+const VaultDataPaymentTokenInterfaceSchema = z
+  .object({
+    created_at: z.string().exactOptional().openapi({ description: 'Token creation timestamp' }),
+    customer_id: z.int().exactOptional().openapi({ description: 'Customer ID.' }),
+    entity_id: z.int().exactOptional().openapi({ description: 'Entity ID.' }),
+    expires_at: z.string().exactOptional().openapi({ description: 'Token expiration timestamp' }),
+    gateway_token: z.string().openapi({ description: 'Gateway token ID' }),
+    is_active: z.boolean().openapi({ description: 'Is active.' }),
+    is_visible: z.boolean().openapi({ description: 'Is visible.' }),
+    payment_method_code: z.string().openapi({ description: 'Payment method code' }),
+    public_hash: z.string().openapi({ description: 'Public hash' }),
+    token_details: z.string().openapi({ description: 'Token details' }),
+    type: z.string().openapi({ description: 'Type' }),
+  })
+  .openapi({
+    description: 'Gateway vault payment token interface.',
+    required: [
+      'public_hash',
+      'payment_method_code',
+      'type',
+      'gateway_token',
+      'token_details',
+      'is_active',
+      'is_visible',
+    ],
+  })
+  .openapi('VaultDataPaymentTokenInterface')
+
+const SalesDataOrderPaymentExtensionInterfaceSchema = z
+  .object({ vault_payment_token: VaultDataPaymentTokenInterfaceSchema.exactOptional() })
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\Sales\\Api\\Data\\OrderPaymentInterface',
+    required: [],
+  })
+  .openapi('SalesDataOrderPaymentExtensionInterface')
+
+const SalesDataOrderPaymentInterfaceSchema = z
+  .object({
+    account_status: z.string().openapi({ description: 'Account status.' }),
+    additional_data: z.string().exactOptional().openapi({ description: 'Additional data.' }),
+    additional_information: z
+      .array(z.string())
+      .openapi({ description: 'Array of additional information.' }),
+    address_status: z.string().exactOptional().openapi({ description: 'Address status.' }),
+    amount_authorized: z.number().exactOptional().openapi({ description: 'Amount authorized.' }),
+    amount_canceled: z.number().exactOptional().openapi({ description: 'Amount canceled.' }),
+    amount_ordered: z.number().exactOptional().openapi({ description: 'Amount ordered.' }),
+    amount_paid: z.number().exactOptional().openapi({ description: 'Amount paid.' }),
+    amount_refunded: z.number().exactOptional().openapi({ description: 'Amount refunded.' }),
+    anet_trans_method: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Anet transaction method.' }),
+    base_amount_authorized: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base amount authorized.' }),
+    base_amount_canceled: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base amount canceled.' }),
+    base_amount_ordered: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base amount ordered.' }),
+    base_amount_paid: z.number().exactOptional().openapi({ description: 'Base amount paid.' }),
+    base_amount_paid_online: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base amount paid online.' }),
+    base_amount_refunded: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base amount refunded.' }),
+    base_amount_refunded_online: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base amount refunded online.' }),
+    base_shipping_amount: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base shipping amount.' }),
+    base_shipping_captured: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base shipping captured amount.' }),
+    base_shipping_refunded: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base shipping refunded amount.' }),
+    cc_approval: z.string().exactOptional().openapi({ description: 'Credit card approval.' }),
+    cc_avs_status: z.string().exactOptional().openapi({ description: 'Credit card avs status.' }),
+    cc_cid_status: z.string().exactOptional().openapi({ description: 'Credit card CID status.' }),
+    cc_debug_request_body: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Credit card debug request body.' }),
+    cc_debug_response_body: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Credit card debug response body.' }),
+    cc_debug_response_serialized: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Credit card debug response serialized.' }),
+    cc_exp_month: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Credit card expiration month.' }),
+    cc_exp_year: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Credit card expiration year.' }),
+    cc_last4: z.string().openapi({ description: 'Last four digits of the credit card.' }),
+    cc_number_enc: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Encrypted credit card number.' }),
+    cc_owner: z.string().exactOptional().openapi({ description: 'Credit card number.' }),
+    cc_secure_verify: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Credit card secure verify.' }),
+    cc_ss_issue: z.string().exactOptional().openapi({ description: 'Credit card SS issue.' }),
+    cc_ss_start_month: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Credit card SS start month.' }),
+    cc_ss_start_year: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Credit card SS start year.' }),
+    cc_status: z.string().exactOptional().openapi({ description: 'Credit card status.' }),
+    cc_status_description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Credit card status description.' }),
+    cc_trans_id: z.string().exactOptional().openapi({ description: 'Credit card transaction ID.' }),
+    cc_type: z.string().exactOptional().openapi({ description: 'Credit card type.' }),
+    echeck_account_name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'eCheck account name.' }),
+    echeck_account_type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'eCheck account type.' }),
+    echeck_bank_name: z.string().exactOptional().openapi({ description: 'eCheck bank name.' }),
+    echeck_routing_number: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'eCheck routing number.' }),
+    echeck_type: z.string().exactOptional().openapi({ description: 'eCheck type.' }),
+    entity_id: z.int().exactOptional().openapi({ description: 'Entity ID.' }),
+    extension_attributes: SalesDataOrderPaymentExtensionInterfaceSchema.exactOptional(),
+    last_trans_id: z.string().exactOptional().openapi({ description: 'Last transaction ID.' }),
+    method: z.string().openapi({ description: 'Method.' }),
+    parent_id: z.int().exactOptional().openapi({ description: 'Parent ID.' }),
+    po_number: z.string().exactOptional().openapi({ description: 'PO number.' }),
+    protection_eligibility: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Protection eligibility.' }),
+    quote_payment_id: z.int().exactOptional().openapi({ description: 'Quote payment ID.' }),
+    shipping_amount: z.number().exactOptional().openapi({ description: 'Shipping amount.' }),
+    shipping_captured: z.number().exactOptional().openapi({ description: 'Shipping captured.' }),
+    shipping_refunded: z.number().exactOptional().openapi({ description: 'Shipping refunded.' }),
+  })
+  .openapi({
+    description:
+      'Order payment interface. An order is a document that a web store issues to a customer. Magento generates a sales order that lists the product items, billing and shipping addresses, and shipping and payment methods. A corresponding external document, known as a purchase order, is emailed to the customer.',
+    required: ['account_status', 'additional_information', 'cc_last4', 'method'],
+  })
+  .openapi('SalesDataOrderPaymentInterface')
+
+const SalesDataOrderStatusHistoryExtensionInterfaceSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\Sales\\Api\\Data\\OrderStatusHistoryInterface',
+  })
+  .openapi('SalesDataOrderStatusHistoryExtensionInterface')
+
+const SalesDataOrderStatusHistoryInterfaceSchema = z
+  .object({
+    comment: z.string().openapi({ description: 'Comment.' }),
+    created_at: z.string().exactOptional().openapi({ description: 'Created-at timestamp.' }),
+    entity_id: z.int().exactOptional().openapi({ description: 'Order status history ID.' }),
+    entity_name: z.string().exactOptional().openapi({ description: 'Entity name.' }),
+    extension_attributes: SalesDataOrderStatusHistoryExtensionInterfaceSchema.exactOptional(),
+    is_customer_notified: z.int().openapi({ description: 'Is-customer-notified flag value.' }),
+    is_visible_on_front: z.int().openapi({ description: 'Is-visible-on-storefront flag value.' }),
+    parent_id: z.int().openapi({ description: 'Parent ID.' }),
+    status: z.string().exactOptional().openapi({ description: 'Status.' }),
+  })
+  .openapi({
+    description:
+      'Order status history interface. An order is a document that a web store issues to a customer. Magento generates a sales order that lists the product items, billing and shipping addresses, and shipping and payment methods. A corresponding external document, known as a purchase order, is emailed to the customer.',
+    required: ['comment', 'is_customer_notified', 'is_visible_on_front', 'parent_id'],
+  })
+  .openapi('SalesDataOrderStatusHistoryInterface')
+
+type SalesDataOrderInterfaceType = {
+  adjustment_negative?: number
+  adjustment_positive?: number
+  applied_rule_ids?: string
+  base_adjustment_negative?: number
+  base_adjustment_positive?: number
+  base_currency_code?: string
+  base_discount_amount?: number
+  base_discount_canceled?: number
+  base_discount_invoiced?: number
+  base_discount_refunded?: number
+  base_discount_tax_compensation_amount?: number
+  base_discount_tax_compensation_invoiced?: number
+  base_discount_tax_compensation_refunded?: number
+  base_grand_total: number
+  base_shipping_amount?: number
+  base_shipping_canceled?: number
+  base_shipping_discount_amount?: number
+  base_shipping_discount_tax_compensation_amnt?: number
+  base_shipping_incl_tax?: number
+  base_shipping_invoiced?: number
+  base_shipping_refunded?: number
+  base_shipping_tax_amount?: number
+  base_shipping_tax_refunded?: number
+  base_subtotal?: number
+  base_subtotal_canceled?: number
+  base_subtotal_incl_tax?: number
+  base_subtotal_invoiced?: number
+  base_subtotal_refunded?: number
+  base_tax_amount?: number
+  base_tax_canceled?: number
+  base_tax_invoiced?: number
+  base_tax_refunded?: number
+  base_to_global_rate?: number
+  base_to_order_rate?: number
+  base_total_canceled?: number
+  base_total_due?: number
+  base_total_invoiced?: number
+  base_total_invoiced_cost?: number
+  base_total_offline_refunded?: number
+  base_total_online_refunded?: number
+  base_total_paid?: number
+  base_total_qty_ordered?: number
+  base_total_refunded?: number
+  billing_address?: z.infer<typeof SalesDataOrderAddressInterfaceSchema>
+  billing_address_id?: number
+  can_ship_partially?: number
+  can_ship_partially_item?: number
+  coupon_code?: string
+  created_at?: string
+  customer_dob?: string
+  customer_email: string
+  customer_firstname?: string
+  customer_gender?: number
+  customer_group_id?: number
+  customer_id?: number
+  customer_is_guest?: number
+  customer_lastname?: string
+  customer_middlename?: string
+  customer_note?: string
+  customer_note_notify?: number
+  customer_prefix?: string
+  customer_suffix?: string
+  customer_taxvat?: string
+  discount_amount?: number
+  discount_canceled?: number
+  discount_description?: string
+  discount_invoiced?: number
+  discount_refunded?: number
+  discount_tax_compensation_amount?: number
+  discount_tax_compensation_invoiced?: number
+  discount_tax_compensation_refunded?: number
+  edit_increment?: number
+  email_sent?: number
+  entity_id?: number
+  ext_customer_id?: string
+  ext_order_id?: string
+  extension_attributes?: z.infer<typeof SalesDataOrderExtensionInterfaceSchema>
+  forced_shipment_with_invoice?: number
+  global_currency_code?: string
+  grand_total: number
+  hold_before_state?: string
+  hold_before_status?: string
+  increment_id?: string
+  is_virtual?: number
+  items: z.infer<typeof SalesDataOrderItemInterfaceSchema>[]
+  order_currency_code?: string
+  original_increment_id?: string
+  payment?: z.infer<typeof SalesDataOrderPaymentInterfaceSchema>
+  payment_auth_expiration?: number
+  payment_authorization_amount?: number
+  protect_code?: string
+  quote_address_id?: number
+  quote_id?: number
+  relation_child_id?: string
+  relation_child_real_id?: string
+  relation_parent_id?: string
+  relation_parent_real_id?: string
+  remote_ip?: string
+  shipping_amount?: number
+  shipping_canceled?: number
+  shipping_description?: string
+  shipping_discount_amount?: number
+  shipping_discount_tax_compensation_amount?: number
+  shipping_incl_tax?: number
+  shipping_invoiced?: number
+  shipping_refunded?: number
+  shipping_tax_amount?: number
+  shipping_tax_refunded?: number
+  state?: string
+  status?: string
+  status_histories?: z.infer<typeof SalesDataOrderStatusHistoryInterfaceSchema>[]
+  store_currency_code?: string
+  store_id?: number
+  store_name?: string
+  store_to_base_rate?: number
+  store_to_order_rate?: number
+  subtotal?: number
+  subtotal_canceled?: number
+  subtotal_incl_tax?: number
+  subtotal_invoiced?: number
+  subtotal_refunded?: number
+  tax_amount?: number
+  tax_canceled?: number
+  tax_invoiced?: number
+  tax_refunded?: number
+  total_canceled?: number
+  total_due?: number
+  total_invoiced?: number
+  total_item_count?: number
+  total_offline_refunded?: number
+  total_online_refunded?: number
+  total_paid?: number
+  total_qty_ordered?: number
+  total_refunded?: number
+  updated_at?: string
+  weight?: number
+  x_forwarded_for?: string
+}
+
+const SalesDataOrderInterfaceSchema: z.ZodType<SalesDataOrderInterfaceType> = z
+  .object({
+    adjustment_negative: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Negative adjustment value.' }),
+    adjustment_positive: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Positive adjustment value.' }),
+    applied_rule_ids: z.string().exactOptional().openapi({ description: 'Applied rule IDs.' }),
+    base_adjustment_negative: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base negative adjustment value.' }),
+    base_adjustment_positive: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base positive adjustment value.' }),
+    base_currency_code: z.string().exactOptional().openapi({ description: 'Base currency code.' }),
+    base_discount_amount: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base discount amount.' }),
+    base_discount_canceled: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base discount canceled.' }),
+    base_discount_invoiced: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base discount invoiced.' }),
+    base_discount_refunded: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base discount refunded.' }),
+    base_discount_tax_compensation_amount: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base discount tax compensation amount.' }),
+    base_discount_tax_compensation_invoiced: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base discount tax compensation invoiced.' }),
+    base_discount_tax_compensation_refunded: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base discount tax compensation refunded.' }),
+    base_grand_total: z.number().openapi({ description: 'Base grand total.' }),
+    base_shipping_amount: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base shipping amount.' }),
+    base_shipping_canceled: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base shipping canceled.' }),
+    base_shipping_discount_amount: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base shipping discount amount.' }),
+    base_shipping_discount_tax_compensation_amnt: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base shipping discount tax compensation amount.' }),
+    base_shipping_incl_tax: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base shipping including tax.' }),
+    base_shipping_invoiced: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base shipping invoiced.' }),
+    base_shipping_refunded: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base shipping refunded.' }),
+    base_shipping_tax_amount: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base shipping tax amount.' }),
+    base_shipping_tax_refunded: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base shipping tax refunded.' }),
+    base_subtotal: z.number().exactOptional().openapi({ description: 'Base subtotal.' }),
+    base_subtotal_canceled: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base subtotal canceled.' }),
+    base_subtotal_incl_tax: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base subtotal including tax.' }),
+    base_subtotal_invoiced: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base subtotal invoiced.' }),
+    base_subtotal_refunded: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base subtotal refunded.' }),
+    base_tax_amount: z.number().exactOptional().openapi({ description: 'Base tax amount.' }),
+    base_tax_canceled: z.number().exactOptional().openapi({ description: 'Base tax canceled.' }),
+    base_tax_invoiced: z.number().exactOptional().openapi({ description: 'Base tax invoiced.' }),
+    base_tax_refunded: z.number().exactOptional().openapi({ description: 'Base tax refunded.' }),
+    base_to_global_rate: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base-to-global rate.' }),
+    base_to_order_rate: z.number().exactOptional().openapi({ description: 'Base-to-order rate.' }),
+    base_total_canceled: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base total canceled.' }),
+    base_total_due: z.number().exactOptional().openapi({ description: 'Base total due.' }),
+    base_total_invoiced: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base total invoiced.' }),
+    base_total_invoiced_cost: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base total invoiced cost.' }),
+    base_total_offline_refunded: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base total offline refunded.' }),
+    base_total_online_refunded: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base total online refunded.' }),
+    base_total_paid: z.number().exactOptional().openapi({ description: 'Base total paid.' }),
+    base_total_qty_ordered: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base total quantity ordered.' }),
+    base_total_refunded: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base total refunded.' }),
+    billing_address: SalesDataOrderAddressInterfaceSchema.exactOptional(),
+    billing_address_id: z.int().exactOptional().openapi({ description: 'Billing address ID.' }),
+    can_ship_partially: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Can-ship-partially flag value.' }),
+    can_ship_partially_item: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Can-ship-partially-item flag value.' }),
+    coupon_code: z.string().exactOptional().openapi({ description: 'Coupon code.' }),
+    created_at: z.string().exactOptional().openapi({ description: 'Created-at timestamp.' }),
+    customer_dob: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Customer date-of-birth (DOB).' }),
+    customer_email: z.string().openapi({ description: 'Customer email address.' }),
+    customer_firstname: z.string().exactOptional().openapi({ description: 'Customer first name.' }),
+    customer_gender: z.int().exactOptional().openapi({ description: 'Customer gender.' }),
+    customer_group_id: z.int().exactOptional().openapi({ description: 'Customer group ID.' }),
+    customer_id: z.int().exactOptional().openapi({ description: 'Customer ID.' }),
+    customer_is_guest: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Customer-is-guest flag value.' }),
+    customer_lastname: z.string().exactOptional().openapi({ description: 'Customer last name.' }),
+    customer_middlename: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Customer middle name.' }),
+    customer_note: z.string().exactOptional().openapi({ description: 'Customer note.' }),
+    customer_note_notify: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Customer-note-notify flag value.' }),
+    customer_prefix: z.string().exactOptional().openapi({ description: 'Customer prefix.' }),
+    customer_suffix: z.string().exactOptional().openapi({ description: 'Customer suffix.' }),
+    customer_taxvat: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Customer value-added tax (VAT).' }),
+    discount_amount: z.number().exactOptional().openapi({ description: 'Discount amount.' }),
+    discount_canceled: z.number().exactOptional().openapi({ description: 'Discount canceled.' }),
+    discount_description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Discount description.' }),
+    discount_invoiced: z.number().exactOptional().openapi({ description: 'Discount invoiced.' }),
+    discount_refunded: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Discount refunded amount.' }),
+    discount_tax_compensation_amount: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Discount tax compensation amount.' }),
+    discount_tax_compensation_invoiced: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Discount tax compensation invoiced amount.' }),
+    discount_tax_compensation_refunded: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Discount tax compensation refunded amount.' }),
+    edit_increment: z.int().exactOptional().openapi({ description: 'Edit increment value.' }),
+    email_sent: z.int().exactOptional().openapi({ description: 'Email-sent flag value.' }),
+    entity_id: z.int().exactOptional().openapi({ description: 'Order ID.' }),
+    ext_customer_id: z.string().exactOptional().openapi({ description: 'External customer ID.' }),
+    ext_order_id: z.string().exactOptional().openapi({ description: 'External order ID.' }),
+    extension_attributes: SalesDataOrderExtensionInterfaceSchema.exactOptional(),
+    forced_shipment_with_invoice: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Forced-shipment-with-invoice flag value.' }),
+    global_currency_code: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Global currency code.' }),
+    grand_total: z.number().openapi({ description: 'Grand total.' }),
+    hold_before_state: z.string().exactOptional().openapi({ description: 'Hold before state.' }),
+    hold_before_status: z.string().exactOptional().openapi({ description: 'Hold before status.' }),
+    increment_id: z.string().exactOptional().openapi({ description: 'Increment ID.' }),
+    is_virtual: z.int().exactOptional().openapi({ description: 'Is-virtual flag value.' }),
+    items: z.array(SalesDataOrderItemInterfaceSchema).openapi({ description: 'Array of items.' }),
+    order_currency_code: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Order currency code.' }),
+    original_increment_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Original increment ID.' }),
+    payment: SalesDataOrderPaymentInterfaceSchema.exactOptional(),
+    payment_auth_expiration: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Payment authorization expiration date.' }),
+    payment_authorization_amount: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Payment authorization amount.' }),
+    protect_code: z.string().exactOptional().openapi({ description: 'Protect code.' }),
+    quote_address_id: z.int().exactOptional().openapi({ description: 'Quote address ID.' }),
+    quote_id: z.int().exactOptional().openapi({ description: 'Quote ID.' }),
+    relation_child_id: z.string().exactOptional().openapi({ description: 'Relation child ID.' }),
+    relation_child_real_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Relation child real ID.' }),
+    relation_parent_id: z.string().exactOptional().openapi({ description: 'Relation parent ID.' }),
+    relation_parent_real_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Relation parent real ID.' }),
+    remote_ip: z.string().exactOptional().openapi({ description: 'Remote IP address.' }),
+    shipping_amount: z.number().exactOptional().openapi({ description: 'Shipping amount.' }),
+    shipping_canceled: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Shipping canceled amount.' }),
+    shipping_description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Shipping description.' }),
+    shipping_discount_amount: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Shipping discount amount.' }),
+    shipping_discount_tax_compensation_amount: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Shipping discount tax compensation amount.' }),
+    shipping_incl_tax: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Shipping including tax amount.' }),
+    shipping_invoiced: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Shipping invoiced amount.' }),
+    shipping_refunded: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Shipping refunded amount.' }),
+    shipping_tax_amount: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Shipping tax amount.' }),
+    shipping_tax_refunded: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Shipping tax refunded amount.' }),
+    state: z.string().exactOptional().openapi({ description: 'State.' }),
+    status: z.string().exactOptional().openapi({ description: 'Status.' }),
+    status_histories: z
+      .array(SalesDataOrderStatusHistoryInterfaceSchema)
+      .exactOptional()
+      .openapi({ description: 'Array of status histories.' }),
+    store_currency_code: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Store currency code.' }),
+    store_id: z.int().exactOptional().openapi({ description: 'Store ID.' }),
+    store_name: z.string().exactOptional().openapi({ description: 'Store name.' }),
+    store_to_base_rate: z.number().exactOptional().openapi({ description: 'Store-to-base rate.' }),
+    store_to_order_rate: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Store-to-order rate.' }),
+    subtotal: z.number().exactOptional().openapi({ description: 'Subtotal.' }),
+    subtotal_canceled: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Subtotal canceled amount.' }),
+    subtotal_incl_tax: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Subtotal including tax amount.' }),
+    subtotal_invoiced: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Subtotal invoiced amount.' }),
+    subtotal_refunded: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Subtotal refunded amount.' }),
+    tax_amount: z.number().exactOptional().openapi({ description: 'Tax amount.' }),
+    tax_canceled: z.number().exactOptional().openapi({ description: 'Tax canceled amount.' }),
+    tax_invoiced: z.number().exactOptional().openapi({ description: 'Tax invoiced amount.' }),
+    tax_refunded: z.number().exactOptional().openapi({ description: 'Tax refunded amount.' }),
+    total_canceled: z.number().exactOptional().openapi({ description: 'Total canceled.' }),
+    total_due: z.number().exactOptional().openapi({ description: 'Total due.' }),
+    total_invoiced: z.number().exactOptional().openapi({ description: 'Total invoiced amount.' }),
+    total_item_count: z.int().exactOptional().openapi({ description: 'Total item count.' }),
+    total_offline_refunded: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Total offline refunded amount.' }),
+    total_online_refunded: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Total online refunded amount.' }),
+    total_paid: z.number().exactOptional().openapi({ description: 'Total paid.' }),
+    total_qty_ordered: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Total quantity ordered.' }),
+    total_refunded: z.number().exactOptional().openapi({ description: 'Total amount refunded.' }),
+    updated_at: z.string().exactOptional().openapi({ description: 'Updated-at timestamp.' }),
+    weight: z.number().exactOptional().openapi({ description: 'Weight.' }),
+    x_forwarded_for: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'X-Forwarded-For field value.' }),
+  })
+  .openapi({
+    description:
+      'Order interface. An order is a document that a web store issues to a customer. Magento generates a sales order that lists the product items, billing and shipping addresses, and shipping and payment methods. A corresponding external document, known as a purchase order, is emailed to the customer.',
+    required: ['base_grand_total', 'customer_email', 'grand_total', 'items'],
+  })
+  .openapi('SalesDataOrderInterface')
+
+type SalesDataInvoiceExtensionInterfaceType = {
+  base_customer_balance_amount?: number
+  base_gift_cards_amount?: number
+  customer_balance_amount?: number
+  gift_cards_amount?: number
+  gw_base_price?: string
+  gw_base_tax_amount?: string
+  gw_card_base_price?: string
+  gw_card_base_tax_amount?: string
+  gw_card_price?: string
+  gw_card_tax_amount?: string
+  gw_items_base_price?: string
+  gw_items_base_tax_amount?: string
+  gw_items_price?: string
+  gw_items_tax_amount?: string
+  gw_price?: string
+  gw_tax_amount?: string
+  vertex_tax_calculation_billing_address?: z.infer<typeof SalesDataOrderAddressInterfaceSchema>
+  vertex_tax_calculation_order?: z.infer<typeof SalesDataOrderInterfaceSchema>
+  vertex_tax_calculation_shipping_address?: z.infer<typeof SalesDataOrderAddressInterfaceSchema>
+}
+
+const SalesDataInvoiceCommentExtensionInterfaceSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\Sales\\Api\\Data\\InvoiceCommentInterface',
+  })
+  .openapi('SalesDataInvoiceCommentExtensionInterface')
+
+const SalesDataInvoiceCommentInterfaceSchema = z
+  .object({
+    comment: z.string().openapi({ description: 'Comment.' }),
+    created_at: z.string().exactOptional().openapi({ description: 'Created-at timestamp.' }),
+    entity_id: z.int().exactOptional().openapi({ description: 'Invoice ID.' }),
+    extension_attributes: SalesDataInvoiceCommentExtensionInterfaceSchema.exactOptional(),
+    is_customer_notified: z.int().openapi({ description: 'Is-customer-notified flag value.' }),
+    is_visible_on_front: z.int().openapi({ description: 'Is-visible-on-storefront flag value.' }),
+    parent_id: z.int().openapi({ description: 'Parent ID.' }),
+  })
+  .openapi({
+    description:
+      'Invoice comment interface. An invoice is a record of the receipt of payment for an order. An invoice can include comments that detail the invoice history.',
+    required: ['is_customer_notified', 'parent_id', 'comment', 'is_visible_on_front'],
+  })
+  .openapi('SalesDataInvoiceCommentInterface')
+
+const SalesDataInvoiceExtensionInterfaceSchema: z.ZodType<SalesDataInvoiceExtensionInterfaceType> =
+  z
+    .object({
+      base_customer_balance_amount: z.number().exactOptional(),
+      base_gift_cards_amount: z.number().exactOptional(),
+      customer_balance_amount: z.number().exactOptional(),
+      gift_cards_amount: z.number().exactOptional(),
+      gw_base_price: z.string().exactOptional(),
+      gw_base_tax_amount: z.string().exactOptional(),
+      gw_card_base_price: z.string().exactOptional(),
+      gw_card_base_tax_amount: z.string().exactOptional(),
+      gw_card_price: z.string().exactOptional(),
+      gw_card_tax_amount: z.string().exactOptional(),
+      gw_items_base_price: z.string().exactOptional(),
+      gw_items_base_tax_amount: z.string().exactOptional(),
+      gw_items_price: z.string().exactOptional(),
+      gw_items_tax_amount: z.string().exactOptional(),
+      gw_price: z.string().exactOptional(),
+      gw_tax_amount: z.string().exactOptional(),
+      vertex_tax_calculation_billing_address: SalesDataOrderAddressInterfaceSchema.exactOptional(),
+      vertex_tax_calculation_order: SalesDataOrderInterfaceSchema.exactOptional(),
+      vertex_tax_calculation_shipping_address: SalesDataOrderAddressInterfaceSchema.exactOptional(),
+    })
+    .openapi({
+      description:
+        'ExtensionInterface class for @see \\Magento\\Sales\\Api\\Data\\InvoiceInterface',
+      required: [],
+    })
+    .openapi('SalesDataInvoiceExtensionInterface')
+
+const SalesDataInvoiceItemExtensionInterfaceSchema = z
+  .object({
+    invoice_text_codes: z.array(z.string()).exactOptional(),
+    tax_codes: z.array(z.string()).exactOptional(),
+    vertex_tax_codes: z.array(z.string()).exactOptional(),
+  })
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\Sales\\Api\\Data\\InvoiceItemInterface',
+    required: [],
+  })
+  .openapi('SalesDataInvoiceItemExtensionInterface')
+
+const SalesDataInvoiceItemInterfaceSchema = z
+  .object({
+    additional_data: z.string().exactOptional().openapi({ description: 'Additional data.' }),
+    base_cost: z.number().exactOptional().openapi({ description: 'Base cost.' }),
+    base_discount_amount: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base discount amount.' }),
+    base_discount_tax_compensation_amount: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base discount tax compensation amount.' }),
+    base_price: z.number().exactOptional().openapi({ description: 'Base price.' }),
+    base_price_incl_tax: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base price including tax.' }),
+    base_row_total: z.number().exactOptional().openapi({ description: 'Base row total.' }),
+    base_row_total_incl_tax: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base row total including tax.' }),
+    base_tax_amount: z.number().exactOptional().openapi({ description: 'Base tax amount.' }),
+    description: z.string().exactOptional().openapi({ description: 'Description.' }),
+    discount_amount: z.number().exactOptional().openapi({ description: 'Discount amount.' }),
+    discount_tax_compensation_amount: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Discount tax compensation amount.' }),
+    entity_id: z.int().exactOptional().openapi({ description: 'Invoice item ID.' }),
+    extension_attributes: SalesDataInvoiceItemExtensionInterfaceSchema.exactOptional(),
+    name: z.string().exactOptional().openapi({ description: 'Name.' }),
+    order_item_id: z.int().openapi({ description: 'Order item ID.' }),
+    parent_id: z.int().exactOptional().openapi({ description: 'Parent ID.' }),
+    price: z.number().exactOptional().openapi({ description: 'Price.' }),
+    price_incl_tax: z.number().exactOptional().openapi({ description: 'Price including tax.' }),
+    product_id: z.int().exactOptional().openapi({ description: 'Product ID.' }),
+    qty: z.number().openapi({ description: 'Quantity.' }),
+    row_total: z.number().exactOptional().openapi({ description: 'Row total.' }),
+    row_total_incl_tax: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Row total including tax.' }),
+    sku: z.string().openapi({ description: 'SKU.' }),
+    tax_amount: z.number().exactOptional().openapi({ description: 'Tax amount.' }),
+  })
+  .openapi({
+    description:
+      'Invoice item interface. An invoice is a record of the receipt of payment for an order. An invoice item is a purchased item in an invoice.',
+    required: ['sku', 'order_item_id', 'qty'],
+  })
+  .openapi('SalesDataInvoiceItemInterface')
+
+type SalesDataInvoiceInterfaceType = {
+  base_currency_code?: string
+  base_discount_amount?: number
+  base_discount_tax_compensation_amount?: number
+  base_grand_total?: number
+  base_shipping_amount?: number
+  base_shipping_discount_tax_compensation_amnt?: number
+  base_shipping_incl_tax?: number
+  base_shipping_tax_amount?: number
+  base_subtotal?: number
+  base_subtotal_incl_tax?: number
+  base_tax_amount?: number
+  base_to_global_rate?: number
+  base_to_order_rate?: number
+  base_total_refunded?: number
+  billing_address_id?: number
+  can_void_flag?: number
+  comments?: z.infer<typeof SalesDataInvoiceCommentInterfaceSchema>[]
+  created_at?: string
+  discount_amount?: number
+  discount_description?: string
+  discount_tax_compensation_amount?: number
+  email_sent?: number
+  entity_id?: number
+  extension_attributes?: z.infer<typeof SalesDataInvoiceExtensionInterfaceSchema>
+  global_currency_code?: string
+  grand_total?: number
+  increment_id?: string
+  is_used_for_refund?: number
+  items: z.infer<typeof SalesDataInvoiceItemInterfaceSchema>[]
+  order_currency_code?: string
+  order_id: number
+  shipping_address_id?: number
+  shipping_amount?: number
+  shipping_discount_tax_compensation_amount?: number
+  shipping_incl_tax?: number
+  shipping_tax_amount?: number
+  state?: number
+  store_currency_code?: string
+  store_id?: number
+  store_to_base_rate?: number
+  store_to_order_rate?: number
+  subtotal?: number
+  subtotal_incl_tax?: number
+  tax_amount?: number
+  total_qty: number
+  transaction_id?: string
+  updated_at?: string
+}
+
+const SalesDataInvoiceInterfaceSchema: z.ZodType<SalesDataInvoiceInterfaceType> = z
+  .object({
+    base_currency_code: z.string().exactOptional().openapi({ description: 'Base currency code.' }),
+    base_discount_amount: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base discount amount.' }),
+    base_discount_tax_compensation_amount: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base discount tax compensation amount.' }),
+    base_grand_total: z.number().exactOptional().openapi({ description: 'Base grand total.' }),
+    base_shipping_amount: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base shipping amount.' }),
+    base_shipping_discount_tax_compensation_amnt: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base shipping discount tax compensation amount.' }),
+    base_shipping_incl_tax: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base shipping including tax.' }),
+    base_shipping_tax_amount: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base shipping tax amount.' }),
+    base_subtotal: z.number().exactOptional().openapi({ description: 'Base subtotal.' }),
+    base_subtotal_incl_tax: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base subtotal including tax.' }),
+    base_tax_amount: z.number().exactOptional().openapi({ description: 'Base tax amount.' }),
+    base_to_global_rate: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base-to-global rate.' }),
+    base_to_order_rate: z.number().exactOptional().openapi({ description: 'Base-to-order rate.' }),
+    base_total_refunded: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Base total refunded.' }),
+    billing_address_id: z.int().exactOptional().openapi({ description: 'Billing address ID.' }),
+    can_void_flag: z.int().exactOptional().openapi({ description: 'Can void flag value.' }),
+    comments: z
+      .array(SalesDataInvoiceCommentInterfaceSchema)
+      .exactOptional()
+      .openapi({ description: 'Array of any invoice comments. Otherwise, null.' }),
+    created_at: z.string().exactOptional().openapi({ description: 'Created-at timestamp.' }),
+    discount_amount: z.number().exactOptional().openapi({ description: 'Discount amount.' }),
+    discount_description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Discount description.' }),
+    discount_tax_compensation_amount: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Discount tax compensation amount.' }),
+    email_sent: z.int().exactOptional().openapi({ description: 'Email-sent flag value.' }),
+    entity_id: z.int().exactOptional().openapi({ description: 'Invoice ID.' }),
+    extension_attributes: SalesDataInvoiceExtensionInterfaceSchema.exactOptional(),
+    global_currency_code: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Global currency code.' }),
+    grand_total: z.number().exactOptional().openapi({ description: 'Grand total.' }),
+    increment_id: z.string().exactOptional().openapi({ description: 'Increment ID.' }),
+    is_used_for_refund: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Is-used-for-refund flag value.' }),
+    items: z
+      .array(SalesDataInvoiceItemInterfaceSchema)
+      .openapi({ description: 'Array of invoice items.' }),
+    order_currency_code: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Order currency code.' }),
+    order_id: z.int().openapi({ description: 'Order ID.' }),
+    shipping_address_id: z.int().exactOptional().openapi({ description: 'Shipping address ID.' }),
+    shipping_amount: z.number().exactOptional().openapi({ description: 'Shipping amount.' }),
+    shipping_discount_tax_compensation_amount: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Shipping discount tax compensation amount.' }),
+    shipping_incl_tax: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Shipping including tax.' }),
+    shipping_tax_amount: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Shipping tax amount.' }),
+    state: z.int().exactOptional().openapi({ description: 'State.' }),
+    store_currency_code: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Store currency code.' }),
+    store_id: z.int().exactOptional().openapi({ description: 'Store ID.' }),
+    store_to_base_rate: z.number().exactOptional().openapi({ description: 'Store-to-base rate.' }),
+    store_to_order_rate: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Store-to-order rate.' }),
+    subtotal: z.number().exactOptional().openapi({ description: 'Subtotal.' }),
+    subtotal_incl_tax: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Subtotal including tax.' }),
+    tax_amount: z.number().exactOptional().openapi({ description: 'Tax amount.' }),
+    total_qty: z.number().openapi({ description: 'Total quantity.' }),
+    transaction_id: z.string().exactOptional().openapi({ description: 'Transaction ID.' }),
+    updated_at: z.string().exactOptional().openapi({ description: 'Updated-at timestamp.' }),
+  })
+  .openapi({
+    description:
+      'Invoice interface. An invoice is a record of the receipt of payment for an order.',
+    required: ['order_id', 'total_qty', 'items'],
+  })
+  .openapi('SalesDataInvoiceInterface')
+
+type SalesDataInvoiceSearchResultInterfaceType = {
+  items: z.infer<typeof SalesDataInvoiceInterfaceSchema>[]
+  search_criteria: z.infer<typeof FrameworkSearchCriteriaInterfaceSchema>
+  total_count: number
+}
+
+const SalesDataOrderItemExtensionInterfaceSchema = z
+  .object({
+    gift_message: GiftMessageDataMessageInterfaceSchema.exactOptional(),
+    gw_base_price: z.string().exactOptional(),
+    gw_base_price_invoiced: z.string().exactOptional(),
+    gw_base_price_refunded: z.string().exactOptional(),
+    gw_base_tax_amount: z.string().exactOptional(),
+    gw_base_tax_amount_invoiced: z.string().exactOptional(),
+    gw_base_tax_amount_refunded: z.string().exactOptional(),
+    gw_id: z.string().exactOptional(),
+    gw_price: z.string().exactOptional(),
+    gw_price_invoiced: z.string().exactOptional(),
+    gw_price_refunded: z.string().exactOptional(),
+    gw_tax_amount: z.string().exactOptional(),
+    gw_tax_amount_invoiced: z.string().exactOptional(),
+    gw_tax_amount_refunded: z.string().exactOptional(),
+    invoice_text_codes: z.array(z.string()).exactOptional(),
+    tax_codes: z.array(z.string()).exactOptional(),
+    vertex_tax_codes: z.array(z.string()).exactOptional(),
+  })
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\Sales\\Api\\Data\\OrderItemInterface',
+    required: [],
+  })
+  .openapi('SalesDataOrderItemExtensionInterface')
+
+const CatalogDataProductOptionExtensionInterfaceSchema = z
+  .object({
+    bundle_options: z.array(BundleDataBundleOptionInterfaceSchema).exactOptional(),
+    configurable_item_options: z
+      .array(ConfigurableProductDataConfigurableItemOptionValueInterfaceSchema)
+      .exactOptional(),
+    custom_options: z.array(CatalogDataCustomOptionInterfaceSchema).exactOptional(),
+    downloadable_option: DownloadableDataDownloadableOptionInterfaceSchema.exactOptional(),
+    giftcard_item_option: GiftCardDataGiftCardOptionInterfaceSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\Catalog\\Api\\Data\\ProductOptionInterface',
+    required: [],
+  })
+  .openapi('CatalogDataProductOptionExtensionInterface')
+
+const CatalogDataProductOptionInterfaceSchema = z
+  .object({
+    extension_attributes: CatalogDataProductOptionExtensionInterfaceSchema.exactOptional(),
+  })
+  .openapi({ description: 'Product option interface', required: [] })
+  .openapi('CatalogDataProductOptionInterface')
+
+type SalesDataOrderItemInterfaceType = {
+  additional_data?: string
+  amount_refunded?: number
+  applied_rule_ids?: string
+  base_amount_refunded?: number
+  base_cost?: number
+  base_discount_amount?: number
+  base_discount_invoiced?: number
+  base_discount_refunded?: number
+  base_discount_tax_compensation_amount?: number
+  base_discount_tax_compensation_invoiced?: number
+  base_discount_tax_compensation_refunded?: number
+  base_original_price?: number
+  base_price?: number
+  base_price_incl_tax?: number
+  base_row_invoiced?: number
+  base_row_total?: number
+  base_row_total_incl_tax?: number
+  base_tax_amount?: number
+  base_tax_before_discount?: number
+  base_tax_invoiced?: number
+  base_tax_refunded?: number
+  base_weee_tax_applied_amount?: number
+  base_weee_tax_applied_row_amnt?: number
+  base_weee_tax_disposition?: number
+  base_weee_tax_row_disposition?: number
+  created_at?: string
+  description?: string
+  discount_amount?: number
+  discount_invoiced?: number
+  discount_percent?: number
+  discount_refunded?: number
+  discount_tax_compensation_amount?: number
+  discount_tax_compensation_canceled?: number
+  discount_tax_compensation_invoiced?: number
+  discount_tax_compensation_refunded?: number
+  event_id?: number
+  ext_order_item_id?: string
+  extension_attributes?: z.infer<typeof SalesDataOrderItemExtensionInterfaceSchema>
+  free_shipping?: number
+  gw_base_price?: number
+  gw_base_price_invoiced?: number
+  gw_base_price_refunded?: number
+  gw_base_tax_amount?: number
+  gw_base_tax_amount_invoiced?: number
+  gw_base_tax_amount_refunded?: number
+  gw_id?: number
+  gw_price?: number
+  gw_price_invoiced?: number
+  gw_price_refunded?: number
+  gw_tax_amount?: number
+  gw_tax_amount_invoiced?: number
+  gw_tax_amount_refunded?: number
+  is_qty_decimal?: number
+  is_virtual?: number
+  item_id?: number
+  locked_do_invoice?: number
+  locked_do_ship?: number
+  name?: string
+  no_discount?: number
+  order_id?: number
+  original_price?: number
+  parent_item?: SalesDataOrderItemInterfaceType
+  parent_item_id?: number
+  price?: number
+  price_incl_tax?: number
+  product_id?: number
+  product_option?: z.infer<typeof CatalogDataProductOptionInterfaceSchema>
+  product_type?: string
+  qty_backordered?: number
+  qty_canceled?: number
+  qty_invoiced?: number
+  qty_ordered?: number
+  qty_refunded?: number
+  qty_returned?: number
+  qty_shipped?: number
+  quote_item_id?: number
+  row_invoiced?: number
+  row_total?: number
+  row_total_incl_tax?: number
+  row_weight?: number
+  sku: string
+  store_id?: number
+  tax_amount?: number
+  tax_before_discount?: number
+  tax_canceled?: number
+  tax_invoiced?: number
+  tax_percent?: number
+  tax_refunded?: number
+  updated_at?: string
+  weee_tax_applied?: string
+  weee_tax_applied_amount?: number
+  weee_tax_applied_row_amount?: number
+  weee_tax_disposition?: number
+  weee_tax_row_disposition?: number
+  weight?: number
+}
+
+type SalesDataOrderItemSearchResultInterfaceType = {
+  items: z.infer<typeof SalesDataOrderItemInterfaceSchema>[]
+  search_criteria: z.infer<typeof FrameworkSearchCriteriaInterfaceSchema>
+  total_count: number
+}
+
+type SalesDataOrderSearchResultInterfaceType = {
+  items: z.infer<typeof SalesDataOrderInterfaceSchema>[]
+  search_criteria: z.infer<typeof FrameworkSearchCriteriaInterfaceSchema>
+  total_count: number
+}
+
+const SalesDataTransactionExtensionInterfaceSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\Sales\\Api\\Data\\TransactionInterface',
+  })
+  .openapi('SalesDataTransactionExtensionInterface')
+
+type SalesDataTransactionInterfaceType = {
+  additional_information?: string[]
+  child_transactions: SalesDataTransactionInterfaceType[]
+  created_at: string
+  extension_attributes?: z.infer<typeof SalesDataTransactionExtensionInterfaceSchema>
+  is_closed: number
+  order_id: number
+  parent_id?: number
+  parent_txn_id: string
+  payment_id: number
+  transaction_id: number
+  txn_id: string
+  txn_type: string
+}
+
+const SalesRuleDataConditionExtensionInterfaceSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\SalesRule\\Api\\Data\\ConditionInterface',
+  })
+  .openapi('SalesRuleDataConditionExtensionInterface')
+
+type SalesRuleDataConditionInterfaceType = {
+  aggregator_type?: string
+  attribute_name?: string
+  condition_type: string
+  conditions?: SalesRuleDataConditionInterfaceType[]
+  extension_attributes?: z.infer<typeof SalesRuleDataConditionExtensionInterfaceSchema>
+  operator: string
+  value: string
+}
+
+const AnalyticsDataLinkInterfaceSchema = z
+  .object({ initialization_vector: z.string(), url: z.string() })
+  .openapi({
+    description:
+      'Interface LinkInterface Represents link with collected data and initialized vector for decryption.',
+    required: ['url', 'initialization_vector'],
+  })
+  .openapi('AnalyticsDataLinkInterface')
+
+const AsynchronousOperationsDataBulkSummaryExtensionInterfaceSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\AsynchronousOperations\\Api\\Data\\BulkSummaryInterface',
+  })
+  .openapi('AsynchronousOperationsDataBulkSummaryExtensionInterface')
+
+const AsynchronousOperationsDataSummaryOperationStatusInterfaceSchema = z
+  .object({
+    error_code: z.int().openapi({ description: 'Error code' }),
+    id: z.int().openapi({ description: 'Id' }),
+    result_message: z.string().openapi({ description: 'Result message' }),
+    status: z.int().openapi({ description: 'Operation status' }),
+  })
+  .openapi({
+    description:
+      "Getter Class OperationsStatusInterface Instead of OperationInterface this class don't provide all operation data and not responsive to set any data, just to get operation data without serialized_data and result_serialized_data",
+    required: ['id', 'status', 'result_message', 'error_code'],
+  })
+  .openapi('AsynchronousOperationsDataSummaryOperationStatusInterface')
+
+const AsynchronousOperationsDataBulkOperationsStatusInterfaceSchema = z
+  .object({
+    bulk_id: z.string().openapi({ description: 'Bulk uuid' }),
+    description: z.string().openapi({ description: 'Bulk description' }),
+    extension_attributes:
+      AsynchronousOperationsDataBulkSummaryExtensionInterfaceSchema.exactOptional(),
+    operation_count: z
+      .int()
+      .openapi({ description: 'Total number of operations scheduled in scope of this bulk' }),
+    operations_list: z
+      .array(AsynchronousOperationsDataSummaryOperationStatusInterfaceSchema)
+      .openapi({ description: 'List of operation with statuses (short data).' }),
+    start_time: z.string().openapi({ description: 'Bulk scheduled time' }),
+    user_id: z.int().openapi({ description: 'User id' }),
+  })
+  .openapi({
+    description:
+      'Interface BulkStatusInterface Bulk summary data with list of operations items summary data.',
+    required: [
+      'operations_list',
+      'bulk_id',
+      'description',
+      'start_time',
+      'user_id',
+      'operation_count',
+    ],
+  })
+  .openapi('AsynchronousOperationsDataBulkOperationsStatusInterface')
+
+const AsynchronousOperationsDataOperationExtensionInterfaceSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\AsynchronousOperations\\Api\\Data\\OperationInterface',
+  })
+  .openapi('AsynchronousOperationsDataOperationExtensionInterface')
+
+const AsynchronousOperationsDataDetailedOperationStatusInterfaceSchema = z
+  .object({
+    bulk_uuid: z.string().openapi({ description: 'Bulk uuid' }),
+    error_code: z.int().openapi({ description: 'Error code' }),
+    extension_attributes:
+      AsynchronousOperationsDataOperationExtensionInterfaceSchema.exactOptional(),
+    id: z.int().openapi({ description: 'Id' }),
+    result_message: z.string().openapi({ description: 'Result message' }),
+    result_serialized_data: z.string().openapi({ description: 'Serialized Data' }),
+    serialized_data: z.string().openapi({ description: 'Data' }),
+    status: z.int().openapi({ description: 'Operation status' }),
+    topic_name: z.string().openapi({ description: 'Queue Topic' }),
+  })
+  .openapi({
+    description: '',
+    required: [
+      'result_serialized_data',
+      'id',
+      'bulk_uuid',
+      'topic_name',
+      'serialized_data',
+      'status',
+      'result_message',
+      'error_code',
+    ],
+  })
+  .openapi('AsynchronousOperationsDataDetailedOperationStatusInterface')
+
+const AsynchronousOperationsDataDetailedBulkOperationsStatusInterfaceSchema = z
+  .object({
+    bulk_id: z.string().openapi({ description: 'Bulk uuid' }),
+    description: z.string().openapi({ description: 'Bulk description' }),
+    extension_attributes:
+      AsynchronousOperationsDataBulkSummaryExtensionInterfaceSchema.exactOptional(),
+    operation_count: z
+      .int()
+      .openapi({ description: 'Total number of operations scheduled in scope of this bulk' }),
+    operations_list: z
+      .array(AsynchronousOperationsDataDetailedOperationStatusInterfaceSchema)
+      .openapi({ description: 'Operations list.' }),
+    start_time: z.string().openapi({ description: 'Bulk scheduled time' }),
+    user_id: z.int().openapi({ description: 'User id' }),
+  })
+  .openapi({
+    description:
+      'Interface BulkStatusInterface Bulk summary data with list of operations items full data.',
+    required: [
+      'operations_list',
+      'bulk_id',
+      'description',
+      'start_time',
+      'user_id',
+      'operation_count',
+    ],
+  })
+  .openapi('AsynchronousOperationsDataDetailedBulkOperationsStatusInterface')
+
+const BundleDataOptionTypeExtensionInterfaceSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\Bundle\\Api\\Data\\OptionTypeInterface',
+  })
+  .openapi('BundleDataOptionTypeExtensionInterface')
+
+const BundleDataOptionTypeInterfaceSchema = z
+  .object({
+    code: z.string().openapi({ description: 'Type code' }),
+    extension_attributes: BundleDataOptionTypeExtensionInterfaceSchema.exactOptional(),
+    label: z.string().openapi({ description: 'Type label' }),
+  })
+  .openapi({ description: 'Interface OptionTypeInterface', required: ['label', 'code'] })
+  .openapi('BundleDataOptionTypeInterface')
+
+const CatalogDataBasePriceExtensionInterfaceSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\Catalog\\Api\\Data\\BasePriceInterface',
+  })
+  .openapi('CatalogDataBasePriceExtensionInterface')
+
+const CatalogDataBasePriceInterfaceSchema = z
+  .object({
+    extension_attributes: CatalogDataBasePriceExtensionInterfaceSchema.exactOptional(),
+    price: z.number().openapi({ description: 'Price.' }),
+    sku: z.string().openapi({ description: 'SKU.' }),
+    store_id: z.int().openapi({ description: 'Store id.' }),
+  })
+  .openapi({ description: 'Price interface.', required: ['price', 'store_id', 'sku'] })
+  .openapi('CatalogDataBasePriceInterface')
+
+const CatalogDataEavAttributeExtensionInterfaceSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\Catalog\\Api\\Data\\EavAttributeInterface',
+  })
+  .openapi('CatalogDataEavAttributeExtensionInterface')
+
+const EavDataAttributeFrontendLabelInterfaceSchema = z
+  .object({
+    label: z.string().exactOptional().openapi({ description: 'Option label' }),
+    store_id: z.int().exactOptional().openapi({ description: 'Store id' }),
+  })
+  .openapi({ description: 'Interface AttributeFrontendLabelInterface', required: [] })
+  .openapi('EavDataAttributeFrontendLabelInterface')
+
+const EavDataAttributeOptionLabelInterfaceSchema = z
+  .object({
+    label: z.string().exactOptional().openapi({ description: 'Option label' }),
+    store_id: z.int().exactOptional().openapi({ description: 'Store id' }),
+  })
+  .openapi({ description: 'Interface AttributeOptionLabelInterface', required: [] })
+  .openapi('EavDataAttributeOptionLabelInterface')
+
+const EavDataAttributeOptionInterfaceSchema = z
+  .object({
+    is_default: z.boolean().exactOptional().openapi({ description: 'Default' }),
+    label: z.string().openapi({ description: 'Option label' }),
+    sort_order: z.int().exactOptional().openapi({ description: 'Option order' }),
+    store_labels: z
+      .array(EavDataAttributeOptionLabelInterfaceSchema)
+      .exactOptional()
+      .openapi({ description: 'Option label for store scopes' }),
+    value: z.string().openapi({ description: 'Option value' }),
+  })
+  .openapi({ description: 'Created from:', required: ['label', 'value'] })
+  .openapi('EavDataAttributeOptionInterface')
+
+const EavDataAttributeValidationRuleInterfaceSchema = z
+  .object({
+    key: z.string().openapi({ description: 'Object key' }),
+    value: z.string().openapi({ description: 'Object value' }),
+  })
+  .openapi({
+    description: 'Interface AttributeValidationRuleInterface',
+    required: ['key', 'value'],
+  })
+  .openapi('EavDataAttributeValidationRuleInterface')
+
+const CatalogDataCategoryAttributeInterfaceSchema = z
+  .object({
+    apply_to: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Apply to value for the element' }),
+    attribute_code: z.string().openapi({ description: 'Code of the attribute.' }),
+    attribute_id: z.int().exactOptional().openapi({ description: 'Id of the attribute.' }),
+    backend_model: z.string().exactOptional().openapi({ description: 'Backend model' }),
+    backend_type: z.string().exactOptional().openapi({ description: 'Backend type.' }),
+    custom_attributes: z
+      .array(FrameworkAttributeInterfaceSchema)
+      .exactOptional()
+      .openapi({ description: 'Custom attributes values.' }),
+    default_frontend_label: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Frontend label for default store' }),
+    default_value: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Default value for the element.' }),
+    entity_type_id: z.string().openapi({ description: 'Entity type id' }),
+    extension_attributes: CatalogDataEavAttributeExtensionInterfaceSchema.exactOptional(),
+    frontend_class: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Frontend class of attribute' }),
+    frontend_input: z.string().openapi({ description: 'HTML for input element.' }),
+    frontend_labels: z
+      .array(EavDataAttributeFrontendLabelInterfaceSchema)
+      .openapi({ description: 'Frontend label for each store' }),
+    is_comparable: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The attribute can be compared on the frontend' }),
+    is_filterable: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'It used in layered navigation' }),
+    is_filterable_in_grid: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'It is filterable in catalog product grid' }),
+    is_filterable_in_search: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'It is used in search results layered navigation' }),
+    is_html_allowed_on_front: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'The HTML tags are allowed on the frontend' }),
+    is_required: z.boolean().openapi({ description: 'Attribute is required.' }),
+    is_searchable: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The attribute can be used in Quick Search' }),
+    is_unique: z.string().exactOptional().openapi({ description: 'This is a unique attribute' }),
+    is_used_for_promo_rules: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The attribute can be used for promo rules' }),
+    is_used_in_grid: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'It is used in catalog product grid' }),
+    is_user_defined: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Current attribute has been defined by a user.' }),
+    is_visible: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Attribute is visible on frontend.' }),
+    is_visible_in_advanced_search: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The attribute can be used in Advanced Search' }),
+    is_visible_in_grid: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'It is visible in catalog product grid' }),
+    is_visible_on_front: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The attribute is visible on the frontend' }),
+    is_wysiwyg_enabled: z.boolean().exactOptional().openapi({ description: 'WYSIWYG flag' }),
+    note: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The note attribute for the element.' }),
+    options: z
+      .array(EavDataAttributeOptionInterfaceSchema)
+      .exactOptional()
+      .openapi({ description: 'Options of the attribute (key => value pairs for select)' }),
+    position: z.int().exactOptional().openapi({ description: 'Position' }),
+    scope: z.string().exactOptional().openapi({ description: 'Attribute scope' }),
+    source_model: z.string().exactOptional().openapi({ description: 'Source model' }),
+    used_for_sort_by: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'It is used for sorting in product listing' }),
+    used_in_product_listing: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The attribute can be used in product listing' }),
+    validation_rules: z
+      .array(EavDataAttributeValidationRuleInterfaceSchema)
+      .exactOptional()
+      .openapi({ description: 'Validation rules.' }),
+  })
+  .openapi({
+    description: '',
+    required: [
+      'attribute_code',
+      'frontend_input',
+      'entity_type_id',
+      'is_required',
+      'frontend_labels',
+    ],
+  })
+  .openapi('CatalogDataCategoryAttributeInterface')
+
+const CatalogDataCategoryAttributeSearchResultsInterfaceSchema = z
+  .object({
+    items: z
+      .array(CatalogDataCategoryAttributeInterfaceSchema)
+      .openapi({ description: 'Attributes list.' }),
+    search_criteria: FrameworkSearchCriteriaInterfaceSchema,
+    total_count: z.int().openapi({ description: 'Total count.' }),
+  })
+  .openapi({ description: '', required: ['items', 'search_criteria', 'total_count'] })
+  .openapi('CatalogDataCategoryAttributeSearchResultsInterface')
+
+const CatalogDataCategoryExtensionInterfaceSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\Catalog\\Api\\Data\\CategoryInterface',
+  })
+  .openapi('CatalogDataCategoryExtensionInterface')
+
+const CatalogDataCategoryInterfaceSchema = z
+  .object({
+    available_sort_by: z.array(z.string()).exactOptional(),
+    children: z.string().exactOptional(),
+    created_at: z.string().exactOptional(),
+    custom_attributes: z
+      .array(FrameworkAttributeInterfaceSchema)
+      .exactOptional()
+      .openapi({ description: 'Custom attributes values.' }),
+    extension_attributes: CatalogDataCategoryExtensionInterfaceSchema.exactOptional(),
+    id: z.int().exactOptional(),
+    include_in_menu: z.boolean().exactOptional(),
+    is_active: z.boolean().exactOptional().openapi({ description: 'Whether category is active' }),
+    level: z.int().exactOptional().openapi({ description: 'Category level' }),
+    name: z.string().exactOptional().openapi({ description: 'Category name' }),
+    parent_id: z.int().exactOptional().openapi({ description: 'Parent category ID' }),
+    path: z.string().exactOptional(),
+    position: z.int().exactOptional().openapi({ description: 'Category position' }),
+    updated_at: z.string().exactOptional(),
+  })
+  .openapi({ description: '', required: [] })
+  .openapi('CatalogDataCategoryInterface')
+
+const CatalogDataCategoryProductLinkExtensionInterfaceSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\Catalog\\Api\\Data\\CategoryProductLinkInterface',
+  })
+  .openapi('CatalogDataCategoryProductLinkExtensionInterface')
+
+const CatalogDataCategoryProductLinkInterfaceSchema = z
+  .object({
+    category_id: z.string().openapi({ description: 'Category id' }),
+    extension_attributes: CatalogDataCategoryProductLinkExtensionInterfaceSchema.exactOptional(),
+    position: z.int().exactOptional(),
+    sku: z.string().exactOptional(),
+  })
+  .openapi({ description: '', required: ['category_id'] })
+  .openapi('CatalogDataCategoryProductLinkInterface')
+
+const CatalogDataCategorySearchResultsInterfaceSchema = z
+  .object({
+    items: z.array(CatalogDataCategoryInterfaceSchema).openapi({ description: 'Categories' }),
+    search_criteria: FrameworkSearchCriteriaInterfaceSchema,
+    total_count: z.int().openapi({ description: 'Total count.' }),
+  })
+  .openapi({ description: '', required: ['items', 'search_criteria', 'total_count'] })
+  .openapi('CatalogDataCategorySearchResultsInterface')
+
+const CatalogDataCategoryTreeInterfaceSchema: z.ZodType<CatalogDataCategoryTreeInterfaceType> = z
+  .lazy(() =>
+    z
+      .object({
+        children_data: z.array(CatalogDataCategoryTreeInterfaceSchema),
+        id: z.int().exactOptional(),
+        is_active: z.boolean().openapi({ description: 'Whether category is active' }),
+        level: z.int().openapi({ description: 'Category level' }),
+        name: z.string().openapi({ description: 'Category name' }),
+        parent_id: z.int().openapi({ description: 'Parent category ID' }),
+        position: z.int().openapi({ description: 'Category position' }),
+        product_count: z.int().openapi({ description: 'Product count' }),
+      })
+      .openapi({
+        description: '',
+        required: [
+          'parent_id',
+          'name',
+          'is_active',
+          'position',
+          'level',
+          'product_count',
+          'children_data',
+        ],
+      }),
+  )
+  .openapi('CatalogDataCategoryTreeInterface')
+
+const CatalogDataCostExtensionInterfaceSchema = z
+  .looseObject({})
+  .openapi({
+    description: 'ExtensionInterface class for @see \\Magento\\Catalog\\Api\\Data\\CostInterface',
+  })
+  .openapi('CatalogDataCostExtensionInterface')
+
+const CatalogDataCostInterfaceSchema = z
+  .object({
+    cost: z.number().openapi({ description: 'Cost value.' }),
+    extension_attributes: CatalogDataCostExtensionInterfaceSchema.exactOptional(),
+    sku: z.string().openapi({ description: 'SKU.' }),
+    store_id: z.int().openapi({ description: 'Store id.' }),
+  })
+  .openapi({ description: 'Cost interface.', required: ['cost', 'store_id', 'sku'] })
+  .openapi('CatalogDataCostInterface')
+
+const CatalogDataPriceUpdateResultExtensionInterfaceSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\Catalog\\Api\\Data\\PriceUpdateResultInterface',
+  })
+  .openapi('CatalogDataPriceUpdateResultExtensionInterface')
+
+const CatalogDataPriceUpdateResultInterfaceSchema = z
+  .object({
+    extension_attributes: CatalogDataPriceUpdateResultExtensionInterfaceSchema.exactOptional(),
+    message: z
+      .string()
+      .openapi({
+        description:
+          'Error message, that contains description of error occurred during price update.',
+      }),
+    parameters: z
+      .array(z.string())
+      .openapi({
+        description: 'Parameters, that could be displayed in error message placeholders.',
+      }),
+  })
+  .openapi({
+    description: 'Interface returned in case of incorrect price passed to efficient price API.',
+    required: ['message', 'parameters'],
+  })
+  .openapi('CatalogDataPriceUpdateResultInterface')
+
+const CatalogDataProductAttributeInterfaceSchema = z
+  .object({
+    apply_to: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Apply to value for the element' }),
+    attribute_code: z.string().openapi({ description: 'Code of the attribute.' }),
+    attribute_id: z.int().exactOptional().openapi({ description: 'Id of the attribute.' }),
+    backend_model: z.string().exactOptional().openapi({ description: 'Backend model' }),
+    backend_type: z.string().exactOptional().openapi({ description: 'Backend type.' }),
+    custom_attributes: z
+      .array(FrameworkAttributeInterfaceSchema)
+      .exactOptional()
+      .openapi({ description: 'Custom attributes values.' }),
+    default_frontend_label: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Frontend label for default store' }),
+    default_value: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Default value for the element.' }),
+    entity_type_id: z.string().openapi({ description: 'Entity type id' }),
+    extension_attributes: CatalogDataEavAttributeExtensionInterfaceSchema.exactOptional(),
+    frontend_class: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Frontend class of attribute' }),
+    frontend_input: z.string().openapi({ description: 'HTML for input element.' }),
+    frontend_labels: z
+      .array(EavDataAttributeFrontendLabelInterfaceSchema)
+      .openapi({ description: 'Frontend label for each store' }),
+    is_comparable: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The attribute can be compared on the frontend' }),
+    is_filterable: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'It used in layered navigation' }),
+    is_filterable_in_grid: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'It is filterable in catalog product grid' }),
+    is_filterable_in_search: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'It is used in search results layered navigation' }),
+    is_html_allowed_on_front: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'The HTML tags are allowed on the frontend' }),
+    is_required: z.boolean().openapi({ description: 'Attribute is required.' }),
+    is_searchable: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The attribute can be used in Quick Search' }),
+    is_unique: z.string().exactOptional().openapi({ description: 'This is a unique attribute' }),
+    is_used_for_promo_rules: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The attribute can be used for promo rules' }),
+    is_used_in_grid: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'It is used in catalog product grid' }),
+    is_user_defined: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Current attribute has been defined by a user.' }),
+    is_visible: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Attribute is visible on frontend.' }),
+    is_visible_in_advanced_search: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The attribute can be used in Advanced Search' }),
+    is_visible_in_grid: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'It is visible in catalog product grid' }),
+    is_visible_on_front: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The attribute is visible on the frontend' }),
+    is_wysiwyg_enabled: z.boolean().exactOptional().openapi({ description: 'WYSIWYG flag' }),
+    note: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The note attribute for the element.' }),
+    options: z
+      .array(EavDataAttributeOptionInterfaceSchema)
+      .exactOptional()
+      .openapi({ description: 'Options of the attribute (key => value pairs for select)' }),
+    position: z.int().exactOptional().openapi({ description: 'Position' }),
+    scope: z.string().exactOptional().openapi({ description: 'Attribute scope' }),
+    source_model: z.string().exactOptional().openapi({ description: 'Source model' }),
+    used_for_sort_by: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'It is used for sorting in product listing' }),
+    used_in_product_listing: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The attribute can be used in product listing' }),
+    validation_rules: z
+      .array(EavDataAttributeValidationRuleInterfaceSchema)
+      .exactOptional()
+      .openapi({ description: 'Validation rules.' }),
+  })
+  .openapi({
+    description: '',
+    required: [
+      'attribute_code',
+      'frontend_input',
+      'entity_type_id',
+      'is_required',
+      'frontend_labels',
+    ],
+  })
+  .openapi('CatalogDataProductAttributeInterface')
+
+const CatalogDataProductAttributeSearchResultsInterfaceSchema = z
+  .object({
+    items: z
+      .array(CatalogDataProductAttributeInterfaceSchema)
+      .openapi({ description: 'Attributes list.' }),
+    search_criteria: FrameworkSearchCriteriaInterfaceSchema,
+    total_count: z.int().openapi({ description: 'Total count.' }),
+  })
+  .openapi({ description: '', required: ['items', 'search_criteria', 'total_count'] })
+  .openapi('CatalogDataProductAttributeSearchResultsInterface')
+
+const CatalogDataProductAttributeTypeExtensionInterfaceSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\Catalog\\Api\\Data\\ProductAttributeTypeInterface',
+  })
+  .openapi('CatalogDataProductAttributeTypeExtensionInterface')
+
+const CatalogDataProductAttributeTypeInterfaceSchema = z
+  .object({
+    extension_attributes: CatalogDataProductAttributeTypeExtensionInterfaceSchema.exactOptional(),
+    label: z.string().openapi({ description: 'Type label' }),
+    value: z.string().openapi({ description: 'Value' }),
+  })
+  .openapi({ description: '', required: ['value', 'label'] })
+  .openapi('CatalogDataProductAttributeTypeInterface')
+
+const CatalogDataProductCustomOptionTypeExtensionInterfaceSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\Catalog\\Api\\Data\\ProductCustomOptionTypeInterface',
+  })
+  .openapi('CatalogDataProductCustomOptionTypeExtensionInterface')
+
+const CatalogDataProductCustomOptionTypeInterfaceSchema = z
+  .object({
+    code: z.string().openapi({ description: 'Option type code' }),
+    extension_attributes:
+      CatalogDataProductCustomOptionTypeExtensionInterfaceSchema.exactOptional(),
+    group: z.string().openapi({ description: 'Option type group' }),
+    label: z.string().openapi({ description: 'Option type label' }),
+  })
+  .openapi({ description: '', required: ['label', 'code', 'group'] })
+  .openapi('CatalogDataProductCustomOptionTypeInterface')
+
+const CatalogDataProductLinkAttributeExtensionInterfaceSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\Catalog\\Api\\Data\\ProductLinkAttributeInterface',
+  })
+  .openapi('CatalogDataProductLinkAttributeExtensionInterface')
+
+const CatalogDataProductLinkAttributeInterfaceSchema = z
+  .object({
+    code: z.string().openapi({ description: 'Attribute code' }),
+    extension_attributes: CatalogDataProductLinkAttributeExtensionInterfaceSchema.exactOptional(),
+    type: z.string().openapi({ description: 'Attribute type' }),
+  })
+  .openapi({ description: '', required: ['code', 'type'] })
+  .openapi('CatalogDataProductLinkAttributeInterface')
+
+const CatalogDataProductLinkTypeExtensionInterfaceSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\Catalog\\Api\\Data\\ProductLinkTypeInterface',
+  })
+  .openapi('CatalogDataProductLinkTypeExtensionInterface')
+
+const CatalogDataProductLinkTypeInterfaceSchema = z
+  .object({
+    code: z.int().openapi({ description: 'Link type code' }),
+    extension_attributes: CatalogDataProductLinkTypeExtensionInterfaceSchema.exactOptional(),
+    name: z.string().openapi({ description: 'Link type name' }),
+  })
+  .openapi({ description: '', required: ['code', 'name'] })
+  .openapi('CatalogDataProductLinkTypeInterface')
+
+const CatalogDataProductRenderButtonExtensionInterfaceSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\Catalog\\Api\\Data\\ProductRender\\ButtonInterface',
+  })
+  .openapi('CatalogDataProductRenderButtonExtensionInterface')
+
+const CatalogDataProductRenderButtonInterfaceSchema = z
+  .object({
+    extension_attributes: CatalogDataProductRenderButtonExtensionInterfaceSchema.exactOptional(),
+    post_data: z.string().openapi({ description: 'Post data' }),
+    required_options: z
+      .boolean()
+      .openapi({ description: 'Flag whether a product has options or not' }),
+    url: z.string().openapi({ description: 'Url, needed to add product to cart' }),
+  })
+  .openapi({
+    description:
+      'Button interface. This interface represents all manner of product buttons: add to cart, add to compare, etc... The buttons describes by this interface should have interaction with backend',
+    required: ['post_data', 'url', 'required_options'],
+  })
+  .openapi('CatalogDataProductRenderButtonInterface')
+
+const CatalogDataProductRenderExtensionInterfaceSchema = z
+  .object({
+    review_html: z.string().exactOptional(),
+    wishlist_button: CatalogDataProductRenderButtonInterfaceSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\Catalog\\Api\\Data\\ProductRenderInterface',
+    required: [],
+  })
+  .openapi('CatalogDataProductRenderExtensionInterface')
+
+const CatalogDataProductRenderImageExtensionInterfaceSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\Catalog\\Api\\Data\\ProductRender\\ImageInterface',
+  })
+  .openapi('CatalogDataProductRenderImageExtensionInterface')
+
+const CatalogDataProductRenderImageInterfaceSchema = z
+  .object({
+    code: z.string().openapi({ description: 'Image code' }),
+    extension_attributes: CatalogDataProductRenderImageExtensionInterfaceSchema.exactOptional(),
+    height: z.number().openapi({ description: 'Image height' }),
+    label: z.string().openapi({ description: 'Image label' }),
+    resized_height: z.number().openapi({ description: 'Resize height' }),
+    resized_width: z.number().openapi({ description: 'Resize width' }),
+    url: z.string().openapi({ description: 'Image url' }),
+    width: z.number().openapi({ description: 'Image width in px' }),
+  })
+  .openapi({
+    description:
+      'Product Render image interface. Represents physical characteristics of image, that can be used in product listing or product view',
+    required: ['url', 'code', 'height', 'width', 'label', 'resized_width', 'resized_height'],
+  })
+  .openapi('CatalogDataProductRenderImageInterface')
+
+const CatalogDataProductRenderInterfaceSchema = z
+  .object({
+    add_to_cart_button: CatalogDataProductRenderButtonInterfaceSchema,
+    add_to_compare_button: CatalogDataProductRenderButtonInterfaceSchema,
+    currency_code: z
+      .string()
+      .openapi({ description: 'Current or desired currency code to product' }),
+    extension_attributes: CatalogDataProductRenderExtensionInterfaceSchema,
+    id: z.int().openapi({ description: 'Product identifier' }),
+    images: z
+      .array(CatalogDataProductRenderImageInterfaceSchema)
+      .openapi({ description: 'Enough information, that needed to render image on front' }),
+    is_salable: z
+      .string()
+      .openapi({ description: 'Information about product saleability (In Stock)' }),
+    name: z.string().openapi({ description: 'Product name' }),
+    price_info: CatalogDataProductRenderPriceInfoInterfaceSchema,
+    store_id: z
+      .int()
+      .openapi({ description: 'Information about current store id or requested store id' }),
+    type: z
+      .string()
+      .openapi({ description: 'Product type. Such as bundle, grouped, simple, etc...' }),
+    url: z.string().openapi({ description: 'Product url' }),
+  })
+  .openapi({
+    description:
+      'Represents Data Object which holds enough information to render product This information is put into part as Add To Cart or Add to Compare Data or Price Data',
+    required: [
+      'add_to_cart_button',
+      'add_to_compare_button',
+      'price_info',
+      'images',
+      'url',
+      'id',
+      'name',
+      'type',
+      'is_salable',
+      'store_id',
+      'currency_code',
+      'extension_attributes',
+    ],
+  })
+  .openapi('CatalogDataProductRenderInterface')
+
+const CatalogDataProductRenderSearchResultsInterfaceSchema = z
+  .object({
+    items: z
+      .array(CatalogDataProductRenderInterfaceSchema)
+      .openapi({ description: 'List of products rendered information' }),
+  })
+  .openapi({ description: 'Dto that holds render information about products', required: ['items'] })
+  .openapi('CatalogDataProductRenderSearchResultsInterface')
+
+const CatalogDataProductSearchResultsInterfaceSchema: z.ZodType<CatalogDataProductSearchResultsInterfaceType> =
+  z
+    .object({
+      items: z
+        .array(CatalogDataProductInterfaceSchema)
+        .openapi({ description: 'Attributes list.' }),
+      search_criteria: FrameworkSearchCriteriaInterfaceSchema,
+      total_count: z.int().openapi({ description: 'Total count.' }),
+    })
+    .openapi({ description: '', required: ['items', 'search_criteria', 'total_count'] })
+    .openapi('CatalogDataProductSearchResultsInterface')
+
+const CatalogDataProductTypeExtensionInterfaceSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\Catalog\\Api\\Data\\ProductTypeInterface',
+  })
+  .openapi('CatalogDataProductTypeExtensionInterface')
+
+const CatalogDataProductTypeInterfaceSchema = z
+  .object({
+    extension_attributes: CatalogDataProductTypeExtensionInterfaceSchema.exactOptional(),
+    label: z.string().openapi({ description: 'Product type label' }),
+    name: z.string().openapi({ description: 'Product type code' }),
+  })
+  .openapi({ description: 'Product type details', required: ['name', 'label'] })
+  .openapi('CatalogDataProductTypeInterface')
+
+const CatalogDataProductWebsiteLinkInterfaceSchema = z
+  .object({ sku: z.string(), website_id: z.int().openapi({ description: 'Website ids' }) })
+  .openapi({ description: '', required: ['sku', 'website_id'] })
+  .openapi('CatalogDataProductWebsiteLinkInterface')
+
+const CatalogDataSpecialPriceExtensionInterfaceSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\Catalog\\Api\\Data\\SpecialPriceInterface',
+  })
+  .openapi('CatalogDataSpecialPriceExtensionInterface')
+
+const CatalogDataSpecialPriceInterfaceSchema = z
+  .object({
+    extension_attributes: CatalogDataSpecialPriceExtensionInterfaceSchema.exactOptional(),
+    price: z.number().openapi({ description: 'Product special price value.' }),
+    price_from: z
+      .string()
+      .openapi({ description: 'Start date for special price in Y-m-d H:i:s format.' }),
+    price_to: z
+      .string()
+      .openapi({ description: 'End date for special price in Y-m-d H:i:s format.' }),
+    sku: z.string().openapi({ description: 'SKU of product, that contains special price value.' }),
+    store_id: z.int().openapi({ description: 'ID of store, that contains special price value.' }),
+  })
+  .openapi({
+    description:
+      'Product Special Price Interface is used to encapsulate data that can be processed by efficient price API.',
+    required: ['price', 'store_id', 'sku', 'price_from', 'price_to'],
+  })
+  .openapi('CatalogDataSpecialPriceInterface')
+
+const CatalogDataTierPriceExtensionInterfaceSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\Catalog\\Api\\Data\\TierPriceInterface',
+  })
+  .openapi('CatalogDataTierPriceExtensionInterface')
+
+const CatalogDataTierPriceInterfaceSchema = z
+  .object({
+    customer_group: z.string().openapi({ description: 'Customer group.' }),
+    extension_attributes: CatalogDataTierPriceExtensionInterfaceSchema.exactOptional(),
+    price: z.number().openapi({ description: 'Tier price.' }),
+    price_type: z.string().openapi({ description: 'Tier price type.' }),
+    quantity: z.number().openapi({ description: 'Quantity.' }),
+    sku: z.string().openapi({ description: 'SKU.' }),
+    website_id: z.int().openapi({ description: 'Website id.' }),
+  })
+  .openapi({
+    description: 'Tier price interface.',
+    required: ['price', 'price_type', 'website_id', 'sku', 'customer_group', 'quantity'],
+  })
+  .openapi('CatalogDataTierPriceInterface')
+
+const FrameworkCriteriaInterfaceSchema: z.ZodType<FrameworkCriteriaInterfaceType> = z
+  .lazy(() =>
+    z
+      .object({
+        criteria_list: z
+          .array(FrameworkCriteriaInterfaceSchema)
+          .openapi({ description: 'Criteria objects added to current Composite Criteria' }),
+        filters: z.array(z.string()).openapi({ description: 'List of filters' }),
+        limit: z.array(z.string()).openapi({ description: 'Limit' }),
+        mapper_interface_name: z
+          .string()
+          .openapi({ description: 'Associated Mapper Interface name' }),
+        orders: z.array(z.string()).openapi({ description: 'Ordering criteria' }),
+      })
+      .openapi({
+        description: 'Interface CriteriaInterface',
+        required: ['mapper_interface_name', 'criteria_list', 'filters', 'orders', 'limit'],
+      }),
+  )
+  .openapi('FrameworkCriteriaInterface')
+
+const CatalogInventoryStockItemCriteriaInterfaceSchema = z
+  .object({
+    criteria_list: z
+      .array(FrameworkCriteriaInterfaceSchema)
+      .openapi({ description: 'Criteria objects added to current Composite Criteria' }),
+    filters: z.array(z.string()).openapi({ description: 'List of filters' }),
+    limit: z.array(z.string()).openapi({ description: 'Limit' }),
+    mapper_interface_name: z.string().openapi({ description: 'Associated Mapper Interface name' }),
+    orders: z.array(z.string()).openapi({ description: 'Ordering criteria' }),
+  })
+  .openapi({
+    description: 'Interface StockItemCriteriaInterface',
+    required: ['mapper_interface_name', 'criteria_list', 'filters', 'orders', 'limit'],
+  })
+  .openapi('CatalogInventoryStockItemCriteriaInterface')
+
+const CatalogInventoryDataStockItemCollectionInterfaceSchema = z
+  .object({
+    items: z.array(CatalogInventoryDataStockItemInterfaceSchema).openapi({ description: 'Items' }),
+    search_criteria: CatalogInventoryStockItemCriteriaInterfaceSchema,
+    total_count: z.int().openapi({ description: 'Total count.' }),
+  })
+  .openapi({
+    description: 'Interface StockItemCollectionInterface',
+    required: ['items', 'search_criteria', 'total_count'],
+  })
+  .openapi('CatalogInventoryDataStockItemCollectionInterface')
+
+const CatalogInventoryDataStockStatusExtensionInterfaceSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\CatalogInventory\\Api\\Data\\StockStatusInterface',
+  })
+  .openapi('CatalogInventoryDataStockStatusExtensionInterface')
+
+const CatalogInventoryDataStockStatusInterfaceSchema = z
+  .object({
+    extension_attributes: CatalogInventoryDataStockStatusExtensionInterfaceSchema.exactOptional(),
+    product_id: z.int(),
+    qty: z.int(),
+    stock_id: z.int(),
+    stock_item: CatalogInventoryDataStockItemInterfaceSchema,
+    stock_status: z.int(),
+  })
+  .openapi({
+    description: 'Interface StockStatusInterface',
+    required: ['product_id', 'stock_id', 'qty', 'stock_status', 'stock_item'],
+  })
+  .openapi('CatalogInventoryDataStockStatusInterface')
+
+const CheckoutAgreementsDataAgreementExtensionInterfaceSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\CheckoutAgreements\\Api\\Data\\AgreementInterface',
+  })
+  .openapi('CheckoutAgreementsDataAgreementExtensionInterface')
+
+const CheckoutAgreementsDataAgreementInterfaceSchema = z
+  .object({
+    agreement_id: z.int().openapi({ description: 'Agreement ID.' }),
+    checkbox_text: z.string().openapi({ description: 'Agreement checkbox text.' }),
+    content: z.string().openapi({ description: 'Agreement content.' }),
+    content_height: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Agreement content height. Otherwise, null.' }),
+    extension_attributes: CheckoutAgreementsDataAgreementExtensionInterfaceSchema.exactOptional(),
+    is_active: z.boolean().openapi({ description: 'Agreement status.' }),
+    is_html: z.boolean().openapi({ description: '* true - HTML. * false - plain text.' }),
+    mode: z.int().openapi({ description: 'The agreement applied mode.' }),
+    name: z.string().openapi({ description: 'Agreement name.' }),
+  })
+  .openapi({
+    description: 'Interface AgreementInterface',
+    required: ['agreement_id', 'name', 'content', 'checkbox_text', 'is_active', 'is_html', 'mode'],
+  })
+  .openapi('CheckoutAgreementsDataAgreementInterface')
+
+const CheckoutDataPaymentDetailsInterfaceSchema: z.ZodType<CheckoutDataPaymentDetailsInterfaceType> =
+  z
+    .object({
+      extension_attributes: CheckoutDataPaymentDetailsExtensionInterfaceSchema.exactOptional(),
+      payment_methods: z.array(QuoteDataPaymentMethodInterfaceSchema),
+      totals: QuoteDataTotalsInterfaceSchema,
+    })
+    .openapi({
+      description: 'Interface PaymentDetailsInterface',
+      required: ['payment_methods', 'totals'],
+    })
+    .openapi('CheckoutDataPaymentDetailsInterface')
+
+const CheckoutDataShippingInformationExtensionInterfaceSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'ExtensionInterface class for @see \\Magento\\Checkout\\Api\\Data\\ShippingInformationInterface',
+  })
+  .openapi('CheckoutDataShippingInformationExtensionInterface')
+
 const CheckoutDataShippingInformationInterfaceSchema = z
   .object({
     billing_address: QuoteDataAddressInterfaceSchema.exactOptional(),
@@ -2591,7 +4908,7 @@ const CheckoutDataShippingInformationInterfaceSchema = z
   .openapi('CheckoutDataShippingInformationInterface')
 
 const CheckoutDataTotalsInformationExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\Checkout\\Api\\Data\\TotalsInformationInterface',
@@ -2710,7 +5027,7 @@ const CompanyCreditDataCreditDataInterfaceSchema = z
   .openapi('CompanyCreditDataCreditDataInterface')
 
 const CompanyCreditDataCreditLimitExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\CompanyCredit\\Api\\Data\\CreditLimitInterface',
@@ -2805,28 +5122,8 @@ const CompanyCreditDataHistorySearchResultsInterfaceSchema = z
   })
   .openapi('CompanyCreditDataHistorySearchResultsInterface')
 
-const CompanyDataCompanyCustomerExtensionInterfaceSchema = z
-  .object({})
-  .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\Company\\Api\\Data\\CompanyCustomerInterface',
-  })
-  .openapi('CompanyDataCompanyCustomerExtensionInterface')
-
-const CompanyDataCompanyCustomerInterfaceSchema = z
-  .object({
-    company_id: z.int().exactOptional().openapi({ description: 'Company ID.' }),
-    customer_id: z.int().exactOptional().openapi({ description: 'Customer ID.' }),
-    extension_attributes: CompanyDataCompanyCustomerExtensionInterfaceSchema.exactOptional(),
-    job_title: z.string().exactOptional().openapi({ description: 'Get job title.' }),
-    status: z.int().exactOptional().openapi({ description: 'Customer status.' }),
-    telephone: z.string().exactOptional().openapi({ description: 'Get telephone.' }),
-  })
-  .openapi({ description: 'Extended customer custom attributes interface.', required: [] })
-  .openapi('CompanyDataCompanyCustomerInterface')
-
 const NegotiableQuoteDataCompanyQuoteConfigExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\NegotiableQuote\\Api\\Data\\CompanyQuoteConfigInterface',
@@ -2894,28 +5191,6 @@ const CompanyDataCompanyInterfaceSchema = z
   })
   .openapi('CompanyDataCompanyInterface')
 
-const CompanyDataCompanyOrderExtensionInterfaceSchema = z
-  .object({})
-  .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\Company\\Api\\Data\\CompanyOrderInterface',
-  })
-  .openapi('CompanyDataCompanyOrderExtensionInterface')
-
-const CompanyDataCompanyOrderInterfaceSchema = z
-  .object({
-    company_id: z.int().exactOptional().openapi({ description: 'Company ID.' }),
-    company_name: z.string().exactOptional().openapi({ description: 'Company name.' }),
-    extension_attributes: CompanyDataCompanyOrderExtensionInterfaceSchema.exactOptional(),
-    order_id: z.int().exactOptional().openapi({ description: 'Order ID.' }),
-  })
-  .openapi({
-    description:
-      'Order company extension attributes interface. Adds new company attributes to orders.',
-    required: [],
-  })
-  .openapi('CompanyDataCompanyOrderInterface')
-
 const CompanyDataCompanySearchResultsInterfaceSchema = z
   .object({
     items: z.array(CompanyDataCompanyInterfaceSchema).openapi({ description: 'Companies list' }),
@@ -2929,7 +5204,7 @@ const CompanyDataCompanySearchResultsInterfaceSchema = z
   .openapi('CompanyDataCompanySearchResultsInterface')
 
 const CompanyDataHierarchyExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\Company\\Api\\Data\\HierarchyInterface',
@@ -2958,7 +5233,7 @@ const CompanyDataPermissionInterfaceSchema = z
   .openapi('CompanyDataPermissionInterface')
 
 const CompanyDataRoleExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'ExtensionInterface class for @see \\Magento\\Company\\Api\\Data\\RoleInterface',
   })
@@ -2990,7 +5265,7 @@ const CompanyDataRoleSearchResultsInterfaceSchema = z
   .openapi('CompanyDataRoleSearchResultsInterface')
 
 const CompanyDataTeamExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'ExtensionInterface class for @see \\Magento\\Company\\Api\\Data\\TeamInterface',
   })
@@ -3021,74 +5296,6 @@ const CompanyDataTeamSearchResultsInterfaceSchema = z
     required: ['items', 'search_criteria', 'total_count'],
   })
   .openapi('CompanyDataTeamSearchResultsInterface')
-
-const CustomerDataAddressExtensionInterfaceSchema = z
-  .object({})
-  .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\Customer\\Api\\Data\\AddressInterface',
-  })
-  .openapi('CustomerDataAddressExtensionInterface')
-
-const CustomerDataRegionExtensionInterfaceSchema = z
-  .object({})
-  .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\Customer\\Api\\Data\\RegionInterface',
-  })
-  .openapi('CustomerDataRegionExtensionInterface')
-
-const CustomerDataRegionInterfaceSchema = z
-  .object({
-    extension_attributes: CustomerDataRegionExtensionInterfaceSchema.exactOptional(),
-    region: z.string().openapi({ description: 'Region' }),
-    region_code: z.string().openapi({ description: 'Region code' }),
-    region_id: z.int().openapi({ description: 'Region id' }),
-  })
-  .openapi({
-    description: 'Customer address region interface.',
-    required: ['region_code', 'region', 'region_id'],
-  })
-  .openapi('CustomerDataRegionInterface')
-
-const CustomerDataAddressInterfaceSchema = z
-  .object({
-    city: z.string().exactOptional().openapi({ description: 'City name' }),
-    company: z.string().exactOptional().openapi({ description: 'Company' }),
-    country_id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Country code in ISO_3166-2 format' }),
-    custom_attributes: z
-      .array(FrameworkAttributeInterfaceSchema)
-      .exactOptional()
-      .openapi({ description: 'Custom attributes values.' }),
-    customer_id: z.int().exactOptional().openapi({ description: 'Customer ID' }),
-    default_billing: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'If this address is default billing address' }),
-    default_shipping: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'If this address is default shipping address.' }),
-    extension_attributes: CustomerDataAddressExtensionInterfaceSchema.exactOptional(),
-    fax: z.string().exactOptional().openapi({ description: 'Fax number' }),
-    firstname: z.string().exactOptional().openapi({ description: 'First name' }),
-    id: z.int().exactOptional().openapi({ description: 'ID' }),
-    lastname: z.string().exactOptional().openapi({ description: 'Last name' }),
-    middlename: z.string().exactOptional().openapi({ description: 'Middle name' }),
-    postcode: z.string().exactOptional().openapi({ description: 'Postcode' }),
-    prefix: z.string().exactOptional().openapi({ description: 'Prefix' }),
-    region: CustomerDataRegionInterfaceSchema.exactOptional(),
-    region_id: z.int().exactOptional().openapi({ description: 'Region ID' }),
-    street: z.array(z.string()).exactOptional().openapi({ description: 'Street' }),
-    suffix: z.string().exactOptional().openapi({ description: 'Suffix' }),
-    telephone: z.string().exactOptional().openapi({ description: 'Telephone number' }),
-    vat_id: z.string().exactOptional().openapi({ description: 'Vat id' }),
-  })
-  .openapi({ description: 'Customer address interface.', required: [] })
-  .openapi('CustomerDataAddressInterface')
 
 const CustomerDataOptionInterfaceSchema: z.ZodType<CustomerDataOptionInterfaceType> = z
   .lazy(() =>
@@ -3183,64 +5390,6 @@ const CustomerDataAttributeMetadataInterfaceSchema = z
   })
   .openapi('CustomerDataAttributeMetadataInterface')
 
-const CustomerDataCustomerExtensionInterfaceSchema = z
-  .object({
-    amazon_id: z.string().exactOptional(),
-    company_attributes: CompanyDataCompanyCustomerInterfaceSchema.exactOptional(),
-    is_subscribed: z.boolean().exactOptional(),
-    vertex_customer_code: z.string().exactOptional(),
-  })
-  .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\Customer\\Api\\Data\\CustomerInterface',
-    required: [],
-  })
-  .openapi('CustomerDataCustomerExtensionInterface')
-
-const CustomerDataCustomerInterfaceSchema = z
-  .object({
-    addresses: z
-      .array(CustomerDataAddressInterfaceSchema)
-      .exactOptional()
-      .openapi({ description: 'Customer addresses.' }),
-    confirmation: z.string().exactOptional().openapi({ description: 'Confirmation' }),
-    created_at: z.string().exactOptional().openapi({ description: 'Created at time' }),
-    created_in: z.string().exactOptional().openapi({ description: 'Created in area' }),
-    custom_attributes: z
-      .array(FrameworkAttributeInterfaceSchema)
-      .exactOptional()
-      .openapi({ description: 'Custom attributes values.' }),
-    default_billing: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Default billing address id' }),
-    default_shipping: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Default shipping address id' }),
-    disable_auto_group_change: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'Disable auto group change flag.' }),
-    dob: z.string().exactOptional().openapi({ description: 'Date of birth' }),
-    email: z.string().openapi({ description: 'Email address' }),
-    extension_attributes: CustomerDataCustomerExtensionInterfaceSchema.exactOptional(),
-    firstname: z.string().openapi({ description: 'First name' }),
-    gender: z.int().exactOptional().openapi({ description: 'Gender' }),
-    group_id: z.int().exactOptional().openapi({ description: 'Group id' }),
-    id: z.int().exactOptional().openapi({ description: 'Customer id' }),
-    lastname: z.string().openapi({ description: 'Last name' }),
-    middlename: z.string().exactOptional().openapi({ description: 'Middle name' }),
-    prefix: z.string().exactOptional().openapi({ description: 'Prefix' }),
-    store_id: z.int().exactOptional().openapi({ description: 'Store id' }),
-    suffix: z.string().exactOptional().openapi({ description: 'Suffix' }),
-    taxvat: z.string().exactOptional().openapi({ description: 'Tax Vat' }),
-    updated_at: z.string().exactOptional().openapi({ description: 'Updated at time' }),
-    website_id: z.int().exactOptional().openapi({ description: 'Website id' }),
-  })
-  .openapi({ description: 'Customer interface.', required: ['email', 'firstname', 'lastname'] })
-  .openapi('CustomerDataCustomerInterface')
-
 const CustomerDataCustomerSearchResultsInterfaceSchema = z
   .object({
     items: z.array(CustomerDataCustomerInterfaceSchema).openapi({ description: 'Customers list.' }),
@@ -3254,7 +5403,7 @@ const CustomerDataCustomerSearchResultsInterfaceSchema = z
   .openapi('CustomerDataCustomerSearchResultsInterface')
 
 const CustomerDataGroupExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'ExtensionInterface class for @see \\Magento\\Customer\\Api\\Data\\GroupInterface',
   })
@@ -3299,7 +5448,7 @@ const CustomerDataValidationResultsInterfaceSchema = z
   .openapi('CustomerDataValidationResultsInterface')
 
 const DirectoryDataCountryInformationExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\Directory\\Api\\Data\\CountryInformationInterface',
@@ -3307,7 +5456,7 @@ const DirectoryDataCountryInformationExtensionInterfaceSchema = z
   .openapi('DirectoryDataCountryInformationExtensionInterface')
 
 const DirectoryDataRegionInformationExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\Directory\\Api\\Data\\RegionInformationInterface',
@@ -3358,7 +5507,7 @@ const DirectoryDataCountryInformationInterfaceSchema = z
   .openapi('DirectoryDataCountryInformationInterface')
 
 const DirectoryDataCurrencyInformationExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\Directory\\Api\\Data\\CurrencyInformationInterface',
@@ -3366,7 +5515,7 @@ const DirectoryDataCurrencyInformationExtensionInterfaceSchema = z
   .openapi('DirectoryDataCurrencyInformationExtensionInterface')
 
 const DirectoryDataExchangeRateExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\Directory\\Api\\Data\\ExchangeRateInterface',
@@ -3462,7 +5611,7 @@ const EavDataAttributeGroupSearchResultsInterfaceSchema = z
   .openapi('EavDataAttributeGroupSearchResultsInterface')
 
 const EavDataAttributeSetExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\Eav\\Api\\Data\\AttributeSetInterface',
@@ -3621,7 +5770,7 @@ const FrameworkSearchSearchResultInterfaceSchema = z
   .openapi('FrameworkSearchSearchResultInterface')
 
 const GiftCardAccountDataGiftCardAccountExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\GiftCardAccount\\Api\\Data\\GiftCardAccountInterface',
@@ -3654,18 +5803,8 @@ const GiftCardAccountDataGiftCardAccountInterfaceSchema = z
   })
   .openapi('GiftCardAccountDataGiftCardAccountInterface')
 
-const GiftCardAccountDataGiftCardInterfaceSchema = z
-  .object({
-    amount: z.number().openapi({ description: 'Amount' }),
-    base_amount: z.number().openapi({ description: 'Base Amount' }),
-    code: z.string().openapi({ description: 'Code' }),
-    id: z.int().openapi({ description: 'Id' }),
-  })
-  .openapi({ description: 'Gift Card data', required: ['id', 'code', 'amount', 'base_amount'] })
-  .openapi('GiftCardAccountDataGiftCardInterface')
-
 const GiftWrappingDataWrappingExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\GiftWrapping\\Api\\Data\\WrappingInterface',
@@ -3704,7 +5843,7 @@ const GiftWrappingDataWrappingSearchResultsInterfaceSchema = z
   .openapi('GiftWrappingDataWrappingSearchResultsInterface')
 
 const NegotiableQuoteDataAttachmentContentExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\NegotiableQuote\\Api\\Data\\AttachmentContentInterface',
@@ -3728,7 +5867,7 @@ const NegotiableQuoteDataAttachmentContentInterfaceSchema = z
   .openapi('NegotiableQuoteDataAttachmentContentInterface')
 
 const NegotiableQuoteDataCommentAttachmentExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\NegotiableQuote\\Api\\Data\\CommentAttachmentInterface',
@@ -3752,7 +5891,7 @@ const NegotiableQuoteDataCommentAttachmentInterfaceSchema = z
   .openapi('NegotiableQuoteDataCommentAttachmentInterface')
 
 const NegotiableQuoteDataCommentExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\NegotiableQuote\\Api\\Data\\CommentInterface',
@@ -3792,324 +5931,18 @@ const NegotiableQuoteDataCommentInterfaceSchema = z
   })
   .openapi('NegotiableQuoteDataCommentInterface')
 
-const NegotiableQuoteDataNegotiableQuoteExtensionInterfaceSchema = z
-  .object({})
-  .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\NegotiableQuote\\Api\\Data\\NegotiableQuoteInterface',
-  })
-  .openapi('NegotiableQuoteDataNegotiableQuoteExtensionInterface')
-
-const NegotiableQuoteDataNegotiableQuoteInterfaceSchema = z
-  .object({
-    applied_rule_ids: z.string().openapi({ description: 'Quote rules.' }),
-    base_negotiated_total_price: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Quote negotiated total price in base currency.' }),
-    base_original_total_price: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Quote original total price in base currency.' }),
-    creator_id: z.int().openapi({ description: 'Quote creator id.' }),
-    creator_type: z.int().openapi({ description: 'Quote creator type.' }),
-    deleted_sku: z.string().openapi({ description: 'Deleted products sku.' }),
-    email_notification_status: z.int().openapi({ description: 'Email notification status.' }),
-    expiration_period: z.string().openapi({ description: 'Expiration period.' }),
-    extension_attributes:
-      NegotiableQuoteDataNegotiableQuoteExtensionInterfaceSchema.exactOptional(),
-    has_unconfirmed_changes: z.boolean().openapi({ description: 'Has unconfirmed changes.' }),
-    is_address_draft: z.boolean().openapi({ description: 'Is address draft.' }),
-    is_customer_price_changed: z.boolean().openapi({ description: 'Customer price changes.' }),
-    is_regular_quote: z.boolean().openapi({ description: 'Is regular quote.' }),
-    is_shipping_tax_changed: z.boolean().openapi({ description: 'Shipping tax changes.' }),
-    negotiated_price_type: z.int().openapi({ description: 'Negotiated price type.' }),
-    negotiated_price_value: z.number().openapi({ description: 'Negotiated price value.' }),
-    negotiated_total_price: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Quote negotiated total price.' }),
-    notifications: z.int().openapi({ description: 'Quote notifications.' }),
-    original_total_price: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Quote original total price.' }),
-    quote_id: z.int().openapi({ description: 'Negotiable quote ID.' }),
-    quote_name: z.string().openapi({ description: 'Negotiable quote name.' }),
-    shipping_price: z.number().openapi({ description: 'Proposed shipping price.' }),
-    status: z.string().openapi({ description: 'Negotiable quote status.' }),
-  })
-  .openapi({
-    description: 'Interface NegotiableQuoteInterface',
-    required: [
-      'quote_id',
-      'is_regular_quote',
-      'status',
-      'negotiated_price_type',
-      'negotiated_price_value',
-      'shipping_price',
-      'quote_name',
-      'expiration_period',
-      'email_notification_status',
-      'has_unconfirmed_changes',
-      'is_shipping_tax_changed',
-      'is_customer_price_changed',
-      'notifications',
-      'applied_rule_ids',
-      'is_address_draft',
-      'deleted_sku',
-      'creator_id',
-      'creator_type',
-    ],
-  })
-  .openapi('NegotiableQuoteDataNegotiableQuoteInterface')
-
-const NegotiableQuoteDataNegotiableQuoteItemExtensionInterfaceSchema = z
-  .object({})
-  .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\NegotiableQuote\\Api\\Data\\NegotiableQuoteItemInterface',
-  })
-  .openapi('NegotiableQuoteDataNegotiableQuoteItemExtensionInterface')
-
-const NegotiableQuoteDataNegotiableQuoteItemInterfaceSchema = z
-  .object({
-    extension_attributes:
-      NegotiableQuoteDataNegotiableQuoteItemExtensionInterfaceSchema.exactOptional(),
-    item_id: z.int().openapi({ description: 'Quote item id' }),
-    original_discount_amount: z
-      .number()
-      .openapi({ description: 'Quote item original discount amount' }),
-    original_price: z.number().openapi({ description: 'Quote item original price' }),
-    original_tax_amount: z.number().openapi({ description: 'Quote item original tax amount' }),
-  })
-  .openapi({
-    description: 'Interface CompanyQuoteConfigInterface',
-    required: ['item_id', 'original_price', 'original_tax_amount', 'original_discount_amount'],
-  })
-  .openapi('NegotiableQuoteDataNegotiableQuoteItemInterface')
-
-const PaymentDataPaymentAdditionalInfoInterfaceSchema = z
-  .object({
-    key: z.string().openapi({ description: 'Object key' }),
-    value: z.string().openapi({ description: 'Object value' }),
-  })
-  .openapi({ description: 'Payment additional info interface.', required: ['key', 'value'] })
-  .openapi('PaymentDataPaymentAdditionalInfoInterface')
-
-const QuoteDataShippingAssignmentExtensionInterfaceSchema = z
-  .object({})
-  .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\Quote\\Api\\Data\\ShippingAssignmentInterface',
-  })
-  .openapi('QuoteDataShippingAssignmentExtensionInterface')
-
-const QuoteDataCartItemExtensionInterfaceSchema = z
-  .object({
-    negotiable_quote_item: NegotiableQuoteDataNegotiableQuoteItemInterfaceSchema.exactOptional(),
-  })
-  .openapi({
-    description: 'ExtensionInterface class for @see \\Magento\\Quote\\Api\\Data\\CartItemInterface',
-    required: [],
-  })
-  .openapi('QuoteDataCartItemExtensionInterface')
-
-const QuoteDataProductOptionExtensionInterfaceSchema = z
-  .object({
-    bundle_options: z.array(BundleDataBundleOptionInterfaceSchema).exactOptional(),
-    configurable_item_options: z
-      .array(ConfigurableProductDataConfigurableItemOptionValueInterfaceSchema)
-      .exactOptional(),
-    custom_options: z.array(CatalogDataCustomOptionInterfaceSchema).exactOptional(),
-    downloadable_option: DownloadableDataDownloadableOptionInterfaceSchema.exactOptional(),
-    giftcard_item_option: GiftCardDataGiftCardOptionInterfaceSchema.exactOptional(),
-  })
-  .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\Quote\\Api\\Data\\ProductOptionInterface',
-    required: [],
-  })
-  .openapi('QuoteDataProductOptionExtensionInterface')
-
-const QuoteDataProductOptionInterfaceSchema = z
-  .object({ extension_attributes: QuoteDataProductOptionExtensionInterfaceSchema.exactOptional() })
-  .openapi({ description: 'Product option interface', required: [] })
-  .openapi('QuoteDataProductOptionInterface')
-
-const QuoteDataCartItemInterfaceSchema = z
-  .object({
-    extension_attributes: QuoteDataCartItemExtensionInterfaceSchema.exactOptional(),
-    item_id: z.int().exactOptional().openapi({ description: 'Item ID. Otherwise, null.' }),
-    name: z.string().exactOptional().openapi({ description: 'Product name. Otherwise, null.' }),
-    price: z.number().exactOptional().openapi({ description: 'Product price. Otherwise, null.' }),
-    product_option: QuoteDataProductOptionInterfaceSchema.exactOptional(),
-    product_type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Product type. Otherwise, null.' }),
-    qty: z.number().openapi({ description: 'Product quantity.' }),
-    quote_id: z.string().openapi({ description: 'Quote id.' }),
-    sku: z.string().exactOptional().openapi({ description: 'Product SKU. Otherwise, null.' }),
-  })
-  .openapi({ description: 'Interface CartItemInterface', required: ['qty', 'quote_id'] })
-  .openapi('QuoteDataCartItemInterface')
-
-const QuoteDataShippingExtensionInterfaceSchema = z
-  .object({})
-  .openapi({
-    description: 'ExtensionInterface class for @see \\Magento\\Quote\\Api\\Data\\ShippingInterface',
-  })
-  .openapi('QuoteDataShippingExtensionInterface')
-
-const QuoteDataShippingInterfaceSchema = z
-  .object({
-    address: QuoteDataAddressInterfaceSchema,
-    extension_attributes: QuoteDataShippingExtensionInterfaceSchema.exactOptional(),
-    method: z.string().openapi({ description: 'Shipping method' }),
-  })
-  .openapi({ description: 'Interface ShippingInterface', required: ['address', 'method'] })
-  .openapi('QuoteDataShippingInterface')
-
-const QuoteDataShippingAssignmentInterfaceSchema = z
-  .object({
-    extension_attributes: QuoteDataShippingAssignmentExtensionInterfaceSchema.exactOptional(),
-    items: z.array(QuoteDataCartItemInterfaceSchema),
-    shipping: QuoteDataShippingInterfaceSchema,
-  })
-  .openapi({
-    description: 'Interface ShippingAssignmentInterface',
-    required: ['shipping', 'items'],
-  })
-  .openapi('QuoteDataShippingAssignmentInterface')
-
-const QuoteDataCartExtensionInterfaceSchema = z
-  .object({
-    amazon_order_reference_id: z.string().exactOptional(),
-    negotiable_quote: NegotiableQuoteDataNegotiableQuoteInterfaceSchema.exactOptional(),
-    shipping_assignments: z.array(QuoteDataShippingAssignmentInterfaceSchema).exactOptional(),
-  })
-  .openapi({
-    description: 'ExtensionInterface class for @see \\Magento\\Quote\\Api\\Data\\CartInterface',
-    required: [],
-  })
-  .openapi('QuoteDataCartExtensionInterface')
-
-const QuoteDataCurrencyExtensionInterfaceSchema = z
-  .object({})
-  .openapi({
-    description: 'ExtensionInterface class for @see \\Magento\\Quote\\Api\\Data\\CurrencyInterface',
-  })
-  .openapi('QuoteDataCurrencyExtensionInterface')
-
-const QuoteDataCurrencyInterfaceSchema = z
-  .object({
-    base_currency_code: z.string().exactOptional().openapi({ description: 'Base currency code' }),
-    base_to_global_rate: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base currency to global currency rate' }),
-    base_to_quote_rate: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base currency to quote currency rate' }),
-    extension_attributes: QuoteDataCurrencyExtensionInterfaceSchema.exactOptional(),
-    global_currency_code: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Global currency code' }),
-    quote_currency_code: z.string().exactOptional().openapi({ description: 'Quote currency code' }),
-    store_currency_code: z.string().exactOptional().openapi({ description: 'Store currency code' }),
-    store_to_base_rate: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Store currency to base currency rate' }),
-    store_to_quote_rate: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Store currency to quote currency rate' }),
-  })
-  .openapi({ description: 'Interface CurrencyInterface', required: [] })
-  .openapi('QuoteDataCurrencyInterface')
-
-const QuoteDataCartInterfaceSchema = z
-  .object({
-    billing_address: QuoteDataAddressInterfaceSchema.exactOptional(),
-    converted_at: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Cart conversion date and time. Otherwise, null.' }),
-    created_at: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Cart creation date and time. Otherwise, null.' }),
-    currency: QuoteDataCurrencyInterfaceSchema.exactOptional(),
-    customer: CustomerDataCustomerInterfaceSchema,
-    customer_is_guest: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'For guest customers, false for logged in customers' }),
-    customer_note: z.string().exactOptional().openapi({ description: 'Notice text' }),
-    customer_note_notify: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Customer notification flag' }),
-    customer_tax_class_id: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'Customer tax class ID.' }),
-    extension_attributes: QuoteDataCartExtensionInterfaceSchema.exactOptional(),
-    id: z.int().openapi({ description: 'Cart/quote ID.' }),
-    is_active: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Active status flag value. Otherwise, null.' }),
-    is_virtual: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Virtual flag value. Otherwise, null.' }),
-    items: z
-      .array(QuoteDataCartItemInterfaceSchema)
-      .exactOptional()
-      .openapi({ description: 'Array of items. Otherwise, null.' }),
-    items_count: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'Number of different items or products in the cart. Otherwise, null.',
-      }),
-    items_qty: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Total quantity of all cart items. Otherwise, null.' }),
-    orig_order_id: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'Original order ID. Otherwise, null.' }),
-    reserved_order_id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Reserved order ID. Otherwise, null.' }),
-    store_id: z.int().openapi({ description: 'Store identifier' }),
-    updated_at: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Cart last update date and time. Otherwise, null.' }),
-  })
-  .openapi({ description: 'Interface CartInterface', required: ['id', 'customer', 'store_id'] })
-  .openapi('QuoteDataCartInterface')
-
-const QuoteDataCartSearchResultsInterfaceSchema = z
-  .object({
-    items: z.array(QuoteDataCartInterfaceSchema).openapi({ description: 'Carts list.' }),
-    search_criteria: FrameworkSearchCriteriaInterfaceSchema,
-    total_count: z.int().openapi({ description: 'Total count.' }),
-  })
-  .openapi({
-    description: 'Interface CartSearchResultsInterface',
-    required: ['items', 'search_criteria', 'total_count'],
-  })
-  .openapi('QuoteDataCartSearchResultsInterface')
+const QuoteDataCartSearchResultsInterfaceSchema: z.ZodType<QuoteDataCartSearchResultsInterfaceType> =
+  z
+    .object({
+      items: z.array(QuoteDataCartInterfaceSchema).openapi({ description: 'Carts list.' }),
+      search_criteria: FrameworkSearchCriteriaInterfaceSchema,
+      total_count: z.int().openapi({ description: 'Total count.' }),
+    })
+    .openapi({
+      description: 'Interface CartSearchResultsInterface',
+      required: ['items', 'search_criteria', 'total_count'],
+    })
+    .openapi('QuoteDataCartSearchResultsInterface')
 
 const QuoteDataPaymentExtensionInterfaceSchema = z
   .object({ agreement_ids: z.array(z.string()).exactOptional() })
@@ -4133,7 +5966,7 @@ const QuoteDataPaymentInterfaceSchema = z
   .openapi('QuoteDataPaymentInterface')
 
 const QuoteDataShippingMethodExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\Quote\\Api\\Data\\ShippingMethodInterface',
@@ -4200,7 +6033,7 @@ const QuoteDataTotalsAdditionalDataInterfaceSchema = z
   .openapi('QuoteDataTotalsAdditionalDataInterface')
 
 const RequisitionListDataRequisitionListExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\RequisitionList\\Api\\Data\\RequisitionListInterface',
@@ -4208,7 +6041,7 @@ const RequisitionListDataRequisitionListExtensionInterfaceSchema = z
   .openapi('RequisitionListDataRequisitionListExtensionInterface')
 
 const RequisitionListDataRequisitionListItemExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\RequisitionList\\Api\\Data\\RequisitionListItemInterface',
@@ -4253,7 +6086,7 @@ const RequisitionListDataRequisitionListInterfaceSchema = z
   .openapi('RequisitionListDataRequisitionListInterface')
 
 const RmaDataCommentExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'ExtensionInterface class for @see \\Magento\\Rma\\Api\\Data\\CommentInterface',
   })
@@ -4305,7 +6138,7 @@ const RmaDataCommentSearchResultInterfaceSchema = z
   .openapi('RmaDataCommentSearchResultInterface')
 
 const RmaDataItemExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'ExtensionInterface class for @see \\Magento\\Rma\\Api\\Data\\ItemInterface',
   })
@@ -4345,14 +6178,14 @@ const RmaDataItemInterfaceSchema = z
   .openapi('RmaDataItemInterface')
 
 const RmaDataRmaExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'ExtensionInterface class for @see \\Magento\\Rma\\Api\\Data\\RmaInterface',
   })
   .openapi('RmaDataRmaExtensionInterface')
 
 const RmaDataTrackExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'ExtensionInterface class for @see \\Magento\\Rma\\Api\\Data\\TrackInterface',
   })
@@ -4437,7 +6270,7 @@ const RmaDataTrackSearchResultInterfaceSchema = z
   .openapi('RmaDataTrackSearchResultInterface')
 
 const SalesDataCreditmemoCommentCreationExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\Sales\\Api\\Data\\CreditmemoCommentCreationInterface',
@@ -4458,7 +6291,7 @@ const SalesDataCreditmemoCommentCreationInterfaceSchema = z
   .openapi('SalesDataCreditmemoCommentCreationInterface')
 
 const SalesDataCreditmemoCommentExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\Sales\\Api\\Data\\CreditmemoCommentInterface',
@@ -4831,7 +6664,7 @@ const SalesDataCreditmemoInterfaceSchema = z
   .openapi('SalesDataCreditmemoInterface')
 
 const SalesDataCreditmemoItemCreationExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\Sales\\Api\\Data\\CreditmemoItemCreationInterface',
@@ -4866,7 +6699,7 @@ const SalesDataCreditmemoSearchResultInterfaceSchema = z
   .openapi('SalesDataCreditmemoSearchResultInterface')
 
 const SalesDataInvoiceCommentCreationExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\Sales\\Api\\Data\\InvoiceCommentCreationInterface',
@@ -4885,31 +6718,6 @@ const SalesDataInvoiceCommentCreationInterfaceSchema = z
   })
   .openapi('SalesDataInvoiceCommentCreationInterface')
 
-const SalesDataInvoiceCommentExtensionInterfaceSchema = z
-  .object({})
-  .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\Sales\\Api\\Data\\InvoiceCommentInterface',
-  })
-  .openapi('SalesDataInvoiceCommentExtensionInterface')
-
-const SalesDataInvoiceCommentInterfaceSchema = z
-  .object({
-    comment: z.string().openapi({ description: 'Comment.' }),
-    created_at: z.string().exactOptional().openapi({ description: 'Created-at timestamp.' }),
-    entity_id: z.int().exactOptional().openapi({ description: 'Invoice ID.' }),
-    extension_attributes: SalesDataInvoiceCommentExtensionInterfaceSchema.exactOptional(),
-    is_customer_notified: z.int().openapi({ description: 'Is-customer-notified flag value.' }),
-    is_visible_on_front: z.int().openapi({ description: 'Is-visible-on-storefront flag value.' }),
-    parent_id: z.int().openapi({ description: 'Parent ID.' }),
-  })
-  .openapi({
-    description:
-      'Invoice comment interface. An invoice is a record of the receipt of payment for an order. An invoice can include comments that detail the invoice history.',
-    required: ['is_customer_notified', 'parent_id', 'comment', 'is_visible_on_front'],
-  })
-  .openapi('SalesDataInvoiceCommentInterface')
-
 const SalesDataInvoiceCommentSearchResultInterfaceSchema = z
   .object({
     items: z
@@ -4926,7 +6734,7 @@ const SalesDataInvoiceCommentSearchResultInterfaceSchema = z
   .openapi('SalesDataInvoiceCommentSearchResultInterface')
 
 const SalesDataInvoiceCreationArgumentsExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\Sales\\Api\\Data\\InvoiceCreationArgumentsInterface',
@@ -4940,1412 +6748,8 @@ const SalesDataInvoiceCreationArgumentsInterfaceSchema = z
   .openapi({ description: 'Interface for creation arguments for Invoice.', required: [] })
   .openapi('SalesDataInvoiceCreationArgumentsInterface')
 
-const SalesDataOrderAddressExtensionInterfaceSchema = z
-  .object({ checkout_fields: z.array(FrameworkAttributeInterfaceSchema).exactOptional() })
-  .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\Sales\\Api\\Data\\OrderAddressInterface',
-    required: [],
-  })
-  .openapi('SalesDataOrderAddressExtensionInterface')
-
-const SalesDataOrderAddressInterfaceSchema = z
-  .object({
-    address_type: z.string().openapi({ description: 'Address type.' }),
-    city: z.string().openapi({ description: 'City.' }),
-    company: z.string().exactOptional().openapi({ description: 'Company.' }),
-    country_id: z.string().openapi({ description: 'Country ID.' }),
-    customer_address_id: z.int().exactOptional().openapi({ description: 'Country address ID.' }),
-    customer_id: z.int().exactOptional().openapi({ description: 'Customer ID.' }),
-    email: z.string().exactOptional().openapi({ description: 'Email address.' }),
-    entity_id: z.int().exactOptional().openapi({ description: 'Order address ID.' }),
-    extension_attributes: SalesDataOrderAddressExtensionInterfaceSchema.exactOptional(),
-    fax: z.string().exactOptional().openapi({ description: 'Fax number.' }),
-    firstname: z.string().openapi({ description: 'First name.' }),
-    lastname: z.string().openapi({ description: 'Last name.' }),
-    middlename: z.string().exactOptional().openapi({ description: 'Middle name.' }),
-    parent_id: z.int().exactOptional().openapi({ description: 'Parent ID.' }),
-    postcode: z.string().openapi({ description: 'Postal code.' }),
-    prefix: z.string().exactOptional().openapi({ description: 'Prefix.' }),
-    region: z.string().exactOptional().openapi({ description: 'Region.' }),
-    region_code: z.string().exactOptional().openapi({ description: 'Region code.' }),
-    region_id: z.int().exactOptional().openapi({ description: 'Region ID.' }),
-    street: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Array of any street values. Otherwise, null.' }),
-    suffix: z.string().exactOptional().openapi({ description: 'Suffix.' }),
-    telephone: z.string().openapi({ description: 'Telephone number.' }),
-    vat_id: z.string().exactOptional().openapi({ description: 'VAT ID.' }),
-    vat_is_valid: z.int().exactOptional().openapi({ description: 'VAT-is-valid flag value.' }),
-    vat_request_date: z.string().exactOptional().openapi({ description: 'VAT request date.' }),
-    vat_request_id: z.string().exactOptional().openapi({ description: 'VAT request ID.' }),
-    vat_request_success: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'VAT-request-success flag value.' }),
-  })
-  .openapi({
-    description:
-      'Order address interface. An order is a document that a web store issues to a customer. Magento generates a sales order that lists the product items, billing and shipping addresses, and shipping and payment methods. A corresponding external document, known as a purchase order, is emailed to the customer.',
-    required: [
-      'address_type',
-      'city',
-      'country_id',
-      'firstname',
-      'lastname',
-      'postcode',
-      'telephone',
-    ],
-  })
-  .openapi('SalesDataOrderAddressInterface')
-
-const TaxDataAppliedTaxRateExtensionInterfaceSchema = z
-  .object({})
-  .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\Tax\\Api\\Data\\AppliedTaxRateInterface',
-  })
-  .openapi('TaxDataAppliedTaxRateExtensionInterface')
-
-const TaxDataAppliedTaxRateInterfaceSchema = z
-  .object({
-    code: z.string().exactOptional().openapi({ description: 'Code' }),
-    extension_attributes: TaxDataAppliedTaxRateExtensionInterfaceSchema.exactOptional(),
-    percent: z.number().exactOptional().openapi({ description: 'Tax Percent' }),
-    title: z.string().exactOptional().openapi({ description: 'Title' }),
-  })
-  .openapi({ description: 'Applied tax rate interface.', required: [] })
-  .openapi('TaxDataAppliedTaxRateInterface')
-
-const TaxDataOrderTaxDetailsAppliedTaxExtensionInterfaceSchema = z
-  .object({ rates: z.array(TaxDataAppliedTaxRateInterfaceSchema).exactOptional() })
-  .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\Tax\\Api\\Data\\OrderTaxDetailsAppliedTaxInterface',
-    required: [],
-  })
-  .openapi('TaxDataOrderTaxDetailsAppliedTaxExtensionInterface')
-
-const TaxDataOrderTaxDetailsAppliedTaxInterfaceSchema = z
-  .object({
-    amount: z.number().openapi({ description: 'Tax amount' }),
-    base_amount: z.number().openapi({ description: 'Tax amount in base currency' }),
-    code: z.string().exactOptional().openapi({ description: 'Code' }),
-    extension_attributes: TaxDataOrderTaxDetailsAppliedTaxExtensionInterfaceSchema.exactOptional(),
-    percent: z.number().exactOptional().openapi({ description: 'Tax Percent' }),
-    title: z.string().exactOptional().openapi({ description: 'Title' }),
-  })
-  .openapi({
-    description: 'Interface OrderTaxDetailsAppliedTaxInterface',
-    required: ['amount', 'base_amount'],
-  })
-  .openapi('TaxDataOrderTaxDetailsAppliedTaxInterface')
-
-const TaxDataOrderTaxDetailsItemExtensionInterfaceSchema = z
-  .object({})
-  .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\Tax\\Api\\Data\\OrderTaxDetailsItemInterface',
-  })
-  .openapi('TaxDataOrderTaxDetailsItemExtensionInterface')
-
-const TaxDataOrderTaxDetailsItemInterfaceSchema = z
-  .object({
-    applied_taxes: z
-      .array(TaxDataOrderTaxDetailsAppliedTaxInterfaceSchema)
-      .exactOptional()
-      .openapi({ description: 'Applied taxes' }),
-    associated_item_id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'Associated item id if this item is associated with another item, null otherwise',
-      }),
-    extension_attributes: TaxDataOrderTaxDetailsItemExtensionInterfaceSchema.exactOptional(),
-    item_id: z.int().exactOptional().openapi({ description: 'Item id if this item is a product' }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Type (shipping, product, weee, gift wrapping, etc)' }),
-  })
-  .openapi({ description: 'Interface OrderTaxDetailsItemInterface', required: [] })
-  .openapi('TaxDataOrderTaxDetailsItemInterface')
-
-const SalesDataShippingAssignmentExtensionInterfaceSchema = z
-  .object({})
-  .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\Sales\\Api\\Data\\ShippingAssignmentInterface',
-  })
-  .openapi('SalesDataShippingAssignmentExtensionInterface')
-
-const SalesDataOrderItemInterfaceSchema: z.ZodType<SalesDataOrderItemInterfaceType> = z
-  .lazy(() =>
-    z
-      .object({
-        additional_data: z.string().exactOptional().openapi({ description: 'Additional data.' }),
-        amount_refunded: z.number().exactOptional().openapi({ description: 'Amount refunded.' }),
-        applied_rule_ids: z.string().exactOptional().openapi({ description: 'Applied rule IDs.' }),
-        base_amount_refunded: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'Base amount refunded.' }),
-        base_cost: z.number().exactOptional().openapi({ description: 'Base cost.' }),
-        base_discount_amount: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'Base discount amount.' }),
-        base_discount_invoiced: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'Base discount invoiced.' }),
-        base_discount_refunded: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'Base discount refunded.' }),
-        base_discount_tax_compensation_amount: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'Base discount tax compensation amount.' }),
-        base_discount_tax_compensation_invoiced: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'Base discount tax compensation invoiced.' }),
-        base_discount_tax_compensation_refunded: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'Base discount tax compensation refunded.' }),
-        base_original_price: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'Base original price.' }),
-        base_price: z.number().exactOptional().openapi({ description: 'Base price.' }),
-        base_price_incl_tax: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'Base price including tax.' }),
-        base_row_invoiced: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'Base row invoiced.' }),
-        base_row_total: z.number().exactOptional().openapi({ description: 'Base row total.' }),
-        base_row_total_incl_tax: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'Base row total including tax.' }),
-        base_tax_amount: z.number().exactOptional().openapi({ description: 'Base tax amount.' }),
-        base_tax_before_discount: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'Base tax before discount.' }),
-        base_tax_invoiced: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'Base tax invoiced.' }),
-        base_tax_refunded: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'Base tax refunded.' }),
-        base_weee_tax_applied_amount: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'Base WEEE tax applied amount.' }),
-        base_weee_tax_applied_row_amnt: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'Base WEEE tax applied row amount.' }),
-        base_weee_tax_disposition: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'Base WEEE tax disposition.' }),
-        base_weee_tax_row_disposition: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'Base WEEE tax row disposition.' }),
-        created_at: z.string().exactOptional().openapi({ description: 'Created-at timestamp.' }),
-        description: z.string().exactOptional().openapi({ description: 'Description.' }),
-        discount_amount: z.number().exactOptional().openapi({ description: 'Discount amount.' }),
-        discount_invoiced: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'Discount invoiced.' }),
-        discount_percent: z.number().exactOptional().openapi({ description: 'Discount percent.' }),
-        discount_refunded: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'Discount refunded.' }),
-        discount_tax_compensation_amount: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'Discount tax compensation amount.' }),
-        discount_tax_compensation_canceled: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'Discount tax compensation canceled.' }),
-        discount_tax_compensation_invoiced: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'Discount tax compensation invoiced.' }),
-        discount_tax_compensation_refunded: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'Discount tax compensation refunded.' }),
-        event_id: z.int().exactOptional().openapi({ description: 'Event ID.' }),
-        ext_order_item_id: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'External order item ID.' }),
-        extension_attributes: SalesDataOrderItemExtensionInterfaceSchema.exactOptional(),
-        free_shipping: z
-          .int()
-          .exactOptional()
-          .openapi({ description: 'Free-shipping flag value.' }),
-        gw_base_price: z.number().exactOptional().openapi({ description: 'GW base price.' }),
-        gw_base_price_invoiced: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'GW base price invoiced.' }),
-        gw_base_price_refunded: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'GW base price refunded.' }),
-        gw_base_tax_amount: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'GW base tax amount.' }),
-        gw_base_tax_amount_invoiced: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'GW base tax amount invoiced.' }),
-        gw_base_tax_amount_refunded: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'GW base tax amount refunded.' }),
-        gw_id: z.int().exactOptional().openapi({ description: 'GW ID.' }),
-        gw_price: z.number().exactOptional().openapi({ description: 'GW price.' }),
-        gw_price_invoiced: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'GW price invoiced.' }),
-        gw_price_refunded: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'GW price refunded.' }),
-        gw_tax_amount: z.number().exactOptional().openapi({ description: 'GW tax amount.' }),
-        gw_tax_amount_invoiced: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'GW tax amount invoiced.' }),
-        gw_tax_amount_refunded: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'GW tax amount refunded.' }),
-        is_qty_decimal: z
-          .int()
-          .exactOptional()
-          .openapi({ description: 'Is-quantity-decimal flag value.' }),
-        is_virtual: z.int().exactOptional().openapi({ description: 'Is-virtual flag value.' }),
-        item_id: z.int().exactOptional().openapi({ description: 'Item ID.' }),
-        locked_do_invoice: z
-          .int()
-          .exactOptional()
-          .openapi({ description: 'Locked DO invoice flag value.' }),
-        locked_do_ship: z
-          .int()
-          .exactOptional()
-          .openapi({ description: 'Locked DO ship flag value.' }),
-        name: z.string().exactOptional().openapi({ description: 'Name.' }),
-        no_discount: z.int().exactOptional().openapi({ description: 'No-discount flag value.' }),
-        order_id: z.int().exactOptional().openapi({ description: 'Order ID.' }),
-        original_price: z.number().exactOptional().openapi({ description: 'Original price.' }),
-        parent_item: SalesDataOrderItemInterfaceSchema.exactOptional(),
-        parent_item_id: z.int().exactOptional().openapi({ description: 'Parent item ID.' }),
-        price: z.number().exactOptional().openapi({ description: 'Price.' }),
-        price_incl_tax: z.number().exactOptional().openapi({ description: 'Price including tax.' }),
-        product_id: z.int().exactOptional().openapi({ description: 'Product ID.' }),
-        product_option: CatalogDataProductOptionInterfaceSchema.exactOptional(),
-        product_type: z.string().exactOptional().openapi({ description: 'Product type.' }),
-        qty_backordered: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'Quantity backordered.' }),
-        qty_canceled: z.number().exactOptional().openapi({ description: 'Quantity canceled.' }),
-        qty_invoiced: z.number().exactOptional().openapi({ description: 'Quantity invoiced.' }),
-        qty_ordered: z.number().exactOptional().openapi({ description: 'Quantity ordered.' }),
-        qty_refunded: z.number().exactOptional().openapi({ description: 'Quantity refunded.' }),
-        qty_returned: z.number().exactOptional().openapi({ description: 'Quantity returned.' }),
-        qty_shipped: z.number().exactOptional().openapi({ description: 'Quantity shipped.' }),
-        quote_item_id: z.int().exactOptional().openapi({ description: 'Quote item ID.' }),
-        row_invoiced: z.number().exactOptional().openapi({ description: 'Row invoiced.' }),
-        row_total: z.number().exactOptional().openapi({ description: 'Row total.' }),
-        row_total_incl_tax: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'Row total including tax.' }),
-        row_weight: z.number().exactOptional().openapi({ description: 'Row weight.' }),
-        sku: z.string().openapi({ description: 'SKU.' }),
-        store_id: z.int().exactOptional().openapi({ description: 'Store ID.' }),
-        tax_amount: z.number().exactOptional().openapi({ description: 'Tax amount.' }),
-        tax_before_discount: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'Tax before discount.' }),
-        tax_canceled: z.number().exactOptional().openapi({ description: 'Tax canceled.' }),
-        tax_invoiced: z.number().exactOptional().openapi({ description: 'Tax invoiced.' }),
-        tax_percent: z.number().exactOptional().openapi({ description: 'Tax percent.' }),
-        tax_refunded: z.number().exactOptional().openapi({ description: 'Tax refunded.' }),
-        updated_at: z.string().exactOptional().openapi({ description: 'Updated-at timestamp.' }),
-        weee_tax_applied: z.string().exactOptional().openapi({ description: 'WEEE tax applied.' }),
-        weee_tax_applied_amount: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'WEEE tax applied amount.' }),
-        weee_tax_applied_row_amount: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'WEEE tax applied row amount.' }),
-        weee_tax_disposition: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'WEEE tax disposition.' }),
-        weee_tax_row_disposition: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'WEEE tax row disposition.' }),
-        weight: z.number().exactOptional().openapi({ description: 'Weight.' }),
-      })
-      .openapi({
-        description:
-          'Order item interface. An order is a document that a web store issues to a customer. Magento generates a sales order that lists the product items, billing and shipping addresses, and shipping and payment methods. A corresponding external document, known as a purchase order, is emailed to the customer.',
-        required: ['sku'],
-      }),
-  )
-  .openapi('SalesDataOrderItemInterface')
-
-const TemandoShippingDataCollectionPointOrderCollectionPointInterfaceSchema = z
-  .object({
-    city: z.string(),
-    collection_point_id: z.string(),
-    country: z.string(),
-    name: z.string(),
-    postcode: z.string(),
-    recipient_address_id: z.int(),
-    region: z.string(),
-    street: z.array(z.string()),
-  })
-  .openapi({
-    description: 'Temando Order Collection Point Interface – Order Details/Fulfillment',
-    required: [
-      'recipient_address_id',
-      'collection_point_id',
-      'name',
-      'country',
-      'region',
-      'postcode',
-      'city',
-      'street',
-    ],
-  })
-  .openapi('TemandoShippingDataCollectionPointOrderCollectionPointInterface')
-
-const TemandoShippingDataOrderShippingExperienceInterfaceSchema = z
-  .object({ code: z.string(), cost: z.number(), label: z.string() })
-  .openapi({
-    description:
-      'Temando Shipping Experience Interface Local representation of a shipping rate in checkout. A set of shipping experiences is the result of creating an order at the Temando platform. (!) Needs to reside in Api namespace because selected shipping experience is exposed to public as a ShippingInterface extension attribute.',
-    required: ['label', 'code', 'cost'],
-  })
-  .openapi('TemandoShippingDataOrderShippingExperienceInterface')
-
-const SalesDataShippingExtensionInterfaceSchema = z
-  .object({
-    collection_point:
-      TemandoShippingDataCollectionPointOrderCollectionPointInterfaceSchema.exactOptional(),
-    ext_order_id: z.string().exactOptional(),
-    shipping_experience: TemandoShippingDataOrderShippingExperienceInterfaceSchema.exactOptional(),
-  })
-  .openapi({
-    description: 'ExtensionInterface class for @see \\Magento\\Sales\\Api\\Data\\ShippingInterface',
-    required: [],
-  })
-  .openapi('SalesDataShippingExtensionInterface')
-
-const SalesDataTotalExtensionInterfaceSchema = z
-  .object({})
-  .openapi({
-    description: 'ExtensionInterface class for @see \\Magento\\Sales\\Api\\Data\\TotalInterface',
-  })
-  .openapi('SalesDataTotalExtensionInterface')
-
-const SalesDataTotalInterfaceSchema = z
-  .object({
-    base_shipping_amount: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base shipping amount.' }),
-    base_shipping_canceled: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base shipping canceled.' }),
-    base_shipping_discount_amount: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base shipping discount amount.' }),
-    base_shipping_discount_tax_compensation_amnt: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base shipping discount tax compensation amount.' }),
-    base_shipping_incl_tax: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base shipping including tax.' }),
-    base_shipping_invoiced: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base shipping invoiced.' }),
-    base_shipping_refunded: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base shipping refunded.' }),
-    base_shipping_tax_amount: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base shipping tax amount.' }),
-    base_shipping_tax_refunded: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base shipping tax refunded.' }),
-    extension_attributes: SalesDataTotalExtensionInterfaceSchema.exactOptional(),
-    shipping_amount: z.number().exactOptional().openapi({ description: 'Shipping amount.' }),
-    shipping_canceled: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Shipping canceled amount.' }),
-    shipping_discount_amount: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Shipping discount amount.' }),
-    shipping_discount_tax_compensation_amount: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Shipping discount tax compensation amount.' }),
-    shipping_incl_tax: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Shipping including tax amount.' }),
-    shipping_invoiced: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Shipping invoiced amount.' }),
-    shipping_refunded: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Shipping refunded amount.' }),
-    shipping_tax_amount: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Shipping tax amount.' }),
-    shipping_tax_refunded: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Shipping tax refunded amount.' }),
-  })
-  .openapi({ description: 'Interface TotalInterface', required: [] })
-  .openapi('SalesDataTotalInterface')
-
-const SalesDataShippingInterfaceSchema = z
-  .object({
-    address: SalesDataOrderAddressInterfaceSchema.exactOptional(),
-    extension_attributes: SalesDataShippingExtensionInterfaceSchema.exactOptional(),
-    method: z.string().exactOptional().openapi({ description: 'Shipping method' }),
-    total: SalesDataTotalInterfaceSchema.exactOptional(),
-  })
-  .openapi({ description: 'Interface ShippingInterface', required: [] })
-  .openapi('SalesDataShippingInterface')
-
-const SalesDataShippingAssignmentInterfaceSchema = z
-  .object({
-    extension_attributes: SalesDataShippingAssignmentExtensionInterfaceSchema.exactOptional(),
-    items: z
-      .array(SalesDataOrderItemInterfaceSchema)
-      .openapi({ description: 'Order items of shipping assignment' }),
-    shipping: SalesDataShippingInterfaceSchema,
-    stock_id: z.int().exactOptional().openapi({ description: 'Stock id' }),
-  })
-  .openapi({
-    description: 'Interface ShippingAssignmentInterface',
-    required: ['shipping', 'items'],
-  })
-  .openapi('SalesDataShippingAssignmentInterface')
-
-const SalesDataOrderExtensionInterfaceSchema = z
-  .object({
-    amazon_order_reference_id: z.string().exactOptional(),
-    applied_taxes: z.array(TaxDataOrderTaxDetailsAppliedTaxInterfaceSchema).exactOptional(),
-    base_customer_balance_amount: z.number().exactOptional(),
-    base_customer_balance_invoiced: z.number().exactOptional(),
-    base_customer_balance_refunded: z.number().exactOptional(),
-    base_customer_balance_total_refunded: z.number().exactOptional(),
-    base_gift_cards_amount: z.number().exactOptional(),
-    base_gift_cards_invoiced: z.number().exactOptional(),
-    base_gift_cards_refunded: z.number().exactOptional(),
-    base_reward_currency_amount: z.number().exactOptional(),
-    company_order_attributes: CompanyDataCompanyOrderInterfaceSchema.exactOptional(),
-    converting_from_quote: z.boolean().exactOptional(),
-    customer_balance_amount: z.number().exactOptional(),
-    customer_balance_invoiced: z.number().exactOptional(),
-    customer_balance_refunded: z.number().exactOptional(),
-    customer_balance_total_refunded: z.number().exactOptional(),
-    gift_cards: z.array(GiftCardAccountDataGiftCardInterfaceSchema).exactOptional(),
-    gift_cards_amount: z.number().exactOptional(),
-    gift_cards_invoiced: z.number().exactOptional(),
-    gift_cards_refunded: z.number().exactOptional(),
-    gift_message: GiftMessageDataMessageInterfaceSchema.exactOptional(),
-    gw_add_card: z.string().exactOptional(),
-    gw_allow_gift_receipt: z.string().exactOptional(),
-    gw_base_price: z.string().exactOptional(),
-    gw_base_price_incl_tax: z.string().exactOptional(),
-    gw_base_price_invoiced: z.string().exactOptional(),
-    gw_base_price_refunded: z.string().exactOptional(),
-    gw_base_tax_amount: z.string().exactOptional(),
-    gw_base_tax_amount_invoiced: z.string().exactOptional(),
-    gw_base_tax_amount_refunded: z.string().exactOptional(),
-    gw_card_base_price: z.string().exactOptional(),
-    gw_card_base_price_incl_tax: z.string().exactOptional(),
-    gw_card_base_price_invoiced: z.string().exactOptional(),
-    gw_card_base_price_refunded: z.string().exactOptional(),
-    gw_card_base_tax_amount: z.string().exactOptional(),
-    gw_card_base_tax_invoiced: z.string().exactOptional(),
-    gw_card_base_tax_refunded: z.string().exactOptional(),
-    gw_card_price: z.string().exactOptional(),
-    gw_card_price_incl_tax: z.string().exactOptional(),
-    gw_card_price_invoiced: z.string().exactOptional(),
-    gw_card_price_refunded: z.string().exactOptional(),
-    gw_card_tax_amount: z.string().exactOptional(),
-    gw_card_tax_invoiced: z.string().exactOptional(),
-    gw_card_tax_refunded: z.string().exactOptional(),
-    gw_id: z.string().exactOptional(),
-    gw_items_base_price: z.string().exactOptional(),
-    gw_items_base_price_incl_tax: z.string().exactOptional(),
-    gw_items_base_price_invoiced: z.string().exactOptional(),
-    gw_items_base_price_refunded: z.string().exactOptional(),
-    gw_items_base_tax_amount: z.string().exactOptional(),
-    gw_items_base_tax_invoiced: z.string().exactOptional(),
-    gw_items_base_tax_refunded: z.string().exactOptional(),
-    gw_items_price: z.string().exactOptional(),
-    gw_items_price_incl_tax: z.string().exactOptional(),
-    gw_items_price_invoiced: z.string().exactOptional(),
-    gw_items_price_refunded: z.string().exactOptional(),
-    gw_items_tax_amount: z.string().exactOptional(),
-    gw_items_tax_invoiced: z.string().exactOptional(),
-    gw_items_tax_refunded: z.string().exactOptional(),
-    gw_price: z.string().exactOptional(),
-    gw_price_incl_tax: z.string().exactOptional(),
-    gw_price_invoiced: z.string().exactOptional(),
-    gw_price_refunded: z.string().exactOptional(),
-    gw_tax_amount: z.string().exactOptional(),
-    gw_tax_amount_invoiced: z.string().exactOptional(),
-    gw_tax_amount_refunded: z.string().exactOptional(),
-    item_applied_taxes: z.array(TaxDataOrderTaxDetailsItemInterfaceSchema).exactOptional(),
-    payment_additional_info: z
-      .array(PaymentDataPaymentAdditionalInfoInterfaceSchema)
-      .exactOptional(),
-    reward_currency_amount: z.number().exactOptional(),
-    reward_points_balance: z.int().exactOptional(),
-    shipping_assignments: z.array(SalesDataShippingAssignmentInterfaceSchema).exactOptional(),
-  })
-  .openapi({
-    description: 'ExtensionInterface class for @see \\Magento\\Sales\\Api\\Data\\OrderInterface',
-    required: [],
-  })
-  .openapi('SalesDataOrderExtensionInterface')
-
-const VaultDataPaymentTokenInterfaceSchema = z
-  .object({
-    created_at: z.string().exactOptional().openapi({ description: 'Token creation timestamp' }),
-    customer_id: z.int().exactOptional().openapi({ description: 'Customer ID.' }),
-    entity_id: z.int().exactOptional().openapi({ description: 'Entity ID.' }),
-    expires_at: z.string().exactOptional().openapi({ description: 'Token expiration timestamp' }),
-    gateway_token: z.string().openapi({ description: 'Gateway token ID' }),
-    is_active: z.boolean().openapi({ description: 'Is active.' }),
-    is_visible: z.boolean().openapi({ description: 'Is visible.' }),
-    payment_method_code: z.string().openapi({ description: 'Payment method code' }),
-    public_hash: z.string().openapi({ description: 'Public hash' }),
-    token_details: z.string().openapi({ description: 'Token details' }),
-    type: z.string().openapi({ description: 'Type' }),
-  })
-  .openapi({
-    description: 'Gateway vault payment token interface.',
-    required: [
-      'public_hash',
-      'payment_method_code',
-      'type',
-      'gateway_token',
-      'token_details',
-      'is_active',
-      'is_visible',
-    ],
-  })
-  .openapi('VaultDataPaymentTokenInterface')
-
-const SalesDataOrderPaymentExtensionInterfaceSchema = z
-  .object({ vault_payment_token: VaultDataPaymentTokenInterfaceSchema.exactOptional() })
-  .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\Sales\\Api\\Data\\OrderPaymentInterface',
-    required: [],
-  })
-  .openapi('SalesDataOrderPaymentExtensionInterface')
-
-const SalesDataOrderPaymentInterfaceSchema = z
-  .object({
-    account_status: z.string().openapi({ description: 'Account status.' }),
-    additional_data: z.string().exactOptional().openapi({ description: 'Additional data.' }),
-    additional_information: z
-      .array(z.string())
-      .openapi({ description: 'Array of additional information.' }),
-    address_status: z.string().exactOptional().openapi({ description: 'Address status.' }),
-    amount_authorized: z.number().exactOptional().openapi({ description: 'Amount authorized.' }),
-    amount_canceled: z.number().exactOptional().openapi({ description: 'Amount canceled.' }),
-    amount_ordered: z.number().exactOptional().openapi({ description: 'Amount ordered.' }),
-    amount_paid: z.number().exactOptional().openapi({ description: 'Amount paid.' }),
-    amount_refunded: z.number().exactOptional().openapi({ description: 'Amount refunded.' }),
-    anet_trans_method: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Anet transaction method.' }),
-    base_amount_authorized: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base amount authorized.' }),
-    base_amount_canceled: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base amount canceled.' }),
-    base_amount_ordered: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base amount ordered.' }),
-    base_amount_paid: z.number().exactOptional().openapi({ description: 'Base amount paid.' }),
-    base_amount_paid_online: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base amount paid online.' }),
-    base_amount_refunded: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base amount refunded.' }),
-    base_amount_refunded_online: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base amount refunded online.' }),
-    base_shipping_amount: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base shipping amount.' }),
-    base_shipping_captured: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base shipping captured amount.' }),
-    base_shipping_refunded: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base shipping refunded amount.' }),
-    cc_approval: z.string().exactOptional().openapi({ description: 'Credit card approval.' }),
-    cc_avs_status: z.string().exactOptional().openapi({ description: 'Credit card avs status.' }),
-    cc_cid_status: z.string().exactOptional().openapi({ description: 'Credit card CID status.' }),
-    cc_debug_request_body: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Credit card debug request body.' }),
-    cc_debug_response_body: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Credit card debug response body.' }),
-    cc_debug_response_serialized: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Credit card debug response serialized.' }),
-    cc_exp_month: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Credit card expiration month.' }),
-    cc_exp_year: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Credit card expiration year.' }),
-    cc_last4: z.string().openapi({ description: 'Last four digits of the credit card.' }),
-    cc_number_enc: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Encrypted credit card number.' }),
-    cc_owner: z.string().exactOptional().openapi({ description: 'Credit card number.' }),
-    cc_secure_verify: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Credit card secure verify.' }),
-    cc_ss_issue: z.string().exactOptional().openapi({ description: 'Credit card SS issue.' }),
-    cc_ss_start_month: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Credit card SS start month.' }),
-    cc_ss_start_year: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Credit card SS start year.' }),
-    cc_status: z.string().exactOptional().openapi({ description: 'Credit card status.' }),
-    cc_status_description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Credit card status description.' }),
-    cc_trans_id: z.string().exactOptional().openapi({ description: 'Credit card transaction ID.' }),
-    cc_type: z.string().exactOptional().openapi({ description: 'Credit card type.' }),
-    echeck_account_name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'eCheck account name.' }),
-    echeck_account_type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'eCheck account type.' }),
-    echeck_bank_name: z.string().exactOptional().openapi({ description: 'eCheck bank name.' }),
-    echeck_routing_number: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'eCheck routing number.' }),
-    echeck_type: z.string().exactOptional().openapi({ description: 'eCheck type.' }),
-    entity_id: z.int().exactOptional().openapi({ description: 'Entity ID.' }),
-    extension_attributes: SalesDataOrderPaymentExtensionInterfaceSchema.exactOptional(),
-    last_trans_id: z.string().exactOptional().openapi({ description: 'Last transaction ID.' }),
-    method: z.string().openapi({ description: 'Method.' }),
-    parent_id: z.int().exactOptional().openapi({ description: 'Parent ID.' }),
-    po_number: z.string().exactOptional().openapi({ description: 'PO number.' }),
-    protection_eligibility: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Protection eligibility.' }),
-    quote_payment_id: z.int().exactOptional().openapi({ description: 'Quote payment ID.' }),
-    shipping_amount: z.number().exactOptional().openapi({ description: 'Shipping amount.' }),
-    shipping_captured: z.number().exactOptional().openapi({ description: 'Shipping captured.' }),
-    shipping_refunded: z.number().exactOptional().openapi({ description: 'Shipping refunded.' }),
-  })
-  .openapi({
-    description:
-      'Order payment interface. An order is a document that a web store issues to a customer. Magento generates a sales order that lists the product items, billing and shipping addresses, and shipping and payment methods. A corresponding external document, known as a purchase order, is emailed to the customer.',
-    required: ['account_status', 'additional_information', 'cc_last4', 'method'],
-  })
-  .openapi('SalesDataOrderPaymentInterface')
-
-const SalesDataOrderStatusHistoryExtensionInterfaceSchema = z
-  .object({})
-  .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\Sales\\Api\\Data\\OrderStatusHistoryInterface',
-  })
-  .openapi('SalesDataOrderStatusHistoryExtensionInterface')
-
-const SalesDataOrderStatusHistoryInterfaceSchema = z
-  .object({
-    comment: z.string().openapi({ description: 'Comment.' }),
-    created_at: z.string().exactOptional().openapi({ description: 'Created-at timestamp.' }),
-    entity_id: z.int().exactOptional().openapi({ description: 'Order status history ID.' }),
-    entity_name: z.string().exactOptional().openapi({ description: 'Entity name.' }),
-    extension_attributes: SalesDataOrderStatusHistoryExtensionInterfaceSchema.exactOptional(),
-    is_customer_notified: z.int().openapi({ description: 'Is-customer-notified flag value.' }),
-    is_visible_on_front: z.int().openapi({ description: 'Is-visible-on-storefront flag value.' }),
-    parent_id: z.int().openapi({ description: 'Parent ID.' }),
-    status: z.string().exactOptional().openapi({ description: 'Status.' }),
-  })
-  .openapi({
-    description:
-      'Order status history interface. An order is a document that a web store issues to a customer. Magento generates a sales order that lists the product items, billing and shipping addresses, and shipping and payment methods. A corresponding external document, known as a purchase order, is emailed to the customer.',
-    required: ['comment', 'is_customer_notified', 'is_visible_on_front', 'parent_id'],
-  })
-  .openapi('SalesDataOrderStatusHistoryInterface')
-
-const SalesDataOrderInterfaceSchema = z
-  .object({
-    adjustment_negative: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Negative adjustment value.' }),
-    adjustment_positive: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Positive adjustment value.' }),
-    applied_rule_ids: z.string().exactOptional().openapi({ description: 'Applied rule IDs.' }),
-    base_adjustment_negative: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base negative adjustment value.' }),
-    base_adjustment_positive: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base positive adjustment value.' }),
-    base_currency_code: z.string().exactOptional().openapi({ description: 'Base currency code.' }),
-    base_discount_amount: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base discount amount.' }),
-    base_discount_canceled: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base discount canceled.' }),
-    base_discount_invoiced: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base discount invoiced.' }),
-    base_discount_refunded: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base discount refunded.' }),
-    base_discount_tax_compensation_amount: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base discount tax compensation amount.' }),
-    base_discount_tax_compensation_invoiced: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base discount tax compensation invoiced.' }),
-    base_discount_tax_compensation_refunded: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base discount tax compensation refunded.' }),
-    base_grand_total: z.number().openapi({ description: 'Base grand total.' }),
-    base_shipping_amount: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base shipping amount.' }),
-    base_shipping_canceled: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base shipping canceled.' }),
-    base_shipping_discount_amount: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base shipping discount amount.' }),
-    base_shipping_discount_tax_compensation_amnt: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base shipping discount tax compensation amount.' }),
-    base_shipping_incl_tax: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base shipping including tax.' }),
-    base_shipping_invoiced: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base shipping invoiced.' }),
-    base_shipping_refunded: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base shipping refunded.' }),
-    base_shipping_tax_amount: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base shipping tax amount.' }),
-    base_shipping_tax_refunded: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base shipping tax refunded.' }),
-    base_subtotal: z.number().exactOptional().openapi({ description: 'Base subtotal.' }),
-    base_subtotal_canceled: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base subtotal canceled.' }),
-    base_subtotal_incl_tax: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base subtotal including tax.' }),
-    base_subtotal_invoiced: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base subtotal invoiced.' }),
-    base_subtotal_refunded: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base subtotal refunded.' }),
-    base_tax_amount: z.number().exactOptional().openapi({ description: 'Base tax amount.' }),
-    base_tax_canceled: z.number().exactOptional().openapi({ description: 'Base tax canceled.' }),
-    base_tax_invoiced: z.number().exactOptional().openapi({ description: 'Base tax invoiced.' }),
-    base_tax_refunded: z.number().exactOptional().openapi({ description: 'Base tax refunded.' }),
-    base_to_global_rate: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base-to-global rate.' }),
-    base_to_order_rate: z.number().exactOptional().openapi({ description: 'Base-to-order rate.' }),
-    base_total_canceled: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base total canceled.' }),
-    base_total_due: z.number().exactOptional().openapi({ description: 'Base total due.' }),
-    base_total_invoiced: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base total invoiced.' }),
-    base_total_invoiced_cost: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base total invoiced cost.' }),
-    base_total_offline_refunded: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base total offline refunded.' }),
-    base_total_online_refunded: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base total online refunded.' }),
-    base_total_paid: z.number().exactOptional().openapi({ description: 'Base total paid.' }),
-    base_total_qty_ordered: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base total quantity ordered.' }),
-    base_total_refunded: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base total refunded.' }),
-    billing_address: SalesDataOrderAddressInterfaceSchema.exactOptional(),
-    billing_address_id: z.int().exactOptional().openapi({ description: 'Billing address ID.' }),
-    can_ship_partially: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'Can-ship-partially flag value.' }),
-    can_ship_partially_item: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'Can-ship-partially-item flag value.' }),
-    coupon_code: z.string().exactOptional().openapi({ description: 'Coupon code.' }),
-    created_at: z.string().exactOptional().openapi({ description: 'Created-at timestamp.' }),
-    customer_dob: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Customer date-of-birth (DOB).' }),
-    customer_email: z.string().openapi({ description: 'Customer email address.' }),
-    customer_firstname: z.string().exactOptional().openapi({ description: 'Customer first name.' }),
-    customer_gender: z.int().exactOptional().openapi({ description: 'Customer gender.' }),
-    customer_group_id: z.int().exactOptional().openapi({ description: 'Customer group ID.' }),
-    customer_id: z.int().exactOptional().openapi({ description: 'Customer ID.' }),
-    customer_is_guest: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'Customer-is-guest flag value.' }),
-    customer_lastname: z.string().exactOptional().openapi({ description: 'Customer last name.' }),
-    customer_middlename: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Customer middle name.' }),
-    customer_note: z.string().exactOptional().openapi({ description: 'Customer note.' }),
-    customer_note_notify: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'Customer-note-notify flag value.' }),
-    customer_prefix: z.string().exactOptional().openapi({ description: 'Customer prefix.' }),
-    customer_suffix: z.string().exactOptional().openapi({ description: 'Customer suffix.' }),
-    customer_taxvat: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Customer value-added tax (VAT).' }),
-    discount_amount: z.number().exactOptional().openapi({ description: 'Discount amount.' }),
-    discount_canceled: z.number().exactOptional().openapi({ description: 'Discount canceled.' }),
-    discount_description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Discount description.' }),
-    discount_invoiced: z.number().exactOptional().openapi({ description: 'Discount invoiced.' }),
-    discount_refunded: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Discount refunded amount.' }),
-    discount_tax_compensation_amount: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Discount tax compensation amount.' }),
-    discount_tax_compensation_invoiced: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Discount tax compensation invoiced amount.' }),
-    discount_tax_compensation_refunded: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Discount tax compensation refunded amount.' }),
-    edit_increment: z.int().exactOptional().openapi({ description: 'Edit increment value.' }),
-    email_sent: z.int().exactOptional().openapi({ description: 'Email-sent flag value.' }),
-    entity_id: z.int().exactOptional().openapi({ description: 'Order ID.' }),
-    ext_customer_id: z.string().exactOptional().openapi({ description: 'External customer ID.' }),
-    ext_order_id: z.string().exactOptional().openapi({ description: 'External order ID.' }),
-    extension_attributes: SalesDataOrderExtensionInterfaceSchema.exactOptional(),
-    forced_shipment_with_invoice: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'Forced-shipment-with-invoice flag value.' }),
-    global_currency_code: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Global currency code.' }),
-    grand_total: z.number().openapi({ description: 'Grand total.' }),
-    hold_before_state: z.string().exactOptional().openapi({ description: 'Hold before state.' }),
-    hold_before_status: z.string().exactOptional().openapi({ description: 'Hold before status.' }),
-    increment_id: z.string().exactOptional().openapi({ description: 'Increment ID.' }),
-    is_virtual: z.int().exactOptional().openapi({ description: 'Is-virtual flag value.' }),
-    items: z.array(SalesDataOrderItemInterfaceSchema).openapi({ description: 'Array of items.' }),
-    order_currency_code: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Order currency code.' }),
-    original_increment_id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Original increment ID.' }),
-    payment: SalesDataOrderPaymentInterfaceSchema.exactOptional(),
-    payment_auth_expiration: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'Payment authorization expiration date.' }),
-    payment_authorization_amount: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Payment authorization amount.' }),
-    protect_code: z.string().exactOptional().openapi({ description: 'Protect code.' }),
-    quote_address_id: z.int().exactOptional().openapi({ description: 'Quote address ID.' }),
-    quote_id: z.int().exactOptional().openapi({ description: 'Quote ID.' }),
-    relation_child_id: z.string().exactOptional().openapi({ description: 'Relation child ID.' }),
-    relation_child_real_id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Relation child real ID.' }),
-    relation_parent_id: z.string().exactOptional().openapi({ description: 'Relation parent ID.' }),
-    relation_parent_real_id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Relation parent real ID.' }),
-    remote_ip: z.string().exactOptional().openapi({ description: 'Remote IP address.' }),
-    shipping_amount: z.number().exactOptional().openapi({ description: 'Shipping amount.' }),
-    shipping_canceled: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Shipping canceled amount.' }),
-    shipping_description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Shipping description.' }),
-    shipping_discount_amount: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Shipping discount amount.' }),
-    shipping_discount_tax_compensation_amount: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Shipping discount tax compensation amount.' }),
-    shipping_incl_tax: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Shipping including tax amount.' }),
-    shipping_invoiced: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Shipping invoiced amount.' }),
-    shipping_refunded: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Shipping refunded amount.' }),
-    shipping_tax_amount: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Shipping tax amount.' }),
-    shipping_tax_refunded: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Shipping tax refunded amount.' }),
-    state: z.string().exactOptional().openapi({ description: 'State.' }),
-    status: z.string().exactOptional().openapi({ description: 'Status.' }),
-    status_histories: z
-      .array(SalesDataOrderStatusHistoryInterfaceSchema)
-      .exactOptional()
-      .openapi({ description: 'Array of status histories.' }),
-    store_currency_code: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Store currency code.' }),
-    store_id: z.int().exactOptional().openapi({ description: 'Store ID.' }),
-    store_name: z.string().exactOptional().openapi({ description: 'Store name.' }),
-    store_to_base_rate: z.number().exactOptional().openapi({ description: 'Store-to-base rate.' }),
-    store_to_order_rate: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Store-to-order rate.' }),
-    subtotal: z.number().exactOptional().openapi({ description: 'Subtotal.' }),
-    subtotal_canceled: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Subtotal canceled amount.' }),
-    subtotal_incl_tax: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Subtotal including tax amount.' }),
-    subtotal_invoiced: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Subtotal invoiced amount.' }),
-    subtotal_refunded: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Subtotal refunded amount.' }),
-    tax_amount: z.number().exactOptional().openapi({ description: 'Tax amount.' }),
-    tax_canceled: z.number().exactOptional().openapi({ description: 'Tax canceled amount.' }),
-    tax_invoiced: z.number().exactOptional().openapi({ description: 'Tax invoiced amount.' }),
-    tax_refunded: z.number().exactOptional().openapi({ description: 'Tax refunded amount.' }),
-    total_canceled: z.number().exactOptional().openapi({ description: 'Total canceled.' }),
-    total_due: z.number().exactOptional().openapi({ description: 'Total due.' }),
-    total_invoiced: z.number().exactOptional().openapi({ description: 'Total invoiced amount.' }),
-    total_item_count: z.int().exactOptional().openapi({ description: 'Total item count.' }),
-    total_offline_refunded: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Total offline refunded amount.' }),
-    total_online_refunded: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Total online refunded amount.' }),
-    total_paid: z.number().exactOptional().openapi({ description: 'Total paid.' }),
-    total_qty_ordered: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Total quantity ordered.' }),
-    total_refunded: z.number().exactOptional().openapi({ description: 'Total amount refunded.' }),
-    updated_at: z.string().exactOptional().openapi({ description: 'Updated-at timestamp.' }),
-    weight: z.number().exactOptional().openapi({ description: 'Weight.' }),
-    x_forwarded_for: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'X-Forwarded-For field value.' }),
-  })
-  .openapi({
-    description:
-      'Order interface. An order is a document that a web store issues to a customer. Magento generates a sales order that lists the product items, billing and shipping addresses, and shipping and payment methods. A corresponding external document, known as a purchase order, is emailed to the customer.',
-    required: ['base_grand_total', 'customer_email', 'grand_total', 'items'],
-  })
-  .openapi('SalesDataOrderInterface')
-
-const SalesDataInvoiceExtensionInterfaceSchema = z
-  .object({
-    base_customer_balance_amount: z.number().exactOptional(),
-    base_gift_cards_amount: z.number().exactOptional(),
-    customer_balance_amount: z.number().exactOptional(),
-    gift_cards_amount: z.number().exactOptional(),
-    gw_base_price: z.string().exactOptional(),
-    gw_base_tax_amount: z.string().exactOptional(),
-    gw_card_base_price: z.string().exactOptional(),
-    gw_card_base_tax_amount: z.string().exactOptional(),
-    gw_card_price: z.string().exactOptional(),
-    gw_card_tax_amount: z.string().exactOptional(),
-    gw_items_base_price: z.string().exactOptional(),
-    gw_items_base_tax_amount: z.string().exactOptional(),
-    gw_items_price: z.string().exactOptional(),
-    gw_items_tax_amount: z.string().exactOptional(),
-    gw_price: z.string().exactOptional(),
-    gw_tax_amount: z.string().exactOptional(),
-    vertex_tax_calculation_billing_address: SalesDataOrderAddressInterfaceSchema.exactOptional(),
-    vertex_tax_calculation_order: SalesDataOrderInterfaceSchema.exactOptional(),
-    vertex_tax_calculation_shipping_address: SalesDataOrderAddressInterfaceSchema.exactOptional(),
-  })
-  .openapi({
-    description: 'ExtensionInterface class for @see \\Magento\\Sales\\Api\\Data\\InvoiceInterface',
-    required: [],
-  })
-  .openapi('SalesDataInvoiceExtensionInterface')
-
-const SalesDataInvoiceItemExtensionInterfaceSchema = z
-  .object({
-    invoice_text_codes: z.array(z.string()).exactOptional(),
-    tax_codes: z.array(z.string()).exactOptional(),
-    vertex_tax_codes: z.array(z.string()).exactOptional(),
-  })
-  .openapi({
-    description:
-      'ExtensionInterface class for @see \\Magento\\Sales\\Api\\Data\\InvoiceItemInterface',
-    required: [],
-  })
-  .openapi('SalesDataInvoiceItemExtensionInterface')
-
-const SalesDataInvoiceItemInterfaceSchema = z
-  .object({
-    additional_data: z.string().exactOptional().openapi({ description: 'Additional data.' }),
-    base_cost: z.number().exactOptional().openapi({ description: 'Base cost.' }),
-    base_discount_amount: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base discount amount.' }),
-    base_discount_tax_compensation_amount: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base discount tax compensation amount.' }),
-    base_price: z.number().exactOptional().openapi({ description: 'Base price.' }),
-    base_price_incl_tax: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base price including tax.' }),
-    base_row_total: z.number().exactOptional().openapi({ description: 'Base row total.' }),
-    base_row_total_incl_tax: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base row total including tax.' }),
-    base_tax_amount: z.number().exactOptional().openapi({ description: 'Base tax amount.' }),
-    description: z.string().exactOptional().openapi({ description: 'Description.' }),
-    discount_amount: z.number().exactOptional().openapi({ description: 'Discount amount.' }),
-    discount_tax_compensation_amount: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Discount tax compensation amount.' }),
-    entity_id: z.int().exactOptional().openapi({ description: 'Invoice item ID.' }),
-    extension_attributes: SalesDataInvoiceItemExtensionInterfaceSchema.exactOptional(),
-    name: z.string().exactOptional().openapi({ description: 'Name.' }),
-    order_item_id: z.int().openapi({ description: 'Order item ID.' }),
-    parent_id: z.int().exactOptional().openapi({ description: 'Parent ID.' }),
-    price: z.number().exactOptional().openapi({ description: 'Price.' }),
-    price_incl_tax: z.number().exactOptional().openapi({ description: 'Price including tax.' }),
-    product_id: z.int().exactOptional().openapi({ description: 'Product ID.' }),
-    qty: z.number().openapi({ description: 'Quantity.' }),
-    row_total: z.number().exactOptional().openapi({ description: 'Row total.' }),
-    row_total_incl_tax: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Row total including tax.' }),
-    sku: z.string().openapi({ description: 'SKU.' }),
-    tax_amount: z.number().exactOptional().openapi({ description: 'Tax amount.' }),
-  })
-  .openapi({
-    description:
-      'Invoice item interface. An invoice is a record of the receipt of payment for an order. An invoice item is a purchased item in an invoice.',
-    required: ['sku', 'order_item_id', 'qty'],
-  })
-  .openapi('SalesDataInvoiceItemInterface')
-
-const SalesDataInvoiceInterfaceSchema = z
-  .object({
-    base_currency_code: z.string().exactOptional().openapi({ description: 'Base currency code.' }),
-    base_discount_amount: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base discount amount.' }),
-    base_discount_tax_compensation_amount: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base discount tax compensation amount.' }),
-    base_grand_total: z.number().exactOptional().openapi({ description: 'Base grand total.' }),
-    base_shipping_amount: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base shipping amount.' }),
-    base_shipping_discount_tax_compensation_amnt: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base shipping discount tax compensation amount.' }),
-    base_shipping_incl_tax: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base shipping including tax.' }),
-    base_shipping_tax_amount: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base shipping tax amount.' }),
-    base_subtotal: z.number().exactOptional().openapi({ description: 'Base subtotal.' }),
-    base_subtotal_incl_tax: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base subtotal including tax.' }),
-    base_tax_amount: z.number().exactOptional().openapi({ description: 'Base tax amount.' }),
-    base_to_global_rate: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base-to-global rate.' }),
-    base_to_order_rate: z.number().exactOptional().openapi({ description: 'Base-to-order rate.' }),
-    base_total_refunded: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Base total refunded.' }),
-    billing_address_id: z.int().exactOptional().openapi({ description: 'Billing address ID.' }),
-    can_void_flag: z.int().exactOptional().openapi({ description: 'Can void flag value.' }),
-    comments: z
-      .array(SalesDataInvoiceCommentInterfaceSchema)
-      .exactOptional()
-      .openapi({ description: 'Array of any invoice comments. Otherwise, null.' }),
-    created_at: z.string().exactOptional().openapi({ description: 'Created-at timestamp.' }),
-    discount_amount: z.number().exactOptional().openapi({ description: 'Discount amount.' }),
-    discount_description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Discount description.' }),
-    discount_tax_compensation_amount: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Discount tax compensation amount.' }),
-    email_sent: z.int().exactOptional().openapi({ description: 'Email-sent flag value.' }),
-    entity_id: z.int().exactOptional().openapi({ description: 'Invoice ID.' }),
-    extension_attributes: SalesDataInvoiceExtensionInterfaceSchema.exactOptional(),
-    global_currency_code: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Global currency code.' }),
-    grand_total: z.number().exactOptional().openapi({ description: 'Grand total.' }),
-    increment_id: z.string().exactOptional().openapi({ description: 'Increment ID.' }),
-    is_used_for_refund: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'Is-used-for-refund flag value.' }),
-    items: z
-      .array(SalesDataInvoiceItemInterfaceSchema)
-      .openapi({ description: 'Array of invoice items.' }),
-    order_currency_code: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Order currency code.' }),
-    order_id: z.int().openapi({ description: 'Order ID.' }),
-    shipping_address_id: z.int().exactOptional().openapi({ description: 'Shipping address ID.' }),
-    shipping_amount: z.number().exactOptional().openapi({ description: 'Shipping amount.' }),
-    shipping_discount_tax_compensation_amount: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Shipping discount tax compensation amount.' }),
-    shipping_incl_tax: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Shipping including tax.' }),
-    shipping_tax_amount: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Shipping tax amount.' }),
-    state: z.int().exactOptional().openapi({ description: 'State.' }),
-    store_currency_code: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Store currency code.' }),
-    store_id: z.int().exactOptional().openapi({ description: 'Store ID.' }),
-    store_to_base_rate: z.number().exactOptional().openapi({ description: 'Store-to-base rate.' }),
-    store_to_order_rate: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Store-to-order rate.' }),
-    subtotal: z.number().exactOptional().openapi({ description: 'Subtotal.' }),
-    subtotal_incl_tax: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Subtotal including tax.' }),
-    tax_amount: z.number().exactOptional().openapi({ description: 'Tax amount.' }),
-    total_qty: z.number().openapi({ description: 'Total quantity.' }),
-    transaction_id: z.string().exactOptional().openapi({ description: 'Transaction ID.' }),
-    updated_at: z.string().exactOptional().openapi({ description: 'Updated-at timestamp.' }),
-  })
-  .openapi({
-    description:
-      'Invoice interface. An invoice is a record of the receipt of payment for an order.',
-    required: ['order_id', 'total_qty', 'items'],
-  })
-  .openapi('SalesDataInvoiceInterface')
-
 const SalesDataInvoiceItemCreationExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\Sales\\Api\\Data\\InvoiceItemCreationInterface',
@@ -6364,50 +6768,53 @@ const SalesDataInvoiceItemCreationInterfaceSchema = z
   })
   .openapi('SalesDataInvoiceItemCreationInterface')
 
-const SalesDataInvoiceSearchResultInterfaceSchema = z
-  .object({
-    items: z
-      .array(SalesDataInvoiceInterfaceSchema)
-      .openapi({ description: 'Array of collection items.' }),
-    search_criteria: FrameworkSearchCriteriaInterfaceSchema,
-    total_count: z.int().openapi({ description: 'Total count.' }),
-  })
-  .openapi({
-    description:
-      'Invoice search result interface. An invoice is a record of the receipt of payment for an order.',
-    required: ['items', 'search_criteria', 'total_count'],
-  })
-  .openapi('SalesDataInvoiceSearchResultInterface')
+const SalesDataInvoiceSearchResultInterfaceSchema: z.ZodType<SalesDataInvoiceSearchResultInterfaceType> =
+  z
+    .object({
+      items: z
+        .array(SalesDataInvoiceInterfaceSchema)
+        .openapi({ description: 'Array of collection items.' }),
+      search_criteria: FrameworkSearchCriteriaInterfaceSchema,
+      total_count: z.int().openapi({ description: 'Total count.' }),
+    })
+    .openapi({
+      description:
+        'Invoice search result interface. An invoice is a record of the receipt of payment for an order.',
+      required: ['items', 'search_criteria', 'total_count'],
+    })
+    .openapi('SalesDataInvoiceSearchResultInterface')
 
-const SalesDataOrderItemSearchResultInterfaceSchema = z
-  .object({
-    items: z
-      .array(SalesDataOrderItemInterfaceSchema)
-      .openapi({ description: 'Array of collection items.' }),
-    search_criteria: FrameworkSearchCriteriaInterfaceSchema,
-    total_count: z.int().openapi({ description: 'Total count.' }),
-  })
-  .openapi({
-    description:
-      'Order item search result interface. An order is a document that a web store issues to a customer. Magento generates a sales order that lists the product items, billing and shipping addresses, and shipping and payment methods. A corresponding external document, known as a purchase order, is emailed to the customer.',
-    required: ['items', 'search_criteria', 'total_count'],
-  })
-  .openapi('SalesDataOrderItemSearchResultInterface')
+const SalesDataOrderItemSearchResultInterfaceSchema: z.ZodType<SalesDataOrderItemSearchResultInterfaceType> =
+  z
+    .object({
+      items: z
+        .array(SalesDataOrderItemInterfaceSchema)
+        .openapi({ description: 'Array of collection items.' }),
+      search_criteria: FrameworkSearchCriteriaInterfaceSchema,
+      total_count: z.int().openapi({ description: 'Total count.' }),
+    })
+    .openapi({
+      description:
+        'Order item search result interface. An order is a document that a web store issues to a customer. Magento generates a sales order that lists the product items, billing and shipping addresses, and shipping and payment methods. A corresponding external document, known as a purchase order, is emailed to the customer.',
+      required: ['items', 'search_criteria', 'total_count'],
+    })
+    .openapi('SalesDataOrderItemSearchResultInterface')
 
-const SalesDataOrderSearchResultInterfaceSchema = z
-  .object({
-    items: z
-      .array(SalesDataOrderInterfaceSchema)
-      .openapi({ description: 'Array of collection items.' }),
-    search_criteria: FrameworkSearchCriteriaInterfaceSchema,
-    total_count: z.int().openapi({ description: 'Total count.' }),
-  })
-  .openapi({
-    description:
-      'Order search result interface. An order is a document that a web store issues to a customer. Magento generates a sales order that lists the product items, billing and shipping addresses, and shipping and payment methods. A corresponding external document, known as a purchase order, is emailed to the customer.',
-    required: ['items', 'search_criteria', 'total_count'],
-  })
-  .openapi('SalesDataOrderSearchResultInterface')
+const SalesDataOrderSearchResultInterfaceSchema: z.ZodType<SalesDataOrderSearchResultInterfaceType> =
+  z
+    .object({
+      items: z
+        .array(SalesDataOrderInterfaceSchema)
+        .openapi({ description: 'Array of collection items.' }),
+      search_criteria: FrameworkSearchCriteriaInterfaceSchema,
+      total_count: z.int().openapi({ description: 'Total count.' }),
+    })
+    .openapi({
+      description:
+        'Order search result interface. An order is a document that a web store issues to a customer. Magento generates a sales order that lists the product items, billing and shipping addresses, and shipping and payment methods. A corresponding external document, known as a purchase order, is emailed to the customer.',
+      required: ['items', 'search_criteria', 'total_count'],
+    })
+    .openapi('SalesDataOrderSearchResultInterface')
 
 const SalesDataOrderStatusHistorySearchResultInterfaceSchema = z
   .object({
@@ -6425,7 +6832,7 @@ const SalesDataOrderStatusHistorySearchResultInterfaceSchema = z
   .openapi('SalesDataOrderStatusHistorySearchResultInterface')
 
 const SalesDataShipmentCommentCreationExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\Sales\\Api\\Data\\ShipmentCommentCreationInterface',
@@ -6445,7 +6852,7 @@ const SalesDataShipmentCommentCreationInterfaceSchema = z
   .openapi('SalesDataShipmentCommentCreationInterface')
 
 const SalesDataShipmentCommentExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\Sales\\Api\\Data\\ShipmentCommentInterface',
@@ -6523,7 +6930,7 @@ const SalesDataShipmentExtensionInterfaceSchema = z
   .openapi('SalesDataShipmentExtensionInterface')
 
 const SalesDataShipmentItemExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\Sales\\Api\\Data\\ShipmentItemInterface',
@@ -6554,7 +6961,7 @@ const SalesDataShipmentItemInterfaceSchema = z
   .openapi('SalesDataShipmentItemInterface')
 
 const SalesDataShipmentPackageExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\Sales\\Api\\Data\\ShipmentPackageInterface',
@@ -6573,7 +6980,7 @@ const SalesDataShipmentPackageInterfaceSchema = z
   .openapi('SalesDataShipmentPackageInterface')
 
 const SalesDataShipmentTrackExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\Sales\\Api\\Data\\ShipmentTrackInterface',
@@ -6650,7 +7057,7 @@ const SalesDataShipmentInterfaceSchema = z
   .openapi('SalesDataShipmentInterface')
 
 const SalesDataShipmentItemCreationExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\Sales\\Api\\Data\\ShipmentItemCreationInterface',
@@ -6671,7 +7078,7 @@ const SalesDataShipmentItemCreationInterfaceSchema = z
   .openapi('SalesDataShipmentItemCreationInterface')
 
 const SalesDataShipmentPackageCreationExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\Sales\\Api\\Data\\ShipmentPackageCreationInterface',
@@ -6705,7 +7112,7 @@ const SalesDataShipmentSearchResultInterfaceSchema = z
   .openapi('SalesDataShipmentSearchResultInterface')
 
 const SalesDataShipmentTrackCreationExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\Sales\\Api\\Data\\ShipmentTrackCreationInterface',
@@ -6809,7 +7216,7 @@ const SalesRuleDataConditionInterfaceSchema: z.ZodType<SalesRuleDataConditionInt
   .openapi('SalesRuleDataConditionInterface')
 
 const SalesRuleDataCouponExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\SalesRule\\Api\\Data\\CouponInterface',
@@ -6817,7 +7224,7 @@ const SalesRuleDataCouponExtensionInterfaceSchema = z
   .openapi('SalesRuleDataCouponExtensionInterface')
 
 const SalesRuleDataCouponGenerationSpecExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\SalesRule\\Api\\Data\\CouponGenerationSpecInterface',
@@ -6901,7 +7308,7 @@ const SalesRuleDataRuleExtensionInterfaceSchema = z
   .openapi('SalesRuleDataRuleExtensionInterface')
 
 const SalesRuleDataRuleLabelExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\SalesRule\\Api\\Data\\RuleLabelInterface',
@@ -7040,7 +7447,7 @@ const SharedCatalogDataSearchResultsInterfaceSchema = z
   .openapi('SharedCatalogDataSearchResultsInterface')
 
 const StoreDataGroupExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'ExtensionInterface class for @see \\Magento\\Store\\Api\\Data\\GroupInterface',
   })
@@ -7063,7 +7470,7 @@ const StoreDataGroupInterfaceSchema = z
   .openapi('StoreDataGroupInterface')
 
 const StoreDataStoreConfigExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\Store\\Api\\Data\\StoreConfigInterface',
@@ -7120,7 +7527,7 @@ const StoreDataStoreConfigInterfaceSchema = z
   .openapi('StoreDataStoreConfigInterface')
 
 const StoreDataStoreExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'ExtensionInterface class for @see \\Magento\\Store\\Api\\Data\\StoreInterface',
   })
@@ -7142,7 +7549,7 @@ const StoreDataStoreInterfaceSchema = z
   .openapi('StoreDataStoreInterface')
 
 const StoreDataWebsiteExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'ExtensionInterface class for @see \\Magento\\Store\\Api\\Data\\WebsiteInterface',
   })
@@ -7163,7 +7570,7 @@ const StoreDataWebsiteInterfaceSchema = z
   .openapi('StoreDataWebsiteInterface')
 
 const TaxDataTaxClassExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'ExtensionInterface class for @see \\Magento\\Tax\\Api\\Data\\TaxClassInterface',
   })
@@ -7192,14 +7599,14 @@ const TaxDataTaxClassSearchResultsInterfaceSchema = z
   .openapi('TaxDataTaxClassSearchResultsInterface')
 
 const TaxDataTaxRateExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'ExtensionInterface class for @see \\Magento\\Tax\\Api\\Data\\TaxRateInterface',
   })
   .openapi('TaxDataTaxRateExtensionInterface')
 
 const TaxDataTaxRateTitleExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'ExtensionInterface class for @see \\Magento\\Tax\\Api\\Data\\TaxRateTitleInterface',
@@ -7249,7 +7656,7 @@ const TaxDataTaxRateSearchResultsInterfaceSchema = z
   .openapi('TaxDataTaxRateSearchResultsInterface')
 
 const TaxDataTaxRuleExtensionInterfaceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'ExtensionInterface class for @see \\Magento\\Tax\\Api\\Data\\TaxRuleInterface',
   })

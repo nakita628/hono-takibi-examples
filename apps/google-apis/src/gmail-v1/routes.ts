@@ -1,5 +1,193 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const MessagePartSchema: z.ZodType<MessagePartType> = z
+  .lazy(() =>
+    z
+      .object({
+        body: MessagePartBodySchema.exactOptional().openapi({
+          description:
+            'The message part body for this part, which may be empty for container MIME message parts.',
+        }),
+        filename: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The filename of the attachment. Only present if this message part represents an attachment.',
+          }),
+        headers: z
+          .array(MessagePartHeaderSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              'List of headers on this message part. For the top-level message part, representing the entire message payload, it will contain the standard RFC 2822 email headers such as `To`, `From`, and `Subject`.',
+          }),
+        mimeType: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The MIME type of the message part.' }),
+        partId: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The immutable ID of the message part.' }),
+        parts: z
+          .array(MessagePartSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              'The child MIME message parts of this part. This only applies to container MIME message parts, for example `multipart/*`. For non- container MIME message part types, such as `text/plain`, this field is empty. For more information, see RFC 1521.',
+          }),
+      })
+      .openapi({ description: 'A single MIME message part.', required: [] }),
+  )
+  .openapi('MessagePart')
+
+const MessageSchema = z
+  .object({
+    historyId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of the last history record that modified this message.' }),
+    id: z.string().exactOptional().openapi({ description: 'The immutable ID of the message.' }),
+    internalDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The internal message creation timestamp (epoch ms), which determines ordering in the inbox. For normal SMTP-received email, this represents the time the message was originally accepted by Google, which is more reliable than the `Date` header. However, for API-migrated mail, it can be configured by client to be based on the `Date` header.',
+      }),
+    labelIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'List of IDs of labels applied to this message.' }),
+    payload: MessagePartSchema.exactOptional().openapi({
+      description: 'The parsed email structure in the message parts.',
+    }),
+    raw: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The entire email message in an RFC 2822 formatted and base64url encoded string. Returned in `messages.get` and `drafts.get` responses when the `format=RAW` parameter is supplied.',
+      }),
+    sizeEstimate: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Estimated size in bytes of the message.' }),
+    snippet: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A short part of the message text.' }),
+    threadId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the thread the message belongs to. To add a message or draft to a thread, the following criteria must be met: 1. The requested `threadId` must be specified on the `Message` or `Draft.Message` you supply with your request. 2. The `References` and `In-Reply-To` headers must be set in compliance with the [RFC 2822](https://tools.ietf.org/html/rfc2822) standard. 3. The `Subject` headers must match. ',
+      }),
+  })
+  .openapi({ description: 'An email message.', required: [] })
+  .openapi('Message')
+
+const HistoryLabelAddedSchema = z
+  .object({
+    labelIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Label IDs added to the message.' }),
+    message: MessageSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('HistoryLabelAdded')
+
+const HistoryLabelRemovedSchema = z
+  .object({
+    labelIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Label IDs removed from the message.' }),
+    message: MessageSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('HistoryLabelRemoved')
+
+const HistoryMessageAddedSchema = z
+  .object({ message: MessageSchema.exactOptional() })
+  .openapi({ required: [] })
+  .openapi('HistoryMessageAdded')
+
+const HistoryMessageDeletedSchema = z
+  .object({ message: MessageSchema.exactOptional() })
+  .openapi({ required: [] })
+  .openapi('HistoryMessageDeleted')
+
+const HistorySchema = z
+  .object({
+    id: z.string().exactOptional().openapi({ description: 'The mailbox sequence ID.' }),
+    labelsAdded: z
+      .array(HistoryLabelAddedSchema)
+      .exactOptional()
+      .openapi({ description: 'Labels added to messages in this history record.' }),
+    labelsRemoved: z
+      .array(HistoryLabelRemovedSchema)
+      .exactOptional()
+      .openapi({ description: 'Labels removed from messages in this history record.' }),
+    messages: z
+      .array(MessageSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'List of messages changed in this history record. The fields for specific change types, such as `messagesAdded` may duplicate messages in this field. We recommend using the specific change-type fields instead of this.',
+      }),
+    messagesAdded: z
+      .array(HistoryMessageAddedSchema)
+      .exactOptional()
+      .openapi({ description: 'Messages added to the mailbox in this history record.' }),
+    messagesDeleted: z
+      .array(HistoryMessageDeletedSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Messages deleted (not Trashed) from the mailbox in this history record.',
+      }),
+  })
+  .openapi({
+    description:
+      "A record of a change to the user's mailbox. Each history change may affect multiple messages in multiple ways.",
+    required: [],
+  })
+  .openapi('History')
+
+type ListHistoryResponseType = {
+  history?: z.infer<typeof HistorySchema>[]
+  historyId?: string
+  nextPageToken?: string
+}
+
+const ThreadSchema = z
+  .object({
+    historyId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of the last history record that modified this thread.' }),
+    id: z.string().exactOptional().openapi({ description: 'The unique ID of the thread.' }),
+    messages: z
+      .array(MessageSchema)
+      .exactOptional()
+      .openapi({ description: 'The list of messages in the thread.' }),
+    snippet: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A short part of the message text.' }),
+  })
+  .openapi({ description: 'A collection of messages representing a conversation.', required: [] })
+  .openapi('Thread')
+
+type ListThreadsResponseType = {
+  nextPageToken?: string
+  resultSizeEstimate?: number
+  threads?: z.infer<typeof ThreadSchema>[]
+}
+
 const MessagePartBodySchema = z
   .object({
     attachmentId: z
@@ -284,98 +472,9 @@ const DelegateSchema = z
   .openapi('Delegate')
 
 const DisableCseKeyPairRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Requests to turn off a client-side encryption key pair.' })
   .openapi('DisableCseKeyPairRequest')
-
-const MessagePartSchema: z.ZodType<MessagePartType> = z
-  .lazy(() =>
-    z
-      .object({
-        body: MessagePartBodySchema.exactOptional().openapi({
-          description:
-            'The message part body for this part, which may be empty for container MIME message parts.',
-        }),
-        filename: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The filename of the attachment. Only present if this message part represents an attachment.',
-          }),
-        headers: z
-          .array(MessagePartHeaderSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'List of headers on this message part. For the top-level message part, representing the entire message payload, it will contain the standard RFC 2822 email headers such as `To`, `From`, and `Subject`.',
-          }),
-        mimeType: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The MIME type of the message part.' }),
-        partId: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The immutable ID of the message part.' }),
-        parts: z
-          .array(MessagePartSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'The child MIME message parts of this part. This only applies to container MIME message parts, for example `multipart/*`. For non- container MIME message part types, such as `text/plain`, this field is empty. For more information, see RFC 1521.',
-          }),
-      })
-      .openapi({ description: 'A single MIME message part.', required: [] }),
-  )
-  .openapi('MessagePart')
-
-const MessageSchema = z
-  .object({
-    historyId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ID of the last history record that modified this message.' }),
-    id: z.string().exactOptional().openapi({ description: 'The immutable ID of the message.' }),
-    internalDate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The internal message creation timestamp (epoch ms), which determines ordering in the inbox. For normal SMTP-received email, this represents the time the message was originally accepted by Google, which is more reliable than the `Date` header. However, for API-migrated mail, it can be configured by client to be based on the `Date` header.',
-      }),
-    labelIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'List of IDs of labels applied to this message.' }),
-    payload: MessagePartSchema.exactOptional().openapi({
-      description: 'The parsed email structure in the message parts.',
-    }),
-    raw: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The entire email message in an RFC 2822 formatted and base64url encoded string. Returned in `messages.get` and `drafts.get` responses when the `format=RAW` parameter is supplied.',
-      }),
-    sizeEstimate: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Estimated size in bytes of the message.' }),
-    snippet: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A short part of the message text.' }),
-    threadId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The ID of the thread the message belongs to. To add a message or draft to a thread, the following criteria must be met: 1. The requested `threadId` must be specified on the `Message` or `Draft.Message` you supply with your request. 2. The `References` and `In-Reply-To` headers must be set in compliance with the [RFC 2822](https://tools.ietf.org/html/rfc2822) standard. 3. The `Subject` headers must match. ',
-      }),
-  })
-  .openapi({ description: 'An email message.', required: [] })
-  .openapi('Message')
 
 const DraftSchema = z
   .object({
@@ -388,7 +487,7 @@ const DraftSchema = z
   .openapi('Draft')
 
 const EnableCseKeyPairRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Requests to turn on a client-side encryption key pair.' })
   .openapi('EnableCseKeyPairRequest')
 
@@ -505,74 +604,6 @@ const ForwardingAddressSchema = z
   })
   .openapi({ description: 'Settings for a forwarding address.', required: [] })
   .openapi('ForwardingAddress')
-
-const HistoryLabelAddedSchema = z
-  .object({
-    labelIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Label IDs added to the message.' }),
-    message: MessageSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('HistoryLabelAdded')
-
-const HistoryLabelRemovedSchema = z
-  .object({
-    labelIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Label IDs removed from the message.' }),
-    message: MessageSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('HistoryLabelRemoved')
-
-const HistoryMessageAddedSchema = z
-  .object({ message: MessageSchema.exactOptional() })
-  .openapi({ required: [] })
-  .openapi('HistoryMessageAdded')
-
-const HistoryMessageDeletedSchema = z
-  .object({ message: MessageSchema.exactOptional() })
-  .openapi({ required: [] })
-  .openapi('HistoryMessageDeleted')
-
-const HistorySchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ description: 'The mailbox sequence ID.' }),
-    labelsAdded: z
-      .array(HistoryLabelAddedSchema)
-      .exactOptional()
-      .openapi({ description: 'Labels added to messages in this history record.' }),
-    labelsRemoved: z
-      .array(HistoryLabelRemovedSchema)
-      .exactOptional()
-      .openapi({ description: 'Labels removed from messages in this history record.' }),
-    messages: z
-      .array(MessageSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'List of messages changed in this history record. The fields for specific change types, such as `messagesAdded` may duplicate messages in this field. We recommend using the specific change-type fields instead of this.',
-      }),
-    messagesAdded: z
-      .array(HistoryMessageAddedSchema)
-      .exactOptional()
-      .openapi({ description: 'Messages added to the mailbox in this history record.' }),
-    messagesDeleted: z
-      .array(HistoryMessageDeletedSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Messages deleted (not Trashed) from the mailbox in this history record.',
-      }),
-  })
-  .openapi({
-    description:
-      "A record of a change to the user's mailbox. Each history change may affect multiple messages in multiple ways.",
-    required: [],
-  })
-  .openapi('History')
 
 const ImapSettingsSchema = z
   .object({
@@ -782,7 +813,7 @@ const ListForwardingAddressesResponseSchema = z
   .openapi({ description: 'Response for the ListForwardingAddresses method.', required: [] })
   .openapi('ListForwardingAddressesResponse')
 
-const ListHistoryResponseSchema = z
+const ListHistoryResponseSchema: z.ZodType<ListHistoryResponseType> = z
   .object({
     history: z
       .array(HistorySchema)
@@ -1001,26 +1032,7 @@ const ListSmimeInfoResponseSchema = z
   .openapi({ required: [] })
   .openapi('ListSmimeInfoResponse')
 
-const ThreadSchema = z
-  .object({
-    historyId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ID of the last history record that modified this thread.' }),
-    id: z.string().exactOptional().openapi({ description: 'The unique ID of the thread.' }),
-    messages: z
-      .array(MessageSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of messages in the thread.' }),
-    snippet: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A short part of the message text.' }),
-  })
-  .openapi({ description: 'A collection of messages representing a conversation.', required: [] })
-  .openapi('Thread')
-
-const ListThreadsResponseSchema = z
+const ListThreadsResponseSchema: z.ZodType<ListThreadsResponseType> = z
   .object({
     nextPageToken: z
       .string()
@@ -1082,7 +1094,7 @@ const ModifyThreadRequestSchema = z
   .openapi('ModifyThreadRequest')
 
 const ObliterateCseKeyPairRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request to obliterate a CSE key pair.' })
   .openapi('ObliterateCseKeyPairRequest')
 

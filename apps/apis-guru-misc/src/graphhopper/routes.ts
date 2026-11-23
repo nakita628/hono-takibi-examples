@@ -204,6 +204,478 @@ const ActivitySchema = z
   .openapi({ required: [] })
   .openapi('Activity')
 
+const RoutePointSchema = z
+  .object({
+    coordinates: z.array(z.looseObject({})).exactOptional(),
+    type: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('RoutePoint')
+
+const RouteSchema = z
+  .object({
+    activities: z
+      .array(ActivitySchema)
+      .exactOptional()
+      .openapi({
+        description: 'Array of activities',
+        example: [
+          {
+            address: { lat: 52.537, location_id: 'berlin', lon: 13.406 },
+            distance: 0,
+            driving_time: 0,
+            end_date_time: '2019-02-25T20:20+01:00',
+            end_time: 1551122400,
+            load_after: [0],
+            location_id: 'berlin',
+            preparation_time: 0,
+            type: 'start',
+            waiting_time: 0,
+          },
+          {
+            address: { lat: 52.527094, location_id: '13.408642_52.527094', lon: 13.408642 },
+            arr_date_time: '2019-02-25T20:25:13+01:00',
+            arr_time: 1551122713,
+            distance: 1777,
+            driving_time: 313,
+            end_date_time: '2019-02-25T20:25:13+01:00',
+            end_time: 1551122713,
+            id: 'berlin-2',
+            load_after: [0],
+            load_before: [0],
+            location_id: '13.408642_52.527094',
+            preparation_time: 0,
+            type: 'service',
+            waiting_time: 0,
+          },
+          {
+            address: { lat: 52.527303, location_id: '13.398170_52.527303', lon: 13.39817 },
+            arr_date_time: '2019-02-25T20:27:44+01:00',
+            arr_time: 1551122864,
+            distance: 2562,
+            driving_time: 464,
+            end_date_time: '2019-02-25T20:27:44+01:00',
+            end_time: 1551122864,
+            id: 'berlin-1',
+            load_after: [0],
+            load_before: [0],
+            location_id: '13.398170_52.527303',
+            preparation_time: 0,
+            type: 'service',
+            waiting_time: 0,
+          },
+          {
+            address: { lat: 52.537, location_id: 'berlin', lon: 13.406 },
+            arr_date_time: '2019-02-25T20:33:09+01:00',
+            arr_time: 1551123189,
+            distance: 4334,
+            driving_time: 789,
+            load_before: [0],
+            location_id: 'berlin',
+            preparation_time: 0,
+            type: 'end',
+            waiting_time: 0,
+          },
+        ],
+      }),
+    completion_time: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Completion time of route in seconds',
+        example: 1800,
+      }),
+    distance: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Distance of route in meter',
+        example: 10000,
+      }),
+    points: z
+      .array(RoutePointSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Array of route planning points',
+        example: [
+          {
+            coordinates: [
+              [13.4061, 52.53701],
+              [13.40643, 52.53634],
+              [13.4067, 52.53573],
+              [13.40722, 52.53479],
+              [13.40729, 52.53468],
+              [13.40735, 52.53463],
+              [13.41205, 52.53275],
+              [13.41245, 52.53264],
+              [13.41218, 52.53166],
+              [13.41205, 52.53139],
+              [13.41177, 52.53112],
+              [13.41072, 52.53033],
+              [13.41049, 52.53014],
+              [13.4098, 52.52928],
+              [13.40937, 52.5287],
+              [13.40994, 52.52858],
+              [13.41032, 52.52782],
+              [13.41054, 52.52745],
+              [13.41097, 52.52656],
+              [13.41107, 52.5265],
+              [13.41119, 52.52614],
+              [13.41119, 52.52604],
+              [13.41109, 52.52587],
+              [13.40971, 52.52631],
+              [13.40981, 52.52659],
+              [13.40891, 52.52683],
+              [13.40852, 52.52695],
+            ],
+            type: 'LineString',
+          },
+          {
+            coordinates: [
+              [13.40852, 52.52695],
+              [13.4081, 52.52706],
+              [13.40802, 52.52696],
+              [13.40469, 52.52758],
+              [13.4033, 52.52781],
+              [13.40331, 52.52767],
+              [13.40298, 52.52763],
+              [13.40261, 52.52807],
+              [13.39818, 52.52726],
+            ],
+            type: 'LineString',
+          },
+          {
+            coordinates: [
+              [13.39818, 52.52726],
+              [13.39808, 52.52725],
+              [13.39785, 52.52768],
+              [13.39727, 52.52866],
+              [13.39762, 52.52876],
+              [13.3976, 52.52914],
+              [13.39756, 52.52943],
+              [13.39597, 52.53243],
+              [13.39777, 52.5325],
+              [13.39843, 52.53254],
+              [13.39891, 52.53259],
+              [13.40288, 52.53354],
+              [13.40297, 52.53359],
+              [13.40338, 52.534],
+              [13.40466, 52.53419],
+              [13.40433, 52.53503],
+              [13.40443, 52.53511],
+              [13.40541, 52.53611],
+              [13.40547, 52.53615],
+              [13.40643, 52.53634],
+              [13.4061, 52.53701],
+            ],
+            type: 'LineString',
+          },
+        ],
+      }),
+    preparation_time: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Preparation time of route in seconds',
+      }),
+    service_duration: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Service duration of route in seconds',
+      }),
+    transport_time: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Transport time of route in seconds',
+        example: 1800,
+      }),
+    vehicle_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Id of vehicle that operates route', example: 'driver-stefan' }),
+    waiting_time: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Waiting time of route in seconds',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('Route')
+
+const DetailSchema = z
+  .object({
+    code: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Reason code\n\nCode   |  Reason\n:------|:---------\n1 | cannot serve required skill\n2 | cannot be visited within time window\n3 | does not fit into any vehicle due to capacity\n4 | cannot be assigned due to max distance constraint of vehicles\n21 | could not be assigned due to relation constraint\n22 | could not be assigned due to allowed vehicle constraint\n23 | could not be assigned due to max-time-in-vehicle constraint\n24 | driver does not need a break\n25 | could not be assigned due to disallowed vehicle constraint\n26 | could not be assigned due to max drive time constraint\n27 | could not be assigned due to max job constraint\n28 | could not be assigned due to max activity constraint\n50 | underlying location cannot be accessed over road network by at least one vehicle\n',
+      }),
+    id: z.string().exactOptional().openapi({ description: 'Id of unassigned service/shipment' }),
+    reason: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Human readable reason as listed above' }),
+  })
+  .openapi({ required: [] })
+  .openapi('Detail')
+
+const SolutionSchema = z
+  .object({
+    completion_time: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'Overall completion time in seconds, i.e. the sum of each routes/drivers operation time.',
+        example: 12000,
+      }),
+    costs: z.int32().exactOptional().openapi({ deprecated: true }),
+    distance: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          "Overall distance travelled in meter, i.e. the sum of each route's transport distance",
+        example: 1200,
+      }),
+    max_operation_time: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Operation time of longest route in seconds.',
+        example: 4000,
+      }),
+    no_unassigned: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'Number of jobs that could not be assigned to final solution.',
+        example: 1,
+      }),
+    no_vehicles: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Number of employed vehicles.', example: 10 }),
+    preparation_time: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Overall preparation time in seconds.',
+      }),
+    routes: z.array(RouteSchema).exactOptional().openapi({ description: 'An array of routes' }),
+    service_duration: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Overall service time in seconds.',
+        example: 1200,
+      }),
+    time: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        deprecated: true,
+        description: 'Use `transport_time` instead.',
+      }),
+    transport_time: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          "Overall time travelled in seconds, i.e. the sum of each route's transport time.",
+        example: 12000,
+      }),
+    unassigned: z
+      .object({
+        breaks: z
+          .array(z.string().openapi({ description: 'Id of unassigned breaks' }))
+          .exactOptional()
+          .openapi({ description: 'An array of ids of unassigned breaks' }),
+        details: z
+          .array(DetailSchema)
+          .exactOptional()
+          .openapi({
+            description: 'An array of details, i.e. reason for unassigned services or shipments',
+            example: [
+              { code: 3, id: 'service-1', reason: 'does not fit into any vehicle due to capacity' },
+              {
+                code: 27,
+                id: 'service-2',
+                reason: 'could not be assigned due to max job constraint',
+              },
+              { code: 2, id: 'shipment-5', reason: 'cannot be visited within time window' },
+            ],
+          }),
+        services: z
+          .array(z.string().openapi({ description: 'Id of unassigned service' }))
+          .exactOptional()
+          .openapi({
+            description: 'An array of ids of unassigned services',
+            example: ['service-1', 'service-3'],
+          }),
+        shipments: z
+          .array(z.string().openapi({ description: 'Id of unassigned shipments' }))
+          .exactOptional()
+          .openapi({
+            description: 'An array of ids of unassigned shipments',
+            example: ['shipment-5'],
+          }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    waiting_time: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Overall waiting time in seconds.',
+        example: 200,
+      }),
+  })
+  .openapi({ description: 'Only available if status field indicates `finished`.', required: [] })
+  .openapi('Solution')
+
+type ResponseType = {
+  copyrights?: string[]
+  processing_time?: bigint
+  solution?: z.infer<typeof SolutionSchema>
+  status?: 'waiting_in_queue' | 'processing' | 'finished'
+  waiting_time_in_queue?: bigint
+}
+
 const AddressSchema = z
   .object({
     curbside: z
@@ -530,24 +1002,6 @@ const CostMatrixSchema = z
   .openapi({ required: [] })
   .openapi('CostMatrix')
 
-const DetailSchema = z
-  .object({
-    code: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Reason code\n\nCode   |  Reason\n:------|:---------\n1 | cannot serve required skill\n2 | cannot be visited within time window\n3 | does not fit into any vehicle due to capacity\n4 | cannot be assigned due to max distance constraint of vehicles\n21 | could not be assigned due to relation constraint\n22 | could not be assigned due to allowed vehicle constraint\n23 | could not be assigned due to max-time-in-vehicle constraint\n24 | driver does not need a break\n25 | could not be assigned due to disallowed vehicle constraint\n26 | could not be assigned due to max drive time constraint\n27 | could not be assigned due to max job constraint\n28 | could not be assigned due to max activity constraint\n50 | underlying location cannot be accessed over road network by at least one vehicle\n',
-      }),
-    id: z.string().exactOptional().openapi({ description: 'Id of unassigned service/shipment' }),
-    reason: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Human readable reason as listed above' }),
-  })
-  .openapi({ required: [] })
-  .openapi('Detail')
-
 const DriveTimeBreakSchema = z
   .object({
     duration: z
@@ -848,7 +1302,7 @@ const InfoResponseSchema = z
           'The bounding box of the geographical area covered by this GraphHopper instance. Format: `"minLon,minLat,maxLon,maxLat"\n',
       }),
     features: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'The supported features, such as elevation, per vehicle profile.\n',
@@ -1055,14 +1509,10 @@ const MatrixRequestSchema = z
         description:
           'Specifies if turn restrictions should be considered. Enabling this option increases the matrix computation time. Only supported for motor vehicles and OpenStreetMap.',
       }),
-    vehicle: VehicleProfileIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The vehicle profile for which the route should be calculated. Other vehicles are listed [here](#section/Map-Data-and-Routing-Profiles/OpenStreetMap) for the details.',
-        }),
-    ).exactOptional(),
+    vehicle: VehicleProfileIdSchema.exactOptional().openapi({
+      description:
+        'The vehicle profile for which the route should be calculated. Other vehicles are listed [here](#section/Map-Data-and-Routing-Profiles/OpenStreetMap) for the details.',
+    }),
   })
   .openapi({
     example: {
@@ -1601,14 +2051,10 @@ const VehicleTypeSchema = z
         description:
           'Specifies the network data provider. Either use [`openstreetmap`](#section/Map-Data-and-Routing-Profiles/OpenStreetMap) (default) or [`tomtom`](#section/Map-Data-and-Routing-Profiles/TomTom) (add-on required).',
       }),
-    profile: z
-      .any()
-      .openapi({
-        description:
-          'Specifies the vehicle profile of this type. The profile is used to determine the network, speed and other physical attributes to use for routing the vehicle.',
-      })
-      .and(VehicleProfileIdSchema)
-      .exactOptional(),
+    profile: VehicleProfileIdSchema.exactOptional().openapi({
+      description:
+        'Specifies the vehicle profile of this type. The profile is used to determine the network, speed and other physical attributes to use for routing the vehicle.',
+    }),
     service_time_factor: z
       .float64()
       .default(1)
@@ -1999,450 +2445,7 @@ const RequestSchema = z
   })
   .openapi('Request')
 
-const RoutePointSchema = z
-  .object({ coordinates: z.array(z.object({})).exactOptional(), type: z.string().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('RoutePoint')
-
-const RouteSchema = z
-  .object({
-    activities: z
-      .array(ActivitySchema)
-      .exactOptional()
-      .openapi({
-        description: 'Array of activities',
-        example: [
-          {
-            address: { lat: 52.537, location_id: 'berlin', lon: 13.406 },
-            distance: 0,
-            driving_time: 0,
-            end_date_time: '2019-02-25T20:20+01:00',
-            end_time: 1551122400,
-            load_after: [0],
-            location_id: 'berlin',
-            preparation_time: 0,
-            type: 'start',
-            waiting_time: 0,
-          },
-          {
-            address: { lat: 52.527094, location_id: '13.408642_52.527094', lon: 13.408642 },
-            arr_date_time: '2019-02-25T20:25:13+01:00',
-            arr_time: 1551122713,
-            distance: 1777,
-            driving_time: 313,
-            end_date_time: '2019-02-25T20:25:13+01:00',
-            end_time: 1551122713,
-            id: 'berlin-2',
-            load_after: [0],
-            load_before: [0],
-            location_id: '13.408642_52.527094',
-            preparation_time: 0,
-            type: 'service',
-            waiting_time: 0,
-          },
-          {
-            address: { lat: 52.527303, location_id: '13.398170_52.527303', lon: 13.39817 },
-            arr_date_time: '2019-02-25T20:27:44+01:00',
-            arr_time: 1551122864,
-            distance: 2562,
-            driving_time: 464,
-            end_date_time: '2019-02-25T20:27:44+01:00',
-            end_time: 1551122864,
-            id: 'berlin-1',
-            load_after: [0],
-            load_before: [0],
-            location_id: '13.398170_52.527303',
-            preparation_time: 0,
-            type: 'service',
-            waiting_time: 0,
-          },
-          {
-            address: { lat: 52.537, location_id: 'berlin', lon: 13.406 },
-            arr_date_time: '2019-02-25T20:33:09+01:00',
-            arr_time: 1551123189,
-            distance: 4334,
-            driving_time: 789,
-            load_before: [0],
-            location_id: 'berlin',
-            preparation_time: 0,
-            type: 'end',
-            waiting_time: 0,
-          },
-        ],
-      }),
-    completion_time: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Completion time of route in seconds',
-        example: 1800,
-      }),
-    distance: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Distance of route in meter',
-        example: 10000,
-      }),
-    points: z
-      .array(RoutePointSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Array of route planning points',
-        example: [
-          {
-            coordinates: [
-              [13.4061, 52.53701],
-              [13.40643, 52.53634],
-              [13.4067, 52.53573],
-              [13.40722, 52.53479],
-              [13.40729, 52.53468],
-              [13.40735, 52.53463],
-              [13.41205, 52.53275],
-              [13.41245, 52.53264],
-              [13.41218, 52.53166],
-              [13.41205, 52.53139],
-              [13.41177, 52.53112],
-              [13.41072, 52.53033],
-              [13.41049, 52.53014],
-              [13.4098, 52.52928],
-              [13.40937, 52.5287],
-              [13.40994, 52.52858],
-              [13.41032, 52.52782],
-              [13.41054, 52.52745],
-              [13.41097, 52.52656],
-              [13.41107, 52.5265],
-              [13.41119, 52.52614],
-              [13.41119, 52.52604],
-              [13.41109, 52.52587],
-              [13.40971, 52.52631],
-              [13.40981, 52.52659],
-              [13.40891, 52.52683],
-              [13.40852, 52.52695],
-            ],
-            type: 'LineString',
-          },
-          {
-            coordinates: [
-              [13.40852, 52.52695],
-              [13.4081, 52.52706],
-              [13.40802, 52.52696],
-              [13.40469, 52.52758],
-              [13.4033, 52.52781],
-              [13.40331, 52.52767],
-              [13.40298, 52.52763],
-              [13.40261, 52.52807],
-              [13.39818, 52.52726],
-            ],
-            type: 'LineString',
-          },
-          {
-            coordinates: [
-              [13.39818, 52.52726],
-              [13.39808, 52.52725],
-              [13.39785, 52.52768],
-              [13.39727, 52.52866],
-              [13.39762, 52.52876],
-              [13.3976, 52.52914],
-              [13.39756, 52.52943],
-              [13.39597, 52.53243],
-              [13.39777, 52.5325],
-              [13.39843, 52.53254],
-              [13.39891, 52.53259],
-              [13.40288, 52.53354],
-              [13.40297, 52.53359],
-              [13.40338, 52.534],
-              [13.40466, 52.53419],
-              [13.40433, 52.53503],
-              [13.40443, 52.53511],
-              [13.40541, 52.53611],
-              [13.40547, 52.53615],
-              [13.40643, 52.53634],
-              [13.4061, 52.53701],
-            ],
-            type: 'LineString',
-          },
-        ],
-      }),
-    preparation_time: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Preparation time of route in seconds',
-      }),
-    service_duration: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Service duration of route in seconds',
-      }),
-    transport_time: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Transport time of route in seconds',
-        example: 1800,
-      }),
-    vehicle_id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Id of vehicle that operates route', example: 'driver-stefan' }),
-    waiting_time: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Waiting time of route in seconds',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('Route')
-
-const SolutionSchema = z
-  .object({
-    completion_time: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'Overall completion time in seconds, i.e. the sum of each routes/drivers operation time.',
-        example: 12000,
-      }),
-    costs: z.int32().exactOptional().openapi({ deprecated: true }),
-    distance: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          "Overall distance travelled in meter, i.e. the sum of each route's transport distance",
-        example: 1200,
-      }),
-    max_operation_time: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Operation time of longest route in seconds.',
-        example: 4000,
-      }),
-    no_unassigned: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'Number of jobs that could not be assigned to final solution.',
-        example: 1,
-      }),
-    no_vehicles: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Number of employed vehicles.', example: 10 }),
-    preparation_time: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Overall preparation time in seconds.',
-      }),
-    routes: z.array(RouteSchema).exactOptional().openapi({ description: 'An array of routes' }),
-    service_duration: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Overall service time in seconds.',
-        example: 1200,
-      }),
-    time: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        deprecated: true,
-        description: 'Use `transport_time` instead.',
-      }),
-    transport_time: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          "Overall time travelled in seconds, i.e. the sum of each route's transport time.",
-        example: 12000,
-      }),
-    unassigned: z
-      .object({
-        breaks: z
-          .array(z.string().openapi({ description: 'Id of unassigned breaks' }))
-          .exactOptional()
-          .openapi({ description: 'An array of ids of unassigned breaks' }),
-        details: z
-          .array(DetailSchema)
-          .exactOptional()
-          .openapi({
-            description: 'An array of details, i.e. reason for unassigned services or shipments',
-            example: [
-              { code: 3, id: 'service-1', reason: 'does not fit into any vehicle due to capacity' },
-              {
-                code: 27,
-                id: 'service-2',
-                reason: 'could not be assigned due to max job constraint',
-              },
-              { code: 2, id: 'shipment-5', reason: 'cannot be visited within time window' },
-            ],
-          }),
-        services: z
-          .array(z.string().openapi({ description: 'Id of unassigned service' }))
-          .exactOptional()
-          .openapi({
-            description: 'An array of ids of unassigned services',
-            example: ['service-1', 'service-3'],
-          }),
-        shipments: z
-          .array(z.string().openapi({ description: 'Id of unassigned shipments' }))
-          .exactOptional()
-          .openapi({
-            description: 'An array of ids of unassigned shipments',
-            example: ['shipment-5'],
-          }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    waiting_time: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Overall waiting time in seconds.',
-        example: 200,
-      }),
-  })
-  .openapi({ description: 'Only available if status field indicates `finished`.', required: [] })
-  .openapi('Solution')
-
-const ResponseSchema = z
+const ResponseSchema: z.ZodType<ResponseType> = z
   .object({
     copyrights: z
       .array(z.string().openapi({ description: 'Attribution' }))
@@ -3139,16 +3142,11 @@ const RouteRequestSchema = z
           'Optional parameter to avoid snapping to a certain road class or road environment. Current supported values `motorway`, `trunk`, `ferry`, `tunnel`, `bridge` and `ford`',
         example: ['motorway', 'ferry', 'tunnel'],
       }),
-    vehicle: VehicleProfileIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The vehicle profile for which the route should be calculated. Other vehicles are listed [here](#section/Map-Data-and-Routing-Profiles/OpenStreetMap) for the details.',
-        }),
-    )
-      .exactOptional()
-      .openapi({ example: 'bike' }),
+    vehicle: VehicleProfileIdSchema.exactOptional().openapi({
+      description:
+        'The vehicle profile for which the route should be calculated. Other vehicles are listed [here](#section/Map-Data-and-Routing-Profiles/OpenStreetMap) for the details.',
+      example: 'bike',
+    }),
     weighting: z
       .string()
       .default('fastest')
@@ -3192,7 +3190,7 @@ const RouteResponsePathSchema = z
       .exactOptional()
       .openapi({ description: 'The total descent, in meters.\n' }),
     details: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -3267,13 +3265,12 @@ const RouteResponsePathSchema = z
           'The instructions for this route. This feature is under active development, and our instructions can sometimes be misleading,\nso be mindful when using them for navigation.\n',
       }),
     points: z
-      .any()
+      .union([EncodedLineStringSchema, LineStringSchema])
+      .exactOptional()
       .openapi({
         description:
           'The geometry of the route. The format depends on the value of `points_encoded`.\n',
-      })
-      .and(z.union([EncodedLineStringSchema, LineStringSchema]))
-      .exactOptional(),
+      }),
     points_encoded: z
       .boolean()
       .exactOptional()
@@ -3289,13 +3286,12 @@ const RouteResponsePathSchema = z
           'An array of indices (zero-based), specifiying the order in which the input points are visited.\nOnly present if the `optimize` parameter was used.\n',
       }),
     snapped_waypoints: z
-      .any()
+      .union([EncodedLineStringSchema, LineStringSchema])
+      .exactOptional()
       .openapi({
         description:
           'The snapped input points. The format depends on the value of `points_encoded`.\n',
-      })
-      .and(z.union([EncodedLineStringSchema, LineStringSchema]))
-      .exactOptional(),
+      }),
     time: z
       .preprocess(
         (val) =>
@@ -3495,14 +3491,10 @@ const SymmetricalMatrixRequestSchema = z
         description:
           'Specifies if turn restrictions should be considered. Enabling this option increases the matrix computation time. Only supported for motor vehicles and OpenStreetMap.',
       }),
-    vehicle: VehicleProfileIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The vehicle profile for which the route should be calculated. Other vehicles are listed [here](#section/Map-Data-and-Routing-Profiles/OpenStreetMap) for the details.',
-        }),
-    ).exactOptional(),
+    vehicle: VehicleProfileIdSchema.exactOptional().openapi({
+      description:
+        'The vehicle profile for which the route should be calculated. Other vehicles are listed [here](#section/Map-Data-and-Routing-Profiles/OpenStreetMap) for the details.',
+    }),
   })
   .openapi({
     example: {
@@ -3541,50 +3533,33 @@ export const postClusterRoute = createRoute({
       description: 'A response containing the solution',
       content: { 'application/json': { schema: ClusterResponseSchema } },
       headers: z.object({
-        'X-RateLimit-Credits': {
-          description:
-            'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Your current daily credit limit.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your current daily credit limit.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'Your remaining credits until the reset.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your remaining credits until the reset.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description:
-            'The number of seconds that you have to wait before a reset of the credit count is done.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The number of seconds that you have to wait before a reset of the credit count is done.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Credits': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Your current daily credit limit.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Your remaining credits until the reset.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The number of seconds that you have to wait before a reset of the credit count is done.',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -3619,50 +3594,33 @@ export const postClusterCalculateRoute = createRoute({
         'A jobId you can use to retrieve your solution from the server - see solution endpoint.',
       content: { 'application/json': { schema: JobIdSchema } },
       headers: z.object({
-        'X-RateLimit-Credits': {
-          description:
-            'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Your current daily credit limit.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your current daily credit limit.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'Your remaining credits until the reset.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your remaining credits until the reset.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description:
-            'The number of seconds that you have to wait before a reset of the credit count is done.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The number of seconds that you have to wait before a reset of the credit count is done.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Credits': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Your current daily credit limit.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Your remaining credits until the reset.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The number of seconds that you have to wait before a reset of the credit count is done.',
+            param: { required: false },
+          }),
       }),
       links: {
         GetSolutionByJobId: {
@@ -3712,50 +3670,33 @@ export const getClusterSolutionJobIdRoute = createRoute({
       description: 'A response containing the solution',
       content: { 'application/json': { schema: ClusterResponseSchema } },
       headers: z.object({
-        'X-RateLimit-Credits': {
-          description:
-            'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Your current daily credit limit.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your current daily credit limit.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'Your remaining credits until the reset.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your remaining credits until the reset.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description:
-            'The number of seconds that you have to wait before a reset of the credit count is done.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The number of seconds that you have to wait before a reset of the credit count is done.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Credits': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Your current daily credit limit.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Your remaining credits until the reset.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The number of seconds that you have to wait before a reset of the credit count is done.',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -3908,50 +3849,33 @@ export const getGeocodeRoute = createRoute({
       description: 'An array found locations',
       content: { 'application/json': { schema: GeocodingResponseSchema } },
       headers: z.object({
-        'X-RateLimit-Credits': {
-          description:
-            'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Your current daily credit limit.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your current daily credit limit.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'Your remaining credits until the reset.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your remaining credits until the reset.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description:
-            'The number of seconds that you have to wait before a reset of the credit count is done.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The number of seconds that you have to wait before a reset of the credit count is done.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Credits': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Your current daily credit limit.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Your remaining credits until the reset.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The number of seconds that you have to wait before a reset of the credit count is done.',
+            param: { required: false },
+          }),
       }),
     },
     default: {
@@ -4144,50 +4068,33 @@ export const postMatchRoute = createRoute({
       description: 'Routing Result',
       content: { 'application/json': { schema: RouteResponseSchema } },
       headers: z.object({
-        'X-RateLimit-Credits': {
-          description:
-            'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Your current daily credit limit.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your current daily credit limit.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'Your remaining credits until the reset.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your remaining credits until the reset.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description:
-            'The number of seconds that you have to wait before a reset of the credit count is done.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The number of seconds that you have to wait before a reset of the credit count is done.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Credits': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Your current daily credit limit.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Your remaining credits until the reset.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The number of seconds that you have to wait before a reset of the credit count is done.',
+            param: { required: false },
+          }),
       }),
     },
     default: {
@@ -4433,50 +4340,33 @@ export const getMatrixRoute = createRoute({
       description: 'Matrix API response',
       content: { 'application/json': { schema: MatrixResponseSchema } },
       headers: z.object({
-        'X-RateLimit-Credits': {
-          description:
-            'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Your current daily credit limit.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your current daily credit limit.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'Your remaining credits until the reset.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your remaining credits until the reset.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description:
-            'The number of seconds that you have to wait before a reset of the credit count is done.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The number of seconds that you have to wait before a reset of the credit count is done.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Credits': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Your current daily credit limit.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Your remaining credits until the reset.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The number of seconds that you have to wait before a reset of the credit count is done.',
+            param: { required: false },
+          }),
       }),
     },
     default: {
@@ -4508,50 +4398,33 @@ export const postMatrixRoute = createRoute({
       description: 'Matrix API response',
       content: { 'application/json': { schema: MatrixResponseSchema } },
       headers: z.object({
-        'X-RateLimit-Credits': {
-          description:
-            'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Your current daily credit limit.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your current daily credit limit.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'Your remaining credits until the reset.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your remaining credits until the reset.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description:
-            'The number of seconds that you have to wait before a reset of the credit count is done.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The number of seconds that you have to wait before a reset of the credit count is done.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Credits': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Your current daily credit limit.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Your remaining credits until the reset.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The number of seconds that you have to wait before a reset of the credit count is done.',
+            param: { required: false },
+          }),
       }),
     },
     default: {
@@ -4583,50 +4456,33 @@ export const postMatrixCalculateRoute = createRoute({
       description: 'A jobId you can use to retrieve your solution from the server.',
       content: { 'application/json': { schema: JobIdSchema } },
       headers: z.object({
-        'X-RateLimit-Credits': {
-          description:
-            'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Your current daily credit limit.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your current daily credit limit.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'Your remaining credits until the reset.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your remaining credits until the reset.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description:
-            'The number of seconds that you have to wait before a reset of the credit count is done.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The number of seconds that you have to wait before a reset of the credit count is done.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Credits': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Your current daily credit limit.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Your remaining credits until the reset.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The number of seconds that you have to wait before a reset of the credit count is done.',
+            param: { required: false },
+          }),
       }),
     },
     default: {
@@ -4664,50 +4520,33 @@ export const getMatrixSolutionJobIdRoute = createRoute({
       description: 'A response containing the matrix',
       content: { 'application/json': { schema: MatrixResponseSchema } },
       headers: z.object({
-        'X-RateLimit-Credits': {
-          description:
-            'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Your current daily credit limit.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your current daily credit limit.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'Your remaining credits until the reset.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your remaining credits until the reset.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description:
-            'The number of seconds that you have to wait before a reset of the credit count is done.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The number of seconds that you have to wait before a reset of the credit count is done.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Credits': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Your current daily credit limit.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Your remaining credits until the reset.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The number of seconds that you have to wait before a reset of the credit count is done.',
+            param: { required: false },
+          }),
       }),
     },
     default: {
@@ -5172,50 +5011,33 @@ export const getRouteRoute = createRoute({
       description: 'Routing Result',
       content: { 'application/json': { schema: RouteResponseSchema } },
       headers: z.object({
-        'X-RateLimit-Credits': {
-          description:
-            'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Your current daily credit limit.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your current daily credit limit.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'Your remaining credits until the reset.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your remaining credits until the reset.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description:
-            'The number of seconds that you have to wait before a reset of the credit count is done.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The number of seconds that you have to wait before a reset of the credit count is done.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Credits': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Your current daily credit limit.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Your remaining credits until the reset.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The number of seconds that you have to wait before a reset of the credit count is done.',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -5223,250 +5045,165 @@ export const getRouteRoute = createRoute({
         'Your request is not valid. For example, you specified too few or too many points.',
       content: { 'application/json': { schema: GHErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Credits': {
-          description:
-            'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Your current daily credit limit.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your current daily credit limit.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'Your remaining credits until the reset.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your remaining credits until the reset.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description:
-            'The number of seconds that you have to wait before a reset of the credit count is done.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The number of seconds that you have to wait before a reset of the credit count is done.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Credits': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Your current daily credit limit.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Your remaining credits until the reset.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The number of seconds that you have to wait before a reset of the credit count is done.',
+            param: { required: false },
+          }),
       }),
     },
     401: {
       description: 'Authentication necessary',
       content: { 'application/json': { schema: GHErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Credits': {
-          description:
-            'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Your current daily credit limit.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your current daily credit limit.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'Your remaining credits until the reset.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your remaining credits until the reset.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description:
-            'The number of seconds that you have to wait before a reset of the credit count is done.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The number of seconds that you have to wait before a reset of the credit count is done.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Credits': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Your current daily credit limit.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Your remaining credits until the reset.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The number of seconds that you have to wait before a reset of the credit count is done.',
+            param: { required: false },
+          }),
       }),
     },
     429: {
       description: 'API limit reached.',
       content: { 'application/json': { schema: GHErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Credits': {
-          description:
-            'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Your current daily credit limit.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your current daily credit limit.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'Your remaining credits until the reset.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your remaining credits until the reset.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description:
-            'The number of seconds that you have to wait before a reset of the credit count is done.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The number of seconds that you have to wait before a reset of the credit count is done.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Credits': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Your current daily credit limit.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Your remaining credits until the reset.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The number of seconds that you have to wait before a reset of the credit count is done.',
+            param: { required: false },
+          }),
       }),
     },
     500: {
       description: 'Internal server error. We get notified automatically and fix this asap.',
       content: { 'application/json': { schema: GHErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Credits': {
-          description:
-            'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Your current daily credit limit.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your current daily credit limit.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'Your remaining credits until the reset.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your remaining credits until the reset.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description:
-            'The number of seconds that you have to wait before a reset of the credit count is done.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The number of seconds that you have to wait before a reset of the credit count is done.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Credits': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Your current daily credit limit.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Your remaining credits until the reset.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The number of seconds that you have to wait before a reset of the credit count is done.',
+            param: { required: false },
+          }),
       }),
     },
     501: {
       description: 'Only a special list of vehicles is supported.',
       content: { 'application/json': { schema: GHErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Credits': {
-          description:
-            'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Your current daily credit limit.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your current daily credit limit.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'Your remaining credits until the reset.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your remaining credits until the reset.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description:
-            'The number of seconds that you have to wait before a reset of the credit count is done.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The number of seconds that you have to wait before a reset of the credit count is done.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Credits': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Your current daily credit limit.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Your remaining credits until the reset.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The number of seconds that you have to wait before a reset of the credit count is done.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -5486,50 +5223,33 @@ export const postRouteRoute = createRoute({
       description: 'Routing Result',
       content: { 'application/json': { schema: RouteResponseSchema } },
       headers: z.object({
-        'X-RateLimit-Credits': {
-          description:
-            'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Your current daily credit limit.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your current daily credit limit.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'Your remaining credits until the reset.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your remaining credits until the reset.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description:
-            'The number of seconds that you have to wait before a reset of the credit count is done.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The number of seconds that you have to wait before a reset of the credit count is done.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Credits': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Your current daily credit limit.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Your remaining credits until the reset.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The number of seconds that you have to wait before a reset of the credit count is done.',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -5537,250 +5257,165 @@ export const postRouteRoute = createRoute({
         'Your request is not valid. For example, you specified too few or too many points.',
       content: { 'application/json': { schema: GHErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Credits': {
-          description:
-            'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Your current daily credit limit.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your current daily credit limit.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'Your remaining credits until the reset.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your remaining credits until the reset.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description:
-            'The number of seconds that you have to wait before a reset of the credit count is done.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The number of seconds that you have to wait before a reset of the credit count is done.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Credits': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Your current daily credit limit.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Your remaining credits until the reset.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The number of seconds that you have to wait before a reset of the credit count is done.',
+            param: { required: false },
+          }),
       }),
     },
     401: {
       description: 'Authentication necessary',
       content: { 'application/json': { schema: GHErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Credits': {
-          description:
-            'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Your current daily credit limit.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your current daily credit limit.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'Your remaining credits until the reset.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your remaining credits until the reset.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description:
-            'The number of seconds that you have to wait before a reset of the credit count is done.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The number of seconds that you have to wait before a reset of the credit count is done.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Credits': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Your current daily credit limit.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Your remaining credits until the reset.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The number of seconds that you have to wait before a reset of the credit count is done.',
+            param: { required: false },
+          }),
       }),
     },
     429: {
       description: 'API limit reached.',
       content: { 'application/json': { schema: GHErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Credits': {
-          description:
-            'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Your current daily credit limit.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your current daily credit limit.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'Your remaining credits until the reset.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your remaining credits until the reset.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description:
-            'The number of seconds that you have to wait before a reset of the credit count is done.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The number of seconds that you have to wait before a reset of the credit count is done.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Credits': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Your current daily credit limit.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Your remaining credits until the reset.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The number of seconds that you have to wait before a reset of the credit count is done.',
+            param: { required: false },
+          }),
       }),
     },
     500: {
       description: 'Internal server error. We get notified automatically and fix this asap.',
       content: { 'application/json': { schema: GHErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Credits': {
-          description:
-            'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Your current daily credit limit.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your current daily credit limit.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'Your remaining credits until the reset.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your remaining credits until the reset.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description:
-            'The number of seconds that you have to wait before a reset of the credit count is done.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The number of seconds that you have to wait before a reset of the credit count is done.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Credits': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Your current daily credit limit.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Your remaining credits until the reset.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The number of seconds that you have to wait before a reset of the credit count is done.',
+            param: { required: false },
+          }),
       }),
     },
     501: {
       description: 'Only a special list of vehicles is supported.',
       content: { 'application/json': { schema: GHErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Credits': {
-          description:
-            'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Your current daily credit limit.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your current daily credit limit.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'Your remaining credits until the reset.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your remaining credits until the reset.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description:
-            'The number of seconds that you have to wait before a reset of the credit count is done.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The number of seconds that you have to wait before a reset of the credit count is done.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Credits': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Your current daily credit limit.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Your remaining credits until the reset.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The number of seconds that you have to wait before a reset of the credit count is done.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -5821,50 +5456,33 @@ export const postVrpRoute = createRoute({
       description: 'A response containing the solution',
       content: { 'application/json': { schema: ResponseSchema } },
       headers: z.object({
-        'X-RateLimit-Credits': {
-          description:
-            'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Your current daily credit limit.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your current daily credit limit.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'Your remaining credits until the reset.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your remaining credits until the reset.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description:
-            'The number of seconds that you have to wait before a reset of the credit count is done.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The number of seconds that you have to wait before a reset of the credit count is done.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Credits': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Your current daily credit limit.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Your remaining credits until the reset.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The number of seconds that you have to wait before a reset of the credit count is done.',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -5899,50 +5517,33 @@ export const postVrpOptimizeRoute = createRoute({
         'A jobId you can use to retrieve your solution from the server - see solution endpoint.',
       content: { 'application/json': { schema: JobIdSchema } },
       headers: z.object({
-        'X-RateLimit-Credits': {
-          description:
-            'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Your current daily credit limit.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your current daily credit limit.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'Your remaining credits until the reset.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your remaining credits until the reset.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description:
-            'The number of seconds that you have to wait before a reset of the credit count is done.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The number of seconds that you have to wait before a reset of the credit count is done.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Credits': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Your current daily credit limit.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Your remaining credits until the reset.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The number of seconds that you have to wait before a reset of the credit count is done.',
+            param: { required: false },
+          }),
       }),
       links: {
         GetSolutionByJobId: {
@@ -5992,50 +5593,33 @@ export const getVrpSolutionJobIdRoute = createRoute({
       description: 'A response containing the solution',
       content: { 'application/json': { schema: ResponseSchema } },
       headers: z.object({
-        'X-RateLimit-Credits': {
-          description:
-            'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Your current daily credit limit.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your current daily credit limit.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'Your remaining credits until the reset.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Your remaining credits until the reset.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description:
-            'The number of seconds that you have to wait before a reset of the credit count is done.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The number of seconds that you have to wait before a reset of the credit count is done.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Credits': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The credit costs for this request. Note it could be a decimal and even negative number, e.g. when an async request failed.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Your current daily credit limit.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Your remaining credits until the reset.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The number of seconds that you have to wait before a reset of the credit count is done.',
+            param: { required: false },
+          }),
       }),
     },
     400: {

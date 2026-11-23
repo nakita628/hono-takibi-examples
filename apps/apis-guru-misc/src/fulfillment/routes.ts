@@ -2004,7 +2004,7 @@ export const postOrdersRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              context: z.array(z.object({})).exactOptional(),
+              context: z.array(z.looseObject({})).exactOptional(),
               message: z.string().exactOptional(),
             })
             .openapi({ title: 'ErrorStandardWithContext.v2', required: [] }),
@@ -2020,7 +2020,7 @@ export const postOrdersRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              context: z.array(z.object({})).exactOptional(),
+              context: z.array(z.looseObject({})).exactOptional(),
               message: z.string().exactOptional(),
             })
             .openapi({ title: 'ErrorStandardWithContext.v2', required: [] }),

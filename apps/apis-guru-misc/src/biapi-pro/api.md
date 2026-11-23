@@ -1262,7 +1262,7 @@ For user's tokens in the jwt format, the "type" field will be renamed from "shar
 
 Base URLs:
 
-* <a href="https://api.apis.guru//budgea.biapi.pro/2.0">https://api.apis.guru//budgea.biapi.pro/2.0</a>
+* <a href="//budgea.biapi.pro/2.0">//budgea.biapi.pro/2.0</a>
 
 <h1 id="budgea-api-documentation-administration">Administration</h1>
 

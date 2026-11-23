@@ -4,7 +4,7 @@
 
 Base URLs:
 
-* <a href="https://api.apis.guru/">https://api.apis.guru/</a>
+* <a href="/">/</a>
 
 <a href="http://wiremock.org/docs/">WireMock user documentation</a>
 

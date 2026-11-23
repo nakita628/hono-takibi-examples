@@ -1,7 +1,7 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
 const AssociateConfigurationItemsToApplicationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('AssociateConfigurationItemsToApplicationResponse')
 
 const ApplicationIdSchema = z.string().regex(/\S+/).max(200).openapi('ApplicationId')
@@ -12,21 +12,12 @@ const ConfigurationIdListSchema = z.array(ConfigurationIdSchema).openapi('Config
 
 const AssociateConfigurationItemsToApplicationRequestSchema = z
   .object({
-    applicationConfigurationId: ApplicationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration ID of an application with which items are to be associated.',
-        }),
-    ),
-    configurationIds: ConfigurationIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of each configuration item to be associated with an application.',
-        }),
-    ),
+    applicationConfigurationId: ApplicationIdSchema.openapi({
+      description: 'The configuration ID of an application with which items are to be associated.',
+    }),
+    configurationIds: ConfigurationIdListSchema.openapi({
+      description: 'The ID of each configuration item to be associated with an application.',
+    }),
   })
   .openapi({
     required: ['applicationConfigurationId', 'configurationIds'],
@@ -56,23 +47,15 @@ const BatchDeleteImportDataErrorDescriptionSchema = z
 
 const BatchDeleteImportDataErrorSchema = z
   .object({
-    importTaskId: ImportTaskIdentifierSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The unique import ID associated with the error that occurred.' }),
-    ).exactOptional(),
-    errorCode: BatchDeleteImportDataErrorCodeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The type of error that occurred for a specific import task.' }),
-    ).exactOptional(),
-    errorDescription: BatchDeleteImportDataErrorDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The description of the error that occurred for a specific import task.',
-        }),
-    ).exactOptional(),
+    importTaskId: ImportTaskIdentifierSchema.exactOptional().openapi({
+      description: 'The unique import ID associated with the error that occurred.',
+    }),
+    errorCode: BatchDeleteImportDataErrorCodeSchema.exactOptional().openapi({
+      description: 'The type of error that occurred for a specific import task.',
+    }),
+    errorDescription: BatchDeleteImportDataErrorDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the error that occurred for a specific import task.',
+    }),
   })
   .openapi({
     description:
@@ -87,14 +70,10 @@ const BatchDeleteImportDataErrorListSchema = z
 
 const BatchDeleteImportDataResponseSchema = z
   .object({
-    errors: BatchDeleteImportDataErrorListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Error messages returned for each import task that you deleted as a response for this command.',
-        }),
-    ).exactOptional(),
+    errors: BatchDeleteImportDataErrorListSchema.exactOptional().openapi({
+      description:
+        'Error messages returned for each import task that you deleted as a response for this command.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('BatchDeleteImportDataResponse')
@@ -107,9 +86,9 @@ const ToDeleteIdentifierListSchema = z
 
 const BatchDeleteImportDataRequestSchema = z
   .object({
-    importTaskIds: ToDeleteIdentifierListSchema.and(
-      z.any().openapi({ description: 'The IDs for the import tasks that you want to delete.' }),
-    ),
+    importTaskIds: ToDeleteIdentifierListSchema.openapi({
+      description: 'The IDs for the import tasks that you want to delete.',
+    }),
   })
   .openapi({ required: ['importTaskIds'], title: 'BatchDeleteImportDataRequest' })
   .openapi('BatchDeleteImportDataRequest')
@@ -122,9 +101,9 @@ const StringSchema = z
 
 const CreateApplicationResponseSchema = z
   .object({
-    configurationId: StringSchema.and(
-      z.any().openapi({ description: 'Configuration ID of an application to be created.' }),
-    ).exactOptional(),
+    configurationId: StringSchema.exactOptional().openapi({
+      description: 'Configuration ID of an application to be created.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateApplicationResponse')
@@ -143,17 +122,15 @@ const ApplicationDescriptionSchema = z
 
 const CreateApplicationRequestSchema = z
   .object({
-    name: ApplicationNameSchema.and(
-      z.any().openapi({ description: 'Name of the application to be created.' }),
-    ),
-    description: ApplicationDescriptionSchema.and(
-      z.any().openapi({ description: 'Description of the application to be created.' }),
-    ).exactOptional(),
+    name: ApplicationNameSchema.openapi({ description: 'Name of the application to be created.' }),
+    description: ApplicationDescriptionSchema.exactOptional().openapi({
+      description: 'Description of the application to be created.',
+    }),
   })
   .openapi({ required: ['name'], title: 'CreateApplicationRequest' })
   .openapi('CreateApplicationRequest')
 
-const CreateTagsResponseSchema = z.object({}).openapi('CreateTagsResponse')
+const CreateTagsResponseSchema = z.looseObject({}).openapi('CreateTagsResponse')
 
 const TagKeySchema = z.string().openapi('TagKey')
 
@@ -161,10 +138,8 @@ const TagValueSchema = z.string().openapi('TagValue')
 
 const TagSchema = z
   .object({
-    key: TagKeySchema.and(z.any().openapi({ description: 'The type of tag on which to filter.' })),
-    value: TagValueSchema.and(
-      z.any().openapi({ description: 'A value for a tag key on which to filter.' }),
-    ),
+    key: TagKeySchema.openapi({ description: 'The type of tag on which to filter.' }),
+    value: TagValueSchema.openapi({ description: 'A value for a tag key on which to filter.' }),
   })
   .openapi({
     required: ['key', 'value'],
@@ -177,55 +152,43 @@ const TagSetSchema = z.array(TagSchema).openapi('TagSet')
 
 const CreateTagsRequestSchema = z
   .object({
-    configurationIds: ConfigurationIdListSchema.and(
-      z.any().openapi({ description: 'A list of configuration items that you want to tag.' }),
-    ),
-    tags: TagSetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Tags that you want to associate with one or more configuration items. Specify the tags that you want to create in a <i>key</i>-<i>value</i> format. For example:</p> <p> <code>{"key": "serverType", "value": "webServer"}</code> </p>',
-        }),
-    ),
+    configurationIds: ConfigurationIdListSchema.openapi({
+      description: 'A list of configuration items that you want to tag.',
+    }),
+    tags: TagSetSchema.openapi({
+      description:
+        '<p>Tags that you want to associate with one or more configuration items. Specify the tags that you want to create in a <i>key</i>-<i>value</i> format. For example:</p> <p> <code>{"key": "serverType", "value": "webServer"}</code> </p>',
+    }),
   })
   .openapi({ required: ['configurationIds', 'tags'], title: 'CreateTagsRequest' })
   .openapi('CreateTagsRequest')
 
 const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundException')
 
-const DeleteApplicationsResponseSchema = z.object({}).openapi('DeleteApplicationsResponse')
+const DeleteApplicationsResponseSchema = z.looseObject({}).openapi('DeleteApplicationsResponse')
 
 const ApplicationIdsListSchema = z.array(ApplicationIdSchema).openapi('ApplicationIdsList')
 
 const DeleteApplicationsRequestSchema = z
   .object({
-    configurationIds: ApplicationIdsListSchema.and(
-      z.any().openapi({ description: 'Configuration ID of an application to be deleted.' }),
-    ),
+    configurationIds: ApplicationIdsListSchema.openapi({
+      description: 'Configuration ID of an application to be deleted.',
+    }),
   })
   .openapi({ required: ['configurationIds'], title: 'DeleteApplicationsRequest' })
   .openapi('DeleteApplicationsRequest')
 
-const DeleteTagsResponseSchema = z.object({}).openapi('DeleteTagsResponse')
+const DeleteTagsResponseSchema = z.looseObject({}).openapi('DeleteTagsResponse')
 
 const DeleteTagsRequestSchema = z
   .object({
-    configurationIds: ConfigurationIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of configuration items with tags that you want to delete.',
-        }),
-    ),
-    tags: TagSetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Tags that you want to delete from one or more configuration items. Specify the tags that you want to delete in a <i>key</i>-<i>value</i> format. For example:</p> <p> <code>{"key": "serverType", "value": "webServer"}</code> </p>',
-        }),
-    ).exactOptional(),
+    configurationIds: ConfigurationIdListSchema.openapi({
+      description: 'A list of configuration items with tags that you want to delete.',
+    }),
+    tags: TagSetSchema.exactOptional().openapi({
+      description:
+        '<p>Tags that you want to delete from one or more configuration items. Specify the tags that you want to delete in a <i>key</i>-<i>value</i> format. For example:</p> <p> <code>{"key": "serverType", "value": "webServer"}</code> </p>',
+    }),
   })
   .openapi({ required: ['configurationIds'], title: 'DeleteTagsRequest' })
   .openapi('DeleteTagsRequest')
@@ -234,18 +197,12 @@ const AgentIdSchema = z.string().regex(/\S+/).min(10).max(20).openapi('AgentId')
 
 const AgentNetworkInfoSchema = z
   .object({
-    ipAddress: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The IP address for the host where the agent/connector resides.' }),
-    ).exactOptional(),
-    macAddress: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The MAC address for the host where the agent/connector resides.',
-        }),
-    ).exactOptional(),
+    ipAddress: StringSchema.exactOptional().openapi({
+      description: 'The IP address for the host where the agent/connector resides.',
+    }),
+    macAddress: StringSchema.exactOptional().openapi({
+      description: 'The MAC address for the host where the agent/connector resides.',
+    }),
   })
   .openapi({
     description: 'Network details about the host where the agent/connector resides.',
@@ -261,45 +218,31 @@ const AgentStatusSchema = z
 
 const AgentInfoSchema = z
   .object({
-    agentId: AgentIdSchema.and(
-      z.any().openapi({ description: 'The agent or connector ID.' }),
-    ).exactOptional(),
-    hostName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the host where the agent or connector resides. The host can be a server or virtual machine.',
-        }),
-    ).exactOptional(),
-    agentNetworkInfoList: AgentNetworkInfoListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Network details about the host where the agent or connector resides.',
-        }),
-    ).exactOptional(),
-    connectorId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the connector.' }),
-    ).exactOptional(),
-    version: StringSchema.and(
-      z.any().openapi({ description: 'The agent or connector version.' }),
-    ).exactOptional(),
-    health: AgentStatusSchema.and(
-      z.any().openapi({ description: 'The health of the agent or connector.' }),
-    ).exactOptional(),
-    lastHealthPingTime: StringSchema.and(
-      z.any().openapi({ description: 'Time since agent or connector health was reported.' }),
-    ).exactOptional(),
-    collectionStatus: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Status of the collection process for an agent or connector.' }),
-    ).exactOptional(),
-    agentType: StringSchema.and(z.any().openapi({ description: 'Type of agent.' })).exactOptional(),
-    registeredTime: StringSchema.and(
-      z.any().openapi({ description: "Agent's first registration timestamp in UTC." }),
-    ).exactOptional(),
+    agentId: AgentIdSchema.exactOptional().openapi({ description: 'The agent or connector ID.' }),
+    hostName: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the host where the agent or connector resides. The host can be a server or virtual machine.',
+    }),
+    agentNetworkInfoList: AgentNetworkInfoListSchema.exactOptional().openapi({
+      description: 'Network details about the host where the agent or connector resides.',
+    }),
+    connectorId: StringSchema.exactOptional().openapi({ description: 'The ID of the connector.' }),
+    version: StringSchema.exactOptional().openapi({
+      description: 'The agent or connector version.',
+    }),
+    health: AgentStatusSchema.exactOptional().openapi({
+      description: 'The health of the agent or connector.',
+    }),
+    lastHealthPingTime: StringSchema.exactOptional().openapi({
+      description: 'Time since agent or connector health was reported.',
+    }),
+    collectionStatus: StringSchema.exactOptional().openapi({
+      description: 'Status of the collection process for an agent or connector.',
+    }),
+    agentType: StringSchema.exactOptional().openapi({ description: 'Type of agent.' }),
+    registeredTime: StringSchema.exactOptional().openapi({
+      description: "Agent's first registration timestamp in UTC.",
+    }),
   })
   .openapi({
     description:
@@ -314,22 +257,14 @@ const NextTokenSchema = z.string().openapi('NextToken')
 
 const DescribeAgentsResponseSchema = z
   .object({
-    agentsInfo: AgentsInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Lists agents or the Connector by ID or lists all agents/Connectors associated with your user account if you did not specify an agent/Connector ID. The output includes agent/Connector IDs, IP addresses, media access control (MAC) addresses, agent/Connector health, host name where the agent/Connector resides, and the version number of each agent/Connector.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Token to retrieve the next set of results. For example, if you specified 100 IDs for <code>DescribeAgentsRequest$agentIds</code> but set <code>DescribeAgentsRequest$maxResults</code> to 10, you received a set of 10 results along with this token. Use this token in the next query to retrieve the next set of 10.',
-        }),
-    ).exactOptional(),
+    agentsInfo: AgentsInfoSchema.exactOptional().openapi({
+      description:
+        'Lists agents or the Connector by ID or lists all agents/Connectors associated with your user account if you did not specify an agent/Connector ID. The output includes agent/Connector IDs, IP addresses, media access control (MAC) addresses, agent/Connector health, host name where the agent/Connector resides, and the version number of each agent/Connector.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'Token to retrieve the next set of results. For example, if you specified 100 IDs for <code>DescribeAgentsRequest$agentIds</code> but set <code>DescribeAgentsRequest$maxResults</code> to 10, you received a set of 10 results along with this token. Use this token in the next query to retrieve the next set of 10.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeAgentsResponse')
@@ -348,23 +283,15 @@ const ConditionSchema = z.string().regex(/\S+/).max(200).openapi('Condition')
 
 const FilterSchema = z
   .object({
-    name: StringSchema.and(z.any().openapi({ description: 'The name of the filter.' })),
-    values: FilterValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string value on which to filter. For example, if you choose the <code>destinationServer.osVersion</code> filter name, you could specify <code>Ubuntu</code> for the value.',
-        }),
-    ),
-    condition: ConditionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A conditional operator. The following operators are valid: EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS. If you specify multiple filters, the system utilizes all filters as though concatenated by <i>AND</i>. If you specify multiple values for a particular filter, the system differentiates the values using <i>OR</i>. Calling either <i>DescribeConfigurations</i> or <i>ListConfigurations</i> returns attributes of matching configuration items.',
-        }),
-    ),
+    name: StringSchema.openapi({ description: 'The name of the filter.' }),
+    values: FilterValuesSchema.openapi({
+      description:
+        'A string value on which to filter. For example, if you choose the <code>destinationServer.osVersion</code> filter name, you could specify <code>Ubuntu</code> for the value.',
+    }),
+    condition: ConditionSchema.openapi({
+      description:
+        'A conditional operator. The following operators are valid: EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS. If you specify multiple filters, the system utilizes all filters as though concatenated by <i>AND</i>. If you specify multiple values for a particular filter, the system differentiates the values using <i>OR</i>. Calling either <i>DescribeConfigurations</i> or <i>ListConfigurations</i> returns attributes of matching configuration items.',
+    }),
   })
   .openapi({
     required: ['name', 'values', 'condition'],
@@ -379,38 +306,22 @@ const IntegerSchema = z.int().openapi('Integer')
 
 const DescribeAgentsRequestSchema = z
   .object({
-    agentIds: AgentIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The agent or the Connector IDs for which you want information. If you specify no IDs, the system returns information about all agents/Connectors associated with your Amazon Web Services user account.',
-        }),
-    ).exactOptional(),
-    filters: FiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>You can filter the request using various logical operators and a <i>key</i>-<i>value</i> format. For example: </p> <p> <code>{"key": "collectionStatus", "value": "STARTED"}</code> </p>',
-        }),
-    ).exactOptional(),
-    maxResults: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of agents/Connectors to return in a single page of output. The maximum value is 100.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Token to retrieve the next set of results. For example, if you previously specified 100 IDs for <code>DescribeAgentsRequest$agentIds</code> but set <code>DescribeAgentsRequest$maxResults</code> to 10, you received a set of 10 results along with a token. Use that token in this query to get the next set of 10.',
-        }),
-    ).exactOptional(),
+    agentIds: AgentIdsSchema.exactOptional().openapi({
+      description:
+        'The agent or the Connector IDs for which you want information. If you specify no IDs, the system returns information about all agents/Connectors associated with your Amazon Web Services user account.',
+    }),
+    filters: FiltersSchema.exactOptional().openapi({
+      description:
+        '<p>You can filter the request using various logical operators and a <i>key</i>-<i>value</i> format. For example: </p> <p> <code>{"key": "collectionStatus", "value": "STARTED"}</code> </p>',
+    }),
+    maxResults: IntegerSchema.exactOptional().openapi({
+      description:
+        'The total number of agents/Connectors to return in a single page of output. The maximum value is 100.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'Token to retrieve the next set of results. For example, if you previously specified 100 IDs for <code>DescribeAgentsRequest$agentIds</code> but set <code>DescribeAgentsRequest$maxResults</code> to 10, you received a set of 10 results along with a token. Use that token in this query to get the next set of 10.',
+    }),
   })
   .openapi({ title: 'DescribeAgentsRequest', required: [] })
   .openapi('DescribeAgentsRequest')
@@ -425,18 +336,18 @@ const DescribeConfigurationsAttributesSchema = z
 
 const DescribeConfigurationsResponseSchema = z
   .object({
-    configurations: DescribeConfigurationsAttributesSchema.and(
-      z.any().openapi({ description: 'A key in the response map. The value is an array of data.' }),
-    ).exactOptional(),
+    configurations: DescribeConfigurationsAttributesSchema.exactOptional().openapi({
+      description: 'A key in the response map. The value is an array of data.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeConfigurationsResponse')
 
 const DescribeConfigurationsRequestSchema = z
   .object({
-    configurationIds: ConfigurationIdListSchema.and(
-      z.any().openapi({ description: 'One or more configuration IDs.' }),
-    ),
+    configurationIds: ConfigurationIdListSchema.openapi({
+      description: 'One or more configuration IDs.',
+    }),
   })
   .openapi({ required: ['configurationIds'], title: 'DescribeConfigurationsRequest' })
   .openapi('DescribeConfigurationsRequest')
@@ -476,62 +387,34 @@ const SchemaStorageConfigSchema = z.record(z.string(), StringSchema).openapi('Sc
 
 const ContinuousExportDescriptionSchema = z
   .object({
-    exportId: ConfigurationsExportIdSchema.and(
-      z.any().openapi({ description: 'The unique ID assigned to this export.' }),
-    ).exactOptional(),
-    status: ContinuousExportStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Describes the status of the export. Can be one of the following values:</p> <ul> <li> <p>START_IN_PROGRESS - setting up resources to start continuous export.</p> </li> <li> <p>START_FAILED - an error occurred setting up continuous export. To recover, call start-continuous-export again.</p> </li> <li> <p>ACTIVE - data is being exported to the customer bucket.</p> </li> <li> <p>ERROR - an error occurred during export. To fix the issue, call stop-continuous-export and start-continuous-export.</p> </li> <li> <p>STOP_IN_PROGRESS - stopping the export.</p> </li> <li> <p>STOP_FAILED - an error occurred stopping the export. To recover, call stop-continuous-export again.</p> </li> <li> <p>INACTIVE - the continuous export has been stopped. Data is no longer being exported to the customer bucket.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    statusDetail: StringMax255Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Contains information about any errors that have occurred. This data type can have the following values:</p> <ul> <li> <p>ACCESS_DENIED - You don’t have permission to start Data Exploration in Amazon Athena. Contact your Amazon Web Services administrator for help. For more information, see <a href="http://docs.aws.amazon.com/application-discovery/latest/userguide/setting-up.html">Setting Up Amazon Web Services Application Discovery Service</a> in the Application Discovery Service User Guide.</p> </li> <li> <p>DELIVERY_STREAM_LIMIT_FAILURE - You reached the limit for Amazon Kinesis Data Firehose delivery streams. Reduce the number of streams or request a limit increase and try again. For more information, see <a href="http://docs.aws.amazon.com/streams/latest/dev/service-sizes-and-limits.html">Kinesis Data Streams Limits</a> in the Amazon Kinesis Data Streams Developer Guide.</p> </li> <li> <p>FIREHOSE_ROLE_MISSING - The Data Exploration feature is in an error state because your IAM User is missing the AWSApplicationDiscoveryServiceFirehose role. Turn on Data Exploration in Amazon Athena and try again. For more information, see <a href="http://docs.aws.amazon.com/application-discovery/latest/userguide/setting-up.html#setting-up-user-policy">Step 3: Provide Application Discovery Service Access to Non-Administrator Users by Attaching Policies</a> in the Application Discovery Service User Guide.</p> </li> <li> <p>FIREHOSE_STREAM_DOES_NOT_EXIST - The Data Exploration feature is in an error state because your IAM User is missing one or more of the Kinesis data delivery streams.</p> </li> <li> <p>INTERNAL_FAILURE - The Data Exploration feature is in an error state because of an internal failure. Try again later. If this problem persists, contact Amazon Web Services Support.</p> </li> <li> <p>LAKE_FORMATION_ACCESS_DENIED - You don\'t have sufficient lake formation permissions to start continuous export. For more information, see <a href="http://docs.aws.amazon.com/lake-formation/latest/dg/upgrade-glue-lake-formation.html"> Upgrading Amazon Web Services Glue Data Permissions to the Amazon Web Services Lake Formation Model </a> in the Amazon Web Services <i>Lake Formation Developer Guide</i>. </p> <p>You can use one of the following two ways to resolve this issue.</p> <ol> <li> <p>If you don’t want to use the Lake Formation permission model, you can change the default Data Catalog settings to use only Amazon Web Services Identity and Access Management (IAM) access control for new databases. For more information, see <a href="https://docs.aws.amazon.com/lake-formation/latest/dg/getting-started-setup.html#setup-change-cat-settings">Change Data Catalog Settings</a> in the <i>Lake Formation Developer Guide</i>.</p> </li> <li> <p>You can give the service-linked IAM roles AWSServiceRoleForApplicationDiscoveryServiceContinuousExport and AWSApplicationDiscoveryServiceFirehose the required Lake Formation permissions. For more information, see <a href="https://docs.aws.amazon.com/lake-formation/latest/dg/granting-database-permissions.html"> Granting Database Permissions</a> in the <i>Lake Formation Developer Guide</i>. </p> <ol> <li> <p>AWSServiceRoleForApplicationDiscoveryServiceContinuousExport - Grant database creator permissions, which gives the role database creation ability and implicit permissions for any created tables. For more information, see <a href="https://docs.aws.amazon.com/lake-formation/latest/dg/implicit-permissions.html"> Implicit Lake Formation Permissions </a> in the <i>Lake Formation Developer Guide</i>.</p> </li> <li> <p>AWSApplicationDiscoveryServiceFirehose - Grant describe permissions for all tables in the database.</p> </li> </ol> </li> </ol> </li> <li> <p>S3_BUCKET_LIMIT_FAILURE - You reached the limit for Amazon S3 buckets. Reduce the number of S3 buckets or request a limit increase and try again. For more information, see <a href="http://docs.aws.amazon.com/AmazonS3/latest/dev/BucketRestrictions.html">Bucket Restrictions and Limitations</a> in the Amazon Simple Storage Service Developer Guide.</p> </li> <li> <p>S3_NOT_SIGNED_UP - Your account is not signed up for the Amazon S3 service. You must sign up before you can use Amazon S3. You can sign up at the following URL: <a href="https://aws.amazon.com/s3">https://aws.amazon.com/s3</a>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    s3Bucket: S3BucketSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the s3 bucket where the export data parquet files are stored.',
-        }),
-    ).exactOptional(),
-    startTime: TimeStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The timestamp representing when the continuous export was started.',
-        }),
-    ).exactOptional(),
-    stopTime: TimeStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The timestamp that represents when this continuous export was stopped.',
-        }),
-    ).exactOptional(),
-    dataSource: DataSourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of data collector used to gather this data (currently only offered for AGENT).',
-        }),
-    ).exactOptional(),
-    schemaStorageConfig: SchemaStorageConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An object which describes how the data is stored.</p> <ul> <li> <p> <code>databaseName</code> - the name of the Glue database used to store the schema.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    exportId: ConfigurationsExportIdSchema.exactOptional().openapi({
+      description: 'The unique ID assigned to this export.',
+    }),
+    status: ContinuousExportStatusSchema.exactOptional().openapi({
+      description:
+        '<p>Describes the status of the export. Can be one of the following values:</p> <ul> <li> <p>START_IN_PROGRESS - setting up resources to start continuous export.</p> </li> <li> <p>START_FAILED - an error occurred setting up continuous export. To recover, call start-continuous-export again.</p> </li> <li> <p>ACTIVE - data is being exported to the customer bucket.</p> </li> <li> <p>ERROR - an error occurred during export. To fix the issue, call stop-continuous-export and start-continuous-export.</p> </li> <li> <p>STOP_IN_PROGRESS - stopping the export.</p> </li> <li> <p>STOP_FAILED - an error occurred stopping the export. To recover, call stop-continuous-export again.</p> </li> <li> <p>INACTIVE - the continuous export has been stopped. Data is no longer being exported to the customer bucket.</p> </li> </ul>',
+    }),
+    statusDetail: StringMax255Schema.exactOptional().openapi({
+      description:
+        '<p>Contains information about any errors that have occurred. This data type can have the following values:</p> <ul> <li> <p>ACCESS_DENIED - You don’t have permission to start Data Exploration in Amazon Athena. Contact your Amazon Web Services administrator for help. For more information, see <a href="http://docs.aws.amazon.com/application-discovery/latest/userguide/setting-up.html">Setting Up Amazon Web Services Application Discovery Service</a> in the Application Discovery Service User Guide.</p> </li> <li> <p>DELIVERY_STREAM_LIMIT_FAILURE - You reached the limit for Amazon Kinesis Data Firehose delivery streams. Reduce the number of streams or request a limit increase and try again. For more information, see <a href="http://docs.aws.amazon.com/streams/latest/dev/service-sizes-and-limits.html">Kinesis Data Streams Limits</a> in the Amazon Kinesis Data Streams Developer Guide.</p> </li> <li> <p>FIREHOSE_ROLE_MISSING - The Data Exploration feature is in an error state because your IAM User is missing the AWSApplicationDiscoveryServiceFirehose role. Turn on Data Exploration in Amazon Athena and try again. For more information, see <a href="http://docs.aws.amazon.com/application-discovery/latest/userguide/setting-up.html#setting-up-user-policy">Step 3: Provide Application Discovery Service Access to Non-Administrator Users by Attaching Policies</a> in the Application Discovery Service User Guide.</p> </li> <li> <p>FIREHOSE_STREAM_DOES_NOT_EXIST - The Data Exploration feature is in an error state because your IAM User is missing one or more of the Kinesis data delivery streams.</p> </li> <li> <p>INTERNAL_FAILURE - The Data Exploration feature is in an error state because of an internal failure. Try again later. If this problem persists, contact Amazon Web Services Support.</p> </li> <li> <p>LAKE_FORMATION_ACCESS_DENIED - You don\'t have sufficient lake formation permissions to start continuous export. For more information, see <a href="http://docs.aws.amazon.com/lake-formation/latest/dg/upgrade-glue-lake-formation.html"> Upgrading Amazon Web Services Glue Data Permissions to the Amazon Web Services Lake Formation Model </a> in the Amazon Web Services <i>Lake Formation Developer Guide</i>. </p> <p>You can use one of the following two ways to resolve this issue.</p> <ol> <li> <p>If you don’t want to use the Lake Formation permission model, you can change the default Data Catalog settings to use only Amazon Web Services Identity and Access Management (IAM) access control for new databases. For more information, see <a href="https://docs.aws.amazon.com/lake-formation/latest/dg/getting-started-setup.html#setup-change-cat-settings">Change Data Catalog Settings</a> in the <i>Lake Formation Developer Guide</i>.</p> </li> <li> <p>You can give the service-linked IAM roles AWSServiceRoleForApplicationDiscoveryServiceContinuousExport and AWSApplicationDiscoveryServiceFirehose the required Lake Formation permissions. For more information, see <a href="https://docs.aws.amazon.com/lake-formation/latest/dg/granting-database-permissions.html"> Granting Database Permissions</a> in the <i>Lake Formation Developer Guide</i>. </p> <ol> <li> <p>AWSServiceRoleForApplicationDiscoveryServiceContinuousExport - Grant database creator permissions, which gives the role database creation ability and implicit permissions for any created tables. For more information, see <a href="https://docs.aws.amazon.com/lake-formation/latest/dg/implicit-permissions.html"> Implicit Lake Formation Permissions </a> in the <i>Lake Formation Developer Guide</i>.</p> </li> <li> <p>AWSApplicationDiscoveryServiceFirehose - Grant describe permissions for all tables in the database.</p> </li> </ol> </li> </ol> </li> <li> <p>S3_BUCKET_LIMIT_FAILURE - You reached the limit for Amazon S3 buckets. Reduce the number of S3 buckets or request a limit increase and try again. For more information, see <a href="http://docs.aws.amazon.com/AmazonS3/latest/dev/BucketRestrictions.html">Bucket Restrictions and Limitations</a> in the Amazon Simple Storage Service Developer Guide.</p> </li> <li> <p>S3_NOT_SIGNED_UP - Your account is not signed up for the Amazon S3 service. You must sign up before you can use Amazon S3. You can sign up at the following URL: <a href="https://aws.amazon.com/s3">https://aws.amazon.com/s3</a>.</p> </li> </ul>',
+    }),
+    s3Bucket: S3BucketSchema.exactOptional().openapi({
+      description: 'The name of the s3 bucket where the export data parquet files are stored.',
+    }),
+    startTime: TimeStampSchema.exactOptional().openapi({
+      description: 'The timestamp representing when the continuous export was started.',
+    }),
+    stopTime: TimeStampSchema.exactOptional().openapi({
+      description: 'The timestamp that represents when this continuous export was stopped.',
+    }),
+    dataSource: DataSourceSchema.exactOptional().openapi({
+      description:
+        'The type of data collector used to gather this data (currently only offered for AGENT).',
+    }),
+    schemaStorageConfig: SchemaStorageConfigSchema.exactOptional().openapi({
+      description:
+        '<p>An object which describes how the data is stored.</p> <ul> <li> <p> <code>databaseName</code> - the name of the Glue database used to store the schema.</p> </li> </ul>',
+    }),
   })
   .openapi({ description: 'A list of continuous export descriptions.', required: [] })
   .openapi('ContinuousExportDescription')
@@ -542,16 +425,12 @@ const ContinuousExportDescriptionsSchema = z
 
 const DescribeContinuousExportsResponseSchema = z
   .object({
-    descriptions: ContinuousExportDescriptionsSchema.and(
-      z.any().openapi({ description: 'A list of continuous export descriptions.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The token from the previous call to <code>DescribeExportTasks</code>.',
-        }),
-    ).exactOptional(),
+    descriptions: ContinuousExportDescriptionsSchema.exactOptional().openapi({
+      description: 'A list of continuous export descriptions.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token from the previous call to <code>DescribeExportTasks</code>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeContinuousExportsResponse')
@@ -568,24 +447,16 @@ const DescribeContinuousExportsMaxResultsSchema = z
 
 const DescribeContinuousExportsRequestSchema = z
   .object({
-    exportIds: ContinuousExportIdsSchema.and(
-      z.any().openapi({ description: 'The unique IDs assigned to the exports.' }),
-    ).exactOptional(),
-    maxResults: DescribeContinuousExportsMaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A number between 1 and 100 specifying the maximum number of continuous export descriptions returned.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The token from the previous call to <code>DescribeExportTasks</code>.',
-        }),
-    ).exactOptional(),
+    exportIds: ContinuousExportIdsSchema.exactOptional().openapi({
+      description: 'The unique IDs assigned to the exports.',
+    }),
+    maxResults: DescribeContinuousExportsMaxResultsSchema.exactOptional().openapi({
+      description:
+        'A number between 1 and 100 specifying the maximum number of continuous export descriptions returned.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token from the previous call to <code>DescribeExportTasks</code>.',
+    }),
   })
   .openapi({ title: 'DescribeContinuousExportsRequest', required: [] })
   .openapi('DescribeContinuousExportsRequest')
@@ -604,50 +475,32 @@ const BooleanSchema = z.boolean().openapi('Boolean')
 
 const ExportInfoSchema = z
   .object({
-    exportId: ConfigurationsExportIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier used to query an export.' }),
-    ),
-    exportStatus: ExportStatusSchema.and(
-      z.any().openapi({ description: 'The status of the data export job.' }),
-    ),
-    statusMessage: ExportStatusMessageSchema.and(
-      z.any().openapi({ description: 'A status message provided for API callers.' }),
-    ),
-    configurationsDownloadUrl: ConfigurationsDownloadUrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A URL for an Amazon S3 bucket where you can review the exported data. The URL is displayed only if the export succeeded.',
-        }),
-    ).exactOptional(),
-    exportRequestTime: ExportRequestTimeSchema.and(
-      z.any().openapi({ description: 'The time that the data export was initiated.' }),
-    ),
-    isTruncated: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If true, the export of agent information exceeded the size limit for a single export and the exported data is incomplete for the requested time range. To address this, select a smaller time range for the export by using <code>startDate</code> and <code>endDate</code>.',
-        }),
-    ).exactOptional(),
-    requestedStartTime: TimeStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value of <code>startTime</code> parameter in the <code>StartExportTask</code> request. If no <code>startTime</code> was requested, this result does not appear in <code>ExportInfo</code>.',
-        }),
-    ).exactOptional(),
-    requestedEndTime: TimeStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>endTime</code> used in the <code>StartExportTask</code> request. If no <code>endTime</code> was requested, this result does not appear in <code>ExportInfo</code>.',
-        }),
-    ).exactOptional(),
+    exportId: ConfigurationsExportIdSchema.openapi({
+      description: 'A unique identifier used to query an export.',
+    }),
+    exportStatus: ExportStatusSchema.openapi({ description: 'The status of the data export job.' }),
+    statusMessage: ExportStatusMessageSchema.openapi({
+      description: 'A status message provided for API callers.',
+    }),
+    configurationsDownloadUrl: ConfigurationsDownloadUrlSchema.exactOptional().openapi({
+      description:
+        'A URL for an Amazon S3 bucket where you can review the exported data. The URL is displayed only if the export succeeded.',
+    }),
+    exportRequestTime: ExportRequestTimeSchema.openapi({
+      description: 'The time that the data export was initiated.',
+    }),
+    isTruncated: BooleanSchema.exactOptional().openapi({
+      description:
+        'If true, the export of agent information exceeded the size limit for a single export and the exported data is incomplete for the requested time range. To address this, select a smaller time range for the export by using <code>startDate</code> and <code>endDate</code>.',
+    }),
+    requestedStartTime: TimeStampSchema.exactOptional().openapi({
+      description:
+        'The value of <code>startTime</code> parameter in the <code>StartExportTask</code> request. If no <code>startTime</code> was requested, this result does not appear in <code>ExportInfo</code>.',
+    }),
+    requestedEndTime: TimeStampSchema.exactOptional().openapi({
+      description:
+        'The <code>endTime</code> used in the <code>StartExportTask</code> request. If no <code>endTime</code> was requested, this result does not appear in <code>ExportInfo</code>.',
+    }),
   })
   .openapi({
     required: ['exportId', 'exportStatus', 'statusMessage', 'exportRequestTime'],
@@ -660,12 +513,10 @@ const ExportsInfoSchema = z.array(ExportInfoSchema).openapi('ExportsInfo')
 
 const DescribeExportConfigurationsResponseSchema = z
   .object({
-    exportsInfo: ExportsInfoSchema.and(z.any().openapi({ description: '<p/>' })).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The token from the previous call to describe-export-tasks.' }),
-    ).exactOptional(),
+    exportsInfo: ExportsInfoSchema.exactOptional().openapi({ description: '<p/>' }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token from the previous call to describe-export-tasks.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeExportConfigurationsResponse')
@@ -674,44 +525,30 @@ const ExportIdsSchema = z.array(ConfigurationsExportIdSchema).openapi('ExportIds
 
 const DescribeExportConfigurationsRequestSchema = z
   .object({
-    exportIds: ExportIdsSchema.and(
-      z.any().openapi({ description: 'A list of continuous export IDs to search for.' }),
-    ).exactOptional(),
-    maxResults: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A number between 1 and 100 specifying the maximum number of continuous export descriptions returned.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The token from the previous call to describe-export-tasks.' }),
-    ).exactOptional(),
+    exportIds: ExportIdsSchema.exactOptional().openapi({
+      description: 'A list of continuous export IDs to search for.',
+    }),
+    maxResults: IntegerSchema.exactOptional().openapi({
+      description:
+        'A number between 1 and 100 specifying the maximum number of continuous export descriptions returned.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token from the previous call to describe-export-tasks.',
+    }),
   })
   .openapi({ title: 'DescribeExportConfigurationsRequest', required: [] })
   .openapi('DescribeExportConfigurationsRequest')
 
 const DescribeExportTasksResponseSchema = z
   .object({
-    exportsInfo: ExportsInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains one or more sets of export request details. When the status of a request is <code>SUCCEEDED</code>, the response includes a URL for an Amazon S3 bucket where you can view the data in a CSV file.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> value to include in a future <code>DescribeExportTasks</code> request. When the results of a <code>DescribeExportTasks</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is null when there are no more results to return.',
-        }),
-    ).exactOptional(),
+    exportsInfo: ExportsInfoSchema.exactOptional().openapi({
+      description:
+        'Contains one or more sets of export request details. When the status of a request is <code>SUCCEEDED</code>, the response includes a URL for an Amazon S3 bucket where you can view the data in a CSV file.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> value to include in a future <code>DescribeExportTasks</code> request. When the results of a <code>DescribeExportTasks</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is null when there are no more results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeExportTasksResponse')
@@ -724,25 +561,17 @@ const FilterNameSchema = z
 
 const ExportFilterSchema = z
   .object({
-    name: FilterNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A single <code>ExportFilter</code> name. Supported filters: <code>agentIds</code>.',
-        }),
-    ),
-    values: FilterValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A single agent ID for a Discovery Agent. An agent ID can be found using the <a href="http://docs.aws.amazon.com/application-discovery/latest/APIReference/API_DescribeAgents.html">DescribeAgents</a> action. Typically an ADS agent ID is in the form <code>o-0123456789abcdef0</code>.',
-        }),
-    ),
-    condition: ConditionSchema.and(
-      z.any().openapi({ description: 'Supported condition: <code>EQUALS</code> ' }),
-    ),
+    name: FilterNameSchema.openapi({
+      description:
+        'A single <code>ExportFilter</code> name. Supported filters: <code>agentIds</code>.',
+    }),
+    values: FilterValuesSchema.openapi({
+      description:
+        'A single agent ID for a Discovery Agent. An agent ID can be found using the <a href="http://docs.aws.amazon.com/application-discovery/latest/APIReference/API_DescribeAgents.html">DescribeAgents</a> action. Typically an ADS agent ID is in the form <code>o-0123456789abcdef0</code>.',
+    }),
+    condition: ConditionSchema.openapi({
+      description: 'Supported condition: <code>EQUALS</code> ',
+    }),
   })
   .openapi({
     required: ['name', 'values', 'condition'],
@@ -755,38 +584,21 @@ const ExportFiltersSchema = z.array(ExportFilterSchema).openapi('ExportFilters')
 
 const DescribeExportTasksRequestSchema = z
   .object({
-    exportIds: ExportIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One or more unique identifiers used to query the status of an export request.',
-        }),
-    ).exactOptional(),
-    filters: ExportFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>One or more filters.</p> <ul> <li> <p> <code>AgentId</code> - ID of the agent whose collected data will be exported</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    maxResults: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of volume results returned by <code>DescribeExportTasks</code> in paginated output. When this parameter is used, <code>DescribeExportTasks</code> only returns <code>maxResults</code> results in a single page along with a <code>nextToken</code> response element.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> value returned from a previous paginated <code>DescribeExportTasks</code> request where <code>maxResults</code> was used and the results exceeded the value of that parameter. Pagination continues from the end of the previous results that returned the <code>nextToken</code> value. This value is null when there are no more results to return.',
-        }),
-    ).exactOptional(),
+    exportIds: ExportIdsSchema.exactOptional().openapi({
+      description: 'One or more unique identifiers used to query the status of an export request.',
+    }),
+    filters: ExportFiltersSchema.exactOptional().openapi({
+      description:
+        '<p>One or more filters.</p> <ul> <li> <p> <code>AgentId</code> - ID of the agent whose collected data will be exported</p> </li> </ul>',
+    }),
+    maxResults: IntegerSchema.exactOptional().openapi({
+      description:
+        'The maximum number of volume results returned by <code>DescribeExportTasks</code> in paginated output. When this parameter is used, <code>DescribeExportTasks</code> only returns <code>maxResults</code> results in a single page along with a <code>nextToken</code> response element.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> value returned from a previous paginated <code>DescribeExportTasks</code> request where <code>maxResults</code> was used and the results exceeded the value of that parameter. Pagination continues from the end of the previous results that returned the <code>nextToken</code> value. This value is null when there are no more results to return.',
+    }),
   })
   .openapi({ title: 'DescribeExportTasksRequest', required: [] })
   .openapi('DescribeExportTasksRequest')
@@ -827,109 +639,57 @@ const S3PresignedUrlSchema = z.string().openapi('S3PresignedUrl')
 
 const ImportTaskSchema = z
   .object({
-    importTaskId: ImportTaskIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The unique ID for a specific import task. These IDs aren't globally unique, but they are unique within an Amazon Web Services account.",
-        }),
-    ).exactOptional(),
-    clientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A unique token used to prevent the same import request from occurring more than once. If you didn't provide a token, a token was automatically generated when the import task request was sent.",
-        }),
-    ).exactOptional(),
-    name: ImportTaskNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A descriptive name for an import task. You can use this name to filter future requests related to this import task, such as identifying applications and servers that were included in this import task. We recommend that you use a meaningful name for each import task.',
-        }),
-    ).exactOptional(),
-    importUrl: ImportURLSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The URL for your import file that you've uploaded to Amazon S3.",
-        }),
-    ).exactOptional(),
-    status: ImportStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the import task. An import can have the status of <code>IMPORT_COMPLETE</code> and still have some records fail to import from the overall request. More information can be found in the downloadable archive defined in the <code>errorsAndFailedEntriesZip</code> field, or in the Migration Hub management console.',
-        }),
-    ).exactOptional(),
-    importRequestTime: TimeStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time that the import task request was made, presented in the Unix time stamp format.',
-        }),
-    ).exactOptional(),
-    importCompletionTime: TimeStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time that the import task request finished, presented in the Unix time stamp format.',
-        }),
-    ).exactOptional(),
-    importDeletedTime: TimeStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time that the import task request was deleted, presented in the Unix time stamp format.',
-        }),
-    ).exactOptional(),
-    serverImportSuccess: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of server records in the import file that were successfully imported.',
-        }),
-    ).exactOptional(),
-    serverImportFailure: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of server records in the import file that failed to be imported.',
-        }),
-    ).exactOptional(),
-    applicationImportSuccess: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of application records in the import file that were successfully imported.',
-        }),
-    ).exactOptional(),
-    applicationImportFailure: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of application records in the import file that failed to be imported.',
-        }),
-    ).exactOptional(),
-    errorsAndFailedEntriesZip: S3PresignedUrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A link to a compressed archive folder (in the ZIP format) that contains an error log and a file of failed records. You can use these two files to quickly identify records that failed, why they failed, and correct those records. Afterward, you can upload the corrected file to your Amazon S3 bucket and create another import task request.</p> <p>This field also includes authorization information so you can confirm the authenticity of the compressed archive before you download it.</p> <p>If some records failed to be imported we recommend that you correct the records in the failed entries file and then imports that failed entries file. This prevents you from having to correct and update the larger original file and attempt importing it again.</p>',
-        }),
-    ).exactOptional(),
+    importTaskId: ImportTaskIdentifierSchema.exactOptional().openapi({
+      description:
+        "The unique ID for a specific import task. These IDs aren't globally unique, but they are unique within an Amazon Web Services account.",
+    }),
+    clientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        "A unique token used to prevent the same import request from occurring more than once. If you didn't provide a token, a token was automatically generated when the import task request was sent.",
+    }),
+    name: ImportTaskNameSchema.exactOptional().openapi({
+      description:
+        'A descriptive name for an import task. You can use this name to filter future requests related to this import task, such as identifying applications and servers that were included in this import task. We recommend that you use a meaningful name for each import task.',
+    }),
+    importUrl: ImportURLSchema.exactOptional().openapi({
+      description: "The URL for your import file that you've uploaded to Amazon S3.",
+    }),
+    status: ImportStatusSchema.exactOptional().openapi({
+      description:
+        'The status of the import task. An import can have the status of <code>IMPORT_COMPLETE</code> and still have some records fail to import from the overall request. More information can be found in the downloadable archive defined in the <code>errorsAndFailedEntriesZip</code> field, or in the Migration Hub management console.',
+    }),
+    importRequestTime: TimeStampSchema.exactOptional().openapi({
+      description:
+        'The time that the import task request was made, presented in the Unix time stamp format.',
+    }),
+    importCompletionTime: TimeStampSchema.exactOptional().openapi({
+      description:
+        'The time that the import task request finished, presented in the Unix time stamp format.',
+    }),
+    importDeletedTime: TimeStampSchema.exactOptional().openapi({
+      description:
+        'The time that the import task request was deleted, presented in the Unix time stamp format.',
+    }),
+    serverImportSuccess: IntegerSchema.exactOptional().openapi({
+      description:
+        'The total number of server records in the import file that were successfully imported.',
+    }),
+    serverImportFailure: IntegerSchema.exactOptional().openapi({
+      description:
+        'The total number of server records in the import file that failed to be imported.',
+    }),
+    applicationImportSuccess: IntegerSchema.exactOptional().openapi({
+      description:
+        'The total number of application records in the import file that were successfully imported.',
+    }),
+    applicationImportFailure: IntegerSchema.exactOptional().openapi({
+      description:
+        'The total number of application records in the import file that failed to be imported.',
+    }),
+    errorsAndFailedEntriesZip: S3PresignedUrlSchema.exactOptional().openapi({
+      description:
+        '<p>A link to a compressed archive folder (in the ZIP format) that contains an error log and a file of failed records. You can use these two files to quickly identify records that failed, why they failed, and correct those records. Afterward, you can upload the corrected file to your Amazon S3 bucket and create another import task request.</p> <p>This field also includes authorization information so you can confirm the authenticity of the compressed archive before you download it.</p> <p>If some records failed to be imported we recommend that you correct the records in the failed entries file and then imports that failed entries file. This prevents you from having to correct and update the larger original file and attempt importing it again.</p>',
+    }),
   })
   .openapi({
     description:
@@ -942,17 +702,13 @@ const ImportTaskListSchema = z.array(ImportTaskSchema).openapi('ImportTaskList')
 
 const DescribeImportTasksResponseSchema = z
   .object({
-    nextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token to request the next page of results.' }),
-    ).exactOptional(),
-    tasks: ImportTaskListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A returned array of import tasks that match any applied filters, up to the specified number of maximum results.',
-        }),
-    ).exactOptional(),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token to request the next page of results.',
+    }),
+    tasks: ImportTaskListSchema.exactOptional().openapi({
+      description:
+        'A returned array of import tasks that match any applied filters, up to the specified number of maximum results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeImportTasksResponse')
@@ -971,21 +727,13 @@ const ImportTaskFilterValueListSchema = z
 
 const ImportTaskFilterSchema = z
   .object({
-    name: ImportTaskFilterNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name, status, or import task ID for a specific import task.',
-        }),
-    ).exactOptional(),
-    values: ImportTaskFilterValueListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of strings that you can provide to match against a specific name, status, or import task ID to filter the results for your import task queries.',
-        }),
-    ).exactOptional(),
+    name: ImportTaskFilterNameSchema.exactOptional().openapi({
+      description: 'The name, status, or import task ID for a specific import task.',
+    }),
+    values: ImportTaskFilterValueListSchema.exactOptional().openapi({
+      description:
+        'An array of strings that you can provide to match against a specific name, status, or import task ID to filter the results for your import task queries.',
+    }),
   })
   .openapi({
     description:
@@ -1006,25 +754,16 @@ const DescribeImportTasksMaxResultsSchema = z
 
 const DescribeImportTasksRequestSchema = z
   .object({
-    filters: DescribeImportTasksFilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An array of name-value pairs that you provide to filter the results for the <code>DescribeImportTask</code> request to a specific subset of results. Currently, wildcard values aren't supported for filters.",
-        }),
-    ).exactOptional(),
-    maxResults: DescribeImportTasksMaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results that you want this request to return, up to 100.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token to request a specific page of results.' }),
-    ).exactOptional(),
+    filters: DescribeImportTasksFilterListSchema.exactOptional().openapi({
+      description:
+        "An array of name-value pairs that you provide to filter the results for the <code>DescribeImportTask</code> request to a specific subset of results. Currently, wildcard values aren't supported for filters.",
+    }),
+    maxResults: DescribeImportTasksMaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results that you want this request to return, up to 100.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token to request a specific page of results.',
+    }),
   })
   .openapi({ title: 'DescribeImportTasksRequest', required: [] })
   .openapi('DescribeImportTasksRequest')
@@ -1035,40 +774,24 @@ const ConfigurationItemTypeSchema = z
 
 const ConfigurationTagSchema = z
   .object({
-    configurationType: ConfigurationItemTypeSchema.and(
-      z.any().openapi({ description: 'A type of IT asset to tag.' }),
-    ).exactOptional(),
-    configurationId: ConfigurationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration ID for the item to tag. You can specify a list of keys and values.',
-        }),
-    ).exactOptional(),
-    key: TagKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A type of tag on which to filter. For example, <i>serverType</i>.',
-        }),
-    ).exactOptional(),
-    value: TagValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value on which to filter. For example <i>key = serverType</i> and <i>value = web server</i>.',
-        }),
-    ).exactOptional(),
-    timeOfCreation: TimeStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time the configuration tag was created in Coordinated Universal Time (UTC).',
-        }),
-    ).exactOptional(),
+    configurationType: ConfigurationItemTypeSchema.exactOptional().openapi({
+      description: 'A type of IT asset to tag.',
+    }),
+    configurationId: ConfigurationIdSchema.exactOptional().openapi({
+      description:
+        'The configuration ID for the item to tag. You can specify a list of keys and values.',
+    }),
+    key: TagKeySchema.exactOptional().openapi({
+      description: 'A type of tag on which to filter. For example, <i>serverType</i>.',
+    }),
+    value: TagValueSchema.exactOptional().openapi({
+      description:
+        'A value on which to filter. For example <i>key = serverType</i> and <i>value = web server</i>.',
+    }),
+    timeOfCreation: TimeStampSchema.exactOptional().openapi({
+      description:
+        'The time the configuration tag was created in Coordinated Universal Time (UTC).',
+    }),
   })
   .openapi({
     description:
@@ -1081,29 +804,21 @@ const ConfigurationTagSetSchema = z.array(ConfigurationTagSchema).openapi('Confi
 
 const DescribeTagsResponseSchema = z
   .object({
-    tags: ConfigurationTagSetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Depending on the input, this is a list of configuration items tagged with a specific tag, or a list of tags for a specific configuration item.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The call returns a token. Use this token to get the next set of results.',
-        }),
-    ).exactOptional(),
+    tags: ConfigurationTagSetSchema.exactOptional().openapi({
+      description:
+        'Depending on the input, this is a list of configuration items tagged with a specific tag, or a list of tags for a specific configuration item.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The call returns a token. Use this token to get the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeTagsResponse')
 
 const TagFilterSchema = z
   .object({
-    name: FilterNameSchema.and(z.any().openapi({ description: 'A name of the tag filter.' })),
-    values: FilterValuesSchema.and(z.any().openapi({ description: 'Values for the tag filter.' })),
+    name: FilterNameSchema.openapi({ description: 'A name of the tag filter.' }),
+    values: FilterValuesSchema.openapi({ description: 'Values for the tag filter.' }),
   })
   .openapi({
     required: ['name', 'values'],
@@ -1116,53 +831,33 @@ const TagFiltersSchema = z.array(TagFilterSchema).openapi('TagFilters')
 
 const DescribeTagsRequestSchema = z
   .object({
-    filters: TagFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'You can filter the list using a <i>key</i>-<i>value</i> format. You can separate these items by using logical operators. Allowed filters include <code>tagKey</code>, <code>tagValue</code>, and <code>configurationId</code>. ',
-        }),
-    ).exactOptional(),
-    maxResults: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of items to return in a single page of output. The maximum value is 100.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A token to start the list. Use this token to get the next set of results.',
-        }),
-    ).exactOptional(),
+    filters: TagFiltersSchema.exactOptional().openapi({
+      description:
+        'You can filter the list using a <i>key</i>-<i>value</i> format. You can separate these items by using logical operators. Allowed filters include <code>tagKey</code>, <code>tagValue</code>, and <code>configurationId</code>. ',
+    }),
+    maxResults: IntegerSchema.exactOptional().openapi({
+      description:
+        'The total number of items to return in a single page of output. The maximum value is 100.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'A token to start the list. Use this token to get the next set of results.',
+    }),
   })
   .openapi({ title: 'DescribeTagsRequest', required: [] })
   .openapi('DescribeTagsRequest')
 
 const DisassociateConfigurationItemsFromApplicationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DisassociateConfigurationItemsFromApplicationResponse')
 
 const DisassociateConfigurationItemsFromApplicationRequestSchema = z
   .object({
-    applicationConfigurationId: ApplicationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Configuration ID of an application from which each item is disassociated.',
-        }),
-    ),
-    configurationIds: ConfigurationIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Configuration ID of each item to be disassociated from an application.',
-        }),
-    ),
+    applicationConfigurationId: ApplicationIdSchema.openapi({
+      description: 'Configuration ID of an application from which each item is disassociated.',
+    }),
+    configurationIds: ConfigurationIdListSchema.openapi({
+      description: 'Configuration ID of each item to be disassociated from an application.',
+    }),
   })
   .openapi({
     required: ['applicationConfigurationId', 'configurationIds'],
@@ -1172,13 +867,9 @@ const DisassociateConfigurationItemsFromApplicationRequestSchema = z
 
 const ExportConfigurationsResponseSchema = z
   .object({
-    exportId: ConfigurationsExportIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A unique identifier that you can use to query the export status.',
-        }),
-    ).exactOptional(),
+    exportId: ConfigurationsExportIdSchema.exactOptional().openapi({
+      description: 'A unique identifier that you can use to query the export status.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ExportConfigurationsResponse')
@@ -1187,27 +878,19 @@ const LongSchema = z.int().openapi('Long')
 
 const CustomerAgentInfoSchema = z
   .object({
-    activeAgents: IntegerSchema.and(
-      z.any().openapi({ description: 'Number of active discovery agents.' }),
-    ),
-    healthyAgents: IntegerSchema.and(
-      z.any().openapi({ description: 'Number of healthy discovery agents' }),
-    ),
-    blackListedAgents: IntegerSchema.and(
-      z.any().openapi({ description: 'Number of blacklisted discovery agents.' }),
-    ),
-    shutdownAgents: IntegerSchema.and(
-      z.any().openapi({ description: 'Number of discovery agents with status SHUTDOWN.' }),
-    ),
-    unhealthyAgents: IntegerSchema.and(
-      z.any().openapi({ description: 'Number of unhealthy discovery agents.' }),
-    ),
-    totalAgents: IntegerSchema.and(
-      z.any().openapi({ description: 'Total number of discovery agents.' }),
-    ),
-    unknownAgents: IntegerSchema.and(
-      z.any().openapi({ description: 'Number of unknown discovery agents.' }),
-    ),
+    activeAgents: IntegerSchema.openapi({ description: 'Number of active discovery agents.' }),
+    healthyAgents: IntegerSchema.openapi({ description: 'Number of healthy discovery agents' }),
+    blackListedAgents: IntegerSchema.openapi({
+      description: 'Number of blacklisted discovery agents.',
+    }),
+    shutdownAgents: IntegerSchema.openapi({
+      description: 'Number of discovery agents with status SHUTDOWN.',
+    }),
+    unhealthyAgents: IntegerSchema.openapi({
+      description: 'Number of unhealthy discovery agents.',
+    }),
+    totalAgents: IntegerSchema.openapi({ description: 'Total number of discovery agents.' }),
+    unknownAgents: IntegerSchema.openapi({ description: 'Number of unknown discovery agents.' }),
   })
   .openapi({
     required: [
@@ -1225,27 +908,27 @@ const CustomerAgentInfoSchema = z
 
 const CustomerConnectorInfoSchema = z
   .object({
-    activeConnectors: IntegerSchema.and(
-      z.any().openapi({ description: 'Number of active discovery connectors.' }),
-    ),
-    healthyConnectors: IntegerSchema.and(
-      z.any().openapi({ description: 'Number of healthy discovery connectors.' }),
-    ),
-    blackListedConnectors: IntegerSchema.and(
-      z.any().openapi({ description: 'Number of blacklisted discovery connectors.' }),
-    ),
-    shutdownConnectors: IntegerSchema.and(
-      z.any().openapi({ description: 'Number of discovery connectors with status SHUTDOWN,' }),
-    ),
-    unhealthyConnectors: IntegerSchema.and(
-      z.any().openapi({ description: 'Number of unhealthy discovery connectors.' }),
-    ),
-    totalConnectors: IntegerSchema.and(
-      z.any().openapi({ description: 'Total number of discovery connectors.' }),
-    ),
-    unknownConnectors: IntegerSchema.and(
-      z.any().openapi({ description: 'Number of unknown discovery connectors.' }),
-    ),
+    activeConnectors: IntegerSchema.openapi({
+      description: 'Number of active discovery connectors.',
+    }),
+    healthyConnectors: IntegerSchema.openapi({
+      description: 'Number of healthy discovery connectors.',
+    }),
+    blackListedConnectors: IntegerSchema.openapi({
+      description: 'Number of blacklisted discovery connectors.',
+    }),
+    shutdownConnectors: IntegerSchema.openapi({
+      description: 'Number of discovery connectors with status SHUTDOWN,',
+    }),
+    unhealthyConnectors: IntegerSchema.openapi({
+      description: 'Number of unhealthy discovery connectors.',
+    }),
+    totalConnectors: IntegerSchema.openapi({
+      description: 'Total number of discovery connectors.',
+    }),
+    unknownConnectors: IntegerSchema.openapi({
+      description: 'Number of unknown discovery connectors.',
+    }),
   })
   .openapi({
     required: [
@@ -1263,34 +946,28 @@ const CustomerConnectorInfoSchema = z
 
 const CustomerMeCollectorInfoSchema = z
   .object({
-    activeMeCollectors: IntegerSchema.and(
-      z.any().openapi({ description: ' The number of active Migration Evaluator collectors. ' }),
-    ),
-    healthyMeCollectors: IntegerSchema.and(
-      z.any().openapi({ description: ' The number of healthy Migration Evaluator collectors. ' }),
-    ),
-    denyListedMeCollectors: IntegerSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The number of deny-listed Migration Evaluator collectors. ' }),
-    ),
-    shutdownMeCollectors: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The number of Migration Evaluator collectors with <code>SHUTDOWN</code> status. ',
-        }),
-    ),
-    unhealthyMeCollectors: IntegerSchema.and(
-      z.any().openapi({ description: ' The number of unhealthy Migration Evaluator collectors. ' }),
-    ),
-    totalMeCollectors: IntegerSchema.and(
-      z.any().openapi({ description: ' The total number of Migration Evaluator collectors. ' }),
-    ),
-    unknownMeCollectors: IntegerSchema.and(
-      z.any().openapi({ description: ' The number of unknown Migration Evaluator collectors. ' }),
-    ),
+    activeMeCollectors: IntegerSchema.openapi({
+      description: ' The number of active Migration Evaluator collectors. ',
+    }),
+    healthyMeCollectors: IntegerSchema.openapi({
+      description: ' The number of healthy Migration Evaluator collectors. ',
+    }),
+    denyListedMeCollectors: IntegerSchema.openapi({
+      description: ' The number of deny-listed Migration Evaluator collectors. ',
+    }),
+    shutdownMeCollectors: IntegerSchema.openapi({
+      description:
+        ' The number of Migration Evaluator collectors with <code>SHUTDOWN</code> status. ',
+    }),
+    unhealthyMeCollectors: IntegerSchema.openapi({
+      description: ' The number of unhealthy Migration Evaluator collectors. ',
+    }),
+    totalMeCollectors: IntegerSchema.openapi({
+      description: ' The total number of Migration Evaluator collectors. ',
+    }),
+    unknownMeCollectors: IntegerSchema.openapi({
+      description: ' The number of unknown Migration Evaluator collectors. ',
+    }),
   })
   .openapi({
     required: [
@@ -1331,48 +1008,35 @@ const CustomerAgentlessCollectorInfoSchema = z
 
 const GetDiscoverySummaryResponseSchema = z
   .object({
-    servers: LongSchema.and(
-      z.any().openapi({ description: 'The number of servers discovered.' }),
-    ).exactOptional(),
-    applications: LongSchema.and(
-      z.any().openapi({ description: 'The number of applications discovered.' }),
-    ).exactOptional(),
-    serversMappedToApplications: LongSchema.and(
-      z.any().openapi({ description: 'The number of servers mapped to applications.' }),
-    ).exactOptional(),
-    serversMappedtoTags: LongSchema.and(
-      z.any().openapi({ description: 'The number of servers mapped to tags.' }),
-    ).exactOptional(),
-    agentSummary: CustomerAgentInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Details about discovered agents, including agent status and health.',
-        }),
-    ).exactOptional(),
-    connectorSummary: CustomerConnectorInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Details about discovered connectors, including connector status and health.',
-        }),
-    ).exactOptional(),
-    meCollectorSummary: CustomerMeCollectorInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Details about Migration Evaluator collectors, including collector status and health. ',
-        }),
-    ).exactOptional(),
+    servers: LongSchema.exactOptional().openapi({
+      description: 'The number of servers discovered.',
+    }),
+    applications: LongSchema.exactOptional().openapi({
+      description: 'The number of applications discovered.',
+    }),
+    serversMappedToApplications: LongSchema.exactOptional().openapi({
+      description: 'The number of servers mapped to applications.',
+    }),
+    serversMappedtoTags: LongSchema.exactOptional().openapi({
+      description: 'The number of servers mapped to tags.',
+    }),
+    agentSummary: CustomerAgentInfoSchema.exactOptional().openapi({
+      description: 'Details about discovered agents, including agent status and health.',
+    }),
+    connectorSummary: CustomerConnectorInfoSchema.exactOptional().openapi({
+      description: 'Details about discovered connectors, including connector status and health.',
+    }),
+    meCollectorSummary: CustomerMeCollectorInfoSchema.exactOptional().openapi({
+      description:
+        ' Details about Migration Evaluator collectors, including collector status and health. ',
+    }),
     agentlessCollectorSummary: CustomerAgentlessCollectorInfoSchema.exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('GetDiscoverySummaryResponse')
 
 const GetDiscoverySummaryRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetDiscoverySummaryRequest' })
   .openapi('GetDiscoverySummaryRequest')
 
@@ -1382,22 +1046,14 @@ const ConfigurationsSchema = z.array(ConfigurationSchema).openapi('Configuration
 
 const ListConfigurationsResponseSchema = z
   .object({
-    configurations: ConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Returns configuration details, including the configuration ID, attribute names, and attribute values.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Token to retrieve the next set of results. For example, if your call to ListConfigurations returned 100 items, but you set <code>ListConfigurationsRequest$maxResults</code> to 10, you received a set of 10 results along with this token. Use this token in the next query to retrieve the next set of 10.',
-        }),
-    ).exactOptional(),
+    configurations: ConfigurationsSchema.exactOptional().openapi({
+      description:
+        'Returns configuration details, including the configuration ID, attribute names, and attribute values.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'Token to retrieve the next set of results. For example, if your call to ListConfigurations returned 100 items, but you set <code>ListConfigurationsRequest$maxResults</code> to 10, you received a set of 10 results along with this token. Use this token in the next query to retrieve the next set of 10.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListConfigurationsResponse')
@@ -1412,12 +1068,10 @@ const OrderStringSchema = z.enum(['ASC', 'DESC']).openapi('OrderString')
 
 const OrderByElementSchema = z
   .object({
-    fieldName: OrderByElementFieldNameSchema.and(
-      z.any().openapi({ description: 'The field on which to order.' }),
-    ),
-    sortOrder: OrderStringSchema.and(
-      z.any().openapi({ description: 'Ordering direction.' }),
-    ).exactOptional(),
+    fieldName: OrderByElementFieldNameSchema.openapi({
+      description: 'The field on which to order.',
+    }),
+    sortOrder: OrderStringSchema.exactOptional().openapi({ description: 'Ordering direction.' }),
   })
   .openapi({ required: ['fieldName'], description: 'A field and direction for ordered output.' })
   .openapi('OrderByElement')
@@ -1426,42 +1080,24 @@ const OrderByListSchema = z.array(OrderByElementSchema).openapi('OrderByList')
 
 const ListConfigurationsRequestSchema = z
   .object({
-    configurationType: ConfigurationItemTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A valid configuration identified by Application Discovery Service. ',
-        }),
-    ),
-    filters: FiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>You can filter the request using various logical operators and a <i>key</i>-<i>value</i> format. For example: </p> <p> <code>{"key": "serverType", "value": "webServer"}</code> </p> <p>For a complete list of filter options and guidance about using them with this action, see <a href="https://docs.aws.amazon.com/application-discovery/latest/userguide/discovery-api-queries.html#ListConfigurations">Using the ListConfigurations Action</a> in the <i>Amazon Web Services Application Discovery Service User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    maxResults: IntegerSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The total number of items to return. The maximum value is 100.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Token to retrieve the next set of results. For example, if a previous call to ListConfigurations returned 100 items, but you set <code>ListConfigurationsRequest$maxResults</code> to 10, you received a set of 10 results along with a token. Use that token in this query to get the next set of 10.',
-        }),
-    ).exactOptional(),
-    orderBy: OrderByListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Certain filter criteria return output that can be sorted in ascending or descending order. For a list of output characteristics for each filter, see <a href="https://docs.aws.amazon.com/application-discovery/latest/userguide/discovery-api-queries.html#ListConfigurations">Using the ListConfigurations Action</a> in the <i>Amazon Web Services Application Discovery Service User Guide</i>.',
-        }),
-    ).exactOptional(),
+    configurationType: ConfigurationItemTypeSchema.openapi({
+      description: 'A valid configuration identified by Application Discovery Service. ',
+    }),
+    filters: FiltersSchema.exactOptional().openapi({
+      description:
+        '<p>You can filter the request using various logical operators and a <i>key</i>-<i>value</i> format. For example: </p> <p> <code>{"key": "serverType", "value": "webServer"}</code> </p> <p>For a complete list of filter options and guidance about using them with this action, see <a href="https://docs.aws.amazon.com/application-discovery/latest/userguide/discovery-api-queries.html#ListConfigurations">Using the ListConfigurations Action</a> in the <i>Amazon Web Services Application Discovery Service User Guide</i>.</p>',
+    }),
+    maxResults: IntegerSchema.exactOptional().openapi({
+      description: 'The total number of items to return. The maximum value is 100.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'Token to retrieve the next set of results. For example, if a previous call to ListConfigurations returned 100 items, but you set <code>ListConfigurationsRequest$maxResults</code> to 10, you received a set of 10 results along with a token. Use that token in this query to get the next set of 10.',
+    }),
+    orderBy: OrderByListSchema.exactOptional().openapi({
+      description:
+        'Certain filter criteria return output that can be sorted in ascending or descending order. For a list of output characteristics for each filter, see <a href="https://docs.aws.amazon.com/application-discovery/latest/userguide/discovery-api-queries.html#ListConfigurations">Using the ListConfigurations Action</a> in the <i>Amazon Web Services Application Discovery Service User Guide</i>.',
+    }),
   })
   .openapi({ required: ['configurationType'], title: 'ListConfigurationsRequest' })
   .openapi('ListConfigurationsRequest')
@@ -1470,27 +1106,21 @@ const BoxedIntegerSchema = z.int().openapi('BoxedInteger')
 
 const NeighborConnectionDetailSchema = z
   .object({
-    sourceServerId: ConfigurationIdSchema.and(
-      z.any().openapi({ description: 'The ID of the server that opened the network connection.' }),
-    ),
-    destinationServerId: ConfigurationIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the server that accepted the network connection.' }),
-    ),
-    destinationPort: BoxedIntegerSchema.and(
-      z.any().openapi({ description: 'The destination network port for the connection.' }),
-    ).exactOptional(),
-    transportProtocol: StringSchema.and(
-      z.any().openapi({ description: 'The network protocol used for the connection.' }),
-    ).exactOptional(),
-    connectionsCount: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of open network connections with the neighboring server.',
-        }),
-    ),
+    sourceServerId: ConfigurationIdSchema.openapi({
+      description: 'The ID of the server that opened the network connection.',
+    }),
+    destinationServerId: ConfigurationIdSchema.openapi({
+      description: 'The ID of the server that accepted the network connection.',
+    }),
+    destinationPort: BoxedIntegerSchema.exactOptional().openapi({
+      description: 'The destination network port for the connection.',
+    }),
+    transportProtocol: StringSchema.exactOptional().openapi({
+      description: 'The network protocol used for the connection.',
+    }),
+    connectionsCount: LongSchema.openapi({
+      description: 'The number of open network connections with the neighboring server.',
+    }),
   })
   .openapi({
     required: ['sourceServerId', 'destinationServerId', 'connectionsCount'],
@@ -1504,112 +1134,68 @@ const NeighborDetailsListSchema = z
 
 const ListServerNeighborsResponseSchema = z
   .object({
-    neighbors: NeighborDetailsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'List of distinct servers that are one hop away from the given server.',
-        }),
-    ),
-    nextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Token to retrieve the next set of results. For example, if you specified 100 IDs for <code>ListServerNeighborsRequest$neighborConfigurationIds</code> but set <code>ListServerNeighborsRequest$maxResults</code> to 10, you received a set of 10 results along with this token. Use this token in the next query to retrieve the next set of 10.',
-        }),
-    ).exactOptional(),
-    knownDependencyCount: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Count of distinct servers that are one hop away from the given server.',
-        }),
-    ).exactOptional(),
+    neighbors: NeighborDetailsListSchema.openapi({
+      description: 'List of distinct servers that are one hop away from the given server.',
+    }),
+    nextToken: StringSchema.exactOptional().openapi({
+      description:
+        'Token to retrieve the next set of results. For example, if you specified 100 IDs for <code>ListServerNeighborsRequest$neighborConfigurationIds</code> but set <code>ListServerNeighborsRequest$maxResults</code> to 10, you received a set of 10 results along with this token. Use this token in the next query to retrieve the next set of 10.',
+    }),
+    knownDependencyCount: LongSchema.exactOptional().openapi({
+      description: 'Count of distinct servers that are one hop away from the given server.',
+    }),
   })
   .openapi({ required: ['neighbors'] })
   .openapi('ListServerNeighborsResponse')
 
 const ListServerNeighborsRequestSchema = z
   .object({
-    configurationId: ConfigurationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Configuration ID of the server for which neighbors are being listed.',
-        }),
-    ),
-    portInformationNeeded: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Flag to indicate if port and protocol information is needed as part of the response.',
-        }),
-    ).exactOptional(),
-    neighborConfigurationIds: ConfigurationIdListSchema.and(
-      z.any().openapi({ description: 'List of configuration IDs to test for one-hop-away.' }),
-    ).exactOptional(),
-    maxResults: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Maximum number of results to return in a single page of output.',
-        }),
-    ).exactOptional(),
-    nextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Token to retrieve the next set of results. For example, if you previously specified 100 IDs for <code>ListServerNeighborsRequest$neighborConfigurationIds</code> but set <code>ListServerNeighborsRequest$maxResults</code> to 10, you received a set of 10 results along with a token. Use that token in this query to get the next set of 10.',
-        }),
-    ).exactOptional(),
+    configurationId: ConfigurationIdSchema.openapi({
+      description: 'Configuration ID of the server for which neighbors are being listed.',
+    }),
+    portInformationNeeded: BooleanSchema.exactOptional().openapi({
+      description:
+        'Flag to indicate if port and protocol information is needed as part of the response.',
+    }),
+    neighborConfigurationIds: ConfigurationIdListSchema.exactOptional().openapi({
+      description: 'List of configuration IDs to test for one-hop-away.',
+    }),
+    maxResults: IntegerSchema.exactOptional().openapi({
+      description: 'Maximum number of results to return in a single page of output.',
+    }),
+    nextToken: StringSchema.exactOptional().openapi({
+      description:
+        'Token to retrieve the next set of results. For example, if you previously specified 100 IDs for <code>ListServerNeighborsRequest$neighborConfigurationIds</code> but set <code>ListServerNeighborsRequest$maxResults</code> to 10, you received a set of 10 results along with a token. Use that token in this query to get the next set of 10.',
+    }),
   })
   .openapi({ required: ['configurationId'], title: 'ListServerNeighborsRequest' })
   .openapi('ListServerNeighborsRequest')
 
 const StartContinuousExportResponseSchema = z
   .object({
-    exportId: ConfigurationsExportIdSchema.and(
-      z.any().openapi({ description: 'The unique ID assigned to this export.' }),
-    ).exactOptional(),
-    s3Bucket: S3BucketSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the s3 bucket where the export data parquet files are stored.',
-        }),
-    ).exactOptional(),
-    startTime: TimeStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The timestamp representing when the continuous export was started.',
-        }),
-    ).exactOptional(),
-    dataSource: DataSourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of data collector used to gather this data (currently only offered for AGENT).',
-        }),
-    ).exactOptional(),
-    schemaStorageConfig: SchemaStorageConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A dictionary which describes how the data is stored.</p> <ul> <li> <p> <code>databaseName</code> - the name of the Glue database used to store the schema.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    exportId: ConfigurationsExportIdSchema.exactOptional().openapi({
+      description: 'The unique ID assigned to this export.',
+    }),
+    s3Bucket: S3BucketSchema.exactOptional().openapi({
+      description: 'The name of the s3 bucket where the export data parquet files are stored.',
+    }),
+    startTime: TimeStampSchema.exactOptional().openapi({
+      description: 'The timestamp representing when the continuous export was started.',
+    }),
+    dataSource: DataSourceSchema.exactOptional().openapi({
+      description:
+        'The type of data collector used to gather this data (currently only offered for AGENT).',
+    }),
+    schemaStorageConfig: SchemaStorageConfigSchema.exactOptional().openapi({
+      description:
+        '<p>A dictionary which describes how the data is stored.</p> <ul> <li> <p> <code>databaseName</code> - the name of the Glue database used to store the schema.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartContinuousExportResponse')
 
 const StartContinuousExportRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'StartContinuousExportRequest' })
   .openapi('StartContinuousExportRequest')
 
@@ -1619,20 +1205,14 @@ const ResourceInUseExceptionSchema = z.any().openapi('ResourceInUseException')
 
 const AgentConfigurationStatusSchema = z
   .object({
-    agentId: StringSchema.and(
-      z.any().openapi({ description: 'The agent/connector ID.' }),
-    ).exactOptional(),
-    operationSucceeded: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the status of the <code>StartDataCollection</code> and <code>StopDataCollection</code> operations. The system has recorded the data collection operation. The agent/connector receives this command the next time it polls for a new command. ',
-        }),
-    ).exactOptional(),
-    description: StringSchema.and(
-      z.any().openapi({ description: 'A description of the operation performed.' }),
-    ).exactOptional(),
+    agentId: StringSchema.exactOptional().openapi({ description: 'The agent/connector ID.' }),
+    operationSucceeded: BooleanSchema.exactOptional().openapi({
+      description:
+        'Information about the status of the <code>StartDataCollection</code> and <code>StopDataCollection</code> operations. The system has recorded the data collection operation. The agent/connector receives this command the next time it polls for a new command. ',
+    }),
+    description: StringSchema.exactOptional().openapi({
+      description: 'A description of the operation performed.',
+    }),
   })
   .openapi({
     description:
@@ -1647,41 +1227,29 @@ const AgentConfigurationStatusListSchema = z
 
 const StartDataCollectionByAgentIdsResponseSchema = z
   .object({
-    agentsConfigurationStatus: AgentConfigurationStatusListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about agents or the connector that were instructed to start collecting data. Information includes the agent/connector ID, a description of the operation performed, and whether the agent/connector configuration was updated.',
-        }),
-    ).exactOptional(),
+    agentsConfigurationStatus: AgentConfigurationStatusListSchema.exactOptional().openapi({
+      description:
+        'Information about agents or the connector that were instructed to start collecting data. Information includes the agent/connector ID, a description of the operation performed, and whether the agent/connector configuration was updated.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartDataCollectionByAgentIdsResponse')
 
 const StartDataCollectionByAgentIdsRequestSchema = z
   .object({
-    agentIds: AgentIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IDs of the agents or connectors from which to start collecting data. If you send a request to an agent/connector ID that you do not have permission to contact, according to your Amazon Web Services account, the service does not throw an exception. Instead, it returns the error in the <i>Description</i> field. If you send a request to multiple agents/connectors and you do not have permission to contact some of those agents/connectors, the system does not throw an exception. Instead, the system shows <code>Failed</code> in the <i>Description</i> field.',
-        }),
-    ),
+    agentIds: AgentIdsSchema.openapi({
+      description:
+        'The IDs of the agents or connectors from which to start collecting data. If you send a request to an agent/connector ID that you do not have permission to contact, according to your Amazon Web Services account, the service does not throw an exception. Instead, it returns the error in the <i>Description</i> field. If you send a request to multiple agents/connectors and you do not have permission to contact some of those agents/connectors, the system does not throw an exception. Instead, the system shows <code>Failed</code> in the <i>Description</i> field.',
+    }),
   })
   .openapi({ required: ['agentIds'], title: 'StartDataCollectionByAgentIdsRequest' })
   .openapi('StartDataCollectionByAgentIdsRequest')
 
 const StartExportTaskResponseSchema = z
   .object({
-    exportId: ConfigurationsExportIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A unique identifier used to query the status of an export request.',
-        }),
-    ).exactOptional(),
+    exportId: ConfigurationsExportIdSchema.exactOptional().openapi({
+      description: 'A unique identifier used to query the status of an export request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartExportTaskResponse')
@@ -1692,156 +1260,107 @@ const ExportDataFormatsSchema = z.array(ExportDataFormatSchema).openapi('ExportD
 
 const StartExportTaskRequestSchema = z
   .object({
-    exportDataFormat: ExportDataFormatsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The file format for the returned export data. Default value is <code>CSV</code>. <b>Note:</b> <i>The</i> <code>GRAPHML</code> <i>option has been deprecated.</i> ',
-        }),
-    ).exactOptional(),
-    filters: ExportFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If a filter is present, it selects the single <code>agentId</code> of the Application Discovery Agent for which data is exported. The <code>agentId</code> can be found in the results of the <code>DescribeAgents</code> API or CLI. If no filter is present, <code>startTime</code> and <code>endTime</code> are ignored and exported data includes both Agentless Discovery Connector data and summary data from Application Discovery agents. ',
-        }),
-    ).exactOptional(),
-    startTime: TimeStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The start timestamp for exported data from the single Application Discovery Agent selected in the filters. If no value is specified, data is exported starting from the first data collected by the agent.',
-        }),
-    ).exactOptional(),
-    endTime: TimeStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The end timestamp for exported data from the single Application Discovery Agent selected in the filters. If no value is specified, exported data includes the most recent data collected by the agent.',
-        }),
-    ).exactOptional(),
+    exportDataFormat: ExportDataFormatsSchema.exactOptional().openapi({
+      description:
+        'The file format for the returned export data. Default value is <code>CSV</code>. <b>Note:</b> <i>The</i> <code>GRAPHML</code> <i>option has been deprecated.</i> ',
+    }),
+    filters: ExportFiltersSchema.exactOptional().openapi({
+      description:
+        'If a filter is present, it selects the single <code>agentId</code> of the Application Discovery Agent for which data is exported. The <code>agentId</code> can be found in the results of the <code>DescribeAgents</code> API or CLI. If no filter is present, <code>startTime</code> and <code>endTime</code> are ignored and exported data includes both Agentless Discovery Connector data and summary data from Application Discovery agents. ',
+    }),
+    startTime: TimeStampSchema.exactOptional().openapi({
+      description:
+        'The start timestamp for exported data from the single Application Discovery Agent selected in the filters. If no value is specified, data is exported starting from the first data collected by the agent.',
+    }),
+    endTime: TimeStampSchema.exactOptional().openapi({
+      description:
+        'The end timestamp for exported data from the single Application Discovery Agent selected in the filters. If no value is specified, exported data includes the most recent data collected by the agent.',
+    }),
   })
   .openapi({ title: 'StartExportTaskRequest', required: [] })
   .openapi('StartExportTaskRequest')
 
 const StartImportTaskResponseSchema = z
   .object({
-    task: ImportTaskSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of information related to the import task request including status information, times, IDs, the Amazon S3 Object URL for the import file, and more. ',
-        }),
-    ).exactOptional(),
+    task: ImportTaskSchema.exactOptional().openapi({
+      description:
+        'An array of information related to the import task request including status information, times, IDs, the Amazon S3 Object URL for the import file, and more. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartImportTaskResponse')
 
 const StartImportTaskRequestSchema = z
   .object({
-    clientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Optional. A unique token that you can provide to prevent the same import request from occurring more than once. If you don't provide a token, a token is automatically generated.</p> <p>Sending more than one <code>StartImportTask</code> request with the same client request token will return information about the original import task with that client request token.</p>",
-        }),
-    ).exactOptional(),
-    name: ImportTaskNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A descriptive name for this request. You can use this name to filter future requests related to this import task, such as identifying applications and servers that were included in this import task. We recommend that you use a meaningful name for each import task.',
-        }),
-    ),
-    importUrl: ImportURLSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The URL for your import file that you've uploaded to Amazon S3.</p> <note> <p>If you're using the Amazon Web Services CLI, this URL is structured as follows: <code>s3://BucketName/ImportFileName.CSV</code> </p> </note>",
-        }),
-    ),
+    clientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        "<p>Optional. A unique token that you can provide to prevent the same import request from occurring more than once. If you don't provide a token, a token is automatically generated.</p> <p>Sending more than one <code>StartImportTask</code> request with the same client request token will return information about the original import task with that client request token.</p>",
+    }),
+    name: ImportTaskNameSchema.openapi({
+      description:
+        'A descriptive name for this request. You can use this name to filter future requests related to this import task, such as identifying applications and servers that were included in this import task. We recommend that you use a meaningful name for each import task.',
+    }),
+    importUrl: ImportURLSchema.openapi({
+      description:
+        "<p>The URL for your import file that you've uploaded to Amazon S3.</p> <note> <p>If you're using the Amazon Web Services CLI, this URL is structured as follows: <code>s3://BucketName/ImportFileName.CSV</code> </p> </note>",
+    }),
   })
   .openapi({ required: ['name', 'importUrl'], title: 'StartImportTaskRequest' })
   .openapi('StartImportTaskRequest')
 
 const StopContinuousExportResponseSchema = z
   .object({
-    startTime: TimeStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Timestamp that represents when this continuous export started collecting data.',
-        }),
-    ).exactOptional(),
-    stopTime: TimeStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Timestamp that represents when this continuous export was stopped.',
-        }),
-    ).exactOptional(),
+    startTime: TimeStampSchema.exactOptional().openapi({
+      description: 'Timestamp that represents when this continuous export started collecting data.',
+    }),
+    stopTime: TimeStampSchema.exactOptional().openapi({
+      description: 'Timestamp that represents when this continuous export was stopped.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StopContinuousExportResponse')
 
 const StopContinuousExportRequestSchema = z
   .object({
-    exportId: ConfigurationsExportIdSchema.and(
-      z.any().openapi({ description: 'The unique ID assigned to this export.' }),
-    ),
+    exportId: ConfigurationsExportIdSchema.openapi({
+      description: 'The unique ID assigned to this export.',
+    }),
   })
   .openapi({ required: ['exportId'], title: 'StopContinuousExportRequest' })
   .openapi('StopContinuousExportRequest')
 
 const StopDataCollectionByAgentIdsResponseSchema = z
   .object({
-    agentsConfigurationStatus: AgentConfigurationStatusListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the agents or connector that were instructed to stop collecting data. Information includes the agent/connector ID, a description of the operation performed, and whether the agent/connector configuration was updated.',
-        }),
-    ).exactOptional(),
+    agentsConfigurationStatus: AgentConfigurationStatusListSchema.exactOptional().openapi({
+      description:
+        'Information about the agents or connector that were instructed to stop collecting data. Information includes the agent/connector ID, a description of the operation performed, and whether the agent/connector configuration was updated.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StopDataCollectionByAgentIdsResponse')
 
 const StopDataCollectionByAgentIdsRequestSchema = z
   .object({
-    agentIds: AgentIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The IDs of the agents or connectors from which to stop collecting data.',
-        }),
-    ),
+    agentIds: AgentIdsSchema.openapi({
+      description: 'The IDs of the agents or connectors from which to stop collecting data.',
+    }),
   })
   .openapi({ required: ['agentIds'], title: 'StopDataCollectionByAgentIdsRequest' })
   .openapi('StopDataCollectionByAgentIdsRequest')
 
-const UpdateApplicationResponseSchema = z.object({}).openapi('UpdateApplicationResponse')
+const UpdateApplicationResponseSchema = z.looseObject({}).openapi('UpdateApplicationResponse')
 
 const UpdateApplicationRequestSchema = z
   .object({
-    configurationId: ApplicationIdSchema.and(
-      z.any().openapi({ description: 'Configuration ID of the application to be updated.' }),
-    ),
-    name: ApplicationNameSchema.and(
-      z.any().openapi({ description: 'New name of the application to be updated.' }),
-    ).exactOptional(),
-    description: ApplicationDescriptionSchema.and(
-      z.any().openapi({ description: 'New description of the application to be updated.' }),
-    ).exactOptional(),
+    configurationId: ApplicationIdSchema.openapi({
+      description: 'Configuration ID of the application to be updated.',
+    }),
+    name: ApplicationNameSchema.exactOptional().openapi({
+      description: 'New name of the application to be updated.',
+    }),
+    description: ApplicationDescriptionSchema.exactOptional().openapi({
+      description: 'New description of the application to be updated.',
+    }),
   })
   .openapi({ required: ['configurationId'], title: 'UpdateApplicationRequest' })
   .openapi('UpdateApplicationRequest')

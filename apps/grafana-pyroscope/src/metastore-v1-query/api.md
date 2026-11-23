@@ -25,7 +25,8 @@ curl http://localhost:4040/metastore.v1.MetadataQueryService/QueryMetadata \
     "query": "string",
     "labels": [
       "string"
-    ]
+    ],
+    "shardSelector": "string"
   }'
 ```
 
@@ -43,7 +44,8 @@ curl http://localhost:4040/metastore.v1.MetadataQueryService/QueryMetadata \
   "query": "string",
   "labels": [
     "string"
-  ]
+  ],
+  "shardSelector": "string"
 }
 ```
 
@@ -59,6 +61,7 @@ curl http://localhost:4040/metastore.v1.MetadataQueryService/QueryMetadata \
 |» endTime|body|integer \| string(int64)|false|none|
 |» query|body|string|false|none|
 |» labels|body|[string]|false|none|
+|» shardSelector|body|string|false|Optional pruning hint, not a filter: the metastore may skip shards whose<br> string table lacks a name or value of an equality matcher. Returned blocks<br> and datasets are selected by query alone and may not match the selector;<br> metastores that predate the field ignore it.|
 
 #### Enumerated Values
 
@@ -528,7 +531,8 @@ BlockMeta is a metadata entry that describes the block's contents. A block
   "query": "string",
   "labels": [
     "string"
-  ]
+  ],
+  "shardSelector": "string"
 }
 ```
 
@@ -541,6 +545,7 @@ BlockMeta is a metadata entry that describes the block's contents. A block
 |endTime|integer \| string(int64)|false|none|none|
 |query|string|false|none|none|
 |labels|[string]|false|none|none|
+|shardSelector|string|false|none|Optional pruning hint, not a filter: the metastore may skip shards whose<br> string table lacks a name or value of an equality matcher. Returned blocks<br> and datasets are selected by query alone and may not match the selector;<br> metastores that predate the field ignore it.|
 
 <h2 id="tocS_metastore.v1.QueryMetadataResponse">metastore.v1.QueryMetadataResponse</h2>
 <!-- backwards compatibility -->

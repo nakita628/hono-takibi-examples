@@ -151,7 +151,7 @@ const ImageEmbeddingInputSchema = z
 const ModelInfoSchema = z
   .object({
     id: z.string().openapi({ title: 'Id' }),
-    stats: z.object({}).openapi({ title: 'Stats' }),
+    stats: z.looseObject({}).openapi({ title: 'Stats' }),
     object: z.literal('model').default('model').exactOptional().openapi({ title: 'Object' }),
     owned_by: z
       .literal('infinity')

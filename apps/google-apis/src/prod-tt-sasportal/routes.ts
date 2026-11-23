@@ -1,121 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const SasPortalAssignmentSchema = z
-  .object({
-    members: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'The identities the role is assigned to. It can have the following values: * `{user_email}`: An email address that represents a specific Google account. For example: `alice@gmail.com`. * `{group_email}`: An email address that represents a Google group. For example, `viewers@gmail.com`.',
-      }),
-    role: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. Role that is assigned to `members`.' }),
-  })
-  .openapi({ description: 'Associates `members` with a `role`.', required: [] })
-  .openapi('SasPortalAssignment')
-
-const SasPortalFrequencyRangeSchema = z
-  .object({
-    highFrequencyMhz: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'The highest frequency of the frequency range in MHz.' }),
-    lowFrequencyMhz: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'The lowest frequency of the frequency range in MHz.' }),
-  })
-  .openapi({
-    description: 'Frequency range from `low_frequency` to `high_frequency`.',
-    required: [],
-  })
-  .openapi('SasPortalFrequencyRange')
-
-const SasPortalChannelWithScoreSchema = z
-  .object({
-    frequencyRange: SasPortalFrequencyRangeSchema.exactOptional().openapi({
-      description: 'The frequency range of the channel.',
-    }),
-    score: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'The channel score, normalized to be in the range [0,100].' }),
-  })
-  .openapi({ description: 'The channel with score.', required: [] })
-  .openapi('SasPortalChannelWithScore')
-
-const SasPortalCreateSignedDeviceRequestSchema = z
-  .object({
-    encodedDevice: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. JSON Web Token signed using a CPI private key. Payload must be the JSON encoding of the device. The user_id field must be set.',
-      }),
-    installerId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Unique installer id (CPI ID) from the Certified Professional Installers database.',
-      }),
-  })
-  .openapi({ description: 'Request for CreateSignedDevice.', required: [] })
-  .openapi('SasPortalCreateSignedDeviceRequest')
-
-const SasPortalCustomerSchema = z
-  .object({
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Required. Name of the organization that the customer entity represents.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Resource name of the customer.' }),
-    sasUserIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'User IDs used by the devices belonging to this customer.' }),
-  })
-  .openapi({ description: 'Entity representing a SAS customer.', required: [] })
-  .openapi('SasPortalCustomer')
-
-const SasPortalDeploymentSchema = z
-  .object({
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The deployment's display name." }),
-    frns: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The FCC Registration Numbers (FRNs) copied from its direct parent.',
-        readOnly: true,
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Resource name.', readOnly: true }),
-    sasUserIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'User ID used by the devices belonging to this deployment. Each deployment should be associated with one unique user ID.',
-      }),
-  })
-  .openapi({ description: 'The Deployment.', required: [] })
-  .openapi('SasPortalDeployment')
-
 const SasPortalDeviceAirInterfaceSchema = z
   .object({
     radioTechnology: z
@@ -320,6 +204,36 @@ const SasPortalDeviceConfigSchema = z
   .openapi({ description: 'Information about the device configuration.', required: [] })
   .openapi('SasPortalDeviceConfig')
 
+const SasPortalFrequencyRangeSchema = z
+  .object({
+    highFrequencyMhz: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'The highest frequency of the frequency range in MHz.' }),
+    lowFrequencyMhz: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'The lowest frequency of the frequency range in MHz.' }),
+  })
+  .openapi({
+    description: 'Frequency range from `low_frequency` to `high_frequency`.',
+    required: [],
+  })
+  .openapi('SasPortalFrequencyRange')
+
+const SasPortalChannelWithScoreSchema = z
+  .object({
+    frequencyRange: SasPortalFrequencyRangeSchema.exactOptional().openapi({
+      description: 'The frequency range of the channel.',
+    }),
+    score: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'The channel score, normalized to be in the range [0,100].' }),
+  })
+  .openapi({ description: 'The channel with score.', required: [] })
+  .openapi('SasPortalChannelWithScore')
+
 const SasPortalNrqzValidationSchema = z
   .object({
     caseId: z.string().exactOptional().openapi({ description: 'Validation case ID.' }),
@@ -490,8 +404,99 @@ const SasPortalDeviceSchema = z
   .openapi({ required: [] })
   .openapi('SasPortalDevice')
 
+type SasPortalListDevicesResponseType = {
+  devices?: z.infer<typeof SasPortalDeviceSchema>[]
+  nextPageToken?: string
+}
+
+const SasPortalAssignmentSchema = z
+  .object({
+    members: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The identities the role is assigned to. It can have the following values: * `{user_email}`: An email address that represents a specific Google account. For example: `alice@gmail.com`. * `{group_email}`: An email address that represents a Google group. For example, `viewers@gmail.com`.',
+      }),
+    role: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. Role that is assigned to `members`.' }),
+  })
+  .openapi({ description: 'Associates `members` with a `role`.', required: [] })
+  .openapi('SasPortalAssignment')
+
+const SasPortalCreateSignedDeviceRequestSchema = z
+  .object({
+    encodedDevice: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. JSON Web Token signed using a CPI private key. Payload must be the JSON encoding of the device. The user_id field must be set.',
+      }),
+    installerId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Unique installer id (CPI ID) from the Certified Professional Installers database.',
+      }),
+  })
+  .openapi({ description: 'Request for CreateSignedDevice.', required: [] })
+  .openapi('SasPortalCreateSignedDeviceRequest')
+
+const SasPortalCustomerSchema = z
+  .object({
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Required. Name of the organization that the customer entity represents.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Resource name of the customer.' }),
+    sasUserIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'User IDs used by the devices belonging to this customer.' }),
+  })
+  .openapi({ description: 'Entity representing a SAS customer.', required: [] })
+  .openapi('SasPortalCustomer')
+
+const SasPortalDeploymentSchema = z
+  .object({
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The deployment's display name." }),
+    frns: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The FCC Registration Numbers (FRNs) copied from its direct parent.',
+        readOnly: true,
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Resource name.', readOnly: true }),
+    sasUserIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'User ID used by the devices belonging to this deployment. Each deployment should be associated with one unique user ID.',
+      }),
+  })
+  .openapi({ description: 'The Deployment.', required: [] })
+  .openapi('SasPortalDeployment')
+
 const SasPortalEmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
@@ -499,7 +504,7 @@ const SasPortalEmptySchema = z
   .openapi('SasPortalEmpty')
 
 const SasPortalGenerateSecretRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request for GenerateSecret.' })
   .openapi('SasPortalGenerateSecretRequest')
 
@@ -559,7 +564,7 @@ const SasPortalListDeploymentsResponseSchema = z
   .openapi({ description: 'Response for ListDeployments.', required: [] })
   .openapi('SasPortalListDeploymentsResponse')
 
-const SasPortalListDevicesResponseSchema = z
+const SasPortalListDevicesResponseSchema: z.ZodType<SasPortalListDevicesResponseType> = z
   .object({
     devices: z
       .array(SasPortalDeviceSchema)
@@ -899,7 +904,7 @@ const SasPortalValidateInstallerRequestSchema = z
   .openapi('SasPortalValidateInstallerRequest')
 
 const SasPortalValidateInstallerResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Response for ValidateInstaller.' })
   .openapi('SasPortalValidateInstallerResponse')
 

@@ -2050,6 +2050,13 @@ const IoK8sApiCoreV1ContainerSchema = z
           "envFrom is the list of sources to populate environment variables in the container. The keys defined within a source may consist of any printable ASCII characters except '='. When a key exists in multiple sources, the value associated with the last source will take precedence. Values defined by an Env with a duplicate key will take precedence. Cannot be updated.",
         'x-kubernetes-list-type': 'atomic',
       }),
+    hostCgroupNamespace: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "hostCgroupNamespace specifies whether the container uses the host's cgroup namespace. If true, the container shares the cgroup namespace with the host, so cgroups other than the container's own cgroup are visible to the container. If false, a new cgroup namespace rooted at the container's own cgroup is created for the container. If unset, the container runtime selects the behavior. Must not be set to true when the pod uses user namespaces (spec.hostUsers is false). Must not be set to true with securityContext.cgroupOptions.mountMode set to ReadWrite, unless securityContext.privileged is true. Must not be set when spec.os.name is windows. The runtime handler must support cgroup namespaces, otherwise the container will fail to start. Cannot be updated.",
+      }),
     image: z
       .string()
       .exactOptional()
@@ -2289,6 +2296,10 @@ const IoK8sApiCoreV1EphemeralContainerSchema = z
           "envFrom is the list of sources to populate environment variables in the container. The keys defined within a source may consist of any printable ASCII characters except '='. When a key exists in multiple sources, the value associated with the last source will take precedence. Values defined by an Env with a duplicate key will take precedence. Cannot be updated.",
         'x-kubernetes-list-type': 'atomic',
       }),
+    hostCgroupNamespace: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'hostCgroupNamespace is not allowed for ephemeral containers.' }),
     image: z
       .string()
       .exactOptional()
@@ -4757,6 +4768,7 @@ type IoK8sApiCoreV1PodSpecType = {
   nodeSelector?: { [key: string]: string }
   os?: z.infer<typeof IoK8sApiCoreV1PodOSSchema>
   overhead?: { [key: string]: z.infer<typeof IoK8sApimachineryPkgApiResourceQuantitySchema> }
+  podNetwork?: string
   preemptionPolicy?: string
   priority?: number
   priorityClassName?: string
@@ -4881,7 +4893,7 @@ const IoK8sApiCoreV1PodSpecSchema: z.ZodType<IoK8sApiCoreV1PodSpecType> = z
       .exactOptional()
       .openapi({
         description:
-          "hostNetwork indicates that the pod should use the host's network namespace. When using hostNetwork you should specify ports so the scheduler is aware. When `hostNetwork` is true, specified `hostPort` fields in port definitions must match `containerPort`, and unspecified `hostPort` fields in port definitions are defaulted to match `containerPort`. Default to false.",
+          "hostNetwork indicates that the pod should use the host's network namespace. When using hostNetwork you should specify ports so the scheduler is aware. When `hostNetwork` is true, specified `hostPort` fields in port definitions must match `containerPort`, and unspecified `hostPort` fields in port definitions are defaulted to match `containerPort`. Default to false. When true, podNetwork may not be set: the pod has no network namespace of its own.",
       }),
     hostPID: z
       .boolean()
@@ -4957,6 +4969,13 @@ const IoK8sApiCoreV1PodSpecSchema: z.ZodType<IoK8sApiCoreV1PodSpecType> = z
       .openapi({
         description:
           'overhead represents the resource overhead associated with running a pod for a given RuntimeClass. This field will be autopopulated at admission time by the RuntimeClass admission controller. If the RuntimeClass admission controller is enabled, overhead must not be set in Pod create requests. The RuntimeClass admission controller will reject Pod create requests which have the overhead already set. If RuntimeClass is configured and selected in the PodSpec, Overhead will be set to the value defined in the corresponding RuntimeClass, otherwise it will remain unset and treated as zero. More info: https://git.k8s.io/enhancements/keps/sig-node/688-pod-overhead/README.md',
+      }),
+    podNetwork: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'podNetwork selects whether a non-hostNetwork pod is attached to the pod network. "Default" attaches the pod to the pod network. "Isolated" gives the pod an isolated network namespace with only the loopback interface configured, not attached to the pod network. This field must be unset if hostNetwork is true. For non-hostNetwork pods, this behaves as if it was set to "Default" if it is not set. If a pod is "Isolated", hostPort and network-based probes and lifecycle handlers are not allowed. This field is immutable on Pods.',
       }),
     preemptionPolicy: z
       .string()

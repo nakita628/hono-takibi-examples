@@ -1,47 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const PeriodicitySchema = z
-  .union([z.literal(0), z.literal(1), z.literal(2), z.literal(3), z.literal(4)])
-  .openapi('Periodicity')
-
-const FrequencySchema = z
-  .strictObject({
-    interval: z.int32().exactOptional(),
-    periodicity: PeriodicitySchema.exactOptional(),
-    periodicityAsString: z.string().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Frequency')
-
-const FrequencyRequestSchema = z
-  .strictObject({
-    interval: z
-      .int32()
-      .openapi({
-        description:
-          'Time interval configured between subscription orders, which depends on the periodicity. For a `DAILY` periodicity, the value will be days, for `MONTHLY` it will be months, and so on.',
-        example: 3,
-      }),
-    periodicity: z
-      .string()
-      .nullable()
-      .openapi({
-        description:
-          'Defines the subscriptions recurrence period. The possible values are: \r\n- `DAILY` \r\n- `WEEKLY` \r\n- `MONTHLY` \r\n- `YEARLY`',
-        example: 'MONTHLY',
-      }),
-  })
-  .openapi({
-    description: "Information about subscriptions' recurrence.",
-    required: ['interval', 'periodicity'],
-  })
-  .openapi('FrequencyRequest')
-
-const FrequencyResponseSchema = z
-  .strictObject({ interval: z.int32(), periodicity: z.string().nullable() })
-  .openapi({ required: ['interval', 'periodicity'], title: 'Frequency' })
-  .openapi('FrequencyResponse')
-
 const ItemAttachmentSchema = z
   .strictObject({
     content: z.record(z.string(), z.string()).nullable().exactOptional(),
@@ -49,64 +7,6 @@ const ItemAttachmentSchema = z
   })
   .openapi({ required: [] })
   .openapi('ItemAttachment')
-
-const ItemSimulationStatusSchema = z
-  .union([z.literal(0), z.literal(1), z.literal(2), z.literal(3), z.literal(4)])
-  .openapi('ItemSimulationStatus')
-
-const LogisticsInfoDeliveryWindowSchema = z
-  .strictObject({
-    endDateUtc: z.iso.datetime({ offset: true }).exactOptional(),
-    price: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    startDateUtc: z.iso.datetime({ offset: true }).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('LogisticsInfoDeliveryWindow')
-
-const LogisticsInfoSLASchema = z
-  .strictObject({
-    availableDeliveryWindows: z.array(LogisticsInfoDeliveryWindowSchema).nullable().exactOptional(),
-    deliveryChannel: z.string().nullable().exactOptional(),
-    deliveryWindows: z.array(LogisticsInfoDeliveryWindowSchema).nullable().exactOptional(),
-    id: z.string().nullable().exactOptional(),
-    lockTtl: z.string().nullable().exactOptional(),
-    pickupPointId: z.string().nullable().exactOptional(),
-    price: z.int32().exactOptional(),
-    shippingEstimate: z.string().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('LogisticsInfoSLA')
-
-const LogisticsInfoSchema = z
-  .strictObject({
-    addressId: z.string().nullable().exactOptional(),
-    deliveryWindow: LogisticsInfoDeliveryWindowSchema.exactOptional(),
-    itemIndex: z.int32().exactOptional(),
-    lockTtl: z.string().nullable().exactOptional(),
-    pickupId: z.string().nullable().exactOptional(),
-    price: z.int32().exactOptional(),
-    quantity: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Amount of units in the cart.', example: 5, title: 'quantity' }),
-    selectedDeliveryChannel: z.string().nullable().exactOptional(),
-    selectedSla: z.string().nullable().exactOptional(),
-    shippingEstimate: z.string().nullable().exactOptional(),
-    slAs: z.array(LogisticsInfoSLASchema).nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('LogisticsInfo')
 
 const PriceTagSchema = z
   .strictObject({
@@ -173,6 +73,69 @@ const OrderItemSchema = z
   .openapi({ required: [] })
   .openapi('OrderItem')
 
+const LogisticsInfoDeliveryWindowSchema = z
+  .strictObject({
+    endDateUtc: z.iso.datetime({ offset: true }).exactOptional(),
+    price: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    startDateUtc: z.iso.datetime({ offset: true }).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('LogisticsInfoDeliveryWindow')
+
+const LogisticsInfoSLASchema = z
+  .strictObject({
+    availableDeliveryWindows: z.array(LogisticsInfoDeliveryWindowSchema).nullable().exactOptional(),
+    deliveryChannel: z.string().nullable().exactOptional(),
+    deliveryWindows: z.array(LogisticsInfoDeliveryWindowSchema).nullable().exactOptional(),
+    id: z.string().nullable().exactOptional(),
+    lockTtl: z.string().nullable().exactOptional(),
+    pickupPointId: z.string().nullable().exactOptional(),
+    price: z.int32().exactOptional(),
+    shippingEstimate: z.string().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('LogisticsInfoSLA')
+
+const LogisticsInfoSchema = z
+  .strictObject({
+    addressId: z.string().nullable().exactOptional(),
+    deliveryWindow: LogisticsInfoDeliveryWindowSchema.exactOptional(),
+    itemIndex: z.int32().exactOptional(),
+    lockTtl: z.string().nullable().exactOptional(),
+    pickupId: z.string().nullable().exactOptional(),
+    price: z.int32().exactOptional(),
+    quantity: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Amount of units in the cart.', example: 5, title: 'quantity' }),
+    selectedDeliveryChannel: z.string().nullable().exactOptional(),
+    selectedSla: z.string().nullable().exactOptional(),
+    shippingEstimate: z.string().nullable().exactOptional(),
+    slAs: z.array(LogisticsInfoSLASchema).nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('LogisticsInfo')
+
+const SimulateMessageResponseSchema = z
+  .strictObject({
+    code: z.string().nullable().exactOptional(),
+    status: z.string().nullable().exactOptional(),
+    text: z.string().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('SimulateMessageResponse')
+
 const PaymentFieldSchema = z
   .strictObject({
     name: z.string().nullable().exactOptional(),
@@ -236,6 +199,204 @@ const PaymentDataSchema = z
   })
   .openapi({ required: [] })
   .openapi('PaymentData')
+
+const PurchaseContextAvailableGiftResponseSchema = z
+  .strictObject({
+    attachments: z.array(ItemAttachmentSchema).nullable().exactOptional(),
+    id: z.string().nullable().exactOptional(),
+    isGift: z.boolean().exactOptional(),
+    isSelected: z.boolean().exactOptional(),
+    name: z.string().nullable().exactOptional(),
+    price: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({ type: ['integer', 'null'], format: 'int64' }),
+    priceTags: z.array(PriceTagSchema).nullable().exactOptional(),
+    quantity: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Amount of units in the cart.', example: 5, title: 'quantity' }),
+    seller: z.string().nullable().exactOptional(),
+    sellingPrice: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({ type: ['integer', 'null'], format: 'int64' }),
+    unitMultiplier: z.float64().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('PurchaseContextAvailableGiftResponse')
+
+const PurchaseContextSelectableGiftsResponseSchema = z
+  .strictObject({
+    availableGifts: z.array(PurchaseContextAvailableGiftResponseSchema).nullable().exactOptional(),
+    availableQuantity: z.int32().exactOptional(),
+    id: z.string().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('PurchaseContextSelectableGiftsResponse')
+
+const ItemSimulationStatusSchema = z
+  .union([z.literal(0), z.literal(1), z.literal(2), z.literal(3), z.literal(4)])
+  .openapi('ItemSimulationStatus')
+
+const SimulationItemResultSchema = z
+  .strictObject({
+    id: z.string().nullable().exactOptional(),
+    quantity: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Amount of units in the cart.', example: 5, title: 'quantity' }),
+    status: ItemSimulationStatusSchema.exactOptional(),
+    statusName: z.string().nullable().exactOptional(),
+    unitPrice: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({ type: ['integer', 'null'], format: 'int64' }),
+  })
+  .openapi({ required: [] })
+  .openapi('SimulationItemResult')
+
+const TotalizationResponseSchema = z
+  .strictObject({
+    id: z.string().nullable().exactOptional(),
+    name: z.string().nullable().exactOptional(),
+    valueAsInt: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+  })
+  .openapi({ required: [] })
+  .openapi('TotalizationResponse')
+
+type SimulateResponseType = {
+  country?: string | null
+  items?: z.infer<typeof OrderItemSchema>[] | null
+  logisticsInfo?: z.infer<typeof LogisticsInfoSchema>[] | null
+  messages?: z.infer<typeof SimulateMessageResponseSchema>[] | null
+  paymentData?: z.infer<typeof PaymentDataSchema>
+  postalCode?: string | null
+  selectableGiftsResponse?: z.infer<typeof PurchaseContextSelectableGiftsResponseSchema>[] | null
+  simulationItems?: z.infer<typeof SimulationItemResultSchema>[] | null
+  totals?: z.infer<typeof TotalizationResponseSchema>[] | null
+}
+
+const ShippingEstimateSchema = z
+  .strictObject({
+    allItemsMatched: z.boolean().exactOptional(),
+    estimate: z.string().nullable().exactOptional(),
+    estimateDeliveryDate: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+    name: z.string().nullable().exactOptional(),
+    nextPurchaseDate: z.iso.datetime({ offset: true }).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ShippingEstimate')
+
+const SimulateResponseSchema: z.ZodType<SimulateResponseType> = z
+  .strictObject({
+    country: z.string().nullable().exactOptional(),
+    items: z.array(OrderItemSchema).nullable().exactOptional(),
+    logisticsInfo: z.array(LogisticsInfoSchema).nullable().exactOptional(),
+    messages: z.array(SimulateMessageResponseSchema).nullable().exactOptional(),
+    paymentData: PaymentDataSchema.exactOptional(),
+    postalCode: z.string().nullable().exactOptional(),
+    selectableGiftsResponse: z
+      .array(PurchaseContextSelectableGiftsResponseSchema)
+      .nullable()
+      .exactOptional(),
+    simulationItems: z.array(SimulationItemResultSchema).nullable().exactOptional(),
+    totals: z.array(TotalizationResponseSchema).nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('SimulateResponse')
+
+const TotalizationSchema = z
+  .strictObject({ id: z.string().nullable().exactOptional(), value: z.float64().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('Totalization')
+
+type SimulateResponseVOType = {
+  shippingEstimate?: z.infer<typeof ShippingEstimateSchema>
+  simulateResponse?: z.infer<typeof SimulateResponseSchema>
+  simulationItems?: z.infer<typeof SimulationItemResultSchema>[] | null
+  totals?: z.infer<typeof TotalizationSchema>[] | null
+}
+
+const PeriodicitySchema = z
+  .union([z.literal(0), z.literal(1), z.literal(2), z.literal(3), z.literal(4)])
+  .openapi('Periodicity')
+
+const FrequencySchema = z
+  .strictObject({
+    interval: z.int32().exactOptional(),
+    periodicity: PeriodicitySchema.exactOptional(),
+    periodicityAsString: z.string().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Frequency')
+
+const FrequencyRequestSchema = z
+  .strictObject({
+    interval: z
+      .int32()
+      .openapi({
+        description:
+          'Time interval configured between subscription orders, which depends on the periodicity. For a `DAILY` periodicity, the value will be days, for `MONTHLY` it will be months, and so on.',
+        example: 3,
+      }),
+    periodicity: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'Defines the subscriptions recurrence period. The possible values are: \r\n- `DAILY` \r\n- `WEEKLY` \r\n- `MONTHLY` \r\n- `YEARLY`',
+        example: 'MONTHLY',
+      }),
+  })
+  .openapi({
+    description: "Information about subscriptions' recurrence.",
+    required: ['interval', 'periodicity'],
+  })
+  .openapi('FrequencyRequest')
+
+const FrequencyResponseSchema = z
+  .strictObject({ interval: z.int32(), periodicity: z.string().nullable() })
+  .openapi({ required: ['interval', 'periodicity'], title: 'Frequency' })
+  .openapi('FrequencyResponse')
 
 const PaymentMethodResponseSchema = z
   .strictObject({
@@ -381,59 +542,6 @@ const PlanThinRequestSchema = z
   })
   .openapi('PlanThinRequest')
 
-const PurchaseContextAvailableGiftResponseSchema = z
-  .strictObject({
-    attachments: z.array(ItemAttachmentSchema).nullable().exactOptional(),
-    id: z.string().nullable().exactOptional(),
-    isGift: z.boolean().exactOptional(),
-    isSelected: z.boolean().exactOptional(),
-    name: z.string().nullable().exactOptional(),
-    price: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({ type: ['integer', 'null'], format: 'int64' }),
-    priceTags: z.array(PriceTagSchema).nullable().exactOptional(),
-    quantity: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Amount of units in the cart.', example: 5, title: 'quantity' }),
-    seller: z.string().nullable().exactOptional(),
-    sellingPrice: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({ type: ['integer', 'null'], format: 'int64' }),
-    unitMultiplier: z.float64().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('PurchaseContextAvailableGiftResponse')
-
-const PurchaseContextSelectableGiftsResponseSchema = z
-  .strictObject({
-    availableGifts: z.array(PurchaseContextAvailableGiftResponseSchema).nullable().exactOptional(),
-    availableQuantity: z.int32().exactOptional(),
-    id: z.string().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('PurchaseContextSelectableGiftsResponse')
-
 const PurchaseSettingsResponseSchema = z
   .strictObject({ currencyCode: z.string().nullable(), paymentMethod: PaymentMethodResponseSchema })
   .openapi({ required: ['currencyCode', 'paymentMethod'], title: 'PurchaseSettings' })
@@ -531,96 +639,7 @@ const ShippingAddressResponseSchema = z
   .openapi({ required: ['addressId', 'addressType'], title: 'Address' })
   .openapi('ShippingAddressResponse')
 
-const ShippingEstimateSchema = z
-  .strictObject({
-    allItemsMatched: z.boolean().exactOptional(),
-    estimate: z.string().nullable().exactOptional(),
-    estimateDeliveryDate: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-    name: z.string().nullable().exactOptional(),
-    nextPurchaseDate: z.iso.datetime({ offset: true }).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ShippingEstimate')
-
-const SimulateMessageResponseSchema = z
-  .strictObject({
-    code: z.string().nullable().exactOptional(),
-    status: z.string().nullable().exactOptional(),
-    text: z.string().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('SimulateMessageResponse')
-
-const SimulationItemResultSchema = z
-  .strictObject({
-    id: z.string().nullable().exactOptional(),
-    quantity: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Amount of units in the cart.', example: 5, title: 'quantity' }),
-    status: ItemSimulationStatusSchema.exactOptional(),
-    statusName: z.string().nullable().exactOptional(),
-    unitPrice: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({ type: ['integer', 'null'], format: 'int64' }),
-  })
-  .openapi({ required: [] })
-  .openapi('SimulationItemResult')
-
-const TotalizationResponseSchema = z
-  .strictObject({
-    id: z.string().nullable().exactOptional(),
-    name: z.string().nullable().exactOptional(),
-    valueAsInt: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-  })
-  .openapi({ required: [] })
-  .openapi('TotalizationResponse')
-
-const SimulateResponseSchema = z
-  .strictObject({
-    country: z.string().nullable().exactOptional(),
-    items: z.array(OrderItemSchema).nullable().exactOptional(),
-    logisticsInfo: z.array(LogisticsInfoSchema).nullable().exactOptional(),
-    messages: z.array(SimulateMessageResponseSchema).nullable().exactOptional(),
-    paymentData: PaymentDataSchema.exactOptional(),
-    postalCode: z.string().nullable().exactOptional(),
-    selectableGiftsResponse: z
-      .array(PurchaseContextSelectableGiftsResponseSchema)
-      .nullable()
-      .exactOptional(),
-    simulationItems: z.array(SimulationItemResultSchema).nullable().exactOptional(),
-    totals: z.array(TotalizationResponseSchema).nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('SimulateResponse')
-
-const TotalizationSchema = z
-  .strictObject({ id: z.string().nullable().exactOptional(), value: z.float64().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('Totalization')
-
-const SimulateResponseVOSchema = z
+const SimulateResponseVOSchema: z.ZodType<SimulateResponseVOType> = z
   .strictObject({
     shippingEstimate: ShippingEstimateSchema.exactOptional(),
     simulateResponse: SimulateResponseSchema.exactOptional(),

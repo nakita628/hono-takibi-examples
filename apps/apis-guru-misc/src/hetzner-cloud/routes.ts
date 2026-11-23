@@ -718,7 +718,7 @@ export const postCertificatesRoute = createRoute({
                   example: null,
                 }),
               labels: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ description: 'User-defined labels (key-value pairs)' }),
               name: z
@@ -1267,7 +1267,7 @@ export const putCertificatesIdRoute = createRoute({
           schema: z
             .object({
               labels: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description: 'User-defined labels (key-value pairs)',
@@ -2657,7 +2657,7 @@ export const postFirewallsRoute = createRoute({
                   description: 'Resources the Firewall should be applied to after creation',
                 }),
               labels: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ description: 'User-defined labels (key-value pairs)' }),
               name: z
@@ -3226,7 +3226,7 @@ export const putFirewallsIdRoute = createRoute({
           schema: z
             .object({
               labels: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description: 'User-defined labels (key-value pairs)',
@@ -4932,7 +4932,7 @@ export const postFloatingIpsRoute = createRoute({
                   example: 'fsn1',
                 }),
               labels: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description: 'User-defined labels (key-value pairs)',
@@ -5467,7 +5467,7 @@ export const putFloatingIpsIdRoute = createRoute({
                 .exactOptional()
                 .openapi({ description: 'New Description to set', example: 'Web Frontend' }),
               labels: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description: 'User-defined labels (key-value pairs)',
@@ -7265,7 +7265,7 @@ export const putImagesIdRoute = createRoute({
                   example: 'My new Image description',
                 }),
               labels: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description: 'User-defined labels (key-value pairs)',
@@ -11167,7 +11167,7 @@ export const putLoadBalancersIdRoute = createRoute({
           schema: z
             .object({
               labels: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description: 'User-defined labels (key-value pairs)',
@@ -15112,7 +15112,7 @@ export const getNetworksRoute = createRoute({
                         example: '10.0.0.0/16',
                       }),
                     labels: z
-                      .object({})
+                      .looseObject({})
                       .openapi({ description: 'User-defined labels (key-value pairs)' }),
                     load_balancers: z
                       .array(z.int())
@@ -15334,7 +15334,7 @@ export const postNetworksRoute = createRoute({
                       example: '10.0.0.0/16',
                     }),
                   labels: z
-                    .object({})
+                    .looseObject({})
                     .openapi({ description: 'User-defined labels (key-value pairs)' }),
                   load_balancers: z
                     .array(z.int())
@@ -15496,7 +15496,7 @@ export const getNetworksIdRoute = createRoute({
                       example: '10.0.0.0/16',
                     }),
                   labels: z
-                    .object({})
+                    .looseObject({})
                     .openapi({ description: 'User-defined labels (key-value pairs)' }),
                   load_balancers: z
                     .array(z.int())
@@ -15677,7 +15677,7 @@ export const putNetworksIdRoute = createRoute({
                       example: '10.0.0.0/16',
                     }),
                   labels: z
-                    .object({})
+                    .looseObject({})
                     .openapi({ description: 'User-defined labels (key-value pairs)' }),
                   load_balancers: z
                     .array(z.int())
@@ -17424,7 +17424,7 @@ export const postPlacementGroupsRoute = createRoute({
           schema: z
             .object({
               labels: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ description: 'User-defined labels (key-value pairs)' }),
               name: z
@@ -17713,7 +17713,7 @@ export const putPlacementGroupsIdRoute = createRoute({
           schema: z
             .object({
               labels: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description: 'User-defined labels (key-value pairs)',
@@ -18626,7 +18626,7 @@ export const postPrimaryIpsRoute = createRoute({
                   example: 'fsn1-dc8',
                 }),
               labels: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description: 'User-defined labels (key-value pairs)',
@@ -19272,7 +19272,7 @@ export const putPrimaryIpsIdRoute = createRoute({
                   example: true,
                 }),
               labels: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description: 'User-defined labels (key-value pairs)',
@@ -21338,16 +21338,13 @@ export const getServersRoute = createRoute({
         },
       },
       headers: z.object({
-        'x-next': {
-          description: 'A link to the next page of responses',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A link to the next page of responses',
-              param: { required: false },
-            }),
-        },
+        'x-next': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A link to the next page of responses',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -21404,7 +21401,7 @@ export const postServersRoute = createRoute({
                   example: 'ubuntu-20.04',
                 }),
               labels: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ description: 'User-defined labels (key-value pairs)' }),
               location: z
@@ -23297,7 +23294,7 @@ export const putServersIdRoute = createRoute({
           schema: z
             .object({
               labels: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description: 'User-defined labels (key-value pairs)',
@@ -28467,7 +28464,7 @@ export const postSshKeysRoute = createRoute({
           schema: z
             .object({
               labels: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ description: 'User-defined labels (key-value pairs)' }),
               name: z
@@ -28632,7 +28629,7 @@ export const putSshKeysIdRoute = createRoute({
           schema: z
             .object({
               labels: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description: 'User-defined labels (key-value pairs)',
@@ -29056,7 +29053,7 @@ export const postVolumesRoute = createRoute({
                   example: 'xfs',
                 }),
               labels: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description: 'User-defined labels (key-value pairs)',

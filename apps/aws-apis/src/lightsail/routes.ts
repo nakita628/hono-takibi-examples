@@ -1,67 +1,280 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const AddOnTypeSchema = z.enum(['AutoSnapshot', 'StopInstanceOnIdle']).openapi('AddOnType')
-
-const TimeOfDaySchema = z
-  .string()
-  .regex(/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/)
-  .openapi('TimeOfDay')
-
-const AutoSnapshotAddOnRequestSchema = z
-  .object({
-    snapshotTimeOfDay: TimeOfDaySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The daily time when an automatic snapshot will be created.</p> <p>Constraints:</p> <ul> <li> <p>Must be in <code>HH:00</code> format, and in an hourly increment.</p> </li> <li> <p>Specified in Coordinated Universal Time (UTC).</p> </li> <li> <p>The snapshot will be automatically created between the time specified and up to 45 minutes after.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>Describes a request to enable or modify the automatic snapshot add-on for an Amazon Lightsail instance or disk.</p> <p>When you modify the automatic snapshot time for a resource, it is typically effective immediately except under the following conditions:</p> <ul> <li> <p>If an automatic snapshot has been created for the current day, and you change the snapshot time to a later time of day, then the new snapshot time will be effective the following day. This ensures that two snapshots are not created for the current day.</p> </li> <li> <p>If an automatic snapshot has not yet been created for the current day, and you change the snapshot time to an earlier time of day, then the new snapshot time will be effective the following day and a snapshot is automatically created at the previously set time for the current day. This ensures that a snapshot is created for the current day.</p> </li> <li> <p>If an automatic snapshot has not yet been created for the current day, and you change the snapshot time to a time that is within 30 minutes from your current time, then the new snapshot time will be effective the following day and a snapshot is automatically created at the previously set time for the current day. This ensures that a snapshot is created for the current day, because 30 minutes is required between your current time and the new snapshot time that you specify.</p> </li> <li> <p>If an automatic snapshot is scheduled to be created within 30 minutes from your current time and you change the snapshot time, then the new snapshot time will be effective the following day and a snapshot is automatically created at the previously set time for the current day. This ensures that a snapshot is created for the current day, because 30 minutes is required between your current time and the new snapshot time that you specify.</p> </li> </ul>',
-    required: [],
-  })
-  .openapi('AutoSnapshotAddOnRequest')
-
-const StringSchema = z.string().openapi('String')
-
-const StopInstanceOnIdleRequestSchema = z
-  .object({
-    threshold: StringSchema.and(
-      z.any().openapi({ description: 'The value to compare with the duration.' }),
-    ).exactOptional(),
-    duration: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount of idle time in minutes after which your virtual computer will automatically stop.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>Describes a request to create or edit the <code>StopInstanceOnIdle</code> add-on.</p> <important> <p>This add-on only applies to Lightsail for Research resources.</p> </important>',
-    required: [],
-  })
-  .openapi('StopInstanceOnIdleRequest')
-
-type AddOnRequestType = {
-  addOnType: z.infer<typeof AddOnTypeSchema> & { [key: string]: unknown }
-  autoSnapshotAddOnRequest?: z.infer<typeof AutoSnapshotAddOnRequestSchema> & {
-    [key: string]: unknown
-  }
-  stopInstanceOnIdleRequest?: z.infer<typeof StopInstanceOnIdleRequestSchema> & {
-    [key: string]: unknown
-  }
-}
-
 const NonEmptyStringSchema = z
   .string()
   .regex(/.*\S.*/)
   .openapi('NonEmptyString')
+
+const CertificateNameSchema = z.string().openapi('CertificateName')
+
+const DomainNameSchema = z.string().openapi('DomainName')
+
+const CertificateStatusSchema = z
+  .enum([
+    'PENDING_VALIDATION',
+    'ISSUED',
+    'INACTIVE',
+    'EXPIRED',
+    'VALIDATION_TIMED_OUT',
+    'REVOKED',
+    'FAILED',
+  ])
+  .openapi('CertificateStatus')
+
+const SerialNumberSchema = z.string().openapi('SerialNumber')
+
+const SubjectAlternativeNameListSchema = z
+  .array(DomainNameSchema)
+  .openapi('SubjectAlternativeNameList')
+
+const StringSchema = z.string().openapi('String')
+
+const ResourceRecordSchema = z
+  .object({
+    name: StringSchema.exactOptional().openapi({ description: 'The name of the record.' }),
+    type: StringSchema.exactOptional().openapi({ description: 'The DNS record type.' }),
+    value: StringSchema.exactOptional().openapi({ description: 'The value for the DNS record.' }),
+  })
+  .openapi({
+    description:
+      "Describes the domain name system (DNS) records to add to your domain's DNS to validate it for an Amazon Lightsail certificate.",
+    required: [],
+  })
+  .openapi('ResourceRecord')
+
+const DnsRecordCreationStateCodeSchema = z
+  .enum(['SUCCEEDED', 'STARTED', 'FAILED'])
+  .openapi('DnsRecordCreationStateCode')
+
+const DnsRecordCreationStateSchema = z
+  .object({
+    code: DnsRecordCreationStateCodeSchema.exactOptional().openapi({
+      description:
+        '<p>The status code for the automated DNS record creation.</p> <p>Following are the possible values:</p> <ul> <li> <p> <code>SUCCEEDED</code> - The validation records were successfully added to the domain.</p> </li> <li> <p> <code>STARTED</code> - The automatic DNS record creation has started.</p> </li> <li> <p> <code>FAILED</code> - The validation records failed to be added to the domain.</p> </li> </ul>',
+    }),
+    message: StringSchema.exactOptional().openapi({
+      description: 'The message that describes the reason for the status code.',
+    }),
+  })
+  .openapi({
+    description:
+      '<p>Describes the creation state of the canonical name (CNAME) records that are automatically added by Amazon Lightsail to the DNS of a domain to validate domain ownership for an SSL/TLS certificate.</p> <p>When you create an SSL/TLS certificate for a Lightsail resource, you must add a set of CNAME records to the DNS of the domains for the certificate to validate that you own the domains. Lightsail can automatically add the CNAME records to the DNS of the domain if the DNS zone for the domain exists within your Lightsail account. If automatic record addition fails, or if you manage the DNS of your domain using a third-party service, then you must manually add the CNAME records to the DNS of your domain. For more information, see <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/verify-tls-ssl-certificate-using-dns-cname-https">Verify an SSL/TLS certificate in Amazon Lightsail</a> in the <i>Amazon Lightsail Developer Guide</i>.</p>',
+    required: [],
+  })
+  .openapi('DnsRecordCreationState')
+
+const CertificateDomainValidationStatusSchema = z
+  .enum(['PENDING_VALIDATION', 'FAILED', 'SUCCESS'])
+  .openapi('CertificateDomainValidationStatus')
+
+const DomainValidationRecordSchema = z
+  .object({
+    domainName: DomainNameSchema.exactOptional().openapi({
+      description:
+        'The domain name of the certificate validation record. For example, <code>example.com</code> or <code>www.example.com</code>.',
+    }),
+    resourceRecord: ResourceRecordSchema.exactOptional().openapi({
+      description:
+        "An object that describes the DNS records to add to your domain's DNS to validate it for the certificate.",
+    }),
+    dnsRecordCreationState: DnsRecordCreationStateSchema.exactOptional().openapi({
+      description:
+        'An object that describes the state of the canonical name (CNAME) records that are automatically added by Lightsail to the DNS of the domain to validate domain ownership.',
+    }),
+    validationStatus: CertificateDomainValidationStatusSchema.exactOptional().openapi({
+      description: 'The validation status of the record.',
+    }),
+  })
+  .openapi({
+    description:
+      'Describes the domain name system (DNS) records that you must add to the DNS of your registered domain to validate ownership for an Amazon Lightsail SSL/TLS certificate.',
+    required: [],
+  })
+  .openapi('DomainValidationRecord')
+
+const DomainValidationRecordListSchema = z
+  .array(DomainValidationRecordSchema)
+  .openapi('DomainValidationRecordList')
+
+const RequestFailureReasonSchema = z.string().openapi('RequestFailureReason')
+
+const InUseResourceCountSchema = z.int().openapi('InUseResourceCount')
+
+const KeyAlgorithmSchema = z.string().openapi('KeyAlgorithm')
+
+const IsoDateSchema = z.iso.datetime({ offset: true }).openapi('IsoDate')
+
+const IssuerCASchema = z.string().openapi('IssuerCA')
+
+const EligibleToRenewSchema = z.string().openapi('EligibleToRenew')
+
+const RenewalStatusSchema = z
+  .enum(['PendingAutoRenewal', 'PendingValidation', 'Success', 'Failed'])
+  .openapi('RenewalStatus')
+
+const RenewalStatusReasonSchema = z.string().openapi('RenewalStatusReason')
+
+const RenewalSummarySchema = z
+  .object({
+    domainValidationRecords: DomainValidationRecordListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the domain validation records of the certificate.',
+    }),
+    renewalStatus: RenewalStatusSchema.exactOptional().openapi({
+      description:
+        "<p>The renewal status of the certificate.</p> <p>The following renewal status are possible:</p> <ul> <li> <p> <b> <code>PendingAutoRenewal</code> </b> - Lightsail is attempting to automatically validate the domain names of the certificate. No further action is required. </p> </li> <li> <p> <b> <code>PendingValidation</code> </b> - Lightsail couldn't automatically validate one or more domain names of the certificate. You must take action to validate these domain names or the certificate won't be renewed. Check to make sure your certificate's domain validation records exist in your domain's DNS, and that your certificate remains in use.</p> </li> <li> <p> <b> <code>Success</code> </b> - All domain names in the certificate are validated, and Lightsail renewed the certificate. No further action is required. </p> </li> <li> <p> <b> <code>Failed</code> </b> - One or more domain names were not validated before the certificate expired, and Lightsail did not renew the certificate. You can request a new certificate using the <code>CreateCertificate</code> action.</p> </li> </ul>",
+    }),
+    renewalStatusReason: RenewalStatusReasonSchema.exactOptional().openapi({
+      description: 'The reason for the renewal status of the certificate.',
+    }),
+    updatedAt: IsoDateSchema.exactOptional().openapi({
+      description: 'The timestamp when the certificate was last updated.',
+    }),
+  })
+  .openapi({
+    description:
+      'Describes the status of a SSL/TLS certificate renewal managed by Amazon Lightsail.',
+    required: [],
+  })
+  .openapi('RenewalSummary')
+
+const RevocationReasonSchema = z.string().openapi('RevocationReason')
+
+const TagKeySchema = z.string().openapi('TagKey')
+
+const TagValueSchema = z.string().openapi('TagValue')
+
+const TagSchema = z
+  .object({
+    key: TagKeySchema.exactOptional().openapi({
+      description:
+        '<p>The key of the tag.</p> <p>Constraints: Tag keys accept a maximum of 128 letters, numbers, spaces in UTF-8, or the following characters: + - = . _ : / @</p>',
+    }),
+    value: TagValueSchema.exactOptional().openapi({
+      description:
+        '<p>The value of the tag.</p> <p>Constraints: Tag values accept a maximum of 256 letters, numbers, spaces in UTF-8, or the following characters: + - = . _ : / @</p>',
+    }),
+  })
+  .openapi({
+    description:
+      '<p>Describes a tag key and optional value assigned to an Amazon Lightsail resource.</p> <p>For more information about tags in Lightsail, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-tags">Amazon Lightsail Developer Guide</a>.</p>',
+    required: [],
+  })
+  .openapi('Tag')
+
+const TagListSchema = z.array(TagSchema).openapi('TagList')
+
+const CertificateSchema = z
+  .object({
+    arn: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the certificate.',
+    }),
+    name: CertificateNameSchema.exactOptional().openapi({
+      description: 'The name of the certificate (e.g., <code>my-certificate</code>).',
+    }),
+    domainName: DomainNameSchema.exactOptional().openapi({
+      description: 'The domain name of the certificate.',
+    }),
+    status: CertificateStatusSchema.exactOptional().openapi({
+      description: 'The validation status of the certificate.',
+    }),
+    serialNumber: SerialNumberSchema.exactOptional().openapi({
+      description: 'The serial number of the certificate.',
+    }),
+    subjectAlternativeNames: SubjectAlternativeNameListSchema.exactOptional().openapi({
+      description:
+        'An array of strings that specify the alternate domains (e.g., <code>example2.com</code>) and subdomains (e.g., <code>blog.example.com</code>) of the certificate.',
+    }),
+    domainValidationRecords: DomainValidationRecordListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the domain validation records of the certificate.',
+    }),
+    requestFailureReason: RequestFailureReasonSchema.exactOptional().openapi({
+      description:
+        '<p>The validation failure reason, if any, of the certificate.</p> <p>The following failure reasons are possible:</p> <ul> <li> <p> <b> <code>NO_AVAILABLE_CONTACTS</code> </b> - This failure applies to email validation, which is not available for Lightsail certificates.</p> </li> <li> <p> <b> <code>ADDITIONAL_VERIFICATION_REQUIRED</code> </b> - Lightsail requires additional information to process this certificate request. This can happen as a fraud-protection measure, such as when the domain ranks within the Alexa top 1000 websites. To provide the required information, use the <a href="https://console.aws.amazon.com/support/home">Amazon Web Services Support Center</a> to contact Amazon Web Services Support.</p> <note> <p>You cannot request a certificate for Amazon-owned domain names such as those ending in amazonaws.com, cloudfront.net, or elasticbeanstalk.com.</p> </note> </li> <li> <p> <b> <code>DOMAIN_NOT_ALLOWED</code> </b> - One or more of the domain names in the certificate request was reported as an unsafe domain by <a href="https://www.virustotal.com/gui/home/url">VirusTotal</a>. To correct the problem, search for your domain name on the <a href="https://www.virustotal.com/gui/home/url">VirusTotal</a> website. If your domain is reported as suspicious, see <a href="https://developers.google.com/web/fundamentals/security/hacked">Google Help for Hacked Websites</a> to learn what you can do.</p> <p>If you believe that the result is a false positive, notify the organization that is reporting the domain. VirusTotal is an aggregate of several antivirus and URL scanners and cannot remove your domain from a block list itself. After you correct the problem and the VirusTotal registry has been updated, request a new certificate.</p> <p>If you see this error and your domain is not included in the VirusTotal list, visit the <a href="https://console.aws.amazon.com/support/home">Amazon Web Services Support Center</a> and create a case.</p> </li> <li> <p> <b> <code>INVALID_PUBLIC_DOMAIN</code> </b> - One or more of the domain names in the certificate request is not valid. Typically, this is because a domain name in the request is not a valid top-level domain. Try to request a certificate again, correcting any spelling errors or typos that were in the failed request, and ensure that all domain names in the request are for valid top-level domains. For example, you cannot request a certificate for <code>example.invalidpublicdomain</code> because <code>invalidpublicdomain</code> is not a valid top-level domain.</p> </li> <li> <p> <b> <code>OTHER</code> </b> - Typically, this failure occurs when there is a typographical error in one or more of the domain names in the certificate request. Try to request a certificate again, correcting any spelling errors or typos that were in the failed request. </p> </li> </ul>',
+    }),
+    inUseResourceCount: InUseResourceCountSchema.exactOptional().openapi({
+      description: 'The number of Lightsail resources that the certificate is attached to.',
+    }),
+    keyAlgorithm: KeyAlgorithmSchema.exactOptional().openapi({
+      description:
+        'The algorithm used to generate the key pair (the public and private key) of the certificate.',
+    }),
+    createdAt: IsoDateSchema.exactOptional().openapi({
+      description: 'The timestamp when the certificate was created.',
+    }),
+    issuedAt: IsoDateSchema.exactOptional().openapi({
+      description: 'The timestamp when the certificate was issued.',
+    }),
+    issuerCA: IssuerCASchema.exactOptional().openapi({
+      description: 'The certificate authority that issued the certificate.',
+    }),
+    notBefore: IsoDateSchema.exactOptional().openapi({
+      description: 'The timestamp when the certificate is first valid.',
+    }),
+    notAfter: IsoDateSchema.exactOptional().openapi({
+      description: 'The timestamp when the certificate expires.',
+    }),
+    eligibleToRenew: EligibleToRenewSchema.exactOptional().openapi({
+      description: 'The renewal eligibility of the certificate.',
+    }),
+    renewalSummary: RenewalSummarySchema.exactOptional().openapi({
+      description:
+        'An object that describes the status of the certificate renewal managed by Lightsail.',
+    }),
+    revokedAt: IsoDateSchema.exactOptional().openapi({
+      description:
+        'The timestamp when the certificate was revoked. This value is present only when the certificate status is <code>REVOKED</code>.',
+    }),
+    revocationReason: RevocationReasonSchema.exactOptional().openapi({
+      description:
+        'The reason the certificate was revoked. This value is present only when the certificate status is <code>REVOKED</code>.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        'The tag keys and optional values for the resource. For more information about tags in Lightsail, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-tags">Amazon Lightsail Developer Guide</a>.',
+    }),
+    supportCode: StringSchema.exactOptional().openapi({
+      description:
+        'The support code. Include this code in your email to support when you have questions about your Lightsail certificate. This code enables our support team to look up your Lightsail information more easily.',
+    }),
+  })
+  .openapi({
+    description:
+      '<p>Describes the full details of an Amazon Lightsail SSL/TLS certificate.</p> <note> <p>To get a summary of a certificate, use the <code>GetCertificates</code> action and ommit <code>includeCertificateDetails</code> from your request. The response will include only the certificate Amazon Resource Name (ARN), certificate name, domain name, and tags.</p> </note>',
+    required: [],
+  })
+  .openapi('Certificate')
+
+const CertificateSummarySchema = z
+  .object({
+    certificateArn: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the certificate.',
+    }),
+    certificateName: CertificateNameSchema.exactOptional().openapi({
+      description: 'The name of the certificate.',
+    }),
+    domainName: DomainNameSchema.exactOptional().openapi({
+      description: 'The domain name of the certificate.',
+    }),
+    certificateDetail: CertificateSchema.exactOptional().openapi({
+      description: 'An object that describes a certificate in detail.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        'The tag keys and optional values for the resource. For more information about tags in Lightsail, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-tags">Amazon Lightsail Developer Guide</a>.',
+    }),
+  })
+  .openapi({ description: 'Describes an Amazon Lightsail SSL/TLS certificate.', required: [] })
+  .openapi('CertificateSummary')
+
+const CertificateSummaryListSchema = z
+  .array(CertificateSummarySchema)
+  .openapi('CertificateSummaryList')
+
+type GetCertificatesResultType = {
+  certificates?: z.infer<typeof CertificateSummaryListSchema> & unknown
+}
 
 const ResourceNameSchema = z
   .string()
@@ -93,7 +306,101 @@ const ResourceTypeSchema = z
   ])
   .openapi('ResourceType')
 
-const IsoDateSchema = z.iso.datetime({ offset: true }).openapi('IsoDate')
+const DoubleSchema = z.float64().openapi('Double')
+
+const PricingUnitSchema = z
+  .enum(['GB', 'Hrs', 'GB-Mo', 'Bundles', 'Queries'])
+  .openapi('PricingUnit')
+
+const CurrencySchema = z.literal('USD').openapi('Currency')
+
+const TimePeriodSchema = z
+  .object({
+    start: IsoDateSchema.exactOptional().openapi({
+      description:
+        'The beginning of the time period. The start date is inclusive. For example, if <code>start</code> is <code>2017-01-01</code>, Lightsail for Research retrieves cost and usage data starting at <code>2017-01-01</code> up to the end date. The start date must be equal to or no later than the current date to avoid a validation error.',
+    }),
+    end: IsoDateSchema.exactOptional().openapi({
+      description:
+        'The end of the time period. The end date is exclusive. For example, if <code>end</code> is <code>2017-05-01</code>, Lightsail for Research retrieves cost and usage data from the start date up to, but not including, <code>2017-05-01</code>.',
+    }),
+  })
+  .openapi({
+    description:
+      'Sets the start date and end date for retrieving a cost estimate. The start date is inclusive, but the end date is exclusive. For example, if <code>start</code> is <code>2017-01-01</code> and <code>end</code> is <code>2017-05-01</code>, then the cost and usage data is retrieved from <code>2017-01-01</code> up to and including <code>2017-04-30</code> but not including <code>2017-05-01</code>.',
+    required: [],
+  })
+  .openapi('TimePeriod')
+
+const EstimateByTimeSchema = z
+  .object({
+    usageCost: DoubleSchema.exactOptional().openapi({
+      description: "The amount of cost or usage that's measured for the cost estimate.",
+    }),
+    pricingUnit: PricingUnitSchema.exactOptional().openapi({
+      description: "The unit of measurement that's used for the cost estimate.",
+    }),
+    unit: DoubleSchema.exactOptional().openapi({
+      description:
+        'The number of pricing units used to calculate the total number of hours. For example, 1 unit equals 1 hour.',
+    }),
+    currency: CurrencySchema.exactOptional().openapi({
+      description: 'The currency of the estimate in USD.',
+    }),
+    timePeriod: TimePeriodSchema.exactOptional().openapi({
+      description:
+        'The period of time, in days, that an estimate covers. The period has a start date and an end date. The start date must come before the end date.',
+    }),
+  })
+  .openapi({ description: "An estimate that's associated with a time period. ", required: [] })
+  .openapi('EstimateByTime')
+
+const EstimatesByTimeSchema = z.array(EstimateByTimeSchema).openapi('EstimatesByTime')
+
+const CostEstimateSchema = z
+  .object({
+    usageType: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        'The types of usage that are included in the estimate, such as costs, usage, or data transfer.',
+    }),
+    resultsByTime: EstimatesByTimeSchema.exactOptional().openapi({
+      description: "The cost estimate result that's associated with a time period.",
+    }),
+  })
+  .openapi({
+    description:
+      'Describes the estimated cost for resources in your Lightsail for Research account.',
+    required: [],
+  })
+  .openapi('CostEstimate')
+
+const CostEstimatesSchema = z.array(CostEstimateSchema).openapi('CostEstimates')
+
+const ResourceBudgetEstimateSchema = z
+  .object({
+    resourceName: ResourceNameSchema.exactOptional().openapi({ description: 'The resource name.' }),
+    resourceType: ResourceTypeSchema.exactOptional().openapi({
+      description: 'The type of resource the budget will track.',
+    }),
+    costEstimates: CostEstimatesSchema.exactOptional().openapi({
+      description: 'The cost estimate for the specified budget.',
+    }),
+    startTime: IsoDateSchema.exactOptional().openapi({ description: 'The estimate start time.' }),
+    endTime: IsoDateSchema.exactOptional().openapi({ description: 'The estimate end time.' }),
+  })
+  .openapi({
+    description: 'Describes the estimated cost or usage that a budget tracks.',
+    required: [],
+  })
+  .openapi('ResourceBudgetEstimate')
+
+const ResourcesBudgetEstimateSchema = z
+  .array(ResourceBudgetEstimateSchema)
+  .openapi('ResourcesBudgetEstimate')
+
+type GetCostEstimateResultType = {
+  resourcesBudgetEstimate?: z.infer<typeof ResourcesBudgetEstimateSchema> & unknown
+}
 
 const RegionNameSchema = z
   .enum([
@@ -117,22 +424,385 @@ const RegionNameSchema = z
 
 const ResourceLocationSchema = z
   .object({
-    availabilityZone: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Availability Zone. Follows the format <code>us-east-2a</code> (case-sensitive).',
-        }),
-    ).exactOptional(),
-    regionName: RegionNameSchema.and(
-      z.any().openapi({ description: 'The Amazon Web Services Region name.' }),
-    ).exactOptional(),
+    availabilityZone: StringSchema.exactOptional().openapi({
+      description:
+        'The Availability Zone. Follows the format <code>us-east-2a</code> (case-sensitive).',
+    }),
+    regionName: RegionNameSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services Region name.',
+    }),
   })
   .openapi({ description: 'Describes the resource location.', required: [] })
   .openapi('ResourceLocation')
 
+const TimeOfDaySchema = z
+  .string()
+  .regex(/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/)
+  .openapi('TimeOfDay')
+
+const AddOnSchema = z
+  .object({
+    name: StringSchema.exactOptional().openapi({ description: 'The name of the add-on.' }),
+    status: StringSchema.exactOptional().openapi({ description: 'The status of the add-on.' }),
+    snapshotTimeOfDay: TimeOfDaySchema.exactOptional().openapi({
+      description:
+        '<p>The daily time when an automatic snapshot is created.</p> <p>The time shown is in <code>HH:00</code> format, and in Coordinated Universal Time (UTC).</p> <p>The snapshot is automatically created between the time shown and up to 45 minutes after.</p>',
+    }),
+    nextSnapshotTimeOfDay: TimeOfDaySchema.exactOptional().openapi({
+      description:
+        '<p>The next daily time an automatic snapshot will be created.</p> <p>The time shown is in <code>HH:00</code> format, and in Coordinated Universal Time (UTC).</p> <p>The snapshot is automatically created between the time shown and up to 45 minutes after.</p>',
+    }),
+    threshold: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The trigger threshold of the action.</p> <important> <p>This add-on only applies to Lightsail for Research resources.</p> </important>',
+    }),
+    duration: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The amount of idle time in minutes after which your virtual computer will automatically stop.</p> <important> <p>This add-on only applies to Lightsail for Research resources.</p> </important>',
+    }),
+  })
+  .openapi({
+    description: 'Describes an add-on that is enabled for an Amazon Lightsail resource.',
+    required: [],
+  })
+  .openapi('AddOn')
+
+const AddOnListSchema = z.array(AddOnSchema).openapi('AddOnList')
+
 const BooleanSchema = z.boolean().openapi('Boolean')
+
+const IpAddressSchema = z
+  .string()
+  .regex(/([0-9]{1,3}\.){3}[0-9]{1,3}/)
+  .openapi('IpAddress')
+
+const Ipv6AddressSchema = z
+  .string()
+  .regex(/([A-F0-9]{1,4}:){7}[A-F0-9]{1,4}/)
+  .openapi('Ipv6Address')
+
+const Ipv6AddressListSchema = z.array(Ipv6AddressSchema).openapi('Ipv6AddressList')
+
+const IpAddressTypeSchema = z.enum(['dualstack', 'ipv4']).openapi('IpAddressType')
+
+const IntegerSchema = z.int().openapi('Integer')
+
+const DiskStateSchema = z
+  .enum(['pending', 'error', 'available', 'in-use', 'unknown'])
+  .openapi('DiskState')
+
+const AutoMountStatusSchema = z
+  .enum(['Failed', 'Pending', 'Mounted', 'NotMounted'])
+  .openapi('AutoMountStatus')
+
+const DiskSchema = z
+  .object({
+    name: ResourceNameSchema.exactOptional().openapi({
+      description: 'The unique name of the disk.',
+    }),
+    arn: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the disk.',
+    }),
+    supportCode: StringSchema.exactOptional().openapi({
+      description:
+        'The support code. Include this code in your email to support when you have questions about an instance or another resource in Lightsail. This code enables our support team to look up your Lightsail information more easily.',
+    }),
+    createdAt: IsoDateSchema.exactOptional().openapi({
+      description: 'The date when the disk was created.',
+    }),
+    location: ResourceLocationSchema.exactOptional().openapi({
+      description: 'The AWS Region and Availability Zone where the disk is located.',
+    }),
+    resourceType: ResourceTypeSchema.exactOptional().openapi({
+      description: 'The Lightsail resource type (e.g., <code>Disk</code>).',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        'The tag keys and optional values for the resource. For more information about tags in Lightsail, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-tags">Amazon Lightsail Developer Guide</a>.',
+    }),
+    addOns: AddOnListSchema.exactOptional().openapi({
+      description: 'An array of objects representing the add-ons enabled on the disk.',
+    }),
+    sizeInGb: IntegerSchema.exactOptional().openapi({ description: 'The size of the disk in GB.' }),
+    isSystemDisk: BooleanSchema.exactOptional().openapi({
+      description:
+        'A Boolean value indicating whether this disk is a system disk (has an operating system loaded on it).',
+    }),
+    iops: IntegerSchema.exactOptional().openapi({
+      description: 'The input/output operations per second (IOPS) of the disk.',
+    }),
+    path: StringSchema.exactOptional().openapi({ description: 'The disk path.' }),
+    state: DiskStateSchema.exactOptional().openapi({
+      description: 'Describes the status of the disk.',
+    }),
+    attachedTo: ResourceNameSchema.exactOptional().openapi({
+      description: 'The resources to which the disk is attached.',
+    }),
+    isAttached: BooleanSchema.exactOptional().openapi({
+      description: 'A Boolean value indicating whether the disk is attached.',
+    }),
+    attachmentState: StringSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        '<p>(Deprecated) The attachment state of the disk.</p> <note> <p>In releases prior to November 14, 2017, this parameter returned <code>attached</code> for system disks in the API response. It is now deprecated, but still included in the response. Use <code>isAttached</code> instead.</p> </note>',
+    }),
+    gbInUse: IntegerSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        '<p>(Deprecated) The number of GB in use by the disk.</p> <note> <p>In releases prior to November 14, 2017, this parameter was not included in the API response. It is now deprecated.</p> </note>',
+    }),
+    autoMountStatus: AutoMountStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of automatically mounting a storage disk to a virtual computer.</p> <important> <p>This parameter only applies to Lightsail for Research resources.</p> </important>',
+    }),
+  })
+  .openapi({ description: 'Describes a block storage disk.', required: [] })
+  .openapi('Disk')
+
+const DiskListSchema = z.array(DiskSchema).openapi('DiskList')
+
+const FloatSchema = z.float32().openapi('Float')
+
+const InstanceHardwareSchema = z
+  .object({
+    cpuCount: IntegerSchema.exactOptional().openapi({
+      description: 'The number of vCPUs the instance has.',
+    }),
+    disks: DiskListSchema.exactOptional().openapi({
+      description: 'The disks attached to the instance.',
+    }),
+    ramSizeInGb: FloatSchema.exactOptional().openapi({
+      description: 'The amount of RAM in GB on the instance (e.g., <code>1.0</code>).',
+    }),
+  })
+  .openapi({ description: 'Describes the hardware for the instance.', required: [] })
+  .openapi('InstanceHardware')
+
+const MonthlyTransferSchema = z
+  .object({
+    gbPerMonthAllocated: IntegerSchema.exactOptional().openapi({
+      description: 'The amount allocated per month (in GB).',
+    }),
+  })
+  .openapi({
+    description:
+      'Describes the monthly data transfer in and out of your virtual private server (or <i>instance</i>).',
+    required: [],
+  })
+  .openapi('MonthlyTransfer')
+
+const PortSchema = z.int().min(-1).max(65535).openapi('Port')
+
+const NetworkProtocolSchema = z.enum(['tcp', 'all', 'udp', 'icmp']).openapi('NetworkProtocol')
+
+const PortAccessTypeSchema = z.enum(['Public', 'Private']).openapi('PortAccessType')
+
+const AccessDirectionSchema = z.enum(['inbound', 'outbound']).openapi('AccessDirection')
+
+const StringListSchema = z.array(StringSchema).openapi('StringList')
+
+const InstancePortInfoSchema = z
+  .object({
+    fromPort: PortSchema.exactOptional().openapi({
+      description:
+        '<p>The first port in a range of open ports on an instance.</p> <p>Allowed ports:</p> <ul> <li> <p>TCP and UDP - <code>0</code> to <code>65535</code> </p> </li> <li> <p>ICMP - The ICMP type for IPv4 addresses. For example, specify <code>8</code> as the <code>fromPort</code> (ICMP type), and <code>-1</code> as the <code>toPort</code> (ICMP code), to enable ICMP Ping. For more information, see <a href="https://en.wikipedia.org/wiki/Internet_Control_Message_Protocol#Control_messages">Control Messages</a> on <i>Wikipedia</i>.</p> </li> <li> <p>ICMPv6 - The ICMP type for IPv6 addresses. For example, specify <code>128</code> as the <code>fromPort</code> (ICMPv6 type), and <code>0</code> as <code>toPort</code> (ICMPv6 code). For more information, see <a href="https://en.wikipedia.org/wiki/Internet_Control_Message_Protocol_for_IPv6">Internet Control Message Protocol for IPv6</a>.</p> </li> </ul>',
+    }),
+    toPort: PortSchema.exactOptional().openapi({
+      description:
+        '<p>The last port in a range of open ports on an instance.</p> <p>Allowed ports:</p> <ul> <li> <p>TCP and UDP - <code>0</code> to <code>65535</code> </p> </li> <li> <p>ICMP - The ICMP code for IPv4 addresses. For example, specify <code>8</code> as the <code>fromPort</code> (ICMP type), and <code>-1</code> as the <code>toPort</code> (ICMP code), to enable ICMP Ping. For more information, see <a href="https://en.wikipedia.org/wiki/Internet_Control_Message_Protocol#Control_messages">Control Messages</a> on <i>Wikipedia</i>.</p> </li> <li> <p>ICMPv6 - The ICMP code for IPv6 addresses. For example, specify <code>128</code> as the <code>fromPort</code> (ICMPv6 type), and <code>0</code> as <code>toPort</code> (ICMPv6 code). For more information, see <a href="https://en.wikipedia.org/wiki/Internet_Control_Message_Protocol_for_IPv6">Internet Control Message Protocol for IPv6</a>.</p> </li> </ul>',
+    }),
+    protocol: NetworkProtocolSchema.exactOptional().openapi({
+      description:
+        '<p>The IP protocol name.</p> <p>The name can be one of the following:</p> <ul> <li> <p> <code>tcp</code> - Transmission Control Protocol (TCP) provides reliable, ordered, and error-checked delivery of streamed data between applications running on hosts communicating by an IP network. If you have an application that doesn\'t require reliable data stream service, use UDP instead.</p> </li> <li> <p> <code>all</code> - All transport layer protocol types. For more general information, see <a href="https://en.wikipedia.org/wiki/Transport_layer">Transport layer</a> on <i>Wikipedia</i>.</p> </li> <li> <p> <code>udp</code> - With User Datagram Protocol (UDP), computer applications can send messages (or datagrams) to other hosts on an Internet Protocol (IP) network. Prior communications are not required to set up transmission channels or data paths. Applications that don\'t require reliable data stream service can use UDP, which provides a connectionless datagram service that emphasizes reduced latency over reliability. If you do require reliable data stream service, use TCP instead.</p> </li> <li> <p> <code>icmp</code> - Internet Control Message Protocol (ICMP) is used to send error messages and operational information indicating success or failure when communicating with an instance. For example, an error is indicated when an instance could not be reached. When you specify <code>icmp</code> as the <code>protocol</code>, you must specify the ICMP type using the <code>fromPort</code> parameter, and ICMP code using the <code>toPort</code> parameter.</p> </li> </ul>',
+    }),
+    accessFrom: StringSchema.exactOptional().openapi({
+      description:
+        'The location from which access is allowed. For example, <code>Anywhere (0.0.0.0/0)</code>, or <code>Custom</code> if a specific IP address or range of IP addresses is allowed.',
+    }),
+    accessType: PortAccessTypeSchema.exactOptional().openapi({
+      description: 'The type of access (<code>Public</code> or <code>Private</code>).',
+    }),
+    commonName: StringSchema.exactOptional().openapi({
+      description: 'The common name of the port information.',
+    }),
+    accessDirection: AccessDirectionSchema.exactOptional().openapi({
+      description:
+        '<p>The access direction (<code>inbound</code> or <code>outbound</code>).</p> <note> <p>Lightsail currently supports only <code>inbound</code> access direction.</p> </note>',
+    }),
+    cidrs: StringListSchema.exactOptional().openapi({
+      description:
+        '<p>The IPv4 address, or range of IPv4 addresses (in CIDR notation) that are allowed to connect to an instance through the ports, and the protocol.</p> <note> <p>The <code>ipv6Cidrs</code> parameter lists the IPv6 addresses that are allowed to connect to an instance.</p> </note> <p>For more information about CIDR block notation, see <a href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing#CIDR_notation">Classless Inter-Domain Routing</a> on <i>Wikipedia</i>.</p>',
+    }),
+    ipv6Cidrs: StringListSchema.exactOptional().openapi({
+      description:
+        '<p>The IPv6 address, or range of IPv6 addresses (in CIDR notation) that are allowed to connect to an instance through the ports, and the protocol. Only devices with an IPv6 address can connect to an instance through IPv6; otherwise, IPv4 should be used.</p> <note> <p>The <code>cidrs</code> parameter lists the IPv4 addresses that are allowed to connect to an instance.</p> </note> <p>For more information about CIDR block notation, see <a href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing#CIDR_notation">Classless Inter-Domain Routing</a> on <i>Wikipedia</i>.</p>',
+    }),
+    cidrListAliases: StringListSchema.exactOptional().openapi({
+      description:
+        '<p>An alias that defines access for a preconfigured range of IP addresses.</p> <p>The only alias currently supported is <code>lightsail-connect</code>, which allows IP addresses of the browser-based RDP/SSH client in the Lightsail console to connect to your instance.</p>',
+    }),
+  })
+  .openapi({
+    description: 'Describes information about ports for an Amazon Lightsail instance.',
+    required: [],
+  })
+  .openapi('InstancePortInfo')
+
+const InstancePortInfoListSchema = z.array(InstancePortInfoSchema).openapi('InstancePortInfoList')
+
+const InstanceNetworkingSchema = z
+  .object({
+    monthlyTransfer: MonthlyTransferSchema.exactOptional().openapi({
+      description: 'The amount of data in GB allocated for monthly data transfers.',
+    }),
+    ports: InstancePortInfoListSchema.exactOptional().openapi({
+      description:
+        'An array of key-value pairs containing information about the ports on the instance.',
+    }),
+  })
+  .openapi({
+    description: 'Describes monthly data transfer rates and port information for an instance.',
+    required: [],
+  })
+  .openapi('InstanceNetworking')
+
+const InstanceStateSchema = z
+  .object({
+    code: IntegerSchema.exactOptional().openapi({
+      description: 'The status code for the instance.',
+    }),
+    name: StringSchema.exactOptional().openapi({
+      description:
+        'The state of the instance (e.g., <code>running</code> or <code>pending</code>).',
+    }),
+  })
+  .openapi({
+    description: 'Describes the virtual private server (or <i>instance</i>) status.',
+    required: [],
+  })
+  .openapi('InstanceState')
+
+const InstanceMetadataStateSchema = z.enum(['pending', 'applied']).openapi('InstanceMetadataState')
+
+const HttpTokensSchema = z.enum(['optional', 'required']).openapi('HttpTokens')
+
+const HttpEndpointSchema = z.enum(['disabled', 'enabled']).openapi('HttpEndpoint')
+
+const HttpProtocolIpv6Schema = z.enum(['disabled', 'enabled']).openapi('HttpProtocolIpv6')
+
+const InstanceMetadataOptionsSchema = z
+  .object({
+    state: InstanceMetadataStateSchema.exactOptional().openapi({
+      description:
+        '<p>The state of the metadata option changes.</p> <p>The following states are possible:</p> <ul> <li> <p> <code>pending</code> - The metadata options are being updated. The instance is not yet ready to process metadata traffic with the new selection.</p> </li> <li> <p> <code>applied</code> - The metadata options have been successfully applied to the instance.</p> </li> </ul>',
+    }),
+    httpTokens: HttpTokensSchema.exactOptional().openapi({
+      description:
+        '<p>The state of token usage for your instance metadata requests.</p> <p>If the state is <code>optional</code>, you can choose whether to retrieve instance metadata with a signed token header on your request. If you retrieve the IAM role credentials without a token, the version 1.0 role credentials are returned. If you retrieve the IAM role credentials by using a valid signed token, the version 2.0 role credentials are returned.</p> <p>If the state is <code>required</code>, you must send a signed token header with all instance metadata retrieval requests. In this state, retrieving the IAM role credential always returns the version 2.0 credentials. The version 1.0 credentials are not available.</p> <important> <p>Not all instance blueprints in Lightsail support version 2.0 credentials. Use the <code>MetadataNoToken</code> instance metric to track the number of calls to the instance metadata service that are using version 1.0 credentials. For more information, see <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-viewing-instance-health-metrics">Viewing instance metrics in Amazon Lightsail</a> in the <i>Amazon Lightsail Developer Guide</i>.</p> </important>',
+    }),
+    httpEndpoint: HttpEndpointSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates whether the HTTP metadata endpoint on your instances is enabled or disabled.</p> <p>If the value is <code>disabled</code>, you cannot access your instance metadata.</p>',
+    }),
+    httpPutResponseHopLimit: IntegerSchema.exactOptional().openapi({
+      description:
+        'The desired HTTP PUT response hop limit for instance metadata requests. A larger number means that the instance metadata requests can travel farther.',
+    }),
+    httpProtocolIpv6: HttpProtocolIpv6Schema.exactOptional().openapi({
+      description:
+        'Indicates whether the IPv6 endpoint for the instance metadata service is enabled or disabled.',
+    }),
+  })
+  .openapi({ description: 'The metadata options for the instance.', required: [] })
+  .openapi('InstanceMetadataOptions')
+
+const InstanceSchema = z
+  .object({
+    name: ResourceNameSchema.exactOptional().openapi({
+      description:
+        'The name the user gave the instance (e.g., <code>Amazon_Linux-1GB-Ohio-1</code>).',
+    }),
+    arn: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the instance (e.g., <code>arn:aws:lightsail:us-east-2:123456789101:Instance/244ad76f-8aad-4741-809f-12345EXAMPLE</code>).',
+    }),
+    supportCode: StringSchema.exactOptional().openapi({
+      description:
+        'The support code. Include this code in your email to support when you have questions about an instance or another resource in Lightsail. This code enables our support team to look up your Lightsail information more easily.',
+    }),
+    createdAt: IsoDateSchema.exactOptional().openapi({
+      description:
+        'The timestamp when the instance was created (e.g., <code>1479734909.17</code>) in Unix time format.',
+    }),
+    location: ResourceLocationSchema.exactOptional().openapi({
+      description: 'The region name and Availability Zone where the instance is located.',
+    }),
+    resourceType: ResourceTypeSchema.exactOptional().openapi({
+      description: 'The type of resource (usually <code>Instance</code>).',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        'The tag keys and optional values for the resource. For more information about tags in Lightsail, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-tags">Amazon Lightsail Developer Guide</a>.',
+    }),
+    blueprintId: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The blueprint ID (e.g., <code>os_amlinux_2016_03</code>).',
+    }),
+    blueprintName: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The friendly name of the blueprint (e.g., <code>Amazon Linux</code>).',
+    }),
+    bundleId: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The bundle for the instance (e.g., <code>micro_1_0</code>).',
+    }),
+    addOns: AddOnListSchema.exactOptional().openapi({
+      description: 'An array of objects representing the add-ons enabled on the instance.',
+    }),
+    isStaticIp: BooleanSchema.exactOptional().openapi({
+      description:
+        'A Boolean value indicating whether this instance has a static IP assigned to it.',
+    }),
+    privateIpAddress: IpAddressSchema.exactOptional().openapi({
+      description: 'The private IP address of the instance.',
+    }),
+    publicIpAddress: IpAddressSchema.exactOptional().openapi({
+      description: 'The public IP address of the instance.',
+    }),
+    ipv6Addresses: Ipv6AddressListSchema.exactOptional().openapi({
+      description: 'The IPv6 addresses of the instance.',
+    }),
+    ipAddressType: IpAddressTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The IP address type of the instance.</p> <p>The possible values are <code>ipv4</code> for IPv4 only, and <code>dualstack</code> for IPv4 and IPv6.</p>',
+    }),
+    hardware: InstanceHardwareSchema.exactOptional().openapi({
+      description: 'The size of the vCPU and the amount of RAM for the instance.',
+    }),
+    networking: InstanceNetworkingSchema.exactOptional().openapi({
+      description:
+        'Information about the public ports and monthly data transfer rates for the instance.',
+    }),
+    state: InstanceStateSchema.exactOptional().openapi({
+      description: 'The status code and the state (e.g., <code>running</code>) for the instance.',
+    }),
+    username: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The user name for connecting to the instance (e.g., <code>ec2-user</code>).',
+    }),
+    sshKeyName: ResourceNameSchema.exactOptional().openapi({
+      description:
+        'The name of the SSH key being used to connect to the instance (e.g., <code>LightsailDefaultKeyPair</code>).',
+    }),
+    metadataOptions: InstanceMetadataOptionsSchema.exactOptional().openapi({
+      description: 'The metadata options for the Amazon Lightsail instance.',
+    }),
+  })
+  .openapi({ description: 'Describes an instance (a virtual private server).', required: [] })
+  .openapi('Instance')
+
+const InstanceListSchema = z.array(InstanceSchema).openapi('InstanceList')
+
+type GetInstancesResultType = {
+  instances?: z.infer<typeof InstanceListSchema> & unknown
+  nextPageToken?: z.infer<typeof StringSchema> & unknown
+}
 
 const OperationTypeSchema = z
   .enum([
@@ -227,58 +897,35 @@ const OperationStatusSchema = z
 
 const OperationSchema = z
   .object({
-    id: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The ID of the operation.' }),
-    ).exactOptional(),
-    resourceName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The resource name.' }),
-    ).exactOptional(),
-    resourceType: ResourceTypeSchema.and(
-      z.any().openapi({ description: 'The resource type. ' }),
-    ).exactOptional(),
-    createdAt: IsoDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp when the operation was initialized (e.g., <code>1479816991.349</code>).',
-        }),
-    ).exactOptional(),
-    location: ResourceLocationSchema.and(
-      z.any().openapi({ description: 'The Amazon Web Services Region and Availability Zone.' }),
-    ).exactOptional(),
-    isTerminal: BooleanSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A Boolean value indicating whether the operation is terminal.' }),
-    ).exactOptional(),
-    operationDetails: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Details about the operation (e.g., <code>Debian-1GB-Ohio-1</code>).',
-        }),
-    ).exactOptional(),
-    operationType: OperationTypeSchema.and(
-      z.any().openapi({ description: 'The type of operation. ' }),
-    ).exactOptional(),
-    status: OperationStatusSchema.and(
-      z.any().openapi({ description: 'The status of the operation. ' }),
-    ).exactOptional(),
-    statusChangedAt: IsoDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp when the status was changed (e.g., <code>1479816991.349</code>).',
-        }),
-    ).exactOptional(),
-    errorCode: StringSchema.and(
-      z.any().openapi({ description: 'The error code.' }),
-    ).exactOptional(),
-    errorDetails: StringSchema.and(
-      z.any().openapi({ description: 'The error details.' }),
-    ).exactOptional(),
+    id: NonEmptyStringSchema.exactOptional().openapi({ description: 'The ID of the operation.' }),
+    resourceName: ResourceNameSchema.exactOptional().openapi({ description: 'The resource name.' }),
+    resourceType: ResourceTypeSchema.exactOptional().openapi({
+      description: 'The resource type. ',
+    }),
+    createdAt: IsoDateSchema.exactOptional().openapi({
+      description:
+        'The timestamp when the operation was initialized (e.g., <code>1479816991.349</code>).',
+    }),
+    location: ResourceLocationSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services Region and Availability Zone.',
+    }),
+    isTerminal: BooleanSchema.exactOptional().openapi({
+      description: 'A Boolean value indicating whether the operation is terminal.',
+    }),
+    operationDetails: StringSchema.exactOptional().openapi({
+      description: 'Details about the operation (e.g., <code>Debian-1GB-Ohio-1</code>).',
+    }),
+    operationType: OperationTypeSchema.exactOptional().openapi({
+      description: 'The type of operation. ',
+    }),
+    status: OperationStatusSchema.exactOptional().openapi({
+      description: 'The status of the operation. ',
+    }),
+    statusChangedAt: IsoDateSchema.exactOptional().openapi({
+      description: 'The timestamp when the status was changed (e.g., <code>1479816991.349</code>).',
+    }),
+    errorCode: StringSchema.exactOptional().openapi({ description: 'The error code.' }),
+    errorDetails: StringSchema.exactOptional().openapi({ description: 'The error details.' }),
   })
   .openapi({ description: 'Describes the API operation.', required: [] })
   .openapi('Operation')
@@ -287,23 +934,17 @@ const OperationListSchema = z.array(OperationSchema).openapi('OperationList')
 
 const AllocateStaticIpResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AllocateStaticIpResult')
 
 const AllocateStaticIpRequestSchema = z
   .object({
-    staticIpName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the static IP address.' }),
-    ),
+    staticIpName: ResourceNameSchema.openapi({ description: 'The name of the static IP address.' }),
   })
   .openapi({ required: ['staticIpName'], title: 'AllocateStaticIpRequest' })
   .openapi('AllocateStaticIpRequest')
@@ -324,36 +965,24 @@ const UnauthenticatedExceptionSchema = z.any().openapi('UnauthenticatedException
 
 const AttachCertificateToDistributionResultSchema = z
   .object({
-    operation: OperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that describes the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operation: OperationSchema.exactOptional().openapi({
+      description:
+        'An object that describes the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AttachCertificateToDistributionResult')
 
 const AttachCertificateToDistributionRequestSchema = z
   .object({
-    distributionName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the distribution that the certificate will be attached to.</p> <p>Use the <code>GetDistributions</code> action to get a list of distribution names that you can specify.</p>',
-        }),
-    ),
-    certificateName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the certificate to attach to a distribution.</p> <p>Only certificates with a status of <code>ISSUED</code> can be attached to a distribution.</p> <p>Use the <code>GetCertificates</code> action to get a list of certificate names that you can specify.</p> <note> <p>This is the name of the certificate resource type and is used only to reference the certificate in other API actions. It can be different than the domain name of the certificate. For example, your certificate name might be <code>WordPress-Blog-Certificate</code> and the domain name of the certificate might be <code>example.com</code>.</p> </note>',
-        }),
-    ),
+    distributionName: ResourceNameSchema.openapi({
+      description:
+        '<p>The name of the distribution that the certificate will be attached to.</p> <p>Use the <code>GetDistributions</code> action to get a list of distribution names that you can specify.</p>',
+    }),
+    certificateName: ResourceNameSchema.openapi({
+      description:
+        '<p>The name of the certificate to attach to a distribution.</p> <p>Only certificates with a status of <code>ISSUED</code> can be attached to a distribution.</p> <p>Use the <code>GetCertificates</code> action to get a list of certificate names that you can specify.</p> <note> <p>This is the name of the certificate resource type and is used only to reference the certificate in other API actions. It can be different than the domain name of the certificate. For example, your certificate name might be <code>WordPress-Blog-Certificate</code> and the domain name of the certificate might be <code>example.com</code>.</p> </note>',
+    }),
   })
   .openapi({
     required: ['distributionName', 'certificateName'],
@@ -363,62 +992,39 @@ const AttachCertificateToDistributionRequestSchema = z
 
 const AttachDiskResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AttachDiskResult')
 
 const AttachDiskRequestSchema = z
   .object({
-    diskName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The unique Lightsail disk name (e.g., <code>my-disk</code>).' }),
-    ),
-    instanceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Lightsail instance where you want to utilize the storage disk.',
-        }),
-    ),
-    diskPath: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The disk path to expose to the instance (e.g., <code>/dev/xvdf</code>).',
-        }),
-    ),
-    autoMounting: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A Boolean value used to determine the automatic mounting of a storage volume to a virtual computer. The default value is <code>False</code>.</p> <important> <p>This value only applies to Lightsail for Research resources.</p> </important>',
-        }),
-    ).exactOptional(),
+    diskName: ResourceNameSchema.openapi({
+      description: 'The unique Lightsail disk name (e.g., <code>my-disk</code>).',
+    }),
+    instanceName: ResourceNameSchema.openapi({
+      description: 'The name of the Lightsail instance where you want to utilize the storage disk.',
+    }),
+    diskPath: NonEmptyStringSchema.openapi({
+      description: 'The disk path to expose to the instance (e.g., <code>/dev/xvdf</code>).',
+    }),
+    autoMounting: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>A Boolean value used to determine the automatic mounting of a storage volume to a virtual computer. The default value is <code>False</code>.</p> <important> <p>This value only applies to Lightsail for Research resources.</p> </important>',
+    }),
   })
   .openapi({ required: ['diskName', 'instanceName', 'diskPath'], title: 'AttachDiskRequest' })
   .openapi('AttachDiskRequest')
 
 const AttachInstancesToLoadBalancerResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AttachInstancesToLoadBalancerResult')
@@ -427,17 +1033,11 @@ const ResourceNameListSchema = z.array(ResourceNameSchema).openapi('ResourceName
 
 const AttachInstancesToLoadBalancerRequestSchema = z
   .object({
-    loadBalancerName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the load balancer.' }),
-    ),
-    instanceNames: ResourceNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of strings representing the instance name(s) you want to attach to your load balancer.</p> <p>An instance must be <code>running</code> before you can attach it to your load balancer.</p> <p>There are no additional limits on the number of instances you can attach to your load balancer, aside from the limit of Lightsail instances you can create in your account (20).</p>',
-        }),
-    ),
+    loadBalancerName: ResourceNameSchema.openapi({ description: 'The name of the load balancer.' }),
+    instanceNames: ResourceNameListSchema.openapi({
+      description:
+        '<p>An array of strings representing the instance name(s) you want to attach to your load balancer.</p> <p>An instance must be <code>running</code> before you can attach it to your load balancer.</p> <p>There are no additional limits on the number of instances you can attach to your load balancer, aside from the limit of Lightsail instances you can create in your account (20).</p>',
+    }),
   })
   .openapi({
     required: ['loadBalancerName', 'instanceNames'],
@@ -447,31 +1047,23 @@ const AttachInstancesToLoadBalancerRequestSchema = z
 
 const AttachLoadBalancerTlsCertificateResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.</p> <p>These SSL/TLS certificates are only usable by Lightsail load balancers. You can't get the certificate and use it for another purpose.</p>",
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        "<p>An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.</p> <p>These SSL/TLS certificates are only usable by Lightsail load balancers. You can't get the certificate and use it for another purpose.</p>",
+    }),
   })
   .openapi({ required: [] })
   .openapi('AttachLoadBalancerTlsCertificateResult')
 
 const AttachLoadBalancerTlsCertificateRequestSchema = z
   .object({
-    loadBalancerName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the load balancer to which you want to associate the SSL/TLS certificate.',
-        }),
-    ),
-    certificateName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of your SSL/TLS certificate.' }),
-    ),
+    loadBalancerName: ResourceNameSchema.openapi({
+      description:
+        'The name of the load balancer to which you want to associate the SSL/TLS certificate.',
+    }),
+    certificateName: ResourceNameSchema.openapi({
+      description: 'The name of your SSL/TLS certificate.',
+    }),
   })
   .openapi({
     required: ['loadBalancerName', 'certificateName'],
@@ -481,104 +1073,60 @@ const AttachLoadBalancerTlsCertificateRequestSchema = z
 
 const AttachStaticIpResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AttachStaticIpResult')
 
 const AttachStaticIpRequestSchema = z
   .object({
-    staticIpName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the static IP.' }),
-    ),
-    instanceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The instance name to which you want to attach the static IP address.',
-        }),
-    ),
+    staticIpName: ResourceNameSchema.openapi({ description: 'The name of the static IP.' }),
+    instanceName: ResourceNameSchema.openapi({
+      description: 'The instance name to which you want to attach the static IP address.',
+    }),
   })
   .openapi({ required: ['staticIpName', 'instanceName'], title: 'AttachStaticIpRequest' })
   .openapi('AttachStaticIpRequest')
 
 const CloseInstancePublicPortsResultSchema = z
   .object({
-    operation: OperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that describes the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operation: OperationSchema.exactOptional().openapi({
+      description:
+        'An object that describes the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CloseInstancePublicPortsResult')
 
-const PortSchema = z.int().min(-1).max(65535).openapi('Port')
-
-const NetworkProtocolSchema = z.enum(['tcp', 'all', 'udp', 'icmp']).openapi('NetworkProtocol')
-
-const StringListSchema = z.array(StringSchema).openapi('StringList')
-
 const PortInfoSchema = z
   .object({
-    fromPort: PortSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The first port in a range of open ports on an instance.</p> <p>Allowed ports:</p> <ul> <li> <p>TCP and UDP - <code>0</code> to <code>65535</code> </p> </li> <li> <p>ICMP - The ICMP type for IPv4 addresses. For example, specify <code>8</code> as the <code>fromPort</code> (ICMP type), and <code>-1</code> as the <code>toPort</code> (ICMP code), to enable ICMP Ping. For more information, see <a href="https://en.wikipedia.org/wiki/Internet_Control_Message_Protocol#Control_messages">Control Messages</a> on <i>Wikipedia</i>.</p> </li> <li> <p>ICMPv6 - The ICMP type for IPv6 addresses. For example, specify <code>128</code> as the <code>fromPort</code> (ICMPv6 type), and <code>0</code> as <code>toPort</code> (ICMPv6 code). For more information, see <a href="https://en.wikipedia.org/wiki/Internet_Control_Message_Protocol_for_IPv6">Internet Control Message Protocol for IPv6</a>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    toPort: PortSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The last port in a range of open ports on an instance.</p> <p>Allowed ports:</p> <ul> <li> <p>TCP and UDP - <code>0</code> to <code>65535</code> </p> </li> <li> <p>ICMP - The ICMP code for IPv4 addresses. For example, specify <code>8</code> as the <code>fromPort</code> (ICMP type), and <code>-1</code> as the <code>toPort</code> (ICMP code), to enable ICMP Ping. For more information, see <a href="https://en.wikipedia.org/wiki/Internet_Control_Message_Protocol#Control_messages">Control Messages</a> on <i>Wikipedia</i>.</p> </li> <li> <p>ICMPv6 - The ICMP code for IPv6 addresses. For example, specify <code>128</code> as the <code>fromPort</code> (ICMPv6 type), and <code>0</code> as <code>toPort</code> (ICMPv6 code). For more information, see <a href="https://en.wikipedia.org/wiki/Internet_Control_Message_Protocol_for_IPv6">Internet Control Message Protocol for IPv6</a>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    protocol: NetworkProtocolSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The IP protocol name.</p> <p>The name can be one of the following:</p> <ul> <li> <p> <code>tcp</code> - Transmission Control Protocol (TCP) provides reliable, ordered, and error-checked delivery of streamed data between applications running on hosts communicating by an IP network. If you have an application that doesn\'t require reliable data stream service, use UDP instead.</p> </li> <li> <p> <code>all</code> - All transport layer protocol types. For more general information, see <a href="https://en.wikipedia.org/wiki/Transport_layer">Transport layer</a> on <i>Wikipedia</i>.</p> </li> <li> <p> <code>udp</code> - With User Datagram Protocol (UDP), computer applications can send messages (or datagrams) to other hosts on an Internet Protocol (IP) network. Prior communications are not required to set up transmission channels or data paths. Applications that don\'t require reliable data stream service can use UDP, which provides a connectionless datagram service that emphasizes reduced latency over reliability. If you do require reliable data stream service, use TCP instead.</p> </li> <li> <p> <code>icmp</code> - Internet Control Message Protocol (ICMP) is used to send error messages and operational information indicating success or failure when communicating with an instance. For example, an error is indicated when an instance could not be reached. When you specify <code>icmp</code> as the <code>protocol</code>, you must specify the ICMP type using the <code>fromPort</code> parameter, and ICMP code using the <code>toPort</code> parameter.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    cidrs: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The IPv4 address, or range of IPv4 addresses (in CIDR notation) that are allowed to connect to an instance through the ports, and the protocol.</p> <note> <p>The <code>ipv6Cidrs</code> parameter lists the IPv6 addresses that are allowed to connect to an instance.</p> </note> <p>Examples:</p> <ul> <li> <p>To allow the IP address <code>192.0.2.44</code>, specify <code>192.0.2.44</code> or <code>192.0.2.44/32</code>. </p> </li> <li> <p>To allow the IP addresses <code>192.0.2.0</code> to <code>192.0.2.255</code>, specify <code>192.0.2.0/24</code>.</p> </li> </ul> <p>For more information about CIDR block notation, see <a href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing#CIDR_notation">Classless Inter-Domain Routing</a> on <i>Wikipedia</i>.</p>',
-        }),
-    ).exactOptional(),
-    ipv6Cidrs: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The IPv6 address, or range of IPv6 addresses (in CIDR notation) that are allowed to connect to an instance through the ports, and the protocol. Only devices with an IPv6 address can connect to an instance through IPv6; otherwise, IPv4 should be used.</p> <note> <p>The <code>cidrs</code> parameter lists the IPv4 addresses that are allowed to connect to an instance.</p> </note> <p>For more information about CIDR block notation, see <a href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing#CIDR_notation">Classless Inter-Domain Routing</a> on <i>Wikipedia</i>.</p>',
-        }),
-    ).exactOptional(),
-    cidrListAliases: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An alias that defines access for a preconfigured range of IP addresses.</p> <p>The only alias currently supported is <code>lightsail-connect</code>, which allows IP addresses of the browser-based RDP/SSH client in the Lightsail console to connect to your instance.</p>',
-        }),
-    ).exactOptional(),
+    fromPort: PortSchema.exactOptional().openapi({
+      description:
+        '<p>The first port in a range of open ports on an instance.</p> <p>Allowed ports:</p> <ul> <li> <p>TCP and UDP - <code>0</code> to <code>65535</code> </p> </li> <li> <p>ICMP - The ICMP type for IPv4 addresses. For example, specify <code>8</code> as the <code>fromPort</code> (ICMP type), and <code>-1</code> as the <code>toPort</code> (ICMP code), to enable ICMP Ping. For more information, see <a href="https://en.wikipedia.org/wiki/Internet_Control_Message_Protocol#Control_messages">Control Messages</a> on <i>Wikipedia</i>.</p> </li> <li> <p>ICMPv6 - The ICMP type for IPv6 addresses. For example, specify <code>128</code> as the <code>fromPort</code> (ICMPv6 type), and <code>0</code> as <code>toPort</code> (ICMPv6 code). For more information, see <a href="https://en.wikipedia.org/wiki/Internet_Control_Message_Protocol_for_IPv6">Internet Control Message Protocol for IPv6</a>.</p> </li> </ul>',
+    }),
+    toPort: PortSchema.exactOptional().openapi({
+      description:
+        '<p>The last port in a range of open ports on an instance.</p> <p>Allowed ports:</p> <ul> <li> <p>TCP and UDP - <code>0</code> to <code>65535</code> </p> </li> <li> <p>ICMP - The ICMP code for IPv4 addresses. For example, specify <code>8</code> as the <code>fromPort</code> (ICMP type), and <code>-1</code> as the <code>toPort</code> (ICMP code), to enable ICMP Ping. For more information, see <a href="https://en.wikipedia.org/wiki/Internet_Control_Message_Protocol#Control_messages">Control Messages</a> on <i>Wikipedia</i>.</p> </li> <li> <p>ICMPv6 - The ICMP code for IPv6 addresses. For example, specify <code>128</code> as the <code>fromPort</code> (ICMPv6 type), and <code>0</code> as <code>toPort</code> (ICMPv6 code). For more information, see <a href="https://en.wikipedia.org/wiki/Internet_Control_Message_Protocol_for_IPv6">Internet Control Message Protocol for IPv6</a>.</p> </li> </ul>',
+    }),
+    protocol: NetworkProtocolSchema.exactOptional().openapi({
+      description:
+        '<p>The IP protocol name.</p> <p>The name can be one of the following:</p> <ul> <li> <p> <code>tcp</code> - Transmission Control Protocol (TCP) provides reliable, ordered, and error-checked delivery of streamed data between applications running on hosts communicating by an IP network. If you have an application that doesn\'t require reliable data stream service, use UDP instead.</p> </li> <li> <p> <code>all</code> - All transport layer protocol types. For more general information, see <a href="https://en.wikipedia.org/wiki/Transport_layer">Transport layer</a> on <i>Wikipedia</i>.</p> </li> <li> <p> <code>udp</code> - With User Datagram Protocol (UDP), computer applications can send messages (or datagrams) to other hosts on an Internet Protocol (IP) network. Prior communications are not required to set up transmission channels or data paths. Applications that don\'t require reliable data stream service can use UDP, which provides a connectionless datagram service that emphasizes reduced latency over reliability. If you do require reliable data stream service, use TCP instead.</p> </li> <li> <p> <code>icmp</code> - Internet Control Message Protocol (ICMP) is used to send error messages and operational information indicating success or failure when communicating with an instance. For example, an error is indicated when an instance could not be reached. When you specify <code>icmp</code> as the <code>protocol</code>, you must specify the ICMP type using the <code>fromPort</code> parameter, and ICMP code using the <code>toPort</code> parameter.</p> </li> </ul>',
+    }),
+    cidrs: StringListSchema.exactOptional().openapi({
+      description:
+        '<p>The IPv4 address, or range of IPv4 addresses (in CIDR notation) that are allowed to connect to an instance through the ports, and the protocol.</p> <note> <p>The <code>ipv6Cidrs</code> parameter lists the IPv6 addresses that are allowed to connect to an instance.</p> </note> <p>Examples:</p> <ul> <li> <p>To allow the IP address <code>192.0.2.44</code>, specify <code>192.0.2.44</code> or <code>192.0.2.44/32</code>. </p> </li> <li> <p>To allow the IP addresses <code>192.0.2.0</code> to <code>192.0.2.255</code>, specify <code>192.0.2.0/24</code>.</p> </li> </ul> <p>For more information about CIDR block notation, see <a href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing#CIDR_notation">Classless Inter-Domain Routing</a> on <i>Wikipedia</i>.</p>',
+    }),
+    ipv6Cidrs: StringListSchema.exactOptional().openapi({
+      description:
+        '<p>The IPv6 address, or range of IPv6 addresses (in CIDR notation) that are allowed to connect to an instance through the ports, and the protocol. Only devices with an IPv6 address can connect to an instance through IPv6; otherwise, IPv4 should be used.</p> <note> <p>The <code>cidrs</code> parameter lists the IPv4 addresses that are allowed to connect to an instance.</p> </note> <p>For more information about CIDR block notation, see <a href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing#CIDR_notation">Classless Inter-Domain Routing</a> on <i>Wikipedia</i>.</p>',
+    }),
+    cidrListAliases: StringListSchema.exactOptional().openapi({
+      description:
+        '<p>An alias that defines access for a preconfigured range of IP addresses.</p> <p>The only alias currently supported is <code>lightsail-connect</code>, which allows IP addresses of the browser-based RDP/SSH client in the Lightsail console to connect to your instance.</p>',
+    }),
   })
   .openapi({
     description:
@@ -589,81 +1137,51 @@ const PortInfoSchema = z
 
 const CloseInstancePublicPortsRequestSchema = z
   .object({
-    portInfo: PortInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object to describe the ports to close for the specified instance.',
-        }),
-    ),
-    instanceName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the instance for which to close ports.' }),
-    ),
+    portInfo: PortInfoSchema.openapi({
+      description: 'An object to describe the ports to close for the specified instance.',
+    }),
+    instanceName: ResourceNameSchema.openapi({
+      description: 'The name of the instance for which to close ports.',
+    }),
   })
   .openapi({ required: ['portInfo', 'instanceName'], title: 'CloseInstancePublicPortsRequest' })
   .openapi('CloseInstancePublicPortsRequest')
 
 const CopySnapshotResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CopySnapshotResult')
 
 const CopySnapshotRequestSchema = z
   .object({
-    sourceSnapshotName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the source manual snapshot to copy.</p> <p>Constraint:</p> <ul> <li> <p>Define this parameter only when copying a manual snapshot as another manual snapshot.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    sourceResourceName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the source instance or disk from which the source automatic snapshot was created.</p> <p>Constraint:</p> <ul> <li> <p>Define this parameter only when copying an automatic snapshot as a manual snapshot. For more information, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-keeping-automatic-snapshots">Amazon Lightsail Developer Guide</a>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    restoreDate: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The date of the source automatic snapshot to copy. Use the <code>get auto snapshots</code> operation to identify the dates of the available automatic snapshots.</p> <p>Constraints:</p> <ul> <li> <p>Must be specified in <code>YYYY-MM-DD</code> format.</p> </li> <li> <p>This parameter cannot be defined together with the <code>use latest restorable auto snapshot</code> parameter. The <code>restore date</code> and <code>use latest restorable auto snapshot</code> parameters are mutually exclusive.</p> </li> <li> <p>Define this parameter only when copying an automatic snapshot as a manual snapshot. For more information, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-keeping-automatic-snapshots">Amazon Lightsail Developer Guide</a>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    useLatestRestorableAutoSnapshot: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A Boolean value to indicate whether to use the latest available automatic snapshot of the specified source instance or disk.</p> <p>Constraints:</p> <ul> <li> <p>This parameter cannot be defined together with the <code>restore date</code> parameter. The <code>use latest restorable auto snapshot</code> and <code>restore date</code> parameters are mutually exclusive.</p> </li> <li> <p>Define this parameter only when copying an automatic snapshot as a manual snapshot. For more information, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-keeping-automatic-snapshots">Amazon Lightsail Developer Guide</a>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    targetSnapshotName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the new manual snapshot to be created as a copy.' }),
-    ),
-    sourceRegion: RegionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services Region where the source manual or automatic snapshot is located.',
-        }),
-    ),
+    sourceSnapshotName: ResourceNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the source manual snapshot to copy.</p> <p>Constraint:</p> <ul> <li> <p>Define this parameter only when copying a manual snapshot as another manual snapshot.</p> </li> </ul>',
+    }),
+    sourceResourceName: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the source instance or disk from which the source automatic snapshot was created.</p> <p>Constraint:</p> <ul> <li> <p>Define this parameter only when copying an automatic snapshot as a manual snapshot. For more information, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-keeping-automatic-snapshots">Amazon Lightsail Developer Guide</a>.</p> </li> </ul>',
+    }),
+    restoreDate: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The date of the source automatic snapshot to copy. Use the <code>get auto snapshots</code> operation to identify the dates of the available automatic snapshots.</p> <p>Constraints:</p> <ul> <li> <p>Must be specified in <code>YYYY-MM-DD</code> format.</p> </li> <li> <p>This parameter cannot be defined together with the <code>use latest restorable auto snapshot</code> parameter. The <code>restore date</code> and <code>use latest restorable auto snapshot</code> parameters are mutually exclusive.</p> </li> <li> <p>Define this parameter only when copying an automatic snapshot as a manual snapshot. For more information, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-keeping-automatic-snapshots">Amazon Lightsail Developer Guide</a>.</p> </li> </ul>',
+    }),
+    useLatestRestorableAutoSnapshot: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>A Boolean value to indicate whether to use the latest available automatic snapshot of the specified source instance or disk.</p> <p>Constraints:</p> <ul> <li> <p>This parameter cannot be defined together with the <code>restore date</code> parameter. The <code>use latest restorable auto snapshot</code> and <code>restore date</code> parameters are mutually exclusive.</p> </li> <li> <p>Define this parameter only when copying an automatic snapshot as a manual snapshot. For more information, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-keeping-automatic-snapshots">Amazon Lightsail Developer Guide</a>.</p> </li> </ul>',
+    }),
+    targetSnapshotName: ResourceNameSchema.openapi({
+      description: 'The name of the new manual snapshot to be created as a copy.',
+    }),
+    sourceRegion: RegionNameSchema.openapi({
+      description:
+        'The Amazon Web Services Region where the source manual or automatic snapshot is located.',
+    }),
   })
   .openapi({ required: ['targetSnapshotName', 'sourceRegion'], title: 'CopySnapshotRequest' })
   .openapi('CopySnapshotRequest')
@@ -672,22 +1190,14 @@ const AccessTypeSchema = z.enum(['public', 'private']).openapi('AccessType')
 
 const AccessRulesSchema = z
   .object({
-    getObject: AccessTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the anonymous access to all objects in a bucket.</p> <p>The following options can be specified:</p> <ul> <li> <p> <code>public</code> - Sets all objects in the bucket to public (read-only), making them readable by anyone in the world.</p> <p>If the <code>getObject</code> value is set to <code>public</code>, then all objects in the bucket default to public regardless of the <code>allowPublicOverrides</code> value.</p> </li> <li> <p> <code>private</code> - Sets all objects in the bucket to private, making them readable only by you or anyone you give access to.</p> <p>If the <code>getObject</code> value is set to <code>private</code>, and the <code>allowPublicOverrides</code> value is set to <code>true</code>, then all objects in the bucket default to private unless they are configured with a <code>public-read</code> ACL. Individual objects with a <code>public-read</code> ACL are readable by anyone in the world.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    allowPublicOverrides: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A Boolean value that indicates whether the access control list (ACL) permissions that are applied to individual objects override the <code>getObject</code> option that is currently specified.</p> <p>When this is true, you can use the <a href="https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutObjectAcl.html">PutObjectAcl</a> Amazon S3 API action to set individual objects to public (read-only) using the <code>public-read</code> ACL, or to private using the <code>private</code> ACL.</p>',
-        }),
-    ).exactOptional(),
+    getObject: AccessTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the anonymous access to all objects in a bucket.</p> <p>The following options can be specified:</p> <ul> <li> <p> <code>public</code> - Sets all objects in the bucket to public (read-only), making them readable by anyone in the world.</p> <p>If the <code>getObject</code> value is set to <code>public</code>, then all objects in the bucket default to public regardless of the <code>allowPublicOverrides</code> value.</p> </li> <li> <p> <code>private</code> - Sets all objects in the bucket to private, making them readable only by you or anyone you give access to.</p> <p>If the <code>getObject</code> value is set to <code>private</code>, and the <code>allowPublicOverrides</code> value is set to <code>true</code>, then all objects in the bucket default to private unless they are configured with a <code>public-read</code> ACL. Individual objects with a <code>public-read</code> ACL are readable by anyone in the world.</p> </li> </ul>',
+    }),
+    allowPublicOverrides: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>A Boolean value that indicates whether the access control list (ACL) permissions that are applied to individual objects override the <code>getObject</code> option that is currently specified.</p> <p>When this is true, you can use the <a href="https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutObjectAcl.html">PutObjectAcl</a> Amazon S3 API action to set individual objects to public (read-only) using the <code>public-read</code> ACL, or to private using the <code>private</code> ACL.</p>',
+    }),
   })
   .openapi({
     description:
@@ -703,52 +1213,16 @@ const BucketNameSchema = z
   .max(54)
   .openapi('BucketName')
 
-const TagKeySchema = z.string().openapi('TagKey')
-
-const TagValueSchema = z.string().openapi('TagValue')
-
-const TagSchema = z
-  .object({
-    key: TagKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The key of the tag.</p> <p>Constraints: Tag keys accept a maximum of 128 letters, numbers, spaces in UTF-8, or the following characters: + - = . _ : / @</p>',
-        }),
-    ).exactOptional(),
-    value: TagValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The value of the tag.</p> <p>Constraints: Tag values accept a maximum of 256 letters, numbers, spaces in UTF-8, or the following characters: + - = . _ : / @</p>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>Describes a tag key and optional value assigned to an Amazon Lightsail resource.</p> <p>For more information about tags in Lightsail, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-tags">Amazon Lightsail Developer Guide</a>.</p>',
-    required: [],
-  })
-  .openapi('Tag')
-
-const TagListSchema = z.array(TagSchema).openapi('TagList')
-
 const PartnerIdListSchema = z.array(NonEmptyStringSchema).max(10).openapi('PartnerIdList')
 
 const ResourceReceivingAccessSchema = z
   .object({
-    name: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The name of the Lightsail instance.' }),
-    ).exactOptional(),
-    resourceType: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Lightsail resource type (for example, <code>Instance</code>).',
-        }),
-    ).exactOptional(),
+    name: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The name of the Lightsail instance.',
+    }),
+    resourceType: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The Lightsail resource type (for example, <code>Instance</code>).',
+    }),
   })
   .openapi({
     description: 'Describes an Amazon Lightsail instance that has access to a Lightsail bucket.',
@@ -762,17 +1236,13 @@ const AccessReceiverListSchema = z
 
 const BucketStateSchema = z
   .object({
-    code: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The state code of the bucket.</p> <p>The following codes are possible:</p> <ul> <li> <p> <code>OK</code> - The bucket is in a running state.</p> </li> <li> <p> <code>Unknown</code> - Creation of the bucket might have timed-out. You might want to delete the bucket and create a new one.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    message: StringSchema.and(
-      z.any().openapi({ description: 'A message that describes the state of the bucket.' }),
-    ).exactOptional(),
+    code: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        '<p>The state code of the bucket.</p> <p>The following codes are possible:</p> <ul> <li> <p> <code>OK</code> - The bucket is in a running state.</p> </li> <li> <p> <code>Unknown</code> - Creation of the bucket might have timed-out. You might want to delete the bucket and create a new one.</p> </li> </ul>',
+    }),
+    message: StringSchema.exactOptional().openapi({
+      description: 'A message that describes the state of the bucket.',
+    }),
   })
   .openapi({ description: 'Describes the state of an Amazon Lightsail bucket.', required: [] })
   .openapi('BucketState')
@@ -786,30 +1256,18 @@ const BucketAccessLogPrefixSchema = z
 
 const BucketAccessLogConfigSchema = z
   .object({
-    enabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean value that indicates whether bucket access logging is enabled for the bucket.',
-        }),
-    ),
-    destination: BucketNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the bucket where the access logs are saved. The destination can be a Lightsail bucket in the same account, and in the same Amazon Web Services Region as the source bucket.</p> <note> <p>This parameter is required when enabling the access log for a bucket, and should be omitted when disabling the access log.</p> </note>',
-        }),
-    ).exactOptional(),
-    prefix: BucketAccessLogPrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The optional object prefix for the bucket access log.</p> <p>The prefix is an optional addition to the object key that organizes your access log files in the destination bucket. For example, if you specify a <code>logs/</code> prefix, then each log object will begin with the <code>logs/</code> prefix in its key (for example, <code>logs/2021-11-01-21-32-16-E568B2907131C0C0</code>).</p> <note> <p>This parameter can be optionally specified when enabling the access log for a bucket, and should be omitted when disabling the access log.</p> </note>',
-        }),
-    ).exactOptional(),
+    enabled: BooleanSchema.openapi({
+      description:
+        'A Boolean value that indicates whether bucket access logging is enabled for the bucket.',
+    }),
+    destination: BucketNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the bucket where the access logs are saved. The destination can be a Lightsail bucket in the same account, and in the same Amazon Web Services Region as the source bucket.</p> <note> <p>This parameter is required when enabling the access log for a bucket, and should be omitted when disabling the access log.</p> </note>',
+    }),
+    prefix: BucketAccessLogPrefixSchema.exactOptional().openapi({
+      description:
+        '<p>The optional object prefix for the bucket access log.</p> <p>The prefix is an optional addition to the object key that organizes your access log files in the destination bucket. For example, if you specify a <code>logs/</code> prefix, then each log object will begin with the <code>logs/</code> prefix in its key (for example, <code>logs/2021-11-01-21-32-16-E568B2907131C0C0</code>).</p> <note> <p>This parameter can be optionally specified when enabling the access log for a bucket, and should be omitted when disabling the access log.</p> </note>',
+    }),
   })
   .openapi({
     required: ['enabled'],
@@ -820,158 +1278,93 @@ const BucketAccessLogConfigSchema = z
 
 const BucketSchema = z
   .object({
-    resourceType: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Lightsail resource type of the bucket (for example, <code>Bucket</code>).',
-        }),
-    ).exactOptional(),
-    accessRules: AccessRulesSchema.and(
-      z.any().openapi({ description: 'An object that describes the access rules of the bucket.' }),
-    ).exactOptional(),
-    arn: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the bucket.' }),
-    ).exactOptional(),
-    bundleId: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the bundle currently applied to the bucket.</p> <p>A bucket bundle specifies the monthly cost, storage space, and data transfer quota for a bucket.</p> <p>Use the <a href="https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_UpdateBucketBundle.html">UpdateBucketBundle</a> action to change the bundle of a bucket.</p>',
-        }),
-    ).exactOptional(),
-    createdAt: IsoDateSchema.and(
-      z.any().openapi({ description: 'The timestamp when the distribution was created.' }),
-    ).exactOptional(),
-    url: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The URL of the bucket.' }),
-    ).exactOptional(),
-    location: ResourceLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that describes the location of the bucket, such as the Amazon Web Services Region and Availability Zone.',
-        }),
-    ).exactOptional(),
-    name: BucketNameSchema.and(
-      z.any().openapi({ description: 'The name of the bucket.' }),
-    ).exactOptional(),
-    supportCode: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The support code for a bucket. Include this code in your email to support when you have questions about a Lightsail bucket. This code enables our support team to look up your Lightsail information more easily.',
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tag keys and optional values for the bucket. For more information, see <a href="https://lightsail.aws.amazon.com/ls/docs/en/articles/amazon-lightsail-tags">Tags in Amazon Lightsail</a> in the <i>Amazon Lightsail Developer Guide</i>.',
-        }),
-    ).exactOptional(),
-    objectVersioning: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether object versioning is enabled for the bucket.</p> <p>The following options can be configured:</p> <ul> <li> <p> <code>Enabled</code> - Object versioning is enabled.</p> </li> <li> <p> <code>Suspended</code> - Object versioning was previously enabled but is currently suspended. Existing object versions are retained.</p> </li> <li> <p> <code>NeverEnabled</code> - Object versioning has never been enabled.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ableToUpdateBundle: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether the bundle that is currently applied to a bucket can be changed to another bundle.</p> <p>You can update a bucket\'s bundle only one time within a monthly Amazon Web Services billing cycle.</p> <p>Use the <a href="https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_UpdateBucketBundle.html">UpdateBucketBundle</a> action to change a bucket\'s bundle.</p>',
-        }),
-    ).exactOptional(),
-    readonlyAccessAccounts: PartnerIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of strings that specify the Amazon Web Services account IDs that have read-only access to the bucket.',
-        }),
-    ).exactOptional(),
-    resourcesReceivingAccess: AccessReceiverListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of objects that describe Lightsail instances that have access to the bucket.</p> <p>Use the <a href="https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_SetResourceAccessForBucket.html">SetResourceAccessForBucket</a> action to update the instances that have access to a bucket.</p>',
-        }),
-    ).exactOptional(),
-    state: BucketStateSchema.and(
-      z.any().openapi({ description: 'An object that describes the state of the bucket.' }),
-    ).exactOptional(),
-    accessLogConfig: BucketAccessLogConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that describes the access log configuration for the bucket.',
-        }),
-    ).exactOptional(),
+    resourceType: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The Lightsail resource type of the bucket (for example, <code>Bucket</code>).',
+    }),
+    accessRules: AccessRulesSchema.exactOptional().openapi({
+      description: 'An object that describes the access rules of the bucket.',
+    }),
+    arn: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the bucket.',
+    }),
+    bundleId: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        '<p>The ID of the bundle currently applied to the bucket.</p> <p>A bucket bundle specifies the monthly cost, storage space, and data transfer quota for a bucket.</p> <p>Use the <a href="https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_UpdateBucketBundle.html">UpdateBucketBundle</a> action to change the bundle of a bucket.</p>',
+    }),
+    createdAt: IsoDateSchema.exactOptional().openapi({
+      description: 'The timestamp when the distribution was created.',
+    }),
+    url: NonEmptyStringSchema.exactOptional().openapi({ description: 'The URL of the bucket.' }),
+    location: ResourceLocationSchema.exactOptional().openapi({
+      description:
+        'An object that describes the location of the bucket, such as the Amazon Web Services Region and Availability Zone.',
+    }),
+    name: BucketNameSchema.exactOptional().openapi({ description: 'The name of the bucket.' }),
+    supportCode: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        'The support code for a bucket. Include this code in your email to support when you have questions about a Lightsail bucket. This code enables our support team to look up your Lightsail information more easily.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        'The tag keys and optional values for the bucket. For more information, see <a href="https://lightsail.aws.amazon.com/ls/docs/en/articles/amazon-lightsail-tags">Tags in Amazon Lightsail</a> in the <i>Amazon Lightsail Developer Guide</i>.',
+    }),
+    objectVersioning: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates whether object versioning is enabled for the bucket.</p> <p>The following options can be configured:</p> <ul> <li> <p> <code>Enabled</code> - Object versioning is enabled.</p> </li> <li> <p> <code>Suspended</code> - Object versioning was previously enabled but is currently suspended. Existing object versions are retained.</p> </li> <li> <p> <code>NeverEnabled</code> - Object versioning has never been enabled.</p> </li> </ul>',
+    }),
+    ableToUpdateBundle: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates whether the bundle that is currently applied to a bucket can be changed to another bundle.</p> <p>You can update a bucket\'s bundle only one time within a monthly Amazon Web Services billing cycle.</p> <p>Use the <a href="https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_UpdateBucketBundle.html">UpdateBucketBundle</a> action to change a bucket\'s bundle.</p>',
+    }),
+    readonlyAccessAccounts: PartnerIdListSchema.exactOptional().openapi({
+      description:
+        'An array of strings that specify the Amazon Web Services account IDs that have read-only access to the bucket.',
+    }),
+    resourcesReceivingAccess: AccessReceiverListSchema.exactOptional().openapi({
+      description:
+        '<p>An array of objects that describe Lightsail instances that have access to the bucket.</p> <p>Use the <a href="https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_SetResourceAccessForBucket.html">SetResourceAccessForBucket</a> action to update the instances that have access to a bucket.</p>',
+    }),
+    state: BucketStateSchema.exactOptional().openapi({
+      description: 'An object that describes the state of the bucket.',
+    }),
+    accessLogConfig: BucketAccessLogConfigSchema.exactOptional().openapi({
+      description: 'An object that describes the access log configuration for the bucket.',
+    }),
   })
   .openapi({ description: 'Describes an Amazon Lightsail bucket.', required: [] })
   .openapi('Bucket')
 
 const CreateBucketResultSchema = z
   .object({
-    bucket: BucketSchema.and(
-      z.any().openapi({ description: 'An object that describes the bucket that is created.' }),
-    ).exactOptional(),
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    bucket: BucketSchema.exactOptional().openapi({
+      description: 'An object that describes the bucket that is created.',
+    }),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateBucketResult')
 
 const CreateBucketRequestSchema = z
   .object({
-    bucketName: BucketNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name for the bucket.</p> <p>For more information about bucket names, see <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/bucket-naming-rules-in-amazon-lightsail">Bucket naming rules in Amazon Lightsail</a> in the <i>Amazon Lightsail Developer Guide</i>.</p>',
-        }),
-    ),
-    bundleId: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the bundle to use for the bucket.</p> <p>A bucket bundle specifies the monthly cost, storage space, and data transfer quota for a bucket.</p> <p>Use the <a href="https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_GetBucketBundles.html">GetBucketBundles</a> action to get a list of bundle IDs that you can specify.</p> <p>Use the <a href="https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_UpdateBucketBundle.html">UpdateBucketBundle</a> action to change the bundle after the bucket is created.</p>',
-        }),
-    ),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The tag keys and optional values to add to the bucket during creation.</p> <p>Use the <a href="https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_TagResource.html">TagResource</a> action to tag the bucket after it\'s created.</p>',
-        }),
-    ).exactOptional(),
-    enableObjectVersioning: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A Boolean value that indicates whether to enable versioning of objects in the bucket.</p> <p>For more information about versioning, see <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-managing-bucket-object-versioning">Enabling and suspending object versioning in a bucket in Amazon Lightsail</a> in the <i>Amazon Lightsail Developer Guide</i>.</p>',
-        }),
-    ).exactOptional(),
+    bucketName: BucketNameSchema.openapi({
+      description:
+        '<p>The name for the bucket.</p> <p>For more information about bucket names, see <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/bucket-naming-rules-in-amazon-lightsail">Bucket naming rules in Amazon Lightsail</a> in the <i>Amazon Lightsail Developer Guide</i>.</p>',
+    }),
+    bundleId: NonEmptyStringSchema.openapi({
+      description:
+        '<p>The ID of the bundle to use for the bucket.</p> <p>A bucket bundle specifies the monthly cost, storage space, and data transfer quota for a bucket.</p> <p>Use the <a href="https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_GetBucketBundles.html">GetBucketBundles</a> action to get a list of bundle IDs that you can specify.</p> <p>Use the <a href="https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_UpdateBucketBundle.html">UpdateBucketBundle</a> action to change the bundle after the bucket is created.</p>',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        '<p>The tag keys and optional values to add to the bucket during creation.</p> <p>Use the <a href="https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_TagResource.html">TagResource</a> action to tag the bucket after it\'s created.</p>',
+    }),
+    enableObjectVersioning: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>A Boolean value that indicates whether to enable versioning of objects in the bucket.</p> <p>For more information about versioning, see <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-managing-bucket-object-versioning">Enabling and suspending object versioning in a bucket in Amazon Lightsail</a> in the <i>Amazon Lightsail Developer Guide</i>.</p>',
+    }),
   })
   .openapi({ required: ['bucketName', 'bundleId'], title: 'CreateBucketRequest' })
   .openapi('CreateBucketRequest')
@@ -986,30 +1379,18 @@ const StatusTypeSchema = z.enum(['Active', 'Inactive']).openapi('StatusType')
 
 const AccessKeyLastUsedSchema = z
   .object({
-    lastUsedDate: IsoDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The date and time when the access key was most recently used.</p> <p>This value is null if the access key has not been used.</p>',
-        }),
-    ).exactOptional(),
-    region: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Web Services Region where this access key was most recently used.</p> <p>This value is <code>N/A</code> if the access key has not been used.</p>',
-        }),
-    ).exactOptional(),
-    serviceName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the Amazon Web Services service with which this access key was most recently used.</p> <p>This value is <code>N/A</code> if the access key has not been used.</p>',
-        }),
-    ).exactOptional(),
+    lastUsedDate: IsoDateSchema.exactOptional().openapi({
+      description:
+        '<p>The date and time when the access key was most recently used.</p> <p>This value is null if the access key has not been used.</p>',
+    }),
+    region: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Web Services Region where this access key was most recently used.</p> <p>This value is <code>N/A</code> if the access key has not been used.</p>',
+    }),
+    serviceName: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the Amazon Web Services service with which this access key was most recently used.</p> <p>This value is <code>N/A</code> if the access key has not been used.</p>',
+    }),
   })
   .openapi({
     description:
@@ -1020,36 +1401,24 @@ const AccessKeyLastUsedSchema = z
 
 const AccessKeySchema = z
   .object({
-    accessKeyId: IAMAccessKeyIdSchema.and(
-      z.any().openapi({ description: 'The ID of the access key.' }),
-    ).exactOptional(),
-    secretAccessKey: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The secret access key used to sign requests.</p> <p>You should store the secret access key in a safe location. We recommend that you delete the access key if the secret access key is compromised.</p>',
-        }),
-    ).exactOptional(),
-    status: StatusTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the access key.</p> <p>A status of <code>Active</code> means that the key is valid, while <code>Inactive</code> means it is not.</p>',
-        }),
-    ).exactOptional(),
-    createdAt: IsoDateSchema.and(
-      z.any().openapi({ description: 'The timestamp when the access key was created.' }),
-    ).exactOptional(),
-    lastUsed: AccessKeyLastUsedSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An object that describes the last time the access key was used.</p> <note> <p>This object does not include data in the response of a <a href="https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_CreateBucketAccessKey.html">CreateBucketAccessKey</a> action. If the access key has not been used, the <code>region</code> and <code>serviceName</code> values are <code>N/A</code>, and the <code>lastUsedDate</code> value is null.</p> </note>',
-        }),
-    ).exactOptional(),
+    accessKeyId: IAMAccessKeyIdSchema.exactOptional().openapi({
+      description: 'The ID of the access key.',
+    }),
+    secretAccessKey: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        '<p>The secret access key used to sign requests.</p> <p>You should store the secret access key in a safe location. We recommend that you delete the access key if the secret access key is compromised.</p>',
+    }),
+    status: StatusTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the access key.</p> <p>A status of <code>Active</code> means that the key is valid, while <code>Inactive</code> means it is not.</p>',
+    }),
+    createdAt: IsoDateSchema.exactOptional().openapi({
+      description: 'The timestamp when the access key was created.',
+    }),
+    lastUsed: AccessKeyLastUsedSchema.exactOptional().openapi({
+      description:
+        '<p>An object that describes the last time the access key was used.</p> <note> <p>This object does not include data in the response of a <a href="https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_CreateBucketAccessKey.html">CreateBucketAccessKey</a> action. If the access key has not been used, the <code>region</code> and <code>serviceName</code> values are <code>N/A</code>, and the <code>lastUsedDate</code> value is null.</p> </note>',
+    }),
   })
   .openapi({
     description:
@@ -1060,409 +1429,66 @@ const AccessKeySchema = z
 
 const CreateBucketAccessKeyResultSchema = z
   .object({
-    accessKey: AccessKeySchema.and(
-      z.any().openapi({ description: 'An object that describes the access key that is created.' }),
-    ).exactOptional(),
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    accessKey: AccessKeySchema.exactOptional().openapi({
+      description: 'An object that describes the access key that is created.',
+    }),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateBucketAccessKeyResult')
 
 const CreateBucketAccessKeyRequestSchema = z
   .object({
-    bucketName: BucketNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the bucket that the new access key will belong to, and grant access to.',
-        }),
-    ),
+    bucketName: BucketNameSchema.openapi({
+      description:
+        'The name of the bucket that the new access key will belong to, and grant access to.',
+    }),
   })
   .openapi({ required: ['bucketName'], title: 'CreateBucketAccessKeyRequest' })
   .openapi('CreateBucketAccessKeyRequest')
 
-const CertificateNameSchema = z.string().openapi('CertificateName')
-
-const DomainNameSchema = z.string().openapi('DomainName')
-
-const CertificateStatusSchema = z
-  .enum([
-    'PENDING_VALIDATION',
-    'ISSUED',
-    'INACTIVE',
-    'EXPIRED',
-    'VALIDATION_TIMED_OUT',
-    'REVOKED',
-    'FAILED',
-  ])
-  .openapi('CertificateStatus')
-
-const SerialNumberSchema = z.string().openapi('SerialNumber')
-
-const SubjectAlternativeNameListSchema = z
-  .array(DomainNameSchema)
-  .openapi('SubjectAlternativeNameList')
-
-const ResourceRecordSchema = z
-  .object({
-    name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the record.' }),
-    ).exactOptional(),
-    type: StringSchema.and(
-      z.any().openapi({ description: 'The DNS record type.' }),
-    ).exactOptional(),
-    value: StringSchema.and(
-      z.any().openapi({ description: 'The value for the DNS record.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      "Describes the domain name system (DNS) records to add to your domain's DNS to validate it for an Amazon Lightsail certificate.",
-    required: [],
-  })
-  .openapi('ResourceRecord')
-
-const DnsRecordCreationStateCodeSchema = z
-  .enum(['SUCCEEDED', 'STARTED', 'FAILED'])
-  .openapi('DnsRecordCreationStateCode')
-
-const DnsRecordCreationStateSchema = z
-  .object({
-    code: DnsRecordCreationStateCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status code for the automated DNS record creation.</p> <p>Following are the possible values:</p> <ul> <li> <p> <code>SUCCEEDED</code> - The validation records were successfully added to the domain.</p> </li> <li> <p> <code>STARTED</code> - The automatic DNS record creation has started.</p> </li> <li> <p> <code>FAILED</code> - The validation records failed to be added to the domain.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    message: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The message that describes the reason for the status code.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>Describes the creation state of the canonical name (CNAME) records that are automatically added by Amazon Lightsail to the DNS of a domain to validate domain ownership for an SSL/TLS certificate.</p> <p>When you create an SSL/TLS certificate for a Lightsail resource, you must add a set of CNAME records to the DNS of the domains for the certificate to validate that you own the domains. Lightsail can automatically add the CNAME records to the DNS of the domain if the DNS zone for the domain exists within your Lightsail account. If automatic record addition fails, or if you manage the DNS of your domain using a third-party service, then you must manually add the CNAME records to the DNS of your domain. For more information, see <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/verify-tls-ssl-certificate-using-dns-cname-https">Verify an SSL/TLS certificate in Amazon Lightsail</a> in the <i>Amazon Lightsail Developer Guide</i>.</p>',
-    required: [],
-  })
-  .openapi('DnsRecordCreationState')
-
-const CertificateDomainValidationStatusSchema = z
-  .enum(['PENDING_VALIDATION', 'FAILED', 'SUCCESS'])
-  .openapi('CertificateDomainValidationStatus')
-
-const DomainValidationRecordSchema = z
-  .object({
-    domainName: DomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The domain name of the certificate validation record. For example, <code>example.com</code> or <code>www.example.com</code>.',
-        }),
-    ).exactOptional(),
-    resourceRecord: ResourceRecordSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An object that describes the DNS records to add to your domain's DNS to validate it for the certificate.",
-        }),
-    ).exactOptional(),
-    dnsRecordCreationState: DnsRecordCreationStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that describes the state of the canonical name (CNAME) records that are automatically added by Lightsail to the DNS of the domain to validate domain ownership.',
-        }),
-    ).exactOptional(),
-    validationStatus: CertificateDomainValidationStatusSchema.and(
-      z.any().openapi({ description: 'The validation status of the record.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Describes the domain name system (DNS) records that you must add to the DNS of your registered domain to validate ownership for an Amazon Lightsail SSL/TLS certificate.',
-    required: [],
-  })
-  .openapi('DomainValidationRecord')
-
-const DomainValidationRecordListSchema = z
-  .array(DomainValidationRecordSchema)
-  .openapi('DomainValidationRecordList')
-
-const RequestFailureReasonSchema = z.string().openapi('RequestFailureReason')
-
-const InUseResourceCountSchema = z.int().openapi('InUseResourceCount')
-
-const KeyAlgorithmSchema = z.string().openapi('KeyAlgorithm')
-
-const IssuerCASchema = z.string().openapi('IssuerCA')
-
-const EligibleToRenewSchema = z.string().openapi('EligibleToRenew')
-
-const RenewalStatusSchema = z
-  .enum(['PendingAutoRenewal', 'PendingValidation', 'Success', 'Failed'])
-  .openapi('RenewalStatus')
-
-const RenewalStatusReasonSchema = z.string().openapi('RenewalStatusReason')
-
-const RenewalSummarySchema = z
-  .object({
-    domainValidationRecords: DomainValidationRecordListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the domain validation records of the certificate.',
-        }),
-    ).exactOptional(),
-    renewalStatus: RenewalStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The renewal status of the certificate.</p> <p>The following renewal status are possible:</p> <ul> <li> <p> <b> <code>PendingAutoRenewal</code> </b> - Lightsail is attempting to automatically validate the domain names of the certificate. No further action is required. </p> </li> <li> <p> <b> <code>PendingValidation</code> </b> - Lightsail couldn't automatically validate one or more domain names of the certificate. You must take action to validate these domain names or the certificate won't be renewed. Check to make sure your certificate's domain validation records exist in your domain's DNS, and that your certificate remains in use.</p> </li> <li> <p> <b> <code>Success</code> </b> - All domain names in the certificate are validated, and Lightsail renewed the certificate. No further action is required. </p> </li> <li> <p> <b> <code>Failed</code> </b> - One or more domain names were not validated before the certificate expired, and Lightsail did not renew the certificate. You can request a new certificate using the <code>CreateCertificate</code> action.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    renewalStatusReason: RenewalStatusReasonSchema.and(
-      z.any().openapi({ description: 'The reason for the renewal status of the certificate.' }),
-    ).exactOptional(),
-    updatedAt: IsoDateSchema.and(
-      z.any().openapi({ description: 'The timestamp when the certificate was last updated.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Describes the status of a SSL/TLS certificate renewal managed by Amazon Lightsail.',
-    required: [],
-  })
-  .openapi('RenewalSummary')
-
-const RevocationReasonSchema = z.string().openapi('RevocationReason')
-
-const CertificateSchema = z
-  .object({
-    arn: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the certificate.' }),
-    ).exactOptional(),
-    name: CertificateNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the certificate (e.g., <code>my-certificate</code>).',
-        }),
-    ).exactOptional(),
-    domainName: DomainNameSchema.and(
-      z.any().openapi({ description: 'The domain name of the certificate.' }),
-    ).exactOptional(),
-    status: CertificateStatusSchema.and(
-      z.any().openapi({ description: 'The validation status of the certificate.' }),
-    ).exactOptional(),
-    serialNumber: SerialNumberSchema.and(
-      z.any().openapi({ description: 'The serial number of the certificate.' }),
-    ).exactOptional(),
-    subjectAlternativeNames: SubjectAlternativeNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of strings that specify the alternate domains (e.g., <code>example2.com</code>) and subdomains (e.g., <code>blog.example.com</code>) of the certificate.',
-        }),
-    ).exactOptional(),
-    domainValidationRecords: DomainValidationRecordListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the domain validation records of the certificate.',
-        }),
-    ).exactOptional(),
-    requestFailureReason: RequestFailureReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The validation failure reason, if any, of the certificate.</p> <p>The following failure reasons are possible:</p> <ul> <li> <p> <b> <code>NO_AVAILABLE_CONTACTS</code> </b> - This failure applies to email validation, which is not available for Lightsail certificates.</p> </li> <li> <p> <b> <code>ADDITIONAL_VERIFICATION_REQUIRED</code> </b> - Lightsail requires additional information to process this certificate request. This can happen as a fraud-protection measure, such as when the domain ranks within the Alexa top 1000 websites. To provide the required information, use the <a href="https://console.aws.amazon.com/support/home">Amazon Web Services Support Center</a> to contact Amazon Web Services Support.</p> <note> <p>You cannot request a certificate for Amazon-owned domain names such as those ending in amazonaws.com, cloudfront.net, or elasticbeanstalk.com.</p> </note> </li> <li> <p> <b> <code>DOMAIN_NOT_ALLOWED</code> </b> - One or more of the domain names in the certificate request was reported as an unsafe domain by <a href="https://www.virustotal.com/gui/home/url">VirusTotal</a>. To correct the problem, search for your domain name on the <a href="https://www.virustotal.com/gui/home/url">VirusTotal</a> website. If your domain is reported as suspicious, see <a href="https://developers.google.com/web/fundamentals/security/hacked">Google Help for Hacked Websites</a> to learn what you can do.</p> <p>If you believe that the result is a false positive, notify the organization that is reporting the domain. VirusTotal is an aggregate of several antivirus and URL scanners and cannot remove your domain from a block list itself. After you correct the problem and the VirusTotal registry has been updated, request a new certificate.</p> <p>If you see this error and your domain is not included in the VirusTotal list, visit the <a href="https://console.aws.amazon.com/support/home">Amazon Web Services Support Center</a> and create a case.</p> </li> <li> <p> <b> <code>INVALID_PUBLIC_DOMAIN</code> </b> - One or more of the domain names in the certificate request is not valid. Typically, this is because a domain name in the request is not a valid top-level domain. Try to request a certificate again, correcting any spelling errors or typos that were in the failed request, and ensure that all domain names in the request are for valid top-level domains. For example, you cannot request a certificate for <code>example.invalidpublicdomain</code> because <code>invalidpublicdomain</code> is not a valid top-level domain.</p> </li> <li> <p> <b> <code>OTHER</code> </b> - Typically, this failure occurs when there is a typographical error in one or more of the domain names in the certificate request. Try to request a certificate again, correcting any spelling errors or typos that were in the failed request. </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    inUseResourceCount: InUseResourceCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of Lightsail resources that the certificate is attached to.',
-        }),
-    ).exactOptional(),
-    keyAlgorithm: KeyAlgorithmSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The algorithm used to generate the key pair (the public and private key) of the certificate.',
-        }),
-    ).exactOptional(),
-    createdAt: IsoDateSchema.and(
-      z.any().openapi({ description: 'The timestamp when the certificate was created.' }),
-    ).exactOptional(),
-    issuedAt: IsoDateSchema.and(
-      z.any().openapi({ description: 'The timestamp when the certificate was issued.' }),
-    ).exactOptional(),
-    issuerCA: IssuerCASchema.and(
-      z.any().openapi({ description: 'The certificate authority that issued the certificate.' }),
-    ).exactOptional(),
-    notBefore: IsoDateSchema.and(
-      z.any().openapi({ description: 'The timestamp when the certificate is first valid.' }),
-    ).exactOptional(),
-    notAfter: IsoDateSchema.and(
-      z.any().openapi({ description: 'The timestamp when the certificate expires.' }),
-    ).exactOptional(),
-    eligibleToRenew: EligibleToRenewSchema.and(
-      z.any().openapi({ description: 'The renewal eligibility of the certificate.' }),
-    ).exactOptional(),
-    renewalSummary: RenewalSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that describes the status of the certificate renewal managed by Lightsail.',
-        }),
-    ).exactOptional(),
-    revokedAt: IsoDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp when the certificate was revoked. This value is present only when the certificate status is <code>REVOKED</code>.',
-        }),
-    ).exactOptional(),
-    revocationReason: RevocationReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The reason the certificate was revoked. This value is present only when the certificate status is <code>REVOKED</code>.',
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tag keys and optional values for the resource. For more information about tags in Lightsail, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-tags">Amazon Lightsail Developer Guide</a>.',
-        }),
-    ).exactOptional(),
-    supportCode: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The support code. Include this code in your email to support when you have questions about your Lightsail certificate. This code enables our support team to look up your Lightsail information more easily.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>Describes the full details of an Amazon Lightsail SSL/TLS certificate.</p> <note> <p>To get a summary of a certificate, use the <code>GetCertificates</code> action and ommit <code>includeCertificateDetails</code> from your request. The response will include only the certificate Amazon Resource Name (ARN), certificate name, domain name, and tags.</p> </note>',
-    required: [],
-  })
-  .openapi('Certificate')
-
-const CertificateSummarySchema = z
-  .object({
-    certificateArn: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the certificate.' }),
-    ).exactOptional(),
-    certificateName: CertificateNameSchema.and(
-      z.any().openapi({ description: 'The name of the certificate.' }),
-    ).exactOptional(),
-    domainName: DomainNameSchema.and(
-      z.any().openapi({ description: 'The domain name of the certificate.' }),
-    ).exactOptional(),
-    certificateDetail: CertificateSchema.and(
-      z.any().openapi({ description: 'An object that describes a certificate in detail.' }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tag keys and optional values for the resource. For more information about tags in Lightsail, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-tags">Amazon Lightsail Developer Guide</a>.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Describes an Amazon Lightsail SSL/TLS certificate.', required: [] })
-  .openapi('CertificateSummary')
-
 const CreateCertificateResultSchema = z
   .object({
-    certificate: CertificateSummarySchema.and(
-      z.any().openapi({ description: 'An object that describes the certificate created.' }),
-    ).exactOptional(),
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    certificate: CertificateSummarySchema.exactOptional().openapi({
+      description: 'An object that describes the certificate created.',
+    }),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateCertificateResult')
 
 const CreateCertificateRequestSchema = z
   .object({
-    certificateName: CertificateNameSchema.and(
-      z.any().openapi({ description: 'The name for the certificate.' }),
-    ),
-    domainName: DomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The domain name (e.g., <code>example.com</code>) for the certificate.',
-        }),
-    ),
-    subjectAlternativeNames: SubjectAlternativeNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of strings that specify the alternate domains (e.g., <code>example2.com</code>) and subdomains (e.g., <code>blog.example.com</code>) for the certificate.</p> <p>You can specify a maximum of nine alternate domains (in addition to the primary domain name).</p> <p>Wildcard domain entries (e.g., <code>*.example.com</code>) are not supported.</p>',
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The tag keys and optional values to add to the certificate during create.</p> <p>Use the <code>TagResource</code> action to tag a resource after it's created.</p>",
-        }),
-    ).exactOptional(),
+    certificateName: CertificateNameSchema.openapi({
+      description: 'The name for the certificate.',
+    }),
+    domainName: DomainNameSchema.openapi({
+      description: 'The domain name (e.g., <code>example.com</code>) for the certificate.',
+    }),
+    subjectAlternativeNames: SubjectAlternativeNameListSchema.exactOptional().openapi({
+      description:
+        '<p>An array of strings that specify the alternate domains (e.g., <code>example2.com</code>) and subdomains (e.g., <code>blog.example.com</code>) for the certificate.</p> <p>You can specify a maximum of nine alternate domains (in addition to the primary domain name).</p> <p>Wildcard domain entries (e.g., <code>*.example.com</code>) are not supported.</p>',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        "<p>The tag keys and optional values to add to the certificate during create.</p> <p>Use the <code>TagResource</code> action to tag a resource after it's created.</p>",
+    }),
   })
   .openapi({ required: ['certificateName', 'domainName'], title: 'CreateCertificateRequest' })
   .openapi('CreateCertificateRequest')
 
 const CreateCloudFormationStackResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateCloudFormationStackResult')
@@ -1473,41 +1499,25 @@ const PortInfoSourceTypeSchema = z
 
 const InstanceEntrySchema = z
   .object({
-    sourceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the export snapshot record, which contains the exported Lightsail instance snapshot that will be used as the source of the new Amazon EC2 instance.</p> <p>Use the <code>get export snapshot records</code> operation to get a list of export snapshot records that you can use to create a CloudFormation stack.</p>',
-        }),
-    ),
-    instanceType: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The instance type (e.g., <code>t2.micro</code>) to use for the new Amazon EC2 instance.',
-        }),
-    ),
-    portInfoSource: PortInfoSourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The port configuration to use for the new Amazon EC2 instance.</p> <p>The following configuration options are available:</p> <ul> <li> <p> <code>DEFAULT</code> - Use the default firewall settings from the Lightsail instance blueprint. If this is specified, then IPv4 and IPv6 will be configured for the new instance that is created in Amazon EC2.</p> </li> <li> <p> <code>INSTANCE</code> - Use the configured firewall settings from the source Lightsail instance. If this is specified, the new instance that is created in Amazon EC2 will be configured to match the configuration of the source Lightsail instance. For example, if the source instance is configured for dual-stack (IPv4 and IPv6), then IPv4 and IPv6 will be configured for the new instance that is created in Amazon EC2. If the source instance is configured for IPv4 only, then only IPv4 will be configured for the new instance that is created in Amazon EC2.</p> </li> <li> <p> <code>NONE</code> - Use the default Amazon EC2 security group. If this is specified, then only IPv4 will be configured for the new instance that is created in Amazon EC2.</p> </li> <li> <p> <code>CLOSED</code> - All ports closed. If this is specified, then only IPv4 will be configured for the new instance that is created in Amazon EC2.</p> </li> </ul> <note> <p>If you configured <code>lightsail-connect</code> as a <code>cidrListAliases</code> on your instance, or if you chose to allow the Lightsail browser-based SSH or RDP clients to connect to your instance, that configuration is not carried over to your new Amazon EC2 instance.</p> </note>',
-        }),
-    ),
-    userData: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A launch script you can create that configures a server with additional user data. For example, you might want to run <code>apt-get -y update</code>.</p> <note> <p>Depending on the machine image you choose, the command to get software on your instance varies. Amazon Linux and CentOS use <code>yum</code>, Debian and Ubuntu use <code>apt-get</code>, and FreeBSD uses <code>pkg</code>.</p> </note>',
-        }),
-    ).exactOptional(),
-    availabilityZone: StringSchema.and(
-      z.any().openapi({ description: 'The Availability Zone for the new Amazon EC2 instance.' }),
-    ),
+    sourceName: ResourceNameSchema.openapi({
+      description:
+        '<p>The name of the export snapshot record, which contains the exported Lightsail instance snapshot that will be used as the source of the new Amazon EC2 instance.</p> <p>Use the <code>get export snapshot records</code> operation to get a list of export snapshot records that you can use to create a CloudFormation stack.</p>',
+    }),
+    instanceType: NonEmptyStringSchema.openapi({
+      description:
+        'The instance type (e.g., <code>t2.micro</code>) to use for the new Amazon EC2 instance.',
+    }),
+    portInfoSource: PortInfoSourceTypeSchema.openapi({
+      description:
+        '<p>The port configuration to use for the new Amazon EC2 instance.</p> <p>The following configuration options are available:</p> <ul> <li> <p> <code>DEFAULT</code> - Use the default firewall settings from the Lightsail instance blueprint. If this is specified, then IPv4 and IPv6 will be configured for the new instance that is created in Amazon EC2.</p> </li> <li> <p> <code>INSTANCE</code> - Use the configured firewall settings from the source Lightsail instance. If this is specified, the new instance that is created in Amazon EC2 will be configured to match the configuration of the source Lightsail instance. For example, if the source instance is configured for dual-stack (IPv4 and IPv6), then IPv4 and IPv6 will be configured for the new instance that is created in Amazon EC2. If the source instance is configured for IPv4 only, then only IPv4 will be configured for the new instance that is created in Amazon EC2.</p> </li> <li> <p> <code>NONE</code> - Use the default Amazon EC2 security group. If this is specified, then only IPv4 will be configured for the new instance that is created in Amazon EC2.</p> </li> <li> <p> <code>CLOSED</code> - All ports closed. If this is specified, then only IPv4 will be configured for the new instance that is created in Amazon EC2.</p> </li> </ul> <note> <p>If you configured <code>lightsail-connect</code> as a <code>cidrListAliases</code> on your instance, or if you chose to allow the Lightsail browser-based SSH or RDP clients to connect to your instance, that configuration is not carried over to your new Amazon EC2 instance.</p> </note>',
+    }),
+    userData: StringSchema.exactOptional().openapi({
+      description:
+        '<p>A launch script you can create that configures a server with additional user data. For example, you might want to run <code>apt-get -y update</code>.</p> <note> <p>Depending on the machine image you choose, the command to get software on your instance varies. Amazon Linux and CentOS use <code>yum</code>, Debian and Ubuntu use <code>apt-get</code>, and FreeBSD uses <code>pkg</code>.</p> </note>',
+    }),
+    availabilityZone: StringSchema.openapi({
+      description: 'The Availability Zone for the new Amazon EC2 instance.',
+    }),
   })
   .openapi({
     required: ['sourceName', 'instanceType', 'portInfoSource', 'availabilityZone'],
@@ -1520,28 +1530,20 @@ const InstanceEntryListSchema = z.array(InstanceEntrySchema).openapi('InstanceEn
 
 const CreateCloudFormationStackRequestSchema = z
   .object({
-    instances: InstanceEntryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of parameters that will be used to create the new Amazon EC2 instance. You can only pass one instance entry at a time in this array. You will get an invalid parameter error if you pass more than one instance entry in this array.',
-        }),
-    ),
+    instances: InstanceEntryListSchema.openapi({
+      description:
+        'An array of parameters that will be used to create the new Amazon EC2 instance. You can only pass one instance entry at a time in this array. You will get an invalid parameter error if you pass more than one instance entry in this array.',
+    }),
   })
   .openapi({ required: ['instances'], title: 'CreateCloudFormationStackRequest' })
   .openapi('CreateCloudFormationStackRequest')
 
 const CreateContactMethodResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateContactMethodResult')
@@ -1552,22 +1554,14 @@ const StringMax256Schema = z.string().min(1).max(256).openapi('StringMax256')
 
 const CreateContactMethodRequestSchema = z
   .object({
-    protocol: ContactProtocolSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The protocol of the contact method, such as <code>Email</code> or <code>SMS</code> (text messaging).</p> <p>The <code>SMS</code> protocol is supported only in the following Amazon Web Services Regions.</p> <ul> <li> <p>US East (N. Virginia) (<code>us-east-1</code>)</p> </li> <li> <p>US West (Oregon) (<code>us-west-2</code>)</p> </li> <li> <p>Europe (Ireland) (<code>eu-west-1</code>)</p> </li> <li> <p>Asia Pacific (Tokyo) (<code>ap-northeast-1</code>)</p> </li> <li> <p>Asia Pacific (Singapore) (<code>ap-southeast-1</code>)</p> </li> <li> <p>Asia Pacific (Sydney) (<code>ap-southeast-2</code>)</p> </li> </ul> <p>For a list of countries/regions where SMS text messages can be sent, and the latest Amazon Web Services Regions where SMS text messaging is supported, see <a href="https://docs.aws.amazon.com/sns/latest/dg/sns-supported-regions-countries.html">Supported Regions and Countries</a> in the <i>Amazon SNS Developer Guide</i>.</p> <p>For more information about notifications in Amazon Lightsail, see <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-notifications">Notifications in Amazon Lightsail</a>.</p>',
-        }),
-    ),
-    contactEndpoint: StringMax256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The destination of the contact method, such as an email address or a mobile phone number.</p> <p>Use the E.164 format when specifying a mobile phone number. E.164 is a standard for the phone number structure used for international telecommunication. Phone numbers that follow this format can have a maximum of 15 digits, and they are prefixed with the plus character (+) and the country code. For example, a U.S. phone number in E.164 format would be specified as +1XXX5550100. For more information, see <a href="https://en.wikipedia.org/wiki/E.164">E.164</a> on <i>Wikipedia</i>.</p>',
-        }),
-    ),
+    protocol: ContactProtocolSchema.openapi({
+      description:
+        '<p>The protocol of the contact method, such as <code>Email</code> or <code>SMS</code> (text messaging).</p> <p>The <code>SMS</code> protocol is supported only in the following Amazon Web Services Regions.</p> <ul> <li> <p>US East (N. Virginia) (<code>us-east-1</code>)</p> </li> <li> <p>US West (Oregon) (<code>us-west-2</code>)</p> </li> <li> <p>Europe (Ireland) (<code>eu-west-1</code>)</p> </li> <li> <p>Asia Pacific (Tokyo) (<code>ap-northeast-1</code>)</p> </li> <li> <p>Asia Pacific (Singapore) (<code>ap-southeast-1</code>)</p> </li> <li> <p>Asia Pacific (Sydney) (<code>ap-southeast-2</code>)</p> </li> </ul> <p>For a list of countries/regions where SMS text messages can be sent, and the latest Amazon Web Services Regions where SMS text messaging is supported, see <a href="https://docs.aws.amazon.com/sns/latest/dg/sns-supported-regions-countries.html">Supported Regions and Countries</a> in the <i>Amazon SNS Developer Guide</i>.</p> <p>For more information about notifications in Amazon Lightsail, see <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-notifications">Notifications in Amazon Lightsail</a>.</p>',
+    }),
+    contactEndpoint: StringMax256Schema.openapi({
+      description:
+        '<p>The destination of the contact method, such as an email address or a mobile phone number.</p> <p>Use the E.164 format when specifying a mobile phone number. E.164 is a standard for the phone number structure used for international telecommunication. Phone numbers that follow this format can have a maximum of 15 digits, and they are prefixed with the plus character (+) and the country code. For example, a U.S. phone number in E.164 format would be specified as +1XXX5550100. For more information, see <a href="https://en.wikipedia.org/wiki/E.164">E.164</a> on <i>Wikipedia</i>.</p>',
+    }),
   })
   .openapi({ required: ['protocol', 'contactEndpoint'], title: 'CreateContactMethodRequest' })
   .openapi('CreateContactMethodRequest')
@@ -1603,29 +1597,19 @@ const ContainerServiceStateDetailCodeSchema = z
 
 const ContainerServiceStateDetailSchema = z
   .object({
-    code: ContainerServiceStateDetailCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The state code of the container service.</p> <p>The following state codes are possible:</p> <ul> <li> <p>The following state codes are possible if your container service is in a <code>DEPLOYING</code> or <code>UPDATING</code> state:</p> <ul> <li> <p> <code>CREATING_SYSTEM_RESOURCES</code> - The system resources for your container service are being created.</p> </li> <li> <p> <code>CREATING_NETWORK_INFRASTRUCTURE</code> - The network infrastructure for your container service are being created.</p> </li> <li> <p> <code>PROVISIONING_CERTIFICATE</code> - The SSL/TLS certificate for your container service is being created.</p> </li> <li> <p> <code>PROVISIONING_SERVICE</code> - Your container service is being provisioned.</p> </li> <li> <p> <code>CREATING_DEPLOYMENT</code> - Your deployment is being created on your container service.</p> </li> <li> <p> <code>EVALUATING_HEALTH_CHECK</code> - The health of your deployment is being evaluated.</p> </li> <li> <p> <code>ACTIVATING_DEPLOYMENT</code> - Your deployment is being activated.</p> </li> </ul> </li> <li> <p>The following state codes are possible if your container service is in a <code>PENDING</code> state:</p> <ul> <li> <p> <code>CERTIFICATE_LIMIT_EXCEEDED</code> - The SSL/TLS certificate required for your container service exceeds the maximum number of certificates allowed for your account.</p> </li> <li> <p> <code>UNKNOWN_ERROR</code> - An error was experienced when your container service was being created.</p> </li> </ul> </li> </ul>',
-        }),
-    ).exactOptional(),
-    message: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A message that provides more information for the state code.</p> <note> <p>The state detail is populated only when a container service is in a <code>PENDING</code>, <code>DEPLOYING</code>, or <code>UPDATING</code> state.</p> </note>',
-        }),
-    ).exactOptional(),
+    code: ContainerServiceStateDetailCodeSchema.exactOptional().openapi({
+      description:
+        '<p>The state code of the container service.</p> <p>The following state codes are possible:</p> <ul> <li> <p>The following state codes are possible if your container service is in a <code>DEPLOYING</code> or <code>UPDATING</code> state:</p> <ul> <li> <p> <code>CREATING_SYSTEM_RESOURCES</code> - The system resources for your container service are being created.</p> </li> <li> <p> <code>CREATING_NETWORK_INFRASTRUCTURE</code> - The network infrastructure for your container service are being created.</p> </li> <li> <p> <code>PROVISIONING_CERTIFICATE</code> - The SSL/TLS certificate for your container service is being created.</p> </li> <li> <p> <code>PROVISIONING_SERVICE</code> - Your container service is being provisioned.</p> </li> <li> <p> <code>CREATING_DEPLOYMENT</code> - Your deployment is being created on your container service.</p> </li> <li> <p> <code>EVALUATING_HEALTH_CHECK</code> - The health of your deployment is being evaluated.</p> </li> <li> <p> <code>ACTIVATING_DEPLOYMENT</code> - Your deployment is being activated.</p> </li> </ul> </li> <li> <p>The following state codes are possible if your container service is in a <code>PENDING</code> state:</p> <ul> <li> <p> <code>CERTIFICATE_LIMIT_EXCEEDED</code> - The SSL/TLS certificate required for your container service exceeds the maximum number of certificates allowed for your account.</p> </li> <li> <p> <code>UNKNOWN_ERROR</code> - An error was experienced when your container service was being created.</p> </li> </ul> </li> </ul>',
+    }),
+    message: StringSchema.exactOptional().openapi({
+      description:
+        '<p>A message that provides more information for the state code.</p> <note> <p>The state detail is populated only when a container service is in a <code>PENDING</code>, <code>DEPLOYING</code>, or <code>UPDATING</code> state.</p> </note>',
+    }),
   })
   .openapi({ description: 'Describes the current state of a container service.', required: [] })
   .openapi('ContainerServiceStateDetail')
 
 const ContainerServiceScaleSchema = z.int().min(1).max(20).openapi('ContainerServiceScale')
-
-const IntegerSchema = z.int().openapi('Integer')
 
 const ContainerServiceDeploymentStateSchema = z
   .enum(['ACTIVATING', 'ACTIVE', 'INACTIVE', 'FAILED'])
@@ -1641,23 +1625,19 @@ const PortMapSchema = z.record(z.string(), ContainerServiceProtocolSchema).opena
 
 const ContainerSchema = z
   .object({
-    image: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name of the image used for the container.</p> <p>Container images sourced from your Lightsail container service, that are registered and stored on your service, start with a colon (<code>:</code>). For example, if your container service name is <code>container-service-1</code>, the container image label is <code>mystaticsite</code>, and you want to use the third (<code>3</code>) version of the registered container image, then you should specify <code>:container-service-1.mystaticsite.3</code>. To use the latest version of a container image, specify <code>latest</code> instead of a version number (for example, <code>:container-service-1.mystaticsite.latest</code>). Lightsail will automatically use the highest numbered version of the registered container image.</p> <p>Container images sourced from a public registry like Docker Hub don't start with a colon. For example, <code>nginx:latest</code> or <code>nginx</code>.</p>",
-        }),
-    ).exactOptional(),
-    command: StringListSchema.and(
-      z.any().openapi({ description: 'The launch command for the container.' }),
-    ).exactOptional(),
-    environment: EnvironmentSchema.and(
-      z.any().openapi({ description: 'The environment variables of the container.' }),
-    ).exactOptional(),
-    ports: PortMapSchema.and(
-      z.any().openapi({ description: 'The open firewall ports of the container.' }),
-    ).exactOptional(),
+    image: StringSchema.exactOptional().openapi({
+      description:
+        "<p>The name of the image used for the container.</p> <p>Container images sourced from your Lightsail container service, that are registered and stored on your service, start with a colon (<code>:</code>). For example, if your container service name is <code>container-service-1</code>, the container image label is <code>mystaticsite</code>, and you want to use the third (<code>3</code>) version of the registered container image, then you should specify <code>:container-service-1.mystaticsite.3</code>. To use the latest version of a container image, specify <code>latest</code> instead of a version number (for example, <code>:container-service-1.mystaticsite.latest</code>). Lightsail will automatically use the highest numbered version of the registered container image.</p> <p>Container images sourced from a public registry like Docker Hub don't start with a colon. For example, <code>nginx:latest</code> or <code>nginx</code>.</p>",
+    }),
+    command: StringListSchema.exactOptional().openapi({
+      description: 'The launch command for the container.',
+    }),
+    environment: EnvironmentSchema.exactOptional().openapi({
+      description: 'The environment variables of the container.',
+    }),
+    ports: PortMapSchema.exactOptional().openapi({
+      description: 'The open firewall ports of the container.',
+    }),
   })
   .openapi({
     description:
@@ -1670,54 +1650,30 @@ const ContainerMapSchema = z.record(z.string(), ContainerSchema).openapi('Contai
 
 const ContainerServiceHealthCheckConfigSchema = z
   .object({
-    healthyThreshold: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of consecutive health checks successes required before moving the container to the <code>Healthy</code> state. The default value is <code>2</code>.',
-        }),
-    ).exactOptional(),
-    unhealthyThreshold: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of consecutive health check failures required before moving the container to the <code>Unhealthy</code> state. The default value is <code>2</code>.',
-        }),
-    ).exactOptional(),
-    timeoutSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount of time, in seconds, during which no response means a failed health check. You can specify between 2 and 60 seconds. The default value is <code>2</code>.',
-        }),
-    ).exactOptional(),
-    intervalSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The approximate interval, in seconds, between health checks of an individual container. You can specify between 5 and 300 seconds. The default value is <code>5</code>.',
-        }),
-    ).exactOptional(),
-    path: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The path on the container on which to perform the health check. The default value is <code>/</code>.',
-        }),
-    ).exactOptional(),
-    successCodes: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The HTTP codes to use when checking for a successful response from a container. You can specify values between <code>200</code> and <code>499</code>. You can specify multiple values (for example, <code>200,202</code>) or a range of values (for example, <code>200-299</code>).',
-        }),
-    ).exactOptional(),
+    healthyThreshold: IntegerSchema.exactOptional().openapi({
+      description:
+        'The number of consecutive health checks successes required before moving the container to the <code>Healthy</code> state. The default value is <code>2</code>.',
+    }),
+    unhealthyThreshold: IntegerSchema.exactOptional().openapi({
+      description:
+        'The number of consecutive health check failures required before moving the container to the <code>Unhealthy</code> state. The default value is <code>2</code>.',
+    }),
+    timeoutSeconds: IntegerSchema.exactOptional().openapi({
+      description:
+        'The amount of time, in seconds, during which no response means a failed health check. You can specify between 2 and 60 seconds. The default value is <code>2</code>.',
+    }),
+    intervalSeconds: IntegerSchema.exactOptional().openapi({
+      description:
+        'The approximate interval, in seconds, between health checks of an individual container. You can specify between 5 and 300 seconds. The default value is <code>5</code>.',
+    }),
+    path: StringSchema.exactOptional().openapi({
+      description:
+        'The path on the container on which to perform the health check. The default value is <code>/</code>.',
+    }),
+    successCodes: StringSchema.exactOptional().openapi({
+      description:
+        'The HTTP codes to use when checking for a successful response from a container. You can specify values between <code>200</code> and <code>499</code>. You can specify multiple values (for example, <code>200,202</code>) or a range of values (for example, <code>200-299</code>).',
+    }),
   })
   .openapi({
     description:
@@ -1728,28 +1684,16 @@ const ContainerServiceHealthCheckConfigSchema = z
 
 const ContainerServiceEndpointSchema = z
   .object({
-    containerName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the container entry of the deployment that the endpoint configuration applies to.',
-        }),
-    ).exactOptional(),
-    containerPort: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The port of the specified container to which traffic is forwarded to.',
-        }),
-    ).exactOptional(),
-    healthCheck: ContainerServiceHealthCheckConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that describes the health check configuration of the container.',
-        }),
-    ).exactOptional(),
+    containerName: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the container entry of the deployment that the endpoint configuration applies to.',
+    }),
+    containerPort: IntegerSchema.exactOptional().openapi({
+      description: 'The port of the specified container to which traffic is forwarded to.',
+    }),
+    healthCheck: ContainerServiceHealthCheckConfigSchema.exactOptional().openapi({
+      description: 'An object that describes the health check configuration of the container.',
+    }),
   })
   .openapi({
     description:
@@ -1760,31 +1704,23 @@ const ContainerServiceEndpointSchema = z
 
 const ContainerServiceDeploymentSchema = z
   .object({
-    version: IntegerSchema.and(
-      z.any().openapi({ description: 'The version number of the deployment.' }),
-    ).exactOptional(),
-    state: ContainerServiceDeploymentStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The state of the deployment.</p> <p>A deployment can be in one of the following states:</p> <ul> <li> <p> <code>Activating</code> - The deployment is being created.</p> </li> <li> <p> <code>Active</code> - The deployment was successfully created, and it's currently running on the container service. The container service can have only one deployment in an active state at a time.</p> </li> <li> <p> <code>Inactive</code> - The deployment was previously successfully created, but it is not currently running on the container service.</p> </li> <li> <p> <code>Failed</code> - The deployment failed. Use the <code>GetContainerLog</code> action to view the log events for the containers in the deployment to try to determine the reason for the failure.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    containers: ContainerMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that describes the configuration for the containers of the deployment.',
-        }),
-    ).exactOptional(),
-    publicEndpoint: ContainerServiceEndpointSchema.and(
-      z.any().openapi({ description: 'An object that describes the endpoint of the deployment.' }),
-    ).exactOptional(),
-    createdAt: IsoDateSchema.and(
-      z.any().openapi({ description: 'The timestamp when the deployment was created.' }),
-    ).exactOptional(),
+    version: IntegerSchema.exactOptional().openapi({
+      description: 'The version number of the deployment.',
+    }),
+    state: ContainerServiceDeploymentStateSchema.exactOptional().openapi({
+      description:
+        "<p>The state of the deployment.</p> <p>A deployment can be in one of the following states:</p> <ul> <li> <p> <code>Activating</code> - The deployment is being created.</p> </li> <li> <p> <code>Active</code> - The deployment was successfully created, and it's currently running on the container service. The container service can have only one deployment in an active state at a time.</p> </li> <li> <p> <code>Inactive</code> - The deployment was previously successfully created, but it is not currently running on the container service.</p> </li> <li> <p> <code>Failed</code> - The deployment failed. Use the <code>GetContainerLog</code> action to view the log events for the containers in the deployment to try to determine the reason for the failure.</p> </li> </ul>",
+    }),
+    containers: ContainerMapSchema.exactOptional().openapi({
+      description:
+        'An object that describes the configuration for the containers of the deployment.',
+    }),
+    publicEndpoint: ContainerServiceEndpointSchema.exactOptional().openapi({
+      description: 'An object that describes the endpoint of the deployment.',
+    }),
+    createdAt: IsoDateSchema.exactOptional().openapi({
+      description: 'The timestamp when the deployment was created.',
+    }),
   })
   .openapi({
     description:
@@ -1803,18 +1739,12 @@ const ContainerServicePublicDomainsSchema = z
 
 const ContainerServiceECRImagePullerRoleSchema = z
   .object({
-    isActive: BooleanSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A Boolean value that indicates whether the role is activated.' }),
-    ).exactOptional(),
-    principalArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the role, if it is activated.',
-        }),
-    ).exactOptional(),
+    isActive: BooleanSchema.exactOptional().openapi({
+      description: 'A Boolean value that indicates whether the role is activated.',
+    }),
+    principalArn: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the role, if it is activated.',
+    }),
   })
   .openapi({
     description:
@@ -1825,14 +1755,10 @@ const ContainerServiceECRImagePullerRoleSchema = z
 
 const PrivateRegistryAccessSchema = z
   .object({
-    ecrImagePullerRole: ContainerServiceECRImagePullerRoleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that describes the activation status of the role that you can use to grant a Lightsail container service access to Amazon ECR private repositories. If the role is activated, the Amazon Resource Name (ARN) of the role is also listed.',
-        }),
-    ).exactOptional(),
+    ecrImagePullerRole: ContainerServiceECRImagePullerRoleSchema.exactOptional().openapi({
+      description:
+        'An object that describes the activation status of the role that you can use to grant a Lightsail container service access to Amazon ECR private repositories. If the role is activated, the Amazon Resource Name (ARN) of the role is also listed.',
+    }),
   })
   .openapi({
     description:
@@ -1843,167 +1769,101 @@ const PrivateRegistryAccessSchema = z
 
 const ContainerServiceSchema = z
   .object({
-    containerServiceName: ContainerServiceNameSchema.and(
-      z.any().openapi({ description: 'The name of the container service.' }),
-    ).exactOptional(),
-    arn: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the container service.' }),
-    ).exactOptional(),
-    createdAt: IsoDateSchema.and(
-      z.any().openapi({ description: 'The timestamp when the container service was created.' }),
-    ).exactOptional(),
-    location: ResourceLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that describes the location of the container service, such as the Amazon Web Services Region and Availability Zone.',
-        }),
-    ).exactOptional(),
-    resourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Lightsail resource type of the container service (i.e., <code>ContainerService</code>).',
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tag keys and optional values for the resource. For more information about tags in Lightsail, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-tags">Amazon Lightsail Developer Guide</a>.',
-        }),
-    ).exactOptional(),
-    power: ContainerServicePowerNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The power specification of the container service.</p> <p>The power specifies the amount of RAM, the number of vCPUs, and the base price of the container service.</p>',
-        }),
-    ).exactOptional(),
-    powerId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the power of the container service.' }),
-    ).exactOptional(),
-    state: ContainerServiceStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The current state of the container service.</p> <p>The following container service states are possible:</p> <ul> <li> <p> <code>PENDING</code> - The container service is being created.</p> </li> <li> <p> <code>READY</code> - The container service is running but it does not have an active container deployment.</p> </li> <li> <p> <code>DEPLOYING</code> - The container service is launching a container deployment.</p> </li> <li> <p> <code>RUNNING</code> - The container service is running and it has an active container deployment.</p> </li> <li> <p> <code>UPDATING</code> - The container service capacity or its custom domains are being updated.</p> </li> <li> <p> <code>DELETING</code> - The container service is being deleted.</p> </li> <li> <p> <code>DISABLED</code> - The container service is disabled, and its active deployment and containers, if any, are shut down.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    stateDetail: ContainerServiceStateDetailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An object that describes the current state of the container service.</p> <note> <p>The state detail is populated only when a container service is in a <code>PENDING</code>, <code>DEPLOYING</code>, or <code>UPDATING</code> state.</p> </note>',
-        }),
-    ).exactOptional(),
-    scale: ContainerServiceScaleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The scale specification of the container service.</p> <p>The scale specifies the allocated compute nodes of the container service.</p>',
-        }),
-    ).exactOptional(),
-    currentDeployment: ContainerServiceDeploymentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that describes the current container deployment of the container service.',
-        }),
-    ).exactOptional(),
-    nextDeployment: ContainerServiceDeploymentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An object that describes the next deployment of the container service.</p> <p>This value is <code>null</code> when there is no deployment in a <code>pending</code> state.</p>',
-        }),
-    ).exactOptional(),
-    isDisabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A Boolean value indicating whether the container service is disabled.',
-        }),
-    ).exactOptional(),
-    principalArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The principal ARN of the container service.</p> <p>The principal ARN can be used to create a trust relationship between your standard Amazon Web Services account and your Lightsail container service. This allows you to give your service permission to access resources in your standard Amazon Web Services account.</p>',
-        }),
-    ).exactOptional(),
-    privateDomainName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The private domain name of the container service.</p> <p>The private domain name is accessible only by other resources within the default virtual private cloud (VPC) of your Lightsail account.</p>',
-        }),
-    ).exactOptional(),
-    publicDomainNames: ContainerServicePublicDomainsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The public domain name of the container service, such as <code>example.com</code> and <code>www.example.com</code>.</p> <p>You can specify up to four public domain names for a container service. The domain names that you specify are used when you create a deployment with a container configured as the public endpoint of your container service.</p> <p>If you don't specify public domain names, then you can use the default domain of the container service.</p> <important> <p>You must create and validate an SSL/TLS certificate before you can use public domain names with your container service. Use the <code>CreateCertificate</code> action to create a certificate for the public domain names you want to use with your container service.</p> </important> <p>See <code>CreateContainerService</code> or <code>UpdateContainerService</code> for information about how to specify public domain names for your Lightsail container service.</p>",
-        }),
-    ).exactOptional(),
-    url: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The publicly accessible URL of the container service.</p> <p>If no public endpoint is specified in the <code>currentDeployment</code>, this URL returns a 404 response.</p>',
-        }),
-    ).exactOptional(),
-    privateRegistryAccess: PrivateRegistryAccessSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An object that describes the configuration for the container service to access private container image repositories, such as Amazon Elastic Container Registry (Amazon ECR) private repositories.</p> <p>For more information, see <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-container-service-ecr-private-repo-access">Configuring access to an Amazon ECR private repository for an Amazon Lightsail container service</a> in the <i>Amazon Lightsail Developer Guide</i>.</p>',
-        }),
-    ).exactOptional(),
+    containerServiceName: ContainerServiceNameSchema.exactOptional().openapi({
+      description: 'The name of the container service.',
+    }),
+    arn: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the container service.',
+    }),
+    createdAt: IsoDateSchema.exactOptional().openapi({
+      description: 'The timestamp when the container service was created.',
+    }),
+    location: ResourceLocationSchema.exactOptional().openapi({
+      description:
+        'An object that describes the location of the container service, such as the Amazon Web Services Region and Availability Zone.',
+    }),
+    resourceType: ResourceTypeSchema.exactOptional().openapi({
+      description:
+        'The Lightsail resource type of the container service (i.e., <code>ContainerService</code>).',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        'The tag keys and optional values for the resource. For more information about tags in Lightsail, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-tags">Amazon Lightsail Developer Guide</a>.',
+    }),
+    power: ContainerServicePowerNameSchema.exactOptional().openapi({
+      description:
+        '<p>The power specification of the container service.</p> <p>The power specifies the amount of RAM, the number of vCPUs, and the base price of the container service.</p>',
+    }),
+    powerId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the power of the container service.',
+    }),
+    state: ContainerServiceStateSchema.exactOptional().openapi({
+      description:
+        '<p>The current state of the container service.</p> <p>The following container service states are possible:</p> <ul> <li> <p> <code>PENDING</code> - The container service is being created.</p> </li> <li> <p> <code>READY</code> - The container service is running but it does not have an active container deployment.</p> </li> <li> <p> <code>DEPLOYING</code> - The container service is launching a container deployment.</p> </li> <li> <p> <code>RUNNING</code> - The container service is running and it has an active container deployment.</p> </li> <li> <p> <code>UPDATING</code> - The container service capacity or its custom domains are being updated.</p> </li> <li> <p> <code>DELETING</code> - The container service is being deleted.</p> </li> <li> <p> <code>DISABLED</code> - The container service is disabled, and its active deployment and containers, if any, are shut down.</p> </li> </ul>',
+    }),
+    stateDetail: ContainerServiceStateDetailSchema.exactOptional().openapi({
+      description:
+        '<p>An object that describes the current state of the container service.</p> <note> <p>The state detail is populated only when a container service is in a <code>PENDING</code>, <code>DEPLOYING</code>, or <code>UPDATING</code> state.</p> </note>',
+    }),
+    scale: ContainerServiceScaleSchema.exactOptional().openapi({
+      description:
+        '<p>The scale specification of the container service.</p> <p>The scale specifies the allocated compute nodes of the container service.</p>',
+    }),
+    currentDeployment: ContainerServiceDeploymentSchema.exactOptional().openapi({
+      description:
+        'An object that describes the current container deployment of the container service.',
+    }),
+    nextDeployment: ContainerServiceDeploymentSchema.exactOptional().openapi({
+      description:
+        '<p>An object that describes the next deployment of the container service.</p> <p>This value is <code>null</code> when there is no deployment in a <code>pending</code> state.</p>',
+    }),
+    isDisabled: BooleanSchema.exactOptional().openapi({
+      description: 'A Boolean value indicating whether the container service is disabled.',
+    }),
+    principalArn: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The principal ARN of the container service.</p> <p>The principal ARN can be used to create a trust relationship between your standard Amazon Web Services account and your Lightsail container service. This allows you to give your service permission to access resources in your standard Amazon Web Services account.</p>',
+    }),
+    privateDomainName: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The private domain name of the container service.</p> <p>The private domain name is accessible only by other resources within the default virtual private cloud (VPC) of your Lightsail account.</p>',
+    }),
+    publicDomainNames: ContainerServicePublicDomainsSchema.exactOptional().openapi({
+      description:
+        "<p>The public domain name of the container service, such as <code>example.com</code> and <code>www.example.com</code>.</p> <p>You can specify up to four public domain names for a container service. The domain names that you specify are used when you create a deployment with a container configured as the public endpoint of your container service.</p> <p>If you don't specify public domain names, then you can use the default domain of the container service.</p> <important> <p>You must create and validate an SSL/TLS certificate before you can use public domain names with your container service. Use the <code>CreateCertificate</code> action to create a certificate for the public domain names you want to use with your container service.</p> </important> <p>See <code>CreateContainerService</code> or <code>UpdateContainerService</code> for information about how to specify public domain names for your Lightsail container service.</p>",
+    }),
+    url: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The publicly accessible URL of the container service.</p> <p>If no public endpoint is specified in the <code>currentDeployment</code>, this URL returns a 404 response.</p>',
+    }),
+    privateRegistryAccess: PrivateRegistryAccessSchema.exactOptional().openapi({
+      description:
+        '<p>An object that describes the configuration for the container service to access private container image repositories, such as Amazon Elastic Container Registry (Amazon ECR) private repositories.</p> <p>For more information, see <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-container-service-ecr-private-repo-access">Configuring access to an Amazon ECR private repository for an Amazon Lightsail container service</a> in the <i>Amazon Lightsail Developer Guide</i>.</p>',
+    }),
   })
   .openapi({ description: 'Describes an Amazon Lightsail container service.', required: [] })
   .openapi('ContainerService')
 
 const CreateContainerServiceResultSchema = z
   .object({
-    containerService: ContainerServiceSchema.and(
-      z.any().openapi({ description: 'An object that describes a container service.' }),
-    ).exactOptional(),
+    containerService: ContainerServiceSchema.exactOptional().openapi({
+      description: 'An object that describes a container service.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateContainerServiceResult')
 
 const EndpointRequestSchema = z
   .object({
-    containerName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the container for the endpoint.' }),
-    ),
-    containerPort: IntegerSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The port of the container to which traffic is forwarded to.' }),
-    ),
-    healthCheck: ContainerServiceHealthCheckConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that describes the health check configuration of the container.',
-        }),
-    ).exactOptional(),
+    containerName: StringSchema.openapi({
+      description: 'The name of the container for the endpoint.',
+    }),
+    containerPort: IntegerSchema.openapi({
+      description: 'The port of the container to which traffic is forwarded to.',
+    }),
+    healthCheck: ContainerServiceHealthCheckConfigSchema.exactOptional().openapi({
+      description: 'An object that describes the health check configuration of the container.',
+    }),
   })
   .openapi({
     required: ['containerName', 'containerPort'],
@@ -2014,17 +1874,13 @@ const EndpointRequestSchema = z
 
 const ContainerServiceDeploymentRequestSchema = z
   .object({
-    containers: ContainerMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that describes the configuration for the containers of the deployment.',
-        }),
-    ).exactOptional(),
-    publicEndpoint: EndpointRequestSchema.and(
-      z.any().openapi({ description: 'An object that describes the endpoint of the deployment.' }),
-    ).exactOptional(),
+    containers: ContainerMapSchema.exactOptional().openapi({
+      description:
+        'An object that describes the configuration for the containers of the deployment.',
+    }),
+    publicEndpoint: EndpointRequestSchema.exactOptional().openapi({
+      description: 'An object that describes the endpoint of the deployment.',
+    }),
   })
   .openapi({
     description:
@@ -2035,11 +1891,9 @@ const ContainerServiceDeploymentRequestSchema = z
 
 const ContainerServiceECRImagePullerRoleRequestSchema = z
   .object({
-    isActive: BooleanSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A Boolean value that indicates whether to activate the role.' }),
-    ).exactOptional(),
+    isActive: BooleanSchema.exactOptional().openapi({
+      description: 'A Boolean value that indicates whether to activate the role.',
+    }),
   })
   .openapi({
     description:
@@ -2050,14 +1904,10 @@ const ContainerServiceECRImagePullerRoleRequestSchema = z
 
 const PrivateRegistryAccessRequestSchema = z
   .object({
-    ecrImagePullerRole: ContainerServiceECRImagePullerRoleRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object to describe a request to activate or deactivate the role that you can use to grant an Amazon Lightsail container service access to Amazon Elastic Container Registry (Amazon ECR) private repositories.',
-        }),
-    ).exactOptional(),
+    ecrImagePullerRole: ContainerServiceECRImagePullerRoleRequestSchema.exactOptional().openapi({
+      description:
+        'An object to describe a request to activate or deactivate the role that you can use to grant an Amazon Lightsail container service access to Amazon Elastic Container Registry (Amazon ECR) private repositories.',
+    }),
   })
   .openapi({
     description:
@@ -2068,138 +1918,82 @@ const PrivateRegistryAccessRequestSchema = z
 
 const CreateContainerServiceRequestSchema = z
   .object({
-    serviceName: ContainerServiceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name for the container service.</p> <p>The name that you specify for your container service will make up part of its default domain. The default domain of a container service is typically <code>https://&lt;ServiceName&gt;.&lt;RandomGUID&gt;.&lt;AWSRegion&gt;.cs.amazonlightsail.com</code>. If the name of your container service is <code>container-service-1</code>, and it's located in the US East (Ohio) Amazon Web Services Region (<code>us-east-2</code>), then the domain for your container service will be like the following example: <code>https://container-service-1.ur4EXAMPLE2uq.us-east-2.cs.amazonlightsail.com</code> </p> <p>The following are the requirements for container service names:</p> <ul> <li> <p>Must be unique within each Amazon Web Services Region in your Lightsail account.</p> </li> <li> <p>Must contain 1 to 63 characters.</p> </li> <li> <p>Must contain only alphanumeric characters and hyphens.</p> </li> <li> <p>A hyphen (-) can separate words but cannot be at the start or end of the name.</p> </li> </ul>",
-        }),
-    ),
-    power: ContainerServicePowerNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The power specification for the container service.</p> <p>The power specifies the amount of memory, vCPUs, and base monthly cost of each node of the container service. The <code>power</code> and <code>scale</code> of a container service makes up its configured capacity. To determine the monthly price of your container service, multiply the base price of the <code>power</code> with the <code>scale</code> (the number of nodes) of the service.</p> <p>Use the <code>GetContainerServicePowers</code> action to get a list of power options that you can specify using this parameter, and their base monthly cost.</p>',
-        }),
-    ),
-    scale: ContainerServiceScaleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The scale specification for the container service.</p> <p>The scale specifies the allocated compute nodes of the container service. The <code>power</code> and <code>scale</code> of a container service makes up its configured capacity. To determine the monthly price of your container service, multiply the base price of the <code>power</code> with the <code>scale</code> (the number of nodes) of the service.</p>',
-        }),
-    ),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The tag keys and optional values to add to the container service during create.</p> <p>Use the <code>TagResource</code> action to tag a resource after it\'s created.</p> <p>For more information about tags in Lightsail, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-tags">Amazon Lightsail Developer Guide</a>.</p>',
-        }),
-    ).exactOptional(),
-    publicDomainNames: ContainerServicePublicDomainsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The public domain names to use with the container service, such as <code>example.com</code> and <code>www.example.com</code>.</p> <p>You can specify up to four public domain names for a container service. The domain names that you specify are used when you create a deployment with a container configured as the public endpoint of your container service.</p> <p>If you don't specify public domain names, then you can use the default domain of the container service.</p> <important> <p>You must create and validate an SSL/TLS certificate before you can use public domain names with your container service. Use the <code>CreateCertificate</code> action to create a certificate for the public domain names you want to use with your container service.</p> </important> <p>You can specify public domain names using a string to array map as shown in the example later on this page.</p>",
-        }),
-    ).exactOptional(),
-    deployment: ContainerServiceDeploymentRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An object that describes a deployment for the container service.</p> <p>A deployment specifies the containers that will be launched on the container service and their settings, such as the ports to open, the environment variables to apply, and the launch command to run. It also specifies the container that will serve as the public endpoint of the deployment and its settings, such as the HTTP or HTTPS port to use, and the health check configuration.</p>',
-        }),
-    ).exactOptional(),
-    privateRegistryAccess: PrivateRegistryAccessRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An object to describe the configuration for the container service to access private container image repositories, such as Amazon Elastic Container Registry (Amazon ECR) private repositories.</p> <p>For more information, see <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-container-service-ecr-private-repo-access">Configuring access to an Amazon ECR private repository for an Amazon Lightsail container service</a> in the <i>Amazon Lightsail Developer Guide</i>.</p>',
-        }),
-    ).exactOptional(),
+    serviceName: ContainerServiceNameSchema.openapi({
+      description:
+        "<p>The name for the container service.</p> <p>The name that you specify for your container service will make up part of its default domain. The default domain of a container service is typically <code>https://&lt;ServiceName&gt;.&lt;RandomGUID&gt;.&lt;AWSRegion&gt;.cs.amazonlightsail.com</code>. If the name of your container service is <code>container-service-1</code>, and it's located in the US East (Ohio) Amazon Web Services Region (<code>us-east-2</code>), then the domain for your container service will be like the following example: <code>https://container-service-1.ur4EXAMPLE2uq.us-east-2.cs.amazonlightsail.com</code> </p> <p>The following are the requirements for container service names:</p> <ul> <li> <p>Must be unique within each Amazon Web Services Region in your Lightsail account.</p> </li> <li> <p>Must contain 1 to 63 characters.</p> </li> <li> <p>Must contain only alphanumeric characters and hyphens.</p> </li> <li> <p>A hyphen (-) can separate words but cannot be at the start or end of the name.</p> </li> </ul>",
+    }),
+    power: ContainerServicePowerNameSchema.openapi({
+      description:
+        '<p>The power specification for the container service.</p> <p>The power specifies the amount of memory, vCPUs, and base monthly cost of each node of the container service. The <code>power</code> and <code>scale</code> of a container service makes up its configured capacity. To determine the monthly price of your container service, multiply the base price of the <code>power</code> with the <code>scale</code> (the number of nodes) of the service.</p> <p>Use the <code>GetContainerServicePowers</code> action to get a list of power options that you can specify using this parameter, and their base monthly cost.</p>',
+    }),
+    scale: ContainerServiceScaleSchema.openapi({
+      description:
+        '<p>The scale specification for the container service.</p> <p>The scale specifies the allocated compute nodes of the container service. The <code>power</code> and <code>scale</code> of a container service makes up its configured capacity. To determine the monthly price of your container service, multiply the base price of the <code>power</code> with the <code>scale</code> (the number of nodes) of the service.</p>',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        '<p>The tag keys and optional values to add to the container service during create.</p> <p>Use the <code>TagResource</code> action to tag a resource after it\'s created.</p> <p>For more information about tags in Lightsail, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-tags">Amazon Lightsail Developer Guide</a>.</p>',
+    }),
+    publicDomainNames: ContainerServicePublicDomainsSchema.exactOptional().openapi({
+      description:
+        "<p>The public domain names to use with the container service, such as <code>example.com</code> and <code>www.example.com</code>.</p> <p>You can specify up to four public domain names for a container service. The domain names that you specify are used when you create a deployment with a container configured as the public endpoint of your container service.</p> <p>If you don't specify public domain names, then you can use the default domain of the container service.</p> <important> <p>You must create and validate an SSL/TLS certificate before you can use public domain names with your container service. Use the <code>CreateCertificate</code> action to create a certificate for the public domain names you want to use with your container service.</p> </important> <p>You can specify public domain names using a string to array map as shown in the example later on this page.</p>",
+    }),
+    deployment: ContainerServiceDeploymentRequestSchema.exactOptional().openapi({
+      description:
+        '<p>An object that describes a deployment for the container service.</p> <p>A deployment specifies the containers that will be launched on the container service and their settings, such as the ports to open, the environment variables to apply, and the launch command to run. It also specifies the container that will serve as the public endpoint of the deployment and its settings, such as the HTTP or HTTPS port to use, and the health check configuration.</p>',
+    }),
+    privateRegistryAccess: PrivateRegistryAccessRequestSchema.exactOptional().openapi({
+      description:
+        '<p>An object to describe the configuration for the container service to access private container image repositories, such as Amazon Elastic Container Registry (Amazon ECR) private repositories.</p> <p>For more information, see <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-container-service-ecr-private-repo-access">Configuring access to an Amazon ECR private repository for an Amazon Lightsail container service</a> in the <i>Amazon Lightsail Developer Guide</i>.</p>',
+    }),
   })
   .openapi({ required: ['serviceName', 'power', 'scale'], title: 'CreateContainerServiceRequest' })
   .openapi('CreateContainerServiceRequest')
 
 const CreateContainerServiceDeploymentResultSchema = z
   .object({
-    containerService: ContainerServiceSchema.and(
-      z.any().openapi({ description: 'An object that describes a container service.' }),
-    ).exactOptional(),
+    containerService: ContainerServiceSchema.exactOptional().openapi({
+      description: 'An object that describes a container service.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateContainerServiceDeploymentResult')
 
 const CreateContainerServiceDeploymentRequestSchema = z
   .object({
-    serviceName: ContainerServiceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the container service for which to create the deployment.',
-        }),
-    ),
-    containers: ContainerMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that describes the settings of the containers that will be launched on the container service.',
-        }),
-    ).exactOptional(),
-    publicEndpoint: EndpointRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that describes the settings of the public endpoint for the container service.',
-        }),
-    ).exactOptional(),
+    serviceName: ContainerServiceNameSchema.openapi({
+      description: 'The name of the container service for which to create the deployment.',
+    }),
+    containers: ContainerMapSchema.exactOptional().openapi({
+      description:
+        'An object that describes the settings of the containers that will be launched on the container service.',
+    }),
+    publicEndpoint: EndpointRequestSchema.exactOptional().openapi({
+      description:
+        'An object that describes the settings of the public endpoint for the container service.',
+    }),
   })
   .openapi({ required: ['serviceName'], title: 'CreateContainerServiceDeploymentRequest' })
   .openapi('CreateContainerServiceDeploymentRequest')
 
 const ContainerServiceRegistryLoginSchema = z
   .object({
-    username: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The container service registry username to use to push container images to the container image registry of a Lightsail account.',
-        }),
-    ).exactOptional(),
-    password: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The container service registry password to use to push container images to the container image registry of a Lightsail account',
-        }),
-    ).exactOptional(),
-    expiresAt: IsoDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The timestamp of when the container image registry sign-in credentials expire.</p> <p>The log in credentials expire 12 hours after they are created, at which point you will need to create a new set of log in credentials using the <code>CreateContainerServiceRegistryLogin</code> action.</p>',
-        }),
-    ).exactOptional(),
-    registry: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The address to use to push container images to the container image registry of a Lightsail account.',
-        }),
-    ).exactOptional(),
+    username: StringSchema.exactOptional().openapi({
+      description:
+        'The container service registry username to use to push container images to the container image registry of a Lightsail account.',
+    }),
+    password: StringSchema.exactOptional().openapi({
+      description:
+        'The container service registry password to use to push container images to the container image registry of a Lightsail account',
+    }),
+    expiresAt: IsoDateSchema.exactOptional().openapi({
+      description:
+        '<p>The timestamp of when the container image registry sign-in credentials expire.</p> <p>The log in credentials expire 12 hours after they are created, at which point you will need to create a new set of log in credentials using the <code>CreateContainerServiceRegistryLogin</code> action.</p>',
+    }),
+    registry: StringSchema.exactOptional().openapi({
+      description:
+        'The address to use to push container images to the container image registry of a Lightsail account.',
+    }),
   })
   .openapi({
     description:
@@ -2210,185 +2004,151 @@ const ContainerServiceRegistryLoginSchema = z
 
 const CreateContainerServiceRegistryLoginResultSchema = z
   .object({
-    registryLogin: ContainerServiceRegistryLoginSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that describes the log in information for the container service registry of your Lightsail account.',
-        }),
-    ).exactOptional(),
+    registryLogin: ContainerServiceRegistryLoginSchema.exactOptional().openapi({
+      description:
+        'An object that describes the log in information for the container service registry of your Lightsail account.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateContainerServiceRegistryLoginResult')
 
 const CreateContainerServiceRegistryLoginRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'CreateContainerServiceRegistryLoginRequest' })
   .openapi('CreateContainerServiceRegistryLoginRequest')
 
 const CreateDiskResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateDiskResult')
 
-const AddOnRequestSchema: z.ZodType<AddOnRequestType> = z
-  .lazy(() =>
-    z
-      .object({
-        addOnType: AddOnTypeSchema.and(z.any().openapi({ description: 'The add-on type.' })),
-        autoSnapshotAddOnRequest: AutoSnapshotAddOnRequestSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'An object that represents additional parameters when enabling or modifying the automatic snapshot add-on.',
-            }),
-        ).exactOptional(),
-        stopInstanceOnIdleRequest: StopInstanceOnIdleRequestSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                '<p>An object that represents additional parameters when enabling or modifying the <code>StopInstanceOnIdle</code> add-on.</p> <important> <p>This object only applies to Lightsail for Research resources.</p> </important>',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({
-        required: ['addOnType'],
-        description:
-          '<p>Describes a request to enable, modify, or disable an add-on for an Amazon Lightsail resource.</p> <note> <p>An additional cost may be associated with enabling add-ons. For more information, see the <a href="https://aws.amazon.com/lightsail/pricing/">Lightsail pricing page</a>.</p> </note>',
-      }),
-  )
+const AddOnTypeSchema = z.enum(['AutoSnapshot', 'StopInstanceOnIdle']).openapi('AddOnType')
+
+const AutoSnapshotAddOnRequestSchema = z
+  .object({
+    snapshotTimeOfDay: TimeOfDaySchema.exactOptional().openapi({
+      description:
+        '<p>The daily time when an automatic snapshot will be created.</p> <p>Constraints:</p> <ul> <li> <p>Must be in <code>HH:00</code> format, and in an hourly increment.</p> </li> <li> <p>Specified in Coordinated Universal Time (UTC).</p> </li> <li> <p>The snapshot will be automatically created between the time specified and up to 45 minutes after.</p> </li> </ul>',
+    }),
+  })
+  .openapi({
+    description:
+      '<p>Describes a request to enable or modify the automatic snapshot add-on for an Amazon Lightsail instance or disk.</p> <p>When you modify the automatic snapshot time for a resource, it is typically effective immediately except under the following conditions:</p> <ul> <li> <p>If an automatic snapshot has been created for the current day, and you change the snapshot time to a later time of day, then the new snapshot time will be effective the following day. This ensures that two snapshots are not created for the current day.</p> </li> <li> <p>If an automatic snapshot has not yet been created for the current day, and you change the snapshot time to an earlier time of day, then the new snapshot time will be effective the following day and a snapshot is automatically created at the previously set time for the current day. This ensures that a snapshot is created for the current day.</p> </li> <li> <p>If an automatic snapshot has not yet been created for the current day, and you change the snapshot time to a time that is within 30 minutes from your current time, then the new snapshot time will be effective the following day and a snapshot is automatically created at the previously set time for the current day. This ensures that a snapshot is created for the current day, because 30 minutes is required between your current time and the new snapshot time that you specify.</p> </li> <li> <p>If an automatic snapshot is scheduled to be created within 30 minutes from your current time and you change the snapshot time, then the new snapshot time will be effective the following day and a snapshot is automatically created at the previously set time for the current day. This ensures that a snapshot is created for the current day, because 30 minutes is required between your current time and the new snapshot time that you specify.</p> </li> </ul>',
+    required: [],
+  })
+  .openapi('AutoSnapshotAddOnRequest')
+
+const StopInstanceOnIdleRequestSchema = z
+  .object({
+    threshold: StringSchema.exactOptional().openapi({
+      description: 'The value to compare with the duration.',
+    }),
+    duration: StringSchema.exactOptional().openapi({
+      description:
+        'The amount of idle time in minutes after which your virtual computer will automatically stop.',
+    }),
+  })
+  .openapi({
+    description:
+      '<p>Describes a request to create or edit the <code>StopInstanceOnIdle</code> add-on.</p> <important> <p>This add-on only applies to Lightsail for Research resources.</p> </important>',
+    required: [],
+  })
+  .openapi('StopInstanceOnIdleRequest')
+
+const AddOnRequestSchema = z
+  .object({
+    addOnType: AddOnTypeSchema.openapi({ description: 'The add-on type.' }),
+    autoSnapshotAddOnRequest: AutoSnapshotAddOnRequestSchema.exactOptional().openapi({
+      description:
+        'An object that represents additional parameters when enabling or modifying the automatic snapshot add-on.',
+    }),
+    stopInstanceOnIdleRequest: StopInstanceOnIdleRequestSchema.exactOptional().openapi({
+      description:
+        '<p>An object that represents additional parameters when enabling or modifying the <code>StopInstanceOnIdle</code> add-on.</p> <important> <p>This object only applies to Lightsail for Research resources.</p> </important>',
+    }),
+  })
+  .openapi({
+    required: ['addOnType'],
+    description:
+      '<p>Describes a request to enable, modify, or disable an add-on for an Amazon Lightsail resource.</p> <note> <p>An additional cost may be associated with enabling add-ons. For more information, see the <a href="https://aws.amazon.com/lightsail/pricing/">Lightsail pricing page</a>.</p> </note>',
+  })
   .openapi('AddOnRequest')
 
 const AddOnRequestListSchema = z.array(AddOnRequestSchema).openapi('AddOnRequestList')
 
 const CreateDiskRequestSchema = z
   .object({
-    diskName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The unique Lightsail disk name (e.g., <code>my-disk</code>).' }),
-    ),
-    availabilityZone: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Availability Zone where you want to create the disk (e.g., <code>us-east-2a</code>). Use the same Availability Zone as the Lightsail instance to which you want to attach the disk.</p> <p>Use the <code>get regions</code> operation to list the Availability Zones where Lightsail is currently available.</p>',
-        }),
-    ),
-    sizeInGb: IntegerSchema.and(
-      z.any().openapi({ description: 'The size of the disk in GB (e.g., <code>32</code>).' }),
-    ),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The tag keys and optional values to add to the resource during create.</p> <p>Use the <code>TagResource</code> action to tag a resource after it's created.</p>",
-        }),
-    ).exactOptional(),
-    addOns: AddOnRequestListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array of objects that represent the add-ons to enable for the new disk.',
-        }),
-    ).exactOptional(),
+    diskName: ResourceNameSchema.openapi({
+      description: 'The unique Lightsail disk name (e.g., <code>my-disk</code>).',
+    }),
+    availabilityZone: NonEmptyStringSchema.openapi({
+      description:
+        '<p>The Availability Zone where you want to create the disk (e.g., <code>us-east-2a</code>). Use the same Availability Zone as the Lightsail instance to which you want to attach the disk.</p> <p>Use the <code>get regions</code> operation to list the Availability Zones where Lightsail is currently available.</p>',
+    }),
+    sizeInGb: IntegerSchema.openapi({
+      description: 'The size of the disk in GB (e.g., <code>32</code>).',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        "<p>The tag keys and optional values to add to the resource during create.</p> <p>Use the <code>TagResource</code> action to tag a resource after it's created.</p>",
+    }),
+    addOns: AddOnRequestListSchema.exactOptional().openapi({
+      description: 'An array of objects that represent the add-ons to enable for the new disk.',
+    }),
   })
   .openapi({ required: ['diskName', 'availabilityZone', 'sizeInGb'], title: 'CreateDiskRequest' })
   .openapi('CreateDiskRequest')
 
 const CreateDiskFromSnapshotResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateDiskFromSnapshotResult')
 
 const CreateDiskFromSnapshotRequestSchema = z
   .object({
-    diskName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The unique Lightsail disk name (e.g., <code>my-disk</code>).' }),
-    ),
-    diskSnapshotName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the disk snapshot (e.g., <code>my-snapshot</code>) from which to create the new storage disk.</p> <p>Constraint:</p> <ul> <li> <p>This parameter cannot be defined together with the <code>source disk name</code> parameter. The <code>disk snapshot name</code> and <code>source disk name</code> parameters are mutually exclusive.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    availabilityZone: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Availability Zone where you want to create the disk (e.g., <code>us-east-2a</code>). Choose the same Availability Zone as the Lightsail instance where you want to create the disk.</p> <p>Use the GetRegions operation to list the Availability Zones where Lightsail is currently available.</p>',
-        }),
-    ),
-    sizeInGb: IntegerSchema.and(
-      z.any().openapi({ description: 'The size of the disk in GB (e.g., <code>32</code>).' }),
-    ),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The tag keys and optional values to add to the resource during create.</p> <p>Use the <code>TagResource</code> action to tag a resource after it's created.</p>",
-        }),
-    ).exactOptional(),
-    addOns: AddOnRequestListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array of objects that represent the add-ons to enable for the new disk.',
-        }),
-    ).exactOptional(),
-    sourceDiskName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the source disk from which the source automatic snapshot was created.</p> <p>Constraints:</p> <ul> <li> <p>This parameter cannot be defined together with the <code>disk snapshot name</code> parameter. The <code>source disk name</code> and <code>disk snapshot name</code> parameters are mutually exclusive.</p> </li> <li> <p>Define this parameter only when creating a new disk from an automatic snapshot. For more information, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-configuring-automatic-snapshots">Amazon Lightsail Developer Guide</a>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    restoreDate: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The date of the automatic snapshot to use for the new disk. Use the <code>get auto snapshots</code> operation to identify the dates of the available automatic snapshots.</p> <p>Constraints:</p> <ul> <li> <p>Must be specified in <code>YYYY-MM-DD</code> format.</p> </li> <li> <p>This parameter cannot be defined together with the <code>use latest restorable auto snapshot</code> parameter. The <code>restore date</code> and <code>use latest restorable auto snapshot</code> parameters are mutually exclusive.</p> </li> <li> <p>Define this parameter only when creating a new disk from an automatic snapshot. For more information, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-configuring-automatic-snapshots">Amazon Lightsail Developer Guide</a>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    useLatestRestorableAutoSnapshot: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A Boolean value to indicate whether to use the latest available automatic snapshot.</p> <p>Constraints:</p> <ul> <li> <p>This parameter cannot be defined together with the <code>restore date</code> parameter. The <code>use latest restorable auto snapshot</code> and <code>restore date</code> parameters are mutually exclusive.</p> </li> <li> <p>Define this parameter only when creating a new disk from an automatic snapshot. For more information, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-configuring-automatic-snapshots">Amazon Lightsail Developer Guide</a>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    diskName: ResourceNameSchema.openapi({
+      description: 'The unique Lightsail disk name (e.g., <code>my-disk</code>).',
+    }),
+    diskSnapshotName: ResourceNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the disk snapshot (e.g., <code>my-snapshot</code>) from which to create the new storage disk.</p> <p>Constraint:</p> <ul> <li> <p>This parameter cannot be defined together with the <code>source disk name</code> parameter. The <code>disk snapshot name</code> and <code>source disk name</code> parameters are mutually exclusive.</p> </li> </ul>',
+    }),
+    availabilityZone: NonEmptyStringSchema.openapi({
+      description:
+        '<p>The Availability Zone where you want to create the disk (e.g., <code>us-east-2a</code>). Choose the same Availability Zone as the Lightsail instance where you want to create the disk.</p> <p>Use the GetRegions operation to list the Availability Zones where Lightsail is currently available.</p>',
+    }),
+    sizeInGb: IntegerSchema.openapi({
+      description: 'The size of the disk in GB (e.g., <code>32</code>).',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        "<p>The tag keys and optional values to add to the resource during create.</p> <p>Use the <code>TagResource</code> action to tag a resource after it's created.</p>",
+    }),
+    addOns: AddOnRequestListSchema.exactOptional().openapi({
+      description: 'An array of objects that represent the add-ons to enable for the new disk.',
+    }),
+    sourceDiskName: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the source disk from which the source automatic snapshot was created.</p> <p>Constraints:</p> <ul> <li> <p>This parameter cannot be defined together with the <code>disk snapshot name</code> parameter. The <code>source disk name</code> and <code>disk snapshot name</code> parameters are mutually exclusive.</p> </li> <li> <p>Define this parameter only when creating a new disk from an automatic snapshot. For more information, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-configuring-automatic-snapshots">Amazon Lightsail Developer Guide</a>.</p> </li> </ul>',
+    }),
+    restoreDate: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The date of the automatic snapshot to use for the new disk. Use the <code>get auto snapshots</code> operation to identify the dates of the available automatic snapshots.</p> <p>Constraints:</p> <ul> <li> <p>Must be specified in <code>YYYY-MM-DD</code> format.</p> </li> <li> <p>This parameter cannot be defined together with the <code>use latest restorable auto snapshot</code> parameter. The <code>restore date</code> and <code>use latest restorable auto snapshot</code> parameters are mutually exclusive.</p> </li> <li> <p>Define this parameter only when creating a new disk from an automatic snapshot. For more information, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-configuring-automatic-snapshots">Amazon Lightsail Developer Guide</a>.</p> </li> </ul>',
+    }),
+    useLatestRestorableAutoSnapshot: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>A Boolean value to indicate whether to use the latest available automatic snapshot.</p> <p>Constraints:</p> <ul> <li> <p>This parameter cannot be defined together with the <code>restore date</code> parameter. The <code>use latest restorable auto snapshot</code> and <code>restore date</code> parameters are mutually exclusive.</p> </li> <li> <p>Define this parameter only when creating a new disk from an automatic snapshot. For more information, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-configuring-automatic-snapshots">Amazon Lightsail Developer Guide</a>.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['diskName', 'availabilityZone', 'sizeInGb'],
@@ -2398,52 +2158,32 @@ const CreateDiskFromSnapshotRequestSchema = z
 
 const CreateDiskSnapshotResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateDiskSnapshotResult')
 
 const CreateDiskSnapshotRequestSchema = z
   .object({
-    diskName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique name of the source disk (e.g., <code>Disk-Virginia-1</code>).</p> <note> <p>This parameter cannot be defined together with the <code>instance name</code> parameter. The <code>disk name</code> and <code>instance name</code> parameters are mutually exclusive.</p> </note>',
-        }),
-    ).exactOptional(),
-    diskSnapshotName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the destination disk snapshot (e.g., <code>my-disk-snapshot</code>) based on the source disk.',
-        }),
-    ),
-    instanceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The unique name of the source instance (e.g., <code>Amazon_Linux-512MB-Virginia-1</code>). When this is defined, a snapshot of the instance's system volume is created.</p> <note> <p>This parameter cannot be defined together with the <code>disk name</code> parameter. The <code>instance name</code> and <code>disk name</code> parameters are mutually exclusive.</p> </note>",
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The tag keys and optional values to add to the resource during create.</p> <p>Use the <code>TagResource</code> action to tag a resource after it's created.</p>",
-        }),
-    ).exactOptional(),
+    diskName: ResourceNameSchema.exactOptional().openapi({
+      description:
+        '<p>The unique name of the source disk (e.g., <code>Disk-Virginia-1</code>).</p> <note> <p>This parameter cannot be defined together with the <code>instance name</code> parameter. The <code>disk name</code> and <code>instance name</code> parameters are mutually exclusive.</p> </note>',
+    }),
+    diskSnapshotName: ResourceNameSchema.openapi({
+      description:
+        'The name of the destination disk snapshot (e.g., <code>my-disk-snapshot</code>) based on the source disk.',
+    }),
+    instanceName: ResourceNameSchema.exactOptional().openapi({
+      description:
+        "<p>The unique name of the source instance (e.g., <code>Amazon_Linux-512MB-Virginia-1</code>). When this is defined, a snapshot of the instance's system volume is created.</p> <note> <p>This parameter cannot be defined together with the <code>disk name</code> parameter. The <code>instance name</code> and <code>disk name</code> parameters are mutually exclusive.</p> </note>",
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        "<p>The tag keys and optional values to add to the resource during create.</p> <p>Use the <code>TagResource</code> action to tag a resource after it's created.</p>",
+    }),
   })
   .openapi({ required: ['diskSnapshotName'], title: 'CreateDiskSnapshotRequest' })
   .openapi('CreateDiskSnapshotRequest')
@@ -2454,27 +2194,19 @@ const OriginProtocolPolicyEnumSchema = z
 
 const OriginSchema = z
   .object({
-    name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the origin resource.' }),
-    ).exactOptional(),
-    resourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The resource type of the origin resource (e.g., <i>Instance</i>).',
-        }),
-    ).exactOptional(),
-    regionName: RegionNameSchema.and(
-      z.any().openapi({ description: 'The AWS Region name of the origin resource.' }),
-    ).exactOptional(),
-    protocolPolicy: OriginProtocolPolicyEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The protocol that your Amazon Lightsail distribution uses when establishing a connection with your origin to pull content.',
-        }),
-    ).exactOptional(),
+    name: ResourceNameSchema.exactOptional().openapi({
+      description: 'The name of the origin resource.',
+    }),
+    resourceType: ResourceTypeSchema.exactOptional().openapi({
+      description: 'The resource type of the origin resource (e.g., <i>Instance</i>).',
+    }),
+    regionName: RegionNameSchema.exactOptional().openapi({
+      description: 'The AWS Region name of the origin resource.',
+    }),
+    protocolPolicy: OriginProtocolPolicyEnumSchema.exactOptional().openapi({
+      description:
+        'The protocol that your Amazon Lightsail distribution uses when establishing a connection with your origin to pull content.',
+    }),
   })
   .openapi({
     description:
@@ -2487,14 +2219,10 @@ const BehaviorEnumSchema = z.enum(['dont-cache', 'cache']).openapi('BehaviorEnum
 
 const CacheBehaviorSchema = z
   .object({
-    behavior: BehaviorEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The cache behavior of the distribution.</p> <p>The following cache behaviors can be specified:</p> <ul> <li> <p> <b> <code>cache</code> </b> - This option is best for static sites. When specified, your distribution caches and serves your entire website as static content. This behavior is ideal for websites with static content that doesn't change depending on who views it, or for websites that don't use cookies, headers, or query strings to personalize content.</p> </li> <li> <p> <b> <code>dont-cache</code> </b> - This option is best for sites that serve a mix of static and dynamic content. When specified, your distribution caches and serve only the content that is specified in the distribution's <code>CacheBehaviorPerPath</code> parameter. This behavior is ideal for websites or web applications that use cookies, headers, and query strings to personalize content for individual users.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
+    behavior: BehaviorEnumSchema.exactOptional().openapi({
+      description:
+        "<p>The cache behavior of the distribution.</p> <p>The following cache behaviors can be specified:</p> <ul> <li> <p> <b> <code>cache</code> </b> - This option is best for static sites. When specified, your distribution caches and serves your entire website as static content. This behavior is ideal for websites with static content that doesn't change depending on who views it, or for websites that don't use cookies, headers, or query strings to personalize content.</p> </li> <li> <p> <b> <code>dont-cache</code> </b> - This option is best for sites that serve a mix of static and dynamic content. When specified, your distribution caches and serve only the content that is specified in the distribution's <code>CacheBehaviorPerPath</code> parameter. This behavior is ideal for websites or web applications that use cookies, headers, and query strings to personalize content for individual users.</p> </li> </ul>",
+    }),
   })
   .openapi({
     description:
@@ -2509,19 +2237,13 @@ const ForwardValuesSchema = z.enum(['none', 'allow-list', 'all']).openapi('Forwa
 
 const CookieObjectSchema = z
   .object({
-    option: ForwardValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies which cookies to forward to the distribution's origin for a cache behavior: <code>all</code>, <code>none</code>, or <code>allow-list</code> to forward only the cookies specified in the <code>cookiesAllowList</code> parameter.",
-        }),
-    ).exactOptional(),
-    cookiesAllowList: StringListSchema.and(
-      z
-        .any()
-        .openapi({ description: "The specific cookies to forward to your distribution's origin." }),
-    ).exactOptional(),
+    option: ForwardValuesSchema.exactOptional().openapi({
+      description:
+        "Specifies which cookies to forward to the distribution's origin for a cache behavior: <code>all</code>, <code>none</code>, or <code>allow-list</code> to forward only the cookies specified in the <code>cookiesAllowList</code> parameter.",
+    }),
+    cookiesAllowList: StringListSchema.exactOptional().openapi({
+      description: "The specific cookies to forward to your distribution's origin.",
+    }),
   })
   .openapi({
     description:
@@ -2554,19 +2276,13 @@ const HeaderForwardListSchema = z.array(HeaderEnumSchema).openapi('HeaderForward
 
 const HeaderObjectSchema = z
   .object({
-    option: ForwardValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The headers that you want your distribution to forward to your origin and base caching on.</p> <p>You can configure your distribution to do one of the following:</p> <ul> <li> <p> <b> <code>all</code> </b> - Forward all headers to your origin.</p> </li> <li> <p> <b> <code>none</code> </b> - Forward only the default headers.</p> </li> <li> <p> <b> <code>allow-list</code> </b> - Forward only the headers you specify using the <code>headersAllowList</code> parameter.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    headersAllowList: HeaderForwardListSchema.and(
-      z
-        .any()
-        .openapi({ description: "The specific headers to forward to your distribution's origin." }),
-    ).exactOptional(),
+    option: ForwardValuesSchema.exactOptional().openapi({
+      description:
+        '<p>The headers that you want your distribution to forward to your origin and base caching on.</p> <p>You can configure your distribution to do one of the following:</p> <ul> <li> <p> <b> <code>all</code> </b> - Forward all headers to your origin.</p> </li> <li> <p> <b> <code>none</code> </b> - Forward only the default headers.</p> </li> <li> <p> <b> <code>allow-list</code> </b> - Forward only the headers you specify using the <code>headersAllowList</code> parameter.</p> </li> </ul>',
+    }),
+    headersAllowList: HeaderForwardListSchema.exactOptional().openapi({
+      description: "The specific headers to forward to your distribution's origin.",
+    }),
   })
   .openapi({
     description:
@@ -2577,22 +2293,13 @@ const HeaderObjectSchema = z
 
 const QueryStringObjectSchema = z
   .object({
-    option: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether the distribution forwards and caches based on query strings.',
-        }),
-    ).exactOptional(),
-    queryStringsAllowList: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The specific query strings that the distribution forwards to the origin.</p> <p>Your distribution will cache content based on the specified query strings.</p> <p>If the <code>option</code> parameter is true, then your distribution forwards all query strings, regardless of what you specify using the <code>queryStringsAllowList</code> parameter.</p>',
-        }),
-    ).exactOptional(),
+    option: BooleanSchema.exactOptional().openapi({
+      description: 'Indicates whether the distribution forwards and caches based on query strings.',
+    }),
+    queryStringsAllowList: StringListSchema.exactOptional().openapi({
+      description:
+        '<p>The specific query strings that the distribution forwards to the origin.</p> <p>Your distribution will cache content based on the specified query strings.</p> <p>If the <code>option</code> parameter is true, then your distribution forwards all query strings, regardless of what you specify using the <code>queryStringsAllowList</code> parameter.</p>',
+    }),
   })
   .openapi({
     description:
@@ -2603,70 +2310,38 @@ const QueryStringObjectSchema = z
 
 const CacheSettingsSchema = z
   .object({
-    defaultTTL: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The default amount of time that objects stay in the distribution's cache before the distribution forwards another request to the origin to determine whether the content has been updated.</p> <note> <p>The value specified applies only when the origin does not add HTTP headers such as <code>Cache-Control max-age</code>, <code>Cache-Control s-maxage</code>, and <code>Expires</code> to objects.</p> </note>",
-        }),
-    ).exactOptional(),
-    minimumTTL: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The minimum amount of time that objects stay in the distribution's cache before the distribution forwards another request to the origin to determine whether the object has been updated.</p> <p>A value of <code>0</code> must be specified for <code>minimumTTL</code> if the distribution is configured to forward all headers to the origin.</p>",
-        }),
-    ).exactOptional(),
-    maximumTTL: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The maximum amount of time that objects stay in the distribution's cache before the distribution forwards another request to the origin to determine whether the object has been updated.</p> <p>The value specified applies only when the origin adds HTTP headers such as <code>Cache-Control max-age</code>, <code>Cache-Control s-maxage</code>, and <code>Expires</code> to objects.</p>",
-        }),
-    ).exactOptional(),
-    allowedHTTPMethods: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The HTTP methods that are processed and forwarded to the distribution's origin.</p> <p>You can specify the following options:</p> <ul> <li> <p> <code>GET,HEAD</code> - The distribution forwards the <code>GET</code> and <code>HEAD</code> methods.</p> </li> <li> <p> <code>GET,HEAD,OPTIONS</code> - The distribution forwards the <code>GET</code>, <code>HEAD</code>, and <code>OPTIONS</code> methods.</p> </li> <li> <p> <code>GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE</code> - The distribution forwards the <code>GET</code>, <code>HEAD</code>, <code>OPTIONS</code>, <code>PUT</code>, <code>PATCH</code>, <code>POST</code>, and <code>DELETE</code> methods.</p> </li> </ul> <p>If you specify the third option, you might need to restrict access to your distribution's origin so users can't perform operations that you don't want them to. For example, you might not want users to have permission to delete objects from your origin.</p>",
-        }),
-    ).exactOptional(),
-    cachedHTTPMethods: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The HTTP method responses that are cached by your distribution.</p> <p>You can specify the following options:</p> <ul> <li> <p> <code>GET,HEAD</code> - The distribution caches responses to the <code>GET</code> and <code>HEAD</code> methods.</p> </li> <li> <p> <code>GET,HEAD,OPTIONS</code> - The distribution caches responses to the <code>GET</code>, <code>HEAD</code>, and <code>OPTIONS</code> methods.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    forwardedCookies: CookieObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that describes the cookies that are forwarded to the origin. Your content is cached based on the cookies that are forwarded.',
-        }),
-    ).exactOptional(),
-    forwardedHeaders: HeaderObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that describes the headers that are forwarded to the origin. Your content is cached based on the headers that are forwarded.',
-        }),
-    ).exactOptional(),
-    forwardedQueryStrings: QueryStringObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that describes the query strings that are forwarded to the origin. Your content is cached based on the query strings that are forwarded.',
-        }),
-    ).exactOptional(),
+    defaultTTL: LongSchema.exactOptional().openapi({
+      description:
+        "<p>The default amount of time that objects stay in the distribution's cache before the distribution forwards another request to the origin to determine whether the content has been updated.</p> <note> <p>The value specified applies only when the origin does not add HTTP headers such as <code>Cache-Control max-age</code>, <code>Cache-Control s-maxage</code>, and <code>Expires</code> to objects.</p> </note>",
+    }),
+    minimumTTL: LongSchema.exactOptional().openapi({
+      description:
+        "<p>The minimum amount of time that objects stay in the distribution's cache before the distribution forwards another request to the origin to determine whether the object has been updated.</p> <p>A value of <code>0</code> must be specified for <code>minimumTTL</code> if the distribution is configured to forward all headers to the origin.</p>",
+    }),
+    maximumTTL: LongSchema.exactOptional().openapi({
+      description:
+        "<p>The maximum amount of time that objects stay in the distribution's cache before the distribution forwards another request to the origin to determine whether the object has been updated.</p> <p>The value specified applies only when the origin adds HTTP headers such as <code>Cache-Control max-age</code>, <code>Cache-Control s-maxage</code>, and <code>Expires</code> to objects.</p>",
+    }),
+    allowedHTTPMethods: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        "<p>The HTTP methods that are processed and forwarded to the distribution's origin.</p> <p>You can specify the following options:</p> <ul> <li> <p> <code>GET,HEAD</code> - The distribution forwards the <code>GET</code> and <code>HEAD</code> methods.</p> </li> <li> <p> <code>GET,HEAD,OPTIONS</code> - The distribution forwards the <code>GET</code>, <code>HEAD</code>, and <code>OPTIONS</code> methods.</p> </li> <li> <p> <code>GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE</code> - The distribution forwards the <code>GET</code>, <code>HEAD</code>, <code>OPTIONS</code>, <code>PUT</code>, <code>PATCH</code>, <code>POST</code>, and <code>DELETE</code> methods.</p> </li> </ul> <p>If you specify the third option, you might need to restrict access to your distribution's origin so users can't perform operations that you don't want them to. For example, you might not want users to have permission to delete objects from your origin.</p>",
+    }),
+    cachedHTTPMethods: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        '<p>The HTTP method responses that are cached by your distribution.</p> <p>You can specify the following options:</p> <ul> <li> <p> <code>GET,HEAD</code> - The distribution caches responses to the <code>GET</code> and <code>HEAD</code> methods.</p> </li> <li> <p> <code>GET,HEAD,OPTIONS</code> - The distribution caches responses to the <code>GET</code>, <code>HEAD</code>, and <code>OPTIONS</code> methods.</p> </li> </ul>',
+    }),
+    forwardedCookies: CookieObjectSchema.exactOptional().openapi({
+      description:
+        'An object that describes the cookies that are forwarded to the origin. Your content is cached based on the cookies that are forwarded.',
+    }),
+    forwardedHeaders: HeaderObjectSchema.exactOptional().openapi({
+      description:
+        'An object that describes the headers that are forwarded to the origin. Your content is cached based on the headers that are forwarded.',
+    }),
+    forwardedQueryStrings: QueryStringObjectSchema.exactOptional().openapi({
+      description:
+        'An object that describes the query strings that are forwarded to the origin. Your content is cached based on the query strings that are forwarded.',
+    }),
   })
   .openapi({
     description:
@@ -2677,22 +2352,14 @@ const CacheSettingsSchema = z
 
 const CacheBehaviorPerPathSchema = z
   .object({
-    path: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The path to a directory or file to cached, or not cache. Use an asterisk symbol to specify wildcard directories (<code>path/to/assets/*</code>), and file types (<code>*.html, *jpg, *js</code>). Directories and file paths are case-sensitive.</p> <p>Examples:</p> <ul> <li> <p>Specify the following to cache all files in the document root of an Apache web server running on a Lightsail instance.</p> <p> <code>var/www/html/</code> </p> </li> <li> <p>Specify the following file to cache only the index page in the document root of an Apache web server.</p> <p> <code>var/www/html/index.html</code> </p> </li> <li> <p>Specify the following to cache only the .html files in the document root of an Apache web server.</p> <p> <code>var/www/html/*.html</code> </p> </li> <li> <p>Specify the following to cache only the .jpg, .png, and .gif files in the images sub-directory of the document root of an Apache web server.</p> <p> <code>var/www/html/images/*.jpg</code> </p> <p> <code>var/www/html/images/*.png</code> </p> <p> <code>var/www/html/images/*.gif</code> </p> <p>Specify the following to cache all files in the images sub-directory of the document root of an Apache web server.</p> <p> <code>var/www/html/images/</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    behavior: BehaviorEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The cache behavior for the specified path.</p> <p>You can specify one of the following per-path cache behaviors:</p> <ul> <li> <p> <b> <code>cache</code> </b> - This behavior caches the specified path. </p> </li> <li> <p> <b> <code>dont-cache</code> </b> - This behavior doesn't cache the specified path. </p> </li> </ul>",
-        }),
-    ).exactOptional(),
+    path: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The path to a directory or file to cached, or not cache. Use an asterisk symbol to specify wildcard directories (<code>path/to/assets/*</code>), and file types (<code>*.html, *jpg, *js</code>). Directories and file paths are case-sensitive.</p> <p>Examples:</p> <ul> <li> <p>Specify the following to cache all files in the document root of an Apache web server running on a Lightsail instance.</p> <p> <code>var/www/html/</code> </p> </li> <li> <p>Specify the following file to cache only the index page in the document root of an Apache web server.</p> <p> <code>var/www/html/index.html</code> </p> </li> <li> <p>Specify the following to cache only the .html files in the document root of an Apache web server.</p> <p> <code>var/www/html/*.html</code> </p> </li> <li> <p>Specify the following to cache only the .jpg, .png, and .gif files in the images sub-directory of the document root of an Apache web server.</p> <p> <code>var/www/html/images/*.jpg</code> </p> <p> <code>var/www/html/images/*.png</code> </p> <p> <code>var/www/html/images/*.gif</code> </p> <p>Specify the following to cache all files in the images sub-directory of the document root of an Apache web server.</p> <p> <code>var/www/html/images/</code> </p> </li> </ul>',
+    }),
+    behavior: BehaviorEnumSchema.exactOptional().openapi({
+      description:
+        "<p>The cache behavior for the specified path.</p> <p>You can specify one of the following per-path cache behaviors:</p> <ul> <li> <p> <b> <code>cache</code> </b> - This behavior caches the specified path. </p> </li> <li> <p> <b> <code>dont-cache</code> </b> - This behavior doesn't cache the specified path. </p> </li> </ul>",
+    }),
   })
   .openapi({
     description:
@@ -2703,121 +2370,75 @@ const CacheBehaviorPerPathSchema = z
 
 const CacheBehaviorListSchema = z.array(CacheBehaviorPerPathSchema).openapi('CacheBehaviorList')
 
-const IpAddressTypeSchema = z.enum(['dualstack', 'ipv4']).openapi('IpAddressType')
-
 const LightsailDistributionSchema = z
   .object({
-    name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the distribution.' }),
-    ).exactOptional(),
-    arn: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the distribution.' }),
-    ).exactOptional(),
-    supportCode: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The support code. Include this code in your email to support when you have questions about your Lightsail distribution. This code enables our support team to look up your Lightsail information more easily.',
-        }),
-    ).exactOptional(),
-    createdAt: IsoDateSchema.and(
-      z.any().openapi({ description: 'The timestamp when the distribution was created.' }),
-    ).exactOptional(),
-    location: ResourceLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An object that describes the location of the distribution, such as the Amazon Web Services Region and Availability Zone.</p> <note> <p>Lightsail distributions are global resources that can reference an origin in any Amazon Web Services Region, and distribute its content globally. However, all distributions are located in the <code>us-east-1</code> Region.</p> </note>',
-        }),
-    ).exactOptional(),
-    resourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Lightsail resource type (e.g., <code>Distribution</code>).' }),
-    ).exactOptional(),
-    alternativeDomainNames: StringListSchema.and(
-      z.any().openapi({ description: 'The alternate domain names of the distribution.' }),
-    ).exactOptional(),
-    status: StringSchema.and(
-      z.any().openapi({ description: 'The status of the distribution.' }),
-    ).exactOptional(),
-    isEnabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Indicates whether the distribution is enabled.' }),
-    ).exactOptional(),
-    domainName: StringSchema.and(
-      z.any().openapi({ description: 'The domain name of the distribution.' }),
-    ).exactOptional(),
-    bundleId: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the bundle currently applied to the distribution.' }),
-    ).exactOptional(),
-    certificateName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the SSL/TLS certificate attached to the distribution, if any.',
-        }),
-    ).exactOptional(),
-    origin: OriginSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An object that describes the origin resource of the distribution, such as a Lightsail instance, bucket, or load balancer.</p> <p>The distribution pulls, caches, and serves content from the origin.</p>',
-        }),
-    ).exactOptional(),
-    originPublicDNS: StringSchema.and(
-      z.any().openapi({ description: 'The public DNS of the origin.' }),
-    ).exactOptional(),
-    defaultCacheBehavior: CacheBehaviorSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that describes the default cache behavior of the distribution.',
-        }),
-    ).exactOptional(),
-    cacheBehaviorSettings: CacheSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that describes the cache behavior settings of the distribution.',
-        }),
-    ).exactOptional(),
-    cacheBehaviors: CacheBehaviorListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the per-path cache behavior of the distribution.',
-        }),
-    ).exactOptional(),
-    ableToUpdateBundle: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Indicates whether the bundle that is currently applied to your distribution, specified using the <code>distributionName</code> parameter, can be changed to another bundle.</p> <p>Use the <code>UpdateDistributionBundle</code> action to change your distribution's bundle.</p>",
-        }),
-    ).exactOptional(),
-    ipAddressType: IpAddressTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The IP address type of the distribution.</p> <p>The possible values are <code>ipv4</code> for IPv4 only, and <code>dualstack</code> for IPv4 and IPv6.</p>',
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tag keys and optional values for the resource. For more information about tags in Lightsail, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-tags">Amazon Lightsail Developer Guide</a>.',
-        }),
-    ).exactOptional(),
+    name: ResourceNameSchema.exactOptional().openapi({
+      description: 'The name of the distribution.',
+    }),
+    arn: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the distribution.',
+    }),
+    supportCode: StringSchema.exactOptional().openapi({
+      description:
+        'The support code. Include this code in your email to support when you have questions about your Lightsail distribution. This code enables our support team to look up your Lightsail information more easily.',
+    }),
+    createdAt: IsoDateSchema.exactOptional().openapi({
+      description: 'The timestamp when the distribution was created.',
+    }),
+    location: ResourceLocationSchema.exactOptional().openapi({
+      description:
+        '<p>An object that describes the location of the distribution, such as the Amazon Web Services Region and Availability Zone.</p> <note> <p>Lightsail distributions are global resources that can reference an origin in any Amazon Web Services Region, and distribute its content globally. However, all distributions are located in the <code>us-east-1</code> Region.</p> </note>',
+    }),
+    resourceType: ResourceTypeSchema.exactOptional().openapi({
+      description: 'The Lightsail resource type (e.g., <code>Distribution</code>).',
+    }),
+    alternativeDomainNames: StringListSchema.exactOptional().openapi({
+      description: 'The alternate domain names of the distribution.',
+    }),
+    status: StringSchema.exactOptional().openapi({
+      description: 'The status of the distribution.',
+    }),
+    isEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Indicates whether the distribution is enabled.',
+    }),
+    domainName: StringSchema.exactOptional().openapi({
+      description: 'The domain name of the distribution.',
+    }),
+    bundleId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the bundle currently applied to the distribution.',
+    }),
+    certificateName: ResourceNameSchema.exactOptional().openapi({
+      description: 'The name of the SSL/TLS certificate attached to the distribution, if any.',
+    }),
+    origin: OriginSchema.exactOptional().openapi({
+      description:
+        '<p>An object that describes the origin resource of the distribution, such as a Lightsail instance, bucket, or load balancer.</p> <p>The distribution pulls, caches, and serves content from the origin.</p>',
+    }),
+    originPublicDNS: StringSchema.exactOptional().openapi({
+      description: 'The public DNS of the origin.',
+    }),
+    defaultCacheBehavior: CacheBehaviorSchema.exactOptional().openapi({
+      description: 'An object that describes the default cache behavior of the distribution.',
+    }),
+    cacheBehaviorSettings: CacheSettingsSchema.exactOptional().openapi({
+      description: 'An object that describes the cache behavior settings of the distribution.',
+    }),
+    cacheBehaviors: CacheBehaviorListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the per-path cache behavior of the distribution.',
+    }),
+    ableToUpdateBundle: BooleanSchema.exactOptional().openapi({
+      description:
+        "<p>Indicates whether the bundle that is currently applied to your distribution, specified using the <code>distributionName</code> parameter, can be changed to another bundle.</p> <p>Use the <code>UpdateDistributionBundle</code> action to change your distribution's bundle.</p>",
+    }),
+    ipAddressType: IpAddressTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The IP address type of the distribution.</p> <p>The possible values are <code>ipv4</code> for IPv4 only, and <code>dualstack</code> for IPv4 and IPv6.</p>',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        'The tag keys and optional values for the resource. For more information about tags in Lightsail, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-tags">Amazon Lightsail Developer Guide</a>.',
+    }),
   })
   .openapi({
     description: 'Describes an Amazon Lightsail content delivery network (CDN) distribution.',
@@ -2827,37 +2448,29 @@ const LightsailDistributionSchema = z
 
 const CreateDistributionResultSchema = z
   .object({
-    distribution: LightsailDistributionSchema.and(
-      z.any().openapi({ description: 'An object that describes the distribution created.' }),
-    ).exactOptional(),
-    operation: OperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    distribution: LightsailDistributionSchema.exactOptional().openapi({
+      description: 'An object that describes the distribution created.',
+    }),
+    operation: OperationSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateDistributionResult')
 
 const InputOriginSchema = z
   .object({
-    name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the origin resource.' }),
-    ).exactOptional(),
-    regionName: RegionNameSchema.and(
-      z.any().openapi({ description: 'The AWS Region name of the origin resource.' }),
-    ).exactOptional(),
-    protocolPolicy: OriginProtocolPolicyEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The protocol that your Amazon Lightsail distribution uses when establishing a connection with your origin to pull content.',
-        }),
-    ).exactOptional(),
+    name: ResourceNameSchema.exactOptional().openapi({
+      description: 'The name of the origin resource.',
+    }),
+    regionName: RegionNameSchema.exactOptional().openapi({
+      description: 'The AWS Region name of the origin resource.',
+    }),
+    protocolPolicy: OriginProtocolPolicyEnumSchema.exactOptional().openapi({
+      description:
+        'The protocol that your Amazon Lightsail distribution uses when establishing a connection with your origin to pull content.',
+    }),
   })
   .openapi({
     description:
@@ -2868,63 +2481,33 @@ const InputOriginSchema = z
 
 const CreateDistributionRequestSchema = z
   .object({
-    distributionName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name for the distribution.' }),
-    ),
-    origin: InputOriginSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An object that describes the origin resource for the distribution, such as a Lightsail instance, bucket, or load balancer.</p> <p>The distribution pulls, caches, and serves content from the origin.</p>',
-        }),
-    ),
-    defaultCacheBehavior: CacheBehaviorSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that describes the default cache behavior for the distribution.',
-        }),
-    ),
-    cacheBehaviorSettings: CacheSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that describes the cache behavior settings for the distribution.',
-        }),
-    ).exactOptional(),
-    cacheBehaviors: CacheBehaviorListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the per-path cache behavior for the distribution.',
-        }),
-    ).exactOptional(),
-    bundleId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The bundle ID to use for the distribution.</p> <p>A distribution bundle describes the specifications of your distribution, such as the monthly cost and monthly network transfer quota.</p> <p>Use the <code>GetDistributionBundles</code> action to get a list of distribution bundle IDs that you can specify.</p>',
-        }),
-    ),
-    ipAddressType: IpAddressTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The IP address type for the distribution.</p> <p>The possible values are <code>ipv4</code> for IPv4 only, and <code>dualstack</code> for IPv4 and IPv6.</p> <p>The default value is <code>dualstack</code>.</p>',
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The tag keys and optional values to add to the distribution during create.</p> <p>Use the <code>TagResource</code> action to tag a resource after it's created.</p>",
-        }),
-    ).exactOptional(),
+    distributionName: ResourceNameSchema.openapi({ description: 'The name for the distribution.' }),
+    origin: InputOriginSchema.openapi({
+      description:
+        '<p>An object that describes the origin resource for the distribution, such as a Lightsail instance, bucket, or load balancer.</p> <p>The distribution pulls, caches, and serves content from the origin.</p>',
+    }),
+    defaultCacheBehavior: CacheBehaviorSchema.openapi({
+      description: 'An object that describes the default cache behavior for the distribution.',
+    }),
+    cacheBehaviorSettings: CacheSettingsSchema.exactOptional().openapi({
+      description: 'An object that describes the cache behavior settings for the distribution.',
+    }),
+    cacheBehaviors: CacheBehaviorListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the per-path cache behavior for the distribution.',
+    }),
+    bundleId: StringSchema.openapi({
+      description:
+        '<p>The bundle ID to use for the distribution.</p> <p>A distribution bundle describes the specifications of your distribution, such as the monthly cost and monthly network transfer quota.</p> <p>Use the <code>GetDistributionBundles</code> action to get a list of distribution bundle IDs that you can specify.</p>',
+    }),
+    ipAddressType: IpAddressTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The IP address type for the distribution.</p> <p>The possible values are <code>ipv4</code> for IPv4 only, and <code>dualstack</code> for IPv4 and IPv6.</p> <p>The default value is <code>dualstack</code>.</p>',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        "<p>The tag keys and optional values to add to the distribution during create.</p> <p>Use the <code>TagResource</code> action to tag a resource after it's created.</p>",
+    }),
   })
   .openapi({
     required: ['distributionName', 'origin', 'defaultCacheBehavior', 'bundleId'],
@@ -2934,47 +2517,33 @@ const CreateDistributionRequestSchema = z
 
 const CreateDomainResultSchema = z
   .object({
-    operation: OperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operation: OperationSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateDomainResult')
 
 const CreateDomainRequestSchema = z
   .object({
-    domainName: DomainNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The domain name to manage (e.g., <code>example.com</code>).' }),
-    ),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The tag keys and optional values to add to the resource during create.</p> <p>Use the <code>TagResource</code> action to tag a resource after it's created.</p>",
-        }),
-    ).exactOptional(),
+    domainName: DomainNameSchema.openapi({
+      description: 'The domain name to manage (e.g., <code>example.com</code>).',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        "<p>The tag keys and optional values to add to the resource during create.</p> <p>Use the <code>TagResource</code> action to tag a resource after it's created.</p>",
+    }),
   })
   .openapi({ required: ['domainName'], title: 'CreateDomainRequest' })
   .openapi('CreateDomainRequest')
 
 const CreateDomainEntryResultSchema = z
   .object({
-    operation: OperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operation: OperationSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateDomainEntryResult')
@@ -2985,67 +2554,41 @@ const DomainEntryOptionsSchema = z.record(z.string(), StringSchema).openapi('Dom
 
 const DomainEntrySchema = z
   .object({
-    id: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The ID of the domain recordset entry.' }),
-    ).exactOptional(),
-    name: DomainNameSchema.and(
-      z.any().openapi({ description: 'The name of the domain.' }),
-    ).exactOptional(),
-    target: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The target IP address (e.g., <code>192.0.2.0</code>), or AWS name server (e.g., <code>ns-111.awsdns-22.com.</code>).</p> <p>For Lightsail load balancers, the value looks like <code>ab1234c56789c6b86aba6fb203d443bc-123456789.us-east-2.elb.amazonaws.com</code>. For Lightsail distributions, the value looks like <code>exampled1182ne.cloudfront.net</code>. For Lightsail container services, the value looks like <code>container-service-1.example23scljs.us-west-2.cs.amazonlightsail.com</code>. Be sure to also set <code>isAlias</code> to <code>true</code> when setting up an A record for a Lightsail load balancer, distribution, or container service.</p>',
-        }),
-    ).exactOptional(),
-    isAlias: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When <code>true</code>, specifies whether the domain entry is an alias used by the Lightsail load balancer, Lightsail container service, Lightsail content delivery network (CDN) distribution, or another Amazon Web Services resource. You can include an alias (A type) record in your request, which points to the DNS name of a load balancer, container service, CDN distribution, or other Amazon Web Services resource and routes traffic to that resource.',
-        }),
-    ).exactOptional(),
-    type: DomainEntryTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of domain entry, such as address for IPv4 (A), address for IPv6 (AAAA), canonical name (CNAME), mail exchanger (MX), name server (NS), start of authority (SOA), service locator (SRV), or text (TXT).</p> <p>The following domain entry types can be used:</p> <ul> <li> <p> <code>A</code> </p> </li> <li> <p> <code>AAAA</code> </p> </li> <li> <p> <code>CNAME</code> </p> </li> <li> <p> <code>MX</code> </p> </li> <li> <p> <code>NS</code> </p> </li> <li> <p> <code>SOA</code> </p> </li> <li> <p> <code>SRV</code> </p> </li> <li> <p> <code>TXT</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    options: DomainEntryOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            '<p>(Deprecated) The options for the domain entry.</p> <note> <p>In releases prior to November 29, 2017, this parameter was not included in the API response. It is now deprecated.</p> </note>',
-        }),
-    ).exactOptional(),
+    id: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The ID of the domain recordset entry.',
+    }),
+    name: DomainNameSchema.exactOptional().openapi({ description: 'The name of the domain.' }),
+    target: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The target IP address (e.g., <code>192.0.2.0</code>), or AWS name server (e.g., <code>ns-111.awsdns-22.com.</code>).</p> <p>For Lightsail load balancers, the value looks like <code>ab1234c56789c6b86aba6fb203d443bc-123456789.us-east-2.elb.amazonaws.com</code>. For Lightsail distributions, the value looks like <code>exampled1182ne.cloudfront.net</code>. For Lightsail container services, the value looks like <code>container-service-1.example23scljs.us-west-2.cs.amazonlightsail.com</code>. Be sure to also set <code>isAlias</code> to <code>true</code> when setting up an A record for a Lightsail load balancer, distribution, or container service.</p>',
+    }),
+    isAlias: BooleanSchema.exactOptional().openapi({
+      description:
+        'When <code>true</code>, specifies whether the domain entry is an alias used by the Lightsail load balancer, Lightsail container service, Lightsail content delivery network (CDN) distribution, or another Amazon Web Services resource. You can include an alias (A type) record in your request, which points to the DNS name of a load balancer, container service, CDN distribution, or other Amazon Web Services resource and routes traffic to that resource.',
+    }),
+    type: DomainEntryTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The type of domain entry, such as address for IPv4 (A), address for IPv6 (AAAA), canonical name (CNAME), mail exchanger (MX), name server (NS), start of authority (SOA), service locator (SRV), or text (TXT).</p> <p>The following domain entry types can be used:</p> <ul> <li> <p> <code>A</code> </p> </li> <li> <p> <code>AAAA</code> </p> </li> <li> <p> <code>CNAME</code> </p> </li> <li> <p> <code>MX</code> </p> </li> <li> <p> <code>NS</code> </p> </li> <li> <p> <code>SOA</code> </p> </li> <li> <p> <code>SRV</code> </p> </li> <li> <p> <code>TXT</code> </p> </li> </ul>',
+    }),
+    options: DomainEntryOptionsSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        '<p>(Deprecated) The options for the domain entry.</p> <note> <p>In releases prior to November 29, 2017, this parameter was not included in the API response. It is now deprecated.</p> </note>',
+    }),
   })
   .openapi({ description: 'Describes a domain recordset entry.', required: [] })
   .openapi('DomainEntry')
 
 const CreateDomainEntryRequestSchema = z
   .object({
-    domainName: DomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The domain name (e.g., <code>example.com</code>) for which you want to create the domain entry.',
-        }),
-    ),
-    domainEntry: DomainEntrySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of key-value pairs containing information about the domain entry request.',
-        }),
-    ),
+    domainName: DomainNameSchema.openapi({
+      description:
+        'The domain name (e.g., <code>example.com</code>) for which you want to create the domain entry.',
+    }),
+    domainEntry: DomainEntrySchema.openapi({
+      description:
+        'An array of key-value pairs containing information about the domain entry request.',
+    }),
   })
   .openapi({ required: ['domainName', 'domainEntry'], title: 'CreateDomainEntryRequest' })
   .openapi('CreateDomainEntryRequest')
@@ -3072,20 +2615,12 @@ const SensitiveNonEmptyStringSchema = z
 
 const SessionSchema = z
   .object({
-    name: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The session name.' }),
-    ).exactOptional(),
-    url: SensitiveNonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The session URL.' }),
-    ).exactOptional(),
-    isPrimary: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When true, this Boolean value indicates the primary session for the specified resource.',
-        }),
-    ).exactOptional(),
+    name: NonEmptyStringSchema.exactOptional().openapi({ description: 'The session name.' }),
+    url: SensitiveNonEmptyStringSchema.exactOptional().openapi({ description: 'The session URL.' }),
+    isPrimary: BooleanSchema.exactOptional().openapi({
+      description:
+        'When true, this Boolean value indicates the primary session for the specified resource.',
+    }),
   })
   .openapi({
     description:
@@ -3098,64 +2633,48 @@ const SessionsSchema = z.array(SessionSchema).openapi('Sessions')
 
 const CreateGUISessionAccessDetailsResultSchema = z
   .object({
-    resourceName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The resource name.' }),
-    ).exactOptional(),
-    status: StatusSchema.and(
-      z.any().openapi({ description: 'The status of the operation.' }),
-    ).exactOptional(),
-    percentageComplete: IntegerSchema.and(
-      z.any().openapi({ description: 'The percentage of completion for the operation.' }),
-    ).exactOptional(),
-    failureReason: StringSchema.and(
-      z.any().openapi({ description: 'The reason the operation failed.' }),
-    ).exactOptional(),
-    sessions: SessionsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Returns information about the specified NICE DCV GUI session.' }),
-    ).exactOptional(),
+    resourceName: ResourceNameSchema.exactOptional().openapi({ description: 'The resource name.' }),
+    status: StatusSchema.exactOptional().openapi({ description: 'The status of the operation.' }),
+    percentageComplete: IntegerSchema.exactOptional().openapi({
+      description: 'The percentage of completion for the operation.',
+    }),
+    failureReason: StringSchema.exactOptional().openapi({
+      description: 'The reason the operation failed.',
+    }),
+    sessions: SessionsSchema.exactOptional().openapi({
+      description: 'Returns information about the specified NICE DCV GUI session.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateGUISessionAccessDetailsResult')
 
 const CreateGUISessionAccessDetailsRequestSchema = z
-  .object({
-    resourceName: ResourceNameSchema.and(z.any().openapi({ description: 'The resource name.' })),
-  })
+  .object({ resourceName: ResourceNameSchema.openapi({ description: 'The resource name.' }) })
   .openapi({ required: ['resourceName'], title: 'CreateGUISessionAccessDetailsRequest' })
   .openapi('CreateGUISessionAccessDetailsRequest')
 
 const CreateInstanceSnapshotResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateInstanceSnapshotResult')
 
 const CreateInstanceSnapshotRequestSchema = z
   .object({
-    instanceSnapshotName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name for your new snapshot.' }),
-    ),
-    instanceName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The Lightsail instance on which to base your snapshot.' }),
-    ),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The tag keys and optional values to add to the resource during create.</p> <p>Use the <code>TagResource</code> action to tag a resource after it's created.</p>",
-        }),
-    ).exactOptional(),
+    instanceSnapshotName: ResourceNameSchema.openapi({
+      description: 'The name for your new snapshot.',
+    }),
+    instanceName: ResourceNameSchema.openapi({
+      description: 'The Lightsail instance on which to base your snapshot.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        "<p>The tag keys and optional values to add to the resource during create.</p> <p>Use the <code>TagResource</code> action to tag a resource after it's created.</p>",
+    }),
   })
   .openapi({
     required: ['instanceSnapshotName', 'instanceName'],
@@ -3165,96 +2684,55 @@ const CreateInstanceSnapshotRequestSchema = z
 
 const CreateInstancesResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateInstancesResult')
 
 const CreateInstancesRequestSchema = z
   .object({
-    instanceNames: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The names to use for your new Lightsail instances. Separate multiple values using quotation marks and commas, for example: <code>["MyFirstInstance","MySecondInstance"]</code> ',
-        }),
-    ),
-    availabilityZone: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Availability Zone in which to create your instance. Use the following format: <code>us-east-2a</code> (case sensitive). You can get a list of Availability Zones by using the <a href="http://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_GetRegions.html">get regions</a> operation. Be sure to add the <code>include Availability Zones</code> parameter to your request.',
-        }),
-    ),
-    customImageName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            '<p>(Deprecated) The name for your custom image.</p> <note> <p>In releases prior to June 12, 2017, this parameter was ignored by the API. It is now deprecated.</p> </note>',
-        }),
-    ).exactOptional(),
-    blueprintId: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID for a virtual private server image (e.g., <code>app_wordpress_4_4</code> or <code>app_lamp_7_0</code>). Use the <code>get blueprints</code> operation to return a list of available images (or <i>blueprints</i>).</p> <note> <p>Use active blueprints when creating new instances. Inactive blueprints are listed to support customers with existing instances and are not necessarily available to create new instances. Blueprints are marked inactive when they become outdated due to operating system updates or new application releases.</p> </note>',
-        }),
-    ),
-    bundleId: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The bundle of specification information for your virtual private server (or <i>instance</i>), including the pricing plan (e.g., <code>micro_1_0</code>).',
-        }),
-    ),
-    userData: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A launch script you can create that configures a server with additional user data. For example, you might want to run <code>apt-get -y update</code>.</p> <note> <p>Depending on the machine image you choose, the command to get software on your instance varies. Amazon Linux and CentOS use <code>yum</code>, Debian and Ubuntu use <code>apt-get</code>, and FreeBSD uses <code>pkg</code>. For a complete list, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/compare-options-choose-lightsail-instance-image">Amazon Lightsail Developer Guide</a>.</p> </note>',
-        }),
-    ).exactOptional(),
-    keyPairName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of your key pair.' }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The tag keys and optional values to add to the resource during create.</p> <p>Use the <code>TagResource</code> action to tag a resource after it's created.</p>",
-        }),
-    ).exactOptional(),
-    addOns: AddOnRequestListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects representing the add-ons to enable for the new instance.',
-        }),
-    ).exactOptional(),
-    ipAddressType: IpAddressTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The IP address type for the instance.</p> <p>The possible values are <code>ipv4</code> for IPv4 only, and <code>dualstack</code> for IPv4 and IPv6.</p> <p>The default value is <code>dualstack</code>.</p>',
-        }),
-    ).exactOptional(),
+    instanceNames: StringListSchema.openapi({
+      description:
+        'The names to use for your new Lightsail instances. Separate multiple values using quotation marks and commas, for example: <code>["MyFirstInstance","MySecondInstance"]</code> ',
+    }),
+    availabilityZone: StringSchema.openapi({
+      description:
+        'The Availability Zone in which to create your instance. Use the following format: <code>us-east-2a</code> (case sensitive). You can get a list of Availability Zones by using the <a href="http://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_GetRegions.html">get regions</a> operation. Be sure to add the <code>include Availability Zones</code> parameter to your request.',
+    }),
+    customImageName: ResourceNameSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        '<p>(Deprecated) The name for your custom image.</p> <note> <p>In releases prior to June 12, 2017, this parameter was ignored by the API. It is now deprecated.</p> </note>',
+    }),
+    blueprintId: NonEmptyStringSchema.openapi({
+      description:
+        '<p>The ID for a virtual private server image (e.g., <code>app_wordpress_4_4</code> or <code>app_lamp_7_0</code>). Use the <code>get blueprints</code> operation to return a list of available images (or <i>blueprints</i>).</p> <note> <p>Use active blueprints when creating new instances. Inactive blueprints are listed to support customers with existing instances and are not necessarily available to create new instances. Blueprints are marked inactive when they become outdated due to operating system updates or new application releases.</p> </note>',
+    }),
+    bundleId: NonEmptyStringSchema.openapi({
+      description:
+        'The bundle of specification information for your virtual private server (or <i>instance</i>), including the pricing plan (e.g., <code>micro_1_0</code>).',
+    }),
+    userData: StringSchema.exactOptional().openapi({
+      description:
+        '<p>A launch script you can create that configures a server with additional user data. For example, you might want to run <code>apt-get -y update</code>.</p> <note> <p>Depending on the machine image you choose, the command to get software on your instance varies. Amazon Linux and CentOS use <code>yum</code>, Debian and Ubuntu use <code>apt-get</code>, and FreeBSD uses <code>pkg</code>. For a complete list, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/compare-options-choose-lightsail-instance-image">Amazon Lightsail Developer Guide</a>.</p> </note>',
+    }),
+    keyPairName: ResourceNameSchema.exactOptional().openapi({
+      description: 'The name of your key pair.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        "<p>The tag keys and optional values to add to the resource during create.</p> <p>Use the <code>TagResource</code> action to tag a resource after it's created.</p>",
+    }),
+    addOns: AddOnRequestListSchema.exactOptional().openapi({
+      description: 'An array of objects representing the add-ons to enable for the new instance.',
+    }),
+    ipAddressType: IpAddressTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The IP address type for the instance.</p> <p>The possible values are <code>ipv4</code> for IPv4 only, and <code>dualstack</code> for IPv4 and IPv6.</p> <p>The default value is <code>dualstack</code>.</p>',
+    }),
   })
   .openapi({
     required: ['instanceNames', 'availabilityZone', 'blueprintId', 'bundleId'],
@@ -3264,31 +2742,23 @@ const CreateInstancesRequestSchema = z
 
 const CreateInstancesFromSnapshotResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateInstancesFromSnapshotResult')
 
 const DiskMapSchema = z
   .object({
-    originalDiskPath: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The original disk path exposed to the instance (for example, <code>/dev/sdh</code>).',
-        }),
-    ).exactOptional(),
-    newDiskName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The new disk name (e.g., <code>my-new-disk</code>).' }),
-    ).exactOptional(),
+    originalDiskPath: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        'The original disk path exposed to the instance (for example, <code>/dev/sdh</code>).',
+    }),
+    newDiskName: ResourceNameSchema.exactOptional().openapi({
+      description: 'The new disk name (e.g., <code>my-new-disk</code>).',
+    }),
   })
   .openapi({ description: 'Describes a block storage disk mapping.', required: [] })
   .openapi('DiskMap')
@@ -3299,99 +2769,52 @@ const AttachedDiskMapSchema = z.record(z.string(), DiskMapListSchema).openapi('A
 
 const CreateInstancesFromSnapshotRequestSchema = z
   .object({
-    instanceNames: StringListSchema.and(
-      z.any().openapi({ description: 'The names for your new instances.' }),
-    ),
-    attachedDiskMapping: AttachedDiskMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object containing information about one or more disk mappings.',
-        }),
-    ).exactOptional(),
-    availabilityZone: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Availability Zone where you want to create your instances. Use the following formatting: <code>us-east-2a</code> (case sensitive). You can get a list of Availability Zones by using the <a href="http://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_GetRegions.html">get regions</a> operation. Be sure to add the <code>include Availability Zones</code> parameter to your request.',
-        }),
-    ),
-    instanceSnapshotName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the instance snapshot on which you are basing your new instances. Use the get instance snapshots operation to return information about your existing snapshots.</p> <p>Constraint:</p> <ul> <li> <p>This parameter cannot be defined together with the <code>source instance name</code> parameter. The <code>instance snapshot name</code> and <code>source instance name</code> parameters are mutually exclusive.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    bundleId: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The bundle of specification information for your virtual private server (or <i>instance</i>), including the pricing plan (e.g., <code>micro_1_0</code>).',
-        }),
-    ),
-    userData: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>You can create a launch script that configures a server with additional user data. For example, <code>apt-get -y update</code>.</p> <note> <p>Depending on the machine image you choose, the command to get software on your instance varies. Amazon Linux and CentOS use <code>yum</code>, Debian and Ubuntu use <code>apt-get</code>, and FreeBSD uses <code>pkg</code>. For a complete list, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/compare-options-choose-lightsail-instance-image">Amazon Lightsail Developer Guide</a>.</p> </note>',
-        }),
-    ).exactOptional(),
-    keyPairName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name for your key pair.' }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The tag keys and optional values to add to the resource during create.</p> <p>Use the <code>TagResource</code> action to tag a resource after it's created.</p>",
-        }),
-    ).exactOptional(),
-    addOns: AddOnRequestListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects representing the add-ons to enable for the new instance.',
-        }),
-    ).exactOptional(),
-    ipAddressType: IpAddressTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The IP address type for the instance.</p> <p>The possible values are <code>ipv4</code> for IPv4 only, and <code>dualstack</code> for IPv4 and IPv6.</p> <p>The default value is <code>dualstack</code>.</p>',
-        }),
-    ).exactOptional(),
-    sourceInstanceName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the source instance from which the source automatic snapshot was created.</p> <p>Constraints:</p> <ul> <li> <p>This parameter cannot be defined together with the <code>instance snapshot name</code> parameter. The <code>source instance name</code> and <code>instance snapshot name</code> parameters are mutually exclusive.</p> </li> <li> <p>Define this parameter only when creating a new instance from an automatic snapshot. For more information, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-configuring-automatic-snapshots">Amazon Lightsail Developer Guide</a>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    restoreDate: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The date of the automatic snapshot to use for the new instance. Use the <code>get auto snapshots</code> operation to identify the dates of the available automatic snapshots.</p> <p>Constraints:</p> <ul> <li> <p>Must be specified in <code>YYYY-MM-DD</code> format.</p> </li> <li> <p>This parameter cannot be defined together with the <code>use latest restorable auto snapshot</code> parameter. The <code>restore date</code> and <code>use latest restorable auto snapshot</code> parameters are mutually exclusive.</p> </li> <li> <p>Define this parameter only when creating a new instance from an automatic snapshot. For more information, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-configuring-automatic-snapshots">Amazon Lightsail Developer Guide</a>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    useLatestRestorableAutoSnapshot: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A Boolean value to indicate whether to use the latest available automatic snapshot.</p> <p>Constraints:</p> <ul> <li> <p>This parameter cannot be defined together with the <code>restore date</code> parameter. The <code>use latest restorable auto snapshot</code> and <code>restore date</code> parameters are mutually exclusive.</p> </li> <li> <p>Define this parameter only when creating a new instance from an automatic snapshot. For more information, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-configuring-automatic-snapshots">Amazon Lightsail Developer Guide</a>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    instanceNames: StringListSchema.openapi({ description: 'The names for your new instances.' }),
+    attachedDiskMapping: AttachedDiskMapSchema.exactOptional().openapi({
+      description: 'An object containing information about one or more disk mappings.',
+    }),
+    availabilityZone: StringSchema.openapi({
+      description:
+        'The Availability Zone where you want to create your instances. Use the following formatting: <code>us-east-2a</code> (case sensitive). You can get a list of Availability Zones by using the <a href="http://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_GetRegions.html">get regions</a> operation. Be sure to add the <code>include Availability Zones</code> parameter to your request.',
+    }),
+    instanceSnapshotName: ResourceNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the instance snapshot on which you are basing your new instances. Use the get instance snapshots operation to return information about your existing snapshots.</p> <p>Constraint:</p> <ul> <li> <p>This parameter cannot be defined together with the <code>source instance name</code> parameter. The <code>instance snapshot name</code> and <code>source instance name</code> parameters are mutually exclusive.</p> </li> </ul>',
+    }),
+    bundleId: NonEmptyStringSchema.openapi({
+      description:
+        'The bundle of specification information for your virtual private server (or <i>instance</i>), including the pricing plan (e.g., <code>micro_1_0</code>).',
+    }),
+    userData: StringSchema.exactOptional().openapi({
+      description:
+        '<p>You can create a launch script that configures a server with additional user data. For example, <code>apt-get -y update</code>.</p> <note> <p>Depending on the machine image you choose, the command to get software on your instance varies. Amazon Linux and CentOS use <code>yum</code>, Debian and Ubuntu use <code>apt-get</code>, and FreeBSD uses <code>pkg</code>. For a complete list, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/compare-options-choose-lightsail-instance-image">Amazon Lightsail Developer Guide</a>.</p> </note>',
+    }),
+    keyPairName: ResourceNameSchema.exactOptional().openapi({
+      description: 'The name for your key pair.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        "<p>The tag keys and optional values to add to the resource during create.</p> <p>Use the <code>TagResource</code> action to tag a resource after it's created.</p>",
+    }),
+    addOns: AddOnRequestListSchema.exactOptional().openapi({
+      description: 'An array of objects representing the add-ons to enable for the new instance.',
+    }),
+    ipAddressType: IpAddressTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The IP address type for the instance.</p> <p>The possible values are <code>ipv4</code> for IPv4 only, and <code>dualstack</code> for IPv4 and IPv6.</p> <p>The default value is <code>dualstack</code>.</p>',
+    }),
+    sourceInstanceName: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the source instance from which the source automatic snapshot was created.</p> <p>Constraints:</p> <ul> <li> <p>This parameter cannot be defined together with the <code>instance snapshot name</code> parameter. The <code>source instance name</code> and <code>instance snapshot name</code> parameters are mutually exclusive.</p> </li> <li> <p>Define this parameter only when creating a new instance from an automatic snapshot. For more information, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-configuring-automatic-snapshots">Amazon Lightsail Developer Guide</a>.</p> </li> </ul>',
+    }),
+    restoreDate: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The date of the automatic snapshot to use for the new instance. Use the <code>get auto snapshots</code> operation to identify the dates of the available automatic snapshots.</p> <p>Constraints:</p> <ul> <li> <p>Must be specified in <code>YYYY-MM-DD</code> format.</p> </li> <li> <p>This parameter cannot be defined together with the <code>use latest restorable auto snapshot</code> parameter. The <code>restore date</code> and <code>use latest restorable auto snapshot</code> parameters are mutually exclusive.</p> </li> <li> <p>Define this parameter only when creating a new instance from an automatic snapshot. For more information, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-configuring-automatic-snapshots">Amazon Lightsail Developer Guide</a>.</p> </li> </ul>',
+    }),
+    useLatestRestorableAutoSnapshot: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>A Boolean value to indicate whether to use the latest available automatic snapshot.</p> <p>Constraints:</p> <ul> <li> <p>This parameter cannot be defined together with the <code>restore date</code> parameter. The <code>use latest restorable auto snapshot</code> and <code>restore date</code> parameters are mutually exclusive.</p> </li> <li> <p>Define this parameter only when creating a new instance from an automatic snapshot. For more information, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-configuring-automatic-snapshots">Amazon Lightsail Developer Guide</a>.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['instanceNames', 'availabilityZone', 'bundleId'],
@@ -3403,115 +2826,75 @@ const Base64Schema = z.string().openapi('Base64')
 
 const KeyPairSchema = z
   .object({
-    name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The friendly name of the SSH key pair.' }),
-    ).exactOptional(),
-    arn: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the key pair (e.g., <code>arn:aws:lightsail:us-east-2:123456789101:KeyPair/05859e3d-331d-48ba-9034-12345EXAMPLE</code>).',
-        }),
-    ).exactOptional(),
-    supportCode: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The support code. Include this code in your email to support when you have questions about an instance or another resource in Lightsail. This code enables our support team to look up your Lightsail information more easily.',
-        }),
-    ).exactOptional(),
-    createdAt: IsoDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp when the key pair was created (e.g., <code>1479816991.349</code>).',
-        }),
-    ).exactOptional(),
-    location: ResourceLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The region name and Availability Zone where the key pair was created.',
-        }),
-    ).exactOptional(),
-    resourceType: ResourceTypeSchema.and(
-      z.any().openapi({ description: 'The resource type (usually <code>KeyPair</code>).' }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tag keys and optional values for the resource. For more information about tags in Lightsail, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-tags">Amazon Lightsail Developer Guide</a>.',
-        }),
-    ).exactOptional(),
-    fingerprint: Base64Schema.and(
-      z.any().openapi({ description: 'The RSA fingerprint of the key pair.' }),
-    ).exactOptional(),
+    name: ResourceNameSchema.exactOptional().openapi({
+      description: 'The friendly name of the SSH key pair.',
+    }),
+    arn: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the key pair (e.g., <code>arn:aws:lightsail:us-east-2:123456789101:KeyPair/05859e3d-331d-48ba-9034-12345EXAMPLE</code>).',
+    }),
+    supportCode: StringSchema.exactOptional().openapi({
+      description:
+        'The support code. Include this code in your email to support when you have questions about an instance or another resource in Lightsail. This code enables our support team to look up your Lightsail information more easily.',
+    }),
+    createdAt: IsoDateSchema.exactOptional().openapi({
+      description:
+        'The timestamp when the key pair was created (e.g., <code>1479816991.349</code>).',
+    }),
+    location: ResourceLocationSchema.exactOptional().openapi({
+      description: 'The region name and Availability Zone where the key pair was created.',
+    }),
+    resourceType: ResourceTypeSchema.exactOptional().openapi({
+      description: 'The resource type (usually <code>KeyPair</code>).',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        'The tag keys and optional values for the resource. For more information about tags in Lightsail, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-tags">Amazon Lightsail Developer Guide</a>.',
+    }),
+    fingerprint: Base64Schema.exactOptional().openapi({
+      description: 'The RSA fingerprint of the key pair.',
+    }),
   })
   .openapi({ description: 'Describes an SSH key pair.', required: [] })
   .openapi('KeyPair')
 
 const CreateKeyPairResultSchema = z
   .object({
-    keyPair: KeyPairSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of key-value pairs containing information about the new key pair you just created.',
-        }),
-    ).exactOptional(),
-    publicKeyBase64: Base64Schema.and(
-      z
-        .any()
-        .openapi({ description: 'A base64-encoded public key of the <code>ssh-rsa</code> type.' }),
-    ).exactOptional(),
-    privateKeyBase64: Base64Schema.and(
-      z.any().openapi({ description: 'A base64-encoded RSA private key.' }),
-    ).exactOptional(),
-    operation: OperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    keyPair: KeyPairSchema.exactOptional().openapi({
+      description:
+        'An array of key-value pairs containing information about the new key pair you just created.',
+    }),
+    publicKeyBase64: Base64Schema.exactOptional().openapi({
+      description: 'A base64-encoded public key of the <code>ssh-rsa</code> type.',
+    }),
+    privateKeyBase64: Base64Schema.exactOptional().openapi({
+      description: 'A base64-encoded RSA private key.',
+    }),
+    operation: OperationSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateKeyPairResult')
 
 const CreateKeyPairRequestSchema = z
   .object({
-    keyPairName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name for your new key pair.' }),
-    ),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The tag keys and optional values to add to the resource during create.</p> <p>Use the <code>TagResource</code> action to tag a resource after it's created.</p>",
-        }),
-    ).exactOptional(),
+    keyPairName: ResourceNameSchema.openapi({ description: 'The name for your new key pair.' }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        "<p>The tag keys and optional values to add to the resource during create.</p> <p>Use the <code>TagResource</code> action to tag a resource after it's created.</p>",
+    }),
   })
   .openapi({ required: ['keyPairName'], title: 'CreateKeyPairRequest' })
   .openapi('CreateKeyPairRequest')
 
 const CreateLoadBalancerResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateLoadBalancerResult')
@@ -3520,129 +2903,74 @@ const DomainNameListSchema = z.array(DomainNameSchema).openapi('DomainNameList')
 
 const CreateLoadBalancerRequestSchema = z
   .object({
-    loadBalancerName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of your load balancer.' }),
-    ),
-    instancePort: PortSchema.and(
-      z
-        .any()
-        .openapi({ description: "The instance port where you're creating your load balancer." }),
-    ),
-    healthCheckPath: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The path you provided to perform the load balancer health check. If you didn\'t specify a health check path, Lightsail uses the root path of your website (e.g., <code>"/"</code>).</p> <p>You may want to specify a custom health check path other than the root of your application if your home page loads slowly or has a lot of media or scripting on it.</p>',
-        }),
-    ).exactOptional(),
-    certificateName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the SSL/TLS certificate.</p> <p>If you specify <code>certificateName</code>, then <code>certificateDomainName</code> is required (and vice-versa).</p>',
-        }),
-    ).exactOptional(),
-    certificateDomainName: DomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The domain name with which your certificate is associated (e.g., <code>example.com</code>).</p> <p>If you specify <code>certificateDomainName</code>, then <code>certificateName</code> is required (and vice-versa).</p>',
-        }),
-    ).exactOptional(),
-    certificateAlternativeNames: DomainNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The optional alternative domains and subdomains to use with your SSL/TLS certificate (e.g., <code>www.example.com</code>, <code>example.com</code>, <code>m.example.com</code>, <code>blog.example.com</code>).',
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The tag keys and optional values to add to the resource during create.</p> <p>Use the <code>TagResource</code> action to tag a resource after it's created.</p>",
-        }),
-    ).exactOptional(),
-    ipAddressType: IpAddressTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The IP address type for the load balancer.</p> <p>The possible values are <code>ipv4</code> for IPv4 only, and <code>dualstack</code> for IPv4 and IPv6.</p> <p>The default value is <code>dualstack</code>.</p>',
-        }),
-    ).exactOptional(),
-    tlsPolicyName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the TLS policy to apply to the load balancer.</p> <p>Use the <a href="https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_GetLoadBalancerTlsPolicies.html">GetLoadBalancerTlsPolicies</a> action to get a list of TLS policy names that you can specify.</p> <p>For more information about load balancer TLS policies, see <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-configure-load-balancer-tls-security-policy">Configuring TLS security policies on your Amazon Lightsail load balancers</a> in the <i>Amazon Lightsail Developer Guide</i>.</p>',
-        }),
-    ).exactOptional(),
+    loadBalancerName: ResourceNameSchema.openapi({
+      description: 'The name of your load balancer.',
+    }),
+    instancePort: PortSchema.openapi({
+      description: "The instance port where you're creating your load balancer.",
+    }),
+    healthCheckPath: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The path you provided to perform the load balancer health check. If you didn\'t specify a health check path, Lightsail uses the root path of your website (e.g., <code>"/"</code>).</p> <p>You may want to specify a custom health check path other than the root of your application if your home page loads slowly or has a lot of media or scripting on it.</p>',
+    }),
+    certificateName: ResourceNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the SSL/TLS certificate.</p> <p>If you specify <code>certificateName</code>, then <code>certificateDomainName</code> is required (and vice-versa).</p>',
+    }),
+    certificateDomainName: DomainNameSchema.exactOptional().openapi({
+      description:
+        '<p>The domain name with which your certificate is associated (e.g., <code>example.com</code>).</p> <p>If you specify <code>certificateDomainName</code>, then <code>certificateName</code> is required (and vice-versa).</p>',
+    }),
+    certificateAlternativeNames: DomainNameListSchema.exactOptional().openapi({
+      description:
+        'The optional alternative domains and subdomains to use with your SSL/TLS certificate (e.g., <code>www.example.com</code>, <code>example.com</code>, <code>m.example.com</code>, <code>blog.example.com</code>).',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        "<p>The tag keys and optional values to add to the resource during create.</p> <p>Use the <code>TagResource</code> action to tag a resource after it's created.</p>",
+    }),
+    ipAddressType: IpAddressTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The IP address type for the load balancer.</p> <p>The possible values are <code>ipv4</code> for IPv4 only, and <code>dualstack</code> for IPv4 and IPv6.</p> <p>The default value is <code>dualstack</code>.</p>',
+    }),
+    tlsPolicyName: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the TLS policy to apply to the load balancer.</p> <p>Use the <a href="https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_GetLoadBalancerTlsPolicies.html">GetLoadBalancerTlsPolicies</a> action to get a list of TLS policy names that you can specify.</p> <p>For more information about load balancer TLS policies, see <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-configure-load-balancer-tls-security-policy">Configuring TLS security policies on your Amazon Lightsail load balancers</a> in the <i>Amazon Lightsail Developer Guide</i>.</p>',
+    }),
   })
   .openapi({ required: ['loadBalancerName', 'instancePort'], title: 'CreateLoadBalancerRequest' })
   .openapi('CreateLoadBalancerRequest')
 
 const CreateLoadBalancerTlsCertificateResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateLoadBalancerTlsCertificateResult')
 
 const CreateLoadBalancerTlsCertificateRequestSchema = z
   .object({
-    loadBalancerName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The load balancer name where you want to create the SSL/TLS certificate.',
-        }),
-    ),
-    certificateName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The SSL/TLS certificate name.</p> <p>You can have up to 10 certificates in your account at one time. Each Lightsail load balancer can have up to 2 certificates associated with it at one time. There is also an overall limit to the number of certificates that can be issue in a 365-day period. For more information, see <a href="http://docs.aws.amazon.com/acm/latest/userguide/acm-limits.html">Limits</a>.</p>',
-        }),
-    ),
-    certificateDomainName: DomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The domain name (e.g., <code>example.com</code>) for your SSL/TLS certificate.',
-        }),
-    ),
-    certificateAlternativeNames: DomainNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of strings listing alternative domains and subdomains for your SSL/TLS certificate. Lightsail will de-dupe the names for you. You can have a maximum of 9 alternative names (in addition to the 1 primary domain). We do not support wildcards (e.g., <code>*.example.com</code>).',
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The tag keys and optional values to add to the resource during create.</p> <p>Use the <code>TagResource</code> action to tag a resource after it's created.</p>",
-        }),
-    ).exactOptional(),
+    loadBalancerName: ResourceNameSchema.openapi({
+      description: 'The load balancer name where you want to create the SSL/TLS certificate.',
+    }),
+    certificateName: ResourceNameSchema.openapi({
+      description:
+        '<p>The SSL/TLS certificate name.</p> <p>You can have up to 10 certificates in your account at one time. Each Lightsail load balancer can have up to 2 certificates associated with it at one time. There is also an overall limit to the number of certificates that can be issue in a 365-day period. For more information, see <a href="http://docs.aws.amazon.com/acm/latest/userguide/acm-limits.html">Limits</a>.</p>',
+    }),
+    certificateDomainName: DomainNameSchema.openapi({
+      description: 'The domain name (e.g., <code>example.com</code>) for your SSL/TLS certificate.',
+    }),
+    certificateAlternativeNames: DomainNameListSchema.exactOptional().openapi({
+      description:
+        'An array of strings listing alternative domains and subdomains for your SSL/TLS certificate. Lightsail will de-dupe the names for you. You can have a maximum of 9 alternative names (in addition to the 1 primary domain). We do not support wildcards (e.g., <code>*.example.com</code>).',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        "<p>The tag keys and optional values to add to the resource during create.</p> <p>Use the <code>TagResource</code> action to tag a resource after it's created.</p>",
+    }),
   })
   .openapi({
     required: ['loadBalancerName', 'certificateName', 'certificateDomainName'],
@@ -3652,14 +2980,10 @@ const CreateLoadBalancerTlsCertificateRequestSchema = z
 
 const CreateRelationalDatabaseResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateRelationalDatabaseResult')
@@ -3668,94 +2992,50 @@ const SensitiveStringSchema = z.string().openapi('SensitiveString')
 
 const CreateRelationalDatabaseRequestSchema = z
   .object({
-    relationalDatabaseName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name to use for your new Lightsail database resource.</p> <p>Constraints:</p> <ul> <li> <p>Must contain from 2 to 255 alphanumeric characters, or hyphens.</p> </li> <li> <p>The first and last character must be a letter or number.</p> </li> </ul>',
-        }),
-    ),
-    availabilityZone: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Availability Zone in which to create your new database. Use the <code>us-east-2a</code> case-sensitive format.</p> <p>You can get a list of Availability Zones by using the <code>get regions</code> operation. Be sure to add the <code>include relational database Availability Zones</code> parameter to your request.</p>',
-        }),
-    ).exactOptional(),
-    relationalDatabaseBlueprintId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The blueprint ID for your new database. A blueprint describes the major engine version of a database.</p> <p>You can get a list of database blueprints IDs by using the <code>get relational database blueprints</code> operation.</p>',
-        }),
-    ),
-    relationalDatabaseBundleId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The bundle ID for your new database. A bundle describes the performance specifications for your database.</p> <p>You can get a list of database bundle IDs by using the <code>get relational database bundles</code> operation.</p>',
-        }),
-    ),
-    masterDatabaseName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The meaning of this parameter differs according to the database engine you use.</p> <p> <b>MySQL</b> </p> <p>The name of the database to create when the Lightsail database resource is created. If this parameter isn\'t specified, no database is created in the database resource.</p> <p>Constraints:</p> <ul> <li> <p>Must contain 1 to 64 letters or numbers.</p> </li> <li> <p>Must begin with a letter. Subsequent characters can be letters, underscores, or digits (0- 9).</p> </li> <li> <p>Can\'t be a word reserved by the specified database engine.</p> <p>For more information about reserved words in MySQL, see the Keywords and Reserved Words articles for <a href="https://dev.mysql.com/doc/refman/5.6/en/keywords.html">MySQL 5.6</a>, <a href="https://dev.mysql.com/doc/refman/5.7/en/keywords.html">MySQL 5.7</a>, and <a href="https://dev.mysql.com/doc/refman/8.0/en/keywords.html">MySQL 8.0</a>.</p> </li> </ul> <p> <b>PostgreSQL</b> </p> <p>The name of the database to create when the Lightsail database resource is created. If this parameter isn\'t specified, a database named <code>postgres</code> is created in the database resource.</p> <p>Constraints:</p> <ul> <li> <p>Must contain 1 to 63 letters or numbers.</p> </li> <li> <p>Must begin with a letter. Subsequent characters can be letters, underscores, or digits (0- 9).</p> </li> <li> <p>Can\'t be a word reserved by the specified database engine.</p> <p>For more information about reserved words in PostgreSQL, see the SQL Key Words articles for <a href="https://www.postgresql.org/docs/9.6/sql-keywords-appendix.html">PostgreSQL 9.6</a>, <a href="https://www.postgresql.org/docs/10/sql-keywords-appendix.html">PostgreSQL 10</a>, <a href="https://www.postgresql.org/docs/11/sql-keywords-appendix.html">PostgreSQL 11</a>, and <a href="https://www.postgresql.org/docs/12/sql-keywords-appendix.html">PostgreSQL 12</a>.</p> </li> </ul>',
-        }),
-    ),
-    masterUsername: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name for the master user.</p> <p> <b>MySQL</b> </p> <p>Constraints:</p> <ul> <li> <p>Required for MySQL.</p> </li> <li> <p>Must be 1 to 16 letters or numbers. Can contain underscores.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Can\'t be a reserved word for the chosen database engine.</p> <p>For more information about reserved words in MySQL 5.6 or 5.7, see the Keywords and Reserved Words articles for <a href="https://dev.mysql.com/doc/refman/5.6/en/keywords.html">MySQL 5.6</a>, <a href="https://dev.mysql.com/doc/refman/5.7/en/keywords.html">MySQL 5.7</a>, or <a href="https://dev.mysql.com/doc/refman/8.0/en/keywords.html">MySQL 8.0</a>.</p> </li> </ul> <p> <b>PostgreSQL</b> </p> <p>Constraints:</p> <ul> <li> <p>Required for PostgreSQL.</p> </li> <li> <p>Must be 1 to 63 letters or numbers. Can contain underscores.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Can\'t be a reserved word for the chosen database engine.</p> <p>For more information about reserved words in MySQL 5.6 or 5.7, see the Keywords and Reserved Words articles for <a href="https://www.postgresql.org/docs/9.6/sql-keywords-appendix.html">PostgreSQL 9.6</a>, <a href="https://www.postgresql.org/docs/10/sql-keywords-appendix.html">PostgreSQL 10</a>, <a href="https://www.postgresql.org/docs/11/sql-keywords-appendix.html">PostgreSQL 11</a>, and <a href="https://www.postgresql.org/docs/12/sql-keywords-appendix.html">PostgreSQL 12</a>.</p> </li> </ul>',
-        }),
-    ),
-    masterUserPassword: SensitiveStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The password for the master user. The password can include any printable ASCII character except "/", """, or "@". It cannot contain spaces.</p> <p> <b>MySQL</b> </p> <p>Constraints: Must contain from 8 to 41 characters.</p> <p> <b>PostgreSQL</b> </p> <p>Constraints: Must contain from 8 to 128 characters.</p>',
-        }),
-    ).exactOptional(),
-    preferredBackupWindow: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The daily time range during which automated backups are created for your new database if automated backups are enabled.</p> <p>The default is a 30-minute window selected at random from an 8-hour block of time for each AWS Region. For more information about the preferred backup window time blocks for each region, see the <a href="https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_WorkingWithAutomatedBackups.html#USER_WorkingWithAutomatedBackups.BackupWindow">Working With Backups</a> guide in the Amazon Relational Database Service documentation.</p> <p>Constraints:</p> <ul> <li> <p>Must be in the <code>hh24:mi-hh24:mi</code> format.</p> <p>Example: <code>16:00-16:30</code> </p> </li> <li> <p>Specified in Coordinated Universal Time (UTC).</p> </li> <li> <p>Must not conflict with the preferred maintenance window.</p> </li> <li> <p>Must be at least 30 minutes.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    preferredMaintenanceWindow: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The weekly time range during which system maintenance can occur on your new database.</p> <p>The default is a 30-minute window selected at random from an 8-hour block of time for each AWS Region, occurring on a random day of the week.</p> <p>Constraints:</p> <ul> <li> <p>Must be in the <code>ddd:hh24:mi-ddd:hh24:mi</code> format.</p> </li> <li> <p>Valid days: Mon, Tue, Wed, Thu, Fri, Sat, Sun.</p> </li> <li> <p>Must be at least 30 minutes.</p> </li> <li> <p>Specified in Coordinated Universal Time (UTC).</p> </li> <li> <p>Example: <code>Tue:17:00-Tue:17:30</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    publiclyAccessible: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the accessibility options for your new database. A value of <code>true</code> specifies a database that is available to resources outside of your Lightsail account. A value of <code>false</code> specifies a database that is available only to your Lightsail resources in the same region as your database.',
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The tag keys and optional values to add to the resource during create.</p> <p>Use the <code>TagResource</code> action to tag a resource after it's created.</p>",
-        }),
-    ).exactOptional(),
+    relationalDatabaseName: ResourceNameSchema.openapi({
+      description:
+        '<p>The name to use for your new Lightsail database resource.</p> <p>Constraints:</p> <ul> <li> <p>Must contain from 2 to 255 alphanumeric characters, or hyphens.</p> </li> <li> <p>The first and last character must be a letter or number.</p> </li> </ul>',
+    }),
+    availabilityZone: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The Availability Zone in which to create your new database. Use the <code>us-east-2a</code> case-sensitive format.</p> <p>You can get a list of Availability Zones by using the <code>get regions</code> operation. Be sure to add the <code>include relational database Availability Zones</code> parameter to your request.</p>',
+    }),
+    relationalDatabaseBlueprintId: StringSchema.openapi({
+      description:
+        '<p>The blueprint ID for your new database. A blueprint describes the major engine version of a database.</p> <p>You can get a list of database blueprints IDs by using the <code>get relational database blueprints</code> operation.</p>',
+    }),
+    relationalDatabaseBundleId: StringSchema.openapi({
+      description:
+        '<p>The bundle ID for your new database. A bundle describes the performance specifications for your database.</p> <p>You can get a list of database bundle IDs by using the <code>get relational database bundles</code> operation.</p>',
+    }),
+    masterDatabaseName: StringSchema.openapi({
+      description:
+        '<p>The meaning of this parameter differs according to the database engine you use.</p> <p> <b>MySQL</b> </p> <p>The name of the database to create when the Lightsail database resource is created. If this parameter isn\'t specified, no database is created in the database resource.</p> <p>Constraints:</p> <ul> <li> <p>Must contain 1 to 64 letters or numbers.</p> </li> <li> <p>Must begin with a letter. Subsequent characters can be letters, underscores, or digits (0- 9).</p> </li> <li> <p>Can\'t be a word reserved by the specified database engine.</p> <p>For more information about reserved words in MySQL, see the Keywords and Reserved Words articles for <a href="https://dev.mysql.com/doc/refman/5.6/en/keywords.html">MySQL 5.6</a>, <a href="https://dev.mysql.com/doc/refman/5.7/en/keywords.html">MySQL 5.7</a>, and <a href="https://dev.mysql.com/doc/refman/8.0/en/keywords.html">MySQL 8.0</a>.</p> </li> </ul> <p> <b>PostgreSQL</b> </p> <p>The name of the database to create when the Lightsail database resource is created. If this parameter isn\'t specified, a database named <code>postgres</code> is created in the database resource.</p> <p>Constraints:</p> <ul> <li> <p>Must contain 1 to 63 letters or numbers.</p> </li> <li> <p>Must begin with a letter. Subsequent characters can be letters, underscores, or digits (0- 9).</p> </li> <li> <p>Can\'t be a word reserved by the specified database engine.</p> <p>For more information about reserved words in PostgreSQL, see the SQL Key Words articles for <a href="https://www.postgresql.org/docs/9.6/sql-keywords-appendix.html">PostgreSQL 9.6</a>, <a href="https://www.postgresql.org/docs/10/sql-keywords-appendix.html">PostgreSQL 10</a>, <a href="https://www.postgresql.org/docs/11/sql-keywords-appendix.html">PostgreSQL 11</a>, and <a href="https://www.postgresql.org/docs/12/sql-keywords-appendix.html">PostgreSQL 12</a>.</p> </li> </ul>',
+    }),
+    masterUsername: StringSchema.openapi({
+      description:
+        '<p>The name for the master user.</p> <p> <b>MySQL</b> </p> <p>Constraints:</p> <ul> <li> <p>Required for MySQL.</p> </li> <li> <p>Must be 1 to 16 letters or numbers. Can contain underscores.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Can\'t be a reserved word for the chosen database engine.</p> <p>For more information about reserved words in MySQL 5.6 or 5.7, see the Keywords and Reserved Words articles for <a href="https://dev.mysql.com/doc/refman/5.6/en/keywords.html">MySQL 5.6</a>, <a href="https://dev.mysql.com/doc/refman/5.7/en/keywords.html">MySQL 5.7</a>, or <a href="https://dev.mysql.com/doc/refman/8.0/en/keywords.html">MySQL 8.0</a>.</p> </li> </ul> <p> <b>PostgreSQL</b> </p> <p>Constraints:</p> <ul> <li> <p>Required for PostgreSQL.</p> </li> <li> <p>Must be 1 to 63 letters or numbers. Can contain underscores.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Can\'t be a reserved word for the chosen database engine.</p> <p>For more information about reserved words in MySQL 5.6 or 5.7, see the Keywords and Reserved Words articles for <a href="https://www.postgresql.org/docs/9.6/sql-keywords-appendix.html">PostgreSQL 9.6</a>, <a href="https://www.postgresql.org/docs/10/sql-keywords-appendix.html">PostgreSQL 10</a>, <a href="https://www.postgresql.org/docs/11/sql-keywords-appendix.html">PostgreSQL 11</a>, and <a href="https://www.postgresql.org/docs/12/sql-keywords-appendix.html">PostgreSQL 12</a>.</p> </li> </ul>',
+    }),
+    masterUserPassword: SensitiveStringSchema.exactOptional().openapi({
+      description:
+        '<p>The password for the master user. The password can include any printable ASCII character except "/", """, or "@". It cannot contain spaces.</p> <p> <b>MySQL</b> </p> <p>Constraints: Must contain from 8 to 41 characters.</p> <p> <b>PostgreSQL</b> </p> <p>Constraints: Must contain from 8 to 128 characters.</p>',
+    }),
+    preferredBackupWindow: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The daily time range during which automated backups are created for your new database if automated backups are enabled.</p> <p>The default is a 30-minute window selected at random from an 8-hour block of time for each AWS Region. For more information about the preferred backup window time blocks for each region, see the <a href="https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_WorkingWithAutomatedBackups.html#USER_WorkingWithAutomatedBackups.BackupWindow">Working With Backups</a> guide in the Amazon Relational Database Service documentation.</p> <p>Constraints:</p> <ul> <li> <p>Must be in the <code>hh24:mi-hh24:mi</code> format.</p> <p>Example: <code>16:00-16:30</code> </p> </li> <li> <p>Specified in Coordinated Universal Time (UTC).</p> </li> <li> <p>Must not conflict with the preferred maintenance window.</p> </li> <li> <p>Must be at least 30 minutes.</p> </li> </ul>',
+    }),
+    preferredMaintenanceWindow: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The weekly time range during which system maintenance can occur on your new database.</p> <p>The default is a 30-minute window selected at random from an 8-hour block of time for each AWS Region, occurring on a random day of the week.</p> <p>Constraints:</p> <ul> <li> <p>Must be in the <code>ddd:hh24:mi-ddd:hh24:mi</code> format.</p> </li> <li> <p>Valid days: Mon, Tue, Wed, Thu, Fri, Sat, Sun.</p> </li> <li> <p>Must be at least 30 minutes.</p> </li> <li> <p>Specified in Coordinated Universal Time (UTC).</p> </li> <li> <p>Example: <code>Tue:17:00-Tue:17:30</code> </p> </li> </ul>',
+    }),
+    publiclyAccessible: BooleanSchema.exactOptional().openapi({
+      description:
+        'Specifies the accessibility options for your new database. A value of <code>true</code> specifies a database that is available to resources outside of your Lightsail account. A value of <code>false</code> specifies a database that is available only to your Lightsail resources in the same region as your database.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        "<p>The tag keys and optional values to add to the resource during create.</p> <p>Use the <code>TagResource</code> action to tag a resource after it's created.</p>",
+    }),
   })
   .openapi({
     required: [
@@ -3771,86 +3051,50 @@ const CreateRelationalDatabaseRequestSchema = z
 
 const CreateRelationalDatabaseFromSnapshotResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateRelationalDatabaseFromSnapshotResult')
 
 const CreateRelationalDatabaseFromSnapshotRequestSchema = z
   .object({
-    relationalDatabaseName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name to use for your new Lightsail database resource.</p> <p>Constraints:</p> <ul> <li> <p>Must contain from 2 to 255 alphanumeric characters, or hyphens.</p> </li> <li> <p>The first and last character must be a letter or number.</p> </li> </ul>',
-        }),
-    ),
-    availabilityZone: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Availability Zone in which to create your new database. Use the <code>us-east-2a</code> case-sensitive format.</p> <p>You can get a list of Availability Zones by using the <code>get regions</code> operation. Be sure to add the <code>include relational database Availability Zones</code> parameter to your request.</p>',
-        }),
-    ).exactOptional(),
-    publiclyAccessible: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the accessibility options for your new database. A value of <code>true</code> specifies a database that is available to resources outside of your Lightsail account. A value of <code>false</code> specifies a database that is available only to your Lightsail resources in the same region as your database.',
-        }),
-    ).exactOptional(),
-    relationalDatabaseSnapshotName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the database snapshot from which to create your new database.',
-        }),
-    ).exactOptional(),
-    relationalDatabaseBundleId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The bundle ID for your new database. A bundle describes the performance specifications for your database.</p> <p>You can get a list of database bundle IDs by using the <code>get relational database bundles</code> operation.</p> <p>When creating a new database from a snapshot, you cannot choose a bundle that is smaller than the bundle of the source database.</p>',
-        }),
-    ).exactOptional(),
-    sourceRelationalDatabaseName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the source database.' }),
-    ).exactOptional(),
-    restoreTime: IsoDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The date and time to restore your database from.</p> <p>Constraints:</p> <ul> <li> <p>Must be before the latest restorable time for the database.</p> </li> <li> <p>Cannot be specified if the <code>use latest restorable time</code> parameter is <code>true</code>.</p> </li> <li> <p>Specified in Coordinated Universal Time (UTC).</p> </li> <li> <p>Specified in the Unix time format.</p> <p>For example, if you wish to use a restore time of October 1, 2018, at 8 PM UTC, then you input <code>1538424000</code> as the restore time.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    useLatestRestorableTime: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether your database is restored from the latest backup time. A value of <code>true</code> restores from the latest backup time. </p> <p>Default: <code>false</code> </p> <p>Constraints: Cannot be specified if the <code>restore time</code> parameter is provided.</p>',
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The tag keys and optional values to add to the resource during create.</p> <p>Use the <code>TagResource</code> action to tag a resource after it's created.</p>",
-        }),
-    ).exactOptional(),
+    relationalDatabaseName: ResourceNameSchema.openapi({
+      description:
+        '<p>The name to use for your new Lightsail database resource.</p> <p>Constraints:</p> <ul> <li> <p>Must contain from 2 to 255 alphanumeric characters, or hyphens.</p> </li> <li> <p>The first and last character must be a letter or number.</p> </li> </ul>',
+    }),
+    availabilityZone: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The Availability Zone in which to create your new database. Use the <code>us-east-2a</code> case-sensitive format.</p> <p>You can get a list of Availability Zones by using the <code>get regions</code> operation. Be sure to add the <code>include relational database Availability Zones</code> parameter to your request.</p>',
+    }),
+    publiclyAccessible: BooleanSchema.exactOptional().openapi({
+      description:
+        'Specifies the accessibility options for your new database. A value of <code>true</code> specifies a database that is available to resources outside of your Lightsail account. A value of <code>false</code> specifies a database that is available only to your Lightsail resources in the same region as your database.',
+    }),
+    relationalDatabaseSnapshotName: ResourceNameSchema.exactOptional().openapi({
+      description: 'The name of the database snapshot from which to create your new database.',
+    }),
+    relationalDatabaseBundleId: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The bundle ID for your new database. A bundle describes the performance specifications for your database.</p> <p>You can get a list of database bundle IDs by using the <code>get relational database bundles</code> operation.</p> <p>When creating a new database from a snapshot, you cannot choose a bundle that is smaller than the bundle of the source database.</p>',
+    }),
+    sourceRelationalDatabaseName: ResourceNameSchema.exactOptional().openapi({
+      description: 'The name of the source database.',
+    }),
+    restoreTime: IsoDateSchema.exactOptional().openapi({
+      description:
+        '<p>The date and time to restore your database from.</p> <p>Constraints:</p> <ul> <li> <p>Must be before the latest restorable time for the database.</p> </li> <li> <p>Cannot be specified if the <code>use latest restorable time</code> parameter is <code>true</code>.</p> </li> <li> <p>Specified in Coordinated Universal Time (UTC).</p> </li> <li> <p>Specified in the Unix time format.</p> <p>For example, if you wish to use a restore time of October 1, 2018, at 8 PM UTC, then you input <code>1538424000</code> as the restore time.</p> </li> </ul>',
+    }),
+    useLatestRestorableTime: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies whether your database is restored from the latest backup time. A value of <code>true</code> restores from the latest backup time. </p> <p>Default: <code>false</code> </p> <p>Constraints: Cannot be specified if the <code>restore time</code> parameter is provided.</p>',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        "<p>The tag keys and optional values to add to the resource during create.</p> <p>Use the <code>TagResource</code> action to tag a resource after it's created.</p>",
+    }),
   })
   .openapi({
     required: ['relationalDatabaseName'],
@@ -3860,41 +3104,27 @@ const CreateRelationalDatabaseFromSnapshotRequestSchema = z
 
 const CreateRelationalDatabaseSnapshotResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateRelationalDatabaseSnapshotResult')
 
 const CreateRelationalDatabaseSnapshotRequestSchema = z
   .object({
-    relationalDatabaseName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the database on which to base your new snapshot.' }),
-    ),
-    relationalDatabaseSnapshotName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name for your new database snapshot.</p> <p>Constraints:</p> <ul> <li> <p>Must contain from 2 to 255 alphanumeric characters, or hyphens.</p> </li> <li> <p>The first and last character must be a letter or number.</p> </li> </ul>',
-        }),
-    ),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The tag keys and optional values to add to the resource during create.</p> <p>Use the <code>TagResource</code> action to tag a resource after it's created.</p>",
-        }),
-    ).exactOptional(),
+    relationalDatabaseName: ResourceNameSchema.openapi({
+      description: 'The name of the database on which to base your new snapshot.',
+    }),
+    relationalDatabaseSnapshotName: ResourceNameSchema.openapi({
+      description:
+        '<p>The name for your new database snapshot.</p> <p>Constraints:</p> <ul> <li> <p>Must contain from 2 to 255 alphanumeric characters, or hyphens.</p> </li> <li> <p>The first and last character must be a letter or number.</p> </li> </ul>',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        "<p>The tag keys and optional values to add to the resource during create.</p> <p>Use the <code>TagResource</code> action to tag a resource after it's created.</p>",
+    }),
   })
   .openapi({
     required: ['relationalDatabaseName', 'relationalDatabaseSnapshotName'],
@@ -3904,37 +3134,27 @@ const CreateRelationalDatabaseSnapshotRequestSchema = z
 
 const DeleteAlarmResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteAlarmResult')
 
 const DeleteAlarmRequestSchema = z
   .object({
-    alarmName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the alarm to delete.' }),
-    ),
+    alarmName: ResourceNameSchema.openapi({ description: 'The name of the alarm to delete.' }),
   })
   .openapi({ required: ['alarmName'], title: 'DeleteAlarmRequest' })
   .openapi('DeleteAlarmRequest')
 
 const DeleteAutoSnapshotResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteAutoSnapshotResult')
@@ -3946,495 +3166,352 @@ const AutoSnapshotDateSchema = z
 
 const DeleteAutoSnapshotRequestSchema = z
   .object({
-    resourceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the source instance or disk from which to delete the automatic snapshot.',
-        }),
-    ),
-    date: AutoSnapshotDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date of the automatic snapshot to delete in <code>YYYY-MM-DD</code> format. Use the <code>get auto snapshots</code> operation to get the available automatic snapshots for a resource.',
-        }),
-    ),
+    resourceName: ResourceNameSchema.openapi({
+      description:
+        'The name of the source instance or disk from which to delete the automatic snapshot.',
+    }),
+    date: AutoSnapshotDateSchema.openapi({
+      description:
+        'The date of the automatic snapshot to delete in <code>YYYY-MM-DD</code> format. Use the <code>get auto snapshots</code> operation to get the available automatic snapshots for a resource.',
+    }),
   })
   .openapi({ required: ['resourceName', 'date'], title: 'DeleteAutoSnapshotRequest' })
   .openapi('DeleteAutoSnapshotRequest')
 
 const DeleteBucketResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteBucketResult')
 
 const DeleteBucketRequestSchema = z
   .object({
-    bucketName: BucketNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the bucket to delete.</p> <p>Use the <a href="https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_GetBuckets.html">GetBuckets</a> action to get a list of bucket names that you can specify.</p>',
-        }),
-    ),
-    forceDelete: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A Boolean value that indicates whether to force delete the bucket.</p> <p>You must force delete the bucket if it has one of the following conditions:</p> <ul> <li> <p>The bucket is the origin of a distribution.</p> </li> <li> <p>The bucket has instances that were granted access to it using the <a href="https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_SetResourceAccessForBucket.html">SetResourceAccessForBucket</a> action.</p> </li> <li> <p>The bucket has objects.</p> </li> <li> <p>The bucket has access keys.</p> </li> </ul> <important> <p>Force deleting a bucket might impact other resources that rely on the bucket, such as instances, distributions, or software that use the issued access keys.</p> </important>',
-        }),
-    ).exactOptional(),
+    bucketName: BucketNameSchema.openapi({
+      description:
+        '<p>The name of the bucket to delete.</p> <p>Use the <a href="https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_GetBuckets.html">GetBuckets</a> action to get a list of bucket names that you can specify.</p>',
+    }),
+    forceDelete: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>A Boolean value that indicates whether to force delete the bucket.</p> <p>You must force delete the bucket if it has one of the following conditions:</p> <ul> <li> <p>The bucket is the origin of a distribution.</p> </li> <li> <p>The bucket has instances that were granted access to it using the <a href="https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_SetResourceAccessForBucket.html">SetResourceAccessForBucket</a> action.</p> </li> <li> <p>The bucket has objects.</p> </li> <li> <p>The bucket has access keys.</p> </li> </ul> <important> <p>Force deleting a bucket might impact other resources that rely on the bucket, such as instances, distributions, or software that use the issued access keys.</p> </important>',
+    }),
   })
   .openapi({ required: ['bucketName'], title: 'DeleteBucketRequest' })
   .openapi('DeleteBucketRequest')
 
 const DeleteBucketAccessKeyResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteBucketAccessKeyResult')
 
 const DeleteBucketAccessKeyRequestSchema = z
   .object({
-    bucketName: BucketNameSchema.and(
-      z.any().openapi({ description: 'The name of the bucket that the access key belongs to.' }),
-    ),
-    accessKeyId: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the access key to delete.</p> <p>Use the <a href="https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_GetBucketAccessKeys.html">GetBucketAccessKeys</a> action to get a list of access key IDs that you can specify.</p>',
-        }),
-    ),
+    bucketName: BucketNameSchema.openapi({
+      description: 'The name of the bucket that the access key belongs to.',
+    }),
+    accessKeyId: NonEmptyStringSchema.openapi({
+      description:
+        '<p>The ID of the access key to delete.</p> <p>Use the <a href="https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_GetBucketAccessKeys.html">GetBucketAccessKeys</a> action to get a list of access key IDs that you can specify.</p>',
+    }),
   })
   .openapi({ required: ['bucketName', 'accessKeyId'], title: 'DeleteBucketAccessKeyRequest' })
   .openapi('DeleteBucketAccessKeyRequest')
 
 const DeleteCertificateResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteCertificateResult')
 
 const DeleteCertificateRequestSchema = z
   .object({
-    certificateName: CertificateNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the certificate to delete.</p> <p>Use the <code>GetCertificates</code> action to get a list of certificate names that you can specify.</p>',
-        }),
-    ),
+    certificateName: CertificateNameSchema.openapi({
+      description:
+        '<p>The name of the certificate to delete.</p> <p>Use the <code>GetCertificates</code> action to get a list of certificate names that you can specify.</p>',
+    }),
   })
   .openapi({ required: ['certificateName'], title: 'DeleteCertificateRequest' })
   .openapi('DeleteCertificateRequest')
 
 const DeleteContactMethodResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteContactMethodResult')
 
 const DeleteContactMethodRequestSchema = z
   .object({
-    protocol: ContactProtocolSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The protocol that will be deleted, such as <code>Email</code> or <code>SMS</code> (text messaging).</p> <note> <p>To delete an <code>Email</code> and an <code>SMS</code> contact method if you added both, you must run separate <code>DeleteContactMethod</code> actions to delete each protocol.</p> </note>',
-        }),
-    ),
+    protocol: ContactProtocolSchema.openapi({
+      description:
+        '<p>The protocol that will be deleted, such as <code>Email</code> or <code>SMS</code> (text messaging).</p> <note> <p>To delete an <code>Email</code> and an <code>SMS</code> contact method if you added both, you must run separate <code>DeleteContactMethod</code> actions to delete each protocol.</p> </note>',
+    }),
   })
   .openapi({ required: ['protocol'], title: 'DeleteContactMethodRequest' })
   .openapi('DeleteContactMethodRequest')
 
-const DeleteContainerImageResultSchema = z.object({}).openapi('DeleteContainerImageResult')
+const DeleteContainerImageResultSchema = z.looseObject({}).openapi('DeleteContainerImageResult')
 
 const DeleteContainerImageRequestSchema = z
   .object({
-    serviceName: ContainerServiceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the container service for which to delete a registered container image.',
-        }),
-    ),
-    image: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name of the container image to delete from the container service.</p> <p>Use the <code>GetContainerImages</code> action to get the name of the container images that are registered to a container service.</p> <note> <p>Container images sourced from your Lightsail container service, that are registered and stored on your service, start with a colon (<code>:</code>). For example, <code>:container-service-1.mystaticwebsite.1</code>. Container images sourced from a public registry like Docker Hub don't start with a colon. For example, <code>nginx:latest</code> or <code>nginx</code>.</p> </note>",
-        }),
-    ),
+    serviceName: ContainerServiceNameSchema.openapi({
+      description:
+        'The name of the container service for which to delete a registered container image.',
+    }),
+    image: StringSchema.openapi({
+      description:
+        "<p>The name of the container image to delete from the container service.</p> <p>Use the <code>GetContainerImages</code> action to get the name of the container images that are registered to a container service.</p> <note> <p>Container images sourced from your Lightsail container service, that are registered and stored on your service, start with a colon (<code>:</code>). For example, <code>:container-service-1.mystaticwebsite.1</code>. Container images sourced from a public registry like Docker Hub don't start with a colon. For example, <code>nginx:latest</code> or <code>nginx</code>.</p> </note>",
+    }),
   })
   .openapi({ required: ['serviceName', 'image'], title: 'DeleteContainerImageRequest' })
   .openapi('DeleteContainerImageRequest')
 
-const DeleteContainerServiceResultSchema = z.object({}).openapi('DeleteContainerServiceResult')
+const DeleteContainerServiceResultSchema = z.looseObject({}).openapi('DeleteContainerServiceResult')
 
 const DeleteContainerServiceRequestSchema = z
   .object({
-    serviceName: ContainerServiceNameSchema.and(
-      z.any().openapi({ description: 'The name of the container service to delete.' }),
-    ),
+    serviceName: ContainerServiceNameSchema.openapi({
+      description: 'The name of the container service to delete.',
+    }),
   })
   .openapi({ required: ['serviceName'], title: 'DeleteContainerServiceRequest' })
   .openapi('DeleteContainerServiceRequest')
 
 const DeleteDiskResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteDiskResult')
 
 const DeleteDiskRequestSchema = z
   .object({
-    diskName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique name of the disk you want to delete (e.g., <code>my-disk</code>).',
-        }),
-    ),
-    forceDeleteAddOns: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A Boolean value to indicate whether to delete all add-ons for the disk.',
-        }),
-    ).exactOptional(),
+    diskName: ResourceNameSchema.openapi({
+      description: 'The unique name of the disk you want to delete (e.g., <code>my-disk</code>).',
+    }),
+    forceDeleteAddOns: BooleanSchema.exactOptional().openapi({
+      description: 'A Boolean value to indicate whether to delete all add-ons for the disk.',
+    }),
   })
   .openapi({ required: ['diskName'], title: 'DeleteDiskRequest' })
   .openapi('DeleteDiskRequest')
 
 const DeleteDiskSnapshotResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteDiskSnapshotResult')
 
 const DeleteDiskSnapshotRequestSchema = z
   .object({
-    diskSnapshotName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the disk snapshot you want to delete (e.g., <code>my-disk-snapshot</code>).',
-        }),
-    ),
+    diskSnapshotName: ResourceNameSchema.openapi({
+      description:
+        'The name of the disk snapshot you want to delete (e.g., <code>my-disk-snapshot</code>).',
+    }),
   })
   .openapi({ required: ['diskSnapshotName'], title: 'DeleteDiskSnapshotRequest' })
   .openapi('DeleteDiskSnapshotRequest')
 
 const DeleteDistributionResultSchema = z
   .object({
-    operation: OperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that describes the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operation: OperationSchema.exactOptional().openapi({
+      description:
+        'An object that describes the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteDistributionResult')
 
 const DeleteDistributionRequestSchema = z
   .object({
-    distributionName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the distribution to delete.</p> <p>Use the <code>GetDistributions</code> action to get a list of distribution names that you can specify.</p>',
-        }),
-    ).exactOptional(),
+    distributionName: ResourceNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the distribution to delete.</p> <p>Use the <code>GetDistributions</code> action to get a list of distribution names that you can specify.</p>',
+    }),
   })
   .openapi({ title: 'DeleteDistributionRequest', required: [] })
   .openapi('DeleteDistributionRequest')
 
 const DeleteDomainResultSchema = z
   .object({
-    operation: OperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operation: OperationSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteDomainResult')
 
 const DeleteDomainRequestSchema = z
   .object({
-    domainName: DomainNameSchema.and(
-      z.any().openapi({ description: 'The specific domain name to delete.' }),
-    ),
+    domainName: DomainNameSchema.openapi({ description: 'The specific domain name to delete.' }),
   })
   .openapi({ required: ['domainName'], title: 'DeleteDomainRequest' })
   .openapi('DeleteDomainRequest')
 
 const DeleteDomainEntryResultSchema = z
   .object({
-    operation: OperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operation: OperationSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteDomainEntryResult')
 
 const DeleteDomainEntryRequestSchema = z
   .object({
-    domainName: DomainNameSchema.and(
-      z.any().openapi({ description: 'The name of the domain entry to delete.' }),
-    ),
-    domainEntry: DomainEntrySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of key-value pairs containing information about your domain entries.',
-        }),
-    ),
+    domainName: DomainNameSchema.openapi({
+      description: 'The name of the domain entry to delete.',
+    }),
+    domainEntry: DomainEntrySchema.openapi({
+      description: 'An array of key-value pairs containing information about your domain entries.',
+    }),
   })
   .openapi({ required: ['domainName', 'domainEntry'], title: 'DeleteDomainEntryRequest' })
   .openapi('DeleteDomainEntryRequest')
 
 const DeleteInstanceResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteInstanceResult')
 
 const DeleteInstanceRequestSchema = z
   .object({
-    instanceName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the instance to delete.' }),
-    ),
-    forceDeleteAddOns: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean value to indicate whether to delete all add-ons for the instance.',
-        }),
-    ).exactOptional(),
+    instanceName: ResourceNameSchema.openapi({
+      description: 'The name of the instance to delete.',
+    }),
+    forceDeleteAddOns: BooleanSchema.exactOptional().openapi({
+      description: 'A Boolean value to indicate whether to delete all add-ons for the instance.',
+    }),
   })
   .openapi({ required: ['instanceName'], title: 'DeleteInstanceRequest' })
   .openapi('DeleteInstanceRequest')
 
 const DeleteInstanceSnapshotResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteInstanceSnapshotResult')
 
 const DeleteInstanceSnapshotRequestSchema = z
   .object({
-    instanceSnapshotName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the snapshot to delete.' }),
-    ),
+    instanceSnapshotName: ResourceNameSchema.openapi({
+      description: 'The name of the snapshot to delete.',
+    }),
   })
   .openapi({ required: ['instanceSnapshotName'], title: 'DeleteInstanceSnapshotRequest' })
   .openapi('DeleteInstanceSnapshotRequest')
 
 const DeleteKeyPairResultSchema = z
   .object({
-    operation: OperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operation: OperationSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteKeyPairResult')
 
 const DeleteKeyPairRequestSchema = z
   .object({
-    keyPairName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the key pair to delete.' }),
-    ),
-    expectedFingerprint: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The RSA fingerprint of the Lightsail default key pair to delete.</p> <note> <p>The <code>expectedFingerprint</code> parameter is required only when specifying to delete a Lightsail default key pair.</p> </note>',
-        }),
-    ).exactOptional(),
+    keyPairName: ResourceNameSchema.openapi({ description: 'The name of the key pair to delete.' }),
+    expectedFingerprint: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The RSA fingerprint of the Lightsail default key pair to delete.</p> <note> <p>The <code>expectedFingerprint</code> parameter is required only when specifying to delete a Lightsail default key pair.</p> </note>',
+    }),
   })
   .openapi({ required: ['keyPairName'], title: 'DeleteKeyPairRequest' })
   .openapi('DeleteKeyPairRequest')
 
 const DeleteKnownHostKeysResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteKnownHostKeysResult')
 
 const DeleteKnownHostKeysRequestSchema = z
   .object({
-    instanceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the instance for which you want to reset the host key or certificate.',
-        }),
-    ),
+    instanceName: ResourceNameSchema.openapi({
+      description:
+        'The name of the instance for which you want to reset the host key or certificate.',
+    }),
   })
   .openapi({ required: ['instanceName'], title: 'DeleteKnownHostKeysRequest' })
   .openapi('DeleteKnownHostKeysRequest')
 
 const DeleteLoadBalancerResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteLoadBalancerResult')
 
 const DeleteLoadBalancerRequestSchema = z
   .object({
-    loadBalancerName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the load balancer you want to delete.' }),
-    ),
+    loadBalancerName: ResourceNameSchema.openapi({
+      description: 'The name of the load balancer you want to delete.',
+    }),
   })
   .openapi({ required: ['loadBalancerName'], title: 'DeleteLoadBalancerRequest' })
   .openapi('DeleteLoadBalancerRequest')
 
 const DeleteLoadBalancerTlsCertificateResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteLoadBalancerTlsCertificateResult')
 
 const DeleteLoadBalancerTlsCertificateRequestSchema = z
   .object({
-    loadBalancerName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The load balancer name.' }),
-    ),
-    certificateName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The SSL/TLS certificate name.' }),
-    ),
-    force: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>When <code>true</code>, forces the deletion of an SSL/TLS certificate.</p> <p>There can be two certificates associated with a Lightsail load balancer: the primary and the backup. The <code>force</code> parameter is required when the primary SSL/TLS certificate is in use by an instance attached to the load balancer.</p>',
-        }),
-    ).exactOptional(),
+    loadBalancerName: ResourceNameSchema.openapi({ description: 'The load balancer name.' }),
+    certificateName: ResourceNameSchema.openapi({ description: 'The SSL/TLS certificate name.' }),
+    force: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>When <code>true</code>, forces the deletion of an SSL/TLS certificate.</p> <p>There can be two certificates associated with a Lightsail load balancer: the primary and the backup. The <code>force</code> parameter is required when the primary SSL/TLS certificate is in use by an instance attached to the load balancer.</p>',
+    }),
   })
   .openapi({
     required: ['loadBalancerName', 'certificateName'],
@@ -4444,62 +3521,46 @@ const DeleteLoadBalancerTlsCertificateRequestSchema = z
 
 const DeleteRelationalDatabaseResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteRelationalDatabaseResult')
 
 const DeleteRelationalDatabaseRequestSchema = z
   .object({
-    relationalDatabaseName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the database that you are deleting.' }),
-    ),
-    skipFinalSnapshot: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Determines whether a final database snapshot is created before your database is deleted. If <code>true</code> is specified, no database snapshot is created. If <code>false</code> is specified, a database snapshot is created before your database is deleted.</p> <p>You must specify the <code>final relational database snapshot name</code> parameter if the <code>skip final snapshot</code> parameter is <code>false</code>.</p> <p>Default: <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    finalRelationalDatabaseSnapshotName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the database snapshot created if <code>skip final snapshot</code> is <code>false</code>, which is the default value for that parameter.</p> <note> <p>Specifying this parameter and also specifying the <code>skip final snapshot</code> parameter to <code>true</code> results in an error.</p> </note> <p>Constraints:</p> <ul> <li> <p>Must contain from 2 to 255 alphanumeric characters, or hyphens.</p> </li> <li> <p>The first and last character must be a letter or number.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    relationalDatabaseName: ResourceNameSchema.openapi({
+      description: 'The name of the database that you are deleting.',
+    }),
+    skipFinalSnapshot: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Determines whether a final database snapshot is created before your database is deleted. If <code>true</code> is specified, no database snapshot is created. If <code>false</code> is specified, a database snapshot is created before your database is deleted.</p> <p>You must specify the <code>final relational database snapshot name</code> parameter if the <code>skip final snapshot</code> parameter is <code>false</code>.</p> <p>Default: <code>false</code> </p>',
+    }),
+    finalRelationalDatabaseSnapshotName: ResourceNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the database snapshot created if <code>skip final snapshot</code> is <code>false</code>, which is the default value for that parameter.</p> <note> <p>Specifying this parameter and also specifying the <code>skip final snapshot</code> parameter to <code>true</code> results in an error.</p> </note> <p>Constraints:</p> <ul> <li> <p>Must contain from 2 to 255 alphanumeric characters, or hyphens.</p> </li> <li> <p>The first and last character must be a letter or number.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['relationalDatabaseName'], title: 'DeleteRelationalDatabaseRequest' })
   .openapi('DeleteRelationalDatabaseRequest')
 
 const DeleteRelationalDatabaseSnapshotResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteRelationalDatabaseSnapshotResult')
 
 const DeleteRelationalDatabaseSnapshotRequestSchema = z
   .object({
-    relationalDatabaseSnapshotName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the database snapshot that you are deleting.' }),
-    ),
+    relationalDatabaseSnapshotName: ResourceNameSchema.openapi({
+      description: 'The name of the database snapshot that you are deleting.',
+    }),
   })
   .openapi({
     required: ['relationalDatabaseSnapshotName'],
@@ -4509,87 +3570,63 @@ const DeleteRelationalDatabaseSnapshotRequestSchema = z
 
 const DetachCertificateFromDistributionResultSchema = z
   .object({
-    operation: OperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that describes the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operation: OperationSchema.exactOptional().openapi({
+      description:
+        'An object that describes the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DetachCertificateFromDistributionResult')
 
 const DetachCertificateFromDistributionRequestSchema = z
   .object({
-    distributionName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the distribution from which to detach the certificate.</p> <p>Use the <code>GetDistributions</code> action to get a list of distribution names that you can specify.</p>',
-        }),
-    ),
+    distributionName: ResourceNameSchema.openapi({
+      description:
+        '<p>The name of the distribution from which to detach the certificate.</p> <p>Use the <code>GetDistributions</code> action to get a list of distribution names that you can specify.</p>',
+    }),
   })
   .openapi({ required: ['distributionName'], title: 'DetachCertificateFromDistributionRequest' })
   .openapi('DetachCertificateFromDistributionRequest')
 
 const DetachDiskResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DetachDiskResult')
 
 const DetachDiskRequestSchema = z
   .object({
-    diskName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique name of the disk you want to detach from your instance (e.g., <code>my-disk</code>).',
-        }),
-    ),
+    diskName: ResourceNameSchema.openapi({
+      description:
+        'The unique name of the disk you want to detach from your instance (e.g., <code>my-disk</code>).',
+    }),
   })
   .openapi({ required: ['diskName'], title: 'DetachDiskRequest' })
   .openapi('DetachDiskRequest')
 
 const DetachInstancesFromLoadBalancerResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DetachInstancesFromLoadBalancerResult')
 
 const DetachInstancesFromLoadBalancerRequestSchema = z
   .object({
-    loadBalancerName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the Lightsail load balancer.' }),
-    ),
-    instanceNames: ResourceNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of strings containing the names of the instances you want to detach from the load balancer.',
-        }),
-    ),
+    loadBalancerName: ResourceNameSchema.openapi({
+      description: 'The name of the Lightsail load balancer.',
+    }),
+    instanceNames: ResourceNameListSchema.openapi({
+      description:
+        'An array of strings containing the names of the instances you want to detach from the load balancer.',
+    }),
   })
   .openapi({
     required: ['loadBalancerName', 'instanceNames'],
@@ -4599,169 +3636,123 @@ const DetachInstancesFromLoadBalancerRequestSchema = z
 
 const DetachStaticIpResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DetachStaticIpResult')
 
 const DetachStaticIpRequestSchema = z
   .object({
-    staticIpName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the static IP to detach from the instance.' }),
-    ),
+    staticIpName: ResourceNameSchema.openapi({
+      description: 'The name of the static IP to detach from the instance.',
+    }),
   })
   .openapi({ required: ['staticIpName'], title: 'DetachStaticIpRequest' })
   .openapi('DetachStaticIpRequest')
 
 const DisableAddOnResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DisableAddOnResult')
 
 const DisableAddOnRequestSchema = z
   .object({
-    addOnType: AddOnTypeSchema.and(z.any().openapi({ description: 'The add-on type to disable.' })),
-    resourceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the source resource for which to disable the add-on.',
-        }),
-    ),
+    addOnType: AddOnTypeSchema.openapi({ description: 'The add-on type to disable.' }),
+    resourceName: ResourceNameSchema.openapi({
+      description: 'The name of the source resource for which to disable the add-on.',
+    }),
   })
   .openapi({ required: ['addOnType', 'resourceName'], title: 'DisableAddOnRequest' })
   .openapi('DisableAddOnRequest')
 
 const DownloadDefaultKeyPairResultSchema = z
   .object({
-    publicKeyBase64: Base64Schema.and(
-      z
-        .any()
-        .openapi({ description: 'A base64-encoded public key of the <code>ssh-rsa</code> type.' }),
-    ).exactOptional(),
-    privateKeyBase64: Base64Schema.and(
-      z.any().openapi({ description: 'A base64-encoded RSA private key.' }),
-    ).exactOptional(),
-    createdAt: IsoDateSchema.and(
-      z.any().openapi({ description: 'The timestamp when the default key pair was created.' }),
-    ).exactOptional(),
+    publicKeyBase64: Base64Schema.exactOptional().openapi({
+      description: 'A base64-encoded public key of the <code>ssh-rsa</code> type.',
+    }),
+    privateKeyBase64: Base64Schema.exactOptional().openapi({
+      description: 'A base64-encoded RSA private key.',
+    }),
+    createdAt: IsoDateSchema.exactOptional().openapi({
+      description: 'The timestamp when the default key pair was created.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DownloadDefaultKeyPairResult')
 
 const DownloadDefaultKeyPairRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DownloadDefaultKeyPairRequest' })
   .openapi('DownloadDefaultKeyPairRequest')
 
 const EnableAddOnResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('EnableAddOnResult')
 
 const EnableAddOnRequestSchema = z
   .object({
-    resourceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the source resource for which to enable or modify the add-on.',
-        }),
-    ),
-    addOnRequest: AddOnRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array of strings representing the add-on to enable or modify.',
-        }),
-    ),
+    resourceName: ResourceNameSchema.openapi({
+      description: 'The name of the source resource for which to enable or modify the add-on.',
+    }),
+    addOnRequest: AddOnRequestSchema.openapi({
+      description: 'An array of strings representing the add-on to enable or modify.',
+    }),
   })
   .openapi({ required: ['resourceName', 'addOnRequest'], title: 'EnableAddOnRequest' })
   .openapi('EnableAddOnRequest')
 
 const ExportSnapshotResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ExportSnapshotResult')
 
 const ExportSnapshotRequestSchema = z
   .object({
-    sourceSnapshotName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the instance or disk snapshot to be exported to Amazon EC2.',
-        }),
-    ),
+    sourceSnapshotName: ResourceNameSchema.openapi({
+      description: 'The name of the instance or disk snapshot to be exported to Amazon EC2.',
+    }),
   })
   .openapi({ required: ['sourceSnapshotName'], title: 'ExportSnapshotRequest' })
   .openapi('ExportSnapshotRequest')
 
 const GetActiveNamesResultSchema = z
   .object({
-    activeNames: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The list of active names returned by the get active names request.',
-        }),
-    ).exactOptional(),
-    nextPageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetActiveNames</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
-        }),
-    ).exactOptional(),
+    activeNames: StringListSchema.exactOptional().openapi({
+      description: 'The list of active names returned by the get active names request.',
+    }),
+    nextPageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetActiveNames</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetActiveNamesResult')
 
 const GetActiveNamesRequestSchema = z
   .object({
-    pageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetActiveNames</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
-        }),
-    ).exactOptional(),
+    pageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetActiveNames</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
+    }),
   })
   .openapi({ title: 'GetActiveNamesRequest', required: [] })
   .openapi('GetActiveNamesRequest')
@@ -4773,24 +3764,16 @@ const ResourceArnSchema = z
 
 const MonitoredResourceInfoSchema = z
   .object({
-    arn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the resource being monitored.',
-        }),
-    ).exactOptional(),
-    name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the Lightsail resource being monitored.' }),
-    ).exactOptional(),
-    resourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Lightsail resource type of the resource being monitored.</p> <p>Instances, load balancers, and relational databases are the only Lightsail resources that can currently be monitored by alarms.</p>',
-        }),
-    ).exactOptional(),
+    arn: ResourceArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the resource being monitored.',
+    }),
+    name: ResourceNameSchema.exactOptional().openapi({
+      description: 'The name of the Lightsail resource being monitored.',
+    }),
+    resourceType: ResourceTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The Lightsail resource type of the resource being monitored.</p> <p>Instances, load balancers, and relational databases are the only Lightsail resources that can currently be monitored by alarms.</p>',
+    }),
   })
   .openapi({
     description:
@@ -4809,8 +3792,6 @@ const ComparisonOperatorSchema = z
   .openapi('ComparisonOperator')
 
 const MetricPeriodSchema = z.int().min(60).max(86400).openapi('MetricPeriod')
-
-const DoubleSchema = z.float64().openapi('Double')
 
 const TreatMissingDataSchema = z
   .enum(['breaching', 'notBreaching', 'ignore', 'missing'])
@@ -4890,119 +3871,71 @@ const NotificationTriggerListSchema = z.array(AlarmStateSchema).openapi('Notific
 
 const AlarmSchema = z
   .object({
-    name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the alarm.' }),
-    ).exactOptional(),
-    arn: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the alarm.' }),
-    ).exactOptional(),
-    createdAt: IsoDateSchema.and(
-      z.any().openapi({ description: 'The timestamp when the alarm was created.' }),
-    ).exactOptional(),
-    location: ResourceLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that lists information about the location of the alarm.',
-        }),
-    ).exactOptional(),
-    resourceType: ResourceTypeSchema.and(
-      z.any().openapi({ description: 'The Lightsail resource type (e.g., <code>Alarm</code>).' }),
-    ).exactOptional(),
-    supportCode: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The support code. Include this code in your email to support when you have questions about your Lightsail alarm. This code enables our support team to look up your Lightsail information more easily.',
-        }),
-    ).exactOptional(),
-    monitoredResourceInfo: MonitoredResourceInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that lists information about the resource monitored by the alarm.',
-        }),
-    ).exactOptional(),
-    comparisonOperator: ComparisonOperatorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The arithmetic operation used when comparing the specified statistic and threshold.',
-        }),
-    ).exactOptional(),
-    evaluationPeriods: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of periods over which data is compared to the specified threshold.',
-        }),
-    ).exactOptional(),
-    period: MetricPeriodSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The period, in seconds, over which the statistic is applied.' }),
-    ).exactOptional(),
-    threshold: DoubleSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The value against which the specified statistic is compared.' }),
-    ).exactOptional(),
-    datapointsToAlarm: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of data points that must not within the specified threshold to trigger the alarm.',
-        }),
-    ).exactOptional(),
-    treatMissingData: TreatMissingDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies how the alarm handles missing data points.</p> <p>An alarm can treat missing data in the following ways:</p> <ul> <li> <p> <code>breaching</code> - Assume the missing data is not within the threshold. Missing data counts towards the number of times the metric is not within the threshold.</p> </li> <li> <p> <code>notBreaching</code> - Assume the missing data is within the threshold. Missing data does not count towards the number of times the metric is not within the threshold.</p> </li> <li> <p> <code>ignore</code> - Ignore the missing data. Maintains the current alarm state.</p> </li> <li> <p> <code>missing</code> - Missing data is treated as missing.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    statistic: MetricStatisticSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The statistic for the metric associated with the alarm.</p> <p>The following statistics are available:</p> <ul> <li> <p> <code>Minimum</code> - The lowest value observed during the specified period. Use this value to determine low volumes of activity for your application.</p> </li> <li> <p> <code>Maximum</code> - The highest value observed during the specified period. Use this value to determine high volumes of activity for your application.</p> </li> <li> <p> <code>Sum</code> - All values submitted for the matching metric added together. You can use this statistic to determine the total volume of a metric.</p> </li> <li> <p> <code>Average</code> - The value of Sum / SampleCount during the specified period. By comparing this statistic with the Minimum and Maximum values, you can determine the full scope of a metric and how close the average use is to the Minimum and Maximum values. This comparison helps you to know when to increase or decrease your resources.</p> </li> <li> <p> <code>SampleCount</code> - The count, or number, of data points used for the statistical calculation.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    metricName: MetricNameSchema.and(
-      z.any().openapi({ description: 'The name of the metric associated with the alarm.' }),
-    ).exactOptional(),
-    state: AlarmStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The current state of the alarm.</p> <p>An alarm has the following possible states:</p> <ul> <li> <p> <code>ALARM</code> - The metric is outside of the defined threshold.</p> </li> <li> <p> <code>INSUFFICIENT_DATA</code> - The alarm has just started, the metric is not available, or not enough data is available for the metric to determine the alarm state.</p> </li> <li> <p> <code>OK</code> - The metric is within the defined threshold.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    unit: MetricUnitSchema.and(
-      z.any().openapi({ description: 'The unit of the metric associated with the alarm.' }),
-    ).exactOptional(),
-    contactProtocols: ContactProtocolsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The contact protocols for the alarm, such as <code>Email</code>, <code>SMS</code> (text messaging), or both.',
-        }),
-    ).exactOptional(),
-    notificationTriggers: NotificationTriggerListSchema.and(
-      z.any().openapi({ description: 'The alarm states that trigger a notification.' }),
-    ).exactOptional(),
-    notificationEnabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Indicates whether the alarm is enabled.' }),
-    ).exactOptional(),
+    name: ResourceNameSchema.exactOptional().openapi({ description: 'The name of the alarm.' }),
+    arn: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the alarm.',
+    }),
+    createdAt: IsoDateSchema.exactOptional().openapi({
+      description: 'The timestamp when the alarm was created.',
+    }),
+    location: ResourceLocationSchema.exactOptional().openapi({
+      description: 'An object that lists information about the location of the alarm.',
+    }),
+    resourceType: ResourceTypeSchema.exactOptional().openapi({
+      description: 'The Lightsail resource type (e.g., <code>Alarm</code>).',
+    }),
+    supportCode: StringSchema.exactOptional().openapi({
+      description:
+        'The support code. Include this code in your email to support when you have questions about your Lightsail alarm. This code enables our support team to look up your Lightsail information more easily.',
+    }),
+    monitoredResourceInfo: MonitoredResourceInfoSchema.exactOptional().openapi({
+      description: 'An object that lists information about the resource monitored by the alarm.',
+    }),
+    comparisonOperator: ComparisonOperatorSchema.exactOptional().openapi({
+      description:
+        'The arithmetic operation used when comparing the specified statistic and threshold.',
+    }),
+    evaluationPeriods: IntegerSchema.exactOptional().openapi({
+      description: 'The number of periods over which data is compared to the specified threshold.',
+    }),
+    period: MetricPeriodSchema.exactOptional().openapi({
+      description: 'The period, in seconds, over which the statistic is applied.',
+    }),
+    threshold: DoubleSchema.exactOptional().openapi({
+      description: 'The value against which the specified statistic is compared.',
+    }),
+    datapointsToAlarm: IntegerSchema.exactOptional().openapi({
+      description:
+        'The number of data points that must not within the specified threshold to trigger the alarm.',
+    }),
+    treatMissingData: TreatMissingDataSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies how the alarm handles missing data points.</p> <p>An alarm can treat missing data in the following ways:</p> <ul> <li> <p> <code>breaching</code> - Assume the missing data is not within the threshold. Missing data counts towards the number of times the metric is not within the threshold.</p> </li> <li> <p> <code>notBreaching</code> - Assume the missing data is within the threshold. Missing data does not count towards the number of times the metric is not within the threshold.</p> </li> <li> <p> <code>ignore</code> - Ignore the missing data. Maintains the current alarm state.</p> </li> <li> <p> <code>missing</code> - Missing data is treated as missing.</p> </li> </ul>',
+    }),
+    statistic: MetricStatisticSchema.exactOptional().openapi({
+      description:
+        '<p>The statistic for the metric associated with the alarm.</p> <p>The following statistics are available:</p> <ul> <li> <p> <code>Minimum</code> - The lowest value observed during the specified period. Use this value to determine low volumes of activity for your application.</p> </li> <li> <p> <code>Maximum</code> - The highest value observed during the specified period. Use this value to determine high volumes of activity for your application.</p> </li> <li> <p> <code>Sum</code> - All values submitted for the matching metric added together. You can use this statistic to determine the total volume of a metric.</p> </li> <li> <p> <code>Average</code> - The value of Sum / SampleCount during the specified period. By comparing this statistic with the Minimum and Maximum values, you can determine the full scope of a metric and how close the average use is to the Minimum and Maximum values. This comparison helps you to know when to increase or decrease your resources.</p> </li> <li> <p> <code>SampleCount</code> - The count, or number, of data points used for the statistical calculation.</p> </li> </ul>',
+    }),
+    metricName: MetricNameSchema.exactOptional().openapi({
+      description: 'The name of the metric associated with the alarm.',
+    }),
+    state: AlarmStateSchema.exactOptional().openapi({
+      description:
+        '<p>The current state of the alarm.</p> <p>An alarm has the following possible states:</p> <ul> <li> <p> <code>ALARM</code> - The metric is outside of the defined threshold.</p> </li> <li> <p> <code>INSUFFICIENT_DATA</code> - The alarm has just started, the metric is not available, or not enough data is available for the metric to determine the alarm state.</p> </li> <li> <p> <code>OK</code> - The metric is within the defined threshold.</p> </li> </ul>',
+    }),
+    unit: MetricUnitSchema.exactOptional().openapi({
+      description: 'The unit of the metric associated with the alarm.',
+    }),
+    contactProtocols: ContactProtocolsListSchema.exactOptional().openapi({
+      description:
+        'The contact protocols for the alarm, such as <code>Email</code>, <code>SMS</code> (text messaging), or both.',
+    }),
+    notificationTriggers: NotificationTriggerListSchema.exactOptional().openapi({
+      description: 'The alarm states that trigger a notification.',
+    }),
+    notificationEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Indicates whether the alarm is enabled.',
+    }),
   })
   .openapi({
     description:
@@ -5015,47 +3948,31 @@ const AlarmsListSchema = z.array(AlarmSchema).openapi('AlarmsList')
 
 const GetAlarmsResultSchema = z
   .object({
-    alarms: AlarmsListSchema.and(
-      z.any().openapi({ description: 'An array of objects that describe the alarms.' }),
-    ).exactOptional(),
-    nextPageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetAlarms</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
-        }),
-    ).exactOptional(),
+    alarms: AlarmsListSchema.exactOptional().openapi({
+      description: 'An array of objects that describe the alarms.',
+    }),
+    nextPageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetAlarms</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetAlarmsResult')
 
 const GetAlarmsRequestSchema = z
   .object({
-    alarmName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the alarm.</p> <p>Specify an alarm name to return information about a specific alarm.</p>',
-        }),
-    ).exactOptional(),
-    pageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetAlarms</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
-        }),
-    ).exactOptional(),
-    monitoredResourceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the Lightsail resource being monitored by the alarm.</p> <p>Specify a monitored resource name to return information about all alarms for a specific resource.</p>',
-        }),
-    ).exactOptional(),
+    alarmName: ResourceNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the alarm.</p> <p>Specify an alarm name to return information about a specific alarm.</p>',
+    }),
+    pageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetAlarms</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
+    }),
+    monitoredResourceName: ResourceNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the Lightsail resource being monitored by the alarm.</p> <p>Specify a monitored resource name to return information about all alarms for a specific resource.</p>',
+    }),
   })
   .openapi({ title: 'GetAlarmsRequest', required: [] })
   .openapi('GetAlarmsRequest')
@@ -5066,12 +3983,10 @@ const AutoSnapshotStatusSchema = z
 
 const AttachedDiskSchema = z
   .object({
-    path: StringSchema.and(
-      z.any().openapi({ description: 'The path of the disk (e.g., <code>/dev/xvdf</code>).' }),
-    ).exactOptional(),
-    sizeInGb: IntegerSchema.and(
-      z.any().openapi({ description: 'The size of the disk in GB.' }),
-    ).exactOptional(),
+    path: StringSchema.exactOptional().openapi({
+      description: 'The path of the disk (e.g., <code>/dev/xvdf</code>).',
+    }),
+    sizeInGb: IntegerSchema.exactOptional().openapi({ description: 'The size of the disk in GB.' }),
   })
   .openapi({
     description:
@@ -5084,27 +3999,19 @@ const AttachedDiskListSchema = z.array(AttachedDiskSchema).openapi('AttachedDisk
 
 const AutoSnapshotDetailsSchema = z
   .object({
-    date: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date of the automatic snapshot in <code>YYYY-MM-DD</code> format.',
-        }),
-    ).exactOptional(),
-    createdAt: IsoDateSchema.and(
-      z.any().openapi({ description: 'The timestamp when the automatic snapshot was created.' }),
-    ).exactOptional(),
-    status: AutoSnapshotStatusSchema.and(
-      z.any().openapi({ description: 'The status of the automatic snapshot.' }),
-    ).exactOptional(),
-    fromAttachedDisks: AttachedDiskListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the block storage disks attached to the instance when the automatic snapshot was created.',
-        }),
-    ).exactOptional(),
+    date: StringSchema.exactOptional().openapi({
+      description: 'The date of the automatic snapshot in <code>YYYY-MM-DD</code> format.',
+    }),
+    createdAt: IsoDateSchema.exactOptional().openapi({
+      description: 'The timestamp when the automatic snapshot was created.',
+    }),
+    status: AutoSnapshotStatusSchema.exactOptional().openapi({
+      description: 'The status of the automatic snapshot.',
+    }),
+    fromAttachedDisks: AttachedDiskListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the block storage disks attached to the instance when the automatic snapshot was created.',
+    }),
   })
   .openapi({ description: 'Describes an automatic snapshot.', required: [] })
   .openapi('AutoSnapshotDetails')
@@ -5115,42 +4022,26 @@ const AutoSnapshotDetailsListSchema = z
 
 const GetAutoSnapshotsResultSchema = z
   .object({
-    resourceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the source instance or disk for the automatic snapshots.',
-        }),
-    ).exactOptional(),
-    resourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The resource type (e.g., <code>Instance</code> or <code>Disk</code>).',
-        }),
-    ).exactOptional(),
-    autoSnapshots: AutoSnapshotDetailsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the automatic snapshots that are available for the specified source instance or disk.',
-        }),
-    ).exactOptional(),
+    resourceName: ResourceNameSchema.exactOptional().openapi({
+      description: 'The name of the source instance or disk for the automatic snapshots.',
+    }),
+    resourceType: ResourceTypeSchema.exactOptional().openapi({
+      description: 'The resource type (e.g., <code>Instance</code> or <code>Disk</code>).',
+    }),
+    autoSnapshots: AutoSnapshotDetailsListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the automatic snapshots that are available for the specified source instance or disk.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetAutoSnapshotsResult')
 
 const GetAutoSnapshotsRequestSchema = z
   .object({
-    resourceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the source instance or disk from which to get automatic snapshot information.',
-        }),
-    ),
+    resourceName: ResourceNameSchema.openapi({
+      description:
+        'The name of the source instance or disk from which to get automatic snapshot information.',
+    }),
   })
   .openapi({ required: ['resourceName'], title: 'GetAutoSnapshotsRequest' })
   .openapi('GetAutoSnapshotsRequest')
@@ -5163,91 +4054,49 @@ const AppCategorySchema = z.literal('LfR').openapi('AppCategory')
 
 const BlueprintSchema = z
   .object({
-    blueprintId: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID for the virtual private server image (e.g., <code>app_wordpress_4_4</code> or <code>app_lamp_7_0</code>).',
-        }),
-    ).exactOptional(),
-    name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The friendly name of the blueprint (e.g., <code>Amazon Linux</code>).',
-        }),
-    ).exactOptional(),
-    group: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The group name of the blueprint (e.g., <code>amazon-linux</code>).',
-        }),
-    ).exactOptional(),
-    type: BlueprintTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of the blueprint (e.g., <code>os</code> or <code>app</code>).',
-        }),
-    ).exactOptional(),
-    description: StringSchema.and(
-      z.any().openapi({ description: 'The description of the blueprint.' }),
-    ).exactOptional(),
-    isActive: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean value indicating whether the blueprint is active. Inactive blueprints are listed to support customers with existing instances but are not necessarily available for launch of new instances. Blueprints are marked inactive when they become outdated due to operating system updates or new application releases.',
-        }),
-    ).exactOptional(),
-    minPower: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The minimum bundle power required to run this blueprint. For example, you need a bundle with a power value of 500 or more to create an instance that uses a blueprint with a minimum power value of 500. <code>0</code> indicates that the blueprint runs on all instance sizes. ',
-        }),
-    ).exactOptional(),
-    version: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version number of the operating system, application, or stack (e.g., <code>2016.03.0</code>).',
-        }),
-    ).exactOptional(),
-    versionCode: StringSchema.and(
-      z.any().openapi({ description: 'The version code.' }),
-    ).exactOptional(),
-    productUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The product URL to learn more about the image or blueprint.' }),
-    ).exactOptional(),
-    licenseUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The end-user license agreement URL for the image or blueprint.' }),
-    ).exactOptional(),
-    platform: InstancePlatformSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The operating system platform (either Linux/Unix-based or Windows Server-based) of the blueprint.',
-        }),
-    ).exactOptional(),
-    appCategory: AppCategorySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Virtual computer blueprints that are supported by Lightsail for Research.</p> <important> <p>This parameter only applies to Lightsail for Research resources.</p> </important>',
-        }),
-    ).exactOptional(),
+    blueprintId: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        'The ID for the virtual private server image (e.g., <code>app_wordpress_4_4</code> or <code>app_lamp_7_0</code>).',
+    }),
+    name: ResourceNameSchema.exactOptional().openapi({
+      description: 'The friendly name of the blueprint (e.g., <code>Amazon Linux</code>).',
+    }),
+    group: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The group name of the blueprint (e.g., <code>amazon-linux</code>).',
+    }),
+    type: BlueprintTypeSchema.exactOptional().openapi({
+      description: 'The type of the blueprint (e.g., <code>os</code> or <code>app</code>).',
+    }),
+    description: StringSchema.exactOptional().openapi({
+      description: 'The description of the blueprint.',
+    }),
+    isActive: BooleanSchema.exactOptional().openapi({
+      description:
+        'A Boolean value indicating whether the blueprint is active. Inactive blueprints are listed to support customers with existing instances but are not necessarily available for launch of new instances. Blueprints are marked inactive when they become outdated due to operating system updates or new application releases.',
+    }),
+    minPower: IntegerSchema.exactOptional().openapi({
+      description:
+        'The minimum bundle power required to run this blueprint. For example, you need a bundle with a power value of 500 or more to create an instance that uses a blueprint with a minimum power value of 500. <code>0</code> indicates that the blueprint runs on all instance sizes. ',
+    }),
+    version: StringSchema.exactOptional().openapi({
+      description:
+        'The version number of the operating system, application, or stack (e.g., <code>2016.03.0</code>).',
+    }),
+    versionCode: StringSchema.exactOptional().openapi({ description: 'The version code.' }),
+    productUrl: StringSchema.exactOptional().openapi({
+      description: 'The product URL to learn more about the image or blueprint.',
+    }),
+    licenseUrl: StringSchema.exactOptional().openapi({
+      description: 'The end-user license agreement URL for the image or blueprint.',
+    }),
+    platform: InstancePlatformSchema.exactOptional().openapi({
+      description:
+        'The operating system platform (either Linux/Unix-based or Windows Server-based) of the blueprint.',
+    }),
+    appCategory: AppCategorySchema.exactOptional().openapi({
+      description:
+        '<p>Virtual computer blueprints that are supported by Lightsail for Research.</p> <important> <p>This parameter only applies to Lightsail for Research resources.</p> </important>',
+    }),
   })
   .openapi({ description: 'Describes a blueprint (a virtual private server image).', required: [] })
   .openapi('Blueprint')
@@ -5256,52 +4105,32 @@ const BlueprintListSchema = z.array(BlueprintSchema).openapi('BlueprintList')
 
 const GetBlueprintsResultSchema = z
   .object({
-    blueprints: BlueprintListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of key-value pairs that contains information about the available blueprints.',
-        }),
-    ).exactOptional(),
-    nextPageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetBlueprints</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
-        }),
-    ).exactOptional(),
+    blueprints: BlueprintListSchema.exactOptional().openapi({
+      description:
+        'An array of key-value pairs that contains information about the available blueprints.',
+    }),
+    nextPageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetBlueprints</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetBlueprintsResult')
 
 const GetBlueprintsRequestSchema = z
   .object({
-    includeInactive: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean value that indicates whether to include inactive (unavailable) blueprints in the response of your request.',
-        }),
-    ).exactOptional(),
-    pageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetBlueprints</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
-        }),
-    ).exactOptional(),
-    appCategory: AppCategorySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Returns a list of blueprints that are specific to Lightsail for Research.</p> <important> <p>You must use this parameter to view Lightsail for Research blueprints.</p> </important>',
-        }),
-    ).exactOptional(),
+    includeInactive: BooleanSchema.exactOptional().openapi({
+      description:
+        'A Boolean value that indicates whether to include inactive (unavailable) blueprints in the response of your request.',
+    }),
+    pageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetBlueprints</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
+    }),
+    appCategory: AppCategorySchema.exactOptional().openapi({
+      description:
+        '<p>Returns a list of blueprints that are specific to Lightsail for Research.</p> <important> <p>You must use this parameter to view Lightsail for Research blueprints.</p> </important>',
+    }),
   })
   .openapi({ title: 'GetBlueprintsRequest', required: [] })
   .openapi('GetBlueprintsRequest')
@@ -5310,52 +4139,40 @@ const AccessKeyListSchema = z.array(AccessKeySchema).openapi('AccessKeyList')
 
 const GetBucketAccessKeysResultSchema = z
   .object({
-    accessKeys: AccessKeyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that describes the access keys for the specified bucket.',
-        }),
-    ).exactOptional(),
+    accessKeys: AccessKeyListSchema.exactOptional().openapi({
+      description: 'An object that describes the access keys for the specified bucket.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetBucketAccessKeysResult')
 
 const GetBucketAccessKeysRequestSchema = z
   .object({
-    bucketName: BucketNameSchema.and(
-      z.any().openapi({ description: 'The name of the bucket for which to return access keys.' }),
-    ),
+    bucketName: BucketNameSchema.openapi({
+      description: 'The name of the bucket for which to return access keys.',
+    }),
   })
   .openapi({ required: ['bucketName'], title: 'GetBucketAccessKeysRequest' })
   .openapi('GetBucketAccessKeysRequest')
 
-const FloatSchema = z.float32().openapi('Float')
-
 const BucketBundleSchema = z
   .object({
-    bundleId: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The ID of the bundle.' }),
-    ).exactOptional(),
-    name: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The name of the bundle.' }),
-    ).exactOptional(),
-    price: FloatSchema.and(
-      z.any().openapi({ description: 'The monthly price of the bundle, in US dollars.' }),
-    ).exactOptional(),
-    storagePerMonthInGb: IntegerSchema.and(
-      z.any().openapi({ description: 'The storage size of the bundle, in GB.' }),
-    ).exactOptional(),
-    transferPerMonthInGb: IntegerSchema.and(
-      z.any().openapi({ description: 'The monthly network transfer quota of the bundle.' }),
-    ).exactOptional(),
-    isActive: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates whether the bundle is active. Use for a new or existing bucket.',
-        }),
-    ).exactOptional(),
+    bundleId: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The ID of the bundle.',
+    }),
+    name: NonEmptyStringSchema.exactOptional().openapi({ description: 'The name of the bundle.' }),
+    price: FloatSchema.exactOptional().openapi({
+      description: 'The monthly price of the bundle, in US dollars.',
+    }),
+    storagePerMonthInGb: IntegerSchema.exactOptional().openapi({
+      description: 'The storage size of the bundle, in GB.',
+    }),
+    transferPerMonthInGb: IntegerSchema.exactOptional().openapi({
+      description: 'The monthly network transfer quota of the bundle.',
+    }),
+    isActive: BooleanSchema.exactOptional().openapi({
+      description: 'Indicates whether the bundle is active. Use for a new or existing bucket.',
+    }),
   })
   .openapi({
     description:
@@ -5368,23 +4185,19 @@ const BucketBundleListSchema = z.array(BucketBundleSchema).openapi('BucketBundle
 
 const GetBucketBundlesResultSchema = z
   .object({
-    bundles: BucketBundleListSchema.and(
-      z.any().openapi({ description: 'An object that describes bucket bundles.' }),
-    ).exactOptional(),
+    bundles: BucketBundleListSchema.exactOptional().openapi({
+      description: 'An object that describes bucket bundles.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetBucketBundlesResult')
 
 const GetBucketBundlesRequestSchema = z
   .object({
-    includeInactive: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean value that indicates whether to include inactive (unavailable) bundles in the response of your request.',
-        }),
-    ).exactOptional(),
+    includeInactive: BooleanSchema.exactOptional().openapi({
+      description:
+        'A Boolean value that indicates whether to include inactive (unavailable) bundles in the response of your request.',
+    }),
   })
   .openapi({ title: 'GetBucketBundlesRequest', required: [] })
   .openapi('GetBucketBundlesRequest')
@@ -5397,17 +4210,15 @@ const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
 
 const MetricDatapointSchema = z
   .object({
-    average: DoubleSchema.and(z.any().openapi({ description: 'The average.' })).exactOptional(),
-    maximum: DoubleSchema.and(z.any().openapi({ description: 'The maximum.' })).exactOptional(),
-    minimum: DoubleSchema.and(z.any().openapi({ description: 'The minimum.' })).exactOptional(),
-    sampleCount: DoubleSchema.and(
-      z.any().openapi({ description: 'The sample count.' }),
-    ).exactOptional(),
-    sum: DoubleSchema.and(z.any().openapi({ description: 'The sum.' })).exactOptional(),
-    timestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The timestamp (e.g., <code>1479816991.349</code>).' }),
-    ).exactOptional(),
-    unit: MetricUnitSchema.and(z.any().openapi({ description: 'The unit. ' })).exactOptional(),
+    average: DoubleSchema.exactOptional().openapi({ description: 'The average.' }),
+    maximum: DoubleSchema.exactOptional().openapi({ description: 'The maximum.' }),
+    minimum: DoubleSchema.exactOptional().openapi({ description: 'The minimum.' }),
+    sampleCount: DoubleSchema.exactOptional().openapi({ description: 'The sample count.' }),
+    sum: DoubleSchema.exactOptional().openapi({ description: 'The sum.' }),
+    timestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp (e.g., <code>1479816991.349</code>).',
+    }),
+    unit: MetricUnitSchema.exactOptional().openapi({ description: 'The unit. ' }),
   })
   .openapi({ description: 'Describes the metric data point.', required: [] })
   .openapi('MetricDatapoint')
@@ -5416,14 +4227,12 @@ const MetricDatapointListSchema = z.array(MetricDatapointSchema).openapi('Metric
 
 const GetBucketMetricDataResultSchema = z
   .object({
-    metricName: BucketMetricNameSchema.and(
-      z.any().openapi({ description: 'The name of the metric returned.' }),
-    ).exactOptional(),
-    metricData: MetricDatapointListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An array of objects that describe the metric data returned.' }),
-    ).exactOptional(),
+    metricName: BucketMetricNameSchema.exactOptional().openapi({
+      description: 'The name of the metric returned.',
+    }),
+    metricData: MetricDatapointListSchema.exactOptional().openapi({
+      description: 'An array of objects that describe the metric data returned.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetBucketMetricDataResult')
@@ -5432,49 +4241,31 @@ const MetricStatisticListSchema = z.array(MetricStatisticSchema).openapi('Metric
 
 const GetBucketMetricDataRequestSchema = z
   .object({
-    bucketName: BucketNameSchema.and(
-      z.any().openapi({ description: 'The name of the bucket for which to get metric data.' }),
-    ),
-    metricName: BucketMetricNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The metric for which you want to return information.</p> <p>Valid bucket metric names are listed below, along with the most useful statistics to include in your request, and the published unit value.</p> <note> <p>These bucket metrics are reported once per day.</p> </note> <ul> <li> <p> <b> <code>BucketSizeBytes</code> </b> - The amount of data in bytes stored in a bucket. This value is calculated by summing the size of all objects in the bucket (including object versions), including the size of all parts for all incomplete multipart uploads to the bucket.</p> <p>Statistics: The most useful statistic is <code>Maximum</code>.</p> <p>Unit: The published unit is <code>Bytes</code>.</p> </li> <li> <p> <b> <code>NumberOfObjects</code> </b> - The total number of objects stored in a bucket. This value is calculated by counting all objects in the bucket (including object versions) and the total number of parts for all incomplete multipart uploads to the bucket.</p> <p>Statistics: The most useful statistic is <code>Average</code>.</p> <p>Unit: The published unit is <code>Count</code>.</p> </li> </ul>',
-        }),
-    ),
-    startTime: IsoDateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The timestamp indicating the earliest data to be returned.' }),
-    ),
-    endTime: IsoDateSchema.and(
-      z.any().openapi({ description: 'The timestamp indicating the latest data to be returned.' }),
-    ),
-    period: MetricPeriodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The granularity, in seconds, of the returned data points.</p> <note> <p>Bucket storage metrics are reported once per day. Therefore, you should specify a period of 86400 seconds, which is the number of seconds in a day.</p> </note>',
-        }),
-    ),
-    statistics: MetricStatisticListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The statistic for the metric.</p> <p>The following statistics are available:</p> <ul> <li> <p> <code>Minimum</code> - The lowest value observed during the specified period. Use this value to determine low volumes of activity for your application.</p> </li> <li> <p> <code>Maximum</code> - The highest value observed during the specified period. Use this value to determine high volumes of activity for your application.</p> </li> <li> <p> <code>Sum</code> - The sum of all values submitted for the matching metric. You can use this statistic to determine the total volume of a metric.</p> </li> <li> <p> <code>Average</code> - The value of <code>Sum</code> / <code>SampleCount</code> during the specified period. By comparing this statistic with the <code>Minimum</code> and <code>Maximum</code> values, you can determine the full scope of a metric and how close the average use is to the <code>Minimum</code> and <code>Maximum</code> values. This comparison helps you to know when to increase or decrease your resources.</p> </li> <li> <p> <code>SampleCount</code> - The count, or number, of data points used for the statistical calculation.</p> </li> </ul>',
-        }),
-    ),
-    unit: MetricUnitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unit for the metric data request.</p> <p>Valid units depend on the metric data being requested. For the valid units with each available metric, see the <code>metricName</code> parameter.</p>',
-        }),
-    ),
+    bucketName: BucketNameSchema.openapi({
+      description: 'The name of the bucket for which to get metric data.',
+    }),
+    metricName: BucketMetricNameSchema.openapi({
+      description:
+        '<p>The metric for which you want to return information.</p> <p>Valid bucket metric names are listed below, along with the most useful statistics to include in your request, and the published unit value.</p> <note> <p>These bucket metrics are reported once per day.</p> </note> <ul> <li> <p> <b> <code>BucketSizeBytes</code> </b> - The amount of data in bytes stored in a bucket. This value is calculated by summing the size of all objects in the bucket (including object versions), including the size of all parts for all incomplete multipart uploads to the bucket.</p> <p>Statistics: The most useful statistic is <code>Maximum</code>.</p> <p>Unit: The published unit is <code>Bytes</code>.</p> </li> <li> <p> <b> <code>NumberOfObjects</code> </b> - The total number of objects stored in a bucket. This value is calculated by counting all objects in the bucket (including object versions) and the total number of parts for all incomplete multipart uploads to the bucket.</p> <p>Statistics: The most useful statistic is <code>Average</code>.</p> <p>Unit: The published unit is <code>Count</code>.</p> </li> </ul>',
+    }),
+    startTime: IsoDateSchema.openapi({
+      description: 'The timestamp indicating the earliest data to be returned.',
+    }),
+    endTime: IsoDateSchema.openapi({
+      description: 'The timestamp indicating the latest data to be returned.',
+    }),
+    period: MetricPeriodSchema.openapi({
+      description:
+        '<p>The granularity, in seconds, of the returned data points.</p> <note> <p>Bucket storage metrics are reported once per day. Therefore, you should specify a period of 86400 seconds, which is the number of seconds in a day.</p> </note>',
+    }),
+    statistics: MetricStatisticListSchema.openapi({
+      description:
+        '<p>The statistic for the metric.</p> <p>The following statistics are available:</p> <ul> <li> <p> <code>Minimum</code> - The lowest value observed during the specified period. Use this value to determine low volumes of activity for your application.</p> </li> <li> <p> <code>Maximum</code> - The highest value observed during the specified period. Use this value to determine high volumes of activity for your application.</p> </li> <li> <p> <code>Sum</code> - The sum of all values submitted for the matching metric. You can use this statistic to determine the total volume of a metric.</p> </li> <li> <p> <code>Average</code> - The value of <code>Sum</code> / <code>SampleCount</code> during the specified period. By comparing this statistic with the <code>Minimum</code> and <code>Maximum</code> values, you can determine the full scope of a metric and how close the average use is to the <code>Minimum</code> and <code>Maximum</code> values. This comparison helps you to know when to increase or decrease your resources.</p> </li> <li> <p> <code>SampleCount</code> - The count, or number, of data points used for the statistical calculation.</p> </li> </ul>',
+    }),
+    unit: MetricUnitSchema.openapi({
+      description:
+        '<p>The unit for the metric data request.</p> <p>Valid units depend on the metric data being requested. For the valid units with each available metric, see the <code>metricName</code> parameter.</p>',
+    }),
   })
   .openapi({
     required: ['bucketName', 'metricName', 'startTime', 'endTime', 'period', 'statistics', 'unit'],
@@ -5499,38 +4290,22 @@ const BPAStatusMessageSchema = z
 
 const AccountLevelBpaSyncSchema = z
   .object({
-    status: AccountLevelBpaSyncStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the account-level BPA synchronization.</p> <p>The following statuses are possible:</p> <ul> <li> <p> <code>InSync</code> - Account-level BPA is synchronized. The Amazon S3 account-level BPA configuration applies to your Lightsail buckets.</p> </li> <li> <p> <code>NeverSynced</code> - Synchronization has not yet happened. The Amazon S3 account-level BPA configuration does not apply to your Lightsail buckets.</p> </li> <li> <p> <code>Failed</code> - Synchronization failed. The Amazon S3 account-level BPA configuration does not apply to your Lightsail buckets.</p> </li> <li> <p> <code>Defaulted</code> - Synchronization failed and account-level BPA for your Lightsail buckets is defaulted to <i>active</i>.</p> </li> </ul> <note> <p>You might need to complete further actions if the status is <code>Failed</code> or <code>Defaulted</code>. The <code>message</code> parameter provides more information for those statuses.</p> </note>',
-        }),
-    ).exactOptional(),
-    lastSyncedAt: IsoDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp of when the account-level BPA configuration was last synchronized. This value is null when the account-level BPA configuration has not been synchronized.',
-        }),
-    ).exactOptional(),
-    message: BPAStatusMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A message that provides a reason for a <code>Failed</code> or <code>Defaulted</code> synchronization status.</p> <p>The following messages are possible:</p> <ul> <li> <p> <code>SYNC_ON_HOLD</code> - The synchronization has not yet happened. This status message occurs immediately after you create your first Lightsail bucket. This status message should change after the first synchronization happens, approximately 1 hour after the first bucket is created.</p> </li> <li> <p> <code>DEFAULTED_FOR_SLR_MISSING</code> - The synchronization failed because the required service-linked role is missing from your Amazon Web Services account. The account-level BPA configuration for your Lightsail buckets is defaulted to <i>active</i> until the synchronization can occur. This means that all your buckets are private and not publicly accessible. For more information about how to create the required service-linked role to allow synchronization, see <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-using-service-linked-roles">Using Service-Linked Roles for Amazon Lightsail</a> in the <i>Amazon Lightsail Developer Guide</i>.</p> </li> <li> <p> <code>DEFAULTED_FOR_SLR_MISSING_ON_HOLD</code> - The synchronization failed because the required service-linked role is missing from your Amazon Web Services account. Account-level BPA is not yet configured for your Lightsail buckets. Therefore, only the bucket access permissions and individual object access permissions apply to your Lightsail buckets. For more information about how to create the required service-linked role to allow synchronization, see <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-using-service-linked-roles">Using Service-Linked Roles for Amazon Lightsail</a> in the <i>Amazon Lightsail Developer Guide</i>.</p> </li> <li> <p> <code>Unknown</code> - The reason that synchronization failed is unknown. Contact Amazon Web Services Support for more information.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    bpaImpactsLightsail: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean value that indicates whether account-level block public access is affecting your Lightsail buckets.',
-        }),
-    ).exactOptional(),
+    status: AccountLevelBpaSyncStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the account-level BPA synchronization.</p> <p>The following statuses are possible:</p> <ul> <li> <p> <code>InSync</code> - Account-level BPA is synchronized. The Amazon S3 account-level BPA configuration applies to your Lightsail buckets.</p> </li> <li> <p> <code>NeverSynced</code> - Synchronization has not yet happened. The Amazon S3 account-level BPA configuration does not apply to your Lightsail buckets.</p> </li> <li> <p> <code>Failed</code> - Synchronization failed. The Amazon S3 account-level BPA configuration does not apply to your Lightsail buckets.</p> </li> <li> <p> <code>Defaulted</code> - Synchronization failed and account-level BPA for your Lightsail buckets is defaulted to <i>active</i>.</p> </li> </ul> <note> <p>You might need to complete further actions if the status is <code>Failed</code> or <code>Defaulted</code>. The <code>message</code> parameter provides more information for those statuses.</p> </note>',
+    }),
+    lastSyncedAt: IsoDateSchema.exactOptional().openapi({
+      description:
+        'The timestamp of when the account-level BPA configuration was last synchronized. This value is null when the account-level BPA configuration has not been synchronized.',
+    }),
+    message: BPAStatusMessageSchema.exactOptional().openapi({
+      description:
+        '<p>A message that provides a reason for a <code>Failed</code> or <code>Defaulted</code> synchronization status.</p> <p>The following messages are possible:</p> <ul> <li> <p> <code>SYNC_ON_HOLD</code> - The synchronization has not yet happened. This status message occurs immediately after you create your first Lightsail bucket. This status message should change after the first synchronization happens, approximately 1 hour after the first bucket is created.</p> </li> <li> <p> <code>DEFAULTED_FOR_SLR_MISSING</code> - The synchronization failed because the required service-linked role is missing from your Amazon Web Services account. The account-level BPA configuration for your Lightsail buckets is defaulted to <i>active</i> until the synchronization can occur. This means that all your buckets are private and not publicly accessible. For more information about how to create the required service-linked role to allow synchronization, see <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-using-service-linked-roles">Using Service-Linked Roles for Amazon Lightsail</a> in the <i>Amazon Lightsail Developer Guide</i>.</p> </li> <li> <p> <code>DEFAULTED_FOR_SLR_MISSING_ON_HOLD</code> - The synchronization failed because the required service-linked role is missing from your Amazon Web Services account. Account-level BPA is not yet configured for your Lightsail buckets. Therefore, only the bucket access permissions and individual object access permissions apply to your Lightsail buckets. For more information about how to create the required service-linked role to allow synchronization, see <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-using-service-linked-roles">Using Service-Linked Roles for Amazon Lightsail</a> in the <i>Amazon Lightsail Developer Guide</i>.</p> </li> <li> <p> <code>Unknown</code> - The reason that synchronization failed is unknown. Contact Amazon Web Services Support for more information.</p> </li> </ul>',
+    }),
+    bpaImpactsLightsail: BooleanSchema.exactOptional().openapi({
+      description:
+        'A Boolean value that indicates whether account-level block public access is affecting your Lightsail buckets.',
+    }),
   })
   .openapi({
     description:
@@ -5541,55 +4316,35 @@ const AccountLevelBpaSyncSchema = z
 
 const GetBucketsResultSchema = z
   .object({
-    buckets: BucketListSchema.and(
-      z.any().openapi({ description: 'An array of objects that describe buckets.' }),
-    ).exactOptional(),
-    nextPageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetBuckets</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
-        }),
-    ).exactOptional(),
-    accountLevelBpaSync: AccountLevelBpaSyncSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An object that describes the synchronization status of the Amazon S3 account-level block public access feature for your Lightsail buckets.</p> <p>For more information about this feature and how it affects Lightsail buckets, see <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-block-public-access-for-buckets">Block public access for buckets in Amazon Lightsail</a>.</p>',
-        }),
-    ).exactOptional(),
+    buckets: BucketListSchema.exactOptional().openapi({
+      description: 'An array of objects that describe buckets.',
+    }),
+    nextPageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetBuckets</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
+    }),
+    accountLevelBpaSync: AccountLevelBpaSyncSchema.exactOptional().openapi({
+      description:
+        '<p>An object that describes the synchronization status of the Amazon S3 account-level block public access feature for your Lightsail buckets.</p> <p>For more information about this feature and how it affects Lightsail buckets, see <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-block-public-access-for-buckets">Block public access for buckets in Amazon Lightsail</a>.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetBucketsResult')
 
 const GetBucketsRequestSchema = z
   .object({
-    bucketName: BucketNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the bucket for which to return information.</p> <p>When omitted, the response includes all of your buckets in the Amazon Web Services Region where the request is made.</p>',
-        }),
-    ).exactOptional(),
-    pageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetBuckets</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
-        }),
-    ).exactOptional(),
-    includeConnectedResources: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean value that indicates whether to include Lightsail instances that were given access to the bucket using the <a href="https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_SetResourceAccessForBucket.html">SetResourceAccessForBucket</a> action.',
-        }),
-    ).exactOptional(),
+    bucketName: BucketNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the bucket for which to return information.</p> <p>When omitted, the response includes all of your buckets in the Amazon Web Services Region where the request is made.</p>',
+    }),
+    pageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetBuckets</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
+    }),
+    includeConnectedResources: BooleanSchema.exactOptional().openapi({
+      description:
+        'A Boolean value that indicates whether to include Lightsail instances that were given access to the bucket using the <a href="https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_SetResourceAccessForBucket.html">SetResourceAccessForBucket</a> action.',
+    }),
   })
   .openapi({ title: 'GetBucketsRequest', required: [] })
   .openapi('GetBucketsRequest')
@@ -5600,73 +4355,45 @@ const AppCategoryListSchema = z.array(AppCategorySchema).openapi('AppCategoryLis
 
 const BundleSchema = z
   .object({
-    price: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The price in US dollars (e.g., <code>5.0</code>) of the bundle.',
-        }),
-    ).exactOptional(),
-    cpuCount: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of vCPUs included in the bundle (e.g., <code>2</code>).',
-        }),
-    ).exactOptional(),
-    diskSizeInGb: IntegerSchema.and(
-      z.any().openapi({ description: 'The size of the SSD (e.g., <code>30</code>).' }),
-    ).exactOptional(),
-    bundleId: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The bundle ID (e.g., <code>micro_1_0</code>).' }),
-    ).exactOptional(),
-    instanceType: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon EC2 instance type (e.g., <code>t2.micro</code>).' }),
-    ).exactOptional(),
-    isActive: BooleanSchema.and(
-      z.any().openapi({ description: 'A Boolean value indicating whether the bundle is active.' }),
-    ).exactOptional(),
-    name: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A friendly name for the bundle (e.g., <code>Micro</code>).' }),
-    ).exactOptional(),
-    power: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A numeric value that represents the power of the bundle (e.g., <code>500</code>). You can use the bundle's power value in conjunction with a blueprint's minimum power value to determine whether the blueprint will run on the bundle. For example, you need a bundle with a power value of 500 or more to create an instance that uses a blueprint with a minimum power value of 500.",
-        }),
-    ).exactOptional(),
-    ramSizeInGb: FloatSchema.and(
-      z.any().openapi({ description: 'The amount of RAM in GB (e.g., <code>2.0</code>).' }),
-    ).exactOptional(),
-    transferPerMonthInGb: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The data transfer rate per month in GB (e.g., <code>2000</code>).',
-        }),
-    ).exactOptional(),
-    supportedPlatforms: InstancePlatformListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The operating system platform (Linux/Unix-based or Windows Server-based) that the bundle supports. You can only launch a <code>WINDOWS</code> bundle on a blueprint that supports the <code>WINDOWS</code> platform. <code>LINUX_UNIX</code> blueprints require a <code>LINUX_UNIX</code> bundle.',
-        }),
-    ).exactOptional(),
-    supportedAppCategories: AppCategoryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Virtual computer blueprints that are supported by a Lightsail for Research bundle.</p> <important> <p>This parameter only applies to Lightsail for Research resources.</p> </important>',
-        }),
-    ).exactOptional(),
+    price: FloatSchema.exactOptional().openapi({
+      description: 'The price in US dollars (e.g., <code>5.0</code>) of the bundle.',
+    }),
+    cpuCount: IntegerSchema.exactOptional().openapi({
+      description: 'The number of vCPUs included in the bundle (e.g., <code>2</code>).',
+    }),
+    diskSizeInGb: IntegerSchema.exactOptional().openapi({
+      description: 'The size of the SSD (e.g., <code>30</code>).',
+    }),
+    bundleId: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The bundle ID (e.g., <code>micro_1_0</code>).',
+    }),
+    instanceType: StringSchema.exactOptional().openapi({
+      description: 'The Amazon EC2 instance type (e.g., <code>t2.micro</code>).',
+    }),
+    isActive: BooleanSchema.exactOptional().openapi({
+      description: 'A Boolean value indicating whether the bundle is active.',
+    }),
+    name: StringSchema.exactOptional().openapi({
+      description: 'A friendly name for the bundle (e.g., <code>Micro</code>).',
+    }),
+    power: IntegerSchema.exactOptional().openapi({
+      description:
+        "A numeric value that represents the power of the bundle (e.g., <code>500</code>). You can use the bundle's power value in conjunction with a blueprint's minimum power value to determine whether the blueprint will run on the bundle. For example, you need a bundle with a power value of 500 or more to create an instance that uses a blueprint with a minimum power value of 500.",
+    }),
+    ramSizeInGb: FloatSchema.exactOptional().openapi({
+      description: 'The amount of RAM in GB (e.g., <code>2.0</code>).',
+    }),
+    transferPerMonthInGb: IntegerSchema.exactOptional().openapi({
+      description: 'The data transfer rate per month in GB (e.g., <code>2000</code>).',
+    }),
+    supportedPlatforms: InstancePlatformListSchema.exactOptional().openapi({
+      description:
+        'The operating system platform (Linux/Unix-based or Windows Server-based) that the bundle supports. You can only launch a <code>WINDOWS</code> bundle on a blueprint that supports the <code>WINDOWS</code> platform. <code>LINUX_UNIX</code> blueprints require a <code>LINUX_UNIX</code> bundle.',
+    }),
+    supportedAppCategories: AppCategoryListSchema.exactOptional().openapi({
+      description:
+        '<p>Virtual computer blueprints that are supported by a Lightsail for Research bundle.</p> <important> <p>This parameter only applies to Lightsail for Research resources.</p> </important>',
+    }),
   })
   .openapi({
     description:
@@ -5679,65 +4406,41 @@ const BundleListSchema = z.array(BundleSchema).openapi('BundleList')
 
 const GetBundlesResultSchema = z
   .object({
-    bundles: BundleListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of key-value pairs that contains information about the available bundles.',
-        }),
-    ).exactOptional(),
-    nextPageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetBundles</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
-        }),
-    ).exactOptional(),
+    bundles: BundleListSchema.exactOptional().openapi({
+      description:
+        'An array of key-value pairs that contains information about the available bundles.',
+    }),
+    nextPageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetBundles</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetBundlesResult')
 
 const GetBundlesRequestSchema = z
   .object({
-    includeInactive: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean value that indicates whether to include inactive (unavailable) bundles in the response of your request.',
-        }),
-    ).exactOptional(),
-    pageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetBundles</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
-        }),
-    ).exactOptional(),
-    appCategory: AppCategorySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Returns a list of bundles that are specific to Lightsail for Research.</p> <important> <p>You must use this parameter to view Lightsail for Research bundles.</p> </important>',
-        }),
-    ).exactOptional(),
+    includeInactive: BooleanSchema.exactOptional().openapi({
+      description:
+        'A Boolean value that indicates whether to include inactive (unavailable) bundles in the response of your request.',
+    }),
+    pageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetBundles</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
+    }),
+    appCategory: AppCategorySchema.exactOptional().openapi({
+      description:
+        '<p>Returns a list of bundles that are specific to Lightsail for Research.</p> <important> <p>You must use this parameter to view Lightsail for Research bundles.</p> </important>',
+    }),
   })
   .openapi({ title: 'GetBundlesRequest', required: [] })
   .openapi('GetBundlesRequest')
 
-const CertificateSummaryListSchema = z
-  .array(CertificateSummarySchema)
-  .openapi('CertificateSummaryList')
-
-const GetCertificatesResultSchema = z
+const GetCertificatesResultSchema: z.ZodType<GetCertificatesResultType> = z
   .object({
-    certificates: CertificateSummaryListSchema.and(
-      z.any().openapi({ description: 'An object that describes certificates.' }),
-    ).exactOptional(),
+    certificates: CertificateSummaryListSchema.exactOptional().openapi({
+      description: 'An object that describes certificates.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetCertificatesResult')
@@ -5750,30 +4453,18 @@ const IncludeCertificateDetailsSchema = z.boolean().openapi('IncludeCertificateD
 
 const GetCertificatesRequestSchema = z
   .object({
-    certificateStatuses: CertificateStatusListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the certificates for which to return information.</p> <p>For example, specify <code>ISSUED</code> to return only certificates with an <code>ISSUED</code> status.</p> <p>When omitted, the response includes all of your certificates in the Amazon Web Services Region where the request is made, regardless of their current status.</p>',
-        }),
-    ).exactOptional(),
-    includeCertificateDetails: IncludeCertificateDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether to include detailed information about the certificates in the response.</p> <p>When omitted, the response includes only the certificate names, Amazon Resource Names (ARNs), domain names, and tags.</p>',
-        }),
-    ).exactOptional(),
-    certificateName: CertificateNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name for the certificate for which to return information.</p> <p>When omitted, the response includes all of your certificates in the Amazon Web Services Region where the request is made.</p>',
-        }),
-    ).exactOptional(),
+    certificateStatuses: CertificateStatusListSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the certificates for which to return information.</p> <p>For example, specify <code>ISSUED</code> to return only certificates with an <code>ISSUED</code> status.</p> <p>When omitted, the response includes all of your certificates in the Amazon Web Services Region where the request is made, regardless of their current status.</p>',
+    }),
+    includeCertificateDetails: IncludeCertificateDetailsSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates whether to include detailed information about the certificates in the response.</p> <p>When omitted, the response includes only the certificate names, Amazon Resource Names (ARNs), domain names, and tags.</p>',
+    }),
+    certificateName: CertificateNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name for the certificate for which to return information.</p> <p>When omitted, the response includes all of your certificates in the Amazon Web Services Region where the request is made.</p>',
+    }),
   })
   .openapi({ title: 'GetCertificatesRequest', required: [] })
   .openapi('GetCertificatesRequest')
@@ -5786,21 +4477,13 @@ const CloudFormationStackRecordSourceTypeSchema = z
 
 const CloudFormationStackRecordSourceInfoSchema = z
   .object({
-    resourceType: CloudFormationStackRecordSourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Lightsail resource type (e.g., <code>ExportSnapshotRecord</code>).',
-        }),
-    ).exactOptional(),
-    name: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The name of the record.' }),
-    ).exactOptional(),
-    arn: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the export snapshot record.' }),
-    ).exactOptional(),
+    resourceType: CloudFormationStackRecordSourceTypeSchema.exactOptional().openapi({
+      description: 'The Lightsail resource type (e.g., <code>ExportSnapshotRecord</code>).',
+    }),
+    name: NonEmptyStringSchema.exactOptional().openapi({ description: 'The name of the record.' }),
+    arn: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the export snapshot record.',
+    }),
   })
   .openapi({
     description:
@@ -5815,73 +4498,45 @@ const CloudFormationStackRecordSourceInfoListSchema = z
 
 const DestinationInfoSchema = z
   .object({
-    id: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The ID of the resource created at the destination.' }),
-    ).exactOptional(),
-    service: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The destination service of the record.' }),
-    ).exactOptional(),
+    id: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The ID of the resource created at the destination.',
+    }),
+    service: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The destination service of the record.',
+    }),
   })
   .openapi({ description: 'Describes the destination of a record.', required: [] })
   .openapi('DestinationInfo')
 
 const CloudFormationStackRecordSchema = z
   .object({
-    name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the CloudFormation stack record. It starts with <code>CloudFormationStackRecord</code> followed by a GUID.',
-        }),
-    ).exactOptional(),
-    arn: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the CloudFormation stack record.',
-        }),
-    ).exactOptional(),
-    createdAt: IsoDateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date when the CloudFormation stack record was created.' }),
-    ).exactOptional(),
-    location: ResourceLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of objects describing the Availability Zone and Amazon Web Services Region of the CloudFormation stack record.',
-        }),
-    ).exactOptional(),
-    resourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Lightsail resource type (e.g., <code>CloudFormationStackRecord</code>).',
-        }),
-    ).exactOptional(),
-    state: RecordStateSchema.and(
-      z.any().openapi({ description: 'The current state of the CloudFormation stack record.' }),
-    ).exactOptional(),
-    sourceInfo: CloudFormationStackRecordSourceInfoListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of objects describing the source of the CloudFormation stack record.',
-        }),
-    ).exactOptional(),
-    destinationInfo: DestinationInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of objects describing the destination service, which is AWS CloudFormation, and the Amazon Resource Name (ARN) of the AWS CloudFormation stack.',
-        }),
-    ).exactOptional(),
+    name: ResourceNameSchema.exactOptional().openapi({
+      description:
+        'The name of the CloudFormation stack record. It starts with <code>CloudFormationStackRecord</code> followed by a GUID.',
+    }),
+    arn: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the CloudFormation stack record.',
+    }),
+    createdAt: IsoDateSchema.exactOptional().openapi({
+      description: 'The date when the CloudFormation stack record was created.',
+    }),
+    location: ResourceLocationSchema.exactOptional().openapi({
+      description:
+        'A list of objects describing the Availability Zone and Amazon Web Services Region of the CloudFormation stack record.',
+    }),
+    resourceType: ResourceTypeSchema.exactOptional().openapi({
+      description: 'The Lightsail resource type (e.g., <code>CloudFormationStackRecord</code>).',
+    }),
+    state: RecordStateSchema.exactOptional().openapi({
+      description: 'The current state of the CloudFormation stack record.',
+    }),
+    sourceInfo: CloudFormationStackRecordSourceInfoListSchema.exactOptional().openapi({
+      description: 'A list of objects describing the source of the CloudFormation stack record.',
+    }),
+    destinationInfo: DestinationInfoSchema.exactOptional().openapi({
+      description:
+        'A list of objects describing the destination service, which is AWS CloudFormation, and the Amazon Resource Name (ARN) of the AWS CloudFormation stack.',
+    }),
   })
   .openapi({
     description:
@@ -5896,33 +4551,23 @@ const CloudFormationStackRecordListSchema = z
 
 const GetCloudFormationStackRecordsResultSchema = z
   .object({
-    cloudFormationStackRecords: CloudFormationStackRecordListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of objects describing the CloudFormation stack records.' }),
-    ).exactOptional(),
-    nextPageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetCloudFormationStackRecords</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
-        }),
-    ).exactOptional(),
+    cloudFormationStackRecords: CloudFormationStackRecordListSchema.exactOptional().openapi({
+      description: 'A list of objects describing the CloudFormation stack records.',
+    }),
+    nextPageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetCloudFormationStackRecords</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetCloudFormationStackRecordsResult')
 
 const GetCloudFormationStackRecordsRequestSchema = z
   .object({
-    pageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetClouFormationStackRecords</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
-        }),
-    ).exactOptional(),
+    pageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetClouFormationStackRecords</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
+    }),
   })
   .openapi({ title: 'GetCloudFormationStackRecordsRequest', required: [] })
   .openapi('GetCloudFormationStackRecordsRequest')
@@ -5933,61 +4578,37 @@ const ContactMethodStatusSchema = z
 
 const ContactMethodSchema = z
   .object({
-    contactEndpoint: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The destination of the contact method, such as an email address or a mobile phone number.',
-        }),
-    ).exactOptional(),
-    status: ContactMethodStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The current status of the contact method.</p> <p>A contact method has the following possible status:</p> <ul> <li> <p> <code>PendingVerification</code> - The contact method has not yet been verified, and the verification has not yet expired.</p> </li> <li> <p> <code>Valid</code> - The contact method has been verified.</p> </li> <li> <p> <code>InValid</code> - An attempt was made to verify the contact method, but the verification has expired.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    protocol: ContactProtocolSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The protocol of the contact method, such as email or SMS (text messaging).',
-        }),
-    ).exactOptional(),
-    name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the contact method.' }),
-    ).exactOptional(),
-    arn: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the contact method.' }),
-    ).exactOptional(),
-    createdAt: IsoDateSchema.and(
-      z.any().openapi({ description: 'The timestamp when the contact method was created.' }),
-    ).exactOptional(),
-    location: ResourceLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that describes the location of the contact method, such as the Amazon Web Services Region and Availability Zone.',
-        }),
-    ).exactOptional(),
-    resourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Lightsail resource type (e.g., <code>ContactMethod</code>).',
-        }),
-    ).exactOptional(),
-    supportCode: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The support code. Include this code in your email to support when you have questions about your Lightsail contact method. This code enables our support team to look up your Lightsail information more easily.',
-        }),
-    ).exactOptional(),
+    contactEndpoint: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        'The destination of the contact method, such as an email address or a mobile phone number.',
+    }),
+    status: ContactMethodStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The current status of the contact method.</p> <p>A contact method has the following possible status:</p> <ul> <li> <p> <code>PendingVerification</code> - The contact method has not yet been verified, and the verification has not yet expired.</p> </li> <li> <p> <code>Valid</code> - The contact method has been verified.</p> </li> <li> <p> <code>InValid</code> - An attempt was made to verify the contact method, but the verification has expired.</p> </li> </ul>',
+    }),
+    protocol: ContactProtocolSchema.exactOptional().openapi({
+      description: 'The protocol of the contact method, such as email or SMS (text messaging).',
+    }),
+    name: ResourceNameSchema.exactOptional().openapi({
+      description: 'The name of the contact method.',
+    }),
+    arn: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the contact method.',
+    }),
+    createdAt: IsoDateSchema.exactOptional().openapi({
+      description: 'The timestamp when the contact method was created.',
+    }),
+    location: ResourceLocationSchema.exactOptional().openapi({
+      description:
+        'An object that describes the location of the contact method, such as the Amazon Web Services Region and Availability Zone.',
+    }),
+    resourceType: ResourceTypeSchema.exactOptional().openapi({
+      description: 'The Lightsail resource type (e.g., <code>ContactMethod</code>).',
+    }),
+    supportCode: StringSchema.exactOptional().openapi({
+      description:
+        'The support code. Include this code in your email to support when you have questions about your Lightsail contact method. This code enables our support team to look up your Lightsail information more easily.',
+    }),
   })
   .openapi({
     description:
@@ -6000,23 +4621,19 @@ const ContactMethodsListSchema = z.array(ContactMethodSchema).openapi('ContactMe
 
 const GetContactMethodsResultSchema = z
   .object({
-    contactMethods: ContactMethodsListSchema.and(
-      z.any().openapi({ description: 'An array of objects that describe the contact methods.' }),
-    ).exactOptional(),
+    contactMethods: ContactMethodsListSchema.exactOptional().openapi({
+      description: 'An array of objects that describe the contact methods.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetContactMethodsResult')
 
 const GetContactMethodsRequestSchema = z
   .object({
-    protocols: ContactProtocolsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The protocols used to send notifications, such as <code>Email</code>, or <code>SMS</code> (text messaging).</p> <p>Specify a protocol in your request to return information about a specific contact method protocol.</p>',
-        }),
-    ).exactOptional(),
+    protocols: ContactProtocolsListSchema.exactOptional().openapi({
+      description:
+        '<p>The protocols used to send notifications, such as <code>Email</code>, or <code>SMS</code> (text messaging).</p> <p>Specify a protocol in your request to return information about a specific contact method protocol.</p>',
+    }),
   })
   .openapi({ title: 'GetContactMethodsRequest', required: [] })
   .openapi('GetContactMethodsRequest')
@@ -6031,34 +4648,30 @@ const ContainerServiceMetadataEntryListSchema = z
 
 const GetContainerAPIMetadataResultSchema = z
   .object({
-    metadata: ContainerServiceMetadataEntryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Metadata about Lightsail containers, such as the current version of the Lightsail Control (lightsailctl) plugin.',
-        }),
-    ).exactOptional(),
+    metadata: ContainerServiceMetadataEntryListSchema.exactOptional().openapi({
+      description:
+        'Metadata about Lightsail containers, such as the current version of the Lightsail Control (lightsailctl) plugin.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetContainerAPIMetadataResult')
 
 const GetContainerAPIMetadataRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetContainerAPIMetadataRequest' })
   .openapi('GetContainerAPIMetadataRequest')
 
 const ContainerImageSchema = z
   .object({
-    image: StringSchema.and(
-      z.any().openapi({ description: 'The name of the container image.' }),
-    ).exactOptional(),
-    digest: StringSchema.and(
-      z.any().openapi({ description: 'The digest of the container image.' }),
-    ).exactOptional(),
-    createdAt: IsoDateSchema.and(
-      z.any().openapi({ description: 'The timestamp when the container image was created.' }),
-    ).exactOptional(),
+    image: StringSchema.exactOptional().openapi({
+      description: 'The name of the container image.',
+    }),
+    digest: StringSchema.exactOptional().openapi({
+      description: 'The digest of the container image.',
+    }),
+    createdAt: IsoDateSchema.exactOptional().openapi({
+      description: 'The timestamp when the container image was created.',
+    }),
   })
   .openapi({
     description:
@@ -6071,44 +4684,32 @@ const ContainerImageListSchema = z.array(ContainerImageSchema).openapi('Containe
 
 const GetContainerImagesResultSchema = z
   .object({
-    containerImages: ContainerImageListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe container images that are registered to the container service.',
-        }),
-    ).exactOptional(),
+    containerImages: ContainerImageListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe container images that are registered to the container service.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetContainerImagesResult')
 
 const GetContainerImagesRequestSchema = z
   .object({
-    serviceName: ContainerServiceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the container service for which to return registered container images.',
-        }),
-    ),
+    serviceName: ContainerServiceNameSchema.openapi({
+      description:
+        'The name of the container service for which to return registered container images.',
+    }),
   })
   .openapi({ required: ['serviceName'], title: 'GetContainerImagesRequest' })
   .openapi('GetContainerImagesRequest')
 
 const ContainerServiceLogEventSchema = z
   .object({
-    createdAt: IsoDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The timestamp when the container service log event was created.',
-        }),
-    ).exactOptional(),
-    message: StringSchema.and(
-      z.any().openapi({ description: 'The message of the container service log event.' }),
-    ).exactOptional(),
+    createdAt: IsoDateSchema.exactOptional().openapi({
+      description: 'The timestamp when the container service log event was created.',
+    }),
+    message: StringSchema.exactOptional().openapi({
+      description: 'The message of the container service log event.',
+    }),
   })
   .openapi({
     description:
@@ -6123,74 +4724,42 @@ const ContainerServiceLogEventListSchema = z
 
 const GetContainerLogResultSchema = z
   .object({
-    logEvents: ContainerServiceLogEventListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array of objects that describe the log events of a container.',
-        }),
-    ).exactOptional(),
-    nextPageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetContainerLog</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
-        }),
-    ).exactOptional(),
+    logEvents: ContainerServiceLogEventListSchema.exactOptional().openapi({
+      description: 'An array of objects that describe the log events of a container.',
+    }),
+    nextPageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetContainerLog</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetContainerLogResult')
 
 const GetContainerLogRequestSchema = z
   .object({
-    serviceName: ContainerServiceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the container service for which to get a container log.',
-        }),
-    ),
-    containerName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the container that is either running or previously ran on the container service for which to return a log.',
-        }),
-    ),
-    startTime: IsoDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The start of the time interval for which to get log data.</p> <p>Constraints:</p> <ul> <li> <p>Specified in Coordinated Universal Time (UTC).</p> </li> <li> <p>Specified in the Unix time format.</p> <p>For example, if you wish to use a start time of October 1, 2018, at 8 PM UTC, specify <code>1538424000</code> as the start time.</p> </li> </ul> <p>You can convert a human-friendly time to Unix time format using a converter like <a href="https://www.epochconverter.com/">Epoch converter</a>.</p>',
-        }),
-    ).exactOptional(),
-    endTime: IsoDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The end of the time interval for which to get log data.</p> <p>Constraints:</p> <ul> <li> <p>Specified in Coordinated Universal Time (UTC).</p> </li> <li> <p>Specified in the Unix time format.</p> <p>For example, if you wish to use an end time of October 1, 2018, at 9 PM UTC, specify <code>1538427600</code> as the end time.</p> </li> </ul> <p>You can convert a human-friendly time to Unix time format using a converter like <a href="https://www.epochconverter.com/">Epoch converter</a>.</p>',
-        }),
-    ).exactOptional(),
-    filterPattern: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The pattern to use to filter the returned log events to a specific term.</p> <p>The following are a few examples of filter patterns that you can specify:</p> <ul> <li> <p>To return all log events, specify a filter pattern of <code>""</code>.</p> </li> <li> <p>To exclude log events that contain the <code>ERROR</code> term, and return all other log events, specify a filter pattern of <code>"-ERROR"</code>.</p> </li> <li> <p>To return log events that contain the <code>ERROR</code> term, specify a filter pattern of <code>"ERROR"</code>.</p> </li> <li> <p>To return log events that contain both the <code>ERROR</code> and <code>Exception</code> terms, specify a filter pattern of <code>"ERROR Exception"</code>.</p> </li> <li> <p>To return log events that contain the <code>ERROR</code> <i>or</i> the <code>Exception</code> term, specify a filter pattern of <code>"?ERROR ?Exception"</code>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    pageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetContainerLog</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
-        }),
-    ).exactOptional(),
+    serviceName: ContainerServiceNameSchema.openapi({
+      description: 'The name of the container service for which to get a container log.',
+    }),
+    containerName: StringSchema.openapi({
+      description:
+        'The name of the container that is either running or previously ran on the container service for which to return a log.',
+    }),
+    startTime: IsoDateSchema.exactOptional().openapi({
+      description:
+        '<p>The start of the time interval for which to get log data.</p> <p>Constraints:</p> <ul> <li> <p>Specified in Coordinated Universal Time (UTC).</p> </li> <li> <p>Specified in the Unix time format.</p> <p>For example, if you wish to use a start time of October 1, 2018, at 8 PM UTC, specify <code>1538424000</code> as the start time.</p> </li> </ul> <p>You can convert a human-friendly time to Unix time format using a converter like <a href="https://www.epochconverter.com/">Epoch converter</a>.</p>',
+    }),
+    endTime: IsoDateSchema.exactOptional().openapi({
+      description:
+        '<p>The end of the time interval for which to get log data.</p> <p>Constraints:</p> <ul> <li> <p>Specified in Coordinated Universal Time (UTC).</p> </li> <li> <p>Specified in the Unix time format.</p> <p>For example, if you wish to use an end time of October 1, 2018, at 9 PM UTC, specify <code>1538427600</code> as the end time.</p> </li> </ul> <p>You can convert a human-friendly time to Unix time format using a converter like <a href="https://www.epochconverter.com/">Epoch converter</a>.</p>',
+    }),
+    filterPattern: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The pattern to use to filter the returned log events to a specific term.</p> <p>The following are a few examples of filter patterns that you can specify:</p> <ul> <li> <p>To return all log events, specify a filter pattern of <code>""</code>.</p> </li> <li> <p>To exclude log events that contain the <code>ERROR</code> term, and return all other log events, specify a filter pattern of <code>"-ERROR"</code>.</p> </li> <li> <p>To return log events that contain the <code>ERROR</code> term, specify a filter pattern of <code>"ERROR"</code>.</p> </li> <li> <p>To return log events that contain both the <code>ERROR</code> and <code>Exception</code> terms, specify a filter pattern of <code>"ERROR Exception"</code>.</p> </li> <li> <p>To return log events that contain the <code>ERROR</code> <i>or</i> the <code>Exception</code> term, specify a filter pattern of <code>"?ERROR ?Exception"</code>.</p> </li> </ul>',
+    }),
+    pageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetContainerLog</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
+    }),
   })
   .openapi({ required: ['serviceName', 'containerName'], title: 'GetContainerLogRequest' })
   .openapi('GetContainerLogRequest')
@@ -6201,26 +4770,18 @@ const ContainerServiceDeploymentListSchema = z
 
 const GetContainerServiceDeploymentsResultSchema = z
   .object({
-    deployments: ContainerServiceDeploymentListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array of objects that describe deployments for a container service.',
-        }),
-    ).exactOptional(),
+    deployments: ContainerServiceDeploymentListSchema.exactOptional().openapi({
+      description: 'An array of objects that describe deployments for a container service.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetContainerServiceDeploymentsResult')
 
 const GetContainerServiceDeploymentsRequestSchema = z
   .object({
-    serviceName: ContainerServiceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the container service for which to return deployments.',
-        }),
-    ),
+    serviceName: ContainerServiceNameSchema.openapi({
+      description: 'The name of the container service for which to return deployments.',
+    }),
   })
   .openapi({ required: ['serviceName'], title: 'GetContainerServiceDeploymentsRequest' })
   .openapi('GetContainerServiceDeploymentsRequest')
@@ -6231,57 +4792,35 @@ const ContainerServiceMetricNameSchema = z
 
 const GetContainerServiceMetricDataResultSchema = z
   .object({
-    metricName: ContainerServiceMetricNameSchema.and(
-      z.any().openapi({ description: 'The name of the metric returned. ' }),
-    ).exactOptional(),
-    metricData: MetricDatapointListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An array of objects that describe the metric data returned.' }),
-    ).exactOptional(),
+    metricName: ContainerServiceMetricNameSchema.exactOptional().openapi({
+      description: 'The name of the metric returned. ',
+    }),
+    metricData: MetricDatapointListSchema.exactOptional().openapi({
+      description: 'An array of objects that describe the metric data returned.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetContainerServiceMetricDataResult')
 
 const GetContainerServiceMetricDataRequestSchema = z
   .object({
-    serviceName: ContainerServiceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the container service for which to get metric data.',
-        }),
-    ),
-    metricName: ContainerServiceMetricNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The metric for which you want to return information.</p> <p>Valid container service metric names are listed below, along with the most useful statistics to include in your request, and the published unit value.</p> <ul> <li> <p> <code>CPUUtilization</code> - The average percentage of compute units that are currently in use across all nodes of the container service. This metric identifies the processing power required to run containers on each node of the container service.</p> <p>Statistics: The most useful statistics are <code>Maximum</code> and <code>Average</code>.</p> <p>Unit: The published unit is <code>Percent</code>.</p> </li> <li> <p> <code>MemoryUtilization</code> - The average percentage of available memory that is currently in use across all nodes of the container service. This metric identifies the memory required to run containers on each node of the container service.</p> <p>Statistics: The most useful statistics are <code>Maximum</code> and <code>Average</code>.</p> <p>Unit: The published unit is <code>Percent</code>.</p> </li> </ul>',
-        }),
-    ),
-    startTime: IsoDateSchema.and(
-      z.any().openapi({ description: 'The start time of the time period.' }),
-    ),
-    endTime: IsoDateSchema.and(
-      z.any().openapi({ description: 'The end time of the time period.' }),
-    ),
-    period: MetricPeriodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The granularity, in seconds, of the returned data points.</p> <p>All container service metric data is available in 5-minute (300 seconds) granularity.</p>',
-        }),
-    ),
-    statistics: MetricStatisticListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The statistic for the metric.</p> <p>The following statistics are available:</p> <ul> <li> <p> <code>Minimum</code> - The lowest value observed during the specified period. Use this value to determine low volumes of activity for your application.</p> </li> <li> <p> <code>Maximum</code> - The highest value observed during the specified period. Use this value to determine high volumes of activity for your application.</p> </li> <li> <p> <code>Sum</code> - All values submitted for the matching metric added together. You can use this statistic to determine the total volume of a metric.</p> </li> <li> <p> <code>Average</code> - The value of <code>Sum</code> / <code>SampleCount</code> during the specified period. By comparing this statistic with the <code>Minimum</code> and <code>Maximum</code> values, you can determine the full scope of a metric and how close the average use is to the <code>Minimum</code> and <code>Maximum</code> values. This comparison helps you to know when to increase or decrease your resources.</p> </li> <li> <p> <code>SampleCount</code> - The count, or number, of data points used for the statistical calculation.</p> </li> </ul>',
-        }),
-    ),
+    serviceName: ContainerServiceNameSchema.openapi({
+      description: 'The name of the container service for which to get metric data.',
+    }),
+    metricName: ContainerServiceMetricNameSchema.openapi({
+      description:
+        '<p>The metric for which you want to return information.</p> <p>Valid container service metric names are listed below, along with the most useful statistics to include in your request, and the published unit value.</p> <ul> <li> <p> <code>CPUUtilization</code> - The average percentage of compute units that are currently in use across all nodes of the container service. This metric identifies the processing power required to run containers on each node of the container service.</p> <p>Statistics: The most useful statistics are <code>Maximum</code> and <code>Average</code>.</p> <p>Unit: The published unit is <code>Percent</code>.</p> </li> <li> <p> <code>MemoryUtilization</code> - The average percentage of available memory that is currently in use across all nodes of the container service. This metric identifies the memory required to run containers on each node of the container service.</p> <p>Statistics: The most useful statistics are <code>Maximum</code> and <code>Average</code>.</p> <p>Unit: The published unit is <code>Percent</code>.</p> </li> </ul>',
+    }),
+    startTime: IsoDateSchema.openapi({ description: 'The start time of the time period.' }),
+    endTime: IsoDateSchema.openapi({ description: 'The end time of the time period.' }),
+    period: MetricPeriodSchema.openapi({
+      description:
+        '<p>The granularity, in seconds, of the returned data points.</p> <p>All container service metric data is available in 5-minute (300 seconds) granularity.</p>',
+    }),
+    statistics: MetricStatisticListSchema.openapi({
+      description:
+        '<p>The statistic for the metric.</p> <p>The following statistics are available:</p> <ul> <li> <p> <code>Minimum</code> - The lowest value observed during the specified period. Use this value to determine low volumes of activity for your application.</p> </li> <li> <p> <code>Maximum</code> - The highest value observed during the specified period. Use this value to determine high volumes of activity for your application.</p> </li> <li> <p> <code>Sum</code> - All values submitted for the matching metric added together. You can use this statistic to determine the total volume of a metric.</p> </li> <li> <p> <code>Average</code> - The value of <code>Sum</code> / <code>SampleCount</code> during the specified period. By comparing this statistic with the <code>Minimum</code> and <code>Maximum</code> values, you can determine the full scope of a metric and how close the average use is to the <code>Minimum</code> and <code>Maximum</code> values. This comparison helps you to know when to increase or decrease your resources.</p> </li> <li> <p> <code>SampleCount</code> - The count, or number, of data points used for the statistical calculation.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['serviceName', 'metricName', 'startTime', 'endTime', 'period', 'statistics'],
@@ -6291,29 +4830,25 @@ const GetContainerServiceMetricDataRequestSchema = z
 
 const ContainerServicePowerSchema = z
   .object({
-    powerId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the power (e.g., <code>nano-1</code>).' }),
-    ).exactOptional(),
-    price: FloatSchema.and(
-      z.any().openapi({ description: 'The monthly price of the power in USD.' }),
-    ).exactOptional(),
-    cpuCount: FloatSchema.and(
-      z.any().openapi({ description: 'The number of vCPUs included in the power.' }),
-    ).exactOptional(),
-    ramSizeInGb: FloatSchema.and(
-      z.any().openapi({ description: 'The amount of RAM (in GB) of the power.' }),
-    ).exactOptional(),
-    name: StringSchema.and(
-      z.any().openapi({ description: 'The friendly name of the power (e.g., <code>nano</code>).' }),
-    ).exactOptional(),
-    isActive: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean value indicating whether the power is active and can be specified for container services.',
-        }),
-    ).exactOptional(),
+    powerId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the power (e.g., <code>nano-1</code>).',
+    }),
+    price: FloatSchema.exactOptional().openapi({
+      description: 'The monthly price of the power in USD.',
+    }),
+    cpuCount: FloatSchema.exactOptional().openapi({
+      description: 'The number of vCPUs included in the power.',
+    }),
+    ramSizeInGb: FloatSchema.exactOptional().openapi({
+      description: 'The amount of RAM (in GB) of the power.',
+    }),
+    name: StringSchema.exactOptional().openapi({
+      description: 'The friendly name of the power (e.g., <code>nano</code>).',
+    }),
+    isActive: BooleanSchema.exactOptional().openapi({
+      description:
+        'A Boolean value indicating whether the power is active and can be specified for container services.',
+    }),
   })
   .openapi({
     description:
@@ -6328,20 +4863,16 @@ const ContainerServicePowerListSchema = z
 
 const GetContainerServicePowersResultSchema = z
   .object({
-    powers: ContainerServicePowerListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the powers that can be specified for a container service.',
-        }),
-    ).exactOptional(),
+    powers: ContainerServicePowerListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the powers that can be specified for a container service.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetContainerServicePowersResult')
 
 const GetContainerServicePowersRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetContainerServicePowersRequest' })
   .openapi('GetContainerServicePowersRequest')
 
@@ -6349,358 +4880,61 @@ const ContainerServiceListSchema = z.array(ContainerServiceSchema).openapi('Cont
 
 const ContainerServicesListResultSchema = z
   .object({
-    containerServices: ContainerServiceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array of objects that describe one or more container services.',
-        }),
-    ).exactOptional(),
+    containerServices: ContainerServiceListSchema.exactOptional().openapi({
+      description: 'An array of objects that describe one or more container services.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ContainerServicesListResult')
 
 const GetContainerServicesRequestSchema = z
   .object({
-    serviceName: ContainerServiceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the container service for which to return information.</p> <p>When omitted, the response includes all of your container services in the Amazon Web Services Region where the request is made.</p>',
-        }),
-    ).exactOptional(),
+    serviceName: ContainerServiceNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the container service for which to return information.</p> <p>When omitted, the response includes all of your container services in the Amazon Web Services Region where the request is made.</p>',
+    }),
   })
   .openapi({ title: 'GetContainerServicesRequest', required: [] })
   .openapi('GetContainerServicesRequest')
 
-const PricingUnitSchema = z
-  .enum(['GB', 'Hrs', 'GB-Mo', 'Bundles', 'Queries'])
-  .openapi('PricingUnit')
-
-const CurrencySchema = z.literal('USD').openapi('Currency')
-
-const TimePeriodSchema = z
+const GetCostEstimateResultSchema: z.ZodType<GetCostEstimateResultType> = z
   .object({
-    start: IsoDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The beginning of the time period. The start date is inclusive. For example, if <code>start</code> is <code>2017-01-01</code>, Lightsail for Research retrieves cost and usage data starting at <code>2017-01-01</code> up to the end date. The start date must be equal to or no later than the current date to avoid a validation error.',
-        }),
-    ).exactOptional(),
-    end: IsoDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The end of the time period. The end date is exclusive. For example, if <code>end</code> is <code>2017-05-01</code>, Lightsail for Research retrieves cost and usage data from the start date up to, but not including, <code>2017-05-01</code>.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Sets the start date and end date for retrieving a cost estimate. The start date is inclusive, but the end date is exclusive. For example, if <code>start</code> is <code>2017-01-01</code> and <code>end</code> is <code>2017-05-01</code>, then the cost and usage data is retrieved from <code>2017-01-01</code> up to and including <code>2017-04-30</code> but not including <code>2017-05-01</code>.',
-    required: [],
-  })
-  .openapi('TimePeriod')
-
-const EstimateByTimeSchema = z
-  .object({
-    usageCost: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The amount of cost or usage that's measured for the cost estimate.",
-        }),
-    ).exactOptional(),
-    pricingUnit: PricingUnitSchema.and(
-      z
-        .any()
-        .openapi({ description: "The unit of measurement that's used for the cost estimate." }),
-    ).exactOptional(),
-    unit: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of pricing units used to calculate the total number of hours. For example, 1 unit equals 1 hour.',
-        }),
-    ).exactOptional(),
-    currency: CurrencySchema.and(
-      z.any().openapi({ description: 'The currency of the estimate in USD.' }),
-    ).exactOptional(),
-    timePeriod: TimePeriodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The period of time, in days, that an estimate covers. The period has a start date and an end date. The start date must come before the end date.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: "An estimate that's associated with a time period. ", required: [] })
-  .openapi('EstimateByTime')
-
-const EstimatesByTimeSchema = z.array(EstimateByTimeSchema).openapi('EstimatesByTime')
-
-const CostEstimateSchema = z
-  .object({
-    usageType: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The types of usage that are included in the estimate, such as costs, usage, or data transfer.',
-        }),
-    ).exactOptional(),
-    resultsByTime: EstimatesByTimeSchema.and(
-      z
-        .any()
-        .openapi({ description: "The cost estimate result that's associated with a time period." }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Describes the estimated cost for resources in your Lightsail for Research account.',
-    required: [],
-  })
-  .openapi('CostEstimate')
-
-const CostEstimatesSchema = z.array(CostEstimateSchema).openapi('CostEstimates')
-
-const ResourceBudgetEstimateSchema = z
-  .object({
-    resourceName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The resource name.' }),
-    ).exactOptional(),
-    resourceType: ResourceTypeSchema.and(
-      z.any().openapi({ description: 'The type of resource the budget will track.' }),
-    ).exactOptional(),
-    costEstimates: CostEstimatesSchema.and(
-      z.any().openapi({ description: 'The cost estimate for the specified budget.' }),
-    ).exactOptional(),
-    startTime: IsoDateSchema.and(
-      z.any().openapi({ description: 'The estimate start time.' }),
-    ).exactOptional(),
-    endTime: IsoDateSchema.and(
-      z.any().openapi({ description: 'The estimate end time.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Describes the estimated cost or usage that a budget tracks.',
-    required: [],
-  })
-  .openapi('ResourceBudgetEstimate')
-
-const ResourcesBudgetEstimateSchema = z
-  .array(ResourceBudgetEstimateSchema)
-  .openapi('ResourcesBudgetEstimate')
-
-const GetCostEstimateResultSchema = z
-  .object({
-    resourcesBudgetEstimate: ResourcesBudgetEstimateSchema.and(
-      z.any().openapi({ description: "Returns the estimate's forecasted cost or usage." }),
-    ).exactOptional(),
+    resourcesBudgetEstimate: ResourcesBudgetEstimateSchema.exactOptional().openapi({
+      description: "Returns the estimate's forecasted cost or usage.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetCostEstimateResult')
 
 const GetCostEstimateRequestSchema = z
   .object({
-    resourceName: ResourceNameSchema.and(z.any().openapi({ description: 'The resource name.' })),
-    startTime: IsoDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The cost estimate start time.</p> <p>Constraints:</p> <ul> <li> <p>Specified in Coordinated Universal Time (UTC).</p> </li> <li> <p>Specified in the Unix time format.</p> <p>For example, if you wish to use a start time of October 1, 2018, at 8 PM UTC, specify <code>1538424000</code> as the start time.</p> </li> </ul> <p>You can convert a human-friendly time to Unix time format using a converter like <a href="https://www.epochconverter.com/">Epoch converter</a>.</p>',
-        }),
-    ),
-    endTime: IsoDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The cost estimate end time.</p> <p>Constraints:</p> <ul> <li> <p>Specified in Coordinated Universal Time (UTC).</p> </li> <li> <p>Specified in the Unix time format.</p> <p>For example, if you wish to use an end time of October 1, 2018, at 9 PM UTC, specify <code>1538427600</code> as the end time.</p> </li> </ul> <p>You can convert a human-friendly time to Unix time format using a converter like <a href="https://www.epochconverter.com/">Epoch converter</a>.</p>',
-        }),
-    ),
+    resourceName: ResourceNameSchema.openapi({ description: 'The resource name.' }),
+    startTime: IsoDateSchema.openapi({
+      description:
+        '<p>The cost estimate start time.</p> <p>Constraints:</p> <ul> <li> <p>Specified in Coordinated Universal Time (UTC).</p> </li> <li> <p>Specified in the Unix time format.</p> <p>For example, if you wish to use a start time of October 1, 2018, at 8 PM UTC, specify <code>1538424000</code> as the start time.</p> </li> </ul> <p>You can convert a human-friendly time to Unix time format using a converter like <a href="https://www.epochconverter.com/">Epoch converter</a>.</p>',
+    }),
+    endTime: IsoDateSchema.openapi({
+      description:
+        '<p>The cost estimate end time.</p> <p>Constraints:</p> <ul> <li> <p>Specified in Coordinated Universal Time (UTC).</p> </li> <li> <p>Specified in the Unix time format.</p> <p>For example, if you wish to use an end time of October 1, 2018, at 9 PM UTC, specify <code>1538427600</code> as the end time.</p> </li> </ul> <p>You can convert a human-friendly time to Unix time format using a converter like <a href="https://www.epochconverter.com/">Epoch converter</a>.</p>',
+    }),
   })
   .openapi({ required: ['resourceName', 'startTime', 'endTime'], title: 'GetCostEstimateRequest' })
   .openapi('GetCostEstimateRequest')
 
-const AddOnSchema = z
-  .object({
-    name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the add-on.' }),
-    ).exactOptional(),
-    status: StringSchema.and(
-      z.any().openapi({ description: 'The status of the add-on.' }),
-    ).exactOptional(),
-    snapshotTimeOfDay: TimeOfDaySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The daily time when an automatic snapshot is created.</p> <p>The time shown is in <code>HH:00</code> format, and in Coordinated Universal Time (UTC).</p> <p>The snapshot is automatically created between the time shown and up to 45 minutes after.</p>',
-        }),
-    ).exactOptional(),
-    nextSnapshotTimeOfDay: TimeOfDaySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The next daily time an automatic snapshot will be created.</p> <p>The time shown is in <code>HH:00</code> format, and in Coordinated Universal Time (UTC).</p> <p>The snapshot is automatically created between the time shown and up to 45 minutes after.</p>',
-        }),
-    ).exactOptional(),
-    threshold: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The trigger threshold of the action.</p> <important> <p>This add-on only applies to Lightsail for Research resources.</p> </important>',
-        }),
-    ).exactOptional(),
-    duration: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The amount of idle time in minutes after which your virtual computer will automatically stop.</p> <important> <p>This add-on only applies to Lightsail for Research resources.</p> </important>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Describes an add-on that is enabled for an Amazon Lightsail resource.',
-    required: [],
-  })
-  .openapi('AddOn')
-
-const AddOnListSchema = z.array(AddOnSchema).openapi('AddOnList')
-
-const DiskStateSchema = z
-  .enum(['pending', 'error', 'available', 'in-use', 'unknown'])
-  .openapi('DiskState')
-
-const AutoMountStatusSchema = z
-  .enum(['Failed', 'Pending', 'Mounted', 'NotMounted'])
-  .openapi('AutoMountStatus')
-
-const DiskSchema = z
-  .object({
-    name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The unique name of the disk.' }),
-    ).exactOptional(),
-    arn: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the disk.' }),
-    ).exactOptional(),
-    supportCode: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The support code. Include this code in your email to support when you have questions about an instance or another resource in Lightsail. This code enables our support team to look up your Lightsail information more easily.',
-        }),
-    ).exactOptional(),
-    createdAt: IsoDateSchema.and(
-      z.any().openapi({ description: 'The date when the disk was created.' }),
-    ).exactOptional(),
-    location: ResourceLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The AWS Region and Availability Zone where the disk is located.',
-        }),
-    ).exactOptional(),
-    resourceType: ResourceTypeSchema.and(
-      z.any().openapi({ description: 'The Lightsail resource type (e.g., <code>Disk</code>).' }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tag keys and optional values for the resource. For more information about tags in Lightsail, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-tags">Amazon Lightsail Developer Guide</a>.',
-        }),
-    ).exactOptional(),
-    addOns: AddOnListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array of objects representing the add-ons enabled on the disk.',
-        }),
-    ).exactOptional(),
-    sizeInGb: IntegerSchema.and(
-      z.any().openapi({ description: 'The size of the disk in GB.' }),
-    ).exactOptional(),
-    isSystemDisk: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean value indicating whether this disk is a system disk (has an operating system loaded on it).',
-        }),
-    ).exactOptional(),
-    iops: IntegerSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The input/output operations per second (IOPS) of the disk.' }),
-    ).exactOptional(),
-    path: StringSchema.and(z.any().openapi({ description: 'The disk path.' })).exactOptional(),
-    state: DiskStateSchema.and(
-      z.any().openapi({ description: 'Describes the status of the disk.' }),
-    ).exactOptional(),
-    attachedTo: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The resources to which the disk is attached.' }),
-    ).exactOptional(),
-    isAttached: BooleanSchema.and(
-      z.any().openapi({ description: 'A Boolean value indicating whether the disk is attached.' }),
-    ).exactOptional(),
-    attachmentState: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            '<p>(Deprecated) The attachment state of the disk.</p> <note> <p>In releases prior to November 14, 2017, this parameter returned <code>attached</code> for system disks in the API response. It is now deprecated, but still included in the response. Use <code>isAttached</code> instead.</p> </note>',
-        }),
-    ).exactOptional(),
-    gbInUse: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            '<p>(Deprecated) The number of GB in use by the disk.</p> <note> <p>In releases prior to November 14, 2017, this parameter was not included in the API response. It is now deprecated.</p> </note>',
-        }),
-    ).exactOptional(),
-    autoMountStatus: AutoMountStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of automatically mounting a storage disk to a virtual computer.</p> <important> <p>This parameter only applies to Lightsail for Research resources.</p> </important>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Describes a block storage disk.', required: [] })
-  .openapi('Disk')
-
 const GetDiskResultSchema = z
   .object({
-    disk: DiskSchema.and(
-      z.any().openapi({ description: 'An object containing information about the disk.' }),
-    ).exactOptional(),
+    disk: DiskSchema.exactOptional().openapi({
+      description: 'An object containing information about the disk.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDiskResult')
 
 const GetDiskRequestSchema = z
   .object({
-    diskName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the disk (e.g., <code>my-disk</code>).' }),
-    ),
+    diskName: ResourceNameSchema.openapi({
+      description: 'The name of the disk (e.g., <code>my-disk</code>).',
+    }),
   })
   .openapi({ required: ['diskName'], title: 'GetDiskRequest' })
   .openapi('GetDiskRequest')
@@ -6711,118 +4945,73 @@ const DiskSnapshotStateSchema = z
 
 const DiskSnapshotSchema = z
   .object({
-    name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the disk snapshot (e.g., <code>my-disk-snapshot</code>).',
-        }),
-    ).exactOptional(),
-    arn: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the disk snapshot.' }),
-    ).exactOptional(),
-    supportCode: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The support code. Include this code in your email to support when you have questions about an instance or another resource in Lightsail. This code enables our support team to look up your Lightsail information more easily.',
-        }),
-    ).exactOptional(),
-    createdAt: IsoDateSchema.and(
-      z.any().openapi({ description: 'The date when the disk snapshot was created.' }),
-    ).exactOptional(),
-    location: ResourceLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The AWS Region and Availability Zone where the disk snapshot was created.',
-        }),
-    ).exactOptional(),
-    resourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Lightsail resource type (e.g., <code>DiskSnapshot</code>).' }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tag keys and optional values for the resource. For more information about tags in Lightsail, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-tags">Amazon Lightsail Developer Guide</a>.',
-        }),
-    ).exactOptional(),
-    sizeInGb: IntegerSchema.and(
-      z.any().openapi({ description: 'The size of the disk in GB.' }),
-    ).exactOptional(),
-    state: DiskSnapshotStateSchema.and(
-      z.any().openapi({ description: 'The status of the disk snapshot operation.' }),
-    ).exactOptional(),
-    progress: StringSchema.and(
-      z.any().openapi({ description: 'The progress of the snapshot.' }),
-    ).exactOptional(),
-    fromDiskName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique name of the source disk from which the disk snapshot was created.',
-        }),
-    ).exactOptional(),
-    fromDiskArn: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the source disk from which the disk snapshot was created.',
-        }),
-    ).exactOptional(),
-    fromInstanceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique name of the source instance from which the disk (system volume) snapshot was created.',
-        }),
-    ).exactOptional(),
-    fromInstanceArn: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the source instance from which the disk (system volume) snapshot was created.',
-        }),
-    ).exactOptional(),
-    isFromAutoSnapshot: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean value indicating whether the snapshot was created from an automatic snapshot.',
-        }),
-    ).exactOptional(),
+    name: ResourceNameSchema.exactOptional().openapi({
+      description: 'The name of the disk snapshot (e.g., <code>my-disk-snapshot</code>).',
+    }),
+    arn: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the disk snapshot.',
+    }),
+    supportCode: StringSchema.exactOptional().openapi({
+      description:
+        'The support code. Include this code in your email to support when you have questions about an instance or another resource in Lightsail. This code enables our support team to look up your Lightsail information more easily.',
+    }),
+    createdAt: IsoDateSchema.exactOptional().openapi({
+      description: 'The date when the disk snapshot was created.',
+    }),
+    location: ResourceLocationSchema.exactOptional().openapi({
+      description: 'The AWS Region and Availability Zone where the disk snapshot was created.',
+    }),
+    resourceType: ResourceTypeSchema.exactOptional().openapi({
+      description: 'The Lightsail resource type (e.g., <code>DiskSnapshot</code>).',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        'The tag keys and optional values for the resource. For more information about tags in Lightsail, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-tags">Amazon Lightsail Developer Guide</a>.',
+    }),
+    sizeInGb: IntegerSchema.exactOptional().openapi({ description: 'The size of the disk in GB.' }),
+    state: DiskSnapshotStateSchema.exactOptional().openapi({
+      description: 'The status of the disk snapshot operation.',
+    }),
+    progress: StringSchema.exactOptional().openapi({
+      description: 'The progress of the snapshot.',
+    }),
+    fromDiskName: ResourceNameSchema.exactOptional().openapi({
+      description: 'The unique name of the source disk from which the disk snapshot was created.',
+    }),
+    fromDiskArn: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the source disk from which the disk snapshot was created.',
+    }),
+    fromInstanceName: ResourceNameSchema.exactOptional().openapi({
+      description:
+        'The unique name of the source instance from which the disk (system volume) snapshot was created.',
+    }),
+    fromInstanceArn: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the source instance from which the disk (system volume) snapshot was created.',
+    }),
+    isFromAutoSnapshot: BooleanSchema.exactOptional().openapi({
+      description:
+        'A Boolean value indicating whether the snapshot was created from an automatic snapshot.',
+    }),
   })
   .openapi({ description: 'Describes a block storage disk snapshot.', required: [] })
   .openapi('DiskSnapshot')
 
 const GetDiskSnapshotResultSchema = z
   .object({
-    diskSnapshot: DiskSnapshotSchema.and(
-      z.any().openapi({ description: 'An object containing information about the disk snapshot.' }),
-    ).exactOptional(),
+    diskSnapshot: DiskSnapshotSchema.exactOptional().openapi({
+      description: 'An object containing information about the disk snapshot.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDiskSnapshotResult')
 
 const GetDiskSnapshotRequestSchema = z
   .object({
-    diskSnapshotName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the disk snapshot (e.g., <code>my-disk-snapshot</code>).',
-        }),
-    ),
+    diskSnapshotName: ResourceNameSchema.openapi({
+      description: 'The name of the disk snapshot (e.g., <code>my-disk-snapshot</code>).',
+    }),
   })
   .openapi({ required: ['diskSnapshotName'], title: 'GetDiskSnapshotRequest' })
   .openapi('GetDiskSnapshotRequest')
@@ -6831,99 +5020,67 @@ const DiskSnapshotListSchema = z.array(DiskSnapshotSchema).openapi('DiskSnapshot
 
 const GetDiskSnapshotsResultSchema = z
   .object({
-    diskSnapshots: DiskSnapshotListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects containing information about all block storage disk snapshots.',
-        }),
-    ).exactOptional(),
-    nextPageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetDiskSnapshots</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
-        }),
-    ).exactOptional(),
+    diskSnapshots: DiskSnapshotListSchema.exactOptional().openapi({
+      description:
+        'An array of objects containing information about all block storage disk snapshots.',
+    }),
+    nextPageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetDiskSnapshots</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDiskSnapshotsResult')
 
 const GetDiskSnapshotsRequestSchema = z
   .object({
-    pageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetDiskSnapshots</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
-        }),
-    ).exactOptional(),
+    pageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetDiskSnapshots</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
+    }),
   })
   .openapi({ title: 'GetDiskSnapshotsRequest', required: [] })
   .openapi('GetDiskSnapshotsRequest')
 
-const DiskListSchema = z.array(DiskSchema).openapi('DiskList')
-
 const GetDisksResultSchema = z
   .object({
-    disks: DiskListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array of objects containing information about all block storage disks.',
-        }),
-    ).exactOptional(),
-    nextPageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetDisks</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
-        }),
-    ).exactOptional(),
+    disks: DiskListSchema.exactOptional().openapi({
+      description: 'An array of objects containing information about all block storage disks.',
+    }),
+    nextPageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetDisks</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDisksResult')
 
 const GetDisksRequestSchema = z
   .object({
-    pageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetDisks</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
-        }),
-    ).exactOptional(),
+    pageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetDisks</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
+    }),
   })
   .openapi({ title: 'GetDisksRequest', required: [] })
   .openapi('GetDisksRequest')
 
 const DistributionBundleSchema = z
   .object({
-    bundleId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the bundle.' }),
-    ).exactOptional(),
-    name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the distribution bundle.' }),
-    ).exactOptional(),
-    price: FloatSchema.and(
-      z.any().openapi({ description: 'The monthly price, in US dollars, of the bundle.' }),
-    ).exactOptional(),
-    transferPerMonthInGb: IntegerSchema.and(
-      z.any().openapi({ description: 'The monthly network transfer quota of the bundle.' }),
-    ).exactOptional(),
-    isActive: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether the bundle is active, and can be specified for a new or existing distribution.',
-        }),
-    ).exactOptional(),
+    bundleId: StringSchema.exactOptional().openapi({ description: 'The ID of the bundle.' }),
+    name: StringSchema.exactOptional().openapi({
+      description: 'The name of the distribution bundle.',
+    }),
+    price: FloatSchema.exactOptional().openapi({
+      description: 'The monthly price, in US dollars, of the bundle.',
+    }),
+    transferPerMonthInGb: IntegerSchema.exactOptional().openapi({
+      description: 'The monthly network transfer quota of the bundle.',
+    }),
+    isActive: BooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates whether the bundle is active, and can be specified for a new or existing distribution.',
+    }),
   })
   .openapi({ description: 'Describes the specifications of a distribution bundle.', required: [] })
   .openapi('DistributionBundle')
@@ -6934,45 +5091,37 @@ const DistributionBundleListSchema = z
 
 const GetDistributionBundlesResultSchema = z
   .object({
-    bundles: DistributionBundleListSchema.and(
-      z.any().openapi({ description: 'An object that describes a distribution bundle.' }),
-    ).exactOptional(),
+    bundles: DistributionBundleListSchema.exactOptional().openapi({
+      description: 'An object that describes a distribution bundle.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDistributionBundlesResult')
 
 const GetDistributionBundlesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetDistributionBundlesRequest' })
   .openapi('GetDistributionBundlesRequest')
 
 const GetDistributionLatestCacheResetResultSchema = z
   .object({
-    status: StringSchema.and(
-      z.any().openapi({ description: 'The status of the last cache reset.' }),
-    ).exactOptional(),
-    createTime: IsoDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp of the last cache reset (e.g., <code>1479734909.17</code>) in Unix time format.',
-        }),
-    ).exactOptional(),
+    status: StringSchema.exactOptional().openapi({
+      description: 'The status of the last cache reset.',
+    }),
+    createTime: IsoDateSchema.exactOptional().openapi({
+      description:
+        'The timestamp of the last cache reset (e.g., <code>1479734909.17</code>) in Unix time format.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDistributionLatestCacheResetResult')
 
 const GetDistributionLatestCacheResetRequestSchema = z
   .object({
-    distributionName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the distribution for which to return the timestamp of the last cache reset.</p> <p>Use the <code>GetDistributions</code> action to get a list of distribution names that you can specify.</p> <p>When omitted, the response includes the latest cache reset timestamp of all your distributions.</p>',
-        }),
-    ).exactOptional(),
+    distributionName: ResourceNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the distribution for which to return the timestamp of the last cache reset.</p> <p>Use the <code>GetDistributions</code> action to get a list of distribution names that you can specify.</p> <p>When omitted, the response includes the latest cache reset timestamp of all your distributions.</p>',
+    }),
   })
   .openapi({ title: 'GetDistributionLatestCacheResetRequest', required: [] })
   .openapi('GetDistributionLatestCacheResetRequest')
@@ -6990,76 +5139,45 @@ const DistributionMetricNameSchema = z
 
 const GetDistributionMetricDataResultSchema = z
   .object({
-    metricName: DistributionMetricNameSchema.and(
-      z.any().openapi({ description: 'The name of the metric returned.' }),
-    ).exactOptional(),
-    metricData: MetricDatapointListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An array of objects that describe the metric data returned.' }),
-    ).exactOptional(),
+    metricName: DistributionMetricNameSchema.exactOptional().openapi({
+      description: 'The name of the metric returned.',
+    }),
+    metricData: MetricDatapointListSchema.exactOptional().openapi({
+      description: 'An array of objects that describe the metric data returned.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDistributionMetricDataResult')
 
 const GetDistributionMetricDataRequestSchema = z
   .object({
-    distributionName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the distribution for which to get metric data.</p> <p>Use the <code>GetDistributions</code> action to get a list of distribution names that you can specify.</p>',
-        }),
-    ),
-    metricName: DistributionMetricNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The metric for which you want to return information.</p> <p>Valid distribution metric names are listed below, along with the most useful <code>statistics</code> to include in your request, and the published <code>unit</code> value.</p> <ul> <li> <p> <b> <code>Requests</code> </b> - The total number of viewer requests received by your Lightsail distribution, for all HTTP methods, and for both HTTP and HTTPS requests.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>.</p> <p> <code>Unit</code>: The published unit is <code>None</code>.</p> </li> <li> <p> <b> <code>BytesDownloaded</code> </b> - The number of bytes downloaded by viewers for GET, HEAD, and OPTIONS requests.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>.</p> <p> <code>Unit</code>: The published unit is <code>None</code>.</p> </li> <li> <p> <b> <code>BytesUploaded </code> </b> - The number of bytes uploaded to your origin by your Lightsail distribution, using POST and PUT requests.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>.</p> <p> <code>Unit</code>: The published unit is <code>None</code>.</p> </li> <li> <p> <b> <code>TotalErrorRate</code> </b> - The percentage of all viewer requests for which the response's HTTP status code was 4xx or 5xx.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Average</code>.</p> <p> <code>Unit</code>: The published unit is <code>Percent</code>.</p> </li> <li> <p> <b> <code>4xxErrorRate</code> </b> - The percentage of all viewer requests for which the response's HTTP status cod was 4xx. In these cases, the client or client viewer may have made an error. For example, a status code of 404 (Not Found) means that the client requested an object that could not be found.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Average</code>.</p> <p> <code>Unit</code>: The published unit is <code>Percent</code>.</p> </li> <li> <p> <b> <code>5xxErrorRate</code> </b> - The percentage of all viewer requests for which the response's HTTP status code was 5xx. In these cases, the origin server did not satisfy the requests. For example, a status code of 503 (Service Unavailable) means that the origin server is currently unavailable.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Average</code>.</p> <p> <code>Unit</code>: The published unit is <code>Percent</code>.</p> </li> </ul>",
-        }),
-    ),
-    startTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The start of the time interval for which to get metric data.</p> <p>Constraints:</p> <ul> <li> <p>Specified in Coordinated Universal Time (UTC).</p> </li> <li> <p>Specified in the Unix time format.</p> <p>For example, if you wish to use a start time of October 1, 2018, at 8 PM UTC, specify <code>1538424000</code> as the start time.</p> </li> </ul> <p>You can convert a human-friendly time to Unix time format using a converter like <a href="https://www.epochconverter.com/">Epoch converter</a>.</p>',
-        }),
-    ),
-    endTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The end of the time interval for which to get metric data.</p> <p>Constraints:</p> <ul> <li> <p>Specified in Coordinated Universal Time (UTC).</p> </li> <li> <p>Specified in the Unix time format.</p> <p>For example, if you wish to use an end time of October 1, 2018, at 9 PM UTC, specify <code>1538427600</code> as the end time.</p> </li> </ul> <p>You can convert a human-friendly time to Unix time format using a converter like <a href="https://www.epochconverter.com/">Epoch converter</a>.</p>',
-        }),
-    ),
-    period: MetricPeriodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The granularity, in seconds, for the metric data points that will be returned.',
-        }),
-    ),
-    unit: MetricUnitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unit for the metric data request.</p> <p>Valid units depend on the metric data being requested. For the valid units with each available metric, see the <code>metricName</code> parameter.</p>',
-        }),
-    ),
-    statistics: MetricStatisticListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The statistic for the metric.</p> <p>The following statistics are available:</p> <ul> <li> <p> <code>Minimum</code> - The lowest value observed during the specified period. Use this value to determine low volumes of activity for your application.</p> </li> <li> <p> <code>Maximum</code> - The highest value observed during the specified period. Use this value to determine high volumes of activity for your application.</p> </li> <li> <p> <code>Sum</code> - All values submitted for the matching metric added together. You can use this statistic to determine the total volume of a metric.</p> </li> <li> <p> <code>Average</code> - The value of Sum / SampleCount during the specified period. By comparing this statistic with the Minimum and Maximum values, you can determine the full scope of a metric and how close the average use is to the Minimum and Maximum values. This comparison helps you to know when to increase or decrease your resources.</p> </li> <li> <p> <code>SampleCount</code> - The count, or number, of data points used for the statistical calculation.</p> </li> </ul>',
-        }),
-    ),
+    distributionName: ResourceNameSchema.openapi({
+      description:
+        '<p>The name of the distribution for which to get metric data.</p> <p>Use the <code>GetDistributions</code> action to get a list of distribution names that you can specify.</p>',
+    }),
+    metricName: DistributionMetricNameSchema.openapi({
+      description:
+        "<p>The metric for which you want to return information.</p> <p>Valid distribution metric names are listed below, along with the most useful <code>statistics</code> to include in your request, and the published <code>unit</code> value.</p> <ul> <li> <p> <b> <code>Requests</code> </b> - The total number of viewer requests received by your Lightsail distribution, for all HTTP methods, and for both HTTP and HTTPS requests.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>.</p> <p> <code>Unit</code>: The published unit is <code>None</code>.</p> </li> <li> <p> <b> <code>BytesDownloaded</code> </b> - The number of bytes downloaded by viewers for GET, HEAD, and OPTIONS requests.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>.</p> <p> <code>Unit</code>: The published unit is <code>None</code>.</p> </li> <li> <p> <b> <code>BytesUploaded </code> </b> - The number of bytes uploaded to your origin by your Lightsail distribution, using POST and PUT requests.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>.</p> <p> <code>Unit</code>: The published unit is <code>None</code>.</p> </li> <li> <p> <b> <code>TotalErrorRate</code> </b> - The percentage of all viewer requests for which the response's HTTP status code was 4xx or 5xx.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Average</code>.</p> <p> <code>Unit</code>: The published unit is <code>Percent</code>.</p> </li> <li> <p> <b> <code>4xxErrorRate</code> </b> - The percentage of all viewer requests for which the response's HTTP status cod was 4xx. In these cases, the client or client viewer may have made an error. For example, a status code of 404 (Not Found) means that the client requested an object that could not be found.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Average</code>.</p> <p> <code>Unit</code>: The published unit is <code>Percent</code>.</p> </li> <li> <p> <b> <code>5xxErrorRate</code> </b> - The percentage of all viewer requests for which the response's HTTP status code was 5xx. In these cases, the origin server did not satisfy the requests. For example, a status code of 503 (Service Unavailable) means that the origin server is currently unavailable.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Average</code>.</p> <p> <code>Unit</code>: The published unit is <code>Percent</code>.</p> </li> </ul>",
+    }),
+    startTime: TimestampSchema.openapi({
+      description:
+        '<p>The start of the time interval for which to get metric data.</p> <p>Constraints:</p> <ul> <li> <p>Specified in Coordinated Universal Time (UTC).</p> </li> <li> <p>Specified in the Unix time format.</p> <p>For example, if you wish to use a start time of October 1, 2018, at 8 PM UTC, specify <code>1538424000</code> as the start time.</p> </li> </ul> <p>You can convert a human-friendly time to Unix time format using a converter like <a href="https://www.epochconverter.com/">Epoch converter</a>.</p>',
+    }),
+    endTime: TimestampSchema.openapi({
+      description:
+        '<p>The end of the time interval for which to get metric data.</p> <p>Constraints:</p> <ul> <li> <p>Specified in Coordinated Universal Time (UTC).</p> </li> <li> <p>Specified in the Unix time format.</p> <p>For example, if you wish to use an end time of October 1, 2018, at 9 PM UTC, specify <code>1538427600</code> as the end time.</p> </li> </ul> <p>You can convert a human-friendly time to Unix time format using a converter like <a href="https://www.epochconverter.com/">Epoch converter</a>.</p>',
+    }),
+    period: MetricPeriodSchema.openapi({
+      description: 'The granularity, in seconds, for the metric data points that will be returned.',
+    }),
+    unit: MetricUnitSchema.openapi({
+      description:
+        '<p>The unit for the metric data request.</p> <p>Valid units depend on the metric data being requested. For the valid units with each available metric, see the <code>metricName</code> parameter.</p>',
+    }),
+    statistics: MetricStatisticListSchema.openapi({
+      description:
+        '<p>The statistic for the metric.</p> <p>The following statistics are available:</p> <ul> <li> <p> <code>Minimum</code> - The lowest value observed during the specified period. Use this value to determine low volumes of activity for your application.</p> </li> <li> <p> <code>Maximum</code> - The highest value observed during the specified period. Use this value to determine high volumes of activity for your application.</p> </li> <li> <p> <code>Sum</code> - All values submitted for the matching metric added together. You can use this statistic to determine the total volume of a metric.</p> </li> <li> <p> <code>Average</code> - The value of Sum / SampleCount during the specified period. By comparing this statistic with the Minimum and Maximum values, you can determine the full scope of a metric and how close the average use is to the Minimum and Maximum values. This comparison helps you to know when to increase or decrease your resources.</p> </li> <li> <p> <code>SampleCount</code> - The count, or number, of data points used for the statistical calculation.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: [
@@ -7079,39 +5197,27 @@ const DistributionListSchema = z.array(LightsailDistributionSchema).openapi('Dis
 
 const GetDistributionsResultSchema = z
   .object({
-    distributions: DistributionListSchema.and(
-      z.any().openapi({ description: 'An array of objects that describe your distributions.' }),
-    ).exactOptional(),
-    nextPageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetDistributions</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
-        }),
-    ).exactOptional(),
+    distributions: DistributionListSchema.exactOptional().openapi({
+      description: 'An array of objects that describe your distributions.',
+    }),
+    nextPageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetDistributions</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDistributionsResult')
 
 const GetDistributionsRequestSchema = z
   .object({
-    distributionName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the distribution for which to return information.</p> <p>When omitted, the response includes all of your distributions in the Amazon Web Services Region where the request is made.</p>',
-        }),
-    ).exactOptional(),
-    pageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetDistributions</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
-        }),
-    ).exactOptional(),
+    distributionName: ResourceNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the distribution for which to return information.</p> <p>When omitted, the response includes all of your distributions in the Amazon Web Services Region where the request is made.</p>',
+    }),
+    pageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetDistributions</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
+    }),
   })
   .openapi({ title: 'GetDistributionsRequest', required: [] })
   .openapi('GetDistributionsRequest')
@@ -7124,19 +5230,13 @@ const NameServersUpdateStateCodeSchema = z
 
 const NameServersUpdateStateSchema = z
   .object({
-    code: NameServersUpdateStateCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status code for the name servers update.</p> <p>Following are the possible values:</p> <ul> <li> <p> <code>SUCCEEDED</code> - The name server records were successfully updated.</p> </li> <li> <p> <code>PENDING</code> - The name server record update is in progress.</p> </li> <li> <p> <code>FAILED</code> - The name server record update failed.</p> </li> <li> <p> <code>STARTED</code> - The automatic name server record update started.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    message: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The message that describes the reason for the status code.' }),
-    ).exactOptional(),
+    code: NameServersUpdateStateCodeSchema.exactOptional().openapi({
+      description:
+        '<p>The status code for the name servers update.</p> <p>Following are the possible values:</p> <ul> <li> <p> <code>SUCCEEDED</code> - The name server records were successfully updated.</p> </li> <li> <p> <code>PENDING</code> - The name server record update is in progress.</p> </li> <li> <p> <code>FAILED</code> - The name server record update failed.</p> </li> <li> <p> <code>STARTED</code> - The automatic name server record update started.</p> </li> </ul>',
+    }),
+    message: StringSchema.exactOptional().openapi({
+      description: 'The message that describes the reason for the status code.',
+    }),
   })
   .openapi({
     description:
@@ -7151,19 +5251,13 @@ const R53HostedZoneDeletionStateCodeSchema = z
 
 const R53HostedZoneDeletionStateSchema = z
   .object({
-    code: R53HostedZoneDeletionStateCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status code for the deletion state.</p> <p>Following are the possible values:</p> <ul> <li> <p> <code>SUCCEEDED</code> - The hosted zone was successfully deleted.</p> </li> <li> <p> <code>PENDING</code> - The hosted zone deletion is in progress.</p> </li> <li> <p> <code>FAILED</code> - The hosted zone deletion failed.</p> </li> <li> <p> <code>STARTED</code> - The hosted zone deletion started.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    message: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The message that describes the reason for the status code.' }),
-    ).exactOptional(),
+    code: R53HostedZoneDeletionStateCodeSchema.exactOptional().openapi({
+      description:
+        '<p>The status code for the deletion state.</p> <p>Following are the possible values:</p> <ul> <li> <p> <code>SUCCEEDED</code> - The hosted zone was successfully deleted.</p> </li> <li> <p> <code>PENDING</code> - The hosted zone deletion is in progress.</p> </li> <li> <p> <code>FAILED</code> - The hosted zone deletion failed.</p> </li> <li> <p> <code>STARTED</code> - The hosted zone deletion started.</p> </li> </ul>',
+    }),
+    message: StringSchema.exactOptional().openapi({
+      description: 'The message that describes the reason for the status code.',
+    }),
   })
   .openapi({
     description:
@@ -7174,22 +5268,14 @@ const R53HostedZoneDeletionStateSchema = z
 
 const RegisteredDomainDelegationInfoSchema = z
   .object({
-    nameServersUpdateState: NameServersUpdateStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that describes the state of the name server records that are automatically added to the Route 53 domain by Lightsail.',
-        }),
-    ).exactOptional(),
-    r53HostedZoneDeletionState: R53HostedZoneDeletionStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes the deletion state of an Amazon Route 53 hosted zone for a domain that is being automatically delegated to an Amazon Lightsail DNS zone.',
-        }),
-    ).exactOptional(),
+    nameServersUpdateState: NameServersUpdateStateSchema.exactOptional().openapi({
+      description:
+        'An object that describes the state of the name server records that are automatically added to the Route 53 domain by Lightsail.',
+    }),
+    r53HostedZoneDeletionState: R53HostedZoneDeletionStateSchema.exactOptional().openapi({
+      description:
+        'Describes the deletion state of an Amazon Route 53 hosted zone for a domain that is being automatically delegated to an Amazon Lightsail DNS zone.',
+    }),
   })
   .openapi({
     description:
@@ -7200,90 +5286,54 @@ const RegisteredDomainDelegationInfoSchema = z
 
 const DomainSchema = z
   .object({
-    name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the domain.' }),
-    ).exactOptional(),
-    arn: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the domain recordset (e.g., <code>arn:aws:lightsail:global:123456789101:Domain/824cede0-abc7-4f84-8dbc-12345EXAMPLE</code>).',
-        }),
-    ).exactOptional(),
-    supportCode: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The support code. Include this code in your email to support when you have questions about an instance or another resource in Lightsail. This code enables our support team to look up your Lightsail information more easily.',
-        }),
-    ).exactOptional(),
-    createdAt: IsoDateSchema.and(
-      z.any().openapi({ description: 'The date when the domain recordset was created.' }),
-    ).exactOptional(),
-    location: ResourceLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The AWS Region and Availability Zones where the domain recordset was created.',
-        }),
-    ).exactOptional(),
-    resourceType: ResourceTypeSchema.and(
-      z.any().openapi({ description: 'The resource type. ' }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tag keys and optional values for the resource. For more information about tags in Lightsail, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-tags">Amazon Lightsail Developer Guide</a>.',
-        }),
-    ).exactOptional(),
-    domainEntries: DomainEntryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of key-value pairs containing information about the domain entries.',
-        }),
-    ).exactOptional(),
-    registeredDomainDelegationInfo: RegisteredDomainDelegationInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that describes the state of the Route 53 domain delegation to a Lightsail DNS zone.',
-        }),
-    ).exactOptional(),
+    name: ResourceNameSchema.exactOptional().openapi({ description: 'The name of the domain.' }),
+    arn: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the domain recordset (e.g., <code>arn:aws:lightsail:global:123456789101:Domain/824cede0-abc7-4f84-8dbc-12345EXAMPLE</code>).',
+    }),
+    supportCode: StringSchema.exactOptional().openapi({
+      description:
+        'The support code. Include this code in your email to support when you have questions about an instance or another resource in Lightsail. This code enables our support team to look up your Lightsail information more easily.',
+    }),
+    createdAt: IsoDateSchema.exactOptional().openapi({
+      description: 'The date when the domain recordset was created.',
+    }),
+    location: ResourceLocationSchema.exactOptional().openapi({
+      description: 'The AWS Region and Availability Zones where the domain recordset was created.',
+    }),
+    resourceType: ResourceTypeSchema.exactOptional().openapi({
+      description: 'The resource type. ',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        'The tag keys and optional values for the resource. For more information about tags in Lightsail, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-tags">Amazon Lightsail Developer Guide</a>.',
+    }),
+    domainEntries: DomainEntryListSchema.exactOptional().openapi({
+      description: 'An array of key-value pairs containing information about the domain entries.',
+    }),
+    registeredDomainDelegationInfo: RegisteredDomainDelegationInfoSchema.exactOptional().openapi({
+      description:
+        'An object that describes the state of the Route 53 domain delegation to a Lightsail DNS zone.',
+    }),
   })
   .openapi({ description: 'Describes a domain where you are storing recordsets.', required: [] })
   .openapi('Domain')
 
 const GetDomainResultSchema = z
   .object({
-    domain: DomainSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of key-value pairs containing information about your get domain request.',
-        }),
-    ).exactOptional(),
+    domain: DomainSchema.exactOptional().openapi({
+      description:
+        'An array of key-value pairs containing information about your get domain request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDomainResult')
 
 const GetDomainRequestSchema = z
   .object({
-    domainName: DomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The domain name for which your want to return information about.',
-        }),
-    ),
+    domainName: DomainNameSchema.openapi({
+      description: 'The domain name for which your want to return information about.',
+    }),
   })
   .openapi({ required: ['domainName'], title: 'GetDomainRequest' })
   .openapi('GetDomainRequest')
@@ -7292,36 +5342,24 @@ const DomainListSchema = z.array(DomainSchema).openapi('DomainList')
 
 const GetDomainsResultSchema = z
   .object({
-    domains: DomainListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An array of key-value pairs containing information about each of the domain entries in the user's account.",
-        }),
-    ).exactOptional(),
-    nextPageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetDomains</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
-        }),
-    ).exactOptional(),
+    domains: DomainListSchema.exactOptional().openapi({
+      description:
+        "An array of key-value pairs containing information about each of the domain entries in the user's account.",
+    }),
+    nextPageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetDomains</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDomainsResult')
 
 const GetDomainsRequestSchema = z
   .object({
-    pageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetDomains</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
-        }),
-    ).exactOptional(),
+    pageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetDomains</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
+    }),
   })
   .openapi({ title: 'GetDomainsRequest', required: [] })
   .openapi('GetDomainsRequest')
@@ -7332,21 +5370,15 @@ const ExportSnapshotRecordSourceTypeSchema = z
 
 const DiskInfoSchema = z
   .object({
-    name: StringSchema.and(z.any().openapi({ description: 'The disk name.' })).exactOptional(),
-    path: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The disk path.' }),
-    ).exactOptional(),
-    sizeInGb: IntegerSchema.and(
-      z.any().openapi({ description: 'The size of the disk in GB (e.g., <code>32</code>).' }),
-    ).exactOptional(),
-    isSystemDisk: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean value indicating whether this disk is a system disk (has an operating system loaded on it).',
-        }),
-    ).exactOptional(),
+    name: StringSchema.exactOptional().openapi({ description: 'The disk name.' }),
+    path: NonEmptyStringSchema.exactOptional().openapi({ description: 'The disk path.' }),
+    sizeInGb: IntegerSchema.exactOptional().openapi({
+      description: 'The size of the disk in GB (e.g., <code>32</code>).',
+    }),
+    isSystemDisk: BooleanSchema.exactOptional().openapi({
+      description:
+        'A Boolean value indicating whether this disk is a system disk (has an operating system loaded on it).',
+    }),
   })
   .openapi({ description: 'Describes a disk.', required: [] })
   .openapi('DiskInfo')
@@ -7355,136 +5387,89 @@ const DiskInfoListSchema = z.array(DiskInfoSchema).openapi('DiskInfoList')
 
 const InstanceSnapshotInfoSchema = z
   .object({
-    fromBundleId: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The bundle ID from which the source instance was created (e.g., <code>micro_1_0</code>).',
-        }),
-    ).exactOptional(),
-    fromBlueprintId: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The blueprint ID from which the source instance (e.g., <code>os_debian_8_3</code>).',
-        }),
-    ).exactOptional(),
-    fromDiskInfo: DiskInfoListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of objects describing the disks that were attached to the source instance.',
-        }),
-    ).exactOptional(),
+    fromBundleId: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        'The bundle ID from which the source instance was created (e.g., <code>micro_1_0</code>).',
+    }),
+    fromBlueprintId: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        'The blueprint ID from which the source instance (e.g., <code>os_debian_8_3</code>).',
+    }),
+    fromDiskInfo: DiskInfoListSchema.exactOptional().openapi({
+      description:
+        'A list of objects describing the disks that were attached to the source instance.',
+    }),
   })
   .openapi({ description: 'Describes an instance snapshot.', required: [] })
   .openapi('InstanceSnapshotInfo')
 
 const DiskSnapshotInfoSchema = z
   .object({
-    sizeInGb: IntegerSchema.and(
-      z.any().openapi({ description: 'The size of the disk in GB (e.g., <code>32</code>).' }),
-    ).exactOptional(),
+    sizeInGb: IntegerSchema.exactOptional().openapi({
+      description: 'The size of the disk in GB (e.g., <code>32</code>).',
+    }),
   })
   .openapi({ description: 'Describes a disk snapshot.', required: [] })
   .openapi('DiskSnapshotInfo')
 
 const ExportSnapshotRecordSourceInfoSchema = z
   .object({
-    resourceType: ExportSnapshotRecordSourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Lightsail resource type (e.g., <code>InstanceSnapshot</code> or <code>DiskSnapshot</code>).',
-        }),
-    ).exactOptional(),
-    createdAt: IsoDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date when the source instance or disk snapshot was created.',
-        }),
-    ).exactOptional(),
-    name: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The name of the source instance or disk snapshot.' }),
-    ).exactOptional(),
-    arn: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the source instance or disk snapshot.',
-        }),
-    ).exactOptional(),
-    fromResourceName: NonEmptyStringSchema.and(
-      z.any().openapi({ description: "The name of the snapshot's source instance or disk." }),
-    ).exactOptional(),
-    fromResourceArn: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The Amazon Resource Name (ARN) of the snapshot's source instance or disk.",
-        }),
-    ).exactOptional(),
-    instanceSnapshotInfo: InstanceSnapshotInfoSchema.and(
-      z.any().openapi({ description: 'A list of objects describing an instance snapshot.' }),
-    ).exactOptional(),
-    diskSnapshotInfo: DiskSnapshotInfoSchema.and(
-      z.any().openapi({ description: 'A list of objects describing a disk snapshot.' }),
-    ).exactOptional(),
+    resourceType: ExportSnapshotRecordSourceTypeSchema.exactOptional().openapi({
+      description:
+        'The Lightsail resource type (e.g., <code>InstanceSnapshot</code> or <code>DiskSnapshot</code>).',
+    }),
+    createdAt: IsoDateSchema.exactOptional().openapi({
+      description: 'The date when the source instance or disk snapshot was created.',
+    }),
+    name: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The name of the source instance or disk snapshot.',
+    }),
+    arn: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the source instance or disk snapshot.',
+    }),
+    fromResourceName: NonEmptyStringSchema.exactOptional().openapi({
+      description: "The name of the snapshot's source instance or disk.",
+    }),
+    fromResourceArn: NonEmptyStringSchema.exactOptional().openapi({
+      description: "The Amazon Resource Name (ARN) of the snapshot's source instance or disk.",
+    }),
+    instanceSnapshotInfo: InstanceSnapshotInfoSchema.exactOptional().openapi({
+      description: 'A list of objects describing an instance snapshot.',
+    }),
+    diskSnapshotInfo: DiskSnapshotInfoSchema.exactOptional().openapi({
+      description: 'A list of objects describing a disk snapshot.',
+    }),
   })
   .openapi({ description: 'Describes the source of an export snapshot record.', required: [] })
   .openapi('ExportSnapshotRecordSourceInfo')
 
 const ExportSnapshotRecordSchema = z
   .object({
-    name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The export snapshot record name.' }),
-    ).exactOptional(),
-    arn: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the export snapshot record.' }),
-    ).exactOptional(),
-    createdAt: IsoDateSchema.and(
-      z.any().openapi({ description: 'The date when the export snapshot record was created.' }),
-    ).exactOptional(),
-    location: ResourceLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The AWS Region and Availability Zone where the export snapshot record is located.',
-        }),
-    ).exactOptional(),
-    resourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Lightsail resource type (e.g., <code>ExportSnapshotRecord</code>).',
-        }),
-    ).exactOptional(),
-    state: RecordStateSchema.and(
-      z.any().openapi({ description: 'The state of the export snapshot record.' }),
-    ).exactOptional(),
-    sourceInfo: ExportSnapshotRecordSourceInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of objects describing the source of the export snapshot record.',
-        }),
-    ).exactOptional(),
-    destinationInfo: DestinationInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of objects describing the destination of the export snapshot record.',
-        }),
-    ).exactOptional(),
+    name: ResourceNameSchema.exactOptional().openapi({
+      description: 'The export snapshot record name.',
+    }),
+    arn: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the export snapshot record.',
+    }),
+    createdAt: IsoDateSchema.exactOptional().openapi({
+      description: 'The date when the export snapshot record was created.',
+    }),
+    location: ResourceLocationSchema.exactOptional().openapi({
+      description:
+        'The AWS Region and Availability Zone where the export snapshot record is located.',
+    }),
+    resourceType: ResourceTypeSchema.exactOptional().openapi({
+      description: 'The Lightsail resource type (e.g., <code>ExportSnapshotRecord</code>).',
+    }),
+    state: RecordStateSchema.exactOptional().openapi({
+      description: 'The state of the export snapshot record.',
+    }),
+    sourceInfo: ExportSnapshotRecordSourceInfoSchema.exactOptional().openapi({
+      description: 'A list of objects describing the source of the export snapshot record.',
+    }),
+    destinationInfo: DestinationInfoSchema.exactOptional().openapi({
+      description: 'A list of objects describing the destination of the export snapshot record.',
+    }),
   })
   .openapi({ description: 'Describes an export snapshot record.', required: [] })
   .openapi('ExportSnapshotRecord')
@@ -7495,448 +5480,54 @@ const ExportSnapshotRecordListSchema = z
 
 const GetExportSnapshotRecordsResultSchema = z
   .object({
-    exportSnapshotRecords: ExportSnapshotRecordListSchema.and(
-      z.any().openapi({ description: 'A list of objects describing the export snapshot records.' }),
-    ).exactOptional(),
-    nextPageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetExportSnapshotRecords</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
-        }),
-    ).exactOptional(),
+    exportSnapshotRecords: ExportSnapshotRecordListSchema.exactOptional().openapi({
+      description: 'A list of objects describing the export snapshot records.',
+    }),
+    nextPageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetExportSnapshotRecords</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetExportSnapshotRecordsResult')
 
 const GetExportSnapshotRecordsRequestSchema = z
   .object({
-    pageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetExportSnapshotRecords</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
-        }),
-    ).exactOptional(),
+    pageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetExportSnapshotRecords</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
+    }),
   })
   .openapi({ title: 'GetExportSnapshotRecordsRequest', required: [] })
   .openapi('GetExportSnapshotRecordsRequest')
 
-const IpAddressSchema = z
-  .string()
-  .regex(/([0-9]{1,3}\.){3}[0-9]{1,3}/)
-  .openapi('IpAddress')
-
-const Ipv6AddressSchema = z
-  .string()
-  .regex(/([A-F0-9]{1,4}:){7}[A-F0-9]{1,4}/)
-  .openapi('Ipv6Address')
-
-const Ipv6AddressListSchema = z.array(Ipv6AddressSchema).openapi('Ipv6AddressList')
-
-const InstanceHardwareSchema = z
-  .object({
-    cpuCount: IntegerSchema.and(
-      z.any().openapi({ description: 'The number of vCPUs the instance has.' }),
-    ).exactOptional(),
-    disks: DiskListSchema.and(
-      z.any().openapi({ description: 'The disks attached to the instance.' }),
-    ).exactOptional(),
-    ramSizeInGb: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The amount of RAM in GB on the instance (e.g., <code>1.0</code>).',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Describes the hardware for the instance.', required: [] })
-  .openapi('InstanceHardware')
-
-const MonthlyTransferSchema = z
-  .object({
-    gbPerMonthAllocated: IntegerSchema.and(
-      z.any().openapi({ description: 'The amount allocated per month (in GB).' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Describes the monthly data transfer in and out of your virtual private server (or <i>instance</i>).',
-    required: [],
-  })
-  .openapi('MonthlyTransfer')
-
-const PortAccessTypeSchema = z.enum(['Public', 'Private']).openapi('PortAccessType')
-
-const AccessDirectionSchema = z.enum(['inbound', 'outbound']).openapi('AccessDirection')
-
-const InstancePortInfoSchema = z
-  .object({
-    fromPort: PortSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The first port in a range of open ports on an instance.</p> <p>Allowed ports:</p> <ul> <li> <p>TCP and UDP - <code>0</code> to <code>65535</code> </p> </li> <li> <p>ICMP - The ICMP type for IPv4 addresses. For example, specify <code>8</code> as the <code>fromPort</code> (ICMP type), and <code>-1</code> as the <code>toPort</code> (ICMP code), to enable ICMP Ping. For more information, see <a href="https://en.wikipedia.org/wiki/Internet_Control_Message_Protocol#Control_messages">Control Messages</a> on <i>Wikipedia</i>.</p> </li> <li> <p>ICMPv6 - The ICMP type for IPv6 addresses. For example, specify <code>128</code> as the <code>fromPort</code> (ICMPv6 type), and <code>0</code> as <code>toPort</code> (ICMPv6 code). For more information, see <a href="https://en.wikipedia.org/wiki/Internet_Control_Message_Protocol_for_IPv6">Internet Control Message Protocol for IPv6</a>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    toPort: PortSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The last port in a range of open ports on an instance.</p> <p>Allowed ports:</p> <ul> <li> <p>TCP and UDP - <code>0</code> to <code>65535</code> </p> </li> <li> <p>ICMP - The ICMP code for IPv4 addresses. For example, specify <code>8</code> as the <code>fromPort</code> (ICMP type), and <code>-1</code> as the <code>toPort</code> (ICMP code), to enable ICMP Ping. For more information, see <a href="https://en.wikipedia.org/wiki/Internet_Control_Message_Protocol#Control_messages">Control Messages</a> on <i>Wikipedia</i>.</p> </li> <li> <p>ICMPv6 - The ICMP code for IPv6 addresses. For example, specify <code>128</code> as the <code>fromPort</code> (ICMPv6 type), and <code>0</code> as <code>toPort</code> (ICMPv6 code). For more information, see <a href="https://en.wikipedia.org/wiki/Internet_Control_Message_Protocol_for_IPv6">Internet Control Message Protocol for IPv6</a>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    protocol: NetworkProtocolSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The IP protocol name.</p> <p>The name can be one of the following:</p> <ul> <li> <p> <code>tcp</code> - Transmission Control Protocol (TCP) provides reliable, ordered, and error-checked delivery of streamed data between applications running on hosts communicating by an IP network. If you have an application that doesn\'t require reliable data stream service, use UDP instead.</p> </li> <li> <p> <code>all</code> - All transport layer protocol types. For more general information, see <a href="https://en.wikipedia.org/wiki/Transport_layer">Transport layer</a> on <i>Wikipedia</i>.</p> </li> <li> <p> <code>udp</code> - With User Datagram Protocol (UDP), computer applications can send messages (or datagrams) to other hosts on an Internet Protocol (IP) network. Prior communications are not required to set up transmission channels or data paths. Applications that don\'t require reliable data stream service can use UDP, which provides a connectionless datagram service that emphasizes reduced latency over reliability. If you do require reliable data stream service, use TCP instead.</p> </li> <li> <p> <code>icmp</code> - Internet Control Message Protocol (ICMP) is used to send error messages and operational information indicating success or failure when communicating with an instance. For example, an error is indicated when an instance could not be reached. When you specify <code>icmp</code> as the <code>protocol</code>, you must specify the ICMP type using the <code>fromPort</code> parameter, and ICMP code using the <code>toPort</code> parameter.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    accessFrom: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The location from which access is allowed. For example, <code>Anywhere (0.0.0.0/0)</code>, or <code>Custom</code> if a specific IP address or range of IP addresses is allowed.',
-        }),
-    ).exactOptional(),
-    accessType: PortAccessTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of access (<code>Public</code> or <code>Private</code>).',
-        }),
-    ).exactOptional(),
-    commonName: StringSchema.and(
-      z.any().openapi({ description: 'The common name of the port information.' }),
-    ).exactOptional(),
-    accessDirection: AccessDirectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The access direction (<code>inbound</code> or <code>outbound</code>).</p> <note> <p>Lightsail currently supports only <code>inbound</code> access direction.</p> </note>',
-        }),
-    ).exactOptional(),
-    cidrs: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The IPv4 address, or range of IPv4 addresses (in CIDR notation) that are allowed to connect to an instance through the ports, and the protocol.</p> <note> <p>The <code>ipv6Cidrs</code> parameter lists the IPv6 addresses that are allowed to connect to an instance.</p> </note> <p>For more information about CIDR block notation, see <a href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing#CIDR_notation">Classless Inter-Domain Routing</a> on <i>Wikipedia</i>.</p>',
-        }),
-    ).exactOptional(),
-    ipv6Cidrs: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The IPv6 address, or range of IPv6 addresses (in CIDR notation) that are allowed to connect to an instance through the ports, and the protocol. Only devices with an IPv6 address can connect to an instance through IPv6; otherwise, IPv4 should be used.</p> <note> <p>The <code>cidrs</code> parameter lists the IPv4 addresses that are allowed to connect to an instance.</p> </note> <p>For more information about CIDR block notation, see <a href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing#CIDR_notation">Classless Inter-Domain Routing</a> on <i>Wikipedia</i>.</p>',
-        }),
-    ).exactOptional(),
-    cidrListAliases: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An alias that defines access for a preconfigured range of IP addresses.</p> <p>The only alias currently supported is <code>lightsail-connect</code>, which allows IP addresses of the browser-based RDP/SSH client in the Lightsail console to connect to your instance.</p>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Describes information about ports for an Amazon Lightsail instance.',
-    required: [],
-  })
-  .openapi('InstancePortInfo')
-
-const InstancePortInfoListSchema = z.array(InstancePortInfoSchema).openapi('InstancePortInfoList')
-
-const InstanceNetworkingSchema = z
-  .object({
-    monthlyTransfer: MonthlyTransferSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The amount of data in GB allocated for monthly data transfers.' }),
-    ).exactOptional(),
-    ports: InstancePortInfoListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of key-value pairs containing information about the ports on the instance.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Describes monthly data transfer rates and port information for an instance.',
-    required: [],
-  })
-  .openapi('InstanceNetworking')
-
-const InstanceStateSchema = z
-  .object({
-    code: IntegerSchema.and(
-      z.any().openapi({ description: 'The status code for the instance.' }),
-    ).exactOptional(),
-    name: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The state of the instance (e.g., <code>running</code> or <code>pending</code>).',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Describes the virtual private server (or <i>instance</i>) status.',
-    required: [],
-  })
-  .openapi('InstanceState')
-
-const InstanceMetadataStateSchema = z.enum(['pending', 'applied']).openapi('InstanceMetadataState')
-
-const HttpTokensSchema = z.enum(['optional', 'required']).openapi('HttpTokens')
-
-const HttpEndpointSchema = z.enum(['disabled', 'enabled']).openapi('HttpEndpoint')
-
-const HttpProtocolIpv6Schema = z.enum(['disabled', 'enabled']).openapi('HttpProtocolIpv6')
-
-const InstanceMetadataOptionsSchema = z
-  .object({
-    state: InstanceMetadataStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The state of the metadata option changes.</p> <p>The following states are possible:</p> <ul> <li> <p> <code>pending</code> - The metadata options are being updated. The instance is not yet ready to process metadata traffic with the new selection.</p> </li> <li> <p> <code>applied</code> - The metadata options have been successfully applied to the instance.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    httpTokens: HttpTokensSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The state of token usage for your instance metadata requests.</p> <p>If the state is <code>optional</code>, you can choose whether to retrieve instance metadata with a signed token header on your request. If you retrieve the IAM role credentials without a token, the version 1.0 role credentials are returned. If you retrieve the IAM role credentials by using a valid signed token, the version 2.0 role credentials are returned.</p> <p>If the state is <code>required</code>, you must send a signed token header with all instance metadata retrieval requests. In this state, retrieving the IAM role credential always returns the version 2.0 credentials. The version 1.0 credentials are not available.</p> <important> <p>Not all instance blueprints in Lightsail support version 2.0 credentials. Use the <code>MetadataNoToken</code> instance metric to track the number of calls to the instance metadata service that are using version 1.0 credentials. For more information, see <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-viewing-instance-health-metrics">Viewing instance metrics in Amazon Lightsail</a> in the <i>Amazon Lightsail Developer Guide</i>.</p> </important>',
-        }),
-    ).exactOptional(),
-    httpEndpoint: HttpEndpointSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether the HTTP metadata endpoint on your instances is enabled or disabled.</p> <p>If the value is <code>disabled</code>, you cannot access your instance metadata.</p>',
-        }),
-    ).exactOptional(),
-    httpPutResponseHopLimit: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The desired HTTP PUT response hop limit for instance metadata requests. A larger number means that the instance metadata requests can travel farther.',
-        }),
-    ).exactOptional(),
-    httpProtocolIpv6: HttpProtocolIpv6Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether the IPv6 endpoint for the instance metadata service is enabled or disabled.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'The metadata options for the instance.', required: [] })
-  .openapi('InstanceMetadataOptions')
-
-const InstanceSchema = z
-  .object({
-    name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name the user gave the instance (e.g., <code>Amazon_Linux-1GB-Ohio-1</code>).',
-        }),
-    ).exactOptional(),
-    arn: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the instance (e.g., <code>arn:aws:lightsail:us-east-2:123456789101:Instance/244ad76f-8aad-4741-809f-12345EXAMPLE</code>).',
-        }),
-    ).exactOptional(),
-    supportCode: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The support code. Include this code in your email to support when you have questions about an instance or another resource in Lightsail. This code enables our support team to look up your Lightsail information more easily.',
-        }),
-    ).exactOptional(),
-    createdAt: IsoDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp when the instance was created (e.g., <code>1479734909.17</code>) in Unix time format.',
-        }),
-    ).exactOptional(),
-    location: ResourceLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The region name and Availability Zone where the instance is located.',
-        }),
-    ).exactOptional(),
-    resourceType: ResourceTypeSchema.and(
-      z.any().openapi({ description: 'The type of resource (usually <code>Instance</code>).' }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tag keys and optional values for the resource. For more information about tags in Lightsail, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-tags">Amazon Lightsail Developer Guide</a>.',
-        }),
-    ).exactOptional(),
-    blueprintId: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The blueprint ID (e.g., <code>os_amlinux_2016_03</code>).' }),
-    ).exactOptional(),
-    blueprintName: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The friendly name of the blueprint (e.g., <code>Amazon Linux</code>).',
-        }),
-    ).exactOptional(),
-    bundleId: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The bundle for the instance (e.g., <code>micro_1_0</code>).' }),
-    ).exactOptional(),
-    addOns: AddOnListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array of objects representing the add-ons enabled on the instance.',
-        }),
-    ).exactOptional(),
-    isStaticIp: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean value indicating whether this instance has a static IP assigned to it.',
-        }),
-    ).exactOptional(),
-    privateIpAddress: IpAddressSchema.and(
-      z.any().openapi({ description: 'The private IP address of the instance.' }),
-    ).exactOptional(),
-    publicIpAddress: IpAddressSchema.and(
-      z.any().openapi({ description: 'The public IP address of the instance.' }),
-    ).exactOptional(),
-    ipv6Addresses: Ipv6AddressListSchema.and(
-      z.any().openapi({ description: 'The IPv6 addresses of the instance.' }),
-    ).exactOptional(),
-    ipAddressType: IpAddressTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The IP address type of the instance.</p> <p>The possible values are <code>ipv4</code> for IPv4 only, and <code>dualstack</code> for IPv4 and IPv6.</p>',
-        }),
-    ).exactOptional(),
-    hardware: InstanceHardwareSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The size of the vCPU and the amount of RAM for the instance.' }),
-    ).exactOptional(),
-    networking: InstanceNetworkingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the public ports and monthly data transfer rates for the instance.',
-        }),
-    ).exactOptional(),
-    state: InstanceStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status code and the state (e.g., <code>running</code>) for the instance.',
-        }),
-    ).exactOptional(),
-    username: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The user name for connecting to the instance (e.g., <code>ec2-user</code>).',
-        }),
-    ).exactOptional(),
-    sshKeyName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the SSH key being used to connect to the instance (e.g., <code>LightsailDefaultKeyPair</code>).',
-        }),
-    ).exactOptional(),
-    metadataOptions: InstanceMetadataOptionsSchema.and(
-      z.any().openapi({ description: 'The metadata options for the Amazon Lightsail instance.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Describes an instance (a virtual private server).', required: [] })
-  .openapi('Instance')
-
 const GetInstanceResultSchema = z
   .object({
-    instance: InstanceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of key-value pairs containing information about the specified instance.',
-        }),
-    ).exactOptional(),
+    instance: InstanceSchema.exactOptional().openapi({
+      description:
+        'An array of key-value pairs containing information about the specified instance.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetInstanceResult')
 
 const GetInstanceRequestSchema = z
   .object({
-    instanceName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the instance.' }),
-    ),
+    instanceName: ResourceNameSchema.openapi({ description: 'The name of the instance.' }),
   })
   .openapi({ required: ['instanceName'], title: 'GetInstanceRequest' })
   .openapi('GetInstanceRequest')
 
 const PasswordDataSchema = z
   .object({
-    ciphertext: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The encrypted password. Ciphertext will be an empty string if access to your new instance is not ready yet. When you create an instance, it can take up to 15 minutes for the instance to be ready.</p> <note> <p>If you use the default key pair (<code>LightsailDefaultKeyPair</code>), the decrypted password will be available in the password field.</p> <p>If you are using a custom key pair, you need to use your own means of decryption.</p> <p>If you change the Administrator password on the instance, Lightsail will continue to return the original ciphertext value. When accessing the instance using RDP, you need to manually enter the Administrator password after changing it from the default.</p> </note>',
-        }),
-    ).exactOptional(),
-    keyPairName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the key pair that you used when creating your instance. If no key pair name was specified when creating the instance, Lightsail uses the default key pair (<code>LightsailDefaultKeyPair</code>).</p> <p>If you are using a custom key pair, you need to use your own means of decrypting your password using the <code>ciphertext</code>. Lightsail creates the ciphertext by encrypting your password with the public key part of this key pair.</p>',
-        }),
-    ).exactOptional(),
+    ciphertext: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The encrypted password. Ciphertext will be an empty string if access to your new instance is not ready yet. When you create an instance, it can take up to 15 minutes for the instance to be ready.</p> <note> <p>If you use the default key pair (<code>LightsailDefaultKeyPair</code>), the decrypted password will be available in the password field.</p> <p>If you are using a custom key pair, you need to use your own means of decryption.</p> <p>If you change the Administrator password on the instance, Lightsail will continue to return the original ciphertext value. When accessing the instance using RDP, you need to manually enter the Administrator password after changing it from the default.</p> </note>',
+    }),
+    keyPairName: ResourceNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the key pair that you used when creating your instance. If no key pair name was specified when creating the instance, Lightsail uses the default key pair (<code>LightsailDefaultKeyPair</code>).</p> <p>If you are using a custom key pair, you need to use your own means of decrypting your password using the <code>ciphertext</code>. Lightsail creates the ciphertext by encrypting your password with the public key part of this key pair.</p>',
+    }),
   })
   .openapi({
     description:
@@ -7949,57 +5540,32 @@ const InstanceAccessProtocolSchema = z.enum(['ssh', 'rdp']).openapi('InstanceAcc
 
 const HostKeyAttributesSchema = z
   .object({
-    algorithm: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The SSH host key algorithm or the RDP certificate format.</p> <p>For SSH host keys, the algorithm may be <code>ssh-rsa</code>, <code>ecdsa-sha2-nistp256</code>, <code>ssh-ed25519</code>, etc. For RDP certificates, the algorithm is always <code>x509-cert</code>.</p>',
-        }),
-    ).exactOptional(),
-    publicKey: StringSchema.and(
-      z.any().openapi({ description: 'The public SSH host key or the RDP certificate.' }),
-    ).exactOptional(),
-    witnessedAt: IsoDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time that the SSH host key or RDP certificate was recorded by Lightsail.',
-        }),
-    ).exactOptional(),
-    fingerprintSHA1: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The SHA-1 fingerprint of the returned SSH host key or RDP certificate.</p> <ul> <li> <p>Example of an SHA-1 SSH fingerprint:</p> <p> <code>SHA1:1CHH6FaAaXjtFOsR/t83vf91SR0</code> </p> </li> <li> <p>Example of an SHA-1 RDP fingerprint:</p> <p> <code>af:34:51:fe:09:f0:e0:da:b8:4e:56:ca:60:c2:10:ff:38:06:db:45</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    fingerprintSHA256: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The SHA-256 fingerprint of the returned SSH host key or RDP certificate.</p> <ul> <li> <p>Example of an SHA-256 SSH fingerprint:</p> <p> <code>SHA256:KTsMnRBh1IhD17HpdfsbzeGA4jOijm5tyXsMjKVbB8o</code> </p> </li> <li> <p>Example of an SHA-256 RDP fingerprint:</p> <p> <code>03:9b:36:9f:4b:de:4e:61:70:fc:7c:c9:78:e7:d2:1a:1c:25:a8:0c:91:f6:7c:e4:d6:a0:85:c8:b4:53:99:68</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    notValidBefore: IsoDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The returned RDP certificate is valid after this point in time.</p> <p>This value is listed only for RDP certificates.</p>',
-        }),
-    ).exactOptional(),
-    notValidAfter: IsoDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The returned RDP certificate is not valid after this point in time.</p> <p>This value is listed only for RDP certificates.</p>',
-        }),
-    ).exactOptional(),
+    algorithm: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The SSH host key algorithm or the RDP certificate format.</p> <p>For SSH host keys, the algorithm may be <code>ssh-rsa</code>, <code>ecdsa-sha2-nistp256</code>, <code>ssh-ed25519</code>, etc. For RDP certificates, the algorithm is always <code>x509-cert</code>.</p>',
+    }),
+    publicKey: StringSchema.exactOptional().openapi({
+      description: 'The public SSH host key or the RDP certificate.',
+    }),
+    witnessedAt: IsoDateSchema.exactOptional().openapi({
+      description: 'The time that the SSH host key or RDP certificate was recorded by Lightsail.',
+    }),
+    fingerprintSHA1: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The SHA-1 fingerprint of the returned SSH host key or RDP certificate.</p> <ul> <li> <p>Example of an SHA-1 SSH fingerprint:</p> <p> <code>SHA1:1CHH6FaAaXjtFOsR/t83vf91SR0</code> </p> </li> <li> <p>Example of an SHA-1 RDP fingerprint:</p> <p> <code>af:34:51:fe:09:f0:e0:da:b8:4e:56:ca:60:c2:10:ff:38:06:db:45</code> </p> </li> </ul>',
+    }),
+    fingerprintSHA256: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The SHA-256 fingerprint of the returned SSH host key or RDP certificate.</p> <ul> <li> <p>Example of an SHA-256 SSH fingerprint:</p> <p> <code>SHA256:KTsMnRBh1IhD17HpdfsbzeGA4jOijm5tyXsMjKVbB8o</code> </p> </li> <li> <p>Example of an SHA-256 RDP fingerprint:</p> <p> <code>03:9b:36:9f:4b:de:4e:61:70:fc:7c:c9:78:e7:d2:1a:1c:25:a8:0c:91:f6:7c:e4:d6:a0:85:c8:b4:53:99:68</code> </p> </li> </ul>',
+    }),
+    notValidBefore: IsoDateSchema.exactOptional().openapi({
+      description:
+        '<p>The returned RDP certificate is valid after this point in time.</p> <p>This value is listed only for RDP certificates.</p>',
+    }),
+    notValidAfter: IsoDateSchema.exactOptional().openapi({
+      description:
+        '<p>The returned RDP certificate is not valid after this point in time.</p> <p>This value is listed only for RDP certificates.</p>',
+    }),
   })
   .openapi({
     description: 'Describes the public SSH host keys or the RDP certificate.',
@@ -8011,68 +5577,40 @@ const HostKeysListSchema = z.array(HostKeyAttributesSchema).openapi('HostKeysLis
 
 const InstanceAccessDetailsSchema = z
   .object({
-    certKey: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For SSH access, the public key to use when accessing your instance For OpenSSH clients (e.g., command line SSH), you should save this value to <code>tempkey-cert.pub</code>.',
-        }),
-    ).exactOptional(),
-    expiresAt: IsoDateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'For SSH access, the date on which the temporary keys expire.' }),
-    ).exactOptional(),
-    ipAddress: IpAddressSchema.and(
-      z.any().openapi({ description: 'The public IP address of the Amazon Lightsail instance.' }),
-    ).exactOptional(),
-    password: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>For RDP access, the password for your Amazon Lightsail instance. Password will be an empty string if the password for your new instance is not ready yet. When you create an instance, it can take up to 15 minutes for the instance to be ready.</p> <note> <p>If you create an instance using any key pair other than the default (<code>LightsailDefaultKeyPair</code>), <code>password</code> will always be an empty string.</p> <p>If you change the Administrator password on the instance, Lightsail will continue to return the original password value. When accessing the instance using RDP, you need to manually enter the Administrator password after changing it from the default.</p> </note>',
-        }),
-    ).exactOptional(),
-    passwordData: PasswordDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For a Windows Server-based instance, an object with the data you can use to retrieve your password. This is only needed if <code>password</code> is empty and the instance is not new (and therefore the password is not ready yet). When you create an instance, it can take up to 15 minutes for the instance to be ready.',
-        }),
-    ).exactOptional(),
-    privateKey: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For SSH access, the temporary private key. For OpenSSH clients (e.g., command line SSH), you should save this value to <code>tempkey</code>).',
-        }),
-    ).exactOptional(),
-    protocol: InstanceAccessProtocolSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The protocol for these Amazon Lightsail instance access details.',
-        }),
-    ).exactOptional(),
-    instanceName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of this Amazon Lightsail instance.' }),
-    ).exactOptional(),
-    username: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The user name to use when logging in to the Amazon Lightsail instance.',
-        }),
-    ).exactOptional(),
-    hostKeys: HostKeysListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Describes the public SSH host keys or the RDP certificate.' }),
-    ).exactOptional(),
+    certKey: StringSchema.exactOptional().openapi({
+      description:
+        'For SSH access, the public key to use when accessing your instance For OpenSSH clients (e.g., command line SSH), you should save this value to <code>tempkey-cert.pub</code>.',
+    }),
+    expiresAt: IsoDateSchema.exactOptional().openapi({
+      description: 'For SSH access, the date on which the temporary keys expire.',
+    }),
+    ipAddress: IpAddressSchema.exactOptional().openapi({
+      description: 'The public IP address of the Amazon Lightsail instance.',
+    }),
+    password: StringSchema.exactOptional().openapi({
+      description:
+        '<p>For RDP access, the password for your Amazon Lightsail instance. Password will be an empty string if the password for your new instance is not ready yet. When you create an instance, it can take up to 15 minutes for the instance to be ready.</p> <note> <p>If you create an instance using any key pair other than the default (<code>LightsailDefaultKeyPair</code>), <code>password</code> will always be an empty string.</p> <p>If you change the Administrator password on the instance, Lightsail will continue to return the original password value. When accessing the instance using RDP, you need to manually enter the Administrator password after changing it from the default.</p> </note>',
+    }),
+    passwordData: PasswordDataSchema.exactOptional().openapi({
+      description:
+        'For a Windows Server-based instance, an object with the data you can use to retrieve your password. This is only needed if <code>password</code> is empty and the instance is not new (and therefore the password is not ready yet). When you create an instance, it can take up to 15 minutes for the instance to be ready.',
+    }),
+    privateKey: StringSchema.exactOptional().openapi({
+      description:
+        'For SSH access, the temporary private key. For OpenSSH clients (e.g., command line SSH), you should save this value to <code>tempkey</code>).',
+    }),
+    protocol: InstanceAccessProtocolSchema.exactOptional().openapi({
+      description: 'The protocol for these Amazon Lightsail instance access details.',
+    }),
+    instanceName: ResourceNameSchema.exactOptional().openapi({
+      description: 'The name of this Amazon Lightsail instance.',
+    }),
+    username: StringSchema.exactOptional().openapi({
+      description: 'The user name to use when logging in to the Amazon Lightsail instance.',
+    }),
+    hostKeys: HostKeysListSchema.exactOptional().openapi({
+      description: 'Describes the public SSH host keys or the RDP certificate.',
+    }),
   })
   .openapi({
     description:
@@ -8083,31 +5621,22 @@ const InstanceAccessDetailsSchema = z
 
 const GetInstanceAccessDetailsResultSchema = z
   .object({
-    accessDetails: InstanceAccessDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of key-value pairs containing information about a get instance access request.',
-        }),
-    ).exactOptional(),
+    accessDetails: InstanceAccessDetailsSchema.exactOptional().openapi({
+      description:
+        'An array of key-value pairs containing information about a get instance access request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetInstanceAccessDetailsResult')
 
 const GetInstanceAccessDetailsRequestSchema = z
   .object({
-    instanceName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the instance to access.' }),
-    ),
-    protocol: InstanceAccessProtocolSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The protocol to use to connect to your instance. Defaults to <code>ssh</code>.',
-        }),
-    ).exactOptional(),
+    instanceName: ResourceNameSchema.openapi({
+      description: 'The name of the instance to access.',
+    }),
+    protocol: InstanceAccessProtocolSchema.exactOptional().openapi({
+      description: 'The protocol to use to connect to your instance. Defaults to <code>ssh</code>.',
+    }),
   })
   .openapi({ required: ['instanceName'], title: 'GetInstanceAccessDetailsRequest' })
   .openapi('GetInstanceAccessDetailsRequest')
@@ -8128,65 +5657,39 @@ const InstanceMetricNameSchema = z
 
 const GetInstanceMetricDataResultSchema = z
   .object({
-    metricName: InstanceMetricNameSchema.and(
-      z.any().openapi({ description: 'The name of the metric returned.' }),
-    ).exactOptional(),
-    metricData: MetricDatapointListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An array of objects that describe the metric data returned.' }),
-    ).exactOptional(),
+    metricName: InstanceMetricNameSchema.exactOptional().openapi({
+      description: 'The name of the metric returned.',
+    }),
+    metricData: MetricDatapointListSchema.exactOptional().openapi({
+      description: 'An array of objects that describe the metric data returned.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetInstanceMetricDataResult')
 
 const GetInstanceMetricDataRequestSchema = z
   .object({
-    instanceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the instance for which you want to get metrics data.',
-        }),
-    ),
-    metricName: InstanceMetricNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The metric for which you want to return information.</p> <p>Valid instance metric names are listed below, along with the most useful <code>statistics</code> to include in your request, and the published <code>unit</code> value.</p> <ul> <li> <p> <b> <code>BurstCapacityPercentage</code> </b> - The percentage of CPU performance available for your instance to burst above its baseline. Your instance continuously accrues and consumes burst capacity. Burst capacity stops accruing when your instance\'s <code>BurstCapacityPercentage</code> reaches 100%. For more information, see <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-viewing-instance-burst-capacity">Viewing instance burst capacity in Amazon Lightsail</a>.</p> <p> <code>Statistics</code>: The most useful statistics are <code>Maximum</code> and <code>Average</code>.</p> <p> <code>Unit</code>: The published unit is <code>Percent</code>.</p> </li> <li> <p> <b> <code>BurstCapacityTime</code> </b> - The available amount of time for your instance to burst at 100% CPU utilization. Your instance continuously accrues and consumes burst capacity. Burst capacity time stops accruing when your instance\'s <code>BurstCapacityPercentage</code> metric reaches 100%.</p> <p>Burst capacity time is consumed at the full rate only when your instance operates at 100% CPU utilization. For example, if your instance operates at 50% CPU utilization in the burstable zone for a 5-minute period, then it consumes CPU burst capacity minutes at a 50% rate in that period. Your instance consumed 2 minutes and 30 seconds of CPU burst capacity minutes in the 5-minute period. For more information, see <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-viewing-instance-burst-capacity">Viewing instance burst capacity in Amazon Lightsail</a>.</p> <p> <code>Statistics</code>: The most useful statistics are <code>Maximum</code> and <code>Average</code>.</p> <p> <code>Unit</code>: The published unit is <code>Seconds</code>.</p> </li> <li> <p> <b> <code>CPUUtilization</code> </b> - The percentage of allocated compute units that are currently in use on the instance. This metric identifies the processing power to run the applications on the instance. Tools in your operating system can show a lower percentage than Lightsail when the instance is not allocated a full processor core.</p> <p> <code>Statistics</code>: The most useful statistics are <code>Maximum</code> and <code>Average</code>.</p> <p> <code>Unit</code>: The published unit is <code>Percent</code>.</p> </li> <li> <p> <b> <code>NetworkIn</code> </b> - The number of bytes received on all network interfaces by the instance. This metric identifies the volume of incoming network traffic to the instance. The number reported is the number of bytes received during the period. Because this metric is reported in 5-minute intervals, divide the reported number by 300 to find Bytes/second.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>.</p> <p> <code>Unit</code>: The published unit is <code>Bytes</code>.</p> </li> <li> <p> <b> <code>NetworkOut</code> </b> - The number of bytes sent out on all network interfaces by the instance. This metric identifies the volume of outgoing network traffic from the instance. The number reported is the number of bytes sent during the period. Because this metric is reported in 5-minute intervals, divide the reported number by 300 to find Bytes/second.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>.</p> <p> <code>Unit</code>: The published unit is <code>Bytes</code>.</p> </li> <li> <p> <b> <code>StatusCheckFailed</code> </b> - Reports whether the instance passed or failed both the instance status check and the system status check. This metric can be either 0 (passed) or 1 (failed). This metric data is available in 1-minute (60 seconds) granularity.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>.</p> <p> <code>Unit</code>: The published unit is <code>Count</code>.</p> </li> <li> <p> <b> <code>StatusCheckFailed_Instance</code> </b> - Reports whether the instance passed or failed the instance status check. This metric can be either 0 (passed) or 1 (failed). This metric data is available in 1-minute (60 seconds) granularity.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>.</p> <p> <code>Unit</code>: The published unit is <code>Count</code>.</p> </li> <li> <p> <b> <code>StatusCheckFailed_System</code> </b> - Reports whether the instance passed or failed the system status check. This metric can be either 0 (passed) or 1 (failed). This metric data is available in 1-minute (60 seconds) granularity.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>.</p> <p> <code>Unit</code>: The published unit is <code>Count</code>.</p> </li> <li> <p> <b> <code>MetadataNoToken</code> </b> - Reports the number of times that the instance metadata service was successfully accessed without a token. This metric determines if there are any processes accessing instance metadata by using Instance Metadata Service Version 1, which doesn\'t use a token. If all requests use token-backed sessions, such as Instance Metadata Service Version 2, then the value is 0.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>.</p> <p> <code>Unit</code>: The published unit is <code>Count</code>.</p> </li> </ul>',
-        }),
-    ),
-    period: MetricPeriodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The granularity, in seconds, of the returned data points.</p> <p>The <code>StatusCheckFailed</code>, <code>StatusCheckFailed_Instance</code>, and <code>StatusCheckFailed_System</code> instance metric data is available in 1-minute (60 seconds) granularity. All other instance metric data is available in 5-minute (300 seconds) granularity.</p>',
-        }),
-    ),
-    startTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The start time of the time period.' }),
-    ),
-    endTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The end time of the time period.' }),
-    ),
-    unit: MetricUnitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unit for the metric data request. Valid units depend on the metric data being requested. For the valid units to specify with each available metric, see the <code>metricName</code> parameter.',
-        }),
-    ),
-    statistics: MetricStatisticListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The statistic for the metric.</p> <p>The following statistics are available:</p> <ul> <li> <p> <code>Minimum</code> - The lowest value observed during the specified period. Use this value to determine low volumes of activity for your application.</p> </li> <li> <p> <code>Maximum</code> - The highest value observed during the specified period. Use this value to determine high volumes of activity for your application.</p> </li> <li> <p> <code>Sum</code> - All values submitted for the matching metric added together. You can use this statistic to determine the total volume of a metric.</p> </li> <li> <p> <code>Average</code> - The value of Sum / SampleCount during the specified period. By comparing this statistic with the Minimum and Maximum values, you can determine the full scope of a metric and how close the average use is to the Minimum and Maximum values. This comparison helps you to know when to increase or decrease your resources.</p> </li> <li> <p> <code>SampleCount</code> - The count, or number, of data points used for the statistical calculation.</p> </li> </ul>',
-        }),
-    ),
+    instanceName: ResourceNameSchema.openapi({
+      description: 'The name of the instance for which you want to get metrics data.',
+    }),
+    metricName: InstanceMetricNameSchema.openapi({
+      description:
+        '<p>The metric for which you want to return information.</p> <p>Valid instance metric names are listed below, along with the most useful <code>statistics</code> to include in your request, and the published <code>unit</code> value.</p> <ul> <li> <p> <b> <code>BurstCapacityPercentage</code> </b> - The percentage of CPU performance available for your instance to burst above its baseline. Your instance continuously accrues and consumes burst capacity. Burst capacity stops accruing when your instance\'s <code>BurstCapacityPercentage</code> reaches 100%. For more information, see <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-viewing-instance-burst-capacity">Viewing instance burst capacity in Amazon Lightsail</a>.</p> <p> <code>Statistics</code>: The most useful statistics are <code>Maximum</code> and <code>Average</code>.</p> <p> <code>Unit</code>: The published unit is <code>Percent</code>.</p> </li> <li> <p> <b> <code>BurstCapacityTime</code> </b> - The available amount of time for your instance to burst at 100% CPU utilization. Your instance continuously accrues and consumes burst capacity. Burst capacity time stops accruing when your instance\'s <code>BurstCapacityPercentage</code> metric reaches 100%.</p> <p>Burst capacity time is consumed at the full rate only when your instance operates at 100% CPU utilization. For example, if your instance operates at 50% CPU utilization in the burstable zone for a 5-minute period, then it consumes CPU burst capacity minutes at a 50% rate in that period. Your instance consumed 2 minutes and 30 seconds of CPU burst capacity minutes in the 5-minute period. For more information, see <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-viewing-instance-burst-capacity">Viewing instance burst capacity in Amazon Lightsail</a>.</p> <p> <code>Statistics</code>: The most useful statistics are <code>Maximum</code> and <code>Average</code>.</p> <p> <code>Unit</code>: The published unit is <code>Seconds</code>.</p> </li> <li> <p> <b> <code>CPUUtilization</code> </b> - The percentage of allocated compute units that are currently in use on the instance. This metric identifies the processing power to run the applications on the instance. Tools in your operating system can show a lower percentage than Lightsail when the instance is not allocated a full processor core.</p> <p> <code>Statistics</code>: The most useful statistics are <code>Maximum</code> and <code>Average</code>.</p> <p> <code>Unit</code>: The published unit is <code>Percent</code>.</p> </li> <li> <p> <b> <code>NetworkIn</code> </b> - The number of bytes received on all network interfaces by the instance. This metric identifies the volume of incoming network traffic to the instance. The number reported is the number of bytes received during the period. Because this metric is reported in 5-minute intervals, divide the reported number by 300 to find Bytes/second.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>.</p> <p> <code>Unit</code>: The published unit is <code>Bytes</code>.</p> </li> <li> <p> <b> <code>NetworkOut</code> </b> - The number of bytes sent out on all network interfaces by the instance. This metric identifies the volume of outgoing network traffic from the instance. The number reported is the number of bytes sent during the period. Because this metric is reported in 5-minute intervals, divide the reported number by 300 to find Bytes/second.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>.</p> <p> <code>Unit</code>: The published unit is <code>Bytes</code>.</p> </li> <li> <p> <b> <code>StatusCheckFailed</code> </b> - Reports whether the instance passed or failed both the instance status check and the system status check. This metric can be either 0 (passed) or 1 (failed). This metric data is available in 1-minute (60 seconds) granularity.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>.</p> <p> <code>Unit</code>: The published unit is <code>Count</code>.</p> </li> <li> <p> <b> <code>StatusCheckFailed_Instance</code> </b> - Reports whether the instance passed or failed the instance status check. This metric can be either 0 (passed) or 1 (failed). This metric data is available in 1-minute (60 seconds) granularity.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>.</p> <p> <code>Unit</code>: The published unit is <code>Count</code>.</p> </li> <li> <p> <b> <code>StatusCheckFailed_System</code> </b> - Reports whether the instance passed or failed the system status check. This metric can be either 0 (passed) or 1 (failed). This metric data is available in 1-minute (60 seconds) granularity.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>.</p> <p> <code>Unit</code>: The published unit is <code>Count</code>.</p> </li> <li> <p> <b> <code>MetadataNoToken</code> </b> - Reports the number of times that the instance metadata service was successfully accessed without a token. This metric determines if there are any processes accessing instance metadata by using Instance Metadata Service Version 1, which doesn\'t use a token. If all requests use token-backed sessions, such as Instance Metadata Service Version 2, then the value is 0.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>.</p> <p> <code>Unit</code>: The published unit is <code>Count</code>.</p> </li> </ul>',
+    }),
+    period: MetricPeriodSchema.openapi({
+      description:
+        '<p>The granularity, in seconds, of the returned data points.</p> <p>The <code>StatusCheckFailed</code>, <code>StatusCheckFailed_Instance</code>, and <code>StatusCheckFailed_System</code> instance metric data is available in 1-minute (60 seconds) granularity. All other instance metric data is available in 5-minute (300 seconds) granularity.</p>',
+    }),
+    startTime: TimestampSchema.openapi({ description: 'The start time of the time period.' }),
+    endTime: TimestampSchema.openapi({ description: 'The end time of the time period.' }),
+    unit: MetricUnitSchema.openapi({
+      description:
+        'The unit for the metric data request. Valid units depend on the metric data being requested. For the valid units to specify with each available metric, see the <code>metricName</code> parameter.',
+    }),
+    statistics: MetricStatisticListSchema.openapi({
+      description:
+        '<p>The statistic for the metric.</p> <p>The following statistics are available:</p> <ul> <li> <p> <code>Minimum</code> - The lowest value observed during the specified period. Use this value to determine low volumes of activity for your application.</p> </li> <li> <p> <code>Maximum</code> - The highest value observed during the specified period. Use this value to determine high volumes of activity for your application.</p> </li> <li> <p> <code>Sum</code> - All values submitted for the matching metric added together. You can use this statistic to determine the total volume of a metric.</p> </li> <li> <p> <code>Average</code> - The value of Sum / SampleCount during the specified period. By comparing this statistic with the Minimum and Maximum values, you can determine the full scope of a metric and how close the average use is to the Minimum and Maximum values. This comparison helps you to know when to increase or decrease your resources.</p> </li> <li> <p> <code>SampleCount</code> - The count, or number, of data points used for the statistical calculation.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: [
@@ -8206,62 +5709,34 @@ const PortStateSchema = z.enum(['open', 'closed']).openapi('PortState')
 
 const InstancePortStateSchema = z
   .object({
-    fromPort: PortSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The first port in a range of open ports on an instance.</p> <p>Allowed ports:</p> <ul> <li> <p>TCP and UDP - <code>0</code> to <code>65535</code> </p> </li> <li> <p>ICMP - The ICMP type for IPv4 addresses. For example, specify <code>8</code> as the <code>fromPort</code> (ICMP type), and <code>-1</code> as the <code>toPort</code> (ICMP code), to enable ICMP Ping. For more information, see <a href="https://en.wikipedia.org/wiki/Internet_Control_Message_Protocol#Control_messages">Control Messages</a> on <i>Wikipedia</i>.</p> </li> <li> <p>ICMPv6 - The ICMP type for IPv6 addresses. For example, specify <code>128</code> as the <code>fromPort</code> (ICMPv6 type), and <code>0</code> as <code>toPort</code> (ICMPv6 code). For more information, see <a href="https://en.wikipedia.org/wiki/Internet_Control_Message_Protocol_for_IPv6">Internet Control Message Protocol for IPv6</a>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    toPort: PortSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The last port in a range of open ports on an instance.</p> <p>Allowed ports:</p> <ul> <li> <p>TCP and UDP - <code>0</code> to <code>65535</code> </p> </li> <li> <p>ICMP - The ICMP code for IPv4 addresses. For example, specify <code>8</code> as the <code>fromPort</code> (ICMP type), and <code>-1</code> as the <code>toPort</code> (ICMP code), to enable ICMP Ping. For more information, see <a href="https://en.wikipedia.org/wiki/Internet_Control_Message_Protocol#Control_messages">Control Messages</a> on <i>Wikipedia</i>.</p> </li> <li> <p>ICMPv6 - The ICMP code for IPv6 addresses. For example, specify <code>128</code> as the <code>fromPort</code> (ICMPv6 type), and <code>0</code> as <code>toPort</code> (ICMPv6 code). For more information, see <a href="https://en.wikipedia.org/wiki/Internet_Control_Message_Protocol_for_IPv6">Internet Control Message Protocol for IPv6</a>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    protocol: NetworkProtocolSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The IP protocol name.</p> <p>The name can be one of the following:</p> <ul> <li> <p> <code>tcp</code> - Transmission Control Protocol (TCP) provides reliable, ordered, and error-checked delivery of streamed data between applications running on hosts communicating by an IP network. If you have an application that doesn\'t require reliable data stream service, use UDP instead.</p> </li> <li> <p> <code>all</code> - All transport layer protocol types. For more general information, see <a href="https://en.wikipedia.org/wiki/Transport_layer">Transport layer</a> on <i>Wikipedia</i>.</p> </li> <li> <p> <code>udp</code> - With User Datagram Protocol (UDP), computer applications can send messages (or datagrams) to other hosts on an Internet Protocol (IP) network. Prior communications are not required to set up transmission channels or data paths. Applications that don\'t require reliable data stream service can use UDP, which provides a connectionless datagram service that emphasizes reduced latency over reliability. If you do require reliable data stream service, use TCP instead.</p> </li> <li> <p> <code>icmp</code> - Internet Control Message Protocol (ICMP) is used to send error messages and operational information indicating success or failure when communicating with an instance. For example, an error is indicated when an instance could not be reached. When you specify <code>icmp</code> as the <code>protocol</code>, you must specify the ICMP type using the <code>fromPort</code> parameter, and ICMP code using the <code>toPort</code> parameter.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    state: PortStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether the instance port is <code>open</code> or <code>closed</code>.</p> <note> <p>The port state for Lightsail instances is always <code>open</code>.</p> </note>',
-        }),
-    ).exactOptional(),
-    cidrs: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The IPv4 address, or range of IPv4 addresses (in CIDR notation) that are allowed to connect to an instance through the ports, and the protocol.</p> <note> <p>The <code>ipv6Cidrs</code> parameter lists the IPv6 addresses that are allowed to connect to an instance.</p> </note> <p>For more information about CIDR block notation, see <a href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing#CIDR_notation">Classless Inter-Domain Routing</a> on <i>Wikipedia</i>.</p>',
-        }),
-    ).exactOptional(),
-    ipv6Cidrs: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The IPv6 address, or range of IPv6 addresses (in CIDR notation) that are allowed to connect to an instance through the ports, and the protocol. Only devices with an IPv6 address can connect to an instance through IPv6; otherwise, IPv4 should be used.</p> <note> <p>The <code>cidrs</code> parameter lists the IPv4 addresses that are allowed to connect to an instance.</p> </note> <p>For more information about CIDR block notation, see <a href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing#CIDR_notation">Classless Inter-Domain Routing</a> on <i>Wikipedia</i>.</p>',
-        }),
-    ).exactOptional(),
-    cidrListAliases: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An alias that defines access for a preconfigured range of IP addresses.</p> <p>The only alias currently supported is <code>lightsail-connect</code>, which allows IP addresses of the browser-based RDP/SSH client in the Lightsail console to connect to your instance.</p>',
-        }),
-    ).exactOptional(),
+    fromPort: PortSchema.exactOptional().openapi({
+      description:
+        '<p>The first port in a range of open ports on an instance.</p> <p>Allowed ports:</p> <ul> <li> <p>TCP and UDP - <code>0</code> to <code>65535</code> </p> </li> <li> <p>ICMP - The ICMP type for IPv4 addresses. For example, specify <code>8</code> as the <code>fromPort</code> (ICMP type), and <code>-1</code> as the <code>toPort</code> (ICMP code), to enable ICMP Ping. For more information, see <a href="https://en.wikipedia.org/wiki/Internet_Control_Message_Protocol#Control_messages">Control Messages</a> on <i>Wikipedia</i>.</p> </li> <li> <p>ICMPv6 - The ICMP type for IPv6 addresses. For example, specify <code>128</code> as the <code>fromPort</code> (ICMPv6 type), and <code>0</code> as <code>toPort</code> (ICMPv6 code). For more information, see <a href="https://en.wikipedia.org/wiki/Internet_Control_Message_Protocol_for_IPv6">Internet Control Message Protocol for IPv6</a>.</p> </li> </ul>',
+    }),
+    toPort: PortSchema.exactOptional().openapi({
+      description:
+        '<p>The last port in a range of open ports on an instance.</p> <p>Allowed ports:</p> <ul> <li> <p>TCP and UDP - <code>0</code> to <code>65535</code> </p> </li> <li> <p>ICMP - The ICMP code for IPv4 addresses. For example, specify <code>8</code> as the <code>fromPort</code> (ICMP type), and <code>-1</code> as the <code>toPort</code> (ICMP code), to enable ICMP Ping. For more information, see <a href="https://en.wikipedia.org/wiki/Internet_Control_Message_Protocol#Control_messages">Control Messages</a> on <i>Wikipedia</i>.</p> </li> <li> <p>ICMPv6 - The ICMP code for IPv6 addresses. For example, specify <code>128</code> as the <code>fromPort</code> (ICMPv6 type), and <code>0</code> as <code>toPort</code> (ICMPv6 code). For more information, see <a href="https://en.wikipedia.org/wiki/Internet_Control_Message_Protocol_for_IPv6">Internet Control Message Protocol for IPv6</a>.</p> </li> </ul>',
+    }),
+    protocol: NetworkProtocolSchema.exactOptional().openapi({
+      description:
+        '<p>The IP protocol name.</p> <p>The name can be one of the following:</p> <ul> <li> <p> <code>tcp</code> - Transmission Control Protocol (TCP) provides reliable, ordered, and error-checked delivery of streamed data between applications running on hosts communicating by an IP network. If you have an application that doesn\'t require reliable data stream service, use UDP instead.</p> </li> <li> <p> <code>all</code> - All transport layer protocol types. For more general information, see <a href="https://en.wikipedia.org/wiki/Transport_layer">Transport layer</a> on <i>Wikipedia</i>.</p> </li> <li> <p> <code>udp</code> - With User Datagram Protocol (UDP), computer applications can send messages (or datagrams) to other hosts on an Internet Protocol (IP) network. Prior communications are not required to set up transmission channels or data paths. Applications that don\'t require reliable data stream service can use UDP, which provides a connectionless datagram service that emphasizes reduced latency over reliability. If you do require reliable data stream service, use TCP instead.</p> </li> <li> <p> <code>icmp</code> - Internet Control Message Protocol (ICMP) is used to send error messages and operational information indicating success or failure when communicating with an instance. For example, an error is indicated when an instance could not be reached. When you specify <code>icmp</code> as the <code>protocol</code>, you must specify the ICMP type using the <code>fromPort</code> parameter, and ICMP code using the <code>toPort</code> parameter.</p> </li> </ul>',
+    }),
+    state: PortStateSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies whether the instance port is <code>open</code> or <code>closed</code>.</p> <note> <p>The port state for Lightsail instances is always <code>open</code>.</p> </note>',
+    }),
+    cidrs: StringListSchema.exactOptional().openapi({
+      description:
+        '<p>The IPv4 address, or range of IPv4 addresses (in CIDR notation) that are allowed to connect to an instance through the ports, and the protocol.</p> <note> <p>The <code>ipv6Cidrs</code> parameter lists the IPv6 addresses that are allowed to connect to an instance.</p> </note> <p>For more information about CIDR block notation, see <a href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing#CIDR_notation">Classless Inter-Domain Routing</a> on <i>Wikipedia</i>.</p>',
+    }),
+    ipv6Cidrs: StringListSchema.exactOptional().openapi({
+      description:
+        '<p>The IPv6 address, or range of IPv6 addresses (in CIDR notation) that are allowed to connect to an instance through the ports, and the protocol. Only devices with an IPv6 address can connect to an instance through IPv6; otherwise, IPv4 should be used.</p> <note> <p>The <code>cidrs</code> parameter lists the IPv4 addresses that are allowed to connect to an instance.</p> </note> <p>For more information about CIDR block notation, see <a href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing#CIDR_notation">Classless Inter-Domain Routing</a> on <i>Wikipedia</i>.</p>',
+    }),
+    cidrListAliases: StringListSchema.exactOptional().openapi({
+      description:
+        '<p>An alias that defines access for a preconfigured range of IP addresses.</p> <p>The only alias currently supported is <code>lightsail-connect</code>, which allows IP addresses of the browser-based RDP/SSH client in the Lightsail console to connect to your instance.</p>',
+    }),
   })
   .openapi({
     description:
@@ -8276,27 +5751,19 @@ const InstancePortStateListSchema = z
 
 const GetInstancePortStatesResultSchema = z
   .object({
-    portStates: InstancePortStateListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the firewall port states for the specified instance.',
-        }),
-    ).exactOptional(),
+    portStates: InstancePortStateListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the firewall port states for the specified instance.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetInstancePortStatesResult')
 
 const GetInstancePortStatesRequestSchema = z
   .object({
-    instanceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the instance for which to return firewall port states.',
-        }),
-    ),
+    instanceName: ResourceNameSchema.openapi({
+      description: 'The name of the instance for which to return firewall port states.',
+    }),
   })
   .openapi({ required: ['instanceName'], title: 'GetInstancePortStatesRequest' })
   .openapi('GetInstancePortStatesRequest')
@@ -8307,137 +5774,78 @@ const InstanceSnapshotStateSchema = z
 
 const InstanceSnapshotSchema = z
   .object({
-    name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the snapshot.' }),
-    ).exactOptional(),
-    arn: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the snapshot (e.g., <code>arn:aws:lightsail:us-east-2:123456789101:InstanceSnapshot/d23b5706-3322-4d83-81e5-12345EXAMPLE</code>).',
-        }),
-    ).exactOptional(),
-    supportCode: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The support code. Include this code in your email to support when you have questions about an instance or another resource in Lightsail. This code enables our support team to look up your Lightsail information more easily.',
-        }),
-    ).exactOptional(),
-    createdAt: IsoDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp when the snapshot was created (e.g., <code>1479907467.024</code>).',
-        }),
-    ).exactOptional(),
-    location: ResourceLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The region name and Availability Zone where you created the snapshot.',
-        }),
-    ).exactOptional(),
-    resourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The type of resource (usually <code>InstanceSnapshot</code>).' }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tag keys and optional values for the resource. For more information about tags in Lightsail, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-tags">Amazon Lightsail Developer Guide</a>.',
-        }),
-    ).exactOptional(),
-    state: InstanceSnapshotStateSchema.and(
-      z.any().openapi({ description: 'The state the snapshot is in.' }),
-    ).exactOptional(),
-    progress: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The progress of the snapshot.</p> <note> <p>This is populated only for disk snapshots, and is <code>null</code> for instance snapshots.</p> </note>',
-        }),
-    ).exactOptional(),
-    fromAttachedDisks: DiskListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of disk objects containing information about all block storage disks.',
-        }),
-    ).exactOptional(),
-    fromInstanceName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The instance from which the snapshot was created.' }),
-    ).exactOptional(),
-    fromInstanceArn: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the instance from which the snapshot was created (e.g., <code>arn:aws:lightsail:us-east-2:123456789101:Instance/64b8404c-ccb1-430b-8daf-12345EXAMPLE</code>).',
-        }),
-    ).exactOptional(),
-    fromBlueprintId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The blueprint ID from which you created the snapshot (e.g., <code>os_debian_8_3</code>). A blueprint is a virtual private server (or <i>instance</i>) image used to create instances quickly.',
-        }),
-    ).exactOptional(),
-    fromBundleId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The bundle ID from which you created the snapshot (e.g., <code>micro_1_0</code>).',
-        }),
-    ).exactOptional(),
-    isFromAutoSnapshot: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean value indicating whether the snapshot was created from an automatic snapshot.',
-        }),
-    ).exactOptional(),
-    sizeInGb: IntegerSchema.and(
-      z.any().openapi({ description: 'The size in GB of the SSD.' }),
-    ).exactOptional(),
+    name: ResourceNameSchema.exactOptional().openapi({ description: 'The name of the snapshot.' }),
+    arn: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the snapshot (e.g., <code>arn:aws:lightsail:us-east-2:123456789101:InstanceSnapshot/d23b5706-3322-4d83-81e5-12345EXAMPLE</code>).',
+    }),
+    supportCode: StringSchema.exactOptional().openapi({
+      description:
+        'The support code. Include this code in your email to support when you have questions about an instance or another resource in Lightsail. This code enables our support team to look up your Lightsail information more easily.',
+    }),
+    createdAt: IsoDateSchema.exactOptional().openapi({
+      description:
+        'The timestamp when the snapshot was created (e.g., <code>1479907467.024</code>).',
+    }),
+    location: ResourceLocationSchema.exactOptional().openapi({
+      description: 'The region name and Availability Zone where you created the snapshot.',
+    }),
+    resourceType: ResourceTypeSchema.exactOptional().openapi({
+      description: 'The type of resource (usually <code>InstanceSnapshot</code>).',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        'The tag keys and optional values for the resource. For more information about tags in Lightsail, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-tags">Amazon Lightsail Developer Guide</a>.',
+    }),
+    state: InstanceSnapshotStateSchema.exactOptional().openapi({
+      description: 'The state the snapshot is in.',
+    }),
+    progress: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The progress of the snapshot.</p> <note> <p>This is populated only for disk snapshots, and is <code>null</code> for instance snapshots.</p> </note>',
+    }),
+    fromAttachedDisks: DiskListSchema.exactOptional().openapi({
+      description: 'An array of disk objects containing information about all block storage disks.',
+    }),
+    fromInstanceName: ResourceNameSchema.exactOptional().openapi({
+      description: 'The instance from which the snapshot was created.',
+    }),
+    fromInstanceArn: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the instance from which the snapshot was created (e.g., <code>arn:aws:lightsail:us-east-2:123456789101:Instance/64b8404c-ccb1-430b-8daf-12345EXAMPLE</code>).',
+    }),
+    fromBlueprintId: StringSchema.exactOptional().openapi({
+      description:
+        'The blueprint ID from which you created the snapshot (e.g., <code>os_debian_8_3</code>). A blueprint is a virtual private server (or <i>instance</i>) image used to create instances quickly.',
+    }),
+    fromBundleId: StringSchema.exactOptional().openapi({
+      description:
+        'The bundle ID from which you created the snapshot (e.g., <code>micro_1_0</code>).',
+    }),
+    isFromAutoSnapshot: BooleanSchema.exactOptional().openapi({
+      description:
+        'A Boolean value indicating whether the snapshot was created from an automatic snapshot.',
+    }),
+    sizeInGb: IntegerSchema.exactOptional().openapi({ description: 'The size in GB of the SSD.' }),
   })
   .openapi({ description: 'Describes an instance snapshot.', required: [] })
   .openapi('InstanceSnapshot')
 
 const GetInstanceSnapshotResultSchema = z
   .object({
-    instanceSnapshot: InstanceSnapshotSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of key-value pairs containing information about the results of your get instance snapshot request.',
-        }),
-    ).exactOptional(),
+    instanceSnapshot: InstanceSnapshotSchema.exactOptional().openapi({
+      description:
+        'An array of key-value pairs containing information about the results of your get instance snapshot request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetInstanceSnapshotResult')
 
 const GetInstanceSnapshotRequestSchema = z
   .object({
-    instanceSnapshotName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the snapshot for which you are requesting information.',
-        }),
-    ),
+    instanceSnapshotName: ResourceNameSchema.openapi({
+      description: 'The name of the snapshot for which you are requesting information.',
+    }),
   })
   .openapi({ required: ['instanceSnapshotName'], title: 'GetInstanceSnapshotRequest' })
   .openapi('GetInstanceSnapshotRequest')
@@ -8446,117 +5854,83 @@ const InstanceSnapshotListSchema = z.array(InstanceSnapshotSchema).openapi('Inst
 
 const GetInstanceSnapshotsResultSchema = z
   .object({
-    instanceSnapshots: InstanceSnapshotListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of key-value pairs containing information about the results of your get instance snapshots request.',
-        }),
-    ).exactOptional(),
-    nextPageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetInstanceSnapshots</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
-        }),
-    ).exactOptional(),
+    instanceSnapshots: InstanceSnapshotListSchema.exactOptional().openapi({
+      description:
+        'An array of key-value pairs containing information about the results of your get instance snapshots request.',
+    }),
+    nextPageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetInstanceSnapshots</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetInstanceSnapshotsResult')
 
 const GetInstanceSnapshotsRequestSchema = z
   .object({
-    pageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetInstanceSnapshots</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
-        }),
-    ).exactOptional(),
+    pageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetInstanceSnapshots</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
+    }),
   })
   .openapi({ title: 'GetInstanceSnapshotsRequest', required: [] })
   .openapi('GetInstanceSnapshotsRequest')
 
 const GetInstanceStateResultSchema = z
   .object({
-    state: InstanceStateSchema.and(
-      z.any().openapi({ description: 'The state of the instance.' }),
-    ).exactOptional(),
+    state: InstanceStateSchema.exactOptional().openapi({
+      description: 'The state of the instance.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetInstanceStateResult')
 
 const GetInstanceStateRequestSchema = z
   .object({
-    instanceName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the instance to get state information about.' }),
-    ),
+    instanceName: ResourceNameSchema.openapi({
+      description: 'The name of the instance to get state information about.',
+    }),
   })
   .openapi({ required: ['instanceName'], title: 'GetInstanceStateRequest' })
   .openapi('GetInstanceStateRequest')
 
-const InstanceListSchema = z.array(InstanceSchema).openapi('InstanceList')
-
-const GetInstancesResultSchema = z
+const GetInstancesResultSchema: z.ZodType<GetInstancesResultType> = z
   .object({
-    instances: InstanceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array of key-value pairs containing information about your instances.',
-        }),
-    ).exactOptional(),
-    nextPageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetInstances</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
-        }),
-    ).exactOptional(),
+    instances: InstanceListSchema.exactOptional().openapi({
+      description: 'An array of key-value pairs containing information about your instances.',
+    }),
+    nextPageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetInstances</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetInstancesResult')
 
 const GetInstancesRequestSchema = z
   .object({
-    pageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetInstances</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
-        }),
-    ).exactOptional(),
+    pageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetInstances</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
+    }),
   })
   .openapi({ title: 'GetInstancesRequest', required: [] })
   .openapi('GetInstancesRequest')
 
 const GetKeyPairResultSchema = z
   .object({
-    keyPair: KeyPairSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array of key-value pairs containing information about the key pair.',
-        }),
-    ).exactOptional(),
+    keyPair: KeyPairSchema.exactOptional().openapi({
+      description: 'An array of key-value pairs containing information about the key pair.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetKeyPairResult')
 
 const GetKeyPairRequestSchema = z
   .object({
-    keyPairName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the key pair for which you are requesting information.',
-        }),
-    ),
+    keyPairName: ResourceNameSchema.openapi({
+      description: 'The name of the key pair for which you are requesting information.',
+    }),
   })
   .openapi({ required: ['keyPairName'], title: 'GetKeyPairRequest' })
   .openapi('GetKeyPairRequest')
@@ -8565,43 +5939,27 @@ const KeyPairListSchema = z.array(KeyPairSchema).openapi('KeyPairList')
 
 const GetKeyPairsResultSchema = z
   .object({
-    keyPairs: KeyPairListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array of key-value pairs containing information about the key pairs.',
-        }),
-    ).exactOptional(),
-    nextPageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetKeyPairs</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
-        }),
-    ).exactOptional(),
+    keyPairs: KeyPairListSchema.exactOptional().openapi({
+      description: 'An array of key-value pairs containing information about the key pairs.',
+    }),
+    nextPageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetKeyPairs</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetKeyPairsResult')
 
 const GetKeyPairsRequestSchema = z
   .object({
-    pageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetKeyPairs</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
-        }),
-    ).exactOptional(),
-    includeDefaultKeyPair: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean value that indicates whether to include the default key pair in the response of your request.',
-        }),
-    ).exactOptional(),
+    pageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetKeyPairs</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
+    }),
+    includeDefaultKeyPair: BooleanSchema.exactOptional().openapi({
+      description:
+        'A Boolean value that indicates whether to include the default key pair in the response of your request.',
+    }),
   })
   .openapi({ title: 'GetKeyPairsRequest', required: [] })
   .openapi('GetKeyPairsRequest')
@@ -8636,27 +5994,17 @@ const InstanceHealthReasonSchema = z
 
 const InstanceHealthSummarySchema = z
   .object({
-    instanceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Lightsail instance for which you are requesting health check data.',
-        }),
-    ).exactOptional(),
-    instanceHealth: InstanceHealthStateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Describes the overall instance health. Valid values are below.' }),
-    ).exactOptional(),
-    instanceHealthReason: InstanceHealthReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>More information about the instance health. If the <code>instanceHealth</code> is <code>healthy</code>, then an <code>instanceHealthReason</code> value is not provided.</p> <p>If <b> <code>instanceHealth</code> </b> is <code>initial</code>, the <b> <code>instanceHealthReason</code> </b> value can be one of the following:</p> <ul> <li> <p> <b> <code>Lb.RegistrationInProgress</code> </b> - The target instance is in the process of being registered with the load balancer.</p> </li> <li> <p> <b> <code>Lb.InitialHealthChecking</code> </b> - The Lightsail load balancer is still sending the target instance the minimum number of health checks required to determine its health status.</p> </li> </ul> <p>If <b> <code>instanceHealth</code> </b> is <code>unhealthy</code>, the <b> <code>instanceHealthReason</code> </b> value can be one of the following:</p> <ul> <li> <p> <b> <code>Instance.ResponseCodeMismatch</code> </b> - The health checks did not return an expected HTTP code.</p> </li> <li> <p> <b> <code>Instance.Timeout</code> </b> - The health check requests timed out.</p> </li> <li> <p> <b> <code>Instance.FailedHealthChecks</code> </b> - The health checks failed because the connection to the target instance timed out, the target instance response was malformed, or the target instance failed the health check for an unknown reason.</p> </li> <li> <p> <b> <code>Lb.InternalError</code> </b> - The health checks failed due to an internal error.</p> </li> </ul> <p>If <b> <code>instanceHealth</code> </b> is <code>unused</code>, the <b> <code>instanceHealthReason</code> </b> value can be one of the following:</p> <ul> <li> <p> <b> <code>Instance.NotRegistered</code> </b> - The target instance is not registered with the target group.</p> </li> <li> <p> <b> <code>Instance.NotInUse</code> </b> - The target group is not used by any load balancer, or the target instance is in an Availability Zone that is not enabled for its load balancer.</p> </li> <li> <p> <b> <code>Instance.IpUnusable</code> </b> - The target IP address is reserved for use by a Lightsail load balancer.</p> </li> <li> <p> <b> <code>Instance.InvalidState</code> </b> - The target is in the stopped or terminated state.</p> </li> </ul> <p>If <b> <code>instanceHealth</code> </b> is <code>draining</code>, the <b> <code>instanceHealthReason</code> </b> value can be one of the following:</p> <ul> <li> <p> <b> <code>Instance.DeregistrationInProgress</code> </b> - The target instance is in the process of being deregistered and the deregistration delay period has not expired.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    instanceName: ResourceNameSchema.exactOptional().openapi({
+      description:
+        'The name of the Lightsail instance for which you are requesting health check data.',
+    }),
+    instanceHealth: InstanceHealthStateSchema.exactOptional().openapi({
+      description: 'Describes the overall instance health. Valid values are below.',
+    }),
+    instanceHealthReason: InstanceHealthReasonSchema.exactOptional().openapi({
+      description:
+        '<p>More information about the instance health. If the <code>instanceHealth</code> is <code>healthy</code>, then an <code>instanceHealthReason</code> value is not provided.</p> <p>If <b> <code>instanceHealth</code> </b> is <code>initial</code>, the <b> <code>instanceHealthReason</code> </b> value can be one of the following:</p> <ul> <li> <p> <b> <code>Lb.RegistrationInProgress</code> </b> - The target instance is in the process of being registered with the load balancer.</p> </li> <li> <p> <b> <code>Lb.InitialHealthChecking</code> </b> - The Lightsail load balancer is still sending the target instance the minimum number of health checks required to determine its health status.</p> </li> </ul> <p>If <b> <code>instanceHealth</code> </b> is <code>unhealthy</code>, the <b> <code>instanceHealthReason</code> </b> value can be one of the following:</p> <ul> <li> <p> <b> <code>Instance.ResponseCodeMismatch</code> </b> - The health checks did not return an expected HTTP code.</p> </li> <li> <p> <b> <code>Instance.Timeout</code> </b> - The health check requests timed out.</p> </li> <li> <p> <b> <code>Instance.FailedHealthChecks</code> </b> - The health checks failed because the connection to the target instance timed out, the target instance response was malformed, or the target instance failed the health check for an unknown reason.</p> </li> <li> <p> <b> <code>Lb.InternalError</code> </b> - The health checks failed due to an internal error.</p> </li> </ul> <p>If <b> <code>instanceHealth</code> </b> is <code>unused</code>, the <b> <code>instanceHealthReason</code> </b> value can be one of the following:</p> <ul> <li> <p> <b> <code>Instance.NotRegistered</code> </b> - The target instance is not registered with the target group.</p> </li> <li> <p> <b> <code>Instance.NotInUse</code> </b> - The target group is not used by any load balancer, or the target instance is in an Availability Zone that is not enabled for its load balancer.</p> </li> <li> <p> <b> <code>Instance.IpUnusable</code> </b> - The target IP address is reserved for use by a Lightsail load balancer.</p> </li> <li> <p> <b> <code>Instance.InvalidState</code> </b> - The target is in the stopped or terminated state.</p> </li> </ul> <p>If <b> <code>instanceHealth</code> </b> is <code>draining</code>, the <b> <code>instanceHealthReason</code> </b> value can be one of the following:</p> <ul> <li> <p> <b> <code>Instance.DeregistrationInProgress</code> </b> - The target instance is in the process of being deregistered and the deregistration delay period has not expired.</p> </li> </ul>',
+    }),
   })
   .openapi({ description: 'Describes information about the health of the instance.', required: [] })
   .openapi('InstanceHealthSummary')
@@ -8667,17 +6015,13 @@ const InstanceHealthSummaryListSchema = z
 
 const LoadBalancerTlsCertificateSummarySchema = z
   .object({
-    name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the SSL/TLS certificate.' }),
-    ).exactOptional(),
-    isAttached: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When <code>true</code>, the SSL/TLS certificate is attached to the Lightsail load balancer.',
-        }),
-    ).exactOptional(),
+    name: ResourceNameSchema.exactOptional().openapi({
+      description: 'The name of the SSL/TLS certificate.',
+    }),
+    isAttached: BooleanSchema.exactOptional().openapi({
+      description:
+        'When <code>true</code>, the SSL/TLS certificate is attached to the Lightsail load balancer.',
+    }),
   })
   .openapi({ description: 'Provides a summary of SSL/TLS certificate metadata.', required: [] })
   .openapi('LoadBalancerTlsCertificateSummary')
@@ -8692,149 +6036,91 @@ const LoadBalancerConfigurationOptionsSchema = z
 
 const LoadBalancerSchema = z
   .object({
-    name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the load balancer (e.g., <code>my-load-balancer</code>).',
-        }),
-    ).exactOptional(),
-    arn: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the load balancer.' }),
-    ).exactOptional(),
-    supportCode: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The support code. Include this code in your email to support when you have questions about your Lightsail load balancer. This code enables our support team to look up your Lightsail information more easily.',
-        }),
-    ).exactOptional(),
-    createdAt: IsoDateSchema.and(
-      z.any().openapi({ description: 'The date when your load balancer was created.' }),
-    ).exactOptional(),
-    location: ResourceLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The AWS Region where your load balancer was created (e.g., <code>us-east-2a</code>). Lightsail automatically creates your load balancer across Availability Zones.',
-        }),
-    ).exactOptional(),
-    resourceType: ResourceTypeSchema.and(
-      z.any().openapi({ description: 'The resource type (e.g., <code>LoadBalancer</code>.' }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tag keys and optional values for the resource. For more information about tags in Lightsail, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-tags">Amazon Lightsail Developer Guide</a>.',
-        }),
-    ).exactOptional(),
-    dnsName: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The DNS name of your Lightsail load balancer.' }),
-    ).exactOptional(),
-    state: LoadBalancerStateSchema.and(
-      z.any().openapi({ description: 'The status of your load balancer. Valid values are below.' }),
-    ).exactOptional(),
-    protocol: LoadBalancerProtocolSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The protocol you have enabled for your load balancer. Valid values are below.</p> <p>You can't just have <code>HTTP_HTTPS</code>, but you can have just <code>HTTP</code>.</p>",
-        }),
-    ).exactOptional(),
-    publicPorts: PortListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of public port settings for your load balancer. For HTTP, use port 80. For HTTPS, use port 443.',
-        }),
-    ).exactOptional(),
-    healthCheckPath: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The path you specified to perform your health checks. If no path is specified, the load balancer tries to make a request to the default (root) page.',
-        }),
-    ).exactOptional(),
-    instancePort: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The port where the load balancer will direct traffic to your Lightsail instances. For HTTP traffic, it's port 80. For HTTPS traffic, it's port 443.",
-        }),
-    ).exactOptional(),
-    instanceHealthSummary: InstanceHealthSummaryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of InstanceHealthSummary objects describing the health of the load balancer.',
-        }),
-    ).exactOptional(),
-    tlsCertificateSummaries: LoadBalancerTlsCertificateSummaryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of LoadBalancerTlsCertificateSummary objects that provide additional information about the SSL/TLS certificates. For example, if <code>true</code>, the certificate is attached to the load balancer.',
-        }),
-    ).exactOptional(),
-    configurationOptions: LoadBalancerConfigurationOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string to string map of the configuration options for your load balancer. Valid values are listed below.',
-        }),
-    ).exactOptional(),
-    ipAddressType: IpAddressTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The IP address type of the load balancer.</p> <p>The possible values are <code>ipv4</code> for IPv4 only, and <code>dualstack</code> for IPv4 and IPv6.</p>',
-        }),
-    ).exactOptional(),
-    httpsRedirectionEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean value that indicates whether HTTPS redirection is enabled for the load balancer.',
-        }),
-    ).exactOptional(),
-    tlsPolicyName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the TLS security policy for the load balancer.' }),
-    ).exactOptional(),
+    name: ResourceNameSchema.exactOptional().openapi({
+      description: 'The name of the load balancer (e.g., <code>my-load-balancer</code>).',
+    }),
+    arn: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the load balancer.',
+    }),
+    supportCode: StringSchema.exactOptional().openapi({
+      description:
+        'The support code. Include this code in your email to support when you have questions about your Lightsail load balancer. This code enables our support team to look up your Lightsail information more easily.',
+    }),
+    createdAt: IsoDateSchema.exactOptional().openapi({
+      description: 'The date when your load balancer was created.',
+    }),
+    location: ResourceLocationSchema.exactOptional().openapi({
+      description:
+        'The AWS Region where your load balancer was created (e.g., <code>us-east-2a</code>). Lightsail automatically creates your load balancer across Availability Zones.',
+    }),
+    resourceType: ResourceTypeSchema.exactOptional().openapi({
+      description: 'The resource type (e.g., <code>LoadBalancer</code>.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        'The tag keys and optional values for the resource. For more information about tags in Lightsail, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-tags">Amazon Lightsail Developer Guide</a>.',
+    }),
+    dnsName: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The DNS name of your Lightsail load balancer.',
+    }),
+    state: LoadBalancerStateSchema.exactOptional().openapi({
+      description: 'The status of your load balancer. Valid values are below.',
+    }),
+    protocol: LoadBalancerProtocolSchema.exactOptional().openapi({
+      description:
+        "<p>The protocol you have enabled for your load balancer. Valid values are below.</p> <p>You can't just have <code>HTTP_HTTPS</code>, but you can have just <code>HTTP</code>.</p>",
+    }),
+    publicPorts: PortListSchema.exactOptional().openapi({
+      description:
+        'An array of public port settings for your load balancer. For HTTP, use port 80. For HTTPS, use port 443.',
+    }),
+    healthCheckPath: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        'The path you specified to perform your health checks. If no path is specified, the load balancer tries to make a request to the default (root) page.',
+    }),
+    instancePort: IntegerSchema.exactOptional().openapi({
+      description:
+        "The port where the load balancer will direct traffic to your Lightsail instances. For HTTP traffic, it's port 80. For HTTPS traffic, it's port 443.",
+    }),
+    instanceHealthSummary: InstanceHealthSummaryListSchema.exactOptional().openapi({
+      description:
+        'An array of InstanceHealthSummary objects describing the health of the load balancer.',
+    }),
+    tlsCertificateSummaries: LoadBalancerTlsCertificateSummaryListSchema.exactOptional().openapi({
+      description:
+        'An array of LoadBalancerTlsCertificateSummary objects that provide additional information about the SSL/TLS certificates. For example, if <code>true</code>, the certificate is attached to the load balancer.',
+    }),
+    configurationOptions: LoadBalancerConfigurationOptionsSchema.exactOptional().openapi({
+      description:
+        'A string to string map of the configuration options for your load balancer. Valid values are listed below.',
+    }),
+    ipAddressType: IpAddressTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The IP address type of the load balancer.</p> <p>The possible values are <code>ipv4</code> for IPv4 only, and <code>dualstack</code> for IPv4 and IPv6.</p>',
+    }),
+    httpsRedirectionEnabled: BooleanSchema.exactOptional().openapi({
+      description:
+        'A Boolean value that indicates whether HTTPS redirection is enabled for the load balancer.',
+    }),
+    tlsPolicyName: ResourceNameSchema.exactOptional().openapi({
+      description: 'The name of the TLS security policy for the load balancer.',
+    }),
   })
   .openapi({ description: 'Describes a load balancer.', required: [] })
   .openapi('LoadBalancer')
 
 const GetLoadBalancerResultSchema = z
   .object({
-    loadBalancer: LoadBalancerSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An object containing information about your load balancer.' }),
-    ).exactOptional(),
+    loadBalancer: LoadBalancerSchema.exactOptional().openapi({
+      description: 'An object containing information about your load balancer.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetLoadBalancerResult')
 
 const GetLoadBalancerRequestSchema = z
   .object({
-    loadBalancerName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the load balancer.' }),
-    ),
+    loadBalancerName: ResourceNameSchema.openapi({ description: 'The name of the load balancer.' }),
   })
   .openapi({ required: ['loadBalancerName'], title: 'GetLoadBalancerRequest' })
   .openapi('GetLoadBalancerRequest')
@@ -8858,54 +6144,36 @@ const LoadBalancerMetricNameSchema = z
 
 const GetLoadBalancerMetricDataResultSchema = z
   .object({
-    metricName: LoadBalancerMetricNameSchema.and(
-      z.any().openapi({ description: 'The name of the metric returned.' }),
-    ).exactOptional(),
-    metricData: MetricDatapointListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An array of objects that describe the metric data returned.' }),
-    ).exactOptional(),
+    metricName: LoadBalancerMetricNameSchema.exactOptional().openapi({
+      description: 'The name of the metric returned.',
+    }),
+    metricData: MetricDatapointListSchema.exactOptional().openapi({
+      description: 'An array of objects that describe the metric data returned.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetLoadBalancerMetricDataResult')
 
 const GetLoadBalancerMetricDataRequestSchema = z
   .object({
-    loadBalancerName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the load balancer.' }),
-    ),
-    metricName: LoadBalancerMetricNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The metric for which you want to return information.</p> <p>Valid load balancer metric names are listed below, along with the most useful <code>statistics</code> to include in your request, and the published <code>unit</code> value.</p> <ul> <li> <p> <b> <code>ClientTLSNegotiationErrorCount</code> </b> - The number of TLS connections initiated by the client that did not establish a session with the load balancer due to a TLS error generated by the load balancer. Possible causes include a mismatch of ciphers or protocols.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>.</p> <p> <code>Unit</code>: The published unit is <code>Count</code>.</p> </li> <li> <p> <b> <code>HealthyHostCount</code> </b> - The number of target instances that are considered healthy.</p> <p> <code>Statistics</code>: The most useful statistic are <code>Average</code>, <code>Minimum</code>, and <code>Maximum</code>.</p> <p> <code>Unit</code>: The published unit is <code>Count</code>.</p> </li> <li> <p> <b> <code>HTTPCode_Instance_2XX_Count</code> </b> - The number of HTTP 2XX response codes generated by the target instances. This does not include any response codes generated by the load balancer.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>. Note that <code>Minimum</code>, <code>Maximum</code>, and <code>Average</code> all return <code>1</code>.</p> <p> <code>Unit</code>: The published unit is <code>Count</code>.</p> </li> <li> <p> <b> <code>HTTPCode_Instance_3XX_Count</code> </b> - The number of HTTP 3XX response codes generated by the target instances. This does not include any response codes generated by the load balancer.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>. Note that <code>Minimum</code>, <code>Maximum</code>, and <code>Average</code> all return <code>1</code>.</p> <p> <code>Unit</code>: The published unit is <code>Count</code>.</p> </li> <li> <p> <b> <code>HTTPCode_Instance_4XX_Count</code> </b> - The number of HTTP 4XX response codes generated by the target instances. This does not include any response codes generated by the load balancer.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>. Note that <code>Minimum</code>, <code>Maximum</code>, and <code>Average</code> all return <code>1</code>.</p> <p> <code>Unit</code>: The published unit is <code>Count</code>.</p> </li> <li> <p> <b> <code>HTTPCode_Instance_5XX_Count</code> </b> - The number of HTTP 5XX response codes generated by the target instances. This does not include any response codes generated by the load balancer.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>. Note that <code>Minimum</code>, <code>Maximum</code>, and <code>Average</code> all return <code>1</code>.</p> <p> <code>Unit</code>: The published unit is <code>Count</code>.</p> </li> <li> <p> <b> <code>HTTPCode_LB_4XX_Count</code> </b> - The number of HTTP 4XX client error codes that originated from the load balancer. Client errors are generated when requests are malformed or incomplete. These requests were not received by the target instance. This count does not include response codes generated by the target instances.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>. Note that <code>Minimum</code>, <code>Maximum</code>, and <code>Average</code> all return <code>1</code>.</p> <p> <code>Unit</code>: The published unit is <code>Count</code>.</p> </li> <li> <p> <b> <code>HTTPCode_LB_5XX_Count</code> </b> - The number of HTTP 5XX server error codes that originated from the load balancer. This does not include any response codes generated by the target instance. This metric is reported if there are no healthy instances attached to the load balancer, or if the request rate exceeds the capacity of the instances (spillover) or the load balancer.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>. Note that <code>Minimum</code>, <code>Maximum</code>, and <code>Average</code> all return <code>1</code>.</p> <p> <code>Unit</code>: The published unit is <code>Count</code>.</p> </li> <li> <p> <b> <code>InstanceResponseTime</code> </b> - The time elapsed, in seconds, after the request leaves the load balancer until a response from the target instance is received.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Average</code>.</p> <p> <code>Unit</code>: The published unit is <code>Seconds</code>.</p> </li> <li> <p> <b> <code>RejectedConnectionCount</code> </b> - The number of connections that were rejected because the load balancer had reached its maximum number of connections.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>.</p> <p> <code>Unit</code>: The published unit is <code>Count</code>.</p> </li> <li> <p> <b> <code>RequestCount</code> </b> - The number of requests processed over IPv4. This count includes only the requests with a response generated by a target instance of the load balancer.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>. Note that <code>Minimum</code>, <code>Maximum</code>, and <code>Average</code> all return <code>1</code>.</p> <p> <code>Unit</code>: The published unit is <code>Count</code>.</p> </li> <li> <p> <b> <code>UnhealthyHostCount</code> </b> - The number of target instances that are considered unhealthy.</p> <p> <code>Statistics</code>: The most useful statistic are <code>Average</code>, <code>Minimum</code>, and <code>Maximum</code>.</p> <p> <code>Unit</code>: The published unit is <code>Count</code>.</p> </li> </ul>',
-        }),
-    ),
-    period: MetricPeriodSchema.and(
-      z.any().openapi({ description: 'The granularity, in seconds, of the returned data points.' }),
-    ),
-    startTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The start time of the period.' }),
-    ),
-    endTime: TimestampSchema.and(z.any().openapi({ description: 'The end time of the period.' })),
-    unit: MetricUnitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unit for the metric data request. Valid units depend on the metric data being requested. For the valid units with each available metric, see the <code>metricName</code> parameter.',
-        }),
-    ),
-    statistics: MetricStatisticListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The statistic for the metric.</p> <p>The following statistics are available:</p> <ul> <li> <p> <code>Minimum</code> - The lowest value observed during the specified period. Use this value to determine low volumes of activity for your application.</p> </li> <li> <p> <code>Maximum</code> - The highest value observed during the specified period. Use this value to determine high volumes of activity for your application.</p> </li> <li> <p> <code>Sum</code> - All values submitted for the matching metric added together. You can use this statistic to determine the total volume of a metric.</p> </li> <li> <p> <code>Average</code> - The value of Sum / SampleCount during the specified period. By comparing this statistic with the Minimum and Maximum values, you can determine the full scope of a metric and how close the average use is to the Minimum and Maximum values. This comparison helps you to know when to increase or decrease your resources.</p> </li> <li> <p> <code>SampleCount</code> - The count, or number, of data points used for the statistical calculation.</p> </li> </ul>',
-        }),
-    ),
+    loadBalancerName: ResourceNameSchema.openapi({ description: 'The name of the load balancer.' }),
+    metricName: LoadBalancerMetricNameSchema.openapi({
+      description:
+        '<p>The metric for which you want to return information.</p> <p>Valid load balancer metric names are listed below, along with the most useful <code>statistics</code> to include in your request, and the published <code>unit</code> value.</p> <ul> <li> <p> <b> <code>ClientTLSNegotiationErrorCount</code> </b> - The number of TLS connections initiated by the client that did not establish a session with the load balancer due to a TLS error generated by the load balancer. Possible causes include a mismatch of ciphers or protocols.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>.</p> <p> <code>Unit</code>: The published unit is <code>Count</code>.</p> </li> <li> <p> <b> <code>HealthyHostCount</code> </b> - The number of target instances that are considered healthy.</p> <p> <code>Statistics</code>: The most useful statistic are <code>Average</code>, <code>Minimum</code>, and <code>Maximum</code>.</p> <p> <code>Unit</code>: The published unit is <code>Count</code>.</p> </li> <li> <p> <b> <code>HTTPCode_Instance_2XX_Count</code> </b> - The number of HTTP 2XX response codes generated by the target instances. This does not include any response codes generated by the load balancer.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>. Note that <code>Minimum</code>, <code>Maximum</code>, and <code>Average</code> all return <code>1</code>.</p> <p> <code>Unit</code>: The published unit is <code>Count</code>.</p> </li> <li> <p> <b> <code>HTTPCode_Instance_3XX_Count</code> </b> - The number of HTTP 3XX response codes generated by the target instances. This does not include any response codes generated by the load balancer.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>. Note that <code>Minimum</code>, <code>Maximum</code>, and <code>Average</code> all return <code>1</code>.</p> <p> <code>Unit</code>: The published unit is <code>Count</code>.</p> </li> <li> <p> <b> <code>HTTPCode_Instance_4XX_Count</code> </b> - The number of HTTP 4XX response codes generated by the target instances. This does not include any response codes generated by the load balancer.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>. Note that <code>Minimum</code>, <code>Maximum</code>, and <code>Average</code> all return <code>1</code>.</p> <p> <code>Unit</code>: The published unit is <code>Count</code>.</p> </li> <li> <p> <b> <code>HTTPCode_Instance_5XX_Count</code> </b> - The number of HTTP 5XX response codes generated by the target instances. This does not include any response codes generated by the load balancer.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>. Note that <code>Minimum</code>, <code>Maximum</code>, and <code>Average</code> all return <code>1</code>.</p> <p> <code>Unit</code>: The published unit is <code>Count</code>.</p> </li> <li> <p> <b> <code>HTTPCode_LB_4XX_Count</code> </b> - The number of HTTP 4XX client error codes that originated from the load balancer. Client errors are generated when requests are malformed or incomplete. These requests were not received by the target instance. This count does not include response codes generated by the target instances.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>. Note that <code>Minimum</code>, <code>Maximum</code>, and <code>Average</code> all return <code>1</code>.</p> <p> <code>Unit</code>: The published unit is <code>Count</code>.</p> </li> <li> <p> <b> <code>HTTPCode_LB_5XX_Count</code> </b> - The number of HTTP 5XX server error codes that originated from the load balancer. This does not include any response codes generated by the target instance. This metric is reported if there are no healthy instances attached to the load balancer, or if the request rate exceeds the capacity of the instances (spillover) or the load balancer.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>. Note that <code>Minimum</code>, <code>Maximum</code>, and <code>Average</code> all return <code>1</code>.</p> <p> <code>Unit</code>: The published unit is <code>Count</code>.</p> </li> <li> <p> <b> <code>InstanceResponseTime</code> </b> - The time elapsed, in seconds, after the request leaves the load balancer until a response from the target instance is received.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Average</code>.</p> <p> <code>Unit</code>: The published unit is <code>Seconds</code>.</p> </li> <li> <p> <b> <code>RejectedConnectionCount</code> </b> - The number of connections that were rejected because the load balancer had reached its maximum number of connections.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>.</p> <p> <code>Unit</code>: The published unit is <code>Count</code>.</p> </li> <li> <p> <b> <code>RequestCount</code> </b> - The number of requests processed over IPv4. This count includes only the requests with a response generated by a target instance of the load balancer.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>. Note that <code>Minimum</code>, <code>Maximum</code>, and <code>Average</code> all return <code>1</code>.</p> <p> <code>Unit</code>: The published unit is <code>Count</code>.</p> </li> <li> <p> <b> <code>UnhealthyHostCount</code> </b> - The number of target instances that are considered unhealthy.</p> <p> <code>Statistics</code>: The most useful statistic are <code>Average</code>, <code>Minimum</code>, and <code>Maximum</code>.</p> <p> <code>Unit</code>: The published unit is <code>Count</code>.</p> </li> </ul>',
+    }),
+    period: MetricPeriodSchema.openapi({
+      description: 'The granularity, in seconds, of the returned data points.',
+    }),
+    startTime: TimestampSchema.openapi({ description: 'The start time of the period.' }),
+    endTime: TimestampSchema.openapi({ description: 'The end time of the period.' }),
+    unit: MetricUnitSchema.openapi({
+      description:
+        'The unit for the metric data request. Valid units depend on the metric data being requested. For the valid units with each available metric, see the <code>metricName</code> parameter.',
+    }),
+    statistics: MetricStatisticListSchema.openapi({
+      description:
+        '<p>The statistic for the metric.</p> <p>The following statistics are available:</p> <ul> <li> <p> <code>Minimum</code> - The lowest value observed during the specified period. Use this value to determine low volumes of activity for your application.</p> </li> <li> <p> <code>Maximum</code> - The highest value observed during the specified period. Use this value to determine high volumes of activity for your application.</p> </li> <li> <p> <code>Sum</code> - All values submitted for the matching metric added together. You can use this statistic to determine the total volume of a metric.</p> </li> <li> <p> <code>Average</code> - The value of Sum / SampleCount during the specified period. By comparing this statistic with the Minimum and Maximum values, you can determine the full scope of a metric and how close the average use is to the Minimum and Maximum values. This comparison helps you to know when to increase or decrease your resources.</p> </li> <li> <p> <code>SampleCount</code> - The count, or number, of data points used for the statistical calculation.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: [
@@ -8944,19 +6212,13 @@ const LoadBalancerTlsCertificateDnsRecordCreationStateCodeSchema = z
 
 const LoadBalancerTlsCertificateDnsRecordCreationStateSchema = z
   .object({
-    code: LoadBalancerTlsCertificateDnsRecordCreationStateCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status code for the automated DNS record creation.</p> <p>Following are the possible values:</p> <ul> <li> <p> <code>SUCCEEDED</code> - The validation records were successfully added.</p> </li> <li> <p> <code>STARTED</code> - The automatic DNS record creation has started.</p> </li> <li> <p> <code>FAILED</code> - The validation record addition failed.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    message: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The message that describes the reason for the status code.' }),
-    ).exactOptional(),
+    code: LoadBalancerTlsCertificateDnsRecordCreationStateCodeSchema.exactOptional().openapi({
+      description:
+        '<p>The status code for the automated DNS record creation.</p> <p>Following are the possible values:</p> <ul> <li> <p> <code>SUCCEEDED</code> - The validation records were successfully added.</p> </li> <li> <p> <code>STARTED</code> - The automatic DNS record creation has started.</p> </li> <li> <p> <code>FAILED</code> - The validation record addition failed.</p> </li> </ul>',
+    }),
+    message: StringSchema.exactOptional().openapi({
+      description: 'The message that describes the reason for the status code.',
+    }),
   })
   .openapi({
     description:
@@ -8967,43 +6229,28 @@ const LoadBalancerTlsCertificateDnsRecordCreationStateSchema = z
 
 const LoadBalancerTlsCertificateDomainValidationRecordSchema = z
   .object({
-    name: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A fully qualified domain name in the certificate. For example, <code>example.com</code>.',
-        }),
-    ).exactOptional(),
-    type: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of validation record. For example, <code>CNAME</code> for domain validation.',
-        }),
-    ).exactOptional(),
-    value: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The value for that type.' }),
-    ).exactOptional(),
-    validationStatus: LoadBalancerTlsCertificateDomainStatusSchema.and(
-      z.any().openapi({ description: 'The validation status. Valid values are listed below.' }),
-    ).exactOptional(),
-    domainName: DomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The domain name against which your SSL/TLS certificate was validated.',
-        }),
-    ).exactOptional(),
-    dnsRecordCreationState: LoadBalancerTlsCertificateDnsRecordCreationStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that describes the state of the canonical name (CNAME) records that are automatically added by Lightsail to the DNS of a domain to validate domain ownership.',
-        }),
-    ).exactOptional(),
+    name: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        'A fully qualified domain name in the certificate. For example, <code>example.com</code>.',
+    }),
+    type: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        'The type of validation record. For example, <code>CNAME</code> for domain validation.',
+    }),
+    value: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The value for that type.',
+    }),
+    validationStatus: LoadBalancerTlsCertificateDomainStatusSchema.exactOptional().openapi({
+      description: 'The validation status. Valid values are listed below.',
+    }),
+    domainName: DomainNameSchema.exactOptional().openapi({
+      description: 'The domain name against which your SSL/TLS certificate was validated.',
+    }),
+    dnsRecordCreationState:
+      LoadBalancerTlsCertificateDnsRecordCreationStateSchema.exactOptional().openapi({
+        description:
+          'An object that describes the state of the canonical name (CNAME) records that are automatically added by Lightsail to the DNS of a domain to validate domain ownership.',
+      }),
   })
   .openapi({
     description: 'Describes the validation record of each domain name in the SSL/TLS certificate.',
@@ -9031,18 +6278,12 @@ const LoadBalancerTlsCertificateRenewalStatusSchema = z
 
 const LoadBalancerTlsCertificateDomainValidationOptionSchema = z
   .object({
-    domainName: DomainNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The fully qualified domain name in the certificate request.' }),
-    ).exactOptional(),
-    validationStatus: LoadBalancerTlsCertificateDomainStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The status of the domain validation. Valid values are listed below.',
-        }),
-    ).exactOptional(),
+    domainName: DomainNameSchema.exactOptional().openapi({
+      description: 'The fully qualified domain name in the certificate request.',
+    }),
+    validationStatus: LoadBalancerTlsCertificateDomainStatusSchema.exactOptional().openapi({
+      description: 'The status of the domain validation. Valid values are listed below.',
+    }),
   })
   .openapi({
     description:
@@ -9057,22 +6298,15 @@ const LoadBalancerTlsCertificateDomainValidationOptionListSchema = z
 
 const LoadBalancerTlsCertificateRenewalSummarySchema = z
   .object({
-    renewalStatus: LoadBalancerTlsCertificateRenewalStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The renewal status of the certificate.</p> <p>The following renewal status are possible:</p> <ul> <li> <p> <b> <code>PendingAutoRenewal</code> </b> - Lightsail is attempting to automatically validate the domain names of the certificate. No further action is required. </p> </li> <li> <p> <b> <code>PendingValidation</code> </b> - Lightsail couldn't automatically validate one or more domain names of the certificate. You must take action to validate these domain names or the certificate won't be renewed. Check to make sure your certificate's domain validation records exist in your domain's DNS, and that your certificate remains in use.</p> </li> <li> <p> <b> <code>Success</code> </b> - All domain names in the certificate are validated, and Lightsail renewed the certificate. No further action is required. </p> </li> <li> <p> <b> <code>Failed</code> </b> - One or more domain names were not validated before the certificate expired, and Lightsail did not renew the certificate. You can request a new certificate using the <code>CreateCertificate</code> action.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    domainValidationOptions: LoadBalancerTlsCertificateDomainValidationOptionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Contains information about the validation of each domain name in the certificate, as it pertains to Lightsail's managed renewal. This is different from the initial validation that occurs as a result of the RequestCertificate request.",
-        }),
-    ).exactOptional(),
+    renewalStatus: LoadBalancerTlsCertificateRenewalStatusSchema.exactOptional().openapi({
+      description:
+        "<p>The renewal status of the certificate.</p> <p>The following renewal status are possible:</p> <ul> <li> <p> <b> <code>PendingAutoRenewal</code> </b> - Lightsail is attempting to automatically validate the domain names of the certificate. No further action is required. </p> </li> <li> <p> <b> <code>PendingValidation</code> </b> - Lightsail couldn't automatically validate one or more domain names of the certificate. You must take action to validate these domain names or the certificate won't be renewed. Check to make sure your certificate's domain validation records exist in your domain's DNS, and that your certificate remains in use.</p> </li> <li> <p> <b> <code>Success</code> </b> - All domain names in the certificate are validated, and Lightsail renewed the certificate. No further action is required. </p> </li> <li> <p> <b> <code>Failed</code> </b> - One or more domain names were not validated before the certificate expired, and Lightsail did not renew the certificate. You can request a new certificate using the <code>CreateCertificate</code> action.</p> </li> </ul>",
+    }),
+    domainValidationOptions:
+      LoadBalancerTlsCertificateDomainValidationOptionListSchema.exactOptional().openapi({
+        description:
+          "Contains information about the validation of each domain name in the certificate, as it pertains to Lightsail's managed renewal. This is different from the initial validation that occurs as a result of the RequestCertificate request.",
+      }),
   })
   .openapi({
     description:
@@ -9098,161 +6332,94 @@ const LoadBalancerTlsCertificateRevocationReasonSchema = z
 
 const LoadBalancerTlsCertificateSchema = z
   .object({
-    name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the SSL/TLS certificate (e.g., <code>my-certificate</code>).',
-        }),
-    ).exactOptional(),
-    arn: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the SSL/TLS certificate.' }),
-    ).exactOptional(),
-    supportCode: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The support code. Include this code in your email to support when you have questions about your Lightsail load balancer or SSL/TLS certificate. This code enables our support team to look up your Lightsail information more easily.',
-        }),
-    ).exactOptional(),
-    createdAt: IsoDateSchema.and(
-      z.any().openapi({ description: 'The time when you created your SSL/TLS certificate.' }),
-    ).exactOptional(),
-    location: ResourceLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services Region and Availability Zone where you created your certificate.',
-        }),
-    ).exactOptional(),
-    resourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The resource type (e.g., <code>LoadBalancerTlsCertificate</code>).</p> <ul> <li> <p> <b> <code>Instance</code> </b> - A Lightsail instance (a virtual private server)</p> </li> <li> <p> <b> <code>StaticIp</code> </b> - A static IP address</p> </li> <li> <p> <b> <code>KeyPair</code> </b> - The key pair used to connect to a Lightsail instance</p> </li> <li> <p> <b> <code>InstanceSnapshot</code> </b> - A Lightsail instance snapshot</p> </li> <li> <p> <b> <code>Domain</code> </b> - A DNS zone</p> </li> <li> <p> <b> <code>PeeredVpc</code> </b> - A peered VPC</p> </li> <li> <p> <b> <code>LoadBalancer</code> </b> - A Lightsail load balancer</p> </li> <li> <p> <b> <code>LoadBalancerTlsCertificate</code> </b> - An SSL/TLS certificate associated with a Lightsail load balancer</p> </li> <li> <p> <b> <code>Disk</code> </b> - A Lightsail block storage disk</p> </li> <li> <p> <b> <code>DiskSnapshot</code> </b> - A block storage disk snapshot</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tag keys and optional values for the resource. For more information about tags in Lightsail, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-tags">Amazon Lightsail Developer Guide</a>.',
-        }),
-    ).exactOptional(),
-    loadBalancerName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The load balancer name where your SSL/TLS certificate is attached.',
-        }),
-    ).exactOptional(),
-    isAttached: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When <code>true</code>, the SSL/TLS certificate is attached to the Lightsail load balancer.',
-        }),
-    ).exactOptional(),
-    status: LoadBalancerTlsCertificateStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The validation status of the SSL/TLS certificate. Valid values are below.',
-        }),
-    ).exactOptional(),
-    domainName: DomainNameSchema.and(
-      z.any().openapi({ description: 'The domain name for your SSL/TLS certificate.' }),
-    ).exactOptional(),
-    domainValidationRecords: LoadBalancerTlsCertificateDomainValidationRecordListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of LoadBalancerTlsCertificateDomainValidationRecord objects describing the records.',
-        }),
-    ).exactOptional(),
-    failureReason: LoadBalancerTlsCertificateFailureReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The validation failure reason, if any, of the certificate.</p> <p>The following failure reasons are possible:</p> <ul> <li> <p> <b> <code>NO_AVAILABLE_CONTACTS</code> </b> - This failure applies to email validation, which is not available for Lightsail certificates.</p> </li> <li> <p> <b> <code>ADDITIONAL_VERIFICATION_REQUIRED</code> </b> - Lightsail requires additional information to process this certificate request. This can happen as a fraud-protection measure, such as when the domain ranks within the Alexa top 1000 websites. To provide the required information, use the <a href="https://console.aws.amazon.com/support/home">AWS Support Center</a> to contact AWS Support.</p> <note> <p>You cannot request a certificate for Amazon-owned domain names such as those ending in amazonaws.com, cloudfront.net, or elasticbeanstalk.com.</p> </note> </li> <li> <p> <b> <code>DOMAIN_NOT_ALLOWED</code> </b> - One or more of the domain names in the certificate request was reported as an unsafe domain by <a href="https://www.virustotal.com/gui/home/url">VirusTotal</a>. To correct the problem, search for your domain name on the <a href="https://www.virustotal.com/gui/home/url">VirusTotal</a> website. If your domain is reported as suspicious, see <a href="https://developers.google.com/web/fundamentals/security/hacked">Google Help for Hacked Websites</a> to learn what you can do.</p> <p>If you believe that the result is a false positive, notify the organization that is reporting the domain. VirusTotal is an aggregate of several antivirus and URL scanners and cannot remove your domain from a block list itself. After you correct the problem and the VirusTotal registry has been updated, request a new certificate.</p> <p>If you see this error and your domain is not included in the VirusTotal list, visit the <a href="https://console.aws.amazon.com/support/home">AWS Support Center</a> and create a case.</p> </li> <li> <p> <b> <code>INVALID_PUBLIC_DOMAIN</code> </b> - One or more of the domain names in the certificate request is not valid. Typically, this is because a domain name in the request is not a valid top-level domain. Try to request a certificate again, correcting any spelling errors or typos that were in the failed request, and ensure that all domain names in the request are for valid top-level domains. For example, you cannot request a certificate for <code>example.invalidpublicdomain</code> because <code>invalidpublicdomain</code> is not a valid top-level domain.</p> </li> <li> <p> <b> <code>OTHER</code> </b> - Typically, this failure occurs when there is a typographical error in one or more of the domain names in the certificate request. Try to request a certificate again, correcting any spelling errors or typos that were in the failed request. </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    issuedAt: IsoDateSchema.and(
-      z.any().openapi({ description: 'The time when the SSL/TLS certificate was issued.' }),
-    ).exactOptional(),
-    issuer: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The issuer of the certificate.' }),
-    ).exactOptional(),
-    keyAlgorithm: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The algorithm used to generate the key pair (the public and private key).',
-        }),
-    ).exactOptional(),
-    notAfter: IsoDateSchema.and(
-      z.any().openapi({ description: 'The timestamp when the SSL/TLS certificate expires.' }),
-    ).exactOptional(),
-    notBefore: IsoDateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The timestamp when the SSL/TLS certificate is first valid.' }),
-    ).exactOptional(),
-    renewalSummary: LoadBalancerTlsCertificateRenewalSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that describes the status of the certificate renewal managed by Lightsail.',
-        }),
-    ).exactOptional(),
-    revocationReason: LoadBalancerTlsCertificateRevocationReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The reason the certificate was revoked. This value is present only when the certificate status is <code>REVOKED</code>.',
-        }),
-    ).exactOptional(),
-    revokedAt: IsoDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp when the certificate was revoked. This value is present only when the certificate status is <code>REVOKED</code>.',
-        }),
-    ).exactOptional(),
-    serial: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The serial number of the certificate.' }),
-    ).exactOptional(),
-    signatureAlgorithm: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The algorithm that was used to sign the certificate.' }),
-    ).exactOptional(),
-    subject: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the entity that is associated with the public key contained in the certificate.',
-        }),
-    ).exactOptional(),
-    subjectAlternativeNames: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of strings that specify the alternate domains (e.g., <code>example2.com</code>) and subdomains (e.g., <code>blog.example.com</code>) for the certificate.',
-        }),
-    ).exactOptional(),
+    name: ResourceNameSchema.exactOptional().openapi({
+      description: 'The name of the SSL/TLS certificate (e.g., <code>my-certificate</code>).',
+    }),
+    arn: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the SSL/TLS certificate.',
+    }),
+    supportCode: StringSchema.exactOptional().openapi({
+      description:
+        'The support code. Include this code in your email to support when you have questions about your Lightsail load balancer or SSL/TLS certificate. This code enables our support team to look up your Lightsail information more easily.',
+    }),
+    createdAt: IsoDateSchema.exactOptional().openapi({
+      description: 'The time when you created your SSL/TLS certificate.',
+    }),
+    location: ResourceLocationSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services Region and Availability Zone where you created your certificate.',
+    }),
+    resourceType: ResourceTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The resource type (e.g., <code>LoadBalancerTlsCertificate</code>).</p> <ul> <li> <p> <b> <code>Instance</code> </b> - A Lightsail instance (a virtual private server)</p> </li> <li> <p> <b> <code>StaticIp</code> </b> - A static IP address</p> </li> <li> <p> <b> <code>KeyPair</code> </b> - The key pair used to connect to a Lightsail instance</p> </li> <li> <p> <b> <code>InstanceSnapshot</code> </b> - A Lightsail instance snapshot</p> </li> <li> <p> <b> <code>Domain</code> </b> - A DNS zone</p> </li> <li> <p> <b> <code>PeeredVpc</code> </b> - A peered VPC</p> </li> <li> <p> <b> <code>LoadBalancer</code> </b> - A Lightsail load balancer</p> </li> <li> <p> <b> <code>LoadBalancerTlsCertificate</code> </b> - An SSL/TLS certificate associated with a Lightsail load balancer</p> </li> <li> <p> <b> <code>Disk</code> </b> - A Lightsail block storage disk</p> </li> <li> <p> <b> <code>DiskSnapshot</code> </b> - A block storage disk snapshot</p> </li> </ul>',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        'The tag keys and optional values for the resource. For more information about tags in Lightsail, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-tags">Amazon Lightsail Developer Guide</a>.',
+    }),
+    loadBalancerName: ResourceNameSchema.exactOptional().openapi({
+      description: 'The load balancer name where your SSL/TLS certificate is attached.',
+    }),
+    isAttached: BooleanSchema.exactOptional().openapi({
+      description:
+        'When <code>true</code>, the SSL/TLS certificate is attached to the Lightsail load balancer.',
+    }),
+    status: LoadBalancerTlsCertificateStatusSchema.exactOptional().openapi({
+      description: 'The validation status of the SSL/TLS certificate. Valid values are below.',
+    }),
+    domainName: DomainNameSchema.exactOptional().openapi({
+      description: 'The domain name for your SSL/TLS certificate.',
+    }),
+    domainValidationRecords:
+      LoadBalancerTlsCertificateDomainValidationRecordListSchema.exactOptional().openapi({
+        description:
+          'An array of LoadBalancerTlsCertificateDomainValidationRecord objects describing the records.',
+      }),
+    failureReason: LoadBalancerTlsCertificateFailureReasonSchema.exactOptional().openapi({
+      description:
+        '<p>The validation failure reason, if any, of the certificate.</p> <p>The following failure reasons are possible:</p> <ul> <li> <p> <b> <code>NO_AVAILABLE_CONTACTS</code> </b> - This failure applies to email validation, which is not available for Lightsail certificates.</p> </li> <li> <p> <b> <code>ADDITIONAL_VERIFICATION_REQUIRED</code> </b> - Lightsail requires additional information to process this certificate request. This can happen as a fraud-protection measure, such as when the domain ranks within the Alexa top 1000 websites. To provide the required information, use the <a href="https://console.aws.amazon.com/support/home">AWS Support Center</a> to contact AWS Support.</p> <note> <p>You cannot request a certificate for Amazon-owned domain names such as those ending in amazonaws.com, cloudfront.net, or elasticbeanstalk.com.</p> </note> </li> <li> <p> <b> <code>DOMAIN_NOT_ALLOWED</code> </b> - One or more of the domain names in the certificate request was reported as an unsafe domain by <a href="https://www.virustotal.com/gui/home/url">VirusTotal</a>. To correct the problem, search for your domain name on the <a href="https://www.virustotal.com/gui/home/url">VirusTotal</a> website. If your domain is reported as suspicious, see <a href="https://developers.google.com/web/fundamentals/security/hacked">Google Help for Hacked Websites</a> to learn what you can do.</p> <p>If you believe that the result is a false positive, notify the organization that is reporting the domain. VirusTotal is an aggregate of several antivirus and URL scanners and cannot remove your domain from a block list itself. After you correct the problem and the VirusTotal registry has been updated, request a new certificate.</p> <p>If you see this error and your domain is not included in the VirusTotal list, visit the <a href="https://console.aws.amazon.com/support/home">AWS Support Center</a> and create a case.</p> </li> <li> <p> <b> <code>INVALID_PUBLIC_DOMAIN</code> </b> - One or more of the domain names in the certificate request is not valid. Typically, this is because a domain name in the request is not a valid top-level domain. Try to request a certificate again, correcting any spelling errors or typos that were in the failed request, and ensure that all domain names in the request are for valid top-level domains. For example, you cannot request a certificate for <code>example.invalidpublicdomain</code> because <code>invalidpublicdomain</code> is not a valid top-level domain.</p> </li> <li> <p> <b> <code>OTHER</code> </b> - Typically, this failure occurs when there is a typographical error in one or more of the domain names in the certificate request. Try to request a certificate again, correcting any spelling errors or typos that were in the failed request. </p> </li> </ul>',
+    }),
+    issuedAt: IsoDateSchema.exactOptional().openapi({
+      description: 'The time when the SSL/TLS certificate was issued.',
+    }),
+    issuer: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The issuer of the certificate.',
+    }),
+    keyAlgorithm: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The algorithm used to generate the key pair (the public and private key).',
+    }),
+    notAfter: IsoDateSchema.exactOptional().openapi({
+      description: 'The timestamp when the SSL/TLS certificate expires.',
+    }),
+    notBefore: IsoDateSchema.exactOptional().openapi({
+      description: 'The timestamp when the SSL/TLS certificate is first valid.',
+    }),
+    renewalSummary: LoadBalancerTlsCertificateRenewalSummarySchema.exactOptional().openapi({
+      description:
+        'An object that describes the status of the certificate renewal managed by Lightsail.',
+    }),
+    revocationReason: LoadBalancerTlsCertificateRevocationReasonSchema.exactOptional().openapi({
+      description:
+        'The reason the certificate was revoked. This value is present only when the certificate status is <code>REVOKED</code>.',
+    }),
+    revokedAt: IsoDateSchema.exactOptional().openapi({
+      description:
+        'The timestamp when the certificate was revoked. This value is present only when the certificate status is <code>REVOKED</code>.',
+    }),
+    serial: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The serial number of the certificate.',
+    }),
+    signatureAlgorithm: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The algorithm that was used to sign the certificate.',
+    }),
+    subject: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        'The name of the entity that is associated with the public key contained in the certificate.',
+    }),
+    subjectAlternativeNames: StringListSchema.exactOptional().openapi({
+      description:
+        'An array of strings that specify the alternate domains (e.g., <code>example2.com</code>) and subdomains (e.g., <code>blog.example.com</code>) for the certificate.',
+    }),
   })
   .openapi({
     description:
@@ -9267,59 +6434,41 @@ const LoadBalancerTlsCertificateListSchema = z
 
 const GetLoadBalancerTlsCertificatesResultSchema = z
   .object({
-    tlsCertificates: LoadBalancerTlsCertificateListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of LoadBalancerTlsCertificate objects describing your SSL/TLS certificates.',
-        }),
-    ).exactOptional(),
+    tlsCertificates: LoadBalancerTlsCertificateListSchema.exactOptional().openapi({
+      description:
+        'An array of LoadBalancerTlsCertificate objects describing your SSL/TLS certificates.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetLoadBalancerTlsCertificatesResult')
 
 const GetLoadBalancerTlsCertificatesRequestSchema = z
   .object({
-    loadBalancerName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the load balancer you associated with your SSL/TLS certificate.',
-        }),
-    ),
+    loadBalancerName: ResourceNameSchema.openapi({
+      description: 'The name of the load balancer you associated with your SSL/TLS certificate.',
+    }),
   })
   .openapi({ required: ['loadBalancerName'], title: 'GetLoadBalancerTlsCertificatesRequest' })
   .openapi('GetLoadBalancerTlsCertificatesRequest')
 
 const LoadBalancerTlsPolicySchema = z
   .object({
-    name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the TLS security policy.' }),
-    ).exactOptional(),
-    isDefault: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean value that indicates whether the TLS security policy is the default.',
-        }),
-    ).exactOptional(),
-    description: StringSchema.and(
-      z.any().openapi({ description: 'The description of the TLS security policy.' }),
-    ).exactOptional(),
-    protocols: StringListSchema.and(
-      z.any().openapi({ description: 'The protocols used in a given TLS security policy.' }),
-    ).exactOptional(),
-    ciphers: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ciphers used by the TLS security policy.</p> <p>The ciphers are listed in order of preference.</p>',
-        }),
-    ).exactOptional(),
+    name: ResourceNameSchema.exactOptional().openapi({
+      description: 'The name of the TLS security policy.',
+    }),
+    isDefault: BooleanSchema.exactOptional().openapi({
+      description: 'A Boolean value that indicates whether the TLS security policy is the default.',
+    }),
+    description: StringSchema.exactOptional().openapi({
+      description: 'The description of the TLS security policy.',
+    }),
+    protocols: StringListSchema.exactOptional().openapi({
+      description: 'The protocols used in a given TLS security policy.',
+    }),
+    ciphers: StringListSchema.exactOptional().openapi({
+      description:
+        '<p>The ciphers used by the TLS security policy.</p> <p>The ciphers are listed in order of preference.</p>',
+    }),
   })
   .openapi({
     description:
@@ -9334,36 +6483,24 @@ const LoadBalancerTlsPolicyListSchema = z
 
 const GetLoadBalancerTlsPoliciesResultSchema = z
   .object({
-    tlsPolicies: LoadBalancerTlsPolicyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the TLS security policies that are available.',
-        }),
-    ).exactOptional(),
-    nextPageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetLoadBalancerTlsPolicies</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
-        }),
-    ).exactOptional(),
+    tlsPolicies: LoadBalancerTlsPolicyListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the TLS security policies that are available.',
+    }),
+    nextPageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetLoadBalancerTlsPolicies</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetLoadBalancerTlsPoliciesResult')
 
 const GetLoadBalancerTlsPoliciesRequestSchema = z
   .object({
-    pageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetLoadBalancerTlsPolicies</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
-        }),
-    ).exactOptional(),
+    pageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetLoadBalancerTlsPolicies</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
+    }),
   })
   .openapi({ title: 'GetLoadBalancerTlsPoliciesRequest', required: [] })
   .openapi('GetLoadBalancerTlsPoliciesRequest')
@@ -9372,163 +6509,111 @@ const LoadBalancerListSchema = z.array(LoadBalancerSchema).openapi('LoadBalancer
 
 const GetLoadBalancersResultSchema = z
   .object({
-    loadBalancers: LoadBalancerListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array of LoadBalancer objects describing your load balancers.',
-        }),
-    ).exactOptional(),
-    nextPageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetLoadBalancers</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
-        }),
-    ).exactOptional(),
+    loadBalancers: LoadBalancerListSchema.exactOptional().openapi({
+      description: 'An array of LoadBalancer objects describing your load balancers.',
+    }),
+    nextPageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetLoadBalancers</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetLoadBalancersResult')
 
 const GetLoadBalancersRequestSchema = z
   .object({
-    pageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetLoadBalancers</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
-        }),
-    ).exactOptional(),
+    pageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetLoadBalancers</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
+    }),
   })
   .openapi({ title: 'GetLoadBalancersRequest', required: [] })
   .openapi('GetLoadBalancersRequest')
 
 const GetOperationResultSchema = z
   .object({
-    operation: OperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operation: OperationSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetOperationResult')
 
 const GetOperationRequestSchema = z
   .object({
-    operationId: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'A GUID used to identify the operation.' }),
-    ),
+    operationId: NonEmptyStringSchema.openapi({
+      description: 'A GUID used to identify the operation.',
+    }),
   })
   .openapi({ required: ['operationId'], title: 'GetOperationRequest' })
   .openapi('GetOperationRequest')
 
 const GetOperationsResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
-    nextPageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetOperations</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
+    nextPageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetOperations</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetOperationsResult')
 
 const GetOperationsRequestSchema = z
   .object({
-    pageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetOperations</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
-        }),
-    ).exactOptional(),
+    pageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetOperations</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
+    }),
   })
   .openapi({ title: 'GetOperationsRequest', required: [] })
   .openapi('GetOperationsRequest')
 
 const GetOperationsForResourceResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
-    nextPageCount: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            '<p>(Deprecated) Returns the number of pages of results that remain.</p> <note> <p>In releases prior to June 12, 2017, this parameter returned <code>null</code> by the API. It is now deprecated, and the API returns the <code>next page token</code> parameter instead.</p> </note>',
-        }),
-    ).exactOptional(),
-    nextPageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetOperationsForResource</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
+    nextPageCount: StringSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        '<p>(Deprecated) Returns the number of pages of results that remain.</p> <note> <p>In releases prior to June 12, 2017, this parameter returned <code>null</code> by the API. It is now deprecated, and the API returns the <code>next page token</code> parameter instead.</p> </note>',
+    }),
+    nextPageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetOperationsForResource</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetOperationsForResourceResult')
 
 const GetOperationsForResourceRequestSchema = z
   .object({
-    resourceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the resource for which you are requesting information.',
-        }),
-    ),
-    pageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetOperationsForResource</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
-        }),
-    ).exactOptional(),
+    resourceName: ResourceNameSchema.openapi({
+      description: 'The name of the resource for which you are requesting information.',
+    }),
+    pageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetOperationsForResource</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
+    }),
   })
   .openapi({ required: ['resourceName'], title: 'GetOperationsForResourceRequest' })
   .openapi('GetOperationsForResourceRequest')
 
 const AvailabilityZoneSchema = z
   .object({
-    zoneName: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Availability Zone. The format is <code>us-east-2a</code> (case-sensitive).',
-        }),
-    ).exactOptional(),
-    state: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The state of the Availability Zone.' }),
-    ).exactOptional(),
+    zoneName: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        'The name of the Availability Zone. The format is <code>us-east-2a</code> (case-sensitive).',
+    }),
+    state: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The state of the Availability Zone.',
+    }),
   })
   .openapi({
     description:
@@ -9541,43 +6626,27 @@ const AvailabilityZoneListSchema = z.array(AvailabilityZoneSchema).openapi('Avai
 
 const RegionSchema = z
   .object({
-    continentCode: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The continent code (e.g., <code>NA</code>, meaning North America).',
-        }),
-    ).exactOptional(),
-    description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The description of the Amazon Web Services Region (e.g., <code>This region is recommended to serve users in the eastern United States and eastern Canada</code>).',
-        }),
-    ).exactOptional(),
-    displayName: StringSchema.and(
-      z.any().openapi({ description: 'The display name (e.g., <code>Ohio</code>).' }),
-    ).exactOptional(),
-    name: RegionNameSchema.and(
-      z.any().openapi({ description: 'The region name (e.g., <code>us-east-2</code>).' }),
-    ).exactOptional(),
-    availabilityZones: AvailabilityZoneListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Availability Zones. Follows the format <code>us-east-2a</code> (case-sensitive).',
-        }),
-    ).exactOptional(),
-    relationalDatabaseAvailabilityZones: AvailabilityZoneListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Availability Zones for databases. Follows the format <code>us-east-2a</code> (case-sensitive).',
-        }),
-    ).exactOptional(),
+    continentCode: StringSchema.exactOptional().openapi({
+      description: 'The continent code (e.g., <code>NA</code>, meaning North America).',
+    }),
+    description: StringSchema.exactOptional().openapi({
+      description:
+        'The description of the Amazon Web Services Region (e.g., <code>This region is recommended to serve users in the eastern United States and eastern Canada</code>).',
+    }),
+    displayName: StringSchema.exactOptional().openapi({
+      description: 'The display name (e.g., <code>Ohio</code>).',
+    }),
+    name: RegionNameSchema.exactOptional().openapi({
+      description: 'The region name (e.g., <code>us-east-2</code>).',
+    }),
+    availabilityZones: AvailabilityZoneListSchema.exactOptional().openapi({
+      description:
+        'The Availability Zones. Follows the format <code>us-east-2a</code> (case-sensitive).',
+    }),
+    relationalDatabaseAvailabilityZones: AvailabilityZoneListSchema.exactOptional().openapi({
+      description:
+        'The Availability Zones for databases. Follows the format <code>us-east-2a</code> (case-sensitive).',
+    }),
   })
   .openapi({ description: 'Describes the Amazon Web Services Region.', required: [] })
   .openapi('Region')
@@ -9586,103 +6655,81 @@ const RegionListSchema = z.array(RegionSchema).openapi('RegionList')
 
 const GetRegionsResultSchema = z
   .object({
-    regions: RegionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of key-value pairs containing information about your get regions request.',
-        }),
-    ).exactOptional(),
+    regions: RegionListSchema.exactOptional().openapi({
+      description:
+        'An array of key-value pairs containing information about your get regions request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetRegionsResult')
 
 const GetRegionsRequestSchema = z
   .object({
-    includeAvailabilityZones: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean value indicating whether to also include Availability Zones in your get regions request. Availability Zones are indicated with a letter: e.g., <code>us-east-2a</code>.',
-        }),
-    ).exactOptional(),
-    includeRelationalDatabaseAvailabilityZones: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean value indicating whether to also include Availability Zones for databases in your get regions request. Availability Zones are indicated with a letter (e.g., <code>us-east-2a</code>).',
-        }),
-    ).exactOptional(),
+    includeAvailabilityZones: BooleanSchema.exactOptional().openapi({
+      description:
+        'A Boolean value indicating whether to also include Availability Zones in your get regions request. Availability Zones are indicated with a letter: e.g., <code>us-east-2a</code>.',
+    }),
+    includeRelationalDatabaseAvailabilityZones: BooleanSchema.exactOptional().openapi({
+      description:
+        'A Boolean value indicating whether to also include Availability Zones for databases in your get regions request. Availability Zones are indicated with a letter (e.g., <code>us-east-2a</code>).',
+    }),
   })
   .openapi({ title: 'GetRegionsRequest', required: [] })
   .openapi('GetRegionsRequest')
 
 const RelationalDatabaseHardwareSchema = z
   .object({
-    cpuCount: IntegerSchema.and(
-      z.any().openapi({ description: 'The number of vCPUs for the database.' }),
-    ).exactOptional(),
-    diskSizeInGb: IntegerSchema.and(
-      z.any().openapi({ description: 'The size of the disk for the database.' }),
-    ).exactOptional(),
-    ramSizeInGb: FloatSchema.and(
-      z.any().openapi({ description: 'The amount of RAM in GB for the database.' }),
-    ).exactOptional(),
+    cpuCount: IntegerSchema.exactOptional().openapi({
+      description: 'The number of vCPUs for the database.',
+    }),
+    diskSizeInGb: IntegerSchema.exactOptional().openapi({
+      description: 'The size of the disk for the database.',
+    }),
+    ramSizeInGb: FloatSchema.exactOptional().openapi({
+      description: 'The amount of RAM in GB for the database.',
+    }),
   })
   .openapi({ description: 'Describes the hardware of a database.', required: [] })
   .openapi('RelationalDatabaseHardware')
 
 const PendingModifiedRelationalDatabaseValuesSchema = z
   .object({
-    masterUserPassword: StringSchema.and(
-      z.any().openapi({ description: 'The password for the master user of the database.' }),
-    ).exactOptional(),
-    engineVersion: StringSchema.and(
-      z.any().openapi({ description: 'The database engine version.' }),
-    ).exactOptional(),
-    backupRetentionEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A Boolean value indicating whether automated backup retention is enabled.',
-        }),
-    ).exactOptional(),
+    masterUserPassword: StringSchema.exactOptional().openapi({
+      description: 'The password for the master user of the database.',
+    }),
+    engineVersion: StringSchema.exactOptional().openapi({
+      description: 'The database engine version.',
+    }),
+    backupRetentionEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'A Boolean value indicating whether automated backup retention is enabled.',
+    }),
   })
   .openapi({ description: 'Describes a pending database value modification.', required: [] })
   .openapi('PendingModifiedRelationalDatabaseValues')
 
 const RelationalDatabaseEndpointSchema = z
   .object({
-    port: IntegerSchema.and(
-      z.any().openapi({ description: 'Specifies the port that the database is listening on.' }),
-    ).exactOptional(),
-    address: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'Specifies the DNS address of the database.' }),
-    ).exactOptional(),
+    port: IntegerSchema.exactOptional().openapi({
+      description: 'Specifies the port that the database is listening on.',
+    }),
+    address: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'Specifies the DNS address of the database.',
+    }),
   })
   .openapi({ description: 'Describes an endpoint for a database.', required: [] })
   .openapi('RelationalDatabaseEndpoint')
 
 const PendingMaintenanceActionSchema = z
   .object({
-    action: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The type of pending database maintenance action.' }),
-    ).exactOptional(),
-    description: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Additional detail about the pending database maintenance action.',
-        }),
-    ).exactOptional(),
-    currentApplyDate: IsoDateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The effective date of the pending database maintenance action.' }),
-    ).exactOptional(),
+    action: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The type of pending database maintenance action.',
+    }),
+    description: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'Additional detail about the pending database maintenance action.',
+    }),
+    currentApplyDate: IsoDateSchema.exactOptional().openapi({
+      description: 'The effective date of the pending database maintenance action.',
+    }),
   })
   .openapi({ description: 'Describes a pending database maintenance action.', required: [] })
   .openapi('PendingMaintenanceAction')
@@ -9693,175 +6740,113 @@ const PendingMaintenanceActionListSchema = z
 
 const RelationalDatabaseSchema = z
   .object({
-    name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The unique name of the database resource in Lightsail.' }),
-    ).exactOptional(),
-    arn: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the database.' }),
-    ).exactOptional(),
-    supportCode: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The support code for the database. Include this code in your email to support when you have questions about a database in Lightsail. This code enables our support team to look up your Lightsail information more easily.',
-        }),
-    ).exactOptional(),
-    createdAt: IsoDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The timestamp when the database was created. Formatted in Unix time.',
-        }),
-    ).exactOptional(),
-    location: ResourceLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Region name and Availability Zone where the database is located.',
-        }),
-    ).exactOptional(),
-    resourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Lightsail resource type for the database (for example, <code>RelationalDatabase</code>).',
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tag keys and optional values for the resource. For more information about tags in Lightsail, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-tags">Amazon Lightsail Developer Guide</a>.',
-        }),
-    ).exactOptional(),
-    relationalDatabaseBlueprintId: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The blueprint ID for the database. A blueprint describes the major engine version of a database.',
-        }),
-    ).exactOptional(),
-    relationalDatabaseBundleId: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The bundle ID for the database. A bundle describes the performance specifications for your database.',
-        }),
-    ).exactOptional(),
-    masterDatabaseName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the master database created when the Lightsail database resource is created.',
-        }),
-    ).exactOptional(),
-    hardware: RelationalDatabaseHardwareSchema.and(
-      z.any().openapi({ description: 'Describes the hardware of the database.' }),
-    ).exactOptional(),
-    state: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'Describes the current state of the database.' }),
-    ).exactOptional(),
-    secondaryAvailabilityZone: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Describes the secondary Availability Zone of a high availability database.</p> <p>The secondary database is used for failover support of a high availability database.</p>',
-        }),
-    ).exactOptional(),
-    backupRetentionEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean value indicating whether automated backup retention is enabled for the database.',
-        }),
-    ).exactOptional(),
-    pendingModifiedValues: PendingModifiedRelationalDatabaseValuesSchema.and(
-      z.any().openapi({ description: 'Describes pending database value modifications.' }),
-    ).exactOptional(),
-    engine: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The database software (for example, <code>MySQL</code>).' }),
-    ).exactOptional(),
-    engineVersion: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The database engine version (for example, <code>5.7.23</code>).',
-        }),
-    ).exactOptional(),
-    latestRestorableTime: IsoDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The latest point in time to which the database can be restored. Formatted in Unix time.',
-        }),
-    ).exactOptional(),
-    masterUsername: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The master user name of the database.' }),
-    ).exactOptional(),
-    parameterApplyStatus: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The status of parameter updates for the database.' }),
-    ).exactOptional(),
-    preferredBackupWindow: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The daily time range during which automated backups are created for the database (for example, <code>16:00-16:30</code>).',
-        }),
-    ).exactOptional(),
-    preferredMaintenanceWindow: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The weekly time range during which system maintenance can occur on the database.</p> <p>In the format <code>ddd:hh24:mi-ddd:hh24:mi</code>. For example, <code>Tue:17:00-Tue:17:30</code>.</p>',
-        }),
-    ).exactOptional(),
-    publiclyAccessible: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A Boolean value indicating whether the database is publicly accessible.',
-        }),
-    ).exactOptional(),
-    masterEndpoint: RelationalDatabaseEndpointSchema.and(
-      z.any().openapi({ description: 'The master endpoint for the database.' }),
-    ).exactOptional(),
-    pendingMaintenanceActions: PendingMaintenanceActionListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Describes the pending maintenance actions for the database.' }),
-    ).exactOptional(),
-    caCertificateIdentifier: StringSchema.and(
-      z.any().openapi({ description: 'The certificate associated with the database.' }),
-    ).exactOptional(),
+    name: ResourceNameSchema.exactOptional().openapi({
+      description: 'The unique name of the database resource in Lightsail.',
+    }),
+    arn: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the database.',
+    }),
+    supportCode: StringSchema.exactOptional().openapi({
+      description:
+        'The support code for the database. Include this code in your email to support when you have questions about a database in Lightsail. This code enables our support team to look up your Lightsail information more easily.',
+    }),
+    createdAt: IsoDateSchema.exactOptional().openapi({
+      description: 'The timestamp when the database was created. Formatted in Unix time.',
+    }),
+    location: ResourceLocationSchema.exactOptional().openapi({
+      description: 'The Region name and Availability Zone where the database is located.',
+    }),
+    resourceType: ResourceTypeSchema.exactOptional().openapi({
+      description:
+        'The Lightsail resource type for the database (for example, <code>RelationalDatabase</code>).',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        'The tag keys and optional values for the resource. For more information about tags in Lightsail, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-tags">Amazon Lightsail Developer Guide</a>.',
+    }),
+    relationalDatabaseBlueprintId: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        'The blueprint ID for the database. A blueprint describes the major engine version of a database.',
+    }),
+    relationalDatabaseBundleId: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        'The bundle ID for the database. A bundle describes the performance specifications for your database.',
+    }),
+    masterDatabaseName: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the master database created when the Lightsail database resource is created.',
+    }),
+    hardware: RelationalDatabaseHardwareSchema.exactOptional().openapi({
+      description: 'Describes the hardware of the database.',
+    }),
+    state: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'Describes the current state of the database.',
+    }),
+    secondaryAvailabilityZone: StringSchema.exactOptional().openapi({
+      description:
+        '<p>Describes the secondary Availability Zone of a high availability database.</p> <p>The secondary database is used for failover support of a high availability database.</p>',
+    }),
+    backupRetentionEnabled: BooleanSchema.exactOptional().openapi({
+      description:
+        'A Boolean value indicating whether automated backup retention is enabled for the database.',
+    }),
+    pendingModifiedValues: PendingModifiedRelationalDatabaseValuesSchema.exactOptional().openapi({
+      description: 'Describes pending database value modifications.',
+    }),
+    engine: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The database software (for example, <code>MySQL</code>).',
+    }),
+    engineVersion: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The database engine version (for example, <code>5.7.23</code>).',
+    }),
+    latestRestorableTime: IsoDateSchema.exactOptional().openapi({
+      description:
+        'The latest point in time to which the database can be restored. Formatted in Unix time.',
+    }),
+    masterUsername: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The master user name of the database.',
+    }),
+    parameterApplyStatus: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The status of parameter updates for the database.',
+    }),
+    preferredBackupWindow: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        'The daily time range during which automated backups are created for the database (for example, <code>16:00-16:30</code>).',
+    }),
+    preferredMaintenanceWindow: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        '<p>The weekly time range during which system maintenance can occur on the database.</p> <p>In the format <code>ddd:hh24:mi-ddd:hh24:mi</code>. For example, <code>Tue:17:00-Tue:17:30</code>.</p>',
+    }),
+    publiclyAccessible: BooleanSchema.exactOptional().openapi({
+      description: 'A Boolean value indicating whether the database is publicly accessible.',
+    }),
+    masterEndpoint: RelationalDatabaseEndpointSchema.exactOptional().openapi({
+      description: 'The master endpoint for the database.',
+    }),
+    pendingMaintenanceActions: PendingMaintenanceActionListSchema.exactOptional().openapi({
+      description: 'Describes the pending maintenance actions for the database.',
+    }),
+    caCertificateIdentifier: StringSchema.exactOptional().openapi({
+      description: 'The certificate associated with the database.',
+    }),
   })
   .openapi({ description: 'Describes a database.', required: [] })
   .openapi('RelationalDatabase')
 
 const GetRelationalDatabaseResultSchema = z
   .object({
-    relationalDatabase: RelationalDatabaseSchema.and(
-      z.any().openapi({ description: 'An object describing the specified database.' }),
-    ).exactOptional(),
+    relationalDatabase: RelationalDatabaseSchema.exactOptional().openapi({
+      description: 'An object describing the specified database.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetRelationalDatabaseResult')
 
 const GetRelationalDatabaseRequestSchema = z
   .object({
-    relationalDatabaseName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the database that you are looking up.' }),
-    ),
+    relationalDatabaseName: ResourceNameSchema.openapi({
+      description: 'The name of the database that you are looking up.',
+    }),
   })
   .openapi({ required: ['relationalDatabaseName'], title: 'GetRelationalDatabaseRequest' })
   .openapi('GetRelationalDatabaseRequest')
@@ -9870,47 +6855,27 @@ const RelationalDatabaseEngineSchema = z.literal('mysql').openapi('RelationalDat
 
 const RelationalDatabaseBlueprintSchema = z
   .object({
-    blueprintId: StringSchema.and(
-      z.any().openapi({ description: 'The ID for the database blueprint.' }),
-    ).exactOptional(),
-    engine: RelationalDatabaseEngineSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The database software of the database blueprint (for example, <code>MySQL</code>).',
-        }),
-    ).exactOptional(),
-    engineVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The database engine version for the database blueprint (for example, <code>5.7.23</code>).',
-        }),
-    ).exactOptional(),
-    engineDescription: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The description of the database engine for the database blueprint.',
-        }),
-    ).exactOptional(),
-    engineVersionDescription: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The description of the database engine version for the database blueprint.',
-        }),
-    ).exactOptional(),
-    isEngineDefault: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean value indicating whether the engine version is the default for the database blueprint.',
-        }),
-    ).exactOptional(),
+    blueprintId: StringSchema.exactOptional().openapi({
+      description: 'The ID for the database blueprint.',
+    }),
+    engine: RelationalDatabaseEngineSchema.exactOptional().openapi({
+      description:
+        'The database software of the database blueprint (for example, <code>MySQL</code>).',
+    }),
+    engineVersion: StringSchema.exactOptional().openapi({
+      description:
+        'The database engine version for the database blueprint (for example, <code>5.7.23</code>).',
+    }),
+    engineDescription: StringSchema.exactOptional().openapi({
+      description: 'The description of the database engine for the database blueprint.',
+    }),
+    engineVersionDescription: StringSchema.exactOptional().openapi({
+      description: 'The description of the database engine version for the database blueprint.',
+    }),
+    isEngineDefault: BooleanSchema.exactOptional().openapi({
+      description:
+        'A Boolean value indicating whether the engine version is the default for the database blueprint.',
+    }),
   })
   .openapi({
     description:
@@ -9925,88 +6890,58 @@ const RelationalDatabaseBlueprintListSchema = z
 
 const GetRelationalDatabaseBlueprintsResultSchema = z
   .object({
-    blueprints: RelationalDatabaseBlueprintListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object describing the result of your get relational database blueprints request.',
-        }),
-    ).exactOptional(),
-    nextPageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetRelationalDatabaseBlueprints</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
-        }),
-    ).exactOptional(),
+    blueprints: RelationalDatabaseBlueprintListSchema.exactOptional().openapi({
+      description:
+        'An object describing the result of your get relational database blueprints request.',
+    }),
+    nextPageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetRelationalDatabaseBlueprints</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetRelationalDatabaseBlueprintsResult')
 
 const GetRelationalDatabaseBlueprintsRequestSchema = z
   .object({
-    pageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetRelationalDatabaseBlueprints</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
-        }),
-    ).exactOptional(),
+    pageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetRelationalDatabaseBlueprints</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
+    }),
   })
   .openapi({ title: 'GetRelationalDatabaseBlueprintsRequest', required: [] })
   .openapi('GetRelationalDatabaseBlueprintsRequest')
 
 const RelationalDatabaseBundleSchema = z
   .object({
-    bundleId: StringSchema.and(
-      z.any().openapi({ description: 'The ID for the database bundle.' }),
-    ).exactOptional(),
-    name: StringSchema.and(
-      z.any().openapi({ description: 'The name for the database bundle.' }),
-    ).exactOptional(),
-    price: FloatSchema.and(
-      z.any().openapi({ description: 'The cost of the database bundle in US currency.' }),
-    ).exactOptional(),
-    ramSizeInGb: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount of RAM in GB (for example, <code>2.0</code>) for the database bundle.',
-        }),
-    ).exactOptional(),
-    diskSizeInGb: IntegerSchema.and(
-      z.any().openapi({ description: 'The size of the disk for the database bundle.' }),
-    ).exactOptional(),
-    transferPerMonthInGb: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The data transfer rate per month in GB for the database bundle.',
-        }),
-    ).exactOptional(),
-    cpuCount: IntegerSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The number of virtual CPUs (vCPUs) for the database bundle.' }),
-    ).exactOptional(),
-    isEncrypted: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A Boolean value indicating whether the database bundle is encrypted.',
-        }),
-    ).exactOptional(),
-    isActive: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A Boolean value indicating whether the database bundle is active.',
-        }),
-    ).exactOptional(),
+    bundleId: StringSchema.exactOptional().openapi({
+      description: 'The ID for the database bundle.',
+    }),
+    name: StringSchema.exactOptional().openapi({
+      description: 'The name for the database bundle.',
+    }),
+    price: FloatSchema.exactOptional().openapi({
+      description: 'The cost of the database bundle in US currency.',
+    }),
+    ramSizeInGb: FloatSchema.exactOptional().openapi({
+      description:
+        'The amount of RAM in GB (for example, <code>2.0</code>) for the database bundle.',
+    }),
+    diskSizeInGb: IntegerSchema.exactOptional().openapi({
+      description: 'The size of the disk for the database bundle.',
+    }),
+    transferPerMonthInGb: IntegerSchema.exactOptional().openapi({
+      description: 'The data transfer rate per month in GB for the database bundle.',
+    }),
+    cpuCount: IntegerSchema.exactOptional().openapi({
+      description: 'The number of virtual CPUs (vCPUs) for the database bundle.',
+    }),
+    isEncrypted: BooleanSchema.exactOptional().openapi({
+      description: 'A Boolean value indicating whether the database bundle is encrypted.',
+    }),
+    isActive: BooleanSchema.exactOptional().openapi({
+      description: 'A Boolean value indicating whether the database bundle is active.',
+    }),
   })
   .openapi({
     description:
@@ -10021,62 +6956,46 @@ const RelationalDatabaseBundleListSchema = z
 
 const GetRelationalDatabaseBundlesResultSchema = z
   .object({
-    bundles: RelationalDatabaseBundleListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object describing the result of your get relational database bundles request.',
-        }),
-    ).exactOptional(),
-    nextPageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetRelationalDatabaseBundles</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
-        }),
-    ).exactOptional(),
+    bundles: RelationalDatabaseBundleListSchema.exactOptional().openapi({
+      description:
+        'An object describing the result of your get relational database bundles request.',
+    }),
+    nextPageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetRelationalDatabaseBundles</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetRelationalDatabaseBundlesResult')
 
 const GetRelationalDatabaseBundlesRequestSchema = z
   .object({
-    pageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetRelationalDatabaseBundles</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
-        }),
-    ).exactOptional(),
-    includeInactive: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean value that indicates whether to include inactive (unavailable) bundles in the response of your request.',
-        }),
-    ).exactOptional(),
+    pageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetRelationalDatabaseBundles</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
+    }),
+    includeInactive: BooleanSchema.exactOptional().openapi({
+      description:
+        'A Boolean value that indicates whether to include inactive (unavailable) bundles in the response of your request.',
+    }),
   })
   .openapi({ title: 'GetRelationalDatabaseBundlesRequest', required: [] })
   .openapi('GetRelationalDatabaseBundlesRequest')
 
 const RelationalDatabaseEventSchema = z
   .object({
-    resource: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The database that the database event relates to.' }),
-    ).exactOptional(),
-    createdAt: IsoDateSchema.and(
-      z.any().openapi({ description: 'The timestamp when the database event was created.' }),
-    ).exactOptional(),
-    message: StringSchema.and(
-      z.any().openapi({ description: 'The message of the database event.' }),
-    ).exactOptional(),
-    eventCategories: StringListSchema.and(
-      z.any().openapi({ description: 'The category that the database event belongs to.' }),
-    ).exactOptional(),
+    resource: ResourceNameSchema.exactOptional().openapi({
+      description: 'The database that the database event relates to.',
+    }),
+    createdAt: IsoDateSchema.exactOptional().openapi({
+      description: 'The timestamp when the database event was created.',
+    }),
+    message: StringSchema.exactOptional().openapi({
+      description: 'The message of the database event.',
+    }),
+    eventCategories: StringListSchema.exactOptional().openapi({
+      description: 'The category that the database event belongs to.',
+    }),
   })
   .openapi({ description: 'Describes an event for a database.', required: [] })
   .openapi('RelationalDatabaseEvent')
@@ -10087,59 +7006,43 @@ const RelationalDatabaseEventListSchema = z
 
 const GetRelationalDatabaseEventsResultSchema = z
   .object({
-    relationalDatabaseEvents: RelationalDatabaseEventListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object describing the result of your get relational database events request.',
-        }),
-    ).exactOptional(),
-    nextPageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetRelationalDatabaseEvents</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
-        }),
-    ).exactOptional(),
+    relationalDatabaseEvents: RelationalDatabaseEventListSchema.exactOptional().openapi({
+      description:
+        'An object describing the result of your get relational database events request.',
+    }),
+    nextPageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetRelationalDatabaseEvents</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetRelationalDatabaseEventsResult')
 
 const GetRelationalDatabaseEventsRequestSchema = z
   .object({
-    relationalDatabaseName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the database from which to get events.' }),
-    ),
-    durationInMinutes: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of minutes in the past from which to retrieve events. For example, to get all events from the past 2 hours, enter 120.</p> <p>Default: <code>60</code> </p> <p>The minimum is 1 and the maximum is 14 days (20160 minutes).</p>',
-        }),
-    ).exactOptional(),
-    pageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetRelationalDatabaseEvents</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
-        }),
-    ).exactOptional(),
+    relationalDatabaseName: ResourceNameSchema.openapi({
+      description: 'The name of the database from which to get events.',
+    }),
+    durationInMinutes: IntegerSchema.exactOptional().openapi({
+      description:
+        '<p>The number of minutes in the past from which to retrieve events. For example, to get all events from the past 2 hours, enter 120.</p> <p>Default: <code>60</code> </p> <p>The minimum is 1 and the maximum is 14 days (20160 minutes).</p>',
+    }),
+    pageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetRelationalDatabaseEvents</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
+    }),
   })
   .openapi({ required: ['relationalDatabaseName'], title: 'GetRelationalDatabaseEventsRequest' })
   .openapi('GetRelationalDatabaseEventsRequest')
 
 const LogEventSchema = z
   .object({
-    createdAt: IsoDateSchema.and(
-      z.any().openapi({ description: 'The timestamp when the database log event was created.' }),
-    ).exactOptional(),
-    message: StringSchema.and(
-      z.any().openapi({ description: 'The message of the database log event.' }),
-    ).exactOptional(),
+    createdAt: IsoDateSchema.exactOptional().openapi({
+      description: 'The timestamp when the database log event was created.',
+    }),
+    message: StringSchema.exactOptional().openapi({
+      description: 'The message of the database log event.',
+    }),
   })
   .openapi({ description: 'Describes a database log event.', required: [] })
   .openapi('LogEvent')
@@ -10148,79 +7051,47 @@ const LogEventListSchema = z.array(LogEventSchema).openapi('LogEventList')
 
 const GetRelationalDatabaseLogEventsResultSchema = z
   .object({
-    resourceLogEvents: LogEventListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object describing the result of your get relational database log events request.',
-        }),
-    ).exactOptional(),
-    nextBackwardToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token used for advancing to the previous page of results from your get relational database log events request.',
-        }),
-    ).exactOptional(),
-    nextForwardToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token used for advancing to the next page of results from your get relational database log events request.',
-        }),
-    ).exactOptional(),
+    resourceLogEvents: LogEventListSchema.exactOptional().openapi({
+      description:
+        'An object describing the result of your get relational database log events request.',
+    }),
+    nextBackwardToken: StringSchema.exactOptional().openapi({
+      description:
+        'A token used for advancing to the previous page of results from your get relational database log events request.',
+    }),
+    nextForwardToken: StringSchema.exactOptional().openapi({
+      description:
+        'A token used for advancing to the next page of results from your get relational database log events request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetRelationalDatabaseLogEventsResult')
 
 const GetRelationalDatabaseLogEventsRequestSchema = z
   .object({
-    relationalDatabaseName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of your database for which to get log events.' }),
-    ),
-    logStreamName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the log stream.</p> <p>Use the <code>get relational database log streams</code> operation to get a list of available log streams.</p>',
-        }),
-    ),
-    startTime: IsoDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The start of the time interval from which to get log events.</p> <p>Constraints:</p> <ul> <li> <p>Specified in Coordinated Universal Time (UTC).</p> </li> <li> <p>Specified in the Unix time format.</p> <p>For example, if you wish to use a start time of October 1, 2018, at 8 PM UTC, then you input <code>1538424000</code> as the start time.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    endTime: IsoDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The end of the time interval from which to get log events.</p> <p>Constraints:</p> <ul> <li> <p>Specified in Coordinated Universal Time (UTC).</p> </li> <li> <p>Specified in the Unix time format.</p> <p>For example, if you wish to use an end time of October 1, 2018, at 8 PM UTC, then you input <code>1538424000</code> as the end time.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    startFromHead: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Parameter to specify if the log should start from head or tail. If <code>true</code> is specified, the log event starts from the head of the log. If <code>false</code> is specified, the log event starts from the tail of the log.</p> <note> <p>For PostgreSQL, the default value of <code>false</code> is the only option available.</p> </note>',
-        }),
-    ).exactOptional(),
-    pageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next or previous page of results from your request.</p> <p>To get a page token, perform an initial <code>GetRelationalDatabaseLogEvents</code> request. If your results are paginated, the response will return a next forward token and/or next backward token that you can specify as the page token in a subsequent request.</p>',
-        }),
-    ).exactOptional(),
+    relationalDatabaseName: ResourceNameSchema.openapi({
+      description: 'The name of your database for which to get log events.',
+    }),
+    logStreamName: StringSchema.openapi({
+      description:
+        '<p>The name of the log stream.</p> <p>Use the <code>get relational database log streams</code> operation to get a list of available log streams.</p>',
+    }),
+    startTime: IsoDateSchema.exactOptional().openapi({
+      description:
+        '<p>The start of the time interval from which to get log events.</p> <p>Constraints:</p> <ul> <li> <p>Specified in Coordinated Universal Time (UTC).</p> </li> <li> <p>Specified in the Unix time format.</p> <p>For example, if you wish to use a start time of October 1, 2018, at 8 PM UTC, then you input <code>1538424000</code> as the start time.</p> </li> </ul>',
+    }),
+    endTime: IsoDateSchema.exactOptional().openapi({
+      description:
+        '<p>The end of the time interval from which to get log events.</p> <p>Constraints:</p> <ul> <li> <p>Specified in Coordinated Universal Time (UTC).</p> </li> <li> <p>Specified in the Unix time format.</p> <p>For example, if you wish to use an end time of October 1, 2018, at 8 PM UTC, then you input <code>1538424000</code> as the end time.</p> </li> </ul>',
+    }),
+    startFromHead: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Parameter to specify if the log should start from head or tail. If <code>true</code> is specified, the log event starts from the head of the log. If <code>false</code> is specified, the log event starts from the tail of the log.</p> <note> <p>For PostgreSQL, the default value of <code>false</code> is the only option available.</p> </note>',
+    }),
+    pageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next or previous page of results from your request.</p> <p>To get a page token, perform an initial <code>GetRelationalDatabaseLogEvents</code> request. If your results are paginated, the response will return a next forward token and/or next backward token that you can specify as the page token in a subsequent request.</p>',
+    }),
   })
   .openapi({
     required: ['relationalDatabaseName', 'logStreamName'],
@@ -10230,23 +7101,19 @@ const GetRelationalDatabaseLogEventsRequestSchema = z
 
 const GetRelationalDatabaseLogStreamsResultSchema = z
   .object({
-    logStreams: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object describing the result of your get relational database log streams request.',
-        }),
-    ).exactOptional(),
+    logStreams: StringListSchema.exactOptional().openapi({
+      description:
+        'An object describing the result of your get relational database log streams request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetRelationalDatabaseLogStreamsResult')
 
 const GetRelationalDatabaseLogStreamsRequestSchema = z
   .object({
-    relationalDatabaseName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of your database for which to get log streams.' }),
-    ),
+    relationalDatabaseName: ResourceNameSchema.openapi({
+      description: 'The name of your database for which to get log streams.',
+    }),
   })
   .openapi({
     required: ['relationalDatabaseName'],
@@ -10256,21 +7123,13 @@ const GetRelationalDatabaseLogStreamsRequestSchema = z
 
 const GetRelationalDatabaseMasterUserPasswordResultSchema = z
   .object({
-    masterUserPassword: SensitiveStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The master user password for the <code>password version</code> specified.',
-        }),
-    ).exactOptional(),
-    createdAt: IsoDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp when the specified version of the master user password was created.',
-        }),
-    ).exactOptional(),
+    masterUserPassword: SensitiveStringSchema.exactOptional().openapi({
+      description: 'The master user password for the <code>password version</code> specified.',
+    }),
+    createdAt: IsoDateSchema.exactOptional().openapi({
+      description:
+        'The timestamp when the specified version of the master user password was created.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetRelationalDatabaseMasterUserPasswordResult')
@@ -10281,21 +7140,13 @@ const RelationalDatabasePasswordVersionSchema = z
 
 const GetRelationalDatabaseMasterUserPasswordRequestSchema = z
   .object({
-    relationalDatabaseName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of your database for which to get the master user password.',
-        }),
-    ),
-    passwordVersion: RelationalDatabasePasswordVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The password version to return.</p> <p>Specifying <code>CURRENT</code> or <code>PREVIOUS</code> returns the current or previous passwords respectively. Specifying <code>PENDING</code> returns the newest version of the password that will rotate to <code>CURRENT</code>. After the <code>PENDING</code> password rotates to <code>CURRENT</code>, the <code>PENDING</code> password is no longer available.</p> <p>Default: <code>CURRENT</code> </p>',
-        }),
-    ).exactOptional(),
+    relationalDatabaseName: ResourceNameSchema.openapi({
+      description: 'The name of your database for which to get the master user password.',
+    }),
+    passwordVersion: RelationalDatabasePasswordVersionSchema.exactOptional().openapi({
+      description:
+        '<p>The password version to return.</p> <p>Specifying <code>CURRENT</code> or <code>PREVIOUS</code> returns the current or previous passwords respectively. Specifying <code>PENDING</code> returns the newest version of the password that will rotate to <code>CURRENT</code>. After the <code>PENDING</code> password rotates to <code>CURRENT</code>, the <code>PENDING</code> password is no longer available.</p> <p>Default: <code>CURRENT</code> </p>',
+    }),
   })
   .openapi({
     required: ['relationalDatabaseName'],
@@ -10316,71 +7167,45 @@ const RelationalDatabaseMetricNameSchema = z
 
 const GetRelationalDatabaseMetricDataResultSchema = z
   .object({
-    metricName: RelationalDatabaseMetricNameSchema.and(
-      z.any().openapi({ description: 'The name of the metric returned.' }),
-    ).exactOptional(),
-    metricData: MetricDatapointListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An array of objects that describe the metric data returned.' }),
-    ).exactOptional(),
+    metricName: RelationalDatabaseMetricNameSchema.exactOptional().openapi({
+      description: 'The name of the metric returned.',
+    }),
+    metricData: MetricDatapointListSchema.exactOptional().openapi({
+      description: 'An array of objects that describe the metric data returned.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetRelationalDatabaseMetricDataResult')
 
 const GetRelationalDatabaseMetricDataRequestSchema = z
   .object({
-    relationalDatabaseName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of your database from which to get metric data.' }),
-    ),
-    metricName: RelationalDatabaseMetricNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The metric for which you want to return information.</p> <p>Valid relational database metric names are listed below, along with the most useful <code>statistics</code> to include in your request, and the published <code>unit</code> value. All relational database metric data is available in 1-minute (60 seconds) granularity.</p> <ul> <li> <p> <b> <code>CPUUtilization</code> </b> - The percentage of CPU utilization currently in use on the database.</p> <p> <code>Statistics</code>: The most useful statistics are <code>Maximum</code> and <code>Average</code>.</p> <p> <code>Unit</code>: The published unit is <code>Percent</code>.</p> </li> <li> <p> <b> <code>DatabaseConnections</code> </b> - The number of database connections in use.</p> <p> <code>Statistics</code>: The most useful statistics are <code>Maximum</code> and <code>Sum</code>.</p> <p> <code>Unit</code>: The published unit is <code>Count</code>.</p> </li> <li> <p> <b> <code>DiskQueueDepth</code> </b> - The number of outstanding IOs (read/write requests) that are waiting to access the disk.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>.</p> <p> <code>Unit</code>: The published unit is <code>Count</code>.</p> </li> <li> <p> <b> <code>FreeStorageSpace</code> </b> - The amount of available storage space.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>.</p> <p> <code>Unit</code>: The published unit is <code>Bytes</code>.</p> </li> <li> <p> <b> <code>NetworkReceiveThroughput</code> </b> - The incoming (Receive) network traffic on the database, including both customer database traffic and AWS traffic used for monitoring and replication.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Average</code>.</p> <p> <code>Unit</code>: The published unit is <code>Bytes/Second</code>.</p> </li> <li> <p> <b> <code>NetworkTransmitThroughput</code> </b> - The outgoing (Transmit) network traffic on the database, including both customer database traffic and AWS traffic used for monitoring and replication.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Average</code>.</p> <p> <code>Unit</code>: The published unit is <code>Bytes/Second</code>.</p> </li> </ul>',
-        }),
-    ),
-    period: MetricPeriodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The granularity, in seconds, of the returned data points.</p> <p>All relational database metric data is available in 1-minute (60 seconds) granularity.</p>',
-        }),
-    ),
-    startTime: IsoDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The start of the time interval from which to get metric data.</p> <p>Constraints:</p> <ul> <li> <p>Specified in Coordinated Universal Time (UTC).</p> </li> <li> <p>Specified in the Unix time format.</p> <p>For example, if you wish to use a start time of October 1, 2018, at 8 PM UTC, then you input <code>1538424000</code> as the start time.</p> </li> </ul>',
-        }),
-    ),
-    endTime: IsoDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The end of the time interval from which to get metric data.</p> <p>Constraints:</p> <ul> <li> <p>Specified in Coordinated Universal Time (UTC).</p> </li> <li> <p>Specified in the Unix time format.</p> <p>For example, if you wish to use an end time of October 1, 2018, at 8 PM UTC, then you input <code>1538424000</code> as the end time.</p> </li> </ul>',
-        }),
-    ),
-    unit: MetricUnitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unit for the metric data request. Valid units depend on the metric data being requested. For the valid units with each available metric, see the <code>metricName</code> parameter.',
-        }),
-    ),
-    statistics: MetricStatisticListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The statistic for the metric.</p> <p>The following statistics are available:</p> <ul> <li> <p> <code>Minimum</code> - The lowest value observed during the specified period. Use this value to determine low volumes of activity for your application.</p> </li> <li> <p> <code>Maximum</code> - The highest value observed during the specified period. Use this value to determine high volumes of activity for your application.</p> </li> <li> <p> <code>Sum</code> - All values submitted for the matching metric added together. You can use this statistic to determine the total volume of a metric.</p> </li> <li> <p> <code>Average</code> - The value of Sum / SampleCount during the specified period. By comparing this statistic with the Minimum and Maximum values, you can determine the full scope of a metric and how close the average use is to the Minimum and Maximum values. This comparison helps you to know when to increase or decrease your resources.</p> </li> <li> <p> <code>SampleCount</code> - The count, or number, of data points used for the statistical calculation.</p> </li> </ul>',
-        }),
-    ),
+    relationalDatabaseName: ResourceNameSchema.openapi({
+      description: 'The name of your database from which to get metric data.',
+    }),
+    metricName: RelationalDatabaseMetricNameSchema.openapi({
+      description:
+        '<p>The metric for which you want to return information.</p> <p>Valid relational database metric names are listed below, along with the most useful <code>statistics</code> to include in your request, and the published <code>unit</code> value. All relational database metric data is available in 1-minute (60 seconds) granularity.</p> <ul> <li> <p> <b> <code>CPUUtilization</code> </b> - The percentage of CPU utilization currently in use on the database.</p> <p> <code>Statistics</code>: The most useful statistics are <code>Maximum</code> and <code>Average</code>.</p> <p> <code>Unit</code>: The published unit is <code>Percent</code>.</p> </li> <li> <p> <b> <code>DatabaseConnections</code> </b> - The number of database connections in use.</p> <p> <code>Statistics</code>: The most useful statistics are <code>Maximum</code> and <code>Sum</code>.</p> <p> <code>Unit</code>: The published unit is <code>Count</code>.</p> </li> <li> <p> <b> <code>DiskQueueDepth</code> </b> - The number of outstanding IOs (read/write requests) that are waiting to access the disk.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>.</p> <p> <code>Unit</code>: The published unit is <code>Count</code>.</p> </li> <li> <p> <b> <code>FreeStorageSpace</code> </b> - The amount of available storage space.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Sum</code>.</p> <p> <code>Unit</code>: The published unit is <code>Bytes</code>.</p> </li> <li> <p> <b> <code>NetworkReceiveThroughput</code> </b> - The incoming (Receive) network traffic on the database, including both customer database traffic and AWS traffic used for monitoring and replication.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Average</code>.</p> <p> <code>Unit</code>: The published unit is <code>Bytes/Second</code>.</p> </li> <li> <p> <b> <code>NetworkTransmitThroughput</code> </b> - The outgoing (Transmit) network traffic on the database, including both customer database traffic and AWS traffic used for monitoring and replication.</p> <p> <code>Statistics</code>: The most useful statistic is <code>Average</code>.</p> <p> <code>Unit</code>: The published unit is <code>Bytes/Second</code>.</p> </li> </ul>',
+    }),
+    period: MetricPeriodSchema.openapi({
+      description:
+        '<p>The granularity, in seconds, of the returned data points.</p> <p>All relational database metric data is available in 1-minute (60 seconds) granularity.</p>',
+    }),
+    startTime: IsoDateSchema.openapi({
+      description:
+        '<p>The start of the time interval from which to get metric data.</p> <p>Constraints:</p> <ul> <li> <p>Specified in Coordinated Universal Time (UTC).</p> </li> <li> <p>Specified in the Unix time format.</p> <p>For example, if you wish to use a start time of October 1, 2018, at 8 PM UTC, then you input <code>1538424000</code> as the start time.</p> </li> </ul>',
+    }),
+    endTime: IsoDateSchema.openapi({
+      description:
+        '<p>The end of the time interval from which to get metric data.</p> <p>Constraints:</p> <ul> <li> <p>Specified in Coordinated Universal Time (UTC).</p> </li> <li> <p>Specified in the Unix time format.</p> <p>For example, if you wish to use an end time of October 1, 2018, at 8 PM UTC, then you input <code>1538424000</code> as the end time.</p> </li> </ul>',
+    }),
+    unit: MetricUnitSchema.openapi({
+      description:
+        'The unit for the metric data request. Valid units depend on the metric data being requested. For the valid units with each available metric, see the <code>metricName</code> parameter.',
+    }),
+    statistics: MetricStatisticListSchema.openapi({
+      description:
+        '<p>The statistic for the metric.</p> <p>The following statistics are available:</p> <ul> <li> <p> <code>Minimum</code> - The lowest value observed during the specified period. Use this value to determine low volumes of activity for your application.</p> </li> <li> <p> <code>Maximum</code> - The highest value observed during the specified period. Use this value to determine high volumes of activity for your application.</p> </li> <li> <p> <code>Sum</code> - All values submitted for the matching metric added together. You can use this statistic to determine the total volume of a metric.</p> </li> <li> <p> <code>Average</code> - The value of Sum / SampleCount during the specified period. By comparing this statistic with the Minimum and Maximum values, you can determine the full scope of a metric and how close the average use is to the Minimum and Maximum values. This comparison helps you to know when to increase or decrease your resources.</p> </li> <li> <p> <code>SampleCount</code> - The count, or number, of data points used for the statistical calculation.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: [
@@ -10398,39 +7223,31 @@ const GetRelationalDatabaseMetricDataRequestSchema = z
 
 const RelationalDatabaseParameterSchema = z
   .object({
-    allowedValues: StringSchema.and(
-      z.any().openapi({ description: 'Specifies the valid range of values for the parameter.' }),
-    ).exactOptional(),
-    applyMethod: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates when parameter updates are applied.</p> <p>Can be <code>immediate</code> or <code>pending-reboot</code>.</p>',
-        }),
-    ).exactOptional(),
-    applyType: StringSchema.and(
-      z.any().openapi({ description: 'Specifies the engine-specific parameter type.' }),
-    ).exactOptional(),
-    dataType: StringSchema.and(
-      z.any().openapi({ description: 'Specifies the valid data type for the parameter.' }),
-    ).exactOptional(),
-    description: StringSchema.and(
-      z.any().openapi({ description: 'Provides a description of the parameter.' }),
-    ).exactOptional(),
-    isModifiable: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A Boolean value indicating whether the parameter can be modified.',
-        }),
-    ).exactOptional(),
-    parameterName: StringSchema.and(
-      z.any().openapi({ description: 'Specifies the name of the parameter.' }),
-    ).exactOptional(),
-    parameterValue: StringSchema.and(
-      z.any().openapi({ description: 'Specifies the value of the parameter.' }),
-    ).exactOptional(),
+    allowedValues: StringSchema.exactOptional().openapi({
+      description: 'Specifies the valid range of values for the parameter.',
+    }),
+    applyMethod: StringSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates when parameter updates are applied.</p> <p>Can be <code>immediate</code> or <code>pending-reboot</code>.</p>',
+    }),
+    applyType: StringSchema.exactOptional().openapi({
+      description: 'Specifies the engine-specific parameter type.',
+    }),
+    dataType: StringSchema.exactOptional().openapi({
+      description: 'Specifies the valid data type for the parameter.',
+    }),
+    description: StringSchema.exactOptional().openapi({
+      description: 'Provides a description of the parameter.',
+    }),
+    isModifiable: BooleanSchema.exactOptional().openapi({
+      description: 'A Boolean value indicating whether the parameter can be modified.',
+    }),
+    parameterName: StringSchema.exactOptional().openapi({
+      description: 'Specifies the name of the parameter.',
+    }),
+    parameterValue: StringSchema.exactOptional().openapi({
+      description: 'Specifies the value of the parameter.',
+    }),
   })
   .openapi({ description: 'Describes the parameters of a database.', required: [] })
   .openapi('RelationalDatabaseParameter')
@@ -10441,39 +7258,27 @@ const RelationalDatabaseParameterListSchema = z
 
 const GetRelationalDatabaseParametersResultSchema = z
   .object({
-    parameters: RelationalDatabaseParameterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object describing the result of your get relational database parameters request.',
-        }),
-    ).exactOptional(),
-    nextPageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetRelationalDatabaseParameters</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
-        }),
-    ).exactOptional(),
+    parameters: RelationalDatabaseParameterListSchema.exactOptional().openapi({
+      description:
+        'An object describing the result of your get relational database parameters request.',
+    }),
+    nextPageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetRelationalDatabaseParameters</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetRelationalDatabaseParametersResult')
 
 const GetRelationalDatabaseParametersRequestSchema = z
   .object({
-    relationalDatabaseName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of your database for which to get parameters.' }),
-    ),
-    pageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetRelationalDatabaseParameters</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
-        }),
-    ).exactOptional(),
+    relationalDatabaseName: ResourceNameSchema.openapi({
+      description: 'The name of your database for which to get parameters.',
+    }),
+    pageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetRelationalDatabaseParameters</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
+    }),
   })
   .openapi({
     required: ['relationalDatabaseName'],
@@ -10483,122 +7288,75 @@ const GetRelationalDatabaseParametersRequestSchema = z
 
 const RelationalDatabaseSnapshotSchema = z
   .object({
-    name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the database snapshot.' }),
-    ).exactOptional(),
-    arn: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the database snapshot.' }),
-    ).exactOptional(),
-    supportCode: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The support code for the database snapshot. Include this code in your email to support when you have questions about a database snapshot in Lightsail. This code enables our support team to look up your Lightsail information more easily.',
-        }),
-    ).exactOptional(),
-    createdAt: IsoDateSchema.and(
-      z.any().openapi({ description: 'The timestamp when the database snapshot was created.' }),
-    ).exactOptional(),
-    location: ResourceLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Region name and Availability Zone where the database snapshot is located.',
-        }),
-    ).exactOptional(),
-    resourceType: ResourceTypeSchema.and(
-      z.any().openapi({ description: 'The Lightsail resource type.' }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tag keys and optional values for the resource. For more information about tags in Lightsail, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-tags">Amazon Lightsail Developer Guide</a>.',
-        }),
-    ).exactOptional(),
-    engine: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The software of the database snapshot (for example, <code>MySQL</code>)',
-        }),
-    ).exactOptional(),
-    engineVersion: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The database engine version for the database snapshot (for example, <code>5.7.23</code>).',
-        }),
-    ).exactOptional(),
-    sizeInGb: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The size of the disk in GB (for example, <code>32</code>) for the database snapshot.',
-        }),
-    ).exactOptional(),
-    state: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The state of the database snapshot.' }),
-    ).exactOptional(),
-    fromRelationalDatabaseName: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the source database from which the database snapshot was created.',
-        }),
-    ).exactOptional(),
-    fromRelationalDatabaseArn: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the database from which the database snapshot was created.',
-        }),
-    ).exactOptional(),
-    fromRelationalDatabaseBundleId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The bundle ID of the database from which the database snapshot was created.',
-        }),
-    ).exactOptional(),
-    fromRelationalDatabaseBlueprintId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The blueprint ID of the database from which the database snapshot was created. A blueprint describes the major engine version of a database.',
-        }),
-    ).exactOptional(),
+    name: ResourceNameSchema.exactOptional().openapi({
+      description: 'The name of the database snapshot.',
+    }),
+    arn: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the database snapshot.',
+    }),
+    supportCode: StringSchema.exactOptional().openapi({
+      description:
+        'The support code for the database snapshot. Include this code in your email to support when you have questions about a database snapshot in Lightsail. This code enables our support team to look up your Lightsail information more easily.',
+    }),
+    createdAt: IsoDateSchema.exactOptional().openapi({
+      description: 'The timestamp when the database snapshot was created.',
+    }),
+    location: ResourceLocationSchema.exactOptional().openapi({
+      description: 'The Region name and Availability Zone where the database snapshot is located.',
+    }),
+    resourceType: ResourceTypeSchema.exactOptional().openapi({
+      description: 'The Lightsail resource type.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        'The tag keys and optional values for the resource. For more information about tags in Lightsail, see the <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-tags">Amazon Lightsail Developer Guide</a>.',
+    }),
+    engine: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The software of the database snapshot (for example, <code>MySQL</code>)',
+    }),
+    engineVersion: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        'The database engine version for the database snapshot (for example, <code>5.7.23</code>).',
+    }),
+    sizeInGb: IntegerSchema.exactOptional().openapi({
+      description:
+        'The size of the disk in GB (for example, <code>32</code>) for the database snapshot.',
+    }),
+    state: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The state of the database snapshot.',
+    }),
+    fromRelationalDatabaseName: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The name of the source database from which the database snapshot was created.',
+    }),
+    fromRelationalDatabaseArn: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the database from which the database snapshot was created.',
+    }),
+    fromRelationalDatabaseBundleId: StringSchema.exactOptional().openapi({
+      description: 'The bundle ID of the database from which the database snapshot was created.',
+    }),
+    fromRelationalDatabaseBlueprintId: StringSchema.exactOptional().openapi({
+      description:
+        'The blueprint ID of the database from which the database snapshot was created. A blueprint describes the major engine version of a database.',
+    }),
   })
   .openapi({ description: 'Describes a database snapshot.', required: [] })
   .openapi('RelationalDatabaseSnapshot')
 
 const GetRelationalDatabaseSnapshotResultSchema = z
   .object({
-    relationalDatabaseSnapshot: RelationalDatabaseSnapshotSchema.and(
-      z.any().openapi({ description: 'An object describing the specified database snapshot.' }),
-    ).exactOptional(),
+    relationalDatabaseSnapshot: RelationalDatabaseSnapshotSchema.exactOptional().openapi({
+      description: 'An object describing the specified database snapshot.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetRelationalDatabaseSnapshotResult')
 
 const GetRelationalDatabaseSnapshotRequestSchema = z
   .object({
-    relationalDatabaseSnapshotName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the database snapshot for which to get information.',
-        }),
-    ),
+    relationalDatabaseSnapshotName: ResourceNameSchema.openapi({
+      description: 'The name of the database snapshot for which to get information.',
+    }),
   })
   .openapi({
     required: ['relationalDatabaseSnapshotName'],
@@ -10612,36 +7370,24 @@ const RelationalDatabaseSnapshotListSchema = z
 
 const GetRelationalDatabaseSnapshotsResultSchema = z
   .object({
-    relationalDatabaseSnapshots: RelationalDatabaseSnapshotListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object describing the result of your get relational database snapshots request.',
-        }),
-    ).exactOptional(),
-    nextPageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetRelationalDatabaseSnapshots</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
-        }),
-    ).exactOptional(),
+    relationalDatabaseSnapshots: RelationalDatabaseSnapshotListSchema.exactOptional().openapi({
+      description:
+        'An object describing the result of your get relational database snapshots request.',
+    }),
+    nextPageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetRelationalDatabaseSnapshots</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetRelationalDatabaseSnapshotsResult')
 
 const GetRelationalDatabaseSnapshotsRequestSchema = z
   .object({
-    pageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetRelationalDatabaseSnapshots</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
-        }),
-    ).exactOptional(),
+    pageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetRelationalDatabaseSnapshots</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
+    }),
   })
   .openapi({ title: 'GetRelationalDatabaseSnapshotsRequest', required: [] })
   .openapi('GetRelationalDatabaseSnapshotsRequest')
@@ -10652,121 +7398,77 @@ const RelationalDatabaseListSchema = z
 
 const GetRelationalDatabasesResultSchema = z
   .object({
-    relationalDatabases: RelationalDatabaseListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object describing the result of your get relational databases request.',
-        }),
-    ).exactOptional(),
-    nextPageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetRelationalDatabases</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
-        }),
-    ).exactOptional(),
+    relationalDatabases: RelationalDatabaseListSchema.exactOptional().openapi({
+      description: 'An object describing the result of your get relational databases request.',
+    }),
+    nextPageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetRelationalDatabases</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetRelationalDatabasesResult')
 
 const GetRelationalDatabasesRequestSchema = z
   .object({
-    pageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetRelationalDatabases</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
-        }),
-    ).exactOptional(),
+    pageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetRelationalDatabases</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
+    }),
   })
   .openapi({ title: 'GetRelationalDatabasesRequest', required: [] })
   .openapi('GetRelationalDatabasesRequest')
 
 const StaticIpSchema = z
   .object({
-    name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the static IP (e.g., <code>StaticIP-Ohio-EXAMPLE</code>).',
-        }),
-    ).exactOptional(),
-    arn: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the static IP (e.g., <code>arn:aws:lightsail:us-east-2:123456789101:StaticIp/9cbb4a9e-f8e3-4dfe-b57e-12345EXAMPLE</code>).',
-        }),
-    ).exactOptional(),
-    supportCode: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The support code. Include this code in your email to support when you have questions about an instance or another resource in Lightsail. This code enables our support team to look up your Lightsail information more easily.',
-        }),
-    ).exactOptional(),
-    createdAt: IsoDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp when the static IP was created (e.g., <code>1479735304.222</code>).',
-        }),
-    ).exactOptional(),
-    location: ResourceLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The region and Availability Zone where the static IP was created.',
-        }),
-    ).exactOptional(),
-    resourceType: ResourceTypeSchema.and(
-      z.any().openapi({ description: 'The resource type (usually <code>StaticIp</code>).' }),
-    ).exactOptional(),
-    ipAddress: IpAddressSchema.and(
-      z.any().openapi({ description: 'The static IP address.' }),
-    ).exactOptional(),
-    attachedTo: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The instance where the static IP is attached (e.g., <code>Amazon_Linux-1GB-Ohio-1</code>).',
-        }),
-    ).exactOptional(),
-    isAttached: BooleanSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A Boolean value indicating whether the static IP is attached.' }),
-    ).exactOptional(),
+    name: ResourceNameSchema.exactOptional().openapi({
+      description: 'The name of the static IP (e.g., <code>StaticIP-Ohio-EXAMPLE</code>).',
+    }),
+    arn: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the static IP (e.g., <code>arn:aws:lightsail:us-east-2:123456789101:StaticIp/9cbb4a9e-f8e3-4dfe-b57e-12345EXAMPLE</code>).',
+    }),
+    supportCode: StringSchema.exactOptional().openapi({
+      description:
+        'The support code. Include this code in your email to support when you have questions about an instance or another resource in Lightsail. This code enables our support team to look up your Lightsail information more easily.',
+    }),
+    createdAt: IsoDateSchema.exactOptional().openapi({
+      description:
+        'The timestamp when the static IP was created (e.g., <code>1479735304.222</code>).',
+    }),
+    location: ResourceLocationSchema.exactOptional().openapi({
+      description: 'The region and Availability Zone where the static IP was created.',
+    }),
+    resourceType: ResourceTypeSchema.exactOptional().openapi({
+      description: 'The resource type (usually <code>StaticIp</code>).',
+    }),
+    ipAddress: IpAddressSchema.exactOptional().openapi({ description: 'The static IP address.' }),
+    attachedTo: ResourceNameSchema.exactOptional().openapi({
+      description:
+        'The instance where the static IP is attached (e.g., <code>Amazon_Linux-1GB-Ohio-1</code>).',
+    }),
+    isAttached: BooleanSchema.exactOptional().openapi({
+      description: 'A Boolean value indicating whether the static IP is attached.',
+    }),
   })
   .openapi({ description: 'Describes a static IP.', required: [] })
   .openapi('StaticIp')
 
 const GetStaticIpResultSchema = z
   .object({
-    staticIp: StaticIpSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of key-value pairs containing information about the requested static IP.',
-        }),
-    ).exactOptional(),
+    staticIp: StaticIpSchema.exactOptional().openapi({
+      description:
+        'An array of key-value pairs containing information about the requested static IP.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetStaticIpResult')
 
 const GetStaticIpRequestSchema = z
   .object({
-    staticIpName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the static IP in Lightsail.' }),
-    ),
+    staticIpName: ResourceNameSchema.openapi({
+      description: 'The name of the static IP in Lightsail.',
+    }),
   })
   .openapi({ required: ['staticIpName'], title: 'GetStaticIpRequest' })
   .openapi('GetStaticIpRequest')
@@ -10775,241 +7477,157 @@ const StaticIpListSchema = z.array(StaticIpSchema).openapi('StaticIpList')
 
 const GetStaticIpsResultSchema = z
   .object({
-    staticIps: StaticIpListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of key-value pairs containing information about your get static IPs request.',
-        }),
-    ).exactOptional(),
-    nextPageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetStaticIps</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
-        }),
-    ).exactOptional(),
+    staticIps: StaticIpListSchema.exactOptional().openapi({
+      description:
+        'An array of key-value pairs containing information about your get static IPs request.',
+    }),
+    nextPageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetStaticIps</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetStaticIpsResult')
 
 const GetStaticIpsRequestSchema = z
   .object({
-    pageToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetStaticIps</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
-        }),
-    ).exactOptional(),
+    pageToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetStaticIps</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>',
+    }),
   })
   .openapi({ title: 'GetStaticIpsRequest', required: [] })
   .openapi('GetStaticIpsRequest')
 
 const ImportKeyPairResultSchema = z
   .object({
-    operation: OperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operation: OperationSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ImportKeyPairResult')
 
 const ImportKeyPairRequestSchema = z
   .object({
-    keyPairName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the key pair for which you want to import the public key.',
-        }),
-    ),
-    publicKeyBase64: Base64Schema.and(
-      z
-        .any()
-        .openapi({ description: 'A base64-encoded public key of the <code>ssh-rsa</code> type.' }),
-    ),
+    keyPairName: ResourceNameSchema.openapi({
+      description: 'The name of the key pair for which you want to import the public key.',
+    }),
+    publicKeyBase64: Base64Schema.openapi({
+      description: 'A base64-encoded public key of the <code>ssh-rsa</code> type.',
+    }),
   })
   .openapi({ required: ['keyPairName', 'publicKeyBase64'], title: 'ImportKeyPairRequest' })
   .openapi('ImportKeyPairRequest')
 
 const IsVpcPeeredResultSchema = z
   .object({
-    isPeered: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Returns <code>true</code> if the Lightsail VPC is peered; otherwise, <code>false</code>.',
-        }),
-    ).exactOptional(),
+    isPeered: BooleanSchema.exactOptional().openapi({
+      description:
+        'Returns <code>true</code> if the Lightsail VPC is peered; otherwise, <code>false</code>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('IsVpcPeeredResult')
 
 const IsVpcPeeredRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'IsVpcPeeredRequest' })
   .openapi('IsVpcPeeredRequest')
 
 const OpenInstancePublicPortsResultSchema = z
   .object({
-    operation: OperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operation: OperationSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('OpenInstancePublicPortsResult')
 
 const OpenInstancePublicPortsRequestSchema = z
   .object({
-    portInfo: PortInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object to describe the ports to open for the specified instance.',
-        }),
-    ),
-    instanceName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the instance for which to open ports.' }),
-    ),
+    portInfo: PortInfoSchema.openapi({
+      description: 'An object to describe the ports to open for the specified instance.',
+    }),
+    instanceName: ResourceNameSchema.openapi({
+      description: 'The name of the instance for which to open ports.',
+    }),
   })
   .openapi({ required: ['portInfo', 'instanceName'], title: 'OpenInstancePublicPortsRequest' })
   .openapi('OpenInstancePublicPortsRequest')
 
 const PeerVpcResultSchema = z
   .object({
-    operation: OperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operation: OperationSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PeerVpcResult')
 
 const PeerVpcRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'PeerVpcRequest' })
   .openapi('PeerVpcRequest')
 
 const PutAlarmResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutAlarmResult')
 
 const PutAlarmRequestSchema = z
   .object({
-    alarmName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name for the alarm. Specify the name of an existing alarm to update, and overwrite the previous configuration of the alarm.',
-        }),
-    ),
-    metricName: MetricNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the metric to associate with the alarm.</p> <p>You can configure up to two alarms per metric.</p> <p>The following metrics are available for each resource type:</p> <ul> <li> <p> <b>Instances</b>: <code>BurstCapacityPercentage</code>, <code>BurstCapacityTime</code>, <code>CPUUtilization</code>, <code>NetworkIn</code>, <code>NetworkOut</code>, <code>StatusCheckFailed</code>, <code>StatusCheckFailed_Instance</code>, and <code>StatusCheckFailed_System</code>.</p> </li> <li> <p> <b>Load balancers</b>: <code>ClientTLSNegotiationErrorCount</code>, <code>HealthyHostCount</code>, <code>UnhealthyHostCount</code>, <code>HTTPCode_LB_4XX_Count</code>, <code>HTTPCode_LB_5XX_Count</code>, <code>HTTPCode_Instance_2XX_Count</code>, <code>HTTPCode_Instance_3XX_Count</code>, <code>HTTPCode_Instance_4XX_Count</code>, <code>HTTPCode_Instance_5XX_Count</code>, <code>InstanceResponseTime</code>, <code>RejectedConnectionCount</code>, and <code>RequestCount</code>.</p> </li> <li> <p> <b>Relational databases</b>: <code>CPUUtilization</code>, <code>DatabaseConnections</code>, <code>DiskQueueDepth</code>, <code>FreeStorageSpace</code>, <code>NetworkReceiveThroughput</code>, and <code>NetworkTransmitThroughput</code>.</p> </li> </ul> <p>For more information about these metrics, see <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-resource-health-metrics#available-metrics">Metrics available in Lightsail</a>.</p>',
-        }),
-    ),
-    monitoredResourceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the Lightsail resource that will be monitored.</p> <p>Instances, load balancers, and relational databases are the only Lightsail resources that can currently be monitored by alarms.</p>',
-        }),
-    ),
-    comparisonOperator: ComparisonOperatorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The arithmetic operation to use when comparing the specified statistic to the threshold. The specified statistic value is used as the first operand.',
-        }),
-    ),
-    threshold: DoubleSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The value against which the specified statistic is compared.' }),
-    ),
-    evaluationPeriods: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of most recent periods over which data is compared to the specified threshold. If you are setting an "M out of N" alarm, this value (<code>evaluationPeriods</code>) is the N.</p> <p>If you are setting an alarm that requires that a number of consecutive data points be breaching to trigger the alarm, this value specifies the rolling period of time in which data points are evaluated.</p> <p>Each evaluation period is five minutes long. For example, specify an evaluation period of 24 to evaluate a metric over a rolling period of two hours.</p> <p>You can specify a minimum valuation period of 1 (5 minutes), and a maximum evaluation period of 288 (24 hours).</p>',
-        }),
-    ),
-    datapointsToAlarm: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of data points that must be not within the specified threshold to trigger the alarm. If you are setting an "M out of N" alarm, this value (<code>datapointsToAlarm</code>) is the M.',
-        }),
-    ).exactOptional(),
-    treatMissingData: TreatMissingDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Sets how this alarm will handle missing data points.</p> <p>An alarm can treat missing data in the following ways:</p> <ul> <li> <p> <code>breaching</code> - Assume the missing data is not within the threshold. Missing data counts towards the number of times the metric is not within the threshold.</p> </li> <li> <p> <code>notBreaching</code> - Assume the missing data is within the threshold. Missing data does not count towards the number of times the metric is not within the threshold.</p> </li> <li> <p> <code>ignore</code> - Ignore the missing data. Maintains the current alarm state.</p> </li> <li> <p> <code>missing</code> - Missing data is treated as missing.</p> </li> </ul> <p>If <code>treatMissingData</code> is not specified, the default behavior of <code>missing</code> is used.</p>',
-        }),
-    ).exactOptional(),
-    contactProtocols: ContactProtocolsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The contact protocols to use for the alarm, such as <code>Email</code>, <code>SMS</code> (text messaging), or both.</p> <p>A notification is sent via the specified contact protocol if notifications are enabled for the alarm, and when the alarm is triggered.</p> <p>A notification is not sent if a contact protocol is not specified, if the specified contact protocol is not configured in the Amazon Web Services Region, or if notifications are not enabled for the alarm using the <code>notificationEnabled</code> paramater.</p> <p>Use the <code>CreateContactMethod</code> action to configure a contact protocol in an Amazon Web Services Region.</p>',
-        }),
-    ).exactOptional(),
-    notificationTriggers: NotificationTriggerListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The alarm states that trigger a notification.</p> <p>An alarm has the following possible states:</p> <ul> <li> <p> <code>ALARM</code> - The metric is outside of the defined threshold.</p> </li> <li> <p> <code>INSUFFICIENT_DATA</code> - The alarm has just started, the metric is not available, or not enough data is available for the metric to determine the alarm state.</p> </li> <li> <p> <code>OK</code> - The metric is within the defined threshold.</p> </li> </ul> <p>When you specify a notification trigger, the <code>ALARM</code> state must be specified. The <code>INSUFFICIENT_DATA</code> and <code>OK</code> states can be specified in addition to the <code>ALARM</code> state.</p> <ul> <li> <p>If you specify <code>OK</code> as an alarm trigger, a notification is sent when the alarm switches from an <code>ALARM</code> or <code>INSUFFICIENT_DATA</code> alarm state to an <code>OK</code> state. This can be thought of as an <i>all clear</i> alarm notification.</p> </li> <li> <p>If you specify <code>INSUFFICIENT_DATA</code> as the alarm trigger, a notification is sent when the alarm switches from an <code>OK</code> or <code>ALARM</code> alarm state to an <code>INSUFFICIENT_DATA</code> state.</p> </li> </ul> <p>The notification trigger defaults to <code>ALARM</code> if you don't specify this parameter.</p>",
-        }),
-    ).exactOptional(),
-    notificationEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Indicates whether the alarm is enabled.</p> <p>Notifications are enabled by default if you don't specify this parameter.</p>",
-        }),
-    ).exactOptional(),
+    alarmName: ResourceNameSchema.openapi({
+      description:
+        'The name for the alarm. Specify the name of an existing alarm to update, and overwrite the previous configuration of the alarm.',
+    }),
+    metricName: MetricNameSchema.openapi({
+      description:
+        '<p>The name of the metric to associate with the alarm.</p> <p>You can configure up to two alarms per metric.</p> <p>The following metrics are available for each resource type:</p> <ul> <li> <p> <b>Instances</b>: <code>BurstCapacityPercentage</code>, <code>BurstCapacityTime</code>, <code>CPUUtilization</code>, <code>NetworkIn</code>, <code>NetworkOut</code>, <code>StatusCheckFailed</code>, <code>StatusCheckFailed_Instance</code>, and <code>StatusCheckFailed_System</code>.</p> </li> <li> <p> <b>Load balancers</b>: <code>ClientTLSNegotiationErrorCount</code>, <code>HealthyHostCount</code>, <code>UnhealthyHostCount</code>, <code>HTTPCode_LB_4XX_Count</code>, <code>HTTPCode_LB_5XX_Count</code>, <code>HTTPCode_Instance_2XX_Count</code>, <code>HTTPCode_Instance_3XX_Count</code>, <code>HTTPCode_Instance_4XX_Count</code>, <code>HTTPCode_Instance_5XX_Count</code>, <code>InstanceResponseTime</code>, <code>RejectedConnectionCount</code>, and <code>RequestCount</code>.</p> </li> <li> <p> <b>Relational databases</b>: <code>CPUUtilization</code>, <code>DatabaseConnections</code>, <code>DiskQueueDepth</code>, <code>FreeStorageSpace</code>, <code>NetworkReceiveThroughput</code>, and <code>NetworkTransmitThroughput</code>.</p> </li> </ul> <p>For more information about these metrics, see <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-resource-health-metrics#available-metrics">Metrics available in Lightsail</a>.</p>',
+    }),
+    monitoredResourceName: ResourceNameSchema.openapi({
+      description:
+        '<p>The name of the Lightsail resource that will be monitored.</p> <p>Instances, load balancers, and relational databases are the only Lightsail resources that can currently be monitored by alarms.</p>',
+    }),
+    comparisonOperator: ComparisonOperatorSchema.openapi({
+      description:
+        'The arithmetic operation to use when comparing the specified statistic to the threshold. The specified statistic value is used as the first operand.',
+    }),
+    threshold: DoubleSchema.openapi({
+      description: 'The value against which the specified statistic is compared.',
+    }),
+    evaluationPeriods: IntegerSchema.openapi({
+      description:
+        '<p>The number of most recent periods over which data is compared to the specified threshold. If you are setting an "M out of N" alarm, this value (<code>evaluationPeriods</code>) is the N.</p> <p>If you are setting an alarm that requires that a number of consecutive data points be breaching to trigger the alarm, this value specifies the rolling period of time in which data points are evaluated.</p> <p>Each evaluation period is five minutes long. For example, specify an evaluation period of 24 to evaluate a metric over a rolling period of two hours.</p> <p>You can specify a minimum valuation period of 1 (5 minutes), and a maximum evaluation period of 288 (24 hours).</p>',
+    }),
+    datapointsToAlarm: IntegerSchema.exactOptional().openapi({
+      description:
+        'The number of data points that must be not within the specified threshold to trigger the alarm. If you are setting an "M out of N" alarm, this value (<code>datapointsToAlarm</code>) is the M.',
+    }),
+    treatMissingData: TreatMissingDataSchema.exactOptional().openapi({
+      description:
+        '<p>Sets how this alarm will handle missing data points.</p> <p>An alarm can treat missing data in the following ways:</p> <ul> <li> <p> <code>breaching</code> - Assume the missing data is not within the threshold. Missing data counts towards the number of times the metric is not within the threshold.</p> </li> <li> <p> <code>notBreaching</code> - Assume the missing data is within the threshold. Missing data does not count towards the number of times the metric is not within the threshold.</p> </li> <li> <p> <code>ignore</code> - Ignore the missing data. Maintains the current alarm state.</p> </li> <li> <p> <code>missing</code> - Missing data is treated as missing.</p> </li> </ul> <p>If <code>treatMissingData</code> is not specified, the default behavior of <code>missing</code> is used.</p>',
+    }),
+    contactProtocols: ContactProtocolsListSchema.exactOptional().openapi({
+      description:
+        '<p>The contact protocols to use for the alarm, such as <code>Email</code>, <code>SMS</code> (text messaging), or both.</p> <p>A notification is sent via the specified contact protocol if notifications are enabled for the alarm, and when the alarm is triggered.</p> <p>A notification is not sent if a contact protocol is not specified, if the specified contact protocol is not configured in the Amazon Web Services Region, or if notifications are not enabled for the alarm using the <code>notificationEnabled</code> paramater.</p> <p>Use the <code>CreateContactMethod</code> action to configure a contact protocol in an Amazon Web Services Region.</p>',
+    }),
+    notificationTriggers: NotificationTriggerListSchema.exactOptional().openapi({
+      description:
+        "<p>The alarm states that trigger a notification.</p> <p>An alarm has the following possible states:</p> <ul> <li> <p> <code>ALARM</code> - The metric is outside of the defined threshold.</p> </li> <li> <p> <code>INSUFFICIENT_DATA</code> - The alarm has just started, the metric is not available, or not enough data is available for the metric to determine the alarm state.</p> </li> <li> <p> <code>OK</code> - The metric is within the defined threshold.</p> </li> </ul> <p>When you specify a notification trigger, the <code>ALARM</code> state must be specified. The <code>INSUFFICIENT_DATA</code> and <code>OK</code> states can be specified in addition to the <code>ALARM</code> state.</p> <ul> <li> <p>If you specify <code>OK</code> as an alarm trigger, a notification is sent when the alarm switches from an <code>ALARM</code> or <code>INSUFFICIENT_DATA</code> alarm state to an <code>OK</code> state. This can be thought of as an <i>all clear</i> alarm notification.</p> </li> <li> <p>If you specify <code>INSUFFICIENT_DATA</code> as the alarm trigger, a notification is sent when the alarm switches from an <code>OK</code> or <code>ALARM</code> alarm state to an <code>INSUFFICIENT_DATA</code> state.</p> </li> </ul> <p>The notification trigger defaults to <code>ALARM</code> if you don't specify this parameter.</p>",
+    }),
+    notificationEnabled: BooleanSchema.exactOptional().openapi({
+      description:
+        "<p>Indicates whether the alarm is enabled.</p> <p>Notifications are enabled by default if you don't specify this parameter.</p>",
+    }),
   })
   .openapi({
     required: [
@@ -11026,14 +7644,10 @@ const PutAlarmRequestSchema = z
 
 const PutInstancePublicPortsResultSchema = z
   .object({
-    operation: OperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operation: OperationSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutInstancePublicPortsResult')
@@ -11042,77 +7656,60 @@ const PortInfoListSchema = z.array(PortInfoSchema).openapi('PortInfoList')
 
 const PutInstancePublicPortsRequestSchema = z
   .object({
-    portInfos: PortInfoListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects to describe the ports to open for the specified instance.',
-        }),
-    ),
-    instanceName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the instance for which to open ports.' }),
-    ),
+    portInfos: PortInfoListSchema.openapi({
+      description: 'An array of objects to describe the ports to open for the specified instance.',
+    }),
+    instanceName: ResourceNameSchema.openapi({
+      description: 'The name of the instance for which to open ports.',
+    }),
   })
   .openapi({ required: ['portInfos', 'instanceName'], title: 'PutInstancePublicPortsRequest' })
   .openapi('PutInstancePublicPortsRequest')
 
 const RebootInstanceResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('RebootInstanceResult')
 
 const RebootInstanceRequestSchema = z
   .object({
-    instanceName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the instance to reboot.' }),
-    ),
+    instanceName: ResourceNameSchema.openapi({
+      description: 'The name of the instance to reboot.',
+    }),
   })
   .openapi({ required: ['instanceName'], title: 'RebootInstanceRequest' })
   .openapi('RebootInstanceRequest')
 
 const RebootRelationalDatabaseResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('RebootRelationalDatabaseResult')
 
 const RebootRelationalDatabaseRequestSchema = z
   .object({
-    relationalDatabaseName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of your database to reboot.' }),
-    ),
+    relationalDatabaseName: ResourceNameSchema.openapi({
+      description: 'The name of your database to reboot.',
+    }),
   })
   .openapi({ required: ['relationalDatabaseName'], title: 'RebootRelationalDatabaseRequest' })
   .openapi('RebootRelationalDatabaseRequest')
 
 const RegisterContainerImageResultSchema = z
   .object({
-    containerImage: ContainerImageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that describes a container image that is registered to a Lightsail container service',
-        }),
-    ).exactOptional(),
+    containerImage: ContainerImageSchema.exactOptional().openapi({
+      description:
+        'An object that describes a container image that is registered to a Lightsail container service',
+    }),
   })
   .openapi({ required: [] })
   .openapi('RegisterContainerImageResult')
@@ -11126,100 +7723,72 @@ const ContainerLabelSchema = z
 
 const RegisterContainerImageRequestSchema = z
   .object({
-    serviceName: ContainerServiceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the container service for which to register a container image.',
-        }),
-    ),
-    label: ContainerLabelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The label for the container image when it's registered to the container service.</p> <p>Use a descriptive label that you can use to track the different versions of your registered container images.</p> <p>Use the <code>GetContainerImages</code> action to return the container images registered to a Lightsail container service. The label is the <code>&lt;imagelabel&gt;</code> portion of the following image name example:</p> <ul> <li> <p> <code>:container-service-1.&lt;imagelabel&gt;.1</code> </p> </li> </ul> <p>If the name of your container service is <code>mycontainerservice</code>, and the label that you specify is <code>mystaticwebsite</code>, then the name of the registered container image will be <code>:mycontainerservice.mystaticwebsite.1</code>.</p> <p>The number at the end of these image name examples represents the version of the registered container image. If you push and register another container image to the same Lightsail container service, with the same label, then the version number for the new registered container image will be <code>2</code>. If you push and register another container image, the version number will be <code>3</code>, and so on.</p>",
-        }),
-    ),
-    digest: StringSchema.and(
-      z.any().openapi({ description: 'The digest of the container image to be registered.' }),
-    ),
+    serviceName: ContainerServiceNameSchema.openapi({
+      description: 'The name of the container service for which to register a container image.',
+    }),
+    label: ContainerLabelSchema.openapi({
+      description:
+        "<p>The label for the container image when it's registered to the container service.</p> <p>Use a descriptive label that you can use to track the different versions of your registered container images.</p> <p>Use the <code>GetContainerImages</code> action to return the container images registered to a Lightsail container service. The label is the <code>&lt;imagelabel&gt;</code> portion of the following image name example:</p> <ul> <li> <p> <code>:container-service-1.&lt;imagelabel&gt;.1</code> </p> </li> </ul> <p>If the name of your container service is <code>mycontainerservice</code>, and the label that you specify is <code>mystaticwebsite</code>, then the name of the registered container image will be <code>:mycontainerservice.mystaticwebsite.1</code>.</p> <p>The number at the end of these image name examples represents the version of the registered container image. If you push and register another container image to the same Lightsail container service, with the same label, then the version number for the new registered container image will be <code>2</code>. If you push and register another container image, the version number will be <code>3</code>, and so on.</p>",
+    }),
+    digest: StringSchema.openapi({
+      description: 'The digest of the container image to be registered.',
+    }),
   })
   .openapi({ required: ['serviceName', 'label', 'digest'], title: 'RegisterContainerImageRequest' })
   .openapi('RegisterContainerImageRequest')
 
 const ReleaseStaticIpResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ReleaseStaticIpResult')
 
 const ReleaseStaticIpRequestSchema = z
   .object({
-    staticIpName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the static IP to delete.' }),
-    ),
+    staticIpName: ResourceNameSchema.openapi({
+      description: 'The name of the static IP to delete.',
+    }),
   })
   .openapi({ required: ['staticIpName'], title: 'ReleaseStaticIpRequest' })
   .openapi('ReleaseStaticIpRequest')
 
 const ResetDistributionCacheResultSchema = z
   .object({
-    status: StringSchema.and(
-      z.any().openapi({ description: 'The status of the reset cache request.' }),
-    ).exactOptional(),
-    createTime: IsoDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp of the reset cache request (e.g., <code>1479734909.17</code>) in Unix time format.',
-        }),
-    ).exactOptional(),
-    operation: OperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    status: StringSchema.exactOptional().openapi({
+      description: 'The status of the reset cache request.',
+    }),
+    createTime: IsoDateSchema.exactOptional().openapi({
+      description:
+        'The timestamp of the reset cache request (e.g., <code>1479734909.17</code>) in Unix time format.',
+    }),
+    operation: OperationSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ResetDistributionCacheResult')
 
 const ResetDistributionCacheRequestSchema = z
   .object({
-    distributionName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the distribution for which to reset cache.</p> <p>Use the <code>GetDistributions</code> action to get a list of distribution names that you can specify.</p>',
-        }),
-    ).exactOptional(),
+    distributionName: ResourceNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the distribution for which to reset cache.</p> <p>Use the <code>GetDistributions</code> action to get a list of distribution names that you can specify.</p>',
+    }),
   })
   .openapi({ title: 'ResetDistributionCacheRequest', required: [] })
   .openapi('ResetDistributionCacheRequest')
 
 const SendContactMethodVerificationResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SendContactMethodVerificationResult')
@@ -11230,55 +7799,37 @@ const ContactMethodVerificationProtocolSchema = z
 
 const SendContactMethodVerificationRequestSchema = z
   .object({
-    protocol: ContactMethodVerificationProtocolSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The protocol to verify, such as <code>Email</code> or <code>SMS</code> (text messaging).',
-        }),
-    ),
+    protocol: ContactMethodVerificationProtocolSchema.openapi({
+      description:
+        'The protocol to verify, such as <code>Email</code> or <code>SMS</code> (text messaging).',
+    }),
   })
   .openapi({ required: ['protocol'], title: 'SendContactMethodVerificationRequest' })
   .openapi('SendContactMethodVerificationRequest')
 
 const SetIpAddressTypeResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SetIpAddressTypeResult')
 
 const SetIpAddressTypeRequestSchema = z
   .object({
-    resourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The resource type.</p> <p>The possible values are <code>Distribution</code>, <code>Instance</code>, and <code>LoadBalancer</code>.</p> <note> <p>Distribution-related APIs are available only in the N. Virginia (<code>us-east-1</code>) Amazon Web Services Region. Set your Amazon Web Services Region configuration to <code>us-east-1</code> to create, view, or edit distributions.</p> </note>',
-        }),
-    ),
-    resourceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the resource for which to set the IP address type.' }),
-    ),
-    ipAddressType: IpAddressTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The IP address type to set for the specified resource.</p> <p>The possible values are <code>ipv4</code> for IPv4 only, and <code>dualstack</code> for IPv4 and IPv6.</p>',
-        }),
-    ),
+    resourceType: ResourceTypeSchema.openapi({
+      description:
+        '<p>The resource type.</p> <p>The possible values are <code>Distribution</code>, <code>Instance</code>, and <code>LoadBalancer</code>.</p> <note> <p>Distribution-related APIs are available only in the N. Virginia (<code>us-east-1</code>) Amazon Web Services Region. Set your Amazon Web Services Region configuration to <code>us-east-1</code> to create, view, or edit distributions.</p> </note>',
+    }),
+    resourceName: ResourceNameSchema.openapi({
+      description: 'The name of the resource for which to set the IP address type.',
+    }),
+    ipAddressType: IpAddressTypeSchema.openapi({
+      description:
+        '<p>The IP address type to set for the specified resource.</p> <p>The possible values are <code>ipv4</code> for IPv4 only, and <code>dualstack</code> for IPv4 and IPv6.</p>',
+    }),
   })
   .openapi({
     required: ['resourceType', 'resourceName', 'ipAddressType'],
@@ -11288,14 +7839,10 @@ const SetIpAddressTypeRequestSchema = z
 
 const SetResourceAccessForBucketResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SetResourceAccessForBucketResult')
@@ -11304,30 +7851,17 @@ const ResourceBucketAccessSchema = z.enum(['allow', 'deny']).openapi('ResourceBu
 
 const SetResourceAccessForBucketRequestSchema = z
   .object({
-    resourceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Lightsail instance for which to set bucket access. The instance must be in a running or stopped state.',
-        }),
-    ),
-    bucketName: BucketNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the bucket for which to set access to another Lightsail resource.',
-        }),
-    ),
-    access: ResourceBucketAccessSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The access setting.</p> <p>The following access settings are available:</p> <ul> <li> <p> <code>allow</code> - Allows access to the bucket and its objects.</p> </li> <li> <p> <code>deny</code> - Denies access to the bucket and its objects. Use this setting to remove access for a resource previously set to <code>allow</code>.</p> </li> </ul>',
-        }),
-    ),
+    resourceName: ResourceNameSchema.openapi({
+      description:
+        'The name of the Lightsail instance for which to set bucket access. The instance must be in a running or stopped state.',
+    }),
+    bucketName: BucketNameSchema.openapi({
+      description: 'The name of the bucket for which to set access to another Lightsail resource.',
+    }),
+    access: ResourceBucketAccessSchema.openapi({
+      description:
+        '<p>The access setting.</p> <p>The following access settings are available:</p> <ul> <li> <p> <code>allow</code> - Allows access to the bucket and its objects.</p> </li> <li> <p> <code>deny</code> - Denies access to the bucket and its objects. Use this setting to remove access for a resource previously set to <code>allow</code>.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['resourceName', 'bucketName', 'access'],
@@ -11337,240 +7871,181 @@ const SetResourceAccessForBucketRequestSchema = z
 
 const StartGUISessionResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z.any().openapi({ description: 'The available API operations.' }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description: 'The available API operations.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartGUISessionResult')
 
 const StartGUISessionRequestSchema = z
-  .object({
-    resourceName: ResourceNameSchema.and(z.any().openapi({ description: 'The resource name.' })),
-  })
+  .object({ resourceName: ResourceNameSchema.openapi({ description: 'The resource name.' }) })
   .openapi({ required: ['resourceName'], title: 'StartGUISessionRequest' })
   .openapi('StartGUISessionRequest')
 
 const StartInstanceResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartInstanceResult')
 
 const StartInstanceRequestSchema = z
   .object({
-    instanceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the instance (a virtual private server) to start.' }),
-    ),
+    instanceName: ResourceNameSchema.openapi({
+      description: 'The name of the instance (a virtual private server) to start.',
+    }),
   })
   .openapi({ required: ['instanceName'], title: 'StartInstanceRequest' })
   .openapi('StartInstanceRequest')
 
 const StartRelationalDatabaseResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartRelationalDatabaseResult')
 
 const StartRelationalDatabaseRequestSchema = z
   .object({
-    relationalDatabaseName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of your database to start.' }),
-    ),
+    relationalDatabaseName: ResourceNameSchema.openapi({
+      description: 'The name of your database to start.',
+    }),
   })
   .openapi({ required: ['relationalDatabaseName'], title: 'StartRelationalDatabaseRequest' })
   .openapi('StartRelationalDatabaseRequest')
 
 const StopGUISessionResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z.any().openapi({ description: 'The available API operations.' }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description: 'The available API operations.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StopGUISessionResult')
 
 const StopGUISessionRequestSchema = z
-  .object({
-    resourceName: ResourceNameSchema.and(z.any().openapi({ description: 'The resource name.' })),
-  })
+  .object({ resourceName: ResourceNameSchema.openapi({ description: 'The resource name.' }) })
   .openapi({ required: ['resourceName'], title: 'StopGUISessionRequest' })
   .openapi('StopGUISessionRequest')
 
 const StopInstanceResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StopInstanceResult')
 
 const StopInstanceRequestSchema = z
   .object({
-    instanceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the instance (a virtual private server) to stop.' }),
-    ),
-    force: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>When set to <code>True</code>, forces a Lightsail instance that is stuck in a <code>stopping</code> state to stop.</p> <important> <p>Only use the <code>force</code> parameter if your instance is stuck in the <code>stopping</code> state. In any other state, your instance should stop normally without adding this parameter to your API request.</p> </important>',
-        }),
-    ).exactOptional(),
+    instanceName: ResourceNameSchema.openapi({
+      description: 'The name of the instance (a virtual private server) to stop.',
+    }),
+    force: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>When set to <code>True</code>, forces a Lightsail instance that is stuck in a <code>stopping</code> state to stop.</p> <important> <p>Only use the <code>force</code> parameter if your instance is stuck in the <code>stopping</code> state. In any other state, your instance should stop normally without adding this parameter to your API request.</p> </important>',
+    }),
   })
   .openapi({ required: ['instanceName'], title: 'StopInstanceRequest' })
   .openapi('StopInstanceRequest')
 
 const StopRelationalDatabaseResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StopRelationalDatabaseResult')
 
 const StopRelationalDatabaseRequestSchema = z
   .object({
-    relationalDatabaseName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of your database to stop.' }),
-    ),
-    relationalDatabaseSnapshotName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of your new database snapshot to be created before stopping your database.',
-        }),
-    ).exactOptional(),
+    relationalDatabaseName: ResourceNameSchema.openapi({
+      description: 'The name of your database to stop.',
+    }),
+    relationalDatabaseSnapshotName: ResourceNameSchema.exactOptional().openapi({
+      description:
+        'The name of your new database snapshot to be created before stopping your database.',
+    }),
   })
   .openapi({ required: ['relationalDatabaseName'], title: 'StopRelationalDatabaseRequest' })
   .openapi('StopRelationalDatabaseRequest')
 
 const TagResourceResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('TagResourceResult')
 
 const TagResourceRequestSchema = z
   .object({
-    resourceName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the resource to which you are adding tags.' }),
-    ),
-    resourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the resource to which you want to add a tag.',
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(z.any().openapi({ description: 'The tag key and optional value.' })),
+    resourceName: ResourceNameSchema.openapi({
+      description: 'The name of the resource to which you are adding tags.',
+    }),
+    resourceArn: ResourceArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the resource to which you want to add a tag.',
+    }),
+    tags: TagListSchema.openapi({ description: 'The tag key and optional value.' }),
   })
   .openapi({ required: ['resourceName', 'tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const TestAlarmResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('TestAlarmResult')
 
 const TestAlarmRequestSchema = z
   .object({
-    alarmName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the alarm to test.' }),
-    ),
-    state: AlarmStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The alarm state to test.</p> <p>An alarm has the following possible states that can be tested:</p> <ul> <li> <p> <code>ALARM</code> - The metric is outside of the defined threshold.</p> </li> <li> <p> <code>INSUFFICIENT_DATA</code> - The alarm has just started, the metric is not available, or not enough data is available for the metric to determine the alarm state.</p> </li> <li> <p> <code>OK</code> - The metric is within the defined threshold.</p> </li> </ul>',
-        }),
-    ),
+    alarmName: ResourceNameSchema.openapi({ description: 'The name of the alarm to test.' }),
+    state: AlarmStateSchema.openapi({
+      description:
+        '<p>The alarm state to test.</p> <p>An alarm has the following possible states that can be tested:</p> <ul> <li> <p> <code>ALARM</code> - The metric is outside of the defined threshold.</p> </li> <li> <p> <code>INSUFFICIENT_DATA</code> - The alarm has just started, the metric is not available, or not enough data is available for the metric to determine the alarm state.</p> </li> <li> <p> <code>OK</code> - The metric is within the defined threshold.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['alarmName', 'state'], title: 'TestAlarmRequest' })
   .openapi('TestAlarmRequest')
 
 const UnpeerVpcResultSchema = z
   .object({
-    operation: OperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operation: OperationSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UnpeerVpcResult')
 
 const UnpeerVpcRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UnpeerVpcRequest' })
   .openapi('UnpeerVpcRequest')
 
 const UntagResourceResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UntagResourceResult')
@@ -11579,368 +8054,240 @@ const TagKeyListSchema = z.array(TagKeySchema).openapi('TagKeyList')
 
 const UntagResourceRequestSchema = z
   .object({
-    resourceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the resource from which you are removing a tag.' }),
-    ),
-    resourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the resource from which you want to remove a tag.',
-        }),
-    ).exactOptional(),
-    tagKeys: TagKeyListSchema.and(
-      z.any().openapi({ description: 'The tag keys to delete from the specified resource.' }),
-    ),
+    resourceName: ResourceNameSchema.openapi({
+      description: 'The name of the resource from which you are removing a tag.',
+    }),
+    resourceArn: ResourceArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the resource from which you want to remove a tag.',
+    }),
+    tagKeys: TagKeyListSchema.openapi({
+      description: 'The tag keys to delete from the specified resource.',
+    }),
   })
   .openapi({ required: ['resourceName', 'tagKeys'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateBucketResultSchema = z
   .object({
-    bucket: BucketSchema.and(
-      z.any().openapi({ description: 'An object that describes the bucket that is updated.' }),
-    ).exactOptional(),
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    bucket: BucketSchema.exactOptional().openapi({
+      description: 'An object that describes the bucket that is updated.',
+    }),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateBucketResult')
 
 const UpdateBucketRequestSchema = z
   .object({
-    bucketName: BucketNameSchema.and(
-      z.any().openapi({ description: 'The name of the bucket to update.' }),
-    ),
-    accessRules: AccessRulesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that sets the public accessibility of objects in the specified bucket.',
-        }),
-    ).exactOptional(),
-    versioning: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether to enable or suspend versioning of objects in the bucket.</p> <p>The following options can be specified:</p> <ul> <li> <p> <code>Enabled</code> - Enables versioning of objects in the specified bucket.</p> </li> <li> <p> <code>Suspended</code> - Suspends versioning of objects in the specified bucket. Existing object versions are retained.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    readonlyAccessAccounts: PartnerIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of strings to specify the Amazon Web Services account IDs that can access the bucket.</p> <p>You can give a maximum of 10 Amazon Web Services accounts access to a bucket.</p>',
-        }),
-    ).exactOptional(),
-    accessLogConfig: BucketAccessLogConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that describes the access log configuration for the bucket.',
-        }),
-    ).exactOptional(),
+    bucketName: BucketNameSchema.openapi({ description: 'The name of the bucket to update.' }),
+    accessRules: AccessRulesSchema.exactOptional().openapi({
+      description:
+        'An object that sets the public accessibility of objects in the specified bucket.',
+    }),
+    versioning: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies whether to enable or suspend versioning of objects in the bucket.</p> <p>The following options can be specified:</p> <ul> <li> <p> <code>Enabled</code> - Enables versioning of objects in the specified bucket.</p> </li> <li> <p> <code>Suspended</code> - Suspends versioning of objects in the specified bucket. Existing object versions are retained.</p> </li> </ul>',
+    }),
+    readonlyAccessAccounts: PartnerIdListSchema.exactOptional().openapi({
+      description:
+        '<p>An array of strings to specify the Amazon Web Services account IDs that can access the bucket.</p> <p>You can give a maximum of 10 Amazon Web Services accounts access to a bucket.</p>',
+    }),
+    accessLogConfig: BucketAccessLogConfigSchema.exactOptional().openapi({
+      description: 'An object that describes the access log configuration for the bucket.',
+    }),
   })
   .openapi({ required: ['bucketName'], title: 'UpdateBucketRequest' })
   .openapi('UpdateBucketRequest')
 
 const UpdateBucketBundleResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateBucketBundleResult')
 
 const UpdateBucketBundleRequestSchema = z
   .object({
-    bucketName: BucketNameSchema.and(
-      z.any().openapi({ description: 'The name of the bucket for which to update the bundle.' }),
-    ),
-    bundleId: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the new bundle to apply to the bucket.</p> <p>Use the <a href="https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_GetBucketBundles.html">GetBucketBundles</a> action to get a list of bundle IDs that you can specify.</p>',
-        }),
-    ),
+    bucketName: BucketNameSchema.openapi({
+      description: 'The name of the bucket for which to update the bundle.',
+    }),
+    bundleId: NonEmptyStringSchema.openapi({
+      description:
+        '<p>The ID of the new bundle to apply to the bucket.</p> <p>Use the <a href="https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_GetBucketBundles.html">GetBucketBundles</a> action to get a list of bundle IDs that you can specify.</p>',
+    }),
   })
   .openapi({ required: ['bucketName', 'bundleId'], title: 'UpdateBucketBundleRequest' })
   .openapi('UpdateBucketBundleRequest')
 
 const UpdateContainerServiceResultSchema = z
   .object({
-    containerService: ContainerServiceSchema.and(
-      z.any().openapi({ description: 'An object that describes a container service.' }),
-    ).exactOptional(),
+    containerService: ContainerServiceSchema.exactOptional().openapi({
+      description: 'An object that describes a container service.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateContainerServiceResult')
 
 const UpdateContainerServiceRequestSchema = z
   .object({
-    serviceName: ContainerServiceNameSchema.and(
-      z.any().openapi({ description: 'The name of the container service to update.' }),
-    ),
-    power: ContainerServicePowerNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The power for the container service.</p> <p>The power specifies the amount of memory, vCPUs, and base monthly cost of each node of the container service. The <code>power</code> and <code>scale</code> of a container service makes up its configured capacity. To determine the monthly price of your container service, multiply the base price of the <code>power</code> with the <code>scale</code> (the number of nodes) of the service.</p> <p>Use the <code>GetContainerServicePowers</code> action to view the specifications of each power option.</p>',
-        }),
-    ).exactOptional(),
-    scale: ContainerServiceScaleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The scale for the container service.</p> <p>The scale specifies the allocated compute nodes of the container service. The <code>power</code> and <code>scale</code> of a container service makes up its configured capacity. To determine the monthly price of your container service, multiply the base price of the <code>power</code> with the <code>scale</code> (the number of nodes) of the service.</p>',
-        }),
-    ).exactOptional(),
-    isDisabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A Boolean value to indicate whether the container service is disabled.',
-        }),
-    ).exactOptional(),
-    publicDomainNames: ContainerServicePublicDomainsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The public domain names to use with the container service, such as <code>example.com</code> and <code>www.example.com</code>.</p> <p>You can specify up to four public domain names for a container service. The domain names that you specify are used when you create a deployment with a container configured as the public endpoint of your container service.</p> <p>If you don't specify public domain names, then you can use the default domain of the container service.</p> <important> <p>You must create and validate an SSL/TLS certificate before you can use public domain names with your container service. Use the <code>CreateCertificate</code> action to create a certificate for the public domain names you want to use with your container service.</p> </important> <p>You can specify public domain names using a string to array map as shown in the example later on this page.</p>",
-        }),
-    ).exactOptional(),
-    privateRegistryAccess: PrivateRegistryAccessRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An object to describe the configuration for the container service to access private container image repositories, such as Amazon Elastic Container Registry (Amazon ECR) private repositories.</p> <p>For more information, see <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-container-service-ecr-private-repo-access">Configuring access to an Amazon ECR private repository for an Amazon Lightsail container service</a> in the <i>Amazon Lightsail Developer Guide</i>.</p>',
-        }),
-    ).exactOptional(),
+    serviceName: ContainerServiceNameSchema.openapi({
+      description: 'The name of the container service to update.',
+    }),
+    power: ContainerServicePowerNameSchema.exactOptional().openapi({
+      description:
+        '<p>The power for the container service.</p> <p>The power specifies the amount of memory, vCPUs, and base monthly cost of each node of the container service. The <code>power</code> and <code>scale</code> of a container service makes up its configured capacity. To determine the monthly price of your container service, multiply the base price of the <code>power</code> with the <code>scale</code> (the number of nodes) of the service.</p> <p>Use the <code>GetContainerServicePowers</code> action to view the specifications of each power option.</p>',
+    }),
+    scale: ContainerServiceScaleSchema.exactOptional().openapi({
+      description:
+        '<p>The scale for the container service.</p> <p>The scale specifies the allocated compute nodes of the container service. The <code>power</code> and <code>scale</code> of a container service makes up its configured capacity. To determine the monthly price of your container service, multiply the base price of the <code>power</code> with the <code>scale</code> (the number of nodes) of the service.</p>',
+    }),
+    isDisabled: BooleanSchema.exactOptional().openapi({
+      description: 'A Boolean value to indicate whether the container service is disabled.',
+    }),
+    publicDomainNames: ContainerServicePublicDomainsSchema.exactOptional().openapi({
+      description:
+        "<p>The public domain names to use with the container service, such as <code>example.com</code> and <code>www.example.com</code>.</p> <p>You can specify up to four public domain names for a container service. The domain names that you specify are used when you create a deployment with a container configured as the public endpoint of your container service.</p> <p>If you don't specify public domain names, then you can use the default domain of the container service.</p> <important> <p>You must create and validate an SSL/TLS certificate before you can use public domain names with your container service. Use the <code>CreateCertificate</code> action to create a certificate for the public domain names you want to use with your container service.</p> </important> <p>You can specify public domain names using a string to array map as shown in the example later on this page.</p>",
+    }),
+    privateRegistryAccess: PrivateRegistryAccessRequestSchema.exactOptional().openapi({
+      description:
+        '<p>An object to describe the configuration for the container service to access private container image repositories, such as Amazon Elastic Container Registry (Amazon ECR) private repositories.</p> <p>For more information, see <a href="https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-container-service-ecr-private-repo-access">Configuring access to an Amazon ECR private repository for an Amazon Lightsail container service</a> in the <i>Amazon Lightsail Developer Guide</i>.</p>',
+    }),
   })
   .openapi({ required: ['serviceName'], title: 'UpdateContainerServiceRequest' })
   .openapi('UpdateContainerServiceRequest')
 
 const UpdateDistributionResultSchema = z
   .object({
-    operation: OperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operation: OperationSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateDistributionResult')
 
 const UpdateDistributionRequestSchema = z
   .object({
-    distributionName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the distribution to update.</p> <p>Use the <code>GetDistributions</code> action to get a list of distribution names that you can specify.</p>',
-        }),
-    ),
-    origin: InputOriginSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An object that describes the origin resource for the distribution, such as a Lightsail instance, bucket, or load balancer.</p> <p>The distribution pulls, caches, and serves content from the origin.</p>',
-        }),
-    ).exactOptional(),
-    defaultCacheBehavior: CacheBehaviorSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that describes the default cache behavior for the distribution.',
-        }),
-    ).exactOptional(),
-    cacheBehaviorSettings: CacheSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>An object that describes the cache behavior settings for the distribution.</p> <note> <p>The <code>cacheBehaviorSettings</code> specified in your <code>UpdateDistributionRequest</code> will replace your distribution's existing settings.</p> </note>",
-        }),
-    ).exactOptional(),
-    cacheBehaviors: CacheBehaviorListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the per-path cache behavior for the distribution.',
-        }),
-    ).exactOptional(),
-    isEnabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Indicates whether to enable the distribution.' }),
-    ).exactOptional(),
+    distributionName: ResourceNameSchema.openapi({
+      description:
+        '<p>The name of the distribution to update.</p> <p>Use the <code>GetDistributions</code> action to get a list of distribution names that you can specify.</p>',
+    }),
+    origin: InputOriginSchema.exactOptional().openapi({
+      description:
+        '<p>An object that describes the origin resource for the distribution, such as a Lightsail instance, bucket, or load balancer.</p> <p>The distribution pulls, caches, and serves content from the origin.</p>',
+    }),
+    defaultCacheBehavior: CacheBehaviorSchema.exactOptional().openapi({
+      description: 'An object that describes the default cache behavior for the distribution.',
+    }),
+    cacheBehaviorSettings: CacheSettingsSchema.exactOptional().openapi({
+      description:
+        "<p>An object that describes the cache behavior settings for the distribution.</p> <note> <p>The <code>cacheBehaviorSettings</code> specified in your <code>UpdateDistributionRequest</code> will replace your distribution's existing settings.</p> </note>",
+    }),
+    cacheBehaviors: CacheBehaviorListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the per-path cache behavior for the distribution.',
+    }),
+    isEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Indicates whether to enable the distribution.',
+    }),
   })
   .openapi({ required: ['distributionName'], title: 'UpdateDistributionRequest' })
   .openapi('UpdateDistributionRequest')
 
 const UpdateDistributionBundleResultSchema = z
   .object({
-    operation: OperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that describes the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operation: OperationSchema.exactOptional().openapi({
+      description:
+        'An object that describes the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateDistributionBundleResult')
 
 const UpdateDistributionBundleRequestSchema = z
   .object({
-    distributionName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the distribution for which to update the bundle.</p> <p>Use the <code>GetDistributions</code> action to get a list of distribution names that you can specify.</p>',
-        }),
-    ).exactOptional(),
-    bundleId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The bundle ID of the new bundle to apply to your distribution.</p> <p>Use the <code>GetDistributionBundles</code> action to get a list of distribution bundle IDs that you can specify.</p>',
-        }),
-    ).exactOptional(),
+    distributionName: ResourceNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the distribution for which to update the bundle.</p> <p>Use the <code>GetDistributions</code> action to get a list of distribution names that you can specify.</p>',
+    }),
+    bundleId: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The bundle ID of the new bundle to apply to your distribution.</p> <p>Use the <code>GetDistributionBundles</code> action to get a list of distribution bundle IDs that you can specify.</p>',
+    }),
   })
   .openapi({ title: 'UpdateDistributionBundleRequest', required: [] })
   .openapi('UpdateDistributionBundleRequest')
 
 const UpdateDomainEntryResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateDomainEntryResult')
 
 const UpdateDomainEntryRequestSchema = z
   .object({
-    domainName: DomainNameSchema.and(
-      z.any().openapi({ description: 'The name of the domain recordset to update.' }),
-    ),
-    domainEntry: DomainEntrySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array of key-value pairs containing information about the domain entry.',
-        }),
-    ),
+    domainName: DomainNameSchema.openapi({
+      description: 'The name of the domain recordset to update.',
+    }),
+    domainEntry: DomainEntrySchema.openapi({
+      description: 'An array of key-value pairs containing information about the domain entry.',
+    }),
   })
   .openapi({ required: ['domainName', 'domainEntry'], title: 'UpdateDomainEntryRequest' })
   .openapi('UpdateDomainEntryRequest')
 
 const UpdateInstanceMetadataOptionsResultSchema = z
   .object({
-    operation: OperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operation: OperationSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateInstanceMetadataOptionsResult')
 
 const UpdateInstanceMetadataOptionsRequestSchema = z
   .object({
-    instanceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the instance for which to update metadata parameters.',
-        }),
-    ),
-    httpTokens: HttpTokensSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The state of token usage for your instance metadata requests. If the parameter is not specified in the request, the default state is <code>optional</code>.</p> <p>If the state is <code>optional</code>, you can choose whether to retrieve instance metadata with a signed token header on your request. If you retrieve the IAM role credentials without a token, the version 1.0 role credentials are returned. If you retrieve the IAM role credentials by using a valid signed token, the version 2.0 role credentials are returned.</p> <p>If the state is <code>required</code>, you must send a signed token header with all instance metadata retrieval requests. In this state, retrieving the IAM role credential always returns the version 2.0 credentials. The version 1.0 credentials are not available.</p>',
-        }),
-    ).exactOptional(),
-    httpEndpoint: HttpEndpointSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Enables or disables the HTTP metadata endpoint on your instances. If this parameter is not specified, the existing state is maintained.</p> <p>If you specify a value of <code>disabled</code>, you cannot access your instance metadata.</p>',
-        }),
-    ).exactOptional(),
-    httpPutResponseHopLimit: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The desired HTTP PUT response hop limit for instance metadata requests. A larger number means that the instance metadata requests can travel farther. If no parameter is specified, the existing state is maintained.',
-        }),
-    ).exactOptional(),
-    httpProtocolIpv6: HttpProtocolIpv6Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Enables or disables the IPv6 endpoint for the instance metadata service. This setting applies only when the HTTP metadata endpoint is enabled.</p> <note> <p>This parameter is available only for instances in the Europe (Stockholm) Amazon Web Services Region (<code>eu-north-1</code>).</p> </note>',
-        }),
-    ).exactOptional(),
+    instanceName: ResourceNameSchema.openapi({
+      description: 'The name of the instance for which to update metadata parameters.',
+    }),
+    httpTokens: HttpTokensSchema.exactOptional().openapi({
+      description:
+        '<p>The state of token usage for your instance metadata requests. If the parameter is not specified in the request, the default state is <code>optional</code>.</p> <p>If the state is <code>optional</code>, you can choose whether to retrieve instance metadata with a signed token header on your request. If you retrieve the IAM role credentials without a token, the version 1.0 role credentials are returned. If you retrieve the IAM role credentials by using a valid signed token, the version 2.0 role credentials are returned.</p> <p>If the state is <code>required</code>, you must send a signed token header with all instance metadata retrieval requests. In this state, retrieving the IAM role credential always returns the version 2.0 credentials. The version 1.0 credentials are not available.</p>',
+    }),
+    httpEndpoint: HttpEndpointSchema.exactOptional().openapi({
+      description:
+        '<p>Enables or disables the HTTP metadata endpoint on your instances. If this parameter is not specified, the existing state is maintained.</p> <p>If you specify a value of <code>disabled</code>, you cannot access your instance metadata.</p>',
+    }),
+    httpPutResponseHopLimit: IntegerSchema.exactOptional().openapi({
+      description:
+        'The desired HTTP PUT response hop limit for instance metadata requests. A larger number means that the instance metadata requests can travel farther. If no parameter is specified, the existing state is maintained.',
+    }),
+    httpProtocolIpv6: HttpProtocolIpv6Schema.exactOptional().openapi({
+      description:
+        '<p>Enables or disables the IPv6 endpoint for the instance metadata service. This setting applies only when the HTTP metadata endpoint is enabled.</p> <note> <p>This parameter is available only for instances in the Europe (Stockholm) Amazon Web Services Region (<code>eu-north-1</code>).</p> </note>',
+    }),
   })
   .openapi({ required: ['instanceName'], title: 'UpdateInstanceMetadataOptionsRequest' })
   .openapi('UpdateInstanceMetadataOptionsRequest')
 
 const UpdateLoadBalancerAttributeResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateLoadBalancerAttributeResult')
@@ -11957,25 +8304,17 @@ const LoadBalancerAttributeNameSchema = z
 
 const UpdateLoadBalancerAttributeRequestSchema = z
   .object({
-    loadBalancerName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the load balancer that you want to modify (e.g., <code>my-load-balancer</code>.',
-        }),
-    ),
-    attributeName: LoadBalancerAttributeNameSchema.and(
-      z.any().openapi({ description: 'The name of the attribute you want to update.' }),
-    ),
-    attributeValue: StringMax256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The value that you want to specify for the attribute name.</p> <p>The following values are supported depending on what you specify for the <code>attributeName</code> request parameter:</p> <ul> <li> <p>If you specify <code>HealthCheckPath</code> for the <code>attributeName</code> request parameter, then the <code>attributeValue</code> request parameter must be the path to ping on the target (for example, <code>/weather/us/wa/seattle</code>).</p> </li> <li> <p>If you specify <code>SessionStickinessEnabled</code> for the <code>attributeName</code> request parameter, then the <code>attributeValue</code> request parameter must be <code>true</code> to activate session stickiness or <code>false</code> to deactivate session stickiness.</p> </li> <li> <p>If you specify <code>SessionStickiness_LB_CookieDurationSeconds</code> for the <code>attributeName</code> request parameter, then the <code>attributeValue</code> request parameter must be an interger that represents the cookie duration in seconds.</p> </li> <li> <p>If you specify <code>HttpsRedirectionEnabled</code> for the <code>attributeName</code> request parameter, then the <code>attributeValue</code> request parameter must be <code>true</code> to activate HTTP to HTTPS redirection or <code>false</code> to deactivate HTTP to HTTPS redirection.</p> </li> <li> <p>If you specify <code>TlsPolicyName</code> for the <code>attributeName</code> request parameter, then the <code>attributeValue</code> request parameter must be the name of the TLS policy.</p> <p>Use the <a href="https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_GetLoadBalancerTlsPolicies.html">GetLoadBalancerTlsPolicies</a> action to get a list of TLS policy names that you can specify.</p> </li> </ul>',
-        }),
-    ),
+    loadBalancerName: ResourceNameSchema.openapi({
+      description:
+        'The name of the load balancer that you want to modify (e.g., <code>my-load-balancer</code>.',
+    }),
+    attributeName: LoadBalancerAttributeNameSchema.openapi({
+      description: 'The name of the attribute you want to update.',
+    }),
+    attributeValue: StringMax256Schema.openapi({
+      description:
+        '<p>The value that you want to specify for the attribute name.</p> <p>The following values are supported depending on what you specify for the <code>attributeName</code> request parameter:</p> <ul> <li> <p>If you specify <code>HealthCheckPath</code> for the <code>attributeName</code> request parameter, then the <code>attributeValue</code> request parameter must be the path to ping on the target (for example, <code>/weather/us/wa/seattle</code>).</p> </li> <li> <p>If you specify <code>SessionStickinessEnabled</code> for the <code>attributeName</code> request parameter, then the <code>attributeValue</code> request parameter must be <code>true</code> to activate session stickiness or <code>false</code> to deactivate session stickiness.</p> </li> <li> <p>If you specify <code>SessionStickiness_LB_CookieDurationSeconds</code> for the <code>attributeName</code> request parameter, then the <code>attributeValue</code> request parameter must be an interger that represents the cookie duration in seconds.</p> </li> <li> <p>If you specify <code>HttpsRedirectionEnabled</code> for the <code>attributeName</code> request parameter, then the <code>attributeValue</code> request parameter must be <code>true</code> to activate HTTP to HTTPS redirection or <code>false</code> to deactivate HTTP to HTTPS redirection.</p> </li> <li> <p>If you specify <code>TlsPolicyName</code> for the <code>attributeName</code> request parameter, then the <code>attributeValue</code> request parameter must be the name of the TLS policy.</p> <p>Use the <a href="https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_GetLoadBalancerTlsPolicies.html">GetLoadBalancerTlsPolicies</a> action to get a list of TLS policy names that you can specify.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['loadBalancerName', 'attributeName', 'attributeValue'],
@@ -11985,120 +8324,76 @@ const UpdateLoadBalancerAttributeRequestSchema = z
 
 const UpdateRelationalDatabaseResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateRelationalDatabaseResult')
 
 const UpdateRelationalDatabaseRequestSchema = z
   .object({
-    relationalDatabaseName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of your Lightsail database resource to update.' }),
-    ),
-    masterUserPassword: SensitiveStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The password for the master user. The password can include any printable ASCII character except "/", """, or "@".</p> <p>My<b>SQL</b> </p> <p>Constraints: Must contain from 8 to 41 characters.</p> <p> <b>PostgreSQL</b> </p> <p>Constraints: Must contain from 8 to 128 characters.</p>',
-        }),
-    ).exactOptional(),
-    rotateMasterUserPassword: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>When <code>true</code>, the master user password is changed to a new strong password generated by Lightsail.</p> <p>Use the <code>get relational database master user password</code> operation to get the new password.</p>',
-        }),
-    ).exactOptional(),
-    preferredBackupWindow: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The daily time range during which automated backups are created for your database if automated backups are enabled.</p> <p>Constraints:</p> <ul> <li> <p>Must be in the <code>hh24:mi-hh24:mi</code> format.</p> <p>Example: <code>16:00-16:30</code> </p> </li> <li> <p>Specified in Coordinated Universal Time (UTC).</p> </li> <li> <p>Must not conflict with the preferred maintenance window.</p> </li> <li> <p>Must be at least 30 minutes.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    preferredMaintenanceWindow: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The weekly time range during which system maintenance can occur on your database.</p> <p>The default is a 30-minute window selected at random from an 8-hour block of time for each Amazon Web Services Region, occurring on a random day of the week.</p> <p>Constraints:</p> <ul> <li> <p>Must be in the <code>ddd:hh24:mi-ddd:hh24:mi</code> format.</p> </li> <li> <p>Valid days: Mon, Tue, Wed, Thu, Fri, Sat, Sun.</p> </li> <li> <p>Must be at least 30 minutes.</p> </li> <li> <p>Specified in Coordinated Universal Time (UTC).</p> </li> <li> <p>Example: <code>Tue:17:00-Tue:17:30</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    enableBackupRetention: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>When <code>true</code>, enables automated backup retention for your database.</p> <p>Updates are applied during the next maintenance window because this can result in an outage.</p>',
-        }),
-    ).exactOptional(),
-    disableBackupRetention: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>When <code>true</code>, disables automated backup retention for your database.</p> <p>Disabling backup retention deletes all automated database backups. Before disabling this, you may want to create a snapshot of your database using the <code>create relational database snapshot</code> operation.</p> <p>Updates are applied during the next maintenance window because this can result in an outage.</p>',
-        }),
-    ).exactOptional(),
-    publiclyAccessible: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the accessibility options for your database. A value of <code>true</code> specifies a database that is available to resources outside of your Lightsail account. A value of <code>false</code> specifies a database that is available only to your Lightsail resources in the same region as your database.',
-        }),
-    ).exactOptional(),
-    applyImmediately: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>When <code>true</code>, applies changes immediately. When <code>false</code>, applies changes during the preferred maintenance window. Some changes may cause an outage.</p> <p>Default: <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    caCertificateIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates the certificate that needs to be associated with the database.',
-        }),
-    ).exactOptional(),
+    relationalDatabaseName: ResourceNameSchema.openapi({
+      description: 'The name of your Lightsail database resource to update.',
+    }),
+    masterUserPassword: SensitiveStringSchema.exactOptional().openapi({
+      description:
+        '<p>The password for the master user. The password can include any printable ASCII character except "/", """, or "@".</p> <p>My<b>SQL</b> </p> <p>Constraints: Must contain from 8 to 41 characters.</p> <p> <b>PostgreSQL</b> </p> <p>Constraints: Must contain from 8 to 128 characters.</p>',
+    }),
+    rotateMasterUserPassword: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>When <code>true</code>, the master user password is changed to a new strong password generated by Lightsail.</p> <p>Use the <code>get relational database master user password</code> operation to get the new password.</p>',
+    }),
+    preferredBackupWindow: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The daily time range during which automated backups are created for your database if automated backups are enabled.</p> <p>Constraints:</p> <ul> <li> <p>Must be in the <code>hh24:mi-hh24:mi</code> format.</p> <p>Example: <code>16:00-16:30</code> </p> </li> <li> <p>Specified in Coordinated Universal Time (UTC).</p> </li> <li> <p>Must not conflict with the preferred maintenance window.</p> </li> <li> <p>Must be at least 30 minutes.</p> </li> </ul>',
+    }),
+    preferredMaintenanceWindow: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The weekly time range during which system maintenance can occur on your database.</p> <p>The default is a 30-minute window selected at random from an 8-hour block of time for each Amazon Web Services Region, occurring on a random day of the week.</p> <p>Constraints:</p> <ul> <li> <p>Must be in the <code>ddd:hh24:mi-ddd:hh24:mi</code> format.</p> </li> <li> <p>Valid days: Mon, Tue, Wed, Thu, Fri, Sat, Sun.</p> </li> <li> <p>Must be at least 30 minutes.</p> </li> <li> <p>Specified in Coordinated Universal Time (UTC).</p> </li> <li> <p>Example: <code>Tue:17:00-Tue:17:30</code> </p> </li> </ul>',
+    }),
+    enableBackupRetention: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>When <code>true</code>, enables automated backup retention for your database.</p> <p>Updates are applied during the next maintenance window because this can result in an outage.</p>',
+    }),
+    disableBackupRetention: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>When <code>true</code>, disables automated backup retention for your database.</p> <p>Disabling backup retention deletes all automated database backups. Before disabling this, you may want to create a snapshot of your database using the <code>create relational database snapshot</code> operation.</p> <p>Updates are applied during the next maintenance window because this can result in an outage.</p>',
+    }),
+    publiclyAccessible: BooleanSchema.exactOptional().openapi({
+      description:
+        'Specifies the accessibility options for your database. A value of <code>true</code> specifies a database that is available to resources outside of your Lightsail account. A value of <code>false</code> specifies a database that is available only to your Lightsail resources in the same region as your database.',
+    }),
+    applyImmediately: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>When <code>true</code>, applies changes immediately. When <code>false</code>, applies changes during the preferred maintenance window. Some changes may cause an outage.</p> <p>Default: <code>false</code> </p>',
+    }),
+    caCertificateIdentifier: StringSchema.exactOptional().openapi({
+      description: 'Indicates the certificate that needs to be associated with the database.',
+    }),
   })
   .openapi({ required: ['relationalDatabaseName'], title: 'UpdateRelationalDatabaseRequest' })
   .openapi('UpdateRelationalDatabaseRequest')
 
 const UpdateRelationalDatabaseParametersResultSchema = z
   .object({
-    operations: OperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
-        }),
-    ).exactOptional(),
+    operations: OperationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateRelationalDatabaseParametersResult')
 
 const UpdateRelationalDatabaseParametersRequestSchema = z
   .object({
-    relationalDatabaseName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of your database for which to update parameters.' }),
-    ),
-    parameters: RelationalDatabaseParameterListSchema.and(
-      z.any().openapi({ description: 'The database parameters to update.' }),
-    ),
+    relationalDatabaseName: ResourceNameSchema.openapi({
+      description: 'The name of your database for which to update parameters.',
+    }),
+    parameters: RelationalDatabaseParameterListSchema.openapi({
+      description: 'The database parameters to update.',
+    }),
   })
   .openapi({
     required: ['relationalDatabaseName', 'parameters'],

@@ -1162,7 +1162,7 @@ const UserSchema = z
       .exactOptional()
       .openapi({ description: 'Password hashing algorithm.', 'x-example': 'argon2' }),
     hashOptions: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ description: 'Password hashing algorithm configuration.', 'x-example': {} }),
@@ -1203,7 +1203,7 @@ const UserSchema = z
       .boolean()
       .openapi({ description: 'Multi factor authentication status.', 'x-example': true }),
     prefs: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'User preferences as a key-value object',
         'x-example': { theme: 'pink', timezone: 'UTC' },
@@ -1973,7 +1973,7 @@ const TeamSchema = z
     name: z.string().openapi({ description: 'Team name.', 'x-example': 'VIP' }),
     total: z.int32().openapi({ description: 'Total number of team members.', 'x-example': 7 }),
     prefs: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'Team preferences as a key-value object',
         'x-example': { theme: 'pink', timezone: 'UTC' },
@@ -3426,10 +3426,10 @@ const ProviderSchema = z
     enabled: z.boolean().openapi({ description: 'Is provider enabled?', 'x-example': true }),
     type: z.string().openapi({ description: 'Type of provider.', 'x-example': 'sms' }),
     credentials: z
-      .object({})
+      .looseObject({})
       .openapi({ description: 'Provider credentials.', 'x-example': { key: '123456789' } }),
     options: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
@@ -3540,7 +3540,7 @@ const MessageSchema = z
         'x-example': 1,
       }),
     data: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'Data of the message.',
         'x-example': {
@@ -3703,7 +3703,7 @@ const SubscriberSchema = z
       }),
     targetId: z.string().openapi({ description: 'Target ID.', 'x-example': '259125845563242502' }),
     target: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'Target.',
         'x-example': {
@@ -4967,7 +4967,7 @@ export const patchAccountPrefsRoute = createRoute({
           schema: z
             .object({
               prefs: z
-                .object({})
+                .looseObject({})
                 .openapi({ description: 'Prefs key-value JSON object.', 'x-example': '{}' }),
             })
             .openapi({ required: ['prefs'] }),
@@ -9727,7 +9727,7 @@ export const putDatabasesDatabaseIdCollectionsCollectionIdDocumentsRoute = creat
           schema: z
             .object({
               documents: z
-                .array(z.object({}))
+                .array(z.looseObject({}))
                 .openapi({
                   description:
                     'Array of document data as JSON objects. May contain partial documents.',
@@ -9798,7 +9798,7 @@ export const postDatabasesDatabaseIdCollectionsCollectionIdDocumentsRoute = crea
                   'x-example': '<DOCUMENT_ID>',
                 }),
               data: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ description: 'Document data as JSON object.', 'x-example': '{}' }),
               permissions: z
@@ -9810,7 +9810,7 @@ export const postDatabasesDatabaseIdCollectionsCollectionIdDocumentsRoute = crea
                   'x-example': '["read("any")"]',
                 }),
               documents: z
-                .array(z.object({}))
+                .array(z.looseObject({}))
                 .exactOptional()
                 .openapi({
                   description: 'Array of documents data as JSON objects.',
@@ -9933,7 +9933,7 @@ export const patchDatabasesDatabaseIdCollectionsCollectionIdDocumentsRoute = cre
           schema: z
             .object({
               data: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -10090,7 +10090,7 @@ export const putDatabasesDatabaseIdCollectionsCollectionIdDocumentsDocumentIdRou
           schema: z
             .object({
               data: z
-                .object({})
+                .looseObject({})
                 .openapi({
                   description:
                     'Document data as JSON object. Include all required attributes of the document to be created or updated.',
@@ -10223,7 +10223,7 @@ export const patchDatabasesDatabaseIdCollectionsCollectionIdDocumentsDocumentIdR
           schema: z
             .object({
               data: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -13508,7 +13508,7 @@ export const postMessagingMessagesPushRoute = createRoute({
                 .exactOptional()
                 .openapi({ description: 'List of Targets IDs.', 'x-example': null }),
               data: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description: 'Additional key-value pair data for push notification.',
@@ -13662,7 +13662,7 @@ export const patchMessagingMessagesPushMessageIdRoute = createRoute({
                 .exactOptional()
                 .openapi({ description: 'Body for push notification.', 'x-example': '<BODY>' }),
               data: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description: 'Additional Data for push notification.',
@@ -14253,7 +14253,7 @@ export const postMessagingProvidersFcmRoute = createRoute({
                 }),
               name: z.string().openapi({ description: 'Provider name.', 'x-example': '<NAME>' }),
               serviceAccountJSON: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ description: 'FCM service account JSON.', 'x-example': '{}' }),
               enabled: z
@@ -14308,7 +14308,7 @@ export const patchMessagingProvidersFcmProviderIdRoute = createRoute({
                 .exactOptional()
                 .openapi({ description: 'Set as enabled.', 'x-example': false }),
               serviceAccountJSON: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ description: 'FCM service account JSON.', 'x-example': '{}' }),
             })
@@ -19187,7 +19187,7 @@ export const putTeamsTeamIdPrefsRoute = createRoute({
           schema: z
             .object({
               prefs: z
-                .object({})
+                .looseObject({})
                 .openapi({ description: 'Prefs key-value JSON object.', 'x-example': '{}' }),
             })
             .openapi({ required: ['prefs'] }),
@@ -20786,7 +20786,7 @@ export const patchUsersUserIdPrefsRoute = createRoute({
           schema: z
             .object({
               prefs: z
-                .object({})
+                .looseObject({})
                 .openapi({ description: 'Prefs key-value JSON object.', 'x-example': '{}' }),
             })
             .openapi({ required: ['prefs'] }),

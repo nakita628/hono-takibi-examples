@@ -1,6 +1,6 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const DeleteHumanLoopResponseSchema = z.object({}).openapi('DeleteHumanLoopResponse')
+const DeleteHumanLoopResponseSchema = z.looseObject({}).openapi('DeleteHumanLoopResponse')
 
 const ValidationExceptionSchema = z.any().openapi('ValidationException')
 
@@ -39,14 +39,10 @@ const FlowDefinitionArnSchema = z
 
 const HumanLoopOutputSchema = z
   .object({
-    OutputS3Uri: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The location of the Amazon S3 object where Amazon Augmented AI stores your human loop output.',
-        }),
-    ),
+    OutputS3Uri: StringSchema.openapi({
+      description:
+        'The location of the Amazon S3 object where Amazon Augmented AI stores your human loop output.',
+    }),
   })
   .openapi({
     required: ['OutputS3Uri'],
@@ -56,53 +52,33 @@ const HumanLoopOutputSchema = z
 
 const DescribeHumanLoopResponseSchema = z
   .object({
-    CreationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The creation time when Amazon Augmented AI created the human loop.',
-        }),
-    ),
-    FailureReason: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The reason why a human loop failed. The failure reason is returned when the status of the human loop is <code>Failed</code>.',
-        }),
-    ).exactOptional(),
-    FailureCode: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A failure code that identifies the type of failure.</p> <p>Possible values: <code>ValidationError</code>, <code>Expired</code>, <code>InternalError</code> </p>',
-        }),
-    ).exactOptional(),
-    HumanLoopStatus: HumanLoopStatusSchema.and(
-      z.any().openapi({ description: 'The status of the human loop. ' }),
-    ),
-    HumanLoopName: HumanLoopNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the human loop. The name must be lowercase, unique within the Region in your account, and can have up to 63 characters. Valid characters: a-z, 0-9, and - (hyphen).',
-        }),
-    ),
-    HumanLoopArn: HumanLoopArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the human loop.' }),
-    ),
-    FlowDefinitionArn: FlowDefinitionArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the flow definition.' }),
-    ),
-    HumanLoopOutput: HumanLoopOutputSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that contains information about the output of the human loop.',
-        }),
-    ).exactOptional(),
+    CreationTime: TimestampSchema.openapi({
+      description: 'The creation time when Amazon Augmented AI created the human loop.',
+    }),
+    FailureReason: StringSchema.exactOptional().openapi({
+      description:
+        'The reason why a human loop failed. The failure reason is returned when the status of the human loop is <code>Failed</code>.',
+    }),
+    FailureCode: StringSchema.exactOptional().openapi({
+      description:
+        '<p>A failure code that identifies the type of failure.</p> <p>Possible values: <code>ValidationError</code>, <code>Expired</code>, <code>InternalError</code> </p>',
+    }),
+    HumanLoopStatus: HumanLoopStatusSchema.openapi({
+      description: 'The status of the human loop. ',
+    }),
+    HumanLoopName: HumanLoopNameSchema.openapi({
+      description:
+        'The name of the human loop. The name must be lowercase, unique within the Region in your account, and can have up to 63 characters. Valid characters: a-z, 0-9, and - (hyphen).',
+    }),
+    HumanLoopArn: HumanLoopArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the human loop.',
+    }),
+    FlowDefinitionArn: FlowDefinitionArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the flow definition.',
+    }),
+    HumanLoopOutput: HumanLoopOutputSchema.exactOptional().openapi({
+      description: 'An object that contains information about the output of the human loop.',
+    }),
   })
   .openapi({
     required: [
@@ -119,31 +95,23 @@ const FailureReasonSchema = z.string().max(1024).openapi('FailureReason')
 
 const HumanLoopSummarySchema = z
   .object({
-    HumanLoopName: HumanLoopNameSchema.and(
-      z.any().openapi({ description: 'The name of the human loop.' }),
-    ).exactOptional(),
-    HumanLoopStatus: HumanLoopStatusSchema.and(
-      z.any().openapi({ description: 'The status of the human loop. ' }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'When Amazon Augmented AI created the human loop.' }),
-    ).exactOptional(),
-    FailureReason: FailureReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The reason why the human loop failed. A failure reason is returned when the status of the human loop is <code>Failed</code>.',
-        }),
-    ).exactOptional(),
-    FlowDefinitionArn: FlowDefinitionArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the flow definition used to configure the human loop.',
-        }),
-    ).exactOptional(),
+    HumanLoopName: HumanLoopNameSchema.exactOptional().openapi({
+      description: 'The name of the human loop.',
+    }),
+    HumanLoopStatus: HumanLoopStatusSchema.exactOptional().openapi({
+      description: 'The status of the human loop. ',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'When Amazon Augmented AI created the human loop.',
+    }),
+    FailureReason: FailureReasonSchema.exactOptional().openapi({
+      description:
+        'The reason why the human loop failed. A failure reason is returned when the status of the human loop is <code>Failed</code>.',
+    }),
+    FlowDefinitionArn: FlowDefinitionArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the flow definition used to configure the human loop.',
+    }),
   })
   .openapi({ description: 'Summary information about the human loop.', required: [] })
   .openapi('HumanLoopSummary')
@@ -154,25 +122,21 @@ const NextTokenSchema = z.string().regex(/.*/).max(8192).openapi('NextToken')
 
 const ListHumanLoopsResponseSchema = z
   .object({
-    HumanLoopSummaries: HumanLoopSummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array of objects that contain information about the human loops.',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'A token to display the next page of results.' }),
-    ).exactOptional(),
+    HumanLoopSummaries: HumanLoopSummariesSchema.openapi({
+      description: 'An array of objects that contain information about the human loops.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'A token to display the next page of results.',
+    }),
   })
   .openapi({ required: ['HumanLoopSummaries'] })
   .openapi('ListHumanLoopsResponse')
 
 const StartHumanLoopResponseSchema = z
   .object({
-    HumanLoopArn: HumanLoopArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the human loop.' }),
-    ).exactOptional(),
+    HumanLoopArn: HumanLoopArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the human loop.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartHumanLoopResponse')
@@ -192,28 +156,24 @@ const ServiceQuotaExceededExceptionSchema = z.any().openapi('ServiceQuotaExceede
 
 const ConflictExceptionSchema = z.any().openapi('ConflictException')
 
-const StopHumanLoopResponseSchema = z.object({}).openapi('StopHumanLoopResponse')
+const StopHumanLoopResponseSchema = z.looseObject({}).openapi('StopHumanLoopResponse')
 
 const DeleteHumanLoopRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteHumanLoopRequest' })
   .openapi('DeleteHumanLoopRequest')
 
 const DescribeHumanLoopRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeHumanLoopRequest' })
   .openapi('DescribeHumanLoopRequest')
 
 const HumanLoopDataAttributesSchema = z
   .object({
-    ContentClassifiers: ContentClassifiersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Declares that your content is free of personally identifiable information or adult content.</p> <p>Amazon SageMaker can restrict the Amazon Mechanical Turk workers who can view your task based on this information.</p>',
-        }),
-    ),
+    ContentClassifiers: ContentClassifiersSchema.openapi({
+      description:
+        '<p>Declares that your content is free of personally identifiable information or adult content.</p> <p>Amazon SageMaker can restrict the Amazon Mechanical Turk workers who can view your task based on this information.</p>',
+    }),
   })
   .openapi({
     required: ['ContentClassifiers'],
@@ -224,14 +184,10 @@ const HumanLoopDataAttributesSchema = z
 
 const HumanLoopInputSchema = z
   .object({
-    InputContent: InputContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Serialized input from the human loop. The input must be a string representation of a file in JSON format.',
-        }),
-    ),
+    InputContent: InputContentSchema.openapi({
+      description:
+        'Serialized input from the human loop. The input must be a string representation of a file in JSON format.',
+    }),
   })
   .openapi({
     required: ['InputContent'],
@@ -244,34 +200,24 @@ const SortOrderSchema = z.enum(['Ascending', 'Descending']).openapi('SortOrder')
 const MaxResultsSchema = z.int().min(1).max(100).openapi('MaxResults')
 
 const ListHumanLoopsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListHumanLoopsRequest' })
   .openapi('ListHumanLoopsRequest')
 
 const StartHumanLoopRequestSchema = z
   .object({
-    HumanLoopName: HumanLoopNameSchema.and(
-      z.any().openapi({ description: 'The name of the human loop.' }),
-    ),
-    FlowDefinitionArn: FlowDefinitionArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the flow definition associated with this human loop.',
-        }),
-    ),
-    HumanLoopInput: HumanLoopInputSchema.and(
-      z.any().openapi({ description: 'An object that contains information about the human loop.' }),
-    ),
-    DataAttributes: HumanLoopDataAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Attributes of the specified data. Use <code>DataAttributes</code> to specify if your data is free of personally identifiable information and/or free of adult content.',
-        }),
-    ).exactOptional(),
+    HumanLoopName: HumanLoopNameSchema.openapi({ description: 'The name of the human loop.' }),
+    FlowDefinitionArn: FlowDefinitionArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the flow definition associated with this human loop.',
+    }),
+    HumanLoopInput: HumanLoopInputSchema.openapi({
+      description: 'An object that contains information about the human loop.',
+    }),
+    DataAttributes: HumanLoopDataAttributesSchema.exactOptional().openapi({
+      description:
+        'Attributes of the specified data. Use <code>DataAttributes</code> to specify if your data is free of personally identifiable information and/or free of adult content.',
+    }),
   })
   .openapi({
     required: ['HumanLoopName', 'FlowDefinitionArn', 'HumanLoopInput'],
@@ -281,9 +227,9 @@ const StartHumanLoopRequestSchema = z
 
 const StopHumanLoopRequestSchema = z
   .object({
-    HumanLoopName: HumanLoopNameSchema.and(
-      z.any().openapi({ description: 'The name of the human loop that you want to stop.' }),
-    ),
+    HumanLoopName: HumanLoopNameSchema.openapi({
+      description: 'The name of the human loop that you want to stop.',
+    }),
   })
   .openapi({ required: ['HumanLoopName'], title: 'StopHumanLoopRequest' })
   .openapi('StopHumanLoopRequest')
@@ -654,14 +600,10 @@ export const postHumanLoopsRoute = createRoute({
                 }),
               HumanLoopInput: z
                 .object({
-                  InputContent: InputContentSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Serialized input from the human loop. The input must be a string representation of a file in JSON format.',
-                      }),
-                  ).exactOptional(),
+                  InputContent: InputContentSchema.exactOptional().openapi({
+                    description:
+                      'Serialized input from the human loop. The input must be a string representation of a file in JSON format.',
+                  }),
                 })
                 .openapi({
                   description: 'An object containing the human loop input in JSON format.',
@@ -669,14 +611,10 @@ export const postHumanLoopsRoute = createRoute({
                 }),
               DataAttributes: z
                 .object({
-                  ContentClassifiers: ContentClassifiersSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>Declares that your content is free of personally identifiable information or adult content.</p> <p>Amazon SageMaker can restrict the Amazon Mechanical Turk workers who can view your task based on this information.</p>',
-                      }),
-                  ).exactOptional(),
+                  ContentClassifiers: ContentClassifiersSchema.exactOptional().openapi({
+                    description:
+                      '<p>Declares that your content is free of personally identifiable information or adult content.</p> <p>Amazon SageMaker can restrict the Amazon Mechanical Turk workers who can view your task based on this information.</p>',
+                  }),
                 })
                 .exactOptional()
                 .openapi({

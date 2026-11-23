@@ -1,14 +1,165 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-type GroundTruthListType =
-  | {
+const GroundTruthListSchema: z.ZodType<GroundTruthListType> = z
+  .lazy(() =>
+    z.union([
+      z.array(
+        z
+          .strictObject({
+            label: z
+              .string()
+              .regex(/^[0-9A-Za-z-_]+$/)
+              .min(1)
+              .max(36),
+            value: z.union([
+              z.string().min(0).max(512),
+              z.any().nullable(),
+              z.boolean(),
+              z.number(),
+              GroundTruthListSchema,
+            ]),
+          })
+          .openapi({ required: ['label', 'value'] }),
+      ),
+      z.array(
+        z.array(
+          z
+            .strictObject({
+              label: z
+                .string()
+                .regex(/^[0-9A-Za-z-_]+$/)
+                .min(1)
+                .max(36),
+              value: z.union([
+                z.string().min(0).max(512),
+                z.any().nullable(),
+                z.boolean(),
+                z.number(),
+                GroundTruthListSchema,
+              ]),
+            })
+            .openapi({ required: ['label', 'value'] }),
+        ),
+      ),
+    ]),
+  )
+  .openapi('GroundTruthList')
+
+type DocumentsType = {
+  consentId?: string[]
+  datasetId?: string[]
+  documents: {
+    consentId?: string
+    content?: string
+    contentMD5: string | null
+    contentType: 'application/pdf' | 'image/jpeg' | 'image/png' | 'image/tiff'
+    createdBy: string | null
+    createdTime: string | null
+    datasetId?: string
+    description: string | null
+    documentId: string
+    groundTruth?: {
       label: string
-      value: string | ({ [key: string]: unknown } | null) | boolean | number | GroundTruthListType
+      value:
+        | (string | null)
+        | (boolean | null)
+        | (number | null)
+        | (z.infer<typeof GroundTruthListSchema> | null)
     }[]
-  | {
-      label: string
-      value: string | ({ [key: string]: unknown } | null) | boolean | number | GroundTruthListType
-    }[][]
+    metadata: { [key: string]: unknown } | null
+    name: string | null
+    retentionInDays: number
+    updatedBy: string | null
+    updatedTime: string | null
+  }[]
+  nextToken: string | null
+  order?: 'ascending' | 'descending'
+  sortBy?: 'createdTime'
+}
+
+type ModelsType = {
+  models: {
+    createdBy: string | null
+    createdTime: string | null
+    description: string | null
+    fieldConfig: {
+      [key: string]:
+        | {
+            description?: string | null
+            enum?: string[]
+            maxLength?: number
+            type: 'amount' | 'date' | 'digits' | 'enum' | 'numeric' | 'string'
+          }
+        | {
+            fields: {
+              [key: string]: {
+                description?: string | null
+                enum?: string[]
+                maxLength?: number
+                type: 'amount' | 'date' | 'digits' | 'enum' | 'numeric' | 'string'
+              }
+            }
+            type: 'lines'
+          }
+    } | null
+    height: number
+    metadata: { [key: string]: unknown } | null
+    modelId: string
+    name: string | null
+    numberOfDataBundles: number
+    numberOfRunningTrainings: number
+    organizationId: string
+    postprocessConfig?:
+      | { strategy: 'BEST_FIRST' }
+      | { parameters: { collapse?: boolean; n: number }; strategy: 'BEST_N_PAGES' }
+    preprocessConfig: { autoRotate: boolean; imageQuality: 'LOW' | 'HIGH'; maxPages: number }
+    status: 'active' | 'inactive'
+    trainingId: string | null
+    updatedBy: string | null
+    updatedTime: string | null
+    width: number
+  }[]
+  nextToken: string | null
+}
+
+type PredictionsType = {
+  nextToken: string | null
+  order?: 'ascending' | 'descending'
+  predictions: {
+    createdBy?: string | null
+    createdTime?: string | null
+    documentId: string
+    inferenceTime: number
+    modelId: string
+    predictionId: string
+    predictions: (
+      | {
+          confidence: number
+          label: string
+          location?: number[]
+          page?: number
+          value: string | null
+        }
+      | {
+          label: string
+          page?: number
+          value: {
+            confidence: number
+            label: string
+            location?: number[]
+            page?: number
+            value: string | null
+          }[][]
+        }
+    )[]
+    trainingId?: string | null
+  }[]
+  sortBy?: 'createdTime'
+}
+
+type GroundTruthListType =
+  | { label: string; value: string | (unknown | null) | boolean | number | GroundTruthListType }[]
+  | { label: string; value: string | (unknown | null) | boolean | number | GroundTruthListType }[][]
 
 const AppClientSchema = z
   .strictObject({
@@ -220,8 +371,8 @@ const DataBundleSchema = z
             .exactOptional(),
           datasetId: z.string().regex(/^las:dataset:[a-f0-9]{32}$/),
           description: z.string().max(4096).nullable(),
-          groundTruthSummary: z.object({}).exactOptional(),
-          metadata: z.object({}).nullable().exactOptional(),
+          groundTruthSummary: z.looseObject({}).exactOptional(),
+          metadata: z.looseObject({}).nullable().exactOptional(),
           name: z.string().max(4096).nullable().exactOptional(),
           numberOfDocuments: z.int().min(0),
           retentionInDays: z.int().min(0).max(1825),
@@ -253,7 +404,7 @@ const DataBundleSchema = z
     name: z.string().max(4096).nullable(),
     retentionInDays: z.int().min(1).exactOptional(),
     status: z.enum(['running', 'succeeded', 'failed']),
-    summary: z.object({}).nullable(),
+    summary: z.looseObject({}).nullable(),
     updatedBy: z.string().max(4096).nullable(),
     updatedTime: z
       .string()
@@ -307,8 +458,8 @@ const DataBundlesSchema = z
                   .exactOptional(),
                 datasetId: z.string().regex(/^las:dataset:[a-f0-9]{32}$/),
                 description: z.string().max(4096).nullable(),
-                groundTruthSummary: z.object({}).exactOptional(),
-                metadata: z.object({}).nullable().exactOptional(),
+                groundTruthSummary: z.looseObject({}).exactOptional(),
+                metadata: z.looseObject({}).nullable().exactOptional(),
                 name: z.string().max(4096).nullable().exactOptional(),
                 numberOfDocuments: z.int().min(0),
                 retentionInDays: z.int().min(0).max(1825),
@@ -340,7 +491,7 @@ const DataBundlesSchema = z
           name: z.string().max(4096).nullable(),
           retentionInDays: z.int().min(1).exactOptional(),
           status: z.enum(['running', 'succeeded', 'failed']),
-          summary: z.object({}).nullable(),
+          summary: z.looseObject({}).nullable(),
           updatedBy: z.string().max(4096).nullable(),
           updatedTime: z
             .string()
@@ -383,8 +534,8 @@ const DatasetSchema = z
       .nullable(),
     datasetId: z.string().regex(/^las:dataset:[a-f0-9]{32}$/),
     description: z.string().max(4096).nullable(),
-    groundTruthSummary: z.object({}),
-    metadata: z.object({}).nullable(),
+    groundTruthSummary: z.looseObject({}),
+    metadata: z.looseObject({}).nullable(),
     name: z.string().max(4096).nullable().exactOptional(),
     numberOfDocuments: z.int().min(0),
     retentionInDays: z.int().min(0).max(1825),
@@ -433,8 +584,8 @@ const DatasetsSchema = z
             .nullable(),
           datasetId: z.string().regex(/^las:dataset:[a-f0-9]{32}$/),
           description: z.string().max(4096).nullable(),
-          groundTruthSummary: z.object({}),
-          metadata: z.object({}).nullable(),
+          groundTruthSummary: z.looseObject({}),
+          metadata: z.looseObject({}).nullable(),
           name: z.string().max(4096).nullable().exactOptional(),
           numberOfDocuments: z.int().min(0),
           retentionInDays: z.int().min(0).max(1825),
@@ -531,51 +682,6 @@ const DeploymentEnvironmentsSchema = z
   .openapi({ required: ['deploymentEnvironments', 'nextToken'], title: 'deploymentEnvironments' })
   .openapi('DeploymentEnvironments')
 
-const GroundTruthListSchema: z.ZodType<GroundTruthListType> = z
-  .lazy(() =>
-    z.union([
-      z.array(
-        z
-          .strictObject({
-            label: z
-              .string()
-              .regex(/^[0-9A-Za-z-_]+$/)
-              .min(1)
-              .max(36),
-            value: z.union([
-              z.string().min(0).max(512),
-              z.any().nullable(),
-              z.boolean(),
-              z.number(),
-              GroundTruthListSchema,
-            ]),
-          })
-          .openapi({ required: ['label', 'value'] }),
-      ),
-      z.array(
-        z.array(
-          z
-            .strictObject({
-              label: z
-                .string()
-                .regex(/^[0-9A-Za-z-_]+$/)
-                .min(1)
-                .max(36),
-              value: z.union([
-                z.string().min(0).max(512),
-                z.any().nullable(),
-                z.boolean(),
-                z.number(),
-                GroundTruthListSchema,
-              ]),
-            })
-            .openapi({ required: ['label', 'value'] }),
-        ),
-      ),
-    ]),
-  )
-  .openapi('GroundTruthList')
-
 const DocumentSchema = z
   .strictObject({
     consentId: z
@@ -617,7 +723,7 @@ const DocumentSchema = z
           .openapi({ required: ['label', 'value'] }),
       )
       .exactOptional(),
-    metadata: z.object({}).nullable(),
+    metadata: z.looseObject({}).nullable(),
     name: z.string().max(4096).nullable(),
     retentionInDays: z.int().min(1),
     updatedBy: z.string().max(4096).nullable(),
@@ -646,7 +752,7 @@ const DocumentSchema = z
   })
   .openapi('Document')
 
-const DocumentsSchema = z
+const DocumentsSchema: z.ZodType<DocumentsType> = z
   .strictObject({
     consentId: z.array(z.string().regex(/^las:consent:[a-f0-9]{32}$/)).exactOptional(),
     datasetId: z.array(z.string().regex(/^las:dataset:[a-f0-9]{32}$/)).exactOptional(),
@@ -692,7 +798,7 @@ const DocumentsSchema = z
                 .openapi({ required: ['label', 'value'] }),
             )
             .exactOptional(),
-          metadata: z.object({}).nullable(),
+          metadata: z.looseObject({}).nullable(),
           name: z.string().max(4096).nullable(),
           retentionInDays: z.int().min(1),
           updatedBy: z.string().max(4096).nullable(),
@@ -726,7 +832,7 @@ const DocumentsSchema = z
   .openapi({ required: ['documents', 'nextToken'], title: 'documents' })
   .openapi('Documents')
 
-const EmptySchema = z.object({}).openapi({ title: 'Empty Schema' }).openapi('Empty')
+const EmptySchema = z.looseObject({}).openapi({ title: 'Empty Schema' }).openapi('Empty')
 
 const ErrorSchema = z
   .object({ message: z.string().exactOptional() })
@@ -735,7 +841,7 @@ const ErrorSchema = z
 
 const LogSchema = z
   .strictObject({
-    events: z.array(z.object({})).exactOptional(),
+    events: z.array(z.looseObject({})).exactOptional(),
     logId: z.string().regex(/^las:log:[a-f0-9]{32}$/),
     startTime: z
       .string()
@@ -780,7 +886,7 @@ const LogsSchema = z
     logs: z.array(
       z
         .strictObject({
-          events: z.array(z.object({})).exactOptional(),
+          events: z.array(z.looseObject({})).exactOptional(),
           logId: z.string().regex(/^las:log:[a-f0-9]{32}$/),
           startTime: z
             .string()
@@ -920,7 +1026,7 @@ const ModelSchema = z
       )
       .nullable(),
     height: z.int().min(97).max(1921),
-    metadata: z.object({}).nullable(),
+    metadata: z.looseObject({}).nullable(),
     modelId: z.string().regex(/^las:model:[a-z0-9-_]+$/),
     name: z.string().max(4096).nullable(),
     numberOfDataBundles: z.int().min(0),
@@ -984,7 +1090,7 @@ const ModelSchema = z
   })
   .openapi('Model')
 
-const ModelsSchema = z
+const ModelsSchema: z.ZodType<ModelsType> = z
   .strictObject({
     models: z.array(
       z
@@ -1065,7 +1171,7 @@ const ModelsSchema = z
             )
             .nullable(),
           height: z.int().min(97).max(1921),
-          metadata: z.object({}).nullable(),
+          metadata: z.looseObject({}).nullable(),
           modelId: z.string().regex(/^las:model:[a-z0-9-_]+$/),
           name: z.string().max(4096).nullable(),
           numberOfDataBundles: z.int().min(0),
@@ -1141,8 +1247,8 @@ const OrganizationSchema = z
       .regex(/^[0-9a-z]+$/)
       .nullable()
       .exactOptional(),
-    deploymentsAllowed: z.object({}).exactOptional(),
-    deploymentsCreated: z.object({}).exactOptional(),
+    deploymentsAllowed: z.looseObject({}).exactOptional(),
+    deploymentsCreated: z.looseObject({}).exactOptional(),
     description: z.string().max(4096).nullable(),
     documentRetentionInDays: z.int().min(1),
     monthlyNumberOfActiveModelsUsed: z.int().min(0),
@@ -1161,7 +1267,7 @@ const OrganizationSchema = z
     monthlyNumberOfTransitionExecutionsCreated: z.int().min(0),
     monthlyNumberOfWorkflowExecutionsAllowed: z.int().min(0),
     monthlyNumberOfWorkflowExecutionsCreated: z.int().min(0),
-    monthlyUsageSummary: z.object({}),
+    monthlyUsageSummary: z.looseObject({}),
     name: z.string().max(4096).nullable(),
     numberOfAppClientsAllowed: z.int().min(0),
     numberOfAppClientsCreated: z.int().min(0),
@@ -1252,8 +1358,8 @@ const OrganizationsSchema = z
             .regex(/^[0-9a-z]+$/)
             .nullable()
             .exactOptional(),
-          deploymentsAllowed: z.object({}).exactOptional(),
-          deploymentsCreated: z.object({}).exactOptional(),
+          deploymentsAllowed: z.looseObject({}).exactOptional(),
+          deploymentsCreated: z.looseObject({}).exactOptional(),
           description: z.string().max(4096).nullable(),
           documentRetentionInDays: z.int().min(1),
           monthlyNumberOfActiveModelsUsed: z.int().min(0),
@@ -1272,7 +1378,7 @@ const OrganizationsSchema = z
           monthlyNumberOfTransitionExecutionsCreated: z.int().min(0),
           monthlyNumberOfWorkflowExecutionsAllowed: z.int().min(0),
           monthlyNumberOfWorkflowExecutionsCreated: z.int().min(0),
-          monthlyUsageSummary: z.object({}),
+          monthlyUsageSummary: z.looseObject({}),
           name: z.string().max(4096).nullable(),
           numberOfAppClientsAllowed: z.int().min(0),
           numberOfAppClientsCreated: z.int().min(0),
@@ -1393,7 +1499,7 @@ const PatchDatasetIdSchema = z
   .strictObject({
     containsPersonallyIdentifiableInformation: z.boolean().exactOptional(),
     description: z.string().max(4096).nullable().exactOptional(),
-    metadata: z.object({}).exactOptional(),
+    metadata: z.looseObject({}).exactOptional(),
     name: z.string().max(4096).nullable().exactOptional(),
     retentionInDays: z.int().min(1).exactOptional(),
   })
@@ -1428,7 +1534,7 @@ const PatchDocumentIdSchema = z
       )
       .nullable()
       .exactOptional(),
-    metadata: z.object({}).exactOptional(),
+    metadata: z.looseObject({}).exactOptional(),
     name: z.string().max(4096).nullable().exactOptional(),
     retentionInDays: z.int().min(1).exactOptional(),
   })
@@ -1507,7 +1613,7 @@ const PatchModelIdSchema = z
       )
       .exactOptional(),
     height: z.int().min(97).max(1921).exactOptional(),
-    metadata: z.object({}).exactOptional(),
+    metadata: z.looseObject({}).exactOptional(),
     name: z.string().max(4096).nullable().exactOptional(),
     postprocessConfig: z
       .xor([
@@ -1570,7 +1676,7 @@ const PatchPaymentMethodIdSchema = z
 
 const PatchSecretIdSchema = z
   .strictObject({
-    data: z.object({}).exactOptional(),
+    data: z.looseObject({}).exactOptional(),
     description: z.string().max(4096).nullable().exactOptional(),
     name: z.string().max(4096).nullable().exactOptional(),
   })
@@ -1588,7 +1694,7 @@ const PatchTrainingIdSchema = z
       .nullable()
       .exactOptional(),
     description: z.string().max(4096).nullable().exactOptional(),
-    metadata: z.object({}).exactOptional(),
+    metadata: z.looseObject({}).exactOptional(),
     name: z.string().max(4096).nullable().exactOptional(),
     status: z.literal('cancelled').exactOptional(),
   })
@@ -1596,32 +1702,47 @@ const PatchTrainingIdSchema = z
   .openapi({ title: 'PATCH /models/{modelId}/trainings/{trainingId}', required: [] })
   .openapi('PatchTrainingId')
 
-const PatchTransistionExecutionIdSchema = z
-  .union([
-    z.object({ status: z.literal('succeeded').exactOptional() }).openapi({ required: [] }),
-    z
-      .object({ status: z.enum(['failed', 'rejected', 'retry']).exactOptional() })
-      .openapi({ required: [] }),
-  ])
-  .and(
-    z
-      .object({
-        error: z
-          .strictObject({ message: z.string().max(4096) })
-          .exactOptional()
-          .openapi({ required: ['message'] }),
-        output: z.object({}).exactOptional(),
-        startTime: z
-          .string()
-          .regex(
-            /^[0-9]{4}-?[0-9]{2}-?[0-9]{2}( |T)?[0-9]{2}:?[0-9]{2}:?[0-9]{2}(.[0-9]{1,6})?(Z|[+][0-9]{2}(:|)[0-9]{2})$/,
-          )
-          .nullable()
-          .exactOptional(),
-        status: z.string().exactOptional(),
-      })
-      .openapi({ required: [] }),
-  )
+const PatchTransistionExecutionIdSchema = (() => {
+  const Schema = z
+    .union([
+      z.object({ status: z.literal('succeeded').exactOptional() }).openapi({ required: [] }),
+      z
+        .object({ status: z.enum(['failed', 'rejected', 'retry']).exactOptional() })
+        .openapi({ required: [] }),
+    ])
+    .and(
+      z
+        .object({
+          error: z
+            .strictObject({ message: z.string().max(4096) })
+            .exactOptional()
+            .openapi({ required: ['message'] }),
+          output: z.looseObject({}).exactOptional(),
+          startTime: z
+            .string()
+            .regex(
+              /^[0-9]{4}-?[0-9]{2}-?[0-9]{2}( |T)?[0-9]{2}:?[0-9]{2}:?[0-9]{2}(.[0-9]{1,6})?(Z|[+][0-9]{2}(:|)[0-9]{2})$/,
+            )
+            .nullable()
+            .exactOptional(),
+          status: z.string().exactOptional(),
+        })
+        .openapi({ required: [] }),
+    )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['error', 'output', 'startTime', 'status'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
   .openapi({ title: 'PATCH transitions/{transitionId}/executions/{executionId}' })
   .openapi('PatchTransistionExecutionId')
 
@@ -1635,13 +1756,14 @@ const PatchTransitionIdSchema = z
           .exactOptional(),
       })
       .catchall(z.string().regex(/^las:asset:[a-f0-9]{32}$/))
-      .exactOptional(),
+      .exactOptional()
+      .openapi({ required: [] }),
     description: z.string().max(4096).nullable().exactOptional(),
     environment: z.record(z.string(), z.string()).exactOptional(),
     environmentSecrets: z.array(z.string().regex(/^las:secret:[a-f0-9]{32}$/)).exactOptional(),
-    inputJsonSchema: z.object({}).exactOptional(),
+    inputJsonSchema: z.looseObject({}).exactOptional(),
     name: z.string().max(4096).nullable().exactOptional(),
-    outputJsonSchema: z.object({}).exactOptional(),
+    outputJsonSchema: z.looseObject({}).exactOptional(),
     parameters: z
       .union([
         z
@@ -1679,7 +1801,8 @@ const PatchTransitionIdSchema = z
                   .exactOptional(),
               })
               .catchall(z.string().regex(/^las:asset:[a-f0-9]{32}$/))
-              .exactOptional(),
+              .exactOptional()
+              .openapi({ required: [] }),
           })
           .openapi({ required: [] }),
       ])
@@ -1692,7 +1815,7 @@ const PatchTransitionIdSchema = z
 const PatchUserIdSchema = z
   .strictObject({
     avatar: z.string().max(131072).nullable().exactOptional(),
-    metadata: z.object({}).exactOptional(),
+    metadata: z.looseObject({}).exactOptional(),
     name: z.string().max(4096).nullable().exactOptional(),
   })
   .refine((val) => Object.keys(val).length >= 1)
@@ -1753,7 +1876,7 @@ const PaymentMethodSchema = z
       )
       .nullable(),
     description: z.string().max(4096).nullable(),
-    details: z.object({}).nullable(),
+    details: z.looseObject({}).nullable(),
     name: z.string().max(4096).nullable(),
     paymentMethodId: z.string().regex(/^las:payment-method:[a-f0-9]{32}$/),
     stripePublishableKey: z.string().max(4096).nullable().exactOptional(),
@@ -1795,7 +1918,7 @@ const PaymentMethodsSchema = z
             )
             .nullable(),
           description: z.string().max(4096).nullable(),
-          details: z.object({}).nullable(),
+          details: z.looseObject({}).nullable(),
           name: z.string().max(4096).nullable(),
           paymentMethodId: z.string().regex(/^las:payment-method:[a-f0-9]{32}$/),
           stripePublishableKey: z.string().max(4096).nullable().exactOptional(),
@@ -1827,15 +1950,15 @@ const PaymentMethodsSchema = z
 
 const PlanSchema = z
   .strictObject({
-    activeModels: z.object({}).nullable().exactOptional(),
+    activeModels: z.looseObject({}).nullable().exactOptional(),
     available: z.boolean(),
     currency: z.enum(['USD', 'EUR', 'NOK']),
     description: z.string().max(4096).nullable().exactOptional(),
-    fieldPredictions: z.object({}).nullable().exactOptional(),
-    gpuHours: z.object({}).nullable().exactOptional(),
+    fieldPredictions: z.looseObject({}).nullable().exactOptional(),
+    gpuHours: z.looseObject({}).nullable().exactOptional(),
     latest: z.int().min(1),
-    license: z.object({}).nullable().exactOptional(),
-    modelDeploymentUnits: z.object({}).nullable().exactOptional(),
+    license: z.looseObject({}).nullable().exactOptional(),
+    modelDeploymentUnits: z.looseObject({}).nullable().exactOptional(),
     name: z.string().max(4096).nullable(),
     organizationId: z
       .string()
@@ -1855,15 +1978,15 @@ const PlansSchema = z
     plans: z.array(
       z
         .strictObject({
-          activeModels: z.object({}).nullable().exactOptional(),
+          activeModels: z.looseObject({}).nullable().exactOptional(),
           available: z.boolean(),
           currency: z.enum(['USD', 'EUR', 'NOK']),
           description: z.string().max(4096).nullable().exactOptional(),
-          fieldPredictions: z.object({}).nullable().exactOptional(),
-          gpuHours: z.object({}).nullable().exactOptional(),
+          fieldPredictions: z.looseObject({}).nullable().exactOptional(),
+          gpuHours: z.looseObject({}).nullable().exactOptional(),
           latest: z.int().min(1),
-          license: z.object({}).nullable().exactOptional(),
-          modelDeploymentUnits: z.object({}).nullable().exactOptional(),
+          license: z.looseObject({}).nullable().exactOptional(),
+          modelDeploymentUnits: z.looseObject({}).nullable().exactOptional(),
           name: z.string().max(4096).nullable(),
           organizationId: z
             .string()
@@ -1920,7 +2043,7 @@ const PostDatasetsSchema = z
   .strictObject({
     containsPersonallyIdentifiableInformation: z.boolean().exactOptional(),
     description: z.string().max(4096).nullable().exactOptional(),
-    metadata: z.object({}).exactOptional(),
+    metadata: z.looseObject({}).exactOptional(),
     name: z.string().max(4096).nullable().exactOptional(),
     retentionInDays: z.int().min(1).exactOptional(),
   })
@@ -1959,7 +2082,7 @@ const PostDocumentsSchema = z
           .openapi({ required: ['label', 'value'] }),
       )
       .exactOptional(),
-    metadata: z.object({}).exactOptional(),
+    metadata: z.looseObject({}).exactOptional(),
     name: z.string().max(4096).nullable().exactOptional(),
     retentionInDays: z.int().min(1).exactOptional(),
   })
@@ -1967,7 +2090,7 @@ const PostDocumentsSchema = z
   .openapi('PostDocuments')
 
 const PostHeartbeatsSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'POST /transitions/{transitionId}/executions/{executionId}/heartbeats' })
   .openapi('PostHeartbeats')
 
@@ -2040,7 +2163,7 @@ const PostModelsSchema = z
       ]),
     ),
     height: z.int().min(97).max(1921).exactOptional(),
-    metadata: z.object({}).exactOptional(),
+    metadata: z.looseObject({}).exactOptional(),
     name: z.string().max(4096).nullable().exactOptional(),
     postprocessConfig: z
       .xor([
@@ -2114,7 +2237,7 @@ const PostPredictionsSchema = z
 
 const PostSecretsSchema = z
   .strictObject({
-    data: z.object({}),
+    data: z.looseObject({}),
     description: z.string().max(4096).nullable().exactOptional(),
     name: z.string().max(4096).nullable().exactOptional(),
   })
@@ -2144,7 +2267,7 @@ const PostTrainingsSchema = z
     dataScientistAssistance: z.boolean().exactOptional(),
     description: z.string().max(4096).nullable().exactOptional(),
     instanceType: z.enum(['small-gpu', 'medium-gpu', 'large-gpu']).nullable().exactOptional(),
-    metadata: z.object({}).exactOptional(),
+    metadata: z.looseObject({}).exactOptional(),
     name: z.string().max(4096).nullable().exactOptional(),
     warmStartConfig: z
       .strictObject({ trainingId: z.string().regex(/^las:model-training:[a-f0-9]{32}$/) })
@@ -2155,16 +2278,16 @@ const PostTrainingsSchema = z
   .openapi('PostTrainings')
 
 const PostTransitionExecutionSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'POST /transitions/{transitionId}/executions' })
   .openapi('PostTransitionExecution')
 
 const PostTransitionsSchema = z
   .strictObject({
     description: z.string().max(4096).nullable().exactOptional(),
-    inputJsonSchema: z.object({}).exactOptional(),
+    inputJsonSchema: z.looseObject({}).exactOptional(),
     name: z.string().max(4096).nullable().exactOptional(),
-    outputJsonSchema: z.object({}).exactOptional(),
+    outputJsonSchema: z.looseObject({}).exactOptional(),
     parameters: z
       .union([
         z
@@ -2200,7 +2323,8 @@ const PostTransitionsSchema = z
                   .exactOptional(),
               })
               .catchall(z.string().regex(/^las:asset:[a-f0-9]{32}$/))
-              .exactOptional(),
+              .exactOptional()
+              .openapi({ required: [] }),
           })
           .openapi({ required: [] }),
       ])
@@ -2219,14 +2343,14 @@ const PostUsersSchema = z
       .exactOptional(),
     avatar: z.string().max(131072).nullable().exactOptional(),
     email: z.string().regex(/^[A-Za-z0-9][-+._A-Za-z0-9]*@([-_.A-Za-z0-9]+\.)+[A-Za-z]{2,}$/),
-    metadata: z.object({}).exactOptional(),
+    metadata: z.looseObject({}).exactOptional(),
     name: z.string().max(4096).nullable().exactOptional(),
   })
   .openapi({ required: ['email'], title: 'POST /users' })
   .openapi('PostUsers')
 
 const PostWorkflowExecutionsSchema = z
-  .strictObject({ input: z.object({}) })
+  .strictObject({ input: z.looseObject({}) })
   .openapi({ required: ['input'], title: 'POST /workflows/{workflowId}/executions' })
   .openapi('PostWorkflowExecutions')
 
@@ -2258,7 +2382,7 @@ const PostWorkflowsSchema = z
     name: z.string().max(4096).nullable().exactOptional(),
     specification: z
       .strictObject({
-        definition: z.object({}),
+        definition: z.looseObject({}),
         language: z.literal('ASL').exactOptional(),
         version: z.literal('1.0.0').exactOptional(),
       })
@@ -2337,7 +2461,7 @@ const PredictionSchema = z
   })
   .openapi('Prediction')
 
-const PredictionsSchema = z
+const PredictionsSchema: z.ZodType<PredictionsType> = z
   .strictObject({
     nextToken: z.string().max(4096).nullable(),
     order: z.enum(['ascending', 'descending']).exactOptional(),
@@ -2431,7 +2555,7 @@ const ProfileSchema = z
     familyName: z.string().max(4096).nullable().exactOptional(),
     givenName: z.string().max(4096).nullable().exactOptional(),
     locale: z.string().max(4096).nullable().exactOptional(),
-    metadata: z.object({}).nullable().exactOptional(),
+    metadata: z.looseObject({}).nullable().exactOptional(),
     name: z.string().max(4096).nullable().exactOptional(),
     picture: z.string().max(4096).nullable().exactOptional(),
     profileId: z.string().regex(/^las:profile:[a-f0-9]{32}$/),
@@ -2547,10 +2671,10 @@ const TrainingSchema = z
       .nullable()
       .exactOptional(),
     description: z.string().max(4096).nullable(),
-    evaluation: z.object({}),
+    evaluation: z.looseObject({}),
     gpuHours: z.number().min(0).nullable(),
     instanceType: z.enum(['small-gpu', 'medium-gpu', 'large-gpu']),
-    metadata: z.object({}).nullable(),
+    metadata: z.looseObject({}).nullable(),
     modelId: z.string().regex(/^las:model:[a-z0-9-_]+$/),
     name: z.string().max(4096).nullable(),
     status: z.enum([
@@ -2627,10 +2751,10 @@ const TrainingsSchema = z
             .nullable()
             .exactOptional(),
           description: z.string().max(4096).nullable(),
-          evaluation: z.object({}),
+          evaluation: z.looseObject({}),
           gpuHours: z.number().min(0).nullable(),
           instanceType: z.enum(['small-gpu', 'medium-gpu', 'large-gpu']),
-          metadata: z.object({}).nullable(),
+          metadata: z.looseObject({}).nullable(),
           modelId: z.string().regex(/^las:model:[a-z0-9-_]+$/),
           name: z.string().max(4096).nullable(),
           status: z.enum([
@@ -2691,7 +2815,8 @@ const TransitionSchema = z
           .exactOptional(),
       })
       .catchall(z.string().regex(/^las:asset:[a-f0-9]{32}$/))
-      .exactOptional(),
+      .exactOptional()
+      .openapi({ required: [] }),
     createdBy: z.string().max(4096).nullable(),
     createdTime: z
       .string()
@@ -2700,10 +2825,10 @@ const TransitionSchema = z
       )
       .nullable(),
     description: z.string().max(4096).nullable(),
-    inputJsonSchema: z.object({}).exactOptional(),
+    inputJsonSchema: z.looseObject({}).exactOptional(),
     name: z.string().max(4096).nullable(),
-    outputJsonSchema: z.object({}).exactOptional(),
-    parameters: z.object({}),
+    outputJsonSchema: z.looseObject({}).exactOptional(),
+    parameters: z.looseObject({}),
     timeoutInSeconds: z.int().min(60).max(1800),
     transitionId: z.union([
       z.string().regex(/^las:transition:[a-f0-9]{32}$/),
@@ -2746,7 +2871,7 @@ const TransitionExecutionSchema = z
       .nullable()
       .exactOptional(),
     executionId: z.string().regex(/^las:transition-execution:[a-f0-9]{32}$/),
-    input: z.object({}).nullable(),
+    input: z.looseObject({}).nullable(),
     logId: z
       .string()
       .regex(/^las:log:[a-f0-9]{32}$/)
@@ -2785,7 +2910,7 @@ const TransitionExecutionsSchema = z
             .nullable()
             .exactOptional(),
           executionId: z.string().regex(/^las:transition-execution:[a-f0-9]{32}$/),
-          input: z.object({}).nullable(),
+          input: z.looseObject({}).nullable(),
           logId: z
             .string()
             .regex(/^las:log:[a-f0-9]{32}$/)
@@ -2836,7 +2961,8 @@ const TransitionsSchema = z
                 .exactOptional(),
             })
             .catchall(z.string().regex(/^las:asset:[a-f0-9]{32}$/))
-            .exactOptional(),
+            .exactOptional()
+            .openapi({ required: [] }),
           createdBy: z.string().max(4096).nullable(),
           createdTime: z
             .string()
@@ -2845,10 +2971,10 @@ const TransitionsSchema = z
             )
             .nullable(),
           description: z.string().max(4096).nullable(),
-          inputJsonSchema: z.object({}).exactOptional(),
+          inputJsonSchema: z.looseObject({}).exactOptional(),
           name: z.string().max(4096).nullable(),
-          outputJsonSchema: z.object({}).exactOptional(),
-          parameters: z.object({}),
+          outputJsonSchema: z.looseObject({}).exactOptional(),
+          parameters: z.looseObject({}),
           timeoutInSeconds: z.int().min(60).max(1800),
           transitionId: z.union([
             z.string().regex(/^las:transition:[a-f0-9]{32}$/),
@@ -2893,7 +3019,7 @@ const UserSchema = z
       )
       .nullable(),
     email: z.string().regex(/^[A-Za-z0-9][-+._A-Za-z0-9]*@([-_.A-Za-z0-9]+\.)+[A-Za-z]{2,}$/),
-    metadata: z.object({}).nullable().exactOptional(),
+    metadata: z.looseObject({}).nullable().exactOptional(),
     name: z.string().max(4096).nullable().exactOptional(),
     profileId: z
       .string()
@@ -2930,7 +3056,7 @@ const UsersSchema = z
             )
             .nullable(),
           email: z.string().regex(/^[A-Za-z0-9][-+._A-Za-z0-9]*@([-_.A-Za-z0-9]+\.)+[A-Za-z]{2,}$/),
-          metadata: z.object({}).nullable().exactOptional(),
+          metadata: z.looseObject({}).nullable().exactOptional(),
           name: z.string().max(4096).nullable().exactOptional(),
           profileId: z
             .string()
@@ -3035,15 +3161,15 @@ const WorkflowExecutionSchema = z
         /^[0-9]{4}-?[0-9]{2}-?[0-9]{2}( |T)?[0-9]{2}:?[0-9]{2}:?[0-9]{2}(.[0-9]{1,6})?(Z|[+][0-9]{2}(:|)[0-9]{2})$/,
       )
       .nullable(),
-    events: z.array(z.object({})).exactOptional(),
+    events: z.array(z.looseObject({})).exactOptional(),
     executionId: z.string().regex(/^las:workflow-execution:[a-f0-9]{32}$/),
-    input: z.object({}).nullable(),
+    input: z.looseObject({}).nullable(),
     logId: z
       .string()
       .regex(/^las:log:[a-f0-9]{32}$/)
       .nullable()
       .exactOptional(),
-    output: z.object({}).nullable(),
+    output: z.looseObject({}).nullable(),
     startTime: z
       .string()
       .regex(
@@ -3051,7 +3177,7 @@ const WorkflowExecutionSchema = z
       )
       .nullable(),
     status: z.enum(['running', 'succeeded', 'failed', 'rejected', 'retry', 'error']),
-    transitionExecutions: z.object({}).nullable(),
+    transitionExecutions: z.looseObject({}).nullable(),
     workflowId: z.string().regex(/^las:workflow:[a-f0-9]{32}$/),
   })
   .openapi({
@@ -3093,15 +3219,15 @@ const WorkflowExecutionsSchema = z
               /^[0-9]{4}-?[0-9]{2}-?[0-9]{2}( |T)?[0-9]{2}:?[0-9]{2}:?[0-9]{2}(.[0-9]{1,6})?(Z|[+][0-9]{2}(:|)[0-9]{2})$/,
             )
             .nullable(),
-          events: z.array(z.object({})).exactOptional(),
+          events: z.array(z.looseObject({})).exactOptional(),
           executionId: z.string().regex(/^las:workflow-execution:[a-f0-9]{32}$/),
-          input: z.object({}).nullable(),
+          input: z.looseObject({}).nullable(),
           logId: z
             .string()
             .regex(/^las:log:[a-f0-9]{32}$/)
             .nullable()
             .exactOptional(),
-          output: z.object({}).nullable(),
+          output: z.looseObject({}).nullable(),
           startTime: z
             .string()
             .regex(
@@ -3109,7 +3235,7 @@ const WorkflowExecutionsSchema = z
             )
             .nullable(),
           status: z.enum(['running', 'succeeded', 'failed', 'rejected', 'retry', 'error']),
-          transitionExecutions: z.object({}).nullable(),
+          transitionExecutions: z.looseObject({}).nullable(),
           workflowId: z.string().regex(/^las:workflow:[a-f0-9]{32}$/),
         })
         .openapi({
@@ -3277,108 +3403,84 @@ export const getAppClientsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: AppClientsSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -3403,108 +3505,84 @@ export const postAppClientsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: AppClientSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -3520,24 +3598,18 @@ export const optionsAppClientsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -3560,108 +3632,84 @@ export const deleteAppClientsAppClientIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: AppClientSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -3686,24 +3734,18 @@ export const optionsAppClientsAppClientIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -3734,108 +3776,84 @@ export const patchAppClientsAppClientIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: AppClientSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -3866,108 +3884,84 @@ export const getAssetsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: AssetsSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -3992,108 +3986,84 @@ export const postAssetsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: AssetSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -4109,24 +4079,18 @@ export const optionsAssetsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -4149,108 +4113,84 @@ export const getAssetsAssetIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: AssetSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -4274,108 +4214,84 @@ export const deleteAssetsAssetIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: AssetSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -4400,24 +4316,18 @@ export const optionsAssetsAssetIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -4448,108 +4358,84 @@ export const patchAssetsAssetIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: AssetSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -4580,108 +4466,84 @@ export const getDatasetsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: DatasetsSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -4706,108 +4568,84 @@ export const postDatasetsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: DatasetSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -4823,24 +4661,18 @@ export const optionsDatasetsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -4863,108 +4695,84 @@ export const getDatasetsDatasetIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: DatasetSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -4988,108 +4796,84 @@ export const deleteDatasetsDatasetIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: DatasetSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -5114,24 +4898,18 @@ export const optionsDatasetsDatasetIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -5162,108 +4940,84 @@ export const patchDatasetsDatasetIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: DatasetSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -5300,108 +5054,84 @@ export const getDeploymentEnvironmentsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: DeploymentEnvironmentsSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -5417,24 +5147,18 @@ export const optionsDeploymentEnvironmentsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -5462,108 +5186,84 @@ export const getDeploymentEnvironmentsDeploymentEnvironmentIdRoute = createRoute
       description: '200 response',
       content: { 'application/json': { schema: DeploymentEnvironmentSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -5593,24 +5293,18 @@ export const optionsDeploymentEnvironmentsDeploymentEnvironmentIdRoute = createR
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -5670,108 +5364,84 @@ export const getDocumentsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: DocumentsSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -5796,108 +5466,84 @@ export const postDocumentsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: DocumentSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -5940,108 +5586,84 @@ export const deleteDocumentsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: DocumentsSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -6057,24 +5679,18 @@ export const optionsDocumentsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -6097,108 +5713,84 @@ export const getDocumentsDocumentIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: DocumentSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -6222,108 +5814,84 @@ export const deleteDocumentsDocumentIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: DocumentSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -6348,24 +5916,18 @@ export const optionsDocumentsDocumentIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -6396,108 +5958,84 @@ export const patchDocumentsDocumentIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: DocumentSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -6568,108 +6106,84 @@ export const getLogsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: LogsSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -6685,24 +6199,18 @@ export const optionsLogsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -6725,108 +6233,84 @@ export const getLogsLogIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: LogSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -6851,24 +6335,18 @@ export const optionsLogsLogIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -6904,108 +6382,84 @@ export const getModelsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: ModelsSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -7030,108 +6484,84 @@ export const postModelsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: ModelSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -7147,24 +6577,18 @@ export const optionsModelsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -7187,108 +6611,84 @@ export const getModelsModelIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: ModelSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -7312,108 +6712,84 @@ export const deleteModelsModelIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: ModelSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -7438,24 +6814,18 @@ export const optionsModelsModelIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -7486,108 +6856,84 @@ export const patchModelsModelIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: ModelSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -7631,108 +6977,84 @@ export const getModelsModelIdDataBundlesRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: DataBundlesSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -7764,108 +7086,84 @@ export const postModelsModelIdDataBundlesRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: DataBundleSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -7890,24 +7188,18 @@ export const optionsModelsModelIdDataBundlesRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -7935,108 +7227,84 @@ export const deleteModelsModelIdDataBundlesDataBundleIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: DataBundleSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -8066,24 +7334,18 @@ export const optionsModelsModelIdDataBundlesDataBundleIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -8119,108 +7381,84 @@ export const patchModelsModelIdDataBundlesDataBundleIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: DataBundleSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -8264,108 +7502,84 @@ export const getModelsModelIdTrainingsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: TrainingsSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -8397,108 +7611,84 @@ export const postModelsModelIdTrainingsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: TrainingSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -8523,24 +7713,18 @@ export const optionsModelsModelIdTrainingsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -8569,24 +7753,18 @@ export const optionsModelsModelIdTrainingsTrainingIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -8622,108 +7800,84 @@ export const patchModelsModelIdTrainingsTrainingIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: TrainingSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -8754,108 +7908,84 @@ export const getOrganizationsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: OrganizationsSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -8880,108 +8010,84 @@ export const postOrganizationsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: OrganizationSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -8997,24 +8103,18 @@ export const optionsOrganizationsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -9037,108 +8137,84 @@ export const getOrganizationsOrganizationIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: OrganizationSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -9163,24 +8239,18 @@ export const optionsOrganizationsOrganizationIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -9214,108 +8284,84 @@ export const patchOrganizationsOrganizationIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: OrganizationSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -9346,108 +8392,84 @@ export const getPaymentMethodsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: PaymentMethodsSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -9472,108 +8494,84 @@ export const postPaymentMethodsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: PaymentMethodSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -9589,24 +8587,18 @@ export const optionsPaymentMethodsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -9634,108 +8626,84 @@ export const getPaymentMethodsPaymentMethodIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: PaymentMethodSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -9764,108 +8732,84 @@ export const deletePaymentMethodsPaymentMethodIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: PaymentMethodSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -9895,24 +8839,18 @@ export const optionsPaymentMethodsPaymentMethodIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -9951,108 +8889,84 @@ export const patchPaymentMethodsPaymentMethodIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: PaymentMethodSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -10089,108 +9003,84 @@ export const getPlansRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: PlansSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -10206,24 +9096,18 @@ export const optionsPlansRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -10246,108 +9130,84 @@ export const getPlansPlanIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: PlanSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -10372,24 +9232,18 @@ export const optionsPlansPlanIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -10431,108 +9285,84 @@ export const getPredictionsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: PredictionsSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -10557,108 +9387,84 @@ export const postPredictionsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: PredictionSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -10674,24 +9480,18 @@ export const optionsPredictionsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -10714,108 +9514,84 @@ export const getProfilesProfileIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: ProfileSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -10840,24 +9616,18 @@ export const optionsProfilesProfileIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -10880,108 +9650,84 @@ export const patchProfilesProfileIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: ProfileSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -11012,108 +9758,84 @@ export const getSecretsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: SecretsSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -11138,108 +9860,84 @@ export const postSecretsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: SecretSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -11255,24 +9953,18 @@ export const optionsSecretsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -11295,108 +9987,84 @@ export const deleteSecretsSecretIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: SecretSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -11421,24 +10089,18 @@ export const optionsSecretsSecretIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -11469,108 +10131,84 @@ export const patchSecretsSecretIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: SecretSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -11595,108 +10233,84 @@ export const postSignupRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: SignUpSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -11711,24 +10325,18 @@ export const optionsSignupRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -11769,108 +10377,84 @@ export const getTransitionsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: TransitionsSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -11895,108 +10479,84 @@ export const postTransitionsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: TransitionSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -12012,24 +10572,18 @@ export const optionsTransitionsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -12052,108 +10606,84 @@ export const getTransitionsTransitionIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: TransitionSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -12177,108 +10707,84 @@ export const deleteTransitionsTransitionIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: TransitionSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -12303,24 +10809,18 @@ export const optionsTransitionsTransitionIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -12351,108 +10851,84 @@ export const patchTransitionsTransitionIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: TransitionSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -12514,108 +10990,84 @@ export const getTransitionsTransitionIdExecutionsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: TransitionExecutionsSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -12650,108 +11102,84 @@ export const postTransitionsTransitionIdExecutionsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: TransitionExecutionSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -12776,24 +11204,18 @@ export const optionsTransitionsTransitionIdExecutionsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -12821,108 +11243,84 @@ export const getTransitionsTransitionIdExecutionsExecutionIdRoute = createRoute(
       description: '200 response',
       content: { 'application/json': { schema: TransitionExecutionSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -12952,24 +11350,18 @@ export const optionsTransitionsTransitionIdExecutionsExecutionIdRoute = createRo
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -13008,108 +11400,84 @@ export const patchTransitionsTransitionIdExecutionsExecutionIdRoute = createRout
       description: '200 response',
       content: { 'application/json': { schema: TransitionExecutionSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -13146,108 +11514,84 @@ export const postTransitionsTransitionIdExecutionsExecutionIdHeartbeatsRoute = c
       description: '204 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -13277,24 +11621,18 @@ export const optionsTransitionsTransitionIdExecutionsExecutionIdHeartbeatsRoute 
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -13324,108 +11662,84 @@ export const getUsersRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: UsersSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -13450,108 +11764,84 @@ export const postUsersRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: UserSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -13567,24 +11857,18 @@ export const optionsUsersRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -13607,108 +11891,84 @@ export const getUsersUserIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: UserSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -13732,108 +11992,84 @@ export const deleteUsersUserIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: UserSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -13858,24 +12094,18 @@ export const optionsUsersUserIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -13906,108 +12136,84 @@ export const patchUsersUserIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: UserSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -14038,108 +12244,84 @@ export const getWorkflowsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: WorkflowsSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -14164,108 +12346,84 @@ export const postWorkflowsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: WorkflowSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -14281,24 +12439,18 @@ export const optionsWorkflowsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -14321,108 +12473,84 @@ export const getWorkflowsWorkflowIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: WorkflowSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -14446,108 +12574,84 @@ export const deleteWorkflowsWorkflowIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: WorkflowSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -14572,24 +12676,18 @@ export const optionsWorkflowsWorkflowIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -14620,108 +12718,84 @@ export const patchWorkflowsWorkflowIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: WorkflowSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -14794,108 +12868,84 @@ export const getWorkflowsWorkflowIdExecutionsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: WorkflowExecutionsSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -14930,108 +12980,84 @@ export const postWorkflowsWorkflowIdExecutionsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: WorkflowExecutionSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -15056,24 +13082,18 @@ export const optionsWorkflowsWorkflowIdExecutionsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -15101,108 +13121,84 @@ export const getWorkflowsWorkflowIdExecutionsExecutionIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: WorkflowExecutionSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -15231,108 +13227,84 @@ export const deleteWorkflowsWorkflowIdExecutionsExecutionIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: WorkflowExecutionSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -15362,24 +13334,18 @@ export const optionsWorkflowsWorkflowIdExecutionsExecutionIdRoute = createRoute(
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -15418,108 +13384,84 @@ export const patchWorkflowsWorkflowIdExecutionsExecutionIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: WorkflowExecutionSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: '400 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     403: {
       description: '403 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
       description: '404 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     415: {
       description: '415 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
       description: '500 response',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },

@@ -427,6 +427,49 @@ const AcatsEquitySchema = z
       })
       .openapi({ required: ['symbol', 'position'] }),
   ])
+  .and(
+    z
+      .object({
+        cusip: z
+          .string()
+          .regex(/^[0-9A-Z]{8}[0-9*@#]$/)
+          .exactOptional()
+          .openapi({
+            description:
+              'CUSIP security identifier for the asset -- 8 uppercase alphanumeric characters followed by a check character, which may be a digit or one of `*`, `@`, `#`. Recommended over `symbol` for unambiguous identification. Provide either `cusip` or `symbol`, not both.',
+          }),
+        position: z
+          .enum(['LONG', 'SHORT'])
+          .exactOptional()
+          .openapi({
+            description:
+              'Position type. Only `LONG` and `SHORT` are accepted for equities -- `CREDIT` and `DEBIT` apply to cash positions and are rejected with HTTP 400 here.',
+          }),
+        qty: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Quantity of assets to transfer. Use `transfer_all` to transfer the entire position instead of specifying a quantity -- `qty` and `transfer_all: true` are mutually exclusive, and sending both is rejected with HTTP 400. Note that the ACATS system will only transfer whole shares.',
+          }),
+        symbol: z
+          .string()
+          .regex(/^[A-Z0-9]{1,6}([-.][A-Z]{1,5})?$/)
+          .exactOptional()
+          .openapi({
+            description:
+              'Stock ticker symbol (e.g. `AAPL`, `BRK.B`, `GOOGL`). Up to 6 alphanumeric characters, optionally followed by a single `.` or `-` separator and a 1-5 letter suffix. Values are trimmed and upper-cased before validation. Use only when a CUSIP is not available, since symbols can change or be reused over time. Provide either `cusip` or `symbol`, not both.',
+          }),
+        transfer_all: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Set to true to transfer the entire balance of this asset. Must not be combined with `qty`. Setting it to `false` without a `qty` is rejected with HTTP 400.',
+          }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description:
       'Equity asset requested in a partial transfer. Identify the security with either `cusip` or `symbol` -- provide one, not both. Prefer `cusip` when you have it: it is a stable, unambiguous identifier. Use `symbol` only when a CUSIP is not available, as ticker symbols can change or be reused over time.',
@@ -447,26 +490,50 @@ const FullTransferSchema = z
   .object({ type: z.literal('FULL') })
   .openapi({ required: ['type'] })
   .and(
-    z.looseObject({}).refine(
-      (val) =>
-        !z
-          .object({ cash: z.array(z.any()).min(1) })
-          .openapi({ required: ['cash'] })
-          .safeParse(val).success,
-    ),
+    z
+      .looseObject({})
+      .refine(
+        (val) =>
+          !z
+            .object({ cash: z.array(z.any()).min(1) })
+            .openapi({ required: ['cash'] })
+            .safeParse(val).success,
+      )
+      .openapi({
+        not: {
+          properties: { cash: { minItems: 1, type: 'array' } },
+          required: ['cash'],
+          type: 'object',
+        },
+      }),
   )
   .and(
-    z.looseObject({}).refine(
-      (val) =>
-        !z
-          .object({
-            securities: z
-              .object({ equities: z.array(z.any()).min(1) })
-              .openapi({ required: ['equities'] }),
-          })
-          .openapi({ required: ['securities'] })
-          .safeParse(val).success,
-    ),
+    z
+      .looseObject({})
+      .refine(
+        (val) =>
+          !z
+            .object({
+              securities: z
+                .object({ equities: z.array(z.any()).min(1) })
+                .openapi({ required: ['equities'] }),
+            })
+            .openapi({ required: ['securities'] })
+            .safeParse(val).success,
+      )
+      .openapi({
+        not: {
+          properties: {
+            securities: {
+              properties: { equities: { minItems: 1, type: 'array' } },
+              required: ['equities'],
+              type: 'object',
+            },
+          },
+          required: ['securities'],
+          type: 'object',
+        },
+      }),
   )
   .openapi({
     description:
@@ -490,13 +557,22 @@ const PartialTransferSchema = z
     type: z.literal('PARTIAL'),
   })
   .superRefine((o, ctx) => {
-    const If = z.looseObject({}).refine(
-      (val) =>
-        !z
-          .object({ cash: z.array(z.any()).min(1) })
-          .openapi({ required: ['cash'] })
-          .safeParse(val).success,
-    )
+    const If = z
+      .looseObject({})
+      .refine(
+        (val) =>
+          !z
+            .object({ cash: z.array(z.any()).min(1) })
+            .openapi({ required: ['cash'] })
+            .safeParse(val).success,
+      )
+      .openapi({
+        not: {
+          properties: { cash: { minItems: 1, type: 'array' } },
+          required: ['cash'],
+          type: 'object',
+        },
+      })
     const ifOk = If.safeParse(o).success
     const Branch = ifOk
       ? z
@@ -525,17 +601,40 @@ const PartialTransferSchema = z
   })
   .openapi('PartialTransfer')
 
+const AcatsInitiateTransferTypeSchema = z
+  .enum(['FULL', 'PARTIAL'])
+  .openapi({ description: 'Transfer type' })
+  .openapi('AcatsInitiateTransferType')
+
 const AcatsInitiateTransferDetailsSchema = z
   .xor([FullTransferSchema, PartialTransferSchema])
+  .and(
+    z
+      .object({
+        cash: z
+          .array(AcatsCashBalanceSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              'Cash amounts to transfer. Only used for PARTIAL transfers. Must be omitted or empty for FULL transfers.',
+          }),
+        securities: AcatsSecuritiesSchema.exactOptional().openapi({
+          description:
+            'Securities to transfer. Only used for PARTIAL transfers. Must be omitted or empty for FULL transfers.',
+        }),
+        type: AcatsInitiateTransferTypeSchema,
+      })
+      .openapi({ required: ['type'] }),
+  )
   .openapi({
     description:
       'Transfer details. The two transfer types are mutually exclusive in what they accept:\n- `FULL`: do not include a non-empty `cash` or `securities.equities` array (the entire account will be transferred). Including either non-empty is rejected with HTTP 400.\n- `PARTIAL`: specify which assets to transfer using the `cash` and/or `securities` objects. At least one of the two must be present and non-empty, otherwise the request is rejected with HTTP 400.\n',
     discriminator: {
+      propertyName: 'type',
       mapping: {
         FULL: '#/components/schemas/FullTransfer',
         PARTIAL: '#/components/schemas/PartialTransfer',
       },
-      propertyName: 'type',
     },
     example: {
       cash: [{ amount: '10000', currency: 'USD' }],
@@ -619,11 +718,6 @@ const AcatsInitiateTransferResponseSchema = z
     required: ['acats_id'],
   })
   .openapi('AcatsInitiateTransferResponse')
-
-const AcatsInitiateTransferTypeSchema = z
-  .enum(['FULL', 'PARTIAL'])
-  .openapi({ description: 'Transfer type' })
-  .openapi('AcatsInitiateTransferType')
 
 const AcatsListAssetsResponseSchema = z
   .array(AcatsAssetSchema)
@@ -824,22 +918,14 @@ const AcatsTransferSchema = z
 
 const AcatsListTransfersResponseSchema = z
   .object({
-    page_token_next: z
-      .any()
-      .openapi({
-        description:
-          'Page token for the next page of transfers. Pass it back in the `page_token` query parameter to fetch that page. Not returned when the caller is on the last page.',
-      })
-      .and(AcatsPageTokenSchema)
-      .exactOptional(),
-    page_token_previous: z
-      .any()
-      .openapi({
-        description:
-          'Page token for the previous page of transfers. Pass it back in the `page_token` query parameter to fetch that page. Not returned when the caller is on the first page.',
-      })
-      .and(AcatsPageTokenSchema)
-      .exactOptional(),
+    page_token_next: AcatsPageTokenSchema.exactOptional().openapi({
+      description:
+        'Page token for the next page of transfers. Pass it back in the `page_token` query parameter to fetch that page. Not returned when the caller is on the last page.',
+    }),
+    page_token_previous: AcatsPageTokenSchema.exactOptional().openapi({
+      description:
+        'Page token for the previous page of transfers. Pass it back in the `page_token` query parameter to fetch that page. Not returned when the caller is on the first page.',
+    }),
     pending_transfers: z
       .int32()
       .exactOptional()
@@ -912,12 +998,31 @@ const AgreementTypeSchema = z
     'customer_agreement',
     'crypto_agreement',
     'options_agreement',
+    'custodian_customer_agreement',
+    'trusted_contact_consent',
+    'master_securities_lending_agreement',
+    'certifications_and_resolutions_statement',
+    'joint_account_agreement',
+    'foreign_markets_addendum',
   ])
   .openapi({
-    description:
-      '- margin_agreement: Alpaca Margin Agreement\n- account_agreement: Alpaca Account Agreement\n- customer_agreement: Alpaca Customer Agreement\n- crypto_agreement: Alpaca Crypto agreement\n- options_agreement: Alpaca Option agreement\n- custodial_customer_agreement: Alpaca Custodial Customer agreement\n',
+    description: 'The type of agreement the customer signed.',
     example: 'customer_agreement',
     title: 'AgreementType',
+    'x-enumDescriptions': {
+      account_agreement: 'Alpaca Account Agreement',
+      certifications_and_resolutions_statement: 'Alpaca Certifications and Resolutions Statement',
+      crypto_agreement: 'Alpaca Crypto Agreement',
+      custodian_customer_agreement:
+        'Alpaca Custodial Customer Agreement (deprecated; use customer_agreement)',
+      customer_agreement: 'Alpaca Customer Agreement',
+      foreign_markets_addendum: 'Alpaca Foreign Markets / Global Equities Addendum',
+      joint_account_agreement: 'Alpaca Joint Account Agreement',
+      margin_agreement: 'Alpaca Margin Agreement',
+      master_securities_lending_agreement: 'Alpaca Master Securities Lending Agreement',
+      options_agreement: 'Alpaca Options Agreement',
+      trusted_contact_consent: 'Alpaca Trusted Contact Consent',
+    },
   })
   .openapi('AgreementType')
 
@@ -1054,6 +1159,7 @@ const CurrencySchema = z
   .openapi({
     description:
       '"USD" // US Dollar\n"JPY" // Japanese Yen\n"EUR" // Euro\n"CAD" // Canadian Dollar\n"GBP" // British Pound Sterling\n"CHF" // Swiss Franc\n"TRY" // Turkish Lira\n"AUD" // Australian Dollar\n"CZK" // Czech Koruna\n"SEK" // Swedish Krona\n"DKK" // Danish Krone\n"SGD" // Singapore Dollar\n"HKD" // Hong Kong Dollar\n"HUF" // Hungarian Forint\n"NZD" // New Zealand Dollar\n"NOK" // Norwegian Krone\n"PLN" // Poland Złoty',
+    example: 'USD',
     title: 'Currency',
   })
   .openapi('Currency')
@@ -1240,6 +1346,24 @@ const OwnerDocumentSchema = z
   })
   .openapi('OwnerDocument')
 
+const AccountDRIPResponseSchema = z
+  .object({
+    equities_dividend_reinvestments: z
+      .boolean()
+      .openapi({
+        description:
+          'If true, Alpaca reinvests eligible cash dividends on US equities in the same security.',
+        example: true,
+      }),
+  })
+  .openapi({
+    description:
+      "This feature is available in sandbox for beta partners only.\n\nThe account's dividend reinvestment (DRIP) setting.\nThis field is returned only when DRIP was turned on for the account at least once.\n",
+    example: { equities_dividend_reinvestments: true },
+    required: ['equities_dividend_reinvestments'],
+  })
+  .openapi('AccountDRIPResponse')
+
 const EnabledAssetClassSchema = z
   .enum(['us_equity', 'us_option', 'crypto'])
   .openapi({
@@ -1278,46 +1402,290 @@ const AccountFPSLResponseSchema = z
   })
   .openapi('AccountFPSLResponse')
 
+const IdentificationSchema = z
+  .object({
+    expiry_date: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description:
+          'The expiry date in "YYYY-MM-DD" format. It must be later than today (UTC) and no earlier than `issued_date`.',
+        example: '2030-01-01',
+        writeOnly: true,
+      }),
+    issued_country: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required on write. [ISO 3166-1 alpha-3](https://www.iso.org/iso-3166-country-codes.html) code of the issuing country.\n',
+        example: 'GBR',
+        writeOnly: true,
+      }),
+    issued_date: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description: 'The issue date in "YYYY-MM-DD" format. It can\'t be later than today (UTC).',
+        example: '2020-01-01',
+        writeOnly: true,
+      }),
+    number: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required on write. The identification number. An `LEI` number is 20 characters long and must pass the ISO 17442 check digits, or the request fails with 422. Lowercase letters are accepted and stored in uppercase.\n',
+        example: '5493001KJTIIGC8Y1R12',
+        writeOnly: true,
+      }),
+    type: z
+      .string()
+      .openapi({
+        description:
+          'The identification type, for example `passport`, `national_id` or `LEI`. `LEI` is uppercase.',
+        example: 'LEI',
+      }),
+  })
+  .openapi({
+    description:
+      'An identity document or identifier of the account owner. Responses return only `type`.',
+    example: { issued_country: 'GBR', number: '5493001KJTIIGC8Y1R12', type: 'LEI' },
+    required: ['type'],
+  })
+  .openapi('Identification')
+
 const TaxIdTypeSchema = z
   .enum([
     'USA_SSN',
+    'USA_EIN',
     'USA_ITIN',
+    'USA_TIN',
+    'ABW_PN',
+    'AGO_NIF',
+    'ALB_NIPT',
+    'AND_NRT',
+    'ARE_EID',
+    'ARE_TRN',
     'ARG_AG_CUIT',
-    'AUS_TFN',
+    'ARG_AR_CUIT',
+    'ARM_SSN',
+    'ARM_TIN',
     'AUS_ABN',
+    'AUS_TFN',
+    'AUT_UID',
+    'AUT_VNR',
+    'AZE_FIN',
+    'AZE_VOEN',
+    'BEL_BCE',
+    'BEL_NN',
+    'BEN_IFU',
+    'BFA_IFU',
+    'BGD_TIN',
+    'BGR_EGN',
+    'BGR_EIK',
+    'BHR_CPR',
+    'BIH_JMBG',
+    'BLR_ID',
+    'BLR_UNP',
+    'BLZ_TIN',
     'BOL_NIT',
+    'BRA_CNPJ',
     'BRA_CPF',
+    'BRB_TIN',
+    'BTN_TPN',
+    'BWA_TIN',
+    'CAN_BN',
+    'CAN_SIN',
+    'CHE_AHV',
+    'CHE_UID',
     'CHL_RUT',
+    'CHN_RID',
+    'CHN_USCC',
+    'CIV_NCC',
+    'CMR_NIU',
+    'COK_RMD',
+    'COL_CC',
+    'COL_CE',
     'COL_NIT',
+    'COL_NUIP',
+    'COL_PPT',
+    'CPV_NIF',
+    'CRI_CJ',
+    'CRI_DIMEX',
     'CRI_NITE',
+    'CRI_PIN',
+    'CUW_CRIB',
+    'CYP_TIC',
+    'CZE_TIN',
     'DEU_TAX_ID',
+    'DEU_UST_ID',
+    'DNK_CPR',
+    'DNK_CVR',
+    'DOM_CED',
     'DOM_RNC',
+    'DZA_NIF',
     'ECU_RUC',
+    'EGY_NID',
+    'EGY_TRN',
+    'ESP_DNI',
+    'ESP_NIE',
+    'ESP_NIF',
+    'EST_IK',
+    'EST_RC',
+    'ETH_TIN',
+    'FIN_HETU',
+    'FIN_YTU',
+    'FJI_TIN',
+    'FRA_SIREN',
     'FRA_SPI',
-    'GBR_UTR',
+    'GAB_NIF',
+    'GBR_CRN',
     'GBR_NINO',
+    'GBR_UTR',
+    'GEO_PID',
+    'GEO_TIN',
+    'GHA_TIN',
+    'GRC_AFM',
     'GTM_NIT',
+    'HKG_BRN',
+    'HKG_HKID',
     'HND_RTN',
+    'HRV_OIB',
+    'HTI_NIF',
+    'HUN_ENT',
     'HUN_TIN',
     'IDN_KTP',
+    'IDN_NWPW',
+    'IND_GSTIN',
     'IND_PAN',
+    'IRL_CRO',
+    'IRL_PPS',
+    'IRN_NID',
+    'ISL_KT',
+    'ISR_CORP',
     'ISR_TAX_ID',
+    'ITA_PIVA',
     'ITA_TAX_ID',
+    'JAM_TRN',
+    'JOR_NID',
+    'JPN_CORP',
     'JPN_TAX_ID',
+    'KAZ_BIN',
+    'KAZ_IIN',
+    'KEN_KRA_PIN',
+    'KGZ_INN',
+    'KHM_NID',
+    'KOR_BRN',
+    'KOR_RRN',
+    'KWT_CID',
+    'LBN_TIN',
+    'LKA_NIC',
+    'LKA_TIN',
+    'LTU_AK',
+    'LTU_JAK',
+    'LUX_NIN',
+    'LUX_TVA',
+    'LVA_PK',
+    'LVA_REG',
+    'MAC_TIN',
+    'MAR_CIN',
+    'MAR_ICE',
+    'MDA_IDNO',
+    'MDA_IDNP',
+    'MEX_CURP',
     'MEX_RFC',
+    'MKD_EDB',
+    'MKD_EMBG',
+    'MLI_NIF',
+    'MLT_ID',
+    'MLT_VAT',
+    'MNE_JMBG',
+    'MNE_PIB',
+    'MNG_RD',
+    'MOZ_NUIT',
+    'MUS_NID',
+    'MUS_TAN_ENT',
+    'MUS_TAN_IND',
+    'MWI_TPIN',
+    'MYS_MYKAD',
+    'MYS_ROC',
+    'NAM_TIN',
+    'NGA_NIN',
+    'NGA_TIN',
     'NIC_RUC',
+    'NLD_BTW',
+    'NLD_KVK',
+    'NLD_OBN',
     'NLD_TIN',
+    'NOR_FNR',
+    'NOR_ORG',
+    'NPL_PAN',
+    'NZL_IRD',
+    'NZL_NZBN',
+    'OMN_CID',
+    'PAK_NIC',
+    'PAK_NTN',
     'PAN_RUC',
     'PER_RUC',
+    'PHL_TIN',
+    'POL_NIP',
+    'POL_PESEL',
+    'PRT_NIF',
     'PRY_RUC',
-    'SGP_NRIC',
-    'SGP_FIN',
+    'QAT_QID',
+    'ROU_CNP',
+    'ROU_CUI',
+    'RUS_INN_ENT',
+    'RUS_INN_IND',
+    'RWA_TIN',
+    'SAU_TIN',
+    'SAU_VAT',
+    'SEN_NINEA',
     'SGP_ASGD',
+    'SGP_FIN',
     'SGP_ITR',
+    'SGP_NRIC',
+    'SGP_UEN',
     'SLV_NIT',
+    'SRB_JMBG',
+    'SRB_PIB',
+    'SVK_ICO',
+    'SVK_TIN',
+    'SVN_DAS',
+    'SVN_MS',
+    'SWE_ORG',
     'SWE_TAX_ID',
+    'SWZ_TIN',
+    'SXM_CRIB',
+    'SYR_TIN',
+    'THA_NID',
+    'THA_TIN',
+    'TJK_TIN',
+    'TTO_BIR',
+    'TUN_CIN',
+    'TUN_MF',
+    'TUR_TIN',
+    'TWN_GUI',
+    'TWN_NID',
+    'TZA_TIN',
+    'UGA_TIN',
+    'UKR_EDRPOU',
+    'UKR_RNTRC',
+    'URY_CI',
     'URY_RUT',
+    'UZB_INN',
+    'UZB_PINFL',
     'VEN_RIF',
+    'VNM_MST_BRN',
+    'VNM_MST_CORP',
+    'VNM_MST_PIN',
+    'WSM_TIN',
+    'XXK_PID',
+    'ZAF_CRN',
+    'ZAF_ID',
+    'ZMB_TPIN',
+    'ZWE_TIN',
     'NATIONAL_ID',
     'PASSPORT',
     'PERMANENT_RESIDENT',
@@ -1327,7 +1695,7 @@ const TaxIdTypeSchema = z
   ])
   .openapi({
     description:
-      "An Enum of the various kinds of Tax ID formats Alpaca supports.\n\nPossible Values are:\n\n\n- **USA_SSN**\nUSA Social Security Number\n\n- **USA_ITIN**\nUSA Individual Taxpayer Identification Number\n\n- **ARG_AR_CUIT**\nArgentina CUIT\n\n- **AUS_TFN**\nAustralian Tax File Number\n\n- **AUS_ABN**\nAustralian Business Number\n\n- **BOL_NIT**\nBolivia NIT\n\n- **BRA_CPF**\nBrazil CPF\n\n- **CHL_RUT**\nChile RUT\n\n- **COL_NIT**\nColombia NIT\n\n- **CRI_NITE**\nCosta Rica NITE\n\n- **DEU_TAX_ID**\nGermany Tax ID (Identifikationsnummer)\n\n- **DOM_RNC**\nDominican Republic RNC\n\n- **ECU_RUC**\nEcuador RUC\n\n- **FRA_SPI**\nFrance SPI (Reference Tax Number)\n\n- **GBR_UTR**\nUK UTR (Unique Taxpayer Reference)\n\n- **GBR_NINO**\nUK NINO (National Insurance Number)\n\n- **GTM_NIT**\nGuatemala NIT\n\n- **HND_RTN**\nHonduras RTN\n\n- **HUN_TIN**\nHungary TIN Number\n\n- **IDN_KTP**\nIndonesia KTP\n\n- **IND_PAN**\nIndia PAN Number\n\n- **ISR_TAX_ID**\nIsrael Tax ID (Teudat Zehut)\n\n- **ITA_TAX_ID**\nItaly Tax ID (Codice Fiscale)\n\n- **JPN_TAX_ID**\nJapan Tax ID (Kojin Bango)\n\n- **MEX_RFC**\nMexico RFC\n\n- **NIC_RUC**\nNicaragua RUC\n\n- **NLD_TIN**\nNetherlands TIN Number\n\n- **PAN_RUC**\nPanama RUC\n\n- **PER_RUC**\nPeru RUC\n\n- **PRY_RUC**\nParaguay RUC\n\n- **SGP_NRIC**\nSingapore NRIC\n\n- **SGP_FIN**\nSingapore FIN\n\n- **SGP_ASGD**\nSingapore ASGD\n\n- **SGP_ITR**\nSingapore ITR\n\n- **SLV_NIT**\nEl Salvador NIT\n\n- **SWE_TAX_ID**\nSweden Tax ID (Personnummer)\n\n- **URY_RUT**\nUruguay RUT\n\n- **VEN_RIF**\nVenezuela RIF\n\n- **NATIONAL_ID**\nNational ID number, if a tax ID number is not available\n\n- **PASSPORT**\nPassport number, if a tax ID number is not available\n\n- **PERMANENT_RESIDENT**\nPermanent resident number, if a tax ID number is not available\n\n- **DRIVER_LICENSE**\nDriver's license number, if a tax ID number is not available\n\n- **OTHER_GOV_ID**\nOther government issued identifier, if a tax ID number is not available\n\n- **NOT_SPECIFIED**\nOther Tax IDs",
+      "The type of the tax ID or other government-issued identification number.\n\nEach country-specific type is meant for accounts whose `country_of_tax_residence` is the country it is named after, and some are also meant for that country's associated jurisdictions, such as its territories. For correspondents with strict tax ID validation, the type must match `country_of_tax_residence` and be supported in the account's booking center, so a listed type can still be rejected when the account is validated. The \"for individuals\" and \"for entities\" notes describe who each type is typically issued to, and aren't checked when the account is validated.\n\nPossible values are:\n\n- **USA_SSN**: USA SSN (Social Security Number), for individuals\n- **USA_EIN**: USA EIN (Employer Identification Number), for entities\n- **USA_ITIN**: USA ITIN (Individual Taxpayer Identification Number), for individuals\n- **USA_TIN**: USA TIN (Taxpayer Identification Number), for entities\n- **ABW_PN**: Aruba Persoonsnummer (Aruba TIN), for individuals and entities\n- **AGO_NIF**: Angola NIF (Número de Identificação Fiscal), for individuals and entities\n- **ALB_NIPT**: Albania NIPT (Numri i Identifikimit të Personit të Tatueshëm), for individuals and entities\n- **AND_NRT**: Andorra NRT (Número de Registre Tributari), for individuals and entities\n- **ARE_EID**: UAE Emirates ID, for individuals\n- **ARE_TRN**: UAE TRN (Tax Registration Number), for entities\n- **ARG_AG_CUIT**: Legacy value for an Argentina CUIT. Use `ARG_AR_CUIT` instead.\n- **ARG_AR_CUIT**: Argentina CUIT (Clave Única de Identificación Tributaria), for individuals and entities\n- **ARM_SSN**: Armenia SSN (Social Security Number), for individuals\n- **ARM_TIN**: Armenia TIN (Tax Identification Number), for entities\n- **AUS_ABN**: Australia ABN (Australian business number), for entities\n- **AUS_TFN**: Australia TFN (Tax File Number), for individuals and entities\n- **AUT_UID**: Austria UID-Nummer (VAT Identification Number), for entities\n- **AUT_VNR**: Austria Versicherungsnummer (Social Insurance Number), for individuals\n- **AZE_FIN**: Azerbaijan FIN (Fərdi İdentifikasiya Nömrəsi), for individuals\n- **AZE_VOEN**: Azerbaijan VÖEN (Tax Identification Number), for entities\n- **BEL_BCE**: Belgium BCE/KBO (Enterprise Number), for entities\n- **BEL_NN**: Belgium NN (Numéro National / Rijksregisternummer), for individuals\n- **BEN_IFU**: Benin IFU (Identifiant Fiscal Unique), for individuals and entities\n- **BFA_IFU**: Burkina Faso IFU (Identifiant Financier Unique), for individuals and entities\n- **BGD_TIN**: Bangladesh TIN (Tax Identification Number), for individuals and entities\n- **BGR_EGN**: Bulgaria EGN (Edinen Grazhdanski Nomer), for individuals\n- **BGR_EIK**: Bulgaria EIK/BULSTAT (Entity Identification Code), for entities\n- **BHR_CPR**: Bahrain CPR (Central Population Registry), for individuals\n- **BIH_JMBG**: Bosnia and Herzegovina JMBG (Jedinstveni Matični Broj Građana), for individuals\n- **BLR_ID**: Belarus Personal Identification Number, for individuals\n- **BLR_UNP**: Belarus UNP (Uchyotny Nomer Platelshchika), for entities\n- **BLZ_TIN**: Belize TIN (Tax Identification Number), for individuals and entities\n- **BOL_NIT**: Bolivia NIT (Número de Identificación Tributaria), for individuals and entities\n- **BRA_CNPJ**: Brazil CNPJ (Cadastro Nacional da Pessoa Jurídica), for entities\n- **BRA_CPF**: Brazil CPF (Cadastro de Pessoas Físicas), for individuals\n- **BRB_TIN**: Barbados TIN (Tax Identification Number), for individuals and entities\n- **BTN_TPN**: Bhutan TPN (Taxpayer Number), for individuals and entities\n- **BWA_TIN**: Botswana TIN (Tax Identification Number), for individuals and entities\n- **CAN_BN**: Canada BN (Business Number), for entities\n- **CAN_SIN**: Canada SIN (Social Insurance Number), for individuals\n- **CHE_AHV**: Switzerland AHV/AVS (Social Insurance Number), for individuals\n- **CHE_UID**: Switzerland UID (Unternehmens-Identifikationsnummer), for entities\n- **CHL_RUT**: Chile RUT (Rol Único Tributario), for individuals and entities\n- **CHN_RID**: China Resident Identity Card Number (居民身份证号码), for individuals\n- **CHN_USCC**: China USCC (Unified Social Credit Code / 统一社会信用代码), for entities\n- **CIV_NCC**: Côte d'Ivoire NCC (Numéro de Compte Contribuable), for individuals and entities\n- **CMR_NIU**: Cameroon NIU (Numéro d'Identifiant Unique), for individuals and entities\n- **COK_RMD**: Cook Islands RMD Number (Revenue Management Division), for individuals and entities\n- **COL_CC**: Colombia CC (Cédula de Ciudadanía), for individuals\n- **COL_CE**: Colombia CE (Cédula de Extranjería), for individuals\n- **COL_NIT**: Colombia NIT (Número de Identificación Tributaria), for individuals and entities\n- **COL_NUIP**: Colombia NUIP (Número Único de Identificación Personal), for individuals\n- **COL_PPT**: Colombia PPT (Permiso por Protección Temporal), for individuals\n- **CPV_NIF**: Cabo Verde NIF (Número de Identificação Fiscal), for individuals and entities\n- **CRI_CJ**: Costa Rica Cédula Jurídica (Legal Entity ID), for entities\n- **CRI_DIMEX**: Costa Rica DIMEX (Documento de Identificación Migratorio para Extranjeros), for individuals\n- **CRI_NITE**: Costa Rica NITE (Número de Identificación Tributaria Especial), for individuals and entities\n- **CRI_PIN**: Costa Rica Personal Identification Number (PIN), for individuals\n- **CUW_CRIB**: Curaçao CRIB (Centraal Registratie Informatie Belastingplichtige), for individuals and entities\n- **CYP_TIC**: Cyprus TIC (Tax Identification Code), for individuals and entities\n- **CZE_TIN**: Czech Republic TIN (Tax Identification Number), for individuals and entities\n- **DEU_TAX_ID**: Germany Tax ID (Identifikationsnummer), for individuals\n- **DEU_UST_ID**: Germany USt-IdNr (Umsatzsteuer-Identifikationsnummer), for entities\n- **DNK_CPR**: Denmark CPR-nummer (Det Centrale Personregister), for individuals\n- **DNK_CVR**: Denmark CVR-nummer (Det Centrale Virksomhedsregister), for entities\n- **DOM_CED**: Dominican Republic Cédula de Identidad y Electoral, for individuals\n- **DOM_RNC**: Dominican Republic RNC (Registro Nacional del Contribuyente), for entities\n- **DZA_NIF**: Algeria NIF (Numéro d'Identification Fiscale), for individuals and entities\n- **ECU_RUC**: Ecuador RUC (Registro Unico de Contribuyentes), for individuals and entities\n- **EGY_NID**: Egypt National ID Number, for individuals\n- **EGY_TRN**: Egypt Tax Registration Number, for entities\n- **ESP_DNI**: Spain DNI (Documento Nacional de Identidad), for individuals\n- **ESP_NIE**: Spain NIE (Número de Identidad de Extranjero), for individuals\n- **ESP_NIF**: Spain NIF (Número de Identificación Fiscal), for individuals and entities\n- **EST_IK**: Estonia Isikukood (Personal Identification Code), for individuals\n- **EST_RC**: Estonia Registrikood (Registry Code), for entities\n- **ETH_TIN**: Ethiopia TIN (Tax Identification Number), for individuals and entities\n- **FIN_HETU**: Finland HETU (Henkilötunnus), for individuals\n- **FIN_YTU**: Finland Y-tunnus (Business ID), for entities\n- **FJI_TIN**: Fiji TIN (Tax Identification Number), for individuals and entities\n- **FRA_SIREN**: France SIREN (Business tax ID), for entities\n- **FRA_SPI**: France SPI (Reference tax number), for individuals\n- **GAB_NIF**: Gabon NIF (Numéro d'Identification Fiscale), for individuals and entities\n- **GBR_CRN**: UK CRN (Companies House Registration Number), for entities\n- **GBR_NINO**: UK NINO (National Insurance Number), for individuals\n- **GBR_UTR**: UK UTR (Unique Taxpayer Reference), for individuals and entities\n- **GEO_PID**: Georgia Personal Identification Number, for individuals\n- **GEO_TIN**: Georgia TIN (Tax Identification Number), for entities\n- **GHA_TIN**: Ghana TIN (Tax Identification Number), for individuals and entities\n- **GRC_AFM**: Greece AFM (Arithmos Forologikou Mitroou), for individuals and entities\n- **GTM_NIT**: Guatemala NIT (Número de Identificación Tributaria), for individuals and entities\n- **HKG_BRN**: Hong Kong BRN (Business Registration Number), for entities\n- **HKG_HKID**: Hong Kong HKID (Hong Kong Identity Card), for individuals\n- **HND_RTN**: Honduras RTN (Registro Tributario Nacional), for individuals and entities\n- **HRV_OIB**: Croatia OIB (Osobni Identifikacijski Broj), for individuals\n- **HTI_NIF**: Haiti NIF (Numéro d'Identification Fiscale), for individuals and entities\n- **HUN_ENT**: Hungary Adószám (Entity Tax Number), for entities\n- **HUN_TIN**: Hungary TIN (Tax Identification Number), for individuals\n- **IDN_KTP**: Indonesia KTP (Indonesian Identity Card), for individuals\n- **IDN_NWPW**: Indonesia NPWP (Nomor Pokok Wajib Pajak), for individuals and entities. The code is spelled `IDN_NWPW`, not `IDN_NPWP`.\n- **IND_GSTIN**: India GSTIN (Goods and Services Tax Identification Number), for entities\n- **IND_PAN**: India PAN (Permanent Account Number), for individuals\n- **IRL_CRO**: Ireland CRO (Companies Registration Office Number), for entities\n- **IRL_PPS**: Ireland PPS (Personal Public Service Number), for individuals\n- **IRN_NID**: Iran National ID (Kode Melli), for individuals\n- **ISL_KT**: Iceland Kennitala (National Identification Number), for individuals\n- **ISR_CORP**: Israel Company Number (Mispar Chevra), for entities\n- **ISR_TAX_ID**: Israel Tax ID (Teudat Zehut), for individuals\n- **ITA_PIVA**: Italy Partita IVA (VAT Number), for entities\n- **ITA_TAX_ID**: Italy Tax ID (Codice fiscale), for individuals\n- **JAM_TRN**: Jamaica TRN (Taxpayer Registration Number), for individuals and entities\n- **JOR_NID**: Jordan National ID Number, for individuals\n- **JPN_CORP**: Japan Corporate Number (法人番号), for entities\n- **JPN_TAX_ID**: Japan Tax ID (kojin bango), for individuals\n- **KAZ_BIN**: Kazakhstan BIN (Business Identification Number), for entities\n- **KAZ_IIN**: Kazakhstan IIN (Individual Identification Number), for individuals\n- **KEN_KRA_PIN**: Kenya KRA PIN (Kenya Revenue Authority PIN), for individuals and entities\n- **KGZ_INN**: Kyrgyzstan INN (Individual Tax Number), for individuals\n- **KHM_NID**: Cambodia National ID Number, for individuals\n- **KOR_BRN**: South Korea BRN (Business Registration Number), for entities\n- **KOR_RRN**: South Korea RRN (Resident Registration Number), for individuals\n- **KWT_CID**: Kuwait Civil ID Number, for individuals\n- **LBN_TIN**: Lebanon TIN (Tax Identification Number), for individuals and entities\n- **LKA_NIC**: Sri Lanka NIC (National Identity Card), for individuals\n- **LKA_TIN**: Sri Lanka TIN (Tax Identification Number), for entities\n- **LTU_AK**: Lithuania Asmens Kodas (Personal Code), for individuals\n- **LTU_JAK**: Lithuania Juridinio Asmens Kodas (Legal Entity Code), for entities\n- **LUX_NIN**: Luxembourg Matricule (National Identification Number), for individuals\n- **LUX_TVA**: Luxembourg Numéro TVA (VAT Number), for entities\n- **LVA_PK**: Latvia Personas Kods (Personal Code), for individuals\n- **LVA_REG**: Latvia Reģistrācijas Numurs (Registration Number), for entities\n- **MAC_TIN**: Macao Taxpayer Number, for individuals and entities\n- **MAR_CIN**: Morocco CIN (Carte d'Identité Nationale), for individuals\n- **MAR_ICE**: Morocco ICE (Identifiant Commun de l'Entreprise), for entities\n- **MDA_IDNO**: Moldova IDNO (State Identification Number of Entity), for entities\n- **MDA_IDNP**: Moldova IDNP (Personal Identification Number), for individuals\n- **MEX_CURP**: Mexico CURP (Clave Única de Registro de Población), for individuals\n- **MEX_RFC**: Mexico RFC (Registro Federal de Contribuyentes), for individuals and entities\n- **MKD_EDB**: North Macedonia EDB (Unique Tax Number), for entities\n- **MKD_EMBG**: North Macedonia EMBG (Unique Master Citizen Number), for individuals\n- **MLI_NIF**: Mali NIF (Numéro d'Identification Fiscale), for individuals and entities\n- **MLT_ID**: Malta Identity Card Number, for individuals\n- **MLT_VAT**: Malta VAT Number, for entities\n- **MNE_JMBG**: Montenegro Unique Master Citizen Number, for individuals\n- **MNE_PIB**: Montenegro PIB (Tax Identification Number), for entities\n- **MNG_RD**: Mongolia Register Number, for individuals\n- **MOZ_NUIT**: Mozambique NUIT (Tax Identification Number), for individuals and entities\n- **MUS_NID**: Mauritius National Identity Card Number, for individuals\n- **MUS_TAN_ENT**: Mauritius TAN (Entity Tax Account Number), for entities\n- **MUS_TAN_IND**: Mauritius TAN (Individual Tax Account Number), for individuals\n- **MWI_TPIN**: Malawi TPIN (Taxpayer Identification Number), for individuals and entities\n- **MYS_MYKAD**: Malaysia MyKad (National Registration Identity Card), for individuals\n- **MYS_ROC**: Malaysia ROC (Companies Commission Registration Number), for entities\n- **NAM_TIN**: Namibia TIN (Tax Identification Number), for individuals and entities\n- **NGA_NIN**: Nigeria NIN (National Identification Number), for individuals\n- **NGA_TIN**: Nigeria TIN (Tax Identification Number), for entities\n- **NIC_RUC**: Nicaragua RUC (Registro Unico de Contribuyentes), for individuals and entities\n- **NLD_BTW**: Netherlands Btw-identificatienummer (btw-id), for entities\n- **NLD_KVK**: Netherlands KVK (Kamer van Koophandel), for entities\n- **NLD_OBN**: Netherlands Omzetbelastingnummer (ob-nummer), for entities\n- **NLD_TIN**: Netherlands BSN (Burgerservicenummer), for individuals\n- **NOR_FNR**: Norway Fødselsnummer (National Identity Number), for individuals\n- **NOR_ORG**: Norway Organisasjonsnummer (Organisation Number), for entities\n- **NPL_PAN**: Nepal PAN (Permanent Account Number), for individuals and entities\n- **NZL_IRD**: New Zealand IRD Number (Inland Revenue Department), for individuals and entities\n- **NZL_NZBN**: New Zealand NZBN (New Zealand Business Number), for entities\n- **OMN_CID**: Oman Civil ID Number, for individuals\n- **PAK_NIC**: Pakistan NIC (National Identity Card), for individuals\n- **PAK_NTN**: Pakistan NTN (National Tax Number), for individuals and entities\n- **PAN_RUC**: Panama RUC (Registro Unico de Contribuyentes), for individuals and entities\n- **PER_RUC**: Peru RUC (Registro Unico de Contribuyentes), for individuals and entities\n- **PHL_TIN**: Philippines TIN (Tax Identification Number), for individuals and entities\n- **POL_NIP**: Poland NIP (Numer Identyfikacji Podatkowej), for entities\n- **POL_PESEL**: Poland PESEL (Polish National Identification Number), for individuals\n- **PRT_NIF**: Portugal NIF (Número de Identificação Fiscal), for individuals and entities\n- **PRY_RUC**: Paraguay RUC (Registro Unico de Contribuyentes), for individuals and entities\n- **QAT_QID**: Qatar QID (Qatar Identity Number), for individuals\n- **ROU_CNP**: Romania CNP (Cod Numeric Personal), for individuals\n- **ROU_CUI**: Romania CUI (Cod Unic de Înregistrare), for entities\n- **RUS_INN_ENT**: Russia INN (Entity Tax Number), for entities\n- **RUS_INN_IND**: Russia INN (Individual Tax Number), for individuals\n- **RWA_TIN**: Rwanda TIN (Tax Identification Number), for individuals and entities\n- **SAU_TIN**: Saudi Arabia TIN (Tax Identification Number), for individuals and entities\n- **SAU_VAT**: Saudi Arabia VAT Registration Number, for entities\n- **SEN_NINEA**: Senegal NINEA (Numéro d'Identification Nationale des Entreprises), for entities\n- **SGP_ASGD**: Singapore ASGD, for individuals\n- **SGP_FIN**: Singapore FIN, for individuals\n- **SGP_ITR**: Singapore ITR, for individuals and entities\n- **SGP_NRIC**: Singapore NRIC, for individuals\n- **SGP_UEN**: Singapore UEN (Unique Entity Number), for entities\n- **SLV_NIT**: El Salvador NIT (Número de Identificación Tributaria), for individuals and entities\n- **SRB_JMBG**: Serbia JMBG (Unique Master Citizen Number), for individuals\n- **SRB_PIB**: Serbia PIB (Tax Identification Number), for entities\n- **SVK_ICO**: Slovakia IČO (Identification Number of Organisation), for entities\n- **SVK_TIN**: Slovakia TIN (Tax Identification Number), for individuals\n- **SVN_DAS**: Slovenia Davčna Številka (Tax Number), for individuals and entities\n- **SVN_MS**: Slovenia Matična Številka (Registration Number), for entities\n- **SWE_ORG**: Sweden Organisationsnummer (Organisation Number), for entities\n- **SWE_TAX_ID**: Sweden Tax ID (Personnummer), for individuals\n- **SWZ_TIN**: Eswatini TIN (Tax Identification Number), for individuals and entities\n- **SXM_CRIB**: Sint Maarten CRIB (Centraal Registratie Informatie Belastingplichtige), for individuals and entities\n- **SYR_TIN**: Syria TIN (Tax Identification Number), for individuals and entities\n- **THA_NID**: Thailand National ID Card Number (เลขประจำตัวประชาชน), for individuals\n- **THA_TIN**: Thailand Tax ID (เลขประจำตัวผู้เสียภาษี), for entities\n- **TJK_TIN**: Tajikistan TIN (Tax Identification Number), for individuals and entities\n- **TTO_BIR**: Trinidad and Tobago BIR (Board of Inland Revenue File Number), for individuals and entities\n- **TUN_CIN**: Tunisia CIN (Carte d'Identité Nationale), for individuals\n- **TUN_MF**: Tunisia Matricule Fiscal (Tax Identification Number), for entities\n- **TUR_TIN**: Turkey TIN (Tax Identification Number), for individuals and entities\n- **TWN_GUI**: Taiwan GUI (Unified Business Number / 統一編號), for entities\n- **TWN_NID**: Taiwan National ID Number (身分證字號), for individuals\n- **TZA_TIN**: Tanzania TIN (Tax Identification Number), for individuals and entities\n- **UGA_TIN**: Uganda TIN (Tax Identification Number), for individuals and entities\n- **UKR_EDRPOU**: Ukraine EDRPOU (Entity Identification Code), for entities\n- **UKR_RNTRC**: Ukraine RNTRC (Individual Tax Number), for individuals\n- **URY_CI**: Uruguay CI (Cédula de Identidad), for individuals\n- **URY_RUT**: Uruguay RUT (Rol Único Tributario), for entities\n- **UZB_INN**: Uzbekistan INN (Entity Tax Number), for entities\n- **UZB_PINFL**: Uzbekistan PINFL (Personal Identification Number), for individuals\n- **VEN_RIF**: Venezuela RIF (Registro de Información Fiscal), for individuals and entities\n- **VNM_MST_BRN**: Vietnam MST Branch (Mã số thuế đơn vị phụ thuộc), for entities\n- **VNM_MST_CORP**: Vietnam MST Enterprise (Mã số thuế doanh nghiệp), for individuals and entities\n- **VNM_MST_PIN**: Vietnam PIN (Personal identification number / Số định danh cá nhân), for individuals\n- **WSM_TIN**: Samoa TIN (Tax Identification Number), for individuals and entities\n- **XXK_PID**: Kosovo Personal Identification Number, for individuals\n- **ZAF_CRN**: South Africa Company Registration Number, for entities\n- **ZAF_ID**: South African ID Number, for individuals\n- **ZMB_TPIN**: Zambia TPIN (Taxpayer Identification Number), for individuals and entities\n- **ZWE_TIN**: Zimbabwe TIN (Tax Identification Number), for individuals and entities\n- **NATIONAL_ID**: National ID number, if a tax ID number is not available\n- **PASSPORT**: Passport number, if a tax ID number is not available\n- **PERMANENT_RESIDENT**: Permanent resident number, if a tax ID number is not available\n- **DRIVER_LICENSE**: Driver's license number, if a tax ID number is not available\n- **OTHER_GOV_ID**: Other government issued identifier, if a tax ID number is not available\n- **NOT_SPECIFIED**: Other Tax IDs",
     example: 'USA_SSN',
     title: 'TaxIdType',
   })
@@ -1391,6 +1759,13 @@ const IdentitySchema = z
     given_name: z
       .string()
       .openapi({ description: 'The first/given name of the user.', example: 'John' }),
+    identifications: z
+      .array(IdentificationSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Identity documents and identifiers other than the tax ID, such as a passport or an LEI. On update, the array replaces every stored identification except the tax ID, which only `tax_id` and `tax_id_type` change.\n\nAccount responses include this field only for natural persons, and each entry has only `type`. Responses also list the tax ID as an entry typed with its tax ID type, for example `USA_SSN`, or `NOT_SPECIFIED` when the type is unknown. Omit that entry on update.\n',
+      }),
     investment_experience_with_options: z
       .enum(['none', '1_to_5_years', 'over_5_years'])
       .exactOptional()
@@ -1490,7 +1865,7 @@ const IdentitySchema = z
       .exactOptional()
       .openapi({
         description:
-          'Required on write when `tax_id` is set. May be `null` on read when unset or for sparse identity on OmniSub / omnibus-non-disclosed accounts.',
+          'Required on write when `tax_id` is set. May be `null` on read when unset or for sparse identity on OmniSub / omnibus-non-disclosed accounts.\n\nAn LEI is not a tax ID: a request with `tax_id_type` set to `LEI`, in any case, fails with 422. Send the LEI in `identifications` and the national tax ID in `tax_id`.\n',
       }),
     total_net_worth_max: z
       .string()
@@ -1656,6 +2031,7 @@ const AccountSchema = z
       .array(OwnerDocumentSchema)
       .exactOptional()
       .openapi({ description: 'The documents associated with the primary owner of the account' }),
+    drip: AccountDRIPResponseSchema.exactOptional(),
     enabled_assets: z
       .array(EnabledAssetClassSchema)
       .exactOptional()
@@ -2064,6 +2440,25 @@ const OwnerDocumentUploadRequestSchema = z
   })
   .openapi('OwnerDocumentUploadRequest')
 
+const AccountDRIPRequestSchema = z
+  .object({
+    equities_dividend_reinvestments: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If true, Alpaca reinvests eligible cash dividends on US equities in the same security.',
+        example: true,
+      }),
+  })
+  .openapi({
+    description:
+      "This feature is available in sandbox for beta partners only.\n\nThe account's dividend reinvestment (DRIP) setting. Omit `drip` to keep the current setting.\n\nTo turn DRIP on, the account must have a signed customer agreement at the revision that Alpaca requires. The agreement can already be on the account, or you can send it in `agreements` in the same request. Otherwise the request fails with HTTP 422, and the error message names the required revision.\n\nDRIP enrollment must be available in the environment. While it is not, a request that turns DRIP on is accepted with HTTP 200 and does not enroll the account. The agreement is not checked, and the response has no `drip` object unless the account was enrolled before.\n\nDRIP is not available for `donor_advised`, `trust`, `omnibus_sub`, and `omnibus_non_disclosed` accounts. A request that turns DRIP on for one of these accounts fails with HTTP 422, even while DRIP enrollment is unavailable. A request that turns DRIP off is accepted.\n",
+    example: { equities_dividend_reinvestments: true },
+    required: [],
+  })
+  .openapi('AccountDRIPRequest')
+
 const AccountFPSLItemPostSchema = z
   .object({
     tier_id: z
@@ -2118,6 +2513,7 @@ const AccountCreationRequestSchema = z
   .object({
     account_sub_type: AccountSubTypeSchema.exactOptional().openapi({
       description: 'The account subtype. Required for IRA accounts.',
+      example: 'traditional',
     }),
     account_type: AccountCreationTypeSchema.default('trading')
       .exactOptional()
@@ -2145,6 +2541,7 @@ const AccountCreationRequestSchema = z
     contact: ContactSchema.exactOptional(),
     disclosures: DisclosuresSchema.exactOptional(),
     documents: z.array(OwnerDocumentUploadRequestSchema).exactOptional(),
+    drip: AccountDRIPRequestSchema.exactOptional(),
     enabled_assets: z
       .array(EnabledAssetClassSchema)
       .exactOptional()
@@ -2331,6 +2728,7 @@ const AccountExtendedSchema = z
       .array(OwnerDocumentSchema)
       .exactOptional()
       .openapi({ description: 'The documents associated with the primary owner of the account' }),
+    drip: AccountDRIPResponseSchema.exactOptional(),
     enabled_assets: z.array(EnabledAssetClassSchema).exactOptional(),
     fpsl: AccountFPSLResponseSchema.exactOptional(),
     id: z.uuid(),
@@ -2844,6 +3242,7 @@ const AccountUpdateRequestSchema = z
     cash_interest: AccountCashInterestPatchSchema.exactOptional(),
     contact: ContactSchema.exactOptional(),
     disclosures: DisclosuresSchema.exactOptional(),
+    drip: AccountDRIPRequestSchema.exactOptional(),
     enabled_assets: z
       .array(EnabledAssetClassSchema)
       .exactOptional()
@@ -2921,21 +3320,42 @@ const ActivityTypeSchema = z
     'FILL',
     'ACATC',
     'ACATS',
+    'ALLOC',
+    'CFEE',
     'CGD',
     'CIL',
+    'CORR',
     'CSD',
+    'CSR',
     'CSW',
     'DIV',
     'DIVCGL',
     'DIVCGS',
+    'DIVFEE',
+    'DIVFT',
     'DIVNRA',
     'DIVROC',
+    'DIVTW',
     'DIVTXEX',
+    'DIVWH',
+    'DTCS',
+    'DVF',
+    'ECEXP',
+    'EXTRD',
     'FEE',
+    'FIMAT',
+    'FXCNV',
+    'FXTRD',
     'INT',
+    'INTNRA',
+    'INTTW',
+    'INVPNL',
+    'JNL',
     'JNLC',
     'JNLS',
     'MA',
+    'MEM',
+    'NC',
     'OPASN',
     'OPCA',
     'OPCSH',
@@ -2943,16 +3363,24 @@ const ActivityTypeSchema = z
     'OPEXP',
     'OPTRD',
     'PTC',
+    'PTR',
     'REO',
     'REORG',
+    'SC',
+    'SEG',
     'SPIN',
     'SPLIT',
+    'SSO',
+    'SSP',
+    'SUB',
+    'VOF',
+    'WH',
     'FOPT',
     'OCT',
   ])
   .openapi({
     description:
-      "Represents the various kinds of activity.\n\nTradeActivity's will always have the type `FILL`\n\n- **FILL**\n  Order Fills (Partial/Full)\n- **ACATC**\n  ACATS IN/OUT (Cash)\n- **ACATS**\n  ACATS IN/OUT (Securities)\n- **CGD**\n  Capital Gains Distribution\n- **CIL**\n  Cash in Lieu of Stock\n- **CSD**\n  Cash Disbursement (+)\n- **CSW**\n  Cash Withdrawable\n- **DIV**\n  Dividend\n- **DIVCGL**\n  Dividend (Capital Gains Long Term)\n- **DIVCGS**\n  Dividend (Capital Gains Short Term)\n- **DIVNRA**\n  Dividend Adjusted (NRA Withheld)\n- **DIVROC**\n  Dividend Return of Capital\n- **DIVTXEX**\n  Dividend (Tax Exempt)\n- **FEE**\n  REG and TAF Fees\n- **INT**\n  Interest (Credit/Margin)\n- **JNLC**\n  Journal Entry (Cash)\n- **JNLS**\n  Journal Entry (Stock)\n- **OPASN**\n   Option Assignment\n- **OPCA**\n  Option Corporate Action\n- **OPCSH**\n   Option cash deliverable for non-standard contracts\n- **OPEXC**\n  Option Exercise\n- **OPEXP**\n  Option Expiration\n- **OPTRD**\n  Option Trade\n- **MA**\n  Merger/Acquisition\n- **PTC**\n  Pass Thru Change\n- **REO**\n  Reorganization\n- **REORG**\n  Worthless removal CA\n- **SPIN**\n  Stock Spinoff\n- **SPLIT**\n  Stock Split\n- **FOPT**\n  Free of Payment Transfers\n- **OCT**\n  On Chain Transactions (blockchain deposits/withdrawals)",
+      'Entry type returned on an activity. The listing returns the stored entry type.\nIt omits `ECJL`, crypto-deposit `JNLC`, and `SWP`.\n\n`TRANS` and `MISC` are filter aliases. They are not returned as `activity_type`.\nThis is the known set. A new clearing code can appear without an API change.\n\nTrade activities always have the type `FILL`.\n\n- **FILL**\n  Order Fills (Partial/Full)\n- **ACATC**\n  ACATS IN/OUT (Cash)\n- **ACATS**\n  ACATS IN/OUT (Securities)\n- **ALLOC**\n  Allocation\n- **CFEE**\n  Crypto fee\n- **CGD**\n  Capital Gains Distribution\n- **CIL**\n  Cash in Lieu of Stock\n- **CORR**\n  Correction\n- **CSD**\n  Cash deposit (+), including returned withdrawals\n- **CSR**\n  Cash receipt (-)\n- **CSW**\n  Cash withdrawal (-), including returned deposits\n- **DIV**\n  Dividend\n- **DIVCGL**\n  Dividend (Capital Gains Long Term)\n- **DIVCGS**\n  Dividend (Capital Gains Short Term)\n- **DIVFEE**\n  Dividend fee\n- **DIVFT**\n  Dividend adjusted (Foreign Tax Withheld)\n- **DIVNRA**\n  Dividend Adjusted (NRA Withheld)\n- **DIVROC**\n  Dividend Return of Capital\n- **DIVTW**\n  Dividend adjusted (Tefra Withheld)\n- **DIVTXEX**\n  Dividend (Tax Exempt)\n- **DIVWH**\n  Dividend withholding\n- **DTCS**\n  DTC security settlement\n- **DVF**\n  DVP flip\n- **ECEXP**\n  Event contract expiration\n- **EXTRD**\n  External trade\n- **FEE**\n  Fee denominated in USD. See `activity_sub_type` for the specific fee.\n- **FIMAT**\n  Fixed income maturity\n- **FXCNV**\n  FX conversion\n- **FXTRD**\n  FX trade\n- **INT**\n  Interest (Credit/Margin)\n- **INTNRA**\n  Interest adjusted (NRA Withheld)\n- **INTTW**\n  Interest adjusted (Tefra Withheld)\n- **INVPNL**\n  Inventory profit and loss\n- **JNL**\n  Journal entry\n- **JNLC**\n  Journal Entry (Cash)\n- **JNLS**\n  Journal Entry (Stock)\n- **MA**\n  Merger/Acquisition\n- **MEM**\n  Memopost\n- **NC**\n  Name change\n- **OPASN**\n   Option Assignment\n- **OPCA**\n  Option Corporate Action\n- **OPCSH**\n   Option cash deliverable for non-standard contracts\n- **OPEXC**\n  Option Exercise\n- **OPEXP**\n  Option Expiration\n- **OPTRD**\n  Option Trade\n- **PTC**\n  Pass Thru Change\n- **PTR**\n  Pass Thru Rebate\n- **REO**\n  Reorganization\n- **REORG**\n  Worthless removal CA\n- **SC**\n  Symbol change\n- **SEG**\n  Segregation\n- **SPIN**\n  Stock Spinoff\n- **SPLIT**\n  Stock Split\n- **SSO**\n  Former stock spin-off code. Current spin-offs use `SPIN`.\n- **SSP**\n  Former stock split code. Current splits use `SPLIT`.\n- **SUB**\n  Subscription\n- **VOF**\n  Voluntary Offering (tender, warrant, rights, or exchange offers)\n- **WH**\n  Withholding\n- **FOPT**\n  Free of Payment Transfers\n- **OCT**\n  On Chain Transactions (blockchain deposits/withdrawals)',
     title: 'ActivityType',
   })
   .openapi('ActivityType')
@@ -3057,7 +3485,7 @@ const ActivitySubTypeSchema = z
   .string()
   .openapi({
     description:
-      'Represents a more specific classification to the `activity_type`.\nThis field is optional and may not always be populated, depending on the activity type and the available data.\nEach `activity_type` has a set of valid `activity_sub_type` values.\n\nFull mapping of `activity_type` to `activity_sub_type`:\n\n- **CGD**: Capital Gains Distribution activity sub-types:\n  - **LTCG**: Long-Term Capital Gain\n  - **STCG**: Short-Term Capital Gain\n\n- **DIV**: Dividend activity sub-types:\n  - **CDIV**: Cash Dividend\n  - **ROC**: Return of Capital\n  - **SDIV**: Stock Dividend\n  - **SPD**: Substitute Payment In Lieu Of Dividend\n\n- **FEE**: Fee-related activity sub-types:\n  - **REG**: Regulatory Fee\n  - **TAF**: Trading Activity Fee\n  - **LCT**: Local Currency Trading Fee\n  - **ORF**: Options Regulatory Fee\n  - **OCC**: Options Clearing Corporation Fee\n  - **NRC**: Non-Retail Commission Fee\n  - **NRV**: Non-Retail Venue Fee\n  - **COM**: Commission\n  - **CAT**: Consolidated Audit Trail Fee\n\n- **INT**: Interest-related activity sub-types:\n  - **MGN**: Margin Interest\n  - **CDT**: Credit Interest\n  - **SWP**: Sweep Interest\n  - **QII**: Qualified Interest\n  - **FI**: Fixed Income Interest (coupon or accrued)\n\n- **MA**: Merger and Acquisition activity sub-types:\n  - **CMA**: Cash Merger\n  - **SMA**: Stock Merger\n  - **SCMA**: Stock & Cash Merger\n\n- **NC**: Name Change activity sub types\n  - **SNC**: Symbol Name Change\n  - **CNC**: CUSIP Name Change\n  - **SCNC**: Symbol & CUSIP Name Change\n\n- **OPCA**: Option Corporate Action activity sub-types:\n  - **DIV.CDIV**: Cash Dividend\n  - **DIV.ROC**: Return of Capital\n  - **DIV.SDIV**: Stock Dividend\n  - **MA.CMA**: Cash Merger\n  - **MA.SMA**: Stock Merger\n  - **MA.SCMA**: Stock & Cash Merger\n  - **NC.CNC**: CUSIP Name Change\n  - **NC.SNC**: Symbol Name Change\n  - **NC.SCNC**: Symbol & CUSIP Name Change\n  - **SPIN**: Spin-off\n  - **SPLIT.FSPLIT**: Forward Stock Split\n  - **SPLIT.RSPLIT**: Reverse Stock Split\n  - **SPLIT.USPLIT**: Unit Split\n\n- **REO**: Reorganization activity sub-types:\n  - **REOS**: Stock only (1 or more stock legs)\n  - **REOC**: Cash only (one cash leg)\n  - **REOSC**: Stock and cash\n\n- **REORG**: Activity sub-types:\n  - **WRM**: Worthless Removal\n\n- **SPLIT**: Stock Split activity sub-types:\n  - **FSPLIT**: Forward Stock Split\n  - **RSPLIT**: Reverse Stock Split\n  - **USPLIT**: Unit Split\n\n- **VOF**: Voluntary Offering activity sub-types:\n  - **VTND**: Tender Offer\n  - **VWRT**: Warrant Exercise\n  - **VRGT**: Rights Offer\n  - **VEXH**: Exchange Offer\n\n- **WH**: Withholding activity sub-types:\n  - **SWH**: State Withholding\n  - **FWH**: Federal Withholding\n  - **SLWH**: Sales Withholding',
+      'Represents a more specific classification to the `activity_type`.\nThis field is optional and may not always be populated, depending on the activity type and the available data.\nEach `activity_type` has a set of valid `activity_sub_type` values.\n\nThis field is a free-form string rather than a closed enum: sub-type codes\noriginate from several upstream clearing, corporate-action, and international-fee\nsystems, and new codes can appear without a corresponding API change. The mapping\nbelow documents the sub-types known at the time of writing; it is not guaranteed\nto be exhaustive.\n\nFull mapping of `activity_type` to `activity_sub_type`:\n\n- **CGD**: Capital Gains Distribution activity sub-types:\n  - **LTCG**: Long-Term Capital Gain\n  - **STCG**: Short-Term Capital Gain\n\n- **DIV**: Dividend activity sub-types:\n  - **CDIV**: Cash Dividend\n  - **ROC**: Return of Capital\n  - **SDIV**: Stock Dividend\n  - **SPD**: Substitute Payment In Lieu Of Dividend\n\n- **FEE**: Fee-related activity sub-types:\n  - **REG**: Regulatory Fee\n  - **TAF**: Trading Activity Fee\n  - **LCT**: Local Currency Trading Fee\n  - **ORF**: Options Regulatory Fee\n  - **OCC**: Options Clearing Corporation Fee\n  - **NRC**: Non-Retail Commission Fee\n  - **NRV**: Non-Retail Venue Fee\n  - **COM**: Commission\n  - **CAT**: Consolidated Audit Trail Fee\n  - **ICF**: Index Contract Fee\n  - **EPI**: Exchange Proprietary Fee\n\n- **INT**: Interest-related activity sub-types:\n  - **MGN**: Margin Interest\n  - **CDT**: Credit Interest\n  - **SWP**: Sweep Interest\n  - **QII**: Qualified Interest\n  - **FI**: Fixed Income Interest (coupon or accrued)\n\n- **MA**: Merger and Acquisition activity sub-types:\n  - **CMA**: Cash Merger\n  - **SMA**: Stock Merger\n  - **SCMA**: Stock & Cash Merger\n\n- **NC**: Name Change activity sub types\n  - **SNC**: Symbol Name Change\n  - **CNC**: CUSIP Name Change\n  - **SCNC**: Symbol & CUSIP Name Change\n\n- **OPCA**: Option Corporate Action activity sub-types:\n  - **DIV.CDIV**: Cash Dividend\n  - **DIV.ROC**: Return of Capital\n  - **DIV.SDIV**: Stock Dividend\n  - **MA.CMA**: Cash Merger\n  - **MA.SMA**: Stock Merger\n  - **MA.SCMA**: Stock & Cash Merger\n  - **NC.CNC**: CUSIP Name Change\n  - **NC.SNC**: Symbol Name Change\n  - **NC.SCNC**: Symbol & CUSIP Name Change\n  - **SPIN**: Spin-off\n  - **SPLIT.FSPLIT**: Forward Stock Split\n  - **SPLIT.RSPLIT**: Reverse Stock Split\n  - **SPLIT.USPLIT**: Unit Split\n\n- **REO**: Reorganization activity sub-types:\n  - **REOS**: Stock only (1 or more stock legs)\n  - **REOC**: Cash only (one cash leg)\n  - **REOSC**: Stock and cash\n\n- **REORG**: Activity sub-types:\n  - **WRM**: Worthless Removal\n\n- **SPLIT**: Stock Split activity sub-types:\n  - **FSPLIT**: Forward Stock Split\n  - **RSPLIT**: Reverse Stock Split\n  - **USPLIT**: Unit Split\n\n- **VOF**: Voluntary Offering activity sub-types:\n  - **VTND**: Tender Offer\n  - **VWRT**: Warrant Exercise\n  - **VRGT**: Rights Offer\n  - **VEXH**: Exchange Offer\n\n- **WH**: Withholding activity sub-types:\n  - **SWH**: State Withholding\n  - **FWH**: Federal Withholding\n  - **SLWH**: Sales Withholding',
     title: 'ActivitySubType',
   })
   .openapi('ActivitySubType')
@@ -3164,6 +3592,17 @@ const ActivitySchema = z
       .openapi({ example: '20220208125959696::88b5f678-fef5-447b-af15-f21e367e6d8c' }),
   })
   .openapi({ required: [] })
+  .and(z.looseObject({}).openapi({ required: ['id', 'activity_type'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'activity_type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(z.xor([TradeActivitySchema, NonTradeActivitySchema]))
   .openapi({
     description: 'Base for activity types',
@@ -3315,7 +3754,7 @@ const ActivityV2DetailTRDSchema = z
       .exactOptional()
       .openapi({ description: 'CUSIP of the security involved with the activity' }),
     execution_type: z
-      .enum(['fill', 'trade_correct', 'trade_bust'])
+      .enum(['fill', 'partial_fill', 'trade_correct', 'trade_bust'])
       .openapi({ description: 'The execution type' }),
     leaves_qty: z
       .string()
@@ -4220,27 +4659,78 @@ const OpcaUSPLITActivityV2Schema = CommonOPCAActivityV2Schema.and(CommonSplitAct
   .openapi({ description: 'Options corporate action of unit-splits' })
   .openapi('OpcaUSPLITActivityV2')
 
-const CommonOptionsActivityV2Schema = z
-  .object({
-    contract_symbol: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The contract symbol of the security involved with the activity' }),
-    cusip: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The CUSIP of the security involved with the activity' }),
-    symbol: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The symbol of the security involved with the activity' }),
-  })
+const OpcaCGDActivityV2Schema = CommonOPCAActivityV2Schema.and(
+  z
+    .object({
+      cusip: z.string().openapi({ description: 'The CUSIP of the underlying security' }),
+      ex_date: z.iso
+        .date()
+        .min(1)
+        .exactOptional()
+        .openapi({ description: 'The ex_date for the underlying capital gains distribution' }),
+      isin: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The ISIN of the underlying security, when applicable' }),
+      long_term_rate: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'Long-term capital gains distribution rate per share, when applicable',
+        }),
+      payable_date: z.iso
+        .date()
+        .min(1)
+        .exactOptional()
+        .openapi({ description: 'The payable_date for the underlying capital gains distribution' }),
+      rate: z
+        .string()
+        .openapi({
+          description:
+            'Combined per-share capital-gains rate (LTCG + STCG). By default this is the strike reduction applied to the option contract; the adjusted strike is reflected in `new_contract_symbol`.',
+        }),
+      record_date: z.iso
+        .date()
+        .min(1)
+        .exactOptional()
+        .openapi({ description: 'The record_date for the underlying capital gains distribution' }),
+      short_term_rate: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'Short-term capital gains distribution rate per share, when applicable',
+        }),
+      symbol: z.string().openapi({ description: 'The symbol of the underlying security' }),
+    })
+    .openapi({ required: ['cusip', 'symbol', 'rate'] }),
+)
   .openapi({
-    description: 'Shared fields for option-related non-trade activity records.',
-    required: ['group_id'],
+    description:
+      'Options corporate action of capital gains distributions. Used for both Long-Term (`CGD.LTCG`) and Short-Term (`CGD.STCG`) sub-types; `CGD.STCG` is emitted only when the distribution has no long-term leg. `rate` is the combined (LTCG + STCG) per-share rate; `long_term_rate` and `short_term_rate` carry the individual legs when present.',
   })
-  .and(CommonNTAActivityV2Schema)
-  .openapi('CommonOptionsActivityV2')
+  .openapi('OpcaCGDActivityV2')
+
+const CommonOptionsActivityV2Schema = CommonNTAActivityV2Schema.and(
+  z
+    .object({
+      contract_symbol: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The contract symbol of the security involved with the activity' }),
+      cusip: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The CUSIP of the security involved with the activity' }),
+      symbol: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The symbol of the security involved with the activity' }),
+    })
+    .openapi({
+      description: 'Shared fields for option-related non-trade activity records.',
+      required: ['group_id'],
+    }),
+).openapi('CommonOptionsActivityV2')
 
 const OPASNActivityV2Schema = CommonOptionsActivityV2Schema.and(z.looseObject({}))
   .openapi({ description: 'Option assignment' })
@@ -4483,6 +4973,7 @@ const ActivityV2DetailNTASchema = z
     OpcaFSPLITActivityV2Schema,
     OpcaRSPLITActivityV2Schema,
     OpcaUSPLITActivityV2Schema,
+    OpcaCGDActivityV2Schema,
     OPASNActivityV2Schema,
     OPEXCActivityV2Schema,
     OPEXPActivityV2Schema,
@@ -4513,6 +5004,75 @@ const ActivityEventV2Schema = ActivityEventV2CommonFieldsSchema.and(
     title: 'ActivityEventV2',
   })
   .openapi('ActivityEventV2')
+
+const ActivityTypeFilterSchema = z
+  .enum([
+    'ACATC',
+    'ACATS',
+    'ALLOC',
+    'CFEE',
+    'CGD',
+    'CIL',
+    'CSD',
+    'CSR',
+    'CSW',
+    'DIV',
+    'DIVCGL',
+    'DIVCGS',
+    'DIVFEE',
+    'DIVFT',
+    'DIVNRA',
+    'DIVROC',
+    'DIVTW',
+    'DIVTXEX',
+    'DIVWH',
+    'DVF',
+    'ECEXP',
+    'EXTRD',
+    'FEE',
+    'FIMAT',
+    'FXCNV',
+    'FXTRD',
+    'INT',
+    'INTNRA',
+    'INTTW',
+    'INVPNL',
+    'JNL',
+    'JNLC',
+    'JNLS',
+    'MA',
+    'MEM',
+    'NC',
+    'OCT',
+    'OPASN',
+    'OPCA',
+    'OPCSH',
+    'OPEXC',
+    'OPEXP',
+    'OPTRD',
+    'PTC',
+    'PTR',
+    'REO',
+    'REORG',
+    'SC',
+    'SPIN',
+    'SPLIT',
+    'SUB',
+    'SWP',
+    'TRD',
+    'VOF',
+    'WH',
+    'FOPT',
+    'FILL',
+    'MISC',
+    'TRANS',
+  ])
+  .openapi({
+    description:
+      'Activity type used to filter results. These are the values the backend accepts.\n\n`TRANS` and `MISC` are aliases. A response uses the expanded entry type, not the alias.\n\n`SWP` is accepted and then omitted from public results.\n\n- **TRANS**\n  Cash transactions (`CSD`, `CSR`, and `CSW`). Filter value only; not returned as an activity type.\n- **MISC**\n  A fixed group of less common activity types, such as `ACATC`, `INT`, and `JNLC`. `FEE`, `CFEE`, `DIV`, `SPLIT`, `SPIN`, `OPCA`, `VOF`, `WH`, `OCT`, and a few others are not included, so filter by those types directly. Filter value only; not returned as an activity type.',
+    title: 'ActivityTypeFilter',
+  })
+  .openapi('ActivityTypeFilter')
 
 const AdminActionBelongsToKindSchema = z
   .enum(['account', 'owner', 'correspondent'])
@@ -4570,42 +5130,34 @@ const AdminActionVisibilitySchema = z
 const AdminActionEventGeneralSchema = z
   .object({
     at: z.iso.datetime({ offset: true }).openapi({ description: 'Timestamp of event' }),
-    belongs_to: z
-      .any()
-      .openapi({
-        deprecated: true,
-        description:
-          '**Deprecation notice:**\nNever sent by the stream. Use belongs_to_kind and belongs_to_id_reference instead.\n\nSince: 2026-09-30\nSunset: 2027-01-13\n\n---\n\nDeprecated. Not sent by the stream; use `belongs_to_kind` and `belongs_to_id_reference` instead.',
-        'x-deprecation': {
-          reason:
-            'Never sent by the stream. Use belongs_to_kind and belongs_to_id_reference instead.',
-          since: '2026-09-30',
-          sunset: '2027-01-13',
-        },
-      })
-      .and(AdminActionBelongsToSchema)
-      .exactOptional(),
+    belongs_to: AdminActionBelongsToSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        '**Deprecation notice:**\nNever sent by the stream. Use belongs_to_kind and belongs_to_id_reference instead.\n\nSince: 2026-09-30\nSunset: 2027-01-13',
+      'x-deprecation': {
+        reason:
+          'Never sent by the stream. Use belongs_to_kind and belongs_to_id_reference instead.',
+        since: '2026-09-30',
+        sunset: '2027-01-13',
+      },
+    }),
     belongs_to_id_reference: z
       .string()
       .openapi({ description: 'The ID of the entity that this event belongs to' }),
     belongs_to_kind: AdminActionBelongsToKindSchema,
     category: AdminActionCategorySchema,
     correspondent: z.string().openapi({ description: 'Related correspondent' }),
-    created_by: z
-      .any()
-      .openapi({
-        deprecated: true,
-        description:
-          '**Deprecation notice:**\nNever sent by the stream. Use created_by_kind and created_by_id_reference instead.\n\nSince: 2026-09-30\nSunset: 2027-01-13\n\n---\n\nDeprecated. Not sent by the stream; use `created_by_kind` and `created_by_id_reference` instead.',
-        'x-deprecation': {
-          reason:
-            'Never sent by the stream. Use created_by_kind and created_by_id_reference instead.',
-          since: '2026-09-30',
-          sunset: '2027-01-13',
-        },
-      })
-      .and(AdminActionCreatedBySchema)
-      .exactOptional(),
+    created_by: AdminActionCreatedBySchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        '**Deprecation notice:**\nNever sent by the stream. Use created_by_kind and created_by_id_reference instead.\n\nSince: 2026-09-30\nSunset: 2027-01-13',
+      'x-deprecation': {
+        reason:
+          'Never sent by the stream. Use created_by_kind and created_by_id_reference instead.',
+        since: '2026-09-30',
+        sunset: '2027-01-13',
+      },
+    }),
     created_by_id_reference: z
       .string()
       .openapi({ description: 'The ID of the entity that created this event' }),
@@ -5964,11 +6516,11 @@ const BatchJournalResponseSchema = z
     description:
       'A forward batch journal result selected by `entry_type`, with an optional non-empty failure message.',
     discriminator: {
+      propertyName: 'entry_type',
       mapping: {
         JNLC: '#/components/schemas/BatchJournalResponseJNLC',
         JNLS: '#/components/schemas/BatchJournalResponseJNLS',
       },
-      propertyName: 'entry_type',
     },
     examples: [
       {
@@ -6408,12 +6960,66 @@ const CIPInfoSchema = z
   })
   .openapi('CIPInfo')
 
+const ClosePositionErrorSchema = z
+  .object({
+    available: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Quantity available. On insufficient-quantity rejections, the position quantity available to close.',
+      }),
+    code: z
+      .string()
+      .openapi({
+        description:
+          'Alpaca error code, such as `"40310000"`. Usually the HTTP status code followed by a five-digit suffix. Several rejections can share the same code, so check `message` and the other fields for the specific reason.',
+      }),
+    existing_qty: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Absolute quantity of the existing position. Present only on insufficient-quantity rejections.',
+      }),
+    held_for_options: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Position quantity held for options. Present only on insufficient-quantity rejections, and only when that hold is positive.',
+      }),
+    held_for_orders: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Position quantity held by open orders. Present only on insufficient-quantity rejections.',
+      }),
+    message: z.string().openapi({ description: 'Human-readable reason for the rejection.' }),
+    symbol: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Symbol the rejection applies to. Set on insufficient-quantity rejections and on some other order rejections, such as admin trading restrictions.',
+      }),
+  })
+  .catchall(z.string())
+  .openapi({
+    description:
+      "The per-position error reported inside a close-all-positions 207 response when a position's `status` is not 200. Other rejection-specific string fields may appear.",
+    required: ['code', 'message'],
+    title: 'Close Position Error',
+  })
+  .openapi('ClosePositionError')
+
 const CommissionTypeSchema = z
   .enum(['notional', 'qty', 'bps'])
   .default('notional')
   .openapi({
     description:
-      'An enum to select how to interpret the value provided in the commission field.\n\n- notional:\nCharge commission on a per order basis. (When the `commission_type` field is omitted from the order request, this is used as the default).\n\n- qty:\nCharge commission on a per qty/contract basis, pro rated.\n\n- bps:\nThe percent commission you want to charge the end user on the order (expressed in bps). Alpaca will convert the order to a notional amount for purposes of calculating commission.\nCommission value in bps can have up to two decimal places.',
+      'An enum to select how to interpret the value provided in the commission field.\n\n- notional:\nCharge commission on a per order basis. (When the `commission_type` field is omitted from the order request, this is used as the default, except for `mleg` orders.)\nNot supported for `mleg` orders.\n\n- qty:\nCharge commission on a per qty/contract basis, pro rated.\nFor `mleg` orders, this is the only supported type and is required whenever `commission` is non-zero. Omitting `commission`, or sending `0`, is accepted as no commission. The rate is charged per option contract in the strategy.\n\n- bps:\nThe percent commission you want to charge the end user on the order (expressed in bps). Alpaca will convert the order to a notional amount for purposes of calculating commission.\nCommission value in bps can have up to two decimal places.\nNot supported for `mleg` orders.',
     example: 'qty',
     title: 'CommissionType',
   })
@@ -6912,7 +7518,8 @@ const MLegOrderLegSchema = z
       .openapi({ description: 'symbol or asset ID to identify the asset to trade' }),
   })
   .openapi({
-    description: 'Represents an individual leg of a multileg options order.',
+    description:
+      'Represents an individual leg of a multileg options order.\n\n`commission`, `commission_type`, and `commission_bps` are ignored on a leg and have no effect. Set `commission` and `commission_type` on the parent order.',
     required: ['symbol', 'ratio_qty'],
     title: 'MLegOrderLeg',
   })
@@ -6972,7 +7579,7 @@ const CreateOrderRequestSchema = z
       .openapi({
         deprecated: true,
         description:
-          '**deprecated**: Please use the commission_type = bps instead and set the desired bps value in the `commission` field.\nThe percent commission you want to charge the end user on the order (expressed in bps). Alpaca will convert the order to a notional amount for purposes of calculating commission.\n',
+          '**deprecated**: Please use the commission_type = bps instead and set the desired bps value in the `commission` field.\nThe percent commission you want to charge the end user on the order (expressed in bps). Alpaca will convert the order to a notional amount for purposes of calculating commission.\nNot supported for `mleg` orders.\n',
         example: '10',
       }),
     commission_type: CommissionTypeSchema.exactOptional(),
@@ -7090,6 +7697,41 @@ const CreateSettlementRequestSchema = z
     required: ['transfers'],
   })
   .openapi('CreateSettlementRequest')
+
+const CreateSimulatedIncomingWireRequestSchema = z
+  .object({
+    amount: z
+      .string()
+      .openapi({
+        description: 'Amount of the incoming wire. Must be greater than 0.',
+        example: '1000.00',
+      }),
+    currency: CurrencySchema.exactOptional(),
+    delay_until: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Accepted and returned in the response, but not currently used. The wire is processed on the next worker run regardless of this value.',
+        example: '2026-11-10T14:00:00Z',
+      }),
+    wire_instructions: z
+      .string()
+      .regex(/FFC [0-9A-Za-z]{4}[-\s]?[0-9A-Za-z]{9}/)
+      .openapi({
+        description:
+          'Must contain an FFC (For Further Credit) string identifying the destination account, in the form `FFC <correspondent>-<account_number>`. The hyphen can also be a space or omitted. Text before or after the FFC string is ignored.\n\n`<correspondent>` must be your 4-character correspondent code, and `<account_number>` must be the 9-character account number of one of your accounts. Only the first 9 characters after the correspondent code are read as the account number.',
+        example: 'FFC TEST-123456789',
+      }),
+  })
+  .openapi({
+    description:
+      'Request body for simulating an incoming wire transfer in the sandbox environment.\n\n`currency` defaults to `USD` when omitted and must match the base currency of the destination account. Supported currencies are `AUD`, `CAD`, `CHF`, `EUR`, `GBP`, `JPY`, `NZD`, `SGD`, `TRY`, and `USD`. Other currencies are rejected with `422`.',
+    required: ['amount', 'wire_instructions'],
+    title: 'CreateSimulatedIncomingWireRequest',
+  })
+  .openapi('CreateSimulatedIncomingWireRequest')
 
 const TransferDirectionSchema = z
   .enum(['INCOMING', 'OUTGOING'])
@@ -7384,7 +8026,15 @@ const EoDCashInterestReportResponseSchema = z
   .openapi('EoDCashInterestReportResponse')
 
 const ErrorSchema = z
-  .object({ code: z.number(), message: z.string() })
+  .object({
+    code: z
+      .number()
+      .openapi({
+        description:
+          'Alpaca error code, such as `40310000`. Usually the HTTP status code followed by a five-digit suffix. Several errors can share the same code, so check `message` for the specific reason.',
+      }),
+    message: z.string().openapi({ description: 'Human-readable reason for the rejection.' }),
+  })
   .openapi({ required: ['code', 'message'], title: 'Error' })
   .openapi('Error')
 
@@ -7436,21 +8086,15 @@ const ExerciseResponseSchema = z
 const FPSLInterestSchema = z
   .object({
     customer: z
-      .float64()
-      .openapi({
-        description: 'The interest accrued by the customer for this loan.',
-        example: 1.23,
-      }),
+      .string()
+      .openapi({ description: 'The interest accrued by the customer.', example: '1.23' }),
     partner: z
-      .float64()
-      .openapi({
-        description: 'The interest accrued by the partner for this loan.',
-        example: 1.65,
-      }),
+      .string()
+      .openapi({ description: 'The interest accrued by the partner.', example: '1.65' }),
   })
   .openapi({
     description:
-      "The interest's details.\nPlease note that the object might not be set if interest has not yet been calculated for the loan.\nAdditionally, interest details may be adjusted retroactively at any time until interests are finalized for the month.\nThe loan's changed `updated_at` field can indicate such an adjustment.\n",
+      'FPSL interest split between the customer and the partner.\nInterest may be adjusted retroactively at any time until interests are finalized for the month.\n',
     required: ['customer', 'partner'],
   })
   .openapi('FPSLInterest')
@@ -7476,7 +8120,11 @@ const FPSLAnalyticsLoansResponseSchema = z
         description: 'The number of FPSL lending activities currently in progress for the account.',
         example: 2,
       }),
-    interest: FPSLInterestSchema.exactOptional(),
+    interest: FPSLInterestSchema.openapi({
+      description:
+        'The accumulated interest totals for all loans in the date range.\nTotals may be adjusted retroactively at any time until interests are finalized for the month.\n',
+      example: { customer: '8.61', partner: '11.55' },
+    }),
     total_lending_activities: z
       .preprocess(
         (val) =>
@@ -7498,7 +8146,12 @@ const FPSLAnalyticsLoansResponseSchema = z
   .openapi({
     description:
       'Aggregated FPSL interest and loan-activity counts for one account over a date range.\n',
-    required: ['account_number', 'total_lending_activities', 'in_progress_lending_activities'],
+    required: [
+      'account_number',
+      'interest',
+      'total_lending_activities',
+      'in_progress_lending_activities',
+    ],
   })
   .openapi('FPSLAnalyticsLoansResponse')
 
@@ -7519,14 +8172,20 @@ const FPSLLoanSchema = z
       .string()
       .openapi({ description: "Account's number at Alpaca", example: '286873545' }),
     collateral: z
-      .float64()
-      .openapi({ description: 'The collateral posted for the loan.', example: 1161.015 }),
+      .string()
+      .openapi({ description: 'The collateral posted for the loan.', example: '1161.015' }),
     correspondent: z.string().openapi({ description: "Account's correspondent", example: 'LPCA' }),
-    date: z.iso.date().openapi({ example: '2006-01-02' }),
-    interest: FPSLInterestSchema.exactOptional(),
+    date: z.iso.date().openapi({ example: '2025-03-21' }),
+    interest: FPSLInterestSchema.exactOptional().openapi({
+      description:
+        "The loan's interest details.\nPlease note that the object might not be set if interest has not yet been calculated for the loan.\nAdditionally, interest details may be adjusted retroactively at any time until interests are finalized for the month.\nThe loan's changed `updated_at` field can indicate such an adjustment.\n",
+    }),
     market_value: z
-      .float64()
-      .openapi({ description: 'The total market value of the shares on loan.', example: 1138.25 }),
+      .string()
+      .openapi({
+        description: 'The total market value of the shares on loan.',
+        example: '1138.25',
+      }),
     quantity: z
       .preprocess(
         (val) =>
@@ -8190,8 +8849,16 @@ const JITReportDownloadURLSchema = z
   .object({
     expires_at: z.iso
       .datetime({ offset: true })
-      .openapi({ description: 'Timestamp when the signed URL expires.' }),
-    filename: z.string().openapi({ description: 'Name of the generated report file.' }),
+      .openapi({
+        description: 'Timestamp when the signed URL expires.',
+        example: '2026-04-14T23:55:00Z',
+      }),
+    filename: z
+      .string()
+      .openapi({
+        description: 'Name of the generated report file.',
+        example: 'ALPC-2026-04-14-common_stock-detail.csv',
+      }),
     url: z.url().openapi({ description: 'Temporary signed URL used to download the report.' }),
   })
   .openapi({ required: ['url', 'filename', 'expires_at'] })
@@ -8256,8 +8923,8 @@ const JournalSchema = z
     description:
       'Represents a cash or securities transfer between accounts, selected by `entry_type`.',
     discriminator: {
-      mapping: { JNLC: '#/components/schemas/JNLC', JNLS: '#/components/schemas/JNLS' },
       propertyName: 'entry_type',
+      mapping: { JNLC: '#/components/schemas/JNLC', JNLS: '#/components/schemas/JNLS' },
     },
     examples: [
       {
@@ -8439,6 +9106,23 @@ const ListFPSLLoansResponseSchema = z
   })
   .openapi({
     description: 'Response to a successful request for a list of FPSL loans.\n',
+    example: {
+      loans: [
+        {
+          account_id: '06d83e79-5bea-4ce9-a362-a25251a700ec',
+          account_number: '286873545',
+          collateral: '1161.015',
+          correspondent: 'LPCA',
+          date: '2025-03-21',
+          interest: { customer: '1.23', partner: '1.65' },
+          market_value: '1138.25',
+          quantity: 5,
+          symbol: 'AAPL',
+          updated_at: '2025-03-21T15:54:19.857034+01:00',
+        },
+      ],
+      next_page_token: null,
+    },
     required: ['loans', 'next_page_token'],
   })
   .openapi('ListFPSLLoansResponse')
@@ -9611,9 +10295,25 @@ const PortfolioHistorySchema = z
   .openapi('PortfolioHistory')
 
 const PortfolioHistoryErrorSchema = z
-  .object({ code: z.int(), message: z.string() })
-  .openapi({ required: ['code', 'message'], title: 'Portfolio History Error' })
+  .object({
+    code: z.int().openapi({ example: 40010001 }),
+    message: z.string().openapi({ example: 'query: "timeframe": invalid value: "2Min"' }),
+  })
+  .openapi({
+    description: 'Error returned by the portfolio history endpoint.',
+    required: ['code', 'message'],
+    title: 'Portfolio History Error',
+  })
   .openapi('PortfolioHistoryError')
+
+const PortfolioRunInitiatorSchema = z
+  .enum(['system', 'api', 'dashboard'])
+  .openapi({
+    description:
+      'Who created the run: `system` for runs Alpaca creates (scheduled rebalancing and subscription creation), `api` for runs created with `POST /v1/rebalancing/runs`, or `dashboard` for runs created by a user in the Broker API dashboard.',
+    title: 'PortfolioRunInitiator',
+  })
+  .openapi('PortfolioRunInitiator')
 
 const SkippedOrderSchema = z
   .object({
@@ -9655,6 +10355,15 @@ const PortfolioRunStatusSchema = z
   })
   .openapi('PortfolioRunStatus')
 
+const PortfolioRunTypeSchema = z
+  .enum(['full_rebalance', 'partial_liquidation', 'invest_cash'])
+  .openapi({
+    description:
+      'full_rebalance, partial_liquidation, or invest_cash. partial_liquidation is emitted when a run has that type. Creating one through the REST API is rejected today.',
+    title: 'PortfolioRunType',
+  })
+  .openapi('PortfolioRunType')
+
 const PortfolioRunSchema = z
   .object({
     account_id: z.string().exactOptional().openapi({ description: 'Account ID for given run' }),
@@ -9665,10 +10374,7 @@ const PortfolioRunSchema = z
       .exactOptional()
       .openapi({ description: 'Array of failed orders for this run' }),
     id: z.string().exactOptional().openapi({ description: 'Run ID' }),
-    initiated_from: z
-      .enum(['system', 'api'])
-      .exactOptional()
-      .openapi({ description: 'system or api' }),
+    initiated_from: PortfolioRunInitiatorSchema.exactOptional(),
     orders: z
       .array(OrderSchema)
       .exactOptional()
@@ -9683,10 +10389,7 @@ const PortfolioRunSchema = z
       .exactOptional()
       .openapi({ description: 'Array of skipped order for this run' }),
     status: PortfolioRunStatusSchema.exactOptional(),
-    type: z
-      .enum(['full_rebalance', 'invest_cash'])
-      .exactOptional()
-      .openapi({ description: 'full_rebalance or invest_cash' }),
+    type: PortfolioRunTypeSchema.exactOptional(),
     updated_at: z.string().exactOptional().openapi({ description: 'RFC3339 format' }),
     weights: z
       .array(PortfolioWeightsSchema)
@@ -9696,27 +10399,38 @@ const PortfolioRunSchema = z
   .openapi({ title: 'PortfolioRun', required: [] })
   .openapi('PortfolioRun')
 
+const TradeMarkerSchema = z
+  .enum(['discretionary', 'unsolicited'])
+  .openapi({
+    description:
+      'How trades for a rebalancing subscription are marked. `discretionary` sends those orders as discretion exercised. `unsolicited` leaves them unmarked.',
+    title: 'TradeMarker',
+  })
+  .openapi('TradeMarker')
+
 const PortfolioSubscriptionSchema = z
   .object({
-    account_id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Account ID subscribing to portfolio' }),
+    account_id: z.string().openapi({ description: 'Account ID subscribing to portfolio' }),
     created_at: z.iso
       .datetime({ offset: true })
-      .exactOptional()
       .openapi({ description: 'Subscription creation timestamp' }),
-    id: z.string().exactOptional().openapi({ description: 'Subscription ID' }),
+    id: z.string().openapi({ description: 'Subscription ID' }),
     last_rebalanced_at: z
       .string()
       .exactOptional()
       .openapi({ description: 'Last rebalancing event for this subscription. Can be null.' }),
-    portfolio_id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Portfolio ID for subscription' }),
+    portfolio_id: z.string().openapi({ description: 'Portfolio ID for subscription' }),
+    trade_marker: z
+      .xor([TradeMarkerSchema, z.null().nullable()])
+      .openapi({
+        description:
+          'How trades for this subscription are marked. `null` on subscriptions created before trade markers.',
+      }),
   })
-  .openapi({ title: 'PortfolioSubscription', required: [] })
+  .openapi({
+    required: ['id', 'account_id', 'portfolio_id', 'created_at', 'trade_marker'],
+    title: 'PortfolioSubscription',
+  })
   .openapi('PortfolioSubscription')
 
 const PortfolioWeightRequestBaseSchema = z
@@ -9769,11 +10483,11 @@ const PortfolioWeightRequestSchema = z
   .openapi({
     description: 'Weight entry in a portfolio create or update request, selected by `type`.',
     discriminator: {
+      propertyName: 'type',
       mapping: {
         asset: '#/components/schemas/PortfolioWeightAssetEntry',
         cash: '#/components/schemas/PortfolioWeightCashEntry',
       },
-      propertyName: 'type',
     },
     title: 'PortfolioWeightRequest',
   })
@@ -9969,7 +10683,13 @@ const PositionSchema = z
 
 const PositionClosedResponseSchema = z
   .object({
-    body: OrderSchema.exactOptional(),
+    body: z
+      .xor([OrderSchema, ClosePositionErrorSchema])
+      .exactOptional()
+      .openapi({
+        description:
+          'The Order used to close out the position when `status` is 200; otherwise the error object.',
+      }),
     status: z
       .int()
       .openapi({ description: 'Http status code for the attempt to close this position' }),
@@ -9977,7 +10697,7 @@ const PositionClosedResponseSchema = z
   })
   .openapi({
     description:
-      'Represents the result of asking the api to close a position.\n\n`body` is the Order used to close out the position.',
+      'Represents the result of asking the api to close a position.\n\nWhen `status` is 200, `body` is the Order used to close out the position. For any other `status`, `body` is the error object describing why the close was rejected.',
     examples: [
       {
         body: {
@@ -10023,6 +10743,184 @@ const PositionClosedResponseSchema = z
     title: 'PositionClosedResponse',
   })
   .openapi('PositionClosedResponse')
+
+const RebalancerEventRebalanceConditionSchema = z
+  .object({
+    day: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Calendar day. A lowercase weekday name (`monday` through `friday`) for `weekly`, a day of the month (`1` to `31`) for `monthly` and `quarterly`, and `MM-DD` for `annually`. Omitted when empty.',
+      }),
+    percent: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Decimal string. Present for drift_band conditions. Omitted when empty.',
+      }),
+    sub_type: z
+      .enum(['absolute', 'relative', 'weekly', 'monthly', 'quarterly', 'annually'])
+      .exactOptional()
+      .openapi({ description: 'Omitted when the producer sends no subtype.' }),
+    type: z.enum(['drift_band', 'calendar', 'on_portfolio_update']),
+  })
+  .openapi({
+    description:
+      'Rebalance condition on a `portfolio.status_changed` event. Empty `sub_type`, `percent`, and `day` are omitted.',
+    required: ['type'],
+    title: 'RebalancerEventRebalanceCondition',
+  })
+  .openapi('RebalancerEventRebalanceCondition')
+
+const RebalancerEventPortfolioSchema = z
+  .object({
+    cooldown_days: z.int(),
+    created_at: z.iso.datetime({ offset: true }),
+    description: z.string(),
+    id: z.uuid(),
+    name: z.string(),
+    rebalance_conditions: z.array(RebalancerEventRebalanceConditionSchema),
+    status: z.enum(['active', 'inactive', 'needs_adjustment']),
+    updated_at: z.iso.datetime({ offset: true }),
+    weights: z.array(PortfolioWeightsSchema),
+  })
+  .openapi({
+    description:
+      'Portfolio snapshot carried on `portfolio.status_changed`, including weights and rebalance conditions.',
+    required: [
+      'id',
+      'name',
+      'status',
+      'description',
+      'weights',
+      'cooldown_days',
+      'rebalance_conditions',
+      'created_at',
+      'updated_at',
+    ],
+    title: 'RebalancerEventPortfolio',
+  })
+  .openapi('RebalancerEventPortfolio')
+
+const RebalancerPortfolioStatusChangedEventSchema = z
+  .object({
+    at: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'Business time of the portfolio status transition.' }),
+    event_id: z.ulid(),
+    event_type: z.literal('portfolio.status_changed'),
+    portfolio: RebalancerEventPortfolioSchema,
+  })
+  .openapi({
+    description:
+      'Emitted when a portfolio status changes. `at` is the business time of the transition.',
+    required: ['event_id', 'at', 'event_type', 'portfolio'],
+    title: 'RebalancerPortfolioStatusChangedEvent',
+  })
+  .openapi('RebalancerPortfolioStatusChangedEvent')
+
+const RebalancerEventRunSchema = z
+  .object({
+    account_id: z.uuid(),
+    canceled_at: z.iso.datetime({ offset: true }).nullable(),
+    completed_at: z.iso.datetime({ offset: true }).nullable(),
+    created_at: z.iso.datetime({ offset: true }),
+    id: z.uuid(),
+    initiated_from: PortfolioRunInitiatorSchema,
+    portfolio_id: z.uuid(),
+    reason: z.string().nullable(),
+    status: z
+      .enum([
+        'QUEUED',
+        'IN_PROGRESS',
+        'CANCELED',
+        'ERROR',
+        'TIMEOUT',
+        'COMPLETED_ADJUSTED',
+        'COMPLETED_SUCCESS',
+      ])
+      .openapi({
+        description:
+          'Run status delivered on the rebalancer stream. `CANCELED_MID_RUN` is a REST portfolio-run status and is not sent on this stream.',
+      }),
+    type: PortfolioRunTypeSchema,
+    updated_at: z.iso.datetime({ offset: true }),
+  })
+  .openapi({
+    description:
+      'Full run snapshot sent on `run.created` and `run.status_changed`. Order lists are omitted; read them from `GET /v1/rebalancing/runs/{run_id}`.',
+    required: [
+      'id',
+      'account_id',
+      'portfolio_id',
+      'type',
+      'initiated_from',
+      'status',
+      'reason',
+      'created_at',
+      'updated_at',
+      'completed_at',
+      'canceled_at',
+    ],
+    title: 'RebalancerEventRun',
+  })
+  .openapi('RebalancerEventRun')
+
+const RebalancerRunCreatedEventSchema = z
+  .object({
+    at: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'Business time of the run creation.' }),
+    event_id: z.ulid(),
+    event_type: z.literal('run.created'),
+    run: RebalancerEventRunSchema,
+  })
+  .openapi({
+    description:
+      'Emitted when a portfolio run is created. `run` is the full run snapshot, without order lists.',
+    required: ['event_id', 'at', 'event_type', 'run'],
+    title: 'RebalancerRunCreatedEvent',
+  })
+  .openapi('RebalancerRunCreatedEvent')
+
+const RebalancerRunStatusChangedEventSchema = z
+  .object({
+    at: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'Business time of the run status transition.' }),
+    event_id: z.ulid(),
+    event_type: z.literal('run.status_changed'),
+    run: RebalancerEventRunSchema,
+  })
+  .openapi({
+    description:
+      'Emitted when a portfolio run status changes. `run` is the same full snapshot sent on `run.created`.',
+    required: ['event_id', 'at', 'event_type', 'run'],
+    title: 'RebalancerRunStatusChangedEvent',
+  })
+  .openapi('RebalancerRunStatusChangedEvent')
+
+const RebalancerEventSchema = z
+  .discriminatedUnion('event_type', [
+    RebalancerPortfolioStatusChangedEventSchema,
+    RebalancerRunCreatedEventSchema,
+    RebalancerRunStatusChangedEventSchema,
+  ])
+  .openapi({
+    description:
+      'A correspondent-scoped rebalancer event delivered on `GET /v2/events/rebalancer`.\n\n`event_type` is one of `portfolio.status_changed`, `run.created`, or `run.status_changed`.\n',
+    discriminator: {
+      propertyName: 'event_type',
+      mapping: {
+        'portfolio.status_changed': '#/components/schemas/RebalancerPortfolioStatusChangedEvent',
+        'run.created': '#/components/schemas/RebalancerRunCreatedEvent',
+        'run.status_changed': '#/components/schemas/RebalancerRunStatusChangedEvent',
+      },
+    },
+    title: 'RebalancerEvent',
+  })
+  .openapi('RebalancerEvent')
 
 const RebalancingConditionsSchema = z
   .object({
@@ -10308,6 +11206,89 @@ const SignedAgreementSchema = z
   })
   .openapi('SignedAgreement')
 
+const TransferStatusSchema = z
+  .enum([
+    'QUEUED',
+    'APPROVAL_PENDING',
+    'PENDING',
+    'SENT_TO_CLEARING',
+    'REJECTED',
+    'CANCELED',
+    'APPROVED',
+    'COMPLETE',
+    'RETURNED',
+  ])
+  .openapi({
+    description:
+      '- **QUEUED**\nTransfer is in queue to be processed.\n- **APPROVAL_PENDING**\nTransfer is pending approval.\n- **PENDING**\nTransfer is pending processing.\n- **SENT_TO_CLEARING**\nTransfer is being processed by the clearing firm.\n- **REJECTED**\nTransfer is rejected.\n- **CANCELED**\nClient initiated transfer cancellation.\n- **APPROVED**\nTransfer is approved.\n- **COMPLETE**\nTransfer is completed.\n- **RETURNED**\nThe bank issued an ACH return for the transfer.\n',
+    example: 'QUEUED',
+  })
+  .openapi('TransferStatus')
+
+const SimulatedIncomingWireSchema = z
+  .object({
+    account_number: z
+      .string()
+      .openapi({ description: 'Account number of the destination account.', example: '123456789' }),
+    amount: z.string().openapi({ description: 'Amount of the incoming wire.', example: '1000' }),
+    batch_processed_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description:
+          'Not currently populated. Always returns the zero time `0001-01-01T00:00:00Z`.',
+        example: '0001-01-01T00:00:00Z',
+      }),
+    correspondent: z
+      .string()
+      .openapi({ description: 'Your 4-character correspondent code.', example: 'TEST' }),
+    create_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp when the incoming wire was created.',
+        example: '2026-11-09T17:45:12.123456Z',
+      }),
+    currency: CurrencySchema,
+    delay_until: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .openapi({
+        description:
+          'The `delay_until` value from the request, or `null` if none was sent. Not used to delay processing.',
+        example: null,
+      }),
+    id: z
+      .uuid()
+      .openapi({
+        description: 'The incoming wire ID.',
+        example: '0b6c4a9e-2f4d-4b8a-9c1e-7f3d2a1b5c6d',
+      }),
+    status: TransferStatusSchema,
+    wire_instructions: z
+      .string()
+      .openapi({
+        description: 'The `wire_instructions` value from the request.',
+        example: 'FFC TEST-123456789',
+      }),
+  })
+  .openapi({
+    description:
+      'A simulated incoming wire transfer created with `POST /v1/testing/incoming_wires`.\n\nAvailable in the sandbox environment only.',
+    required: [
+      'id',
+      'amount',
+      'create_at',
+      'batch_processed_at',
+      'wire_instructions',
+      'status',
+      'delay_until',
+      'account_number',
+      'correspondent',
+      'currency',
+    ],
+    title: 'SimulatedIncomingWire',
+  })
+  .openapi('SimulatedIncomingWire')
+
 const SortOrderSchema = z.enum(['ASC', 'DESC']).openapi('SortOrder')
 
 const StatusFundingEventSchema = z
@@ -10317,11 +11298,8 @@ const StatusFundingEventSchema = z
     correspondent: z.string().min(1).max(4).openapi({ description: "Correspondent's code" }),
     entity_id: z.uuid().min(1).openapi({ description: "Entity's UUID" }),
     entity_type: z
-      .uuid()
-      .min(1)
-      .openapi({
-        description: 'Valid values are BankRelationship, WireBank, Transfer and FundingWallet.',
-      }),
+      .enum(['BankRelationship', 'WireBank', 'Transfer', 'FundingWallet'])
+      .openapi({ description: 'Type of funding entity that `entity_id` identifies.' }),
     event_id: z
       .ulid()
       .min(1)
@@ -10419,7 +11397,7 @@ const SystemEventV2Schema = z
   .openapi('SystemEventV2')
 
 const TokenizationIssuerSchema = z
-  .enum(['binance', 'coinbase', 'ondo', 'st0x', 'xstocks'])
+  .enum(['binance', 'bitget', 'coinbase', 'ondo', 'robinhood', 'st0x', 'xstocks'])
   .openapi({
     description: "The tokenized asset's issuer",
     example: 'xstocks',
@@ -10482,6 +11460,14 @@ const TokenizationMintCallbackSchema = z
 
 const TokenizationMintRequestSchema = z
   .object({
+    client_request_id: z
+      .string()
+      .max(128)
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional label of your choosing for this mint request. It is returned on the mint response and on the tokenization request, and you can retrieve the request by it with the Get Tokenization Request by `client_request_id` endpoint. If multiple requests within the same account share the same `client_request_id`, the endpoint returns the most recent matching request. To prevent duplicate processing, use the `Idempotency-Key` header.\n\nMust be at most 128 printable ASCII characters with no leading or trailing whitespace.',
+      }),
     issuer: TokenizationIssuerSchema,
     network: TokenizationNetworkSchema,
     qty: z
@@ -10512,6 +11498,13 @@ const TokenizationRequestStatusSchema = z
 
 const TokenizationMintResponseSchema = z
   .object({
+    client_request_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `client_request_id` supplied on the mint request. Omitted when none was supplied.',
+      }),
     created_at: z.iso.datetime({ offset: true }),
     issuer: TokenizationIssuerSchema,
     network: TokenizationNetworkSchema,
@@ -11162,6 +12155,14 @@ const TradeUpdateEventTypeSchema = z
 
 const TradeUpdateEventV2LegSchema = z
   .object({
+    commission: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The commission charged on this leg\'s execution. On a `trade_bust` event it is negative, refunding the busted execution\'s commission.\n\nOmitted when the execution carries no commission, such as on an equity leg. A zero commission is sent as `"0"`.\n\nA later event can list the same execution again, so key commissions by `execution_id` instead of adding up every event.',
+        example: '0.65',
+      }),
     execution_id: z
       .uuid()
       .exactOptional()
@@ -11185,7 +12186,7 @@ const TradeUpdateEventV2LegSchema = z
       .openapi({ description: 'Timestamp of this event leg\n' }),
   })
   .openapi({
-    description: 'Represents filled qty/price of legs.',
+    description: 'Represents filled qty/price and commission of legs.',
     title: 'TradeUpdateEventV2Leg',
     required: [],
   })
@@ -11216,7 +12217,7 @@ const TradeUpdateEventV2Schema = z
       .exactOptional()
       .openapi({
         description:
-          'Only present when event is for `MultilegOptions`. Represents filled qty/price of legs.\n',
+          'Only present when event is for `MultilegOptions`. Represents filled qty/price and commission of legs.\n',
       }),
     order: OrderSchema.exactOptional(),
     position_qty: z
@@ -11343,25 +12344,6 @@ const TransferIRADetailsSchema = z
   })
   .openapi({ required: [] })
   .openapi('TransferIRADetails')
-
-const TransferStatusSchema = z
-  .enum([
-    'QUEUED',
-    'APPROVAL_PENDING',
-    'PENDING',
-    'SENT_TO_CLEARING',
-    'REJECTED',
-    'CANCELED',
-    'APPROVED',
-    'COMPLETE',
-    'RETURNED',
-  ])
-  .openapi({
-    description:
-      '- **QUEUED**\nTransfer is in queue to be processed.\n- **APPROVAL_PENDING**\nTransfer is pending approval.\n- **PENDING**\nTransfer is pending processing.\n- **SENT_TO_CLEARING**\nTransfer is being processed by the clearing firm.\n- **REJECTED**\nTransfer is rejected.\n- **CANCELED**\nClient initiated transfer cancellation.\n- **APPROVED**\nTransfer is approved.\n- **COMPLETE**\nTransfer is completed.\n- **RETURNED**\nThe bank issued an ACH return for the transfer.\n',
-    example: 'QUEUED',
-  })
-  .openapi('TransferStatus')
 
 const TransferSchema = z
   .object({
@@ -11794,7 +12776,7 @@ const UpdateOrderRequestSchema = z
   })
   .openapi({
     description:
-      'Represents the fields that are editable in an order replace/update call.\n\nNote: client_order_id is currently not editable on its own, one of the other fields must be changed at the same time to effectively replace the order.\n\nNote: `qty` and `notional` are mutually exclusive on a single replace request. `notional` is only valid for IPO indications of interest (`asset_class: "ipo"`); non-IPO notional orders cannot be replaced at all.',
+      'Represents the fields that are editable in an order replace/update call.\n\nNote: client_order_id is currently not editable on its own, one of the other fields must be changed at the same time to effectively replace the order.\n\nNote: `commission`, `commission_type`, and `commission_bps` are not editable. They are ignored on a replace request and have no effect.\n\nNote: `qty` and `notional` are mutually exclusive on a single replace request. `notional` is only valid for IPO indications of interest (`asset_class: "ipo"`); non-IPO notional orders cannot be replaced at all.',
     title: 'OrderUpdateRequest',
     required: [],
   })
@@ -12645,7 +13627,12 @@ const ForbiddenResponse = {
 
 const IdempotencyKeyConflictResponse = {
   description: 'The idempotency key was already used with a different request payload.',
-  content: { 'application/json': { schema: ErrorSchema } },
+  content: {
+    'application/json': {
+      schema: ErrorSchema,
+      example: { code: 42210000, message: 'idempotency key reused with a different request body' },
+    },
+  },
 }
 
 const NotAuthorizedResponse = {
@@ -12704,86 +13691,16 @@ const AccountIDParamsSchema = z
     },
   })
 
-const ActivityTypeParamsSchema = z
-  .enum([
-    'FILL',
-    'ACATC',
-    'ACATS',
-    'CGD',
-    'CIL',
-    'CSD',
-    'CSW',
-    'DIV',
-    'DIVCGL',
-    'DIVCGS',
-    'DIVNRA',
-    'DIVROC',
-    'DIVTXEX',
-    'FEE',
-    'INT',
-    'MEM',
-    'JNLC',
-    'JNLS',
-    'MA',
-    'OPASN',
-    'OPCA',
-    'OPCSH',
-    'OPEXC',
-    'OPEXP',
-    'OPTRD',
-    'PTC',
-    'REO',
-    'REORG',
-    'SPIN',
-    'SPLIT',
-    'FOPT',
-    'OCT',
-  ])
-  .openapi({
-    param: {
-      description: 'see ActivityType model for details about what the different types mean',
-      in: 'path',
-      name: 'activity_type',
-      required: true,
-      schema: {
-        enum: [
-          'FILL',
-          'ACATC',
-          'ACATS',
-          'CGD',
-          'CIL',
-          'CSD',
-          'CSW',
-          'DIV',
-          'DIVCGL',
-          'DIVCGS',
-          'DIVNRA',
-          'DIVROC',
-          'DIVTXEX',
-          'FEE',
-          'INT',
-          'MEM',
-          'JNLC',
-          'JNLS',
-          'MA',
-          'OPASN',
-          'OPCA',
-          'OPCSH',
-          'OPEXC',
-          'OPEXP',
-          'OPTRD',
-          'PTC',
-          'REO',
-          'REORG',
-          'SPIN',
-          'SPLIT',
-          'FOPT',
-          'OCT',
-        ],
-        type: 'string',
-      },
-    },
-  })
+const ActivityTypeParamsSchema = ActivityTypeFilterSchema.openapi({
+  param: {
+    description:
+      'Activity type to filter by. Accepted values are the activity types recognized by the backend.',
+    in: 'path',
+    name: 'activity_type',
+    required: true,
+    schema: { $ref: '#/components/schemas/ActivityTypeFilter' },
+  },
+})
 
 const AfterParamsSchema = z.iso
   .datetime({ offset: true })
@@ -13566,6 +14483,125 @@ const MultilegOptionsOrderResponseExample = {
   },
 }
 
+const MultilegOptionsWithCommissionOrderResponseExample = {
+  summary: 'Multi-leg order with a per-contract commission',
+  value: {
+    asset_class: '',
+    asset_id: '',
+    canceled_at: null,
+    client_order_id: '9e4a7c21-3b5d-4f8a-a6e2-1d0c9b8f7e65',
+    commission: '1.5',
+    commission_type: 'qty',
+    created_at: '2026-11-12T15:02:11.204518Z',
+    expired_at: null,
+    extended_hours: false,
+    failed_at: null,
+    filled_at: null,
+    filled_avg_price: null,
+    filled_qty: '0',
+    hwm: null,
+    id: '1b6f2c8e-4d3a-4f7e-9a51-6c2e8d0b7f34',
+    legs: [
+      {
+        asset_class: 'us_option',
+        asset_id: 'f0ea14b2-8a49-4e9b-89d1-894c6e518a76',
+        canceled_at: null,
+        client_order_id: 'c3f8a1d6-7e2b-4a9c-8d5f-2b1e0c6a9d47',
+        created_at: '2026-11-12T15:02:11.204518Z',
+        expired_at: null,
+        extended_hours: false,
+        failed_at: null,
+        filled_at: null,
+        filled_avg_price: null,
+        filled_qty: '0',
+        hwm: null,
+        id: '5a2d9e7c-8f1b-4c6a-b3e4-0d7f2a9c1e58',
+        legs: null,
+        limit_price: null,
+        notional: null,
+        order_class: 'mleg',
+        order_type: '',
+        position_intent: 'buy_to_open',
+        qty: '1',
+        ratio_qty: '1',
+        replaced_at: null,
+        replaced_by: null,
+        replaces: null,
+        side: 'buy',
+        source: null,
+        status: 'accepted',
+        stop_price: null,
+        submitted_at: '2026-11-12T15:02:11.193402Z',
+        subtag: null,
+        symbol: 'AAPL250620C00100000',
+        time_in_force: 'day',
+        trail_percent: null,
+        trail_price: null,
+        type: '',
+        updated_at: '2026-11-12T15:02:11.204518Z',
+      },
+      {
+        asset_class: 'us_option',
+        asset_id: 'f89940db-eeb1-46e6-8f9b-bb1f27a0b395',
+        canceled_at: null,
+        client_order_id: '6d2b9f4e-1a8c-4d7b-9e3f-5c0a8b7d2e16',
+        created_at: '2026-11-12T15:02:11.204518Z',
+        expired_at: null,
+        extended_hours: false,
+        failed_at: null,
+        filled_at: null,
+        filled_avg_price: null,
+        filled_qty: '0',
+        hwm: null,
+        id: '8e1c4b7a-2d9f-4e3c-a5b8-7f6d0e2c1a93',
+        legs: null,
+        limit_price: null,
+        notional: null,
+        order_class: 'mleg',
+        order_type: '',
+        position_intent: 'sell_to_open',
+        qty: '1',
+        ratio_qty: '1',
+        replaced_at: null,
+        replaced_by: null,
+        replaces: null,
+        side: 'sell',
+        source: null,
+        status: 'accepted',
+        stop_price: null,
+        submitted_at: '2026-11-12T15:02:11.193402Z',
+        subtag: null,
+        symbol: 'AAPL250620C00105000',
+        time_in_force: 'day',
+        trail_percent: null,
+        trail_price: null,
+        type: '',
+        updated_at: '2026-11-12T15:02:11.204518Z',
+      },
+    ],
+    limit_price: '2.5',
+    notional: null,
+    order_class: 'mleg',
+    order_type: 'limit',
+    qty: '1',
+    replaced_at: null,
+    replaced_by: null,
+    replaces: null,
+    side: '',
+    source: null,
+    status: 'accepted',
+    stop_price: null,
+    submitted_at: '2026-11-12T15:02:11.193402Z',
+    subtag: null,
+    symbol: '',
+    time_in_force: 'day',
+    trail_percent: null,
+    trail_price: null,
+    type: 'limit',
+    updated_at: '2026-11-12T15:02:11.204518Z',
+  },
+}
+
 const OptionOrderResponseExample = {
   value: {
     asset_class: 'us_option',
@@ -13602,6 +14638,76 @@ const OptionOrderResponseExample = {
     trail_price: null,
     type: 'limit',
     updated_at: '2023-12-12T21:35:49.102504673Z',
+  },
+}
+
+const RebalancerEventPortfolioStatusChangedExample = {
+  summary: 'Portfolio status changed',
+  value: {
+    at: '2026-10-05T14:30:00.123456Z',
+    event_id: '01K6Q6ZJ7M2X3T0E4B9N8RCW5D',
+    event_type: 'portfolio.status_changed',
+    portfolio: {
+      cooldown_days: 7,
+      created_at: '2026-09-01T12:00:00Z',
+      description: '60/40 with a cash sleeve',
+      id: '2d49d00e-ab1c-4014-89d8-70c5f64df2fc',
+      name: 'Balanced',
+      rebalance_conditions: [
+        { percent: '5', sub_type: 'absolute', type: 'drift_band' },
+        { day: '15', sub_type: 'monthly', type: 'calendar' },
+      ],
+      status: 'active',
+      updated_at: '2026-10-05T14:30:00.123456Z',
+      weights: [
+        { percent: '60', symbol: 'SPY', type: 'asset' },
+        { percent: '40', symbol: null, type: 'cash' },
+      ],
+    },
+  },
+}
+
+const RebalancerEventRunCreatedExample = {
+  summary: 'Portfolio run created',
+  value: {
+    at: '2026-10-05T14:31:00Z',
+    event_id: '01K6Q70B3D8H5S2V9F1G6KTMXE',
+    event_type: 'run.created',
+    run: {
+      account_id: '6221407b-32b2-3e6b-a7fe-cd79e1b68ba3',
+      canceled_at: null,
+      completed_at: null,
+      created_at: '2026-10-05T14:31:00Z',
+      id: 'bdc8e56f-cd91-448d-bb46-a4593cde2f95',
+      initiated_from: 'system',
+      portfolio_id: '2d49d00e-ab1c-4014-89d8-70c5f64df2fc',
+      reason: null,
+      status: 'QUEUED',
+      type: 'full_rebalance',
+      updated_at: '2026-10-05T14:31:00Z',
+    },
+  },
+}
+
+const RebalancerEventRunStatusChangedExample = {
+  summary: 'Portfolio run status changed',
+  value: {
+    at: '2026-10-05T14:33:12Z',
+    event_id: '01K6Q74R9W2C7N4J0P3Y5HQZAB',
+    event_type: 'run.status_changed',
+    run: {
+      account_id: '6221407b-32b2-3e6b-a7fe-cd79e1b68ba3',
+      canceled_at: null,
+      completed_at: '2026-10-05T14:33:12Z',
+      created_at: '2026-10-05T14:31:00Z',
+      id: 'bdc8e56f-cd91-448d-bb46-a4593cde2f95',
+      initiated_from: 'system',
+      portfolio_id: '2d49d00e-ab1c-4014-89d8-70c5f64df2fc',
+      reason: null,
+      status: 'COMPLETED_SUCCESS',
+      type: 'full_rebalance',
+      updated_at: '2026-10-05T14:33:12Z',
+    },
   },
 }
 
@@ -13922,12 +15028,9 @@ const RebalancingActiveRunExistsExample = {
 
 const RebalancingAmountNotDecimalExample = {
   description:
-    'Send a numeric amount and try again. Message template: amount must be a decimal: {parse_error}',
+    'Send a numeric amount and try again. Message template: amount must be a decimal: {parse_error} (`invalid value` or `value is empty`)',
   summary: 'The amount is not a valid decimal number',
-  value: {
-    code: 40010001,
-    message: "amount must be a decimal: can't convert not-a-number to decimal",
-  },
+  value: { code: 40010001, message: 'amount must be a decimal: invalid value' },
 }
 
 const RebalancingAssetNotFoundExample = {
@@ -13956,24 +15059,19 @@ const RebalancingAssetSymbolRequiredExample = {
 
 const RebalancingCalendarDayNotMmddExample = {
   description:
-    'Use that format and try again. Message template: calendar conditions day must be in MM-DD format: {time_parse_error}',
+    'Use that format and try again. Message template: calendar conditions day must be in MM-DD format: {parse_error} (`invalid value` or `value is empty`)',
   summary: 'An annual calendar condition has a day that is not in MM-DD format',
   value: {
     code: 40010001,
-    message:
-      'calendar conditions day must be in MM-DD format: parsing time "13-40" as "01-02": month out of range',
+    message: 'calendar conditions day must be in MM-DD format: invalid value',
   },
 }
 
 const RebalancingCalendarDayNotNumberExample = {
   description:
-    'Use a day from 1 to 31 and try again. Message template: calendar conditions day must be a number: {parse_error}',
+    'Use a day from 1 to 31 and try again. Message template: calendar conditions day must be a number: {parse_error} (`invalid value` or `value is empty`)',
   summary: 'A monthly or quarterly calendar condition has a day that is not a number',
-  value: {
-    code: 40010001,
-    message:
-      'calendar conditions day must be a number: strconv.Atoi: parsing "abc": invalid syntax',
-  },
+  value: { code: 40010001, message: 'calendar conditions day must be a number: invalid value' },
 }
 
 const RebalancingCalendarDayOutOfRangeExample = {
@@ -14011,19 +15109,16 @@ const RebalancingCalendarWeekdayInvalidExample = {
 
 const RebalancingCashWeightPercentEmptyExample = {
   description:
-    'Set a numeric percent and try again. Message template: weights[{index}].percent: {parse_error}',
+    'Set a numeric percent and try again. Message template: weights[{index}].percent: value is empty',
   summary: 'A cash weight has an empty percent',
-  value: { code: 40010001, message: "weights[0].percent: can't convert  to decimal" },
+  value: { code: 40010001, message: 'weights[0].percent: value is empty' },
 }
 
 const RebalancingConditionPercentNotDecimalExample = {
   description:
-    'Send a numeric percent and try again. Message template: rebalance_conditions[{index}].percent: {parse_error}',
+    'Send a numeric percent and try again. Message template: rebalance_conditions[{index}].percent: {parse_error} (`invalid value` or `value is empty`)',
   summary: 'The percent on the rebalance condition named in the message is not a valid decimal',
-  value: {
-    code: 40010001,
-    message: "rebalance_conditions[0].percent: can't convert not-a-number to decimal",
-  },
+  value: { code: 40010001, message: 'rebalance_conditions[0].percent: invalid value' },
 }
 
 const RebalancingCooldownDaysInvalidExample = {
@@ -14054,14 +15149,23 @@ const RebalancingCryptoPositionExample = {
   },
 }
 
+const RebalancingDiscretionNotAuthorizedExample = {
+  description:
+    "A missing `trade_marker` means `discretionary`. That requires the correspondent's advisor to be marked discretionary. Send `unsolicited` to create the subscription without that flag.",
+  summary: 'Discretionary rebalancing is not allowed for this correspondent',
+  value: {
+    code: 42210000,
+    message: 'discretionary rebalancing is not allowed for this correspondent',
+  },
+}
+
 const RebalancingDriftPercentNotDecimalExample = {
   description:
-    'Send a numeric percent and try again. Message template: drift_band conditions percent must be a decimal: {parse_error}',
+    'Send a numeric percent and try again. Message template: drift_band conditions percent must be a decimal: {parse_error} (`invalid value` or `value is empty`)',
   summary: 'A drift band percent is not a valid decimal number',
   value: {
     code: 40010001,
-    message:
-      "drift_band conditions percent must be a decimal: can't convert not-a-number to decimal",
+    message: 'drift_band conditions percent must be a decimal: invalid value',
   },
 }
 
@@ -14190,6 +15294,13 @@ const RebalancingInvalidSubscriptionIdExample = {
   value: { code: 40010001, message: 'invalid subscription_id' },
 }
 
+const RebalancingInvalidTradeMarkerExample = {
+  description:
+    'The request is rejected by request validation before the handler runs, so the message is the generic invalid-parameters message. Send `discretionary` or `unsolicited`, or omit the field.',
+  summary: 'trade_marker is not discretionary or unsolicited',
+  value: { code: 40010001, message: 'request parameters are invalid' },
+}
+
 const RebalancingJitCorrespondentExample = {
   description: 'Contact support if this correspondent needs rebalancing.',
   summary: 'This correspondent uses just-in-time buying power, so rebalancing is not permitted',
@@ -14210,7 +15321,7 @@ const RebalancingNestedPortfolioWeightsExample = {
   value: {
     code: 40010001,
     message:
-      'publishing portfolio status changed: portfolio contains nested portfolio weights that cannot be represented in a rebalancer event',
+      'portfolio contains nested portfolio weights and cannot be updated or deleted through this API',
   },
 }
 
@@ -14358,12 +15469,9 @@ const RebalancingUnsupportedMediaTypeExample = {
 
 const RebalancingWeightPercentNotDecimalExample = {
   description:
-    'Send a numeric percent and try again. Message template: percent must be a decimal: {parse_error}',
+    'Send a numeric percent and try again. Message template: percent must be a decimal: {parse_error} (`invalid value` or `value is empty`)',
   summary: 'A weight percent is not a valid decimal number',
-  value: {
-    code: 40010001,
-    message: "percent must be a decimal: can't convert not-a-number to decimal",
-  },
+  value: { code: 40010001, message: 'percent must be a decimal: invalid value' },
 }
 
 const RebalancingWeightPercentNotPositiveExample = {
@@ -16977,7 +18085,7 @@ export const postV1AccountsAccountIdTransfersRoute = createRoute({
   tags: ['Funding', 'Accounts'],
   summary: 'Request a New Transfer',
   description:
-    'Create a new transfer to deposit money into or withdraw money from an account.\n\nTwo `transfer_type` values are accepted, and both are available in sandbox and production:\n\n- **`ach`** — supports both `INCOMING` (deposit) and `OUTGOING` (withdrawal) directions. A `relationship_id` from a previously created [ACH Relationship](https://docs.alpaca.markets/reference/createachrelationshipforaccount) is required.\n- **`wire`** — supports the `OUTGOING` (withdrawal) direction only. Incoming wires cannot be initiated through this endpoint; they are pushed in by the sending bank and recorded automatically. A `bank_id` from a previously created [Bank Relationship](https://docs.alpaca.markets/reference/createrecipientbank) is required, and the bank must be in `APPROVED` status before the transfer will progress past `QUEUED`.\n\nIn the sandbox environment, ACH deposits and withdrawals settle instantly against virtual funds. Outgoing wire withdrawals are accepted and simulated end-to-end — no funds are transmitted to a bank, but the transfer progresses to `COMPLETE` and the account is debited against virtual funds. Sandbox wire withdrawals are asynchronous (not instant) and auto-complete on weekdays only; transfers submitted on a weekend will not progress until Monday. For more on funding accounts in sandbox, see [this tutorial](https://alpaca.markets/learn/fund-broker-api/).',
+    'Create a new transfer to deposit money into or withdraw money from an account.\n\nTwo `transfer_type` values are accepted, and both are available in sandbox and production:\n\n- **`ach`** — supports both `INCOMING` (deposit) and `OUTGOING` (withdrawal) directions. A `relationship_id` from a previously created [ACH Relationship](https://docs.alpaca.markets/reference/createachrelationshipforaccount) is required.\n- **`wire`** — supports the `OUTGOING` (withdrawal) direction only. Incoming wires cannot be initiated through this endpoint; they are pushed in by the sending bank and recorded automatically. A `bank_id` from a previously created [Bank Relationship](https://docs.alpaca.markets/reference/createrecipientbank) is required, and the bank must be in `APPROVED` status before the transfer will progress past `QUEUED`.\n\nIn the sandbox environment, ACH deposits and withdrawals settle instantly against virtual funds. Outgoing wire withdrawals are accepted and simulated end-to-end — no funds are transmitted to a bank, but the transfer progresses to `COMPLETE` and the account is debited against virtual funds. Sandbox wire withdrawals are asynchronous (not instant) and auto-complete on weekdays only; transfers submitted on a weekend will not progress until Monday. To fund an account with an incoming wire in sandbox, use [Simulate an Incoming Wire Transfer](https://docs.alpaca.markets/reference/createincomingwire) (`POST /v1/testing/incoming_wires`). For more on funding accounts in sandbox, see [this tutorial](https://alpaca.markets/learn/fund-broker-api/).',
   operationId: 'createTransferForAccount',
   request: {
     params: z.object({
@@ -17093,14 +18201,19 @@ export const getV1AccountsAccountIdWalletsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            deprecated: true,
             description:
-              "Deprecated. Use chain instead. Optional network identifier which is used to request wallets for a specific network when asset is a multi-chain crypto asset. When both 'chain' and 'network' are specified, 'chain' will take precedence and 'network' will be ignored. If 'chain' and 'network' are not specified, the default 'network' (ethereum) will be used.",
+              "**Deprecation notice:**\nUse `chain` instead.\n\nSince: 2026-11-02\nSunset: 2027-02-02\n\n---\n\nDeprecated. Use chain instead. Optional network identifier which is used to request wallets for a specific network when asset is a multi-chain crypto asset. When both 'chain' and 'network' are specified, 'chain' will take precedence and 'network' will be ignored. If 'chain' and 'network' are not specified, the default 'network' (ethereum) will be used.",
             in: 'query',
             name: 'network',
-            schema: { deprecated: true, enum: ['ethereum', 'solana'], type: 'string' },
+            schema: { enum: ['ethereum', 'solana'], type: 'string' },
+            'x-deprecation': {
+              reason: 'Use `chain` instead.',
+              since: '2026-11-02',
+              sunset: '2027-02-02',
+            },
             required: false,
           },
-          deprecated: true,
         }),
     }),
   },
@@ -17379,7 +18492,7 @@ export const getV1AccountsActivitiesRoute = createRoute({
               : (Array.isArray(val) ? val : [val]).flatMap((item) =>
                   typeof item === 'string' ? item.split(',') : [item],
                 ),
-          z.array(ActivityTypeSchema),
+          z.array(ActivityTypeFilterSchema),
         )
         .exactOptional()
         .openapi({
@@ -17388,7 +18501,7 @@ export const getV1AccountsActivitiesRoute = createRoute({
             explode: false,
             in: 'query',
             name: 'activity_types',
-            schema: { items: { $ref: '#/components/schemas/ActivityType' }, type: 'array' },
+            schema: { items: { $ref: '#/components/schemas/ActivityTypeFilter' }, type: 'array' },
             style: 'form',
             required: false,
           },
@@ -17879,6 +18992,8 @@ export const postV1AgreementsRoute = createRoute({
   operationId: 'createAgreement',
   request: {
     body: {
+      description:
+        'The signed agreement to record for the party. Include `account_id` for per-account agreements.',
       content: {
         'application/json': {
           schema: CreateAgreementRequestSchema,
@@ -20176,9 +21291,9 @@ export const deleteV1JournalsJournalIdRoute = createRoute({
   method: 'delete',
   path: '/v1/journals/{journal_id}',
   tags: ['Journals'],
-  summary: 'Cancel a Pending Journal',
+  summary: 'Cancel a Journal',
   description:
-    'You can only delete a journal if the journal is still in a pending state, if a journal is executed you will not be able to delete. The alternative is to create a mirror journal entry to reverse the flow of funds.',
+    'You can delete a journal only while it is `pending` or `queued`. A journal that has moved past those statuses, including one that has been executed, cannot be deleted. To reverse an executed journal, create a mirror journal entry.',
   operationId: 'deleteJournalById',
   request: {
     params: z.object({
@@ -20197,7 +21312,7 @@ export const deleteV1JournalsJournalIdRoute = createRoute({
   responses: {
     204: { description: 'The cancel request succeeded. (No-content)\n' },
     404: { description: 'The journal is not found.\n' },
-    422: { description: 'The journal is not in the pending status.\n' },
+    422: { description: 'The journal is not pending or queued.\n' },
   },
 })
 
@@ -21969,7 +23084,8 @@ export const postV1RebalancingSubscriptionsRoute = createRoute({
   path: '/v1/rebalancing/subscriptions',
   tags: ['Rebalancing'],
   summary: 'Create Subscription',
-  description: 'Creates a subscription between an account and a portfolio.',
+  description:
+    "Creates a subscription between an account and a portfolio.\n\n`trade_marker` is optional. Omitting it means `discretionary`. A discretionary subscription is rejected with 422 unless the correspondent's advisor is marked discretionary. Send `unsolicited` to create the subscription without that advisor flag. Existing subscriptions created before trade markers return `trade_marker: null` and their orders stay unmarked.",
   operationId: 'post-v1-rebalancing-subscriptions',
   request: {
     body: {
@@ -21989,6 +23105,12 @@ export const postV1RebalancingSubscriptionsRoute = createRoute({
                 .string()
                 .exactOptional()
                 .openapi({ description: 'Portfolio ID. Portfolio must be active' }),
+              trade_marker: TradeMarkerSchema.default('discretionary')
+                .exactOptional()
+                .openapi({
+                  description:
+                    "How trades for this subscription are marked. Omitted means discretionary. Discretionary requires the correspondent's advisor to be marked discretionary. Send unsolicited when that flag is not set.",
+                }),
             })
             .openapi({ required: [] }),
         },
@@ -22063,7 +23185,9 @@ export const postV1RebalancingSubscriptionsRoute = createRoute({
           examples: {
             active_run_exists: RebalancingActiveRunExistsExample,
             crypto_position: RebalancingCryptoPositionExample,
+            discretion_not_authorized: RebalancingDiscretionNotAuthorizedExample,
             invalid_request: RebalancingInvalidRequestExample,
+            invalid_trade_marker: RebalancingInvalidTradeMarkerExample,
             open_orders: RebalancingOpenOrdersExample,
             pattern_day_trader: RebalancingPatternDayTraderExample,
             portfolio_unavailable: RebalancingPortfolioUnavailableExample,
@@ -22544,6 +23668,143 @@ export const getV1ReportingEodPositionsRoute = createRoute({
   },
 })
 
+export const postV1TestingIncomingWiresRoute = createRoute({
+  method: 'post',
+  path: '/v1/testing/incoming_wires',
+  tags: ['Funding'],
+  summary: 'Simulate an Incoming Wire Transfer',
+  description:
+    "Simulate an incoming wire transfer to fund one of your accounts, without a real sending bank.\n\nThis endpoint is **only available in the sandbox environment**. Calling it in production returns `403`. In production, incoming wires are sent by the customer's bank and cannot be created through the API.\n\nIdentify the destination account by including an FFC (For Further Credit) string `FFC <correspondent>-<account_number>` in `wire_instructions`, where `<correspondent>` is your 4-character correspondent code and `<account_number>` is the account's 9-character account number.\n\n`currency` defaults to `USD` and must match the account's base currency. Supported currencies are `AUD`, `CAD`, `CHF`, `EUR`, `GBP`, `JPY`, `NZD`, `SGD`, `TRY`, and `USD`.\n\nThe wire is created with status `QUEUED` and processed asynchronously on the next worker run.",
+  operationId: 'createIncomingWire',
+  request: {
+    body: {
+      description: 'The amount, currency, and destination account of the simulated incoming wire.',
+      content: {
+        'application/json': {
+          schema: CreateSimulatedIncomingWireRequestSchema,
+          examples: {
+            eur: {
+              summary: 'EUR incoming wire to a EUR account',
+              value: { amount: '250.50', currency: 'EUR', wire_instructions: 'FFC TEST-987654321' },
+            },
+            usd: {
+              summary: 'USD incoming wire',
+              value: { amount: '1000.00', wire_instructions: 'FFC TEST-123456789' },
+            },
+          },
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'The simulated incoming wire was created.',
+      content: {
+        'application/json': {
+          schema: SimulatedIncomingWireSchema,
+          examples: {
+            queued: {
+              summary: 'Newly created incoming wire',
+              value: {
+                account_number: '123456789',
+                amount: '1000',
+                batch_processed_at: '0001-01-01T00:00:00Z',
+                correspondent: 'TEST',
+                create_at: '2026-11-09T17:45:12.123456Z',
+                currency: 'USD',
+                delay_until: null,
+                id: '0b6c4a9e-2f4d-4b8a-9c1e-7f3d2a1b5c6d',
+                status: 'QUEUED',
+                wire_instructions: 'FFC TEST-123456789',
+              },
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'The request body is malformed, for example invalid JSON.',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            malformedBody: {
+              summary: 'Malformed request body',
+              value: { code: 40010000, message: 'request body format is invalid' },
+            },
+          },
+        },
+      },
+    },
+    403: {
+      description:
+        'The endpoint was called in production. It is only available in the sandbox environment.',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            production: {
+              summary: 'Called in production',
+              value: {
+                code: 40310000,
+                message: 'testing incoming wires is only available to sandbox environments',
+              },
+            },
+          },
+        },
+      },
+    },
+    404: {
+      description:
+        'No account with the account number in `wire_instructions` exists for your correspondent.',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            accountNotFound: {
+              summary: 'Unknown account number',
+              value: { code: 40410000, message: 'account number 123456789 does not exist' },
+            },
+          },
+        },
+      },
+    },
+    422: {
+      description:
+        "The request was rejected by validation. Common reasons include:\n\n- `invalid wire instructions: must be in format FFC TEST-987654321`: `wire_instructions` does not contain an FFC string.\n- `invalid correspondent used in wire instructions`: the correspondent in `wire_instructions` is not yours.\n- `currency does not match account's base currency`: `currency`, or the `USD` default, differs from the account's base currency.\n- `please contact support. currency is not supported for incoming_wire: <currency>`: `currency` is not a supported incoming wire currency.\n- `currency is not a valid currency`: `currency` is not a recognized currency code.\n- `amount should be greater than or equal to zero`: `amount` is 0 or negative. The amount must be greater than 0.\n",
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            invalidWireInstructions: {
+              summary: 'Wire instructions without an FFC string',
+              value: {
+                code: 40010001,
+                message: 'invalid wire instructions: must be in format FFC TEST-987654321',
+              },
+            },
+          },
+        },
+      },
+    },
+    default: {
+      description: 'Unexpected error.',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            internalError: {
+              summary: 'Internal server error',
+              value: { code: 50010000, message: 'internal server error occurred' },
+            },
+          },
+        },
+      },
+    },
+  },
+})
+
 export const getV1TradingAccountsAccountIdAccountRoute = createRoute({
   method: 'get',
   path: '/v1/trading/accounts/{account_id}/account',
@@ -23008,7 +24269,7 @@ export const postV1TradingAccountsAccountIdOrdersRoute = createRoute({
   tags: ['Trading'],
   summary: 'Create an Order for an Account',
   description:
-    'Creating an order for your end customer. Each trading request must pass in the account_id in the URL.\n\n- Note that when submitting crypto orders, `market`, `limit` and `stop_limit` orders are supported while the supported `time_in_force` values are `gtc`, and `ioc`.\n- For equities and crypto we accept fractional orders as well with either `notional` or `qty` provided.\n- Note that submitting an options order is only available for partners who have been enabled for Options BETA.\n- In case of Fixed Income, only `market` and `limit` order types with `day` `time_in_force` are supported, and order replacement is not supported.\nNote that submitting Fixed Income orders is only available for partners who have been enabled for Fixed Income.\n- Note that submitting DMA orders (using `advanced_instructions` with `algorithm: DMA`) is only available for partners/correspondents who have been enabled for DMA.\n- For IPO indications of interest (`asset_class: "ipo"`), the `symbol` is the offering reference returned by [`GET /v1/ipos`](#operation/listIPOOfferings) (e.g. `FI111225`). IPO orders are notional-only (`notional` required, `qty` must be omitted), buy-side, `market` type, and `gtc` time_in_force. Indications of interest can be replaced or canceled while the offering is open via [`PATCH /v1/trading/accounts/{account_id}/orders/{order_id}`](#operation/replaceOrderForAccount) and [`DELETE /v1/trading/accounts/{account_id}/orders/{order_id}`](#operation/deleteOrderForAccount).',
+    'Creating an order for your end customer. Each trading request must pass in the account_id in the URL.\n\n- Note that when submitting crypto orders, `market`, `limit` and `stop_limit` orders are supported while the supported `time_in_force` values are `gtc`, and `ioc`.\n- For equities and crypto we accept fractional orders as well with either `notional` or `qty` provided.\n- Note that submitting an options order is only available for partners who have been enabled for Options BETA.\n- For multi-leg options orders (`order_class: mleg`), `commission` is a per-contract rate charged on the option contracts in the strategy, and `commission_type: qty` is required whenever `commission` is non-zero. Omitting `commission`, or sending `0`, is accepted as no commission.\n- In case of Fixed Income, only `market` and `limit` order types with `day` `time_in_force` are supported, and order replacement is not supported.\nNote that submitting Fixed Income orders is only available for partners who have been enabled for Fixed Income.\n- Note that submitting DMA orders (using `advanced_instructions` with `algorithm: DMA`) is only available for partners/correspondents who have been enabled for DMA.\n- For IPO indications of interest (`asset_class: "ipo"`), the `symbol` is the offering reference returned by [`GET /v1/ipos`](#operation/listIPOOfferings) (e.g. `FI111225`). IPO orders are notional-only (`notional` required, `qty` must be omitted), buy-side, `market` type, and `gtc` time_in_force. Indications of interest can be replaced or canceled while the offering is open via [`PATCH /v1/trading/accounts/{account_id}/orders/{order_id}`](#operation/replaceOrderForAccount) and [`DELETE /v1/trading/accounts/{account_id}/orders/{order_id}`](#operation/deleteOrderForAccount).',
   operationId: 'createOrderForAccount',
   request: {
     params: z.object({ account_id: AccountIDParamsSchema }),
@@ -23060,6 +24321,34 @@ export const postV1TradingAccountsAccountIdOrdersRoute = createRoute({
                 type: 'market',
               },
             },
+            MultilegOptionsWithCommission: {
+              summary: 'Buy a call vertical spread with a per-contract commission',
+              description:
+                'Charges 1.50 per option contract, so 1.50 × 1 × (1 + 1) = 3.00 on a full fill.',
+              value: {
+                commission: '1.50',
+                commission_type: 'qty',
+                legs: [
+                  {
+                    position_intent: 'buy_to_open',
+                    ratio_qty: '1',
+                    side: 'buy',
+                    symbol: 'AAPL250620C00100000',
+                  },
+                  {
+                    position_intent: 'sell_to_open',
+                    ratio_qty: '1',
+                    side: 'sell',
+                    symbol: 'AAPL250620C00105000',
+                  },
+                ],
+                limit_price: '2.50',
+                order_class: 'mleg',
+                qty: '1',
+                time_in_force: 'day',
+                type: 'limit',
+              },
+            },
             Options: {
               summary: 'Buy an option contract (BETA)',
               value: {
@@ -23089,6 +24378,7 @@ export const postV1TradingAccountsAccountIdOrdersRoute = createRoute({
             Equity: EquityOrderResponseExample,
             IPO: IPOOrderResponseExample,
             MultilegOptions: MultilegOptionsOrderResponseExample,
+            MultilegOptionsWithCommission: MultilegOptionsWithCommissionOrderResponseExample,
             Options: OptionOrderResponseExample,
           },
         },
@@ -23324,7 +24614,7 @@ export const deleteV1TradingAccountsAccountIdPositionsRoute = createRoute({
   tags: ['Trading'],
   summary: 'Close All Positions for an Account',
   description:
-    "Closes (liquidates) all of the account's open long and short positions. A response will be provided for each order that is attempted to be cancelled. If an order is no longer cancelable, the server will respond with status 500 and reject the request.",
+    "Closes (liquidates) all of the account's open long and short positions. The 207 response contains one result per position: `body` is the closing Order when `status` is 200, otherwise the error describing why that position was not closed.",
   operationId: 'closeAllPositionsForAccount',
   request: {
     params: z.object({ account_id: AccountIDParamsSchema }),
@@ -23352,6 +24642,61 @@ export const deleteV1TradingAccountsAccountIdPositionsRoute = createRoute({
         'application/json': {
           schema: z.array(PositionClosedResponseSchema),
           examples: {
+            'Partially Closed': {
+              value: [
+                {
+                  body: {
+                    asset_class: 'us_equity',
+                    asset_id: 'a4778bc8-fad1-47b7-87fe-d5cde10d43f4',
+                    canceled_at: null,
+                    client_order_id: '17dbfab4-cb86-4e0a-8fa6-f0606b0a9a4e',
+                    created_at: '2022-05-13T16:25:29.336330998Z',
+                    expired_at: null,
+                    extended_hours: false,
+                    failed_at: null,
+                    filled_at: null,
+                    filled_avg_price: null,
+                    filled_qty: '0',
+                    hwm: null,
+                    id: 'd1143025-89fc-4952-8936-db2409d899f3',
+                    legs: null,
+                    limit_price: null,
+                    notional: null,
+                    order_class: '',
+                    order_type: 'market',
+                    qty: '4',
+                    replaced_at: null,
+                    replaced_by: null,
+                    replaces: null,
+                    side: 'sell',
+                    source: null,
+                    status: 'accepted',
+                    stop_price: null,
+                    submitted_at: '2022-05-13T16:25:29.335776073Z',
+                    symbol: 'TSLA',
+                    time_in_force: 'day',
+                    trail_percent: null,
+                    trail_price: null,
+                    type: 'market',
+                    updated_at: '2022-05-13T16:25:29.336330998Z',
+                  },
+                  status: 200,
+                  symbol: 'TSLA',
+                },
+                {
+                  body: {
+                    available: '2',
+                    code: 40310000,
+                    existing_qty: '2',
+                    held_for_orders: '0',
+                    message: 'insufficient qty available for order (requested: 10, available: 2)',
+                    symbol: 'NVDA',
+                  },
+                  status: 403,
+                  symbol: 'NVDA',
+                },
+              ],
+            },
             'example-1': {
               value: [
                 {
@@ -23399,7 +24744,33 @@ export const deleteV1TradingAccountsAccountIdPositionsRoute = createRoute({
         },
       },
     },
-    500: { description: 'Failed to liquidate some positions' },
+    422: {
+      description: 'Invalid Parameters.\n\nOne or more parameters provided are invalid.',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            'Invalid cancel_orders': {
+              value: { code: 40010001, message: 'cancel_orders must be true or false' },
+            },
+          },
+        },
+      },
+    },
+    500: {
+      description:
+        'Request-level failure; no per-position results are returned. Positions that fail to close are reported in the 207 response.',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            'Internal Server Error': {
+              value: { code: 50010000, message: 'internal server error occurred' },
+            },
+          },
+        },
+      },
+    },
   },
 })
 
@@ -24615,6 +25986,7 @@ export const getV2EventsAdminActionsRoute = createRoute({
               ])
               .openapi({
                 discriminator: {
+                  propertyName: 'type',
                   mapping: {
                     acats_status_admin_event: '#/components/schemas/AdminActionAcatsStatus',
                     legacy_note_admin_event: '#/components/schemas/AdminActionLegacyNote',
@@ -24623,7 +25995,6 @@ export const getV2EventsAdminActionsRoute = createRoute({
                     transaction_cancel_admin_event:
                       '#/components/schemas/AdminActionTransactionCancel',
                   },
-                  propertyName: 'type',
                 },
               }),
           ),
@@ -24852,6 +26223,101 @@ export const getV2EventsJournalsStatusRoute = createRoute({
       description:
         'Connected. Events will now start streaming as long as you keep the connection open.',
       content: { 'text/event-stream': { schema: z.array(JournalStatusEventV2Schema) } },
+    },
+  },
+})
+
+export const getV2EventsRebalancerRoute = createRoute({
+  method: 'get',
+  path: '/v2/events/rebalancer',
+  tags: ['Events'],
+  summary: 'Subscribe to Rebalancer Events (SSE)',
+  description:
+    "The Events API provides event push as well as historical queries via SSE (server sent events).\n\nThis stream is correspondent-scoped and v2-only. A subscriber receives rebalancer events for their own correspondent. Every `event_id` is a ULID.\n\nYou can listen to portfolio status changes, portfolio run creation, and portfolio run status changes.\n\nHistorical events are streamed immediately if queried, and updates are pushed as events occur.\n\nQuery Params Rules:\n- `since` required if `until` specified\n- `since_id` required if `until_id` specified\n- `since` and `since_id` can't be used at the same time\n- `until` and `until_id` can't be used at the same time\n\nBehavior:\n- if `since` or `since_id` not specified this will not return any historic data\n- if `until` or `until_id` reached stream will end (status 200)\n- the `Last-Event-Id` request header, when present, is used as `since_id` and takes precedence over the `since_id` query parameter. Combining it with `since` returns an error, the same as sending `since` and `since_id` together.\n- `since` and `until` select events by the time encoded in `event_id` (when the event was emitted), not by `at`. To resume reliably, use `since_id` or `Last-Event-Id`.\n\n---\n\n**Event types**\n\n`event_type` selects the payload:\n\n- `portfolio.status_changed` carries the portfolio snapshot. Weights and rebalance conditions are included. `symbol` is always present on a weight and is `null` for cash.\n- `run.created` and `run.status_changed` both carry the full run snapshot: `id`, `account_id`, `portfolio_id`, `type`, `initiated_from`, `status`, `reason`, `created_at`, `updated_at`, `completed_at`, and `canceled_at`. `weights`, `orders`, `failed_orders`, and `skipped_orders` are omitted; read them from `GET /v1/rebalancing/runs/{run_id}`.\n- Run `status` on this stream is `QUEUED`, `IN_PROGRESS`, `CANCELED`, `ERROR`, `TIMEOUT`, `COMPLETED_ADJUSTED`, or `COMPLETED_SUCCESS`. `CANCELED_MID_RUN` is not sent.\n\n`correspondent` is not included in the event JSON.\n\n---\n\nNote for people using the clients generated from this OAS spec. Currently OAS-3 doesn't have full support for representing SSE style responses from an API, so if you are using a generated client and don't specify a `since` and `until` there is a good chance the generated clients will hang waiting for the response to end.\n\nIf you require the streaming capabilities we recommend not using the generated clients for this specific usecase until the OAS-3 standards come to a consensus on how to represent this correctly in OAS-3.\n",
+  operationId: 'subscribeToRebalancerEventsSSE',
+  request: {
+    query: z.object({
+      since: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({
+          param: {
+            description: 'Format: RFC3339 or YYYY-MM-DD',
+            in: 'query',
+            name: 'since',
+            schema: { format: 'date-time', type: 'string' },
+            required: false,
+          },
+        }),
+      until: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({
+          param: {
+            description: 'Format: RFC3339 or YYYY-MM-DD',
+            in: 'query',
+            name: 'until',
+            schema: { format: 'date-time', type: 'string' },
+            required: false,
+          },
+        }),
+      since_id: z
+        .ulid()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'ULID `event_id` to resume the stream from. The first event returned will be the one immediately after `since_id`.',
+            in: 'query',
+            name: 'since_id',
+            schema: { format: 'ulid', type: 'string' },
+            required: false,
+          },
+        }),
+      until_id: z
+        .ulid()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'ULID `event_id` at which the stream will end (inclusive). Useful for backfills.',
+            in: 'query',
+            name: 'until_id',
+            schema: { format: 'ulid', type: 'string' },
+            required: false,
+          },
+        }),
+    }),
+    headers: z.object({
+      'Last-Event-Id': z
+        .ulid()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "Used as `since_id`, taking precedence over the `since_id` query parameter. Can't be combined with `since`.",
+            in: 'header',
+            name: 'Last-Event-Id',
+            schema: { format: 'ulid', type: 'string' },
+            required: false,
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description:
+        'Connected. Events will now start streaming as long as you keep the connection open.',
+      content: {
+        'text/event-stream': {
+          schema: z.array(RebalancerEventSchema),
+          examples: {
+            PortfolioStatusChanged: RebalancerEventPortfolioStatusChangedExample,
+            RunCreated: RebalancerEventRunCreatedExample,
+            RunStatusChanged: RebalancerEventRunStatusChangedExample,
+          },
+        },
+      },
     },
   },
 })

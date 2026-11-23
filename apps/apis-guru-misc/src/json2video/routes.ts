@@ -221,252 +221,553 @@ const VisualElementSchema = z
   .openapi({ title: 'VisualElement', required: [] })
   .openapi('VisualElement')
 
-const AudioSchema = z
-  .strictObject({ src: z.url().exactOptional(), type: z.literal('audio').exactOptional() })
-  .openapi({ required: [] })
-  .and(BaseElementSchema)
-  .and(AudioElementSchema)
+const AudioSchema = (() => {
+  const Schema = z
+    .strictObject({ src: z.url().exactOptional(), type: z.literal('audio').exactOptional() })
+    .openapi({ required: [] })
+    .and(BaseElementSchema)
+    .and(AudioElementSchema)
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['src', 'type'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'cache',
+            'comment',
+            'duration',
+            'extra-time',
+            'fade-in',
+            'fade-out',
+            'start',
+            'z-index',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['muted', 'volume'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ title: 'Audio' })
   .openapi('Audio')
 
-const ComponentSchema = z
-  .strictObject({
-    component: z
-      .string()
-      .openapi({
-        description:
-          "ID of the Component element. Check all available components in the <a href='https://json2video.com/docs/resources/basic/'>library</a>",
-        example: 'basic/001',
-      }),
-    height: z
-      .int()
-      .min(-1)
-      .max(1080)
-      .default(-1)
-      .exactOptional()
-      .openapi({
-        description:
-          'Desired text element height, but can be overriden by the component defaults. A value of <code>-1</code> means inherits scenes or movie height',
-      }),
-    settings: z
-      .object({})
-      .exactOptional()
-      .openapi({ description: 'Settings to be passed to the component' }),
-    type: z.literal('component'),
-    width: z
-      .int()
-      .min(-1)
-      .max(1920)
-      .default(-1)
-      .exactOptional()
-      .openapi({
-        description:
-          'Desired text element width, but can be overriden by the component defaults. A value of <code>-1</code> means inherits scenes or movie width',
-      }),
-  })
-  .openapi({ required: ['type', 'component'] })
-  .and(BaseElementSchema)
-  .and(VisualElementSchema)
+const ComponentSchema = (() => {
+  const Schema = z
+    .strictObject({
+      component: z
+        .string()
+        .openapi({
+          description:
+            "ID of the Component element. Check all available components in the <a href='https://json2video.com/docs/resources/basic/'>library</a>",
+          example: 'basic/001',
+        }),
+      height: z
+        .int()
+        .min(-1)
+        .max(1080)
+        .default(-1)
+        .exactOptional()
+        .openapi({
+          description:
+            'Desired text element height, but can be overriden by the component defaults. A value of <code>-1</code> means inherits scenes or movie height',
+        }),
+      settings: z
+        .looseObject({})
+        .exactOptional()
+        .openapi({ description: 'Settings to be passed to the component' }),
+      type: z.literal('component'),
+      width: z
+        .int()
+        .min(-1)
+        .max(1920)
+        .default(-1)
+        .exactOptional()
+        .openapi({
+          description:
+            'Desired text element width, but can be overriden by the component defaults. A value of <code>-1</code> means inherits scenes or movie width',
+        }),
+    })
+    .openapi({ required: ['type', 'component'] })
+    .and(BaseElementSchema)
+    .and(VisualElementSchema)
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['component', 'height', 'settings', 'type', 'width'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'cache',
+            'comment',
+            'duration',
+            'extra-time',
+            'fade-in',
+            'fade-out',
+            'start',
+            'z-index',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (
+          !['chroma-key', 'crop', 'pan', 'position', 'rotate', 'scale', 'x', 'y', 'zoom'].includes(
+            k,
+          )
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ description: 'Creates an element based on the specified feature', title: 'Component' })
   .openapi('Component')
 
-const HtmlSchema = z
-  .strictObject({
-    height: z
-      .int()
-      .min(-1)
-      .max(1080)
-      .default(-1)
-      .exactOptional()
-      .openapi({
-        description:
-          'Desired text element height. A value of <code>-1</code> means inherits scenes or movie height',
-      }),
-    html: z
-      .string()
-      .openapi({
-        description: 'HTML snippet to render. Compatible with HTML5, CSS3 and Javascript',
-        example: '&lt;h1&gt;Hello world&lt;/h1&gt;',
-      }),
-    tailwindcss: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({ description: 'Enables usage of TailwindCSS for the HTML snippet', example: true }),
-    type: z.literal('html'),
-    width: z
-      .int()
-      .min(-1)
-      .max(1920)
-      .default(-1)
-      .exactOptional()
-      .openapi({
-        description:
-          'Desired text element width. A value of <code>-1</code> means inherits scenes or movie width',
-      }),
-  })
-  .openapi({ required: ['type', 'html'] })
-  .and(BaseElementSchema)
-  .and(VisualElementSchema)
+const HtmlSchema = (() => {
+  const Schema = z
+    .strictObject({
+      height: z
+        .int()
+        .min(-1)
+        .max(1080)
+        .default(-1)
+        .exactOptional()
+        .openapi({
+          description:
+            'Desired text element height. A value of <code>-1</code> means inherits scenes or movie height',
+        }),
+      html: z
+        .string()
+        .openapi({
+          description: 'HTML snippet to render. Compatible with HTML5, CSS3 and Javascript',
+          example: '&lt;h1&gt;Hello world&lt;/h1&gt;',
+        }),
+      tailwindcss: z
+        .boolean()
+        .default(false)
+        .exactOptional()
+        .openapi({
+          description: 'Enables usage of TailwindCSS for the HTML snippet',
+          example: true,
+        }),
+      type: z.literal('html'),
+      width: z
+        .int()
+        .min(-1)
+        .max(1920)
+        .default(-1)
+        .exactOptional()
+        .openapi({
+          description:
+            'Desired text element width. A value of <code>-1</code> means inherits scenes or movie width',
+        }),
+    })
+    .openapi({ required: ['type', 'html'] })
+    .and(BaseElementSchema)
+    .and(VisualElementSchema)
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['height', 'html', 'tailwindcss', 'type', 'width'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'cache',
+            'comment',
+            'duration',
+            'extra-time',
+            'fade-in',
+            'fade-out',
+            'start',
+            'z-index',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (
+          !['chroma-key', 'crop', 'pan', 'position', 'rotate', 'scale', 'x', 'y', 'zoom'].includes(
+            k,
+          )
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Creates a video recording or a screenshot of the provided HTML snippet',
     title: 'HTML',
   })
   .openapi('Html')
 
-const ImageSchema = z
-  .strictObject({ src: z.url().exactOptional(), type: z.literal('image').exactOptional() })
-  .openapi({ required: [] })
-  .and(VisualElementSchema)
+const ImageSchema = (() => {
+  const Schema = z
+    .strictObject({ src: z.url().exactOptional(), type: z.literal('image').exactOptional() })
+    .openapi({ required: [] })
+    .and(VisualElementSchema)
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['src', 'type'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (
+          !['chroma-key', 'crop', 'pan', 'position', 'rotate', 'scale', 'x', 'y', 'zoom'].includes(
+            k,
+          )
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ title: 'Image' })
   .openapi('Image')
 
-const VideoSchema = z
-  .strictObject({
-    src: z
-      .url()
-      .exactOptional()
-      .openapi({
-        description:
-          'URL to the asset file. Videos can be in MP4, MKV, MOV but MP4 is recommended.',
-      }),
-    type: z.literal('video'),
-  })
-  .openapi({ required: ['type'] })
-  .and(BaseElementSchema)
-  .and(VisualElementSchema)
-  .and(
-    z
-      .strictObject({
-        loop: z
-          .int()
-          .min(-1)
-          .exactOptional()
-          .openapi({
-            description:
-              'Sets the number of loops the video to play. Use -1 for an infinite loop. The default value of 1 plays the video just once.',
-            example: -1,
-          }),
-      })
-      .openapi({ required: [] }),
-  )
-  .and(AudioElementSchema)
+const VideoSchema = (() => {
+  const Schema = z
+    .strictObject({
+      src: z
+        .url()
+        .exactOptional()
+        .openapi({
+          description:
+            'URL to the asset file. Videos can be in MP4, MKV, MOV but MP4 is recommended.',
+        }),
+      type: z.literal('video'),
+    })
+    .openapi({ required: ['type'] })
+    .and(BaseElementSchema)
+    .and(VisualElementSchema)
+    .and(
+      z
+        .strictObject({
+          loop: z
+            .int()
+            .min(-1)
+            .exactOptional()
+            .openapi({
+              description:
+                'Sets the number of loops the video to play. Use -1 for an infinite loop. The default value of 1 plays the video just once.',
+              example: -1,
+            }),
+        })
+        .openapi({ required: [] }),
+    )
+    .and(AudioElementSchema)
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['src', 'type'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'cache',
+            'comment',
+            'duration',
+            'extra-time',
+            'fade-in',
+            'fade-out',
+            'start',
+            'z-index',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (
+          !['chroma-key', 'crop', 'pan', 'position', 'rotate', 'scale', 'x', 'y', 'zoom'].includes(
+            k,
+          )
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['loop'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['muted', 'volume'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ title: 'Video' })
   .openapi('Video')
 
-const TextSchema = z
-  .strictObject({
-    height: z
-      .int()
-      .min(-1)
-      .max(1080)
-      .default(-1)
-      .exactOptional()
-      .openapi({
-        description:
-          'Desired text element height, but can be overriden by the style defaults. A value of <code>-1</code> means inherits scenes or movie height',
-      }),
-    settings: z
-      .object({})
-      .default({})
-      .exactOptional()
-      .openapi({
-        description:
-          'Text formatting settings. In general, these are CSS properties such as <code>font-size</code>, <code>colour</code> or <code>font-weight</code>. See the styles to confirm which properties are available.',
-        example: { color: '#FF0000', 'font-size': '60px' },
-      }),
-    style: z
-      .string()
-      .default('001')
-      .exactOptional()
-      .openapi({
-        description:
-          "Style of the text element. Check all available text style at <a href='https://json2video.com/docs/resources/text/'>https://json2video.com/resources/text/</a>",
-        example: '003',
-      }),
-    text: z
-      .string()
-      .openapi({
-        description: 'Text to be printed. The text string does not accept HTML formatting.',
-        example: 'Lorem ipsum dolor sit amet',
-      }),
-    type: z.literal('text'),
-    width: z
-      .int()
-      .min(-1)
-      .max(1920)
-      .default(-1)
-      .exactOptional()
-      .openapi({
-        description:
-          'Desired text element width, but can be overriden by the style defaults. A value of <code>-1</code> means inherits scenes or movie width',
-      }),
-  })
-  .openapi({ required: ['type', 'text'] })
-  .and(BaseElementSchema)
-  .and(VisualElementSchema)
+const TextSchema = (() => {
+  const Schema = z
+    .strictObject({
+      height: z
+        .int()
+        .min(-1)
+        .max(1080)
+        .default(-1)
+        .exactOptional()
+        .openapi({
+          description:
+            'Desired text element height, but can be overriden by the style defaults. A value of <code>-1</code> means inherits scenes or movie height',
+        }),
+      settings: z
+        .looseObject({})
+        .default({})
+        .exactOptional()
+        .openapi({
+          description:
+            'Text formatting settings. In general, these are CSS properties such as <code>font-size</code>, <code>colour</code> or <code>font-weight</code>. See the styles to confirm which properties are available.',
+          example: { color: '#FF0000', 'font-size': '60px' },
+        }),
+      style: z
+        .string()
+        .default('001')
+        .exactOptional()
+        .openapi({
+          description:
+            "Style of the text element. Check all available text style at <a href='https://json2video.com/docs/resources/text/'>https://json2video.com/resources/text/</a>",
+          example: '003',
+        }),
+      text: z
+        .string()
+        .openapi({
+          description: 'Text to be printed. The text string does not accept HTML formatting.',
+          example: 'Lorem ipsum dolor sit amet',
+        }),
+      type: z.literal('text'),
+      width: z
+        .int()
+        .min(-1)
+        .max(1920)
+        .default(-1)
+        .exactOptional()
+        .openapi({
+          description:
+            'Desired text element width, but can be overriden by the style defaults. A value of <code>-1</code> means inherits scenes or movie width',
+        }),
+    })
+    .openapi({ required: ['type', 'text'] })
+    .and(BaseElementSchema)
+    .and(VisualElementSchema)
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['height', 'settings', 'style', 'text', 'type', 'width'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'cache',
+            'comment',
+            'duration',
+            'extra-time',
+            'fade-in',
+            'fade-out',
+            'start',
+            'z-index',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (
+          !['chroma-key', 'crop', 'pan', 'position', 'rotate', 'scale', 'x', 'y', 'zoom'].includes(
+            k,
+          )
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ description: 'Creates a text element of a given style', title: 'Text' })
   .openapi('Text')
 
-const TemplateSchema = z
-  .strictObject({
-    height: z
-      .int()
-      .min(-1)
-      .max(1080)
-      .default(-1)
-      .exactOptional()
-      .openapi({
-        description:
-          'Desired text element height, but can be overriden by the component defaults. A value of <code>-1</code> means inherits scenes or movie height',
-      }),
-    settings: z
-      .object({})
-      .exactOptional()
-      .openapi({ description: 'Settings to be passed to the component' }),
-    template: z
-      .string()
-      .openapi({
-        description:
-          "ID of the Component element. Check all available components at <a href='https://json2video.com/docs/resources/basic/'>https://json2video.com/docs/resources/basic/</a>",
-        example: 'basic/001',
-      }),
-    type: z.literal('template'),
-    width: z
-      .int()
-      .min(-1)
-      .max(1920)
-      .default(-1)
-      .exactOptional()
-      .openapi({
-        description:
-          'Desired text element width, but can be overriden by the component defaults. A value of <code>-1</code> means inherits scenes or movie width',
-      }),
-  })
-  .openapi({ required: ['type', 'template'] })
-  .and(BaseElementSchema)
-  .and(VisualElementSchema)
+const TemplateSchema = (() => {
+  const Schema = z
+    .strictObject({
+      height: z
+        .int()
+        .min(-1)
+        .max(1080)
+        .default(-1)
+        .exactOptional()
+        .openapi({
+          description:
+            'Desired text element height, but can be overriden by the component defaults. A value of <code>-1</code> means inherits scenes or movie height',
+        }),
+      settings: z
+        .looseObject({})
+        .exactOptional()
+        .openapi({ description: 'Settings to be passed to the component' }),
+      template: z
+        .string()
+        .openapi({
+          description:
+            "ID of the Component element. Check all available components at <a href='https://json2video.com/docs/resources/basic/'>https://json2video.com/docs/resources/basic/</a>",
+          example: 'basic/001',
+        }),
+      type: z.literal('template'),
+      width: z
+        .int()
+        .min(-1)
+        .max(1920)
+        .default(-1)
+        .exactOptional()
+        .openapi({
+          description:
+            'Desired text element width, but can be overriden by the component defaults. A value of <code>-1</code> means inherits scenes or movie width',
+        }),
+    })
+    .openapi({ required: ['type', 'template'] })
+    .and(BaseElementSchema)
+    .and(VisualElementSchema)
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['height', 'settings', 'template', 'type', 'width'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'cache',
+            'comment',
+            'duration',
+            'extra-time',
+            'fade-in',
+            'fade-out',
+            'start',
+            'z-index',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (
+          !['chroma-key', 'crop', 'pan', 'position', 'rotate', 'scale', 'x', 'y', 'zoom'].includes(
+            k,
+          )
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ description: 'Creates an element based on the specified feature', title: 'Template' })
   .openapi('Template')
 
-const VoiceSchema = z
-  .strictObject({
-    text: z
-      .string()
-      .openapi({ description: 'The sentence or sentences to be converted to voice audio' }),
-    type: z.literal('voice'),
-    voice: z
-      .string()
-      .default('en-GB-LibbyNeural')
-      .exactOptional()
-      .openapi({
-        description:
-          'The voice name to be used. Check <a href="/docs/tutorial/voice-elements/">available voices</a>.',
-      }),
-  })
-  .openapi({ required: ['type', 'text'] })
-  .and(BaseElementSchema)
-  .and(AudioElementSchema)
+const VoiceSchema = (() => {
+  const Schema = z
+    .strictObject({
+      text: z
+        .string()
+        .openapi({ description: 'The sentence or sentences to be converted to voice audio' }),
+      type: z.literal('voice'),
+      voice: z
+        .string()
+        .default('en-GB-LibbyNeural')
+        .exactOptional()
+        .openapi({
+          description:
+            'The voice name to be used. Check <a href="/docs/tutorial/voice-elements/">available voices</a>.',
+        }),
+    })
+    .openapi({ required: ['type', 'text'] })
+    .and(BaseElementSchema)
+    .and(AudioElementSchema)
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['text', 'type', 'voice'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'cache',
+            'comment',
+            'duration',
+            'extra-time',
+            'fade-in',
+            'fade-out',
+            'start',
+            'z-index',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['muted', 'volume'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ description: 'Creates a voice audio element from the provided text', title: 'Voice' })
   .openapi('Voice')
 
@@ -611,7 +912,7 @@ const MovieSchema = z
       .exactOptional(),
     scenes: z.array(SceneSchema),
     settings: z
-      .object({})
+      .looseObject({})
       .default({})
       .exactOptional()
       .openapi({ description: 'Movie advanced settings', 'x-hidden': true }),

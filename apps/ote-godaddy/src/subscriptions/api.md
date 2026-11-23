@@ -4,7 +4,7 @@
 
 Base URLs:
 
-* <a href="https://api.apis.guru//api.ote-godaddy.com">https://api.apis.guru//api.ote-godaddy.com</a>
+* <a href="//api.ote-godaddy.com">//api.ote-godaddy.com</a>
 
 <h1 id="api-v1">v1</h1>
 

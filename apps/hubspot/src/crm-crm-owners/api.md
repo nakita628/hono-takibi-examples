@@ -26,12 +26,6 @@ Base URLs:
 |crm.pipelines.approval.read||
 |crm.pipelines.governance.write||
 
-* API Key (private_apps)
-    - Parameter Name: **private-app**, in: header.
-
-* API Key (private_apps_legacy)
-    - Parameter Name: **private-app-legacy**, in: header.
-
 <h1 id="crm-owners-basic">Basic</h1>
 
 ## List owners

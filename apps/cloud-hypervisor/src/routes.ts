@@ -1,47 +1,8 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const TcpConsoleConfigSchema = z
-  .strictObject({
-    address: z
-      .string()
-      .openapi({
-        description:
-          'Loopback IPv4 or IPv6 literal and a nonzero port.\nIPv6 addresses must be enclosed in brackets.\nHostnames are not accepted.\n',
-        example: '127.0.0.1:4444',
-      }),
-    server: z
-      .literal(true)
-      .default(true)
-      .exactOptional()
-      .openapi({ description: 'Only server mode is supported.' }),
-  })
-  .openapi({ required: ['address'] })
-  .openapi('TcpConsoleConfig')
-
-const ConsoleModeSchema = z
-  .enum(['Off', 'Pty', 'Tty', 'File', 'Socket', 'Tcp', 'Null'])
-  .openapi('ConsoleMode')
-
-const IommuTypeSchema = z
-  .enum(['Off', 'Virtio', 'Smmuv3'])
-  .default('Off')
-  .openapi({ description: 'Virtual IOMMU the device is attached to.' })
-  .openapi('IommuType')
-
-type ConsoleConfigType = {
-  file?: string
-  socket?: string
-  tcp?: z.infer<typeof TcpConsoleConfigSchema>
-  mode: z.infer<typeof ConsoleModeSchema>
-  iommu?: z.infer<typeof IommuTypeSchema>
-  id?: string
-  pci_segment?: number
-  pci_device_id?: number
-}
-
 const VmmPingResponseSchema = z
   .object({
-    build_version: z.string().exactOptional(),
+    build_version: z.string(),
     version: z.string(),
     pid: z
       .preprocess(
@@ -53,11 +14,13 @@ const VmmPingResponseSchema = z
               : val,
         z.int64(),
       )
-      .exactOptional()
       .openapi({ type: 'integer', format: 'int64' }),
-    features: z.array(z.string()).exactOptional(),
+    features: z.array(z.string()),
   })
-  .openapi({ required: ['version'], description: 'Virtual Machine Monitor information' })
+  .openapi({
+    required: ['build_version', 'version', 'pid', 'features'],
+    description: 'Virtual Machine Monitor information',
+  })
   .openapi('VmmPingResponse')
 
 const VmStateSchema = z
@@ -66,12 +29,12 @@ const VmStateSchema = z
 
 const CpuTopologySchema = z
   .object({
-    threads_per_core: z.int().exactOptional(),
-    cores_per_die: z.int().exactOptional(),
-    dies_per_package: z.int().exactOptional(),
-    packages: z.int().exactOptional(),
+    threads_per_core: z.int(),
+    cores_per_die: z.int(),
+    dies_per_package: z.int(),
+    packages: z.int(),
   })
-  .openapi({ required: [] })
+  .openapi({ required: ['threads_per_core', 'cores_per_die', 'dies_per_package', 'packages'] })
   .openapi('CpuTopology')
 
 const CpuAffinitySchema = z
@@ -134,6 +97,11 @@ const CpusConfigSchema = z
     max_vcpus: z.int().min(1),
     topology: CpuTopologySchema.exactOptional(),
     kvm_hyperv: z.boolean().default(false).exactOptional(),
+    kvm_hint_realtime: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({ description: 'Advertise KVM_HINTS_REALTIME to the guest (x86-64 with KVM only)' }),
     max_phys_bits: z.int().exactOptional(),
     nested: z.boolean().default(false).exactOptional(),
     affinity: z.array(CpuAffinitySchema).exactOptional(),
@@ -208,7 +176,10 @@ const MemoryZoneConfigSchema = z
       .exactOptional()
       .openapi({ type: 'integer', format: 'int64' }),
     prefault: z.boolean().default(false).exactOptional(),
-    reserve: z.boolean().default(false).exactOptional(),
+    reserve: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Defaults to the value of hugepages.' }),
   })
   .openapi({ required: ['id', 'size'] })
   .openapi('MemoryZoneConfig')
@@ -251,7 +222,14 @@ const MemoryConfigSchema = z
       .exactOptional()
       .openapi({ type: 'integer', format: 'int64' }),
     mergeable: z.boolean().default(false).exactOptional(),
-    hotplug_method: z.string().default('Acpi').exactOptional(),
+    hotplug_method: z
+      .enum(['Acpi', 'VirtioMem'])
+      .default('Acpi')
+      .exactOptional()
+      .openapi({
+        description:
+          'ACPI memory hotplug is deprecated and will be removed in a future release. Use VirtioMem instead.',
+      }),
     shared: z.boolean().default(false).exactOptional(),
     hugepages: z.boolean().default(false).exactOptional(),
     hugepage_size: z
@@ -267,7 +245,10 @@ const MemoryConfigSchema = z
       .exactOptional()
       .openapi({ type: 'integer', format: 'int64' }),
     prefault: z.boolean().default(false).exactOptional(),
-    reserve: z.boolean().default(false).exactOptional(),
+    reserve: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Defaults to the value of hugepages.' }),
     thp: z.boolean().default(true).exactOptional(),
     zones: z.array(MemoryZoneConfigSchema).exactOptional(),
   })
@@ -337,11 +318,65 @@ const TokenBucketSchema = z
         minimum: 0,
         description: 'The amount of milliseconds it takes for the bucket to refill.',
       }),
+    burst_rate: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64().min(1n),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        minimum: 1,
+        description:
+          'The peak rate in tokens per second (bytes/s for bandwidth, operations/s for ops). Enables bounded bursts.',
+      }),
+    burst_seconds: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64().min(1n),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        minimum: 1,
+        description:
+          'The burst length in seconds, with depth equal to burst_rate times burst_seconds. Requires burst_rate and defaults to 1 when burst_rate is set.',
+      }),
+    burst_recharge_seconds: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64().min(1n),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        minimum: 1,
+        description:
+          'The seconds to regain full burst credit from empty while idle. Requires burst_rate and defaults to burst_rate times burst_seconds divided by the sustained rate.',
+      }),
   })
   .openapi({
     required: ['size', 'refill_time'],
     description:
-      'Defines a token bucket with a maximum capacity (_size_), an initial burst size (_one_time_burst_) and an interval for refilling purposes (_refill_time_). The refill-rate is derived from _size_ and _refill_time_, and it is the constant rate at which the tokens replenish. The refill process only starts happening after the initial burst budget is consumed. Consumption from the token bucket is unbounded in speed which allows for bursts bound in size by the amount of tokens available. Once the token bucket is empty, consumption speed is bound by the refill-rate.',
+      'A plain bucket holds _size_ tokens, refills over _refill_time_ milliseconds, and allows initial _one_time_burst_ credit that does not replenish. Available tokens can be consumed at device speed. With bounded bursts, _size_ and _refill_time_ define the sustained rate, and the full initial depth is _burst_rate_ times _burst_seconds_. A peak bucket holds _burst_rate_ tokens and refills at _burst_rate_ tokens/s; requests need both meters. This is a token-bucket envelope, not a strict per-second ceiling, and oversized requests carry debt. Optional _burst_recharge_seconds_ changes idle recharge time without increasing the rate under continuous demand.',
   })
   .openapi('TokenBucket')
 
@@ -358,6 +393,12 @@ const RateLimitGroupConfigSchema = z
   .object({ id: z.string(), rate_limiter_config: RateLimiterConfigSchema })
   .openapi({ required: ['id', 'rate_limiter_config'] })
   .openapi('RateLimitGroupConfig')
+
+const IommuTypeSchema = z
+  .enum(['Off', 'Virtio', 'Smmuv3'])
+  .default('Off')
+  .openapi({ description: 'Virtual IOMMU the device is attached to.' })
+  .openapi('IommuType')
 
 const VirtQueueAffinitySchema = z
   .object({ queue_index: z.int(), host_cpus: z.array(z.int()) })
@@ -397,7 +438,7 @@ const DiskConfigSchema = z
     lock_granularity: LockGranularitySchema.exactOptional(),
     guest_block_size: z.int().exactOptional(),
   })
-  .openapi({ required: [] })
+  .openapi({ description: 'image_type is required unless vhost_user is true.', required: [] })
   .openapi('DiskConfig')
 
 const NetConfigSchema = z
@@ -405,12 +446,12 @@ const NetConfigSchema = z
     tap: z.string().exactOptional(),
     ip: z
       .string()
-      .default('192.168.249.1')
       .exactOptional()
-      .openapi({ description: 'IPv4 or IPv6 address' }),
+      .openapi({
+        description: 'IPv4 or IPv6 address. If omitted, no address is assigned to the TAP device.',
+      }),
     mask: z
       .string()
-      .default('255.255.255.0')
       .exactOptional()
       .openapi({
         description:
@@ -424,7 +465,7 @@ const NetConfigSchema = z
     queue_size: z.int().default(256).exactOptional(),
     vhost_user: z.boolean().default(false).exactOptional(),
     vhost_socket: z.string().exactOptional(),
-    vhost_mode: z.string().default('Client').exactOptional(),
+    vhost_mode: z.enum(['Client', 'Server']).default('Client').exactOptional(),
     id: z.string().exactOptional(),
     pci_segment: z.int().exactOptional(),
     pci_device_id: z.int().exactOptional(),
@@ -482,13 +523,13 @@ const FsConfigSchema = z
   .object({
     tag: z.string(),
     socket: z.string(),
-    num_queues: z.int().default(1),
-    queue_size: z.int().default(1024),
+    num_queues: z.int().default(1).exactOptional(),
+    queue_size: z.int().default(1024).exactOptional(),
     pci_segment: z.int().exactOptional(),
     pci_device_id: z.int().exactOptional(),
     id: z.string().exactOptional(),
   })
-  .openapi({ required: ['num_queues', 'queue_size', 'socket', 'tag'] })
+  .openapi({ required: ['socket', 'tag'] })
   .openapi('FsConfig')
 
 const GenericVhostUserConfigSchema = z
@@ -527,37 +568,72 @@ const PmemConfigSchema = z
   .openapi({ required: ['file'] })
   .openapi('PmemConfig')
 
+const TcpConsoleConfigSchema = z
+  .strictObject({
+    address: z
+      .string()
+      .openapi({
+        description:
+          'Loopback IPv4 or IPv6 literal and a nonzero port.\nIPv6 addresses must be enclosed in brackets.\nHostnames are not accepted.\n',
+        example: '127.0.0.1:4444',
+      }),
+    server: z
+      .literal(true)
+      .default(true)
+      .exactOptional()
+      .openapi({ description: 'Only server mode is supported.' }),
+  })
+  .openapi({ required: ['address'] })
+  .openapi('TcpConsoleConfig')
+
+const ConsoleModeSchema = z
+  .enum(['Off', 'Pty', 'Tty', 'File', 'Socket', 'Tcp', 'Null'])
+  .openapi('ConsoleMode')
+
 const SerialConfigSchema = z
   .object({
-    file: z.string().exactOptional(),
-    socket: z.string().exactOptional(),
-    tcp: TcpConsoleConfigSchema.exactOptional(),
+    file: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required if `mode` is `File`. For `Pty`, it holds the path of the\nPTY once the device has been created.\n',
+      }),
+    socket: z.string().exactOptional().openapi({ description: 'Required if `mode` is `Socket`.' }),
+    tcp: TcpConsoleConfigSchema.exactOptional().openapi({
+      description: 'Required if `mode` is `Tcp`.',
+    }),
     mode: ConsoleModeSchema,
   })
   .openapi({ required: ['mode'] })
   .openapi('SerialConfig')
 
-const ConsoleConfigSchema: z.ZodType<ConsoleConfigType> = z
-  .lazy(() =>
-    z
-      .object({
-        file: z.string().exactOptional(),
-        socket: z.string().exactOptional(),
-        tcp: TcpConsoleConfigSchema.exactOptional(),
-        mode: ConsoleModeSchema,
-        iommu: IommuTypeSchema.exactOptional(),
-        id: z.string().exactOptional(),
-        pci_segment: z.int().exactOptional(),
-        pci_device_id: z.int().exactOptional(),
-      })
-      .openapi({ required: ['mode'] }),
-  )
+const ConsoleConfigSchema = z
+  .object({
+    file: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required if `mode` is `File`. For `Pty`, it holds the path of the\nPTY once the device has been created.\n',
+      }),
+    socket: z.string().exactOptional().openapi({ description: 'Required if `mode` is `Socket`.' }),
+    tcp: TcpConsoleConfigSchema.exactOptional().openapi({
+      description: 'Required if `mode` is `Tcp`.',
+    }),
+    mode: ConsoleModeSchema,
+    iommu: IommuTypeSchema.exactOptional(),
+    id: z.string().exactOptional(),
+    pci_segment: z.int().exactOptional(),
+    pci_device_id: z.int().exactOptional(),
+  })
+  .openapi({ required: ['mode'] })
   .openapi('ConsoleConfig')
 
 const DebugConsoleConfigSchema = z
   .object({
-    file: z.string().exactOptional(),
-    mode: ConsoleModeSchema,
+    file: z.string().exactOptional().openapi({ description: 'Required if `mode` is `File`.' }),
+    mode: z.enum(['Off', 'Tty', 'File', 'Null']),
     iobase: z.int().exactOptional(),
   })
   .openapi({ required: ['mode'] })
@@ -609,13 +685,13 @@ const UserDeviceConfigSchema = z
 const VdpaConfigSchema = z
   .object({
     path: z.string(),
-    num_queues: z.int().default(1),
+    num_queues: z.int().default(1).exactOptional(),
     iommu: IommuTypeSchema.exactOptional(),
     pci_segment: z.int().exactOptional(),
     pci_device_id: z.int().exactOptional(),
     id: z.string().exactOptional(),
   })
-  .openapi({ required: ['path', 'num_queues'] })
+  .openapi({ required: ['path'] })
   .openapi('VdpaConfig')
 
 const VsockConfigSchema = z
@@ -628,12 +704,23 @@ const VsockConfigSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(3n),
+        z.int64().min(3n).max(4294967294n),
       )
-      .openapi({ type: 'integer', format: 'int64', minimum: 3, description: 'Guest Vsock CID' }),
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        minimum: 3,
+        maximum: 4294967294,
+        description: 'Guest Vsock CID',
+      }),
     socket: z
       .string()
       .openapi({ description: 'Path to UNIX domain socket, used to proxy vsock connections.' }),
+    socket_type: z
+      .enum(['Stream', 'SeqPacket'])
+      .default('Stream')
+      .exactOptional()
+      .openapi({ description: 'UNIX listener socket type for host initiated connections.' }),
     iommu: IommuTypeSchema.exactOptional(),
     pci_segment: z.int().exactOptional(),
     pci_device_id: z.int().exactOptional(),
@@ -643,7 +730,7 @@ const VsockConfigSchema = z
   .openapi('VsockConfig')
 
 const NumaDistanceSchema = z
-  .object({ destination: z.int32(), distance: z.int32() })
+  .object({ destination: z.int32(), distance: z.int() })
   .openapi({ required: ['destination', 'distance'] })
   .openapi('NumaDistance')
 
@@ -653,7 +740,7 @@ const NumaConfigSchema = z
     cpus: z.array(z.int32()).exactOptional(),
     distances: z.array(NumaDistanceSchema).exactOptional(),
     memory_zones: z.array(z.string()).exactOptional(),
-    pci_segments: z.array(z.int32()).exactOptional(),
+    pci_segments: z.array(z.int()).exactOptional(),
     device_id: z.string().exactOptional(),
   })
   .openapi({ required: ['guest_numa_id'] })
@@ -671,11 +758,11 @@ const RtcConfigSchema = z
 
 const PciSegmentConfigSchema = z
   .object({
-    pci_segment: z.int(),
+    pci_segment: z.int().default(0).exactOptional(),
     mmio32_aperture_weight: z.int32().exactOptional(),
     mmio64_aperture_weight: z.int32().exactOptional(),
   })
-  .openapi({ required: ['pci_segment'] })
+  .openapi({ required: [] })
   .openapi('PciSegmentConfig')
 
 const PlatformConfigSchema = z
@@ -744,12 +831,13 @@ const VmConfigSchema = z
 
 const DeviceNodeSchema = z
   .object({
-    id: z.string().exactOptional(),
-    resources: z.array(z.object({})).exactOptional(),
-    children: z.array(z.string()).exactOptional(),
+    id: z.string(),
+    resources: z.array(z.looseObject({})),
+    parent: z.string().exactOptional(),
+    children: z.array(z.string()),
     pci_bdf: z.string().exactOptional(),
   })
-  .openapi({ required: [] })
+  .openapi({ required: ['id', 'resources', 'children'] })
   .openapi('DeviceNode')
 
 const VmInfoSchema = z
@@ -766,30 +854,38 @@ const VmInfoSchema = z
               : val,
         z.int64(),
       )
-      .exactOptional()
       .openapi({ type: 'integer', format: 'int64' }),
     device_tree: z.record(z.string(), DeviceNodeSchema).exactOptional(),
   })
-  .openapi({ required: ['config', 'state'], description: 'Virtual Machine information' })
+  .openapi({
+    required: ['config', 'state', 'memory_actual_size'],
+    description: 'Virtual Machine information',
+  })
   .openapi('VmInfo')
 
 const VmCountersSchema = z
   .record(
     z.string(),
-    z.record(
-      z.string(),
-      z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
+    z
+      .object({
+        device_type: z
+          .string()
+          .openapi({ description: 'The virtio device type, such as block or net' }),
+      })
+      .catchall(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
                 ? BigInt(val)
-                : val,
-          z.int64(),
-        )
-        .openapi({ type: 'integer', format: 'int64' }),
-    ),
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.uint64(),
+          )
+          .openapi({ type: 'integer', format: 'uint64' }),
+      )
+      .openapi({ required: ['device_type'] }),
   )
   .openapi('VmCounters')
 
@@ -1111,7 +1207,7 @@ const VmResizeSchema = z
 
 const VmResizeDiskSchema = z
   .object({
-    id: z.string().exactOptional().openapi({ description: 'disk identifier' }),
+    id: z.string().openapi({ description: 'disk identifier' }),
     desired_size: z
       .preprocess(
         (val) =>
@@ -1122,15 +1218,14 @@ const VmResizeDiskSchema = z
               : val,
         z.int64(),
       )
-      .exactOptional()
       .openapi({ type: 'integer', format: 'int64', description: 'desired disk size in bytes' }),
   })
-  .openapi({ required: [] })
+  .openapi({ required: ['id', 'desired_size'] })
   .openapi('VmResizeDisk')
 
 const VmResizeZoneSchema = z
   .object({
-    id: z.string().exactOptional(),
+    id: z.string(),
     desired_ram: z
       .preprocess(
         (val) =>
@@ -1141,35 +1236,81 @@ const VmResizeZoneSchema = z
               : val,
         z.int64(),
       )
-      .exactOptional()
       .openapi({
         type: 'integer',
         format: 'int64',
         description: 'desired memory zone size in bytes',
       }),
   })
-  .openapi({ required: [] })
+  .openapi({ required: ['id', 'desired_ram'] })
   .openapi('VmResizeZone')
 
 const VmRemoveDeviceSchema = z
-  .object({ id: z.string().exactOptional() })
-  .openapi({ required: [] })
+  .object({ id: z.string() })
+  .openapi({ required: ['id'] })
   .openapi('VmRemoveDevice')
 
 const VmSnapshotConfigSchema = z
-  .object({ destination_url: z.string().exactOptional() })
-  .openapi({ required: [] })
+  .object({ destination_url: z.string() })
+  .openapi({ required: ['destination_url'] })
   .openapi('VmSnapshotConfig')
 
 const VmCoredumpDataSchema = z
-  .object({ destination_url: z.string().exactOptional() })
-  .openapi({ required: [] })
+  .object({ destination_url: z.string() })
+  .openapi({ required: ['destination_url'] })
   .openapi('VmCoredumpData')
 
 const MemoryRestoreModeSchema = z
-  .enum(['Copy', 'OnDemand', 'CopyOnWrite'])
+  .enum(['Copy', 'OnDemand', 'OnDemandNoBackgroundFetchPages', 'CopyOnWrite'])
   .default('Copy')
   .openapi('MemoryRestoreMode')
+
+const ExternalFdTargetSchema = z
+  .xor([
+    z
+      .object({ Net: z.object({ id: z.string() }).openapi({ required: ['id'] }) })
+      .openapi({ required: ['Net'] }),
+    z
+      .object({ Vfio: z.object({ id: z.string() }).openapi({ required: ['id'] }) })
+      .openapi({ required: ['Vfio'] }),
+    z.literal('Iommu'),
+  ])
+  .openapi('ExternalFdTarget')
+
+const RestoredNetConfigSchema = z
+  .object({
+    id: z.string(),
+    num_fds: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.uint64(),
+      )
+      .default(0n)
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'uint64', default: 0 }),
+    fds: z
+      .array(z.int32())
+      .exactOptional()
+      .openapi({ description: 'Descriptor numbers in JSON are ignored; use SCM_RIGHTS.' }),
+  })
+  .openapi({ required: ['id'] })
+  .openapi('RestoredNetConfig')
+
+const RestoredVfioConfigSchema = z
+  .object({
+    id: z.string(),
+    fd: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The descriptor number in JSON is ignored; use SCM_RIGHTS.' }),
+  })
+  .openapi({ required: ['id'] })
+  .openapi('RestoredVfioConfig')
 
 const VmMemoryZoneUpdateDataSchema = z
   .object({ id: z.string().min(1), host_numa_node: z.uint32().min(0) })
@@ -1181,8 +1322,63 @@ const RestoreConfigSchema = z
     source_url: z.string(),
     prefault: z.boolean().exactOptional(),
     memory_restore_mode: MemoryRestoreModeSchema.exactOptional(),
+    net_fds: z
+      .array(RestoredNetConfigSchema)
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description: 'Deprecated: use external_fds with Net targets instead.\n',
+      }),
+    vfio_fds: z
+      .array(RestoredVfioConfigSchema)
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description: 'Deprecated: use external_fds with Vfio targets instead.\n',
+      }),
+    iommufd_fd: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description: 'Deprecated: use external_fds with an Iommu target instead.\n',
+      }),
     resume: z.boolean().exactOptional(),
     zone_updates: z.array(VmMemoryZoneUpdateDataSchema).exactOptional(),
+    serial: SerialConfigSchema.exactOptional().openapi({
+      description: 'New output of the serial console, in the mode of the snapshot.',
+    }),
+    console: SerialConfigSchema.exactOptional().openapi({
+      description: 'New output of the virtio console, in the mode of the snapshot.',
+    }),
+    external_fds: z
+      .array(
+        z
+          .object({
+            target: ExternalFdTargetSchema,
+            expected_fds: z
+              .preprocess(
+                (val) =>
+                  typeof val === 'number' && Number.isSafeInteger(val)
+                    ? BigInt(val)
+                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                      ? BigInt(val)
+                      : val,
+                z.uint64(),
+              )
+              .openapi({
+                type: 'integer',
+                format: 'uint64',
+                description: 'Number of file descriptors expected for this entry.',
+              }),
+          })
+          .openapi({ required: ['target', 'expected_fds'] }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'File descriptor entries and counts. The corresponding descriptors must be supplied out of band via SCM_RIGHTS on the API UNIX socket. Do not combine external_fds with legacy FD fields.\n',
+      }),
   })
   .openapi({ required: ['source_url'] })
   .openapi('RestoreConfig')
@@ -1190,6 +1386,20 @@ const RestoreConfigSchema = z
 const ReceiveMigrationDataSchema = z
   .object({
     receiver_url: z.string(),
+    vfio_fds: z
+      .array(RestoredVfioConfigSchema)
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description: 'Deprecated: use external_fds with Vfio targets instead.\n',
+      }),
+    iommufd_fd: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description: 'Deprecated: use external_fds with an Iommu target instead.\n',
+      }),
     tls_dir: z
       .string()
       .exactOptional()
@@ -1203,6 +1413,40 @@ const ReceiveMigrationDataSchema = z
       .default(true)
       .exactOptional()
       .openapi({ description: 'Enable the background thread for faulting all remaining pages.' }),
+    serial: SerialConfigSchema.exactOptional().openapi({
+      description: 'New output of the serial console, in the mode of the source VM.',
+    }),
+    console: SerialConfigSchema.exactOptional().openapi({
+      description: 'New output of the virtio console, in the mode of the source VM.',
+    }),
+    external_fds: z
+      .array(
+        z
+          .object({
+            target: ExternalFdTargetSchema,
+            expected_fds: z
+              .preprocess(
+                (val) =>
+                  typeof val === 'number' && Number.isSafeInteger(val)
+                    ? BigInt(val)
+                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                      ? BigInt(val)
+                      : val,
+                z.uint64(),
+              )
+              .openapi({
+                type: 'integer',
+                format: 'uint64',
+                description: 'Number of file descriptors expected for this entry.',
+              }),
+          })
+          .openapi({ required: ['target', 'expected_fds'] }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'File descriptor entries and counts. The corresponding descriptors must be supplied out of band via SCM_RIGHTS on the API UNIX socket. Do not combine external_fds with legacy FD fields.\n',
+      }),
   })
   .openapi({ required: ['receiver_url'] })
   .openapi('ReceiveMigrationData')
@@ -1324,6 +1568,7 @@ const VmAddUserDeviceSchema = z
     socket: z.string(),
     pci_segment: z.int().exactOptional(),
     pci_device_id: z.int().exactOptional(),
+    id: z.string().exactOptional(),
   })
   .openapi({ required: ['socket'] })
   .openapi('VmAddUserDevice')
@@ -1455,7 +1700,7 @@ export const putVmResumeRoute = createRoute({
   summary: 'Resume a previously paused VM instance.',
   operationId: 'resumeVM',
   responses: {
-    204: { description: 'The VM instance successfully paused.' },
+    204: { description: 'The VM instance successfully resumed.' },
     404: { description: 'The VM instance could not resume because it is not booted yet' },
     405: { description: 'The VM instance could not resume because it is not paused.' },
     409: { description: 'The operation conflicts with the current state of the VM.' },
@@ -1526,6 +1771,7 @@ export const putVmResizeDiskRoute = createRoute({
   method: 'put',
   path: '/vm.resize-disk',
   summary: 'Resize a disk',
+  description: 'Requires a booted VM.',
   request: {
     body: {
       description: 'Resizes a disk attached to the VM',
@@ -1943,9 +2189,9 @@ export const putVmSendMigrationRoute = createRoute({
     },
   },
   responses: {
-    204: { description: 'The VM migration was successfully sent.' },
+    204: { description: 'The VM migration was started. The result is reported through events.' },
     409: { description: 'The operation conflicts with the current state of the VMM.' },
-    500: { description: 'The VM migration could not be sent.' },
+    500: { description: 'The VM migration could not be started.' },
   },
 })
 

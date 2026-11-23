@@ -12,7 +12,7 @@ IOTVAS API enables you to discover IoT/Connected devices in the network and prov
 
 Base URLs:
 
-* <a href="https://api.apis.guru/api/v1">https://api.apis.guru/api/v1</a>
+* <a href="/api/v1">/api/v1</a>
 
 # Authentication
 

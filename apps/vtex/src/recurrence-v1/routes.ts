@@ -82,6 +82,15 @@ const UpdaterecurrenceRequestSchema = z
       deliveryDay: 26,
       deliveryWeekday: 'Friday',
       email: 'user@vtex.com.br',
+      items: [
+        {
+          frequency: { interval: 1, periodicity: 'weekly' },
+          quantity: 2,
+          seller: '1',
+          shippingAddressId: '-1461618656161',
+          sku: '18',
+        },
+      ],
       paymentAccountId: '87FE21B06C0D42908D31A5B11E6FC043',
     },
     required: ['email', 'deliveryDay', 'deliveryWeekday', 'items', 'paymentAccountId'],

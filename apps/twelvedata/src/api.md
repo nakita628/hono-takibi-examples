@@ -128,6 +128,11 @@ Authorization: apikey your_api_key
  REST API | `https://api.twelvedata.com` |
  WebSocket | `wss://ws.twelvedata.com` |
 
+### API credits and limits
+API credits are counted per minute on every plan. Only the Basic plan has a daily cap of 800 API credits, which resets at midnight UTC. Paid plans have no daily limit.
+
+To check your current usage and your plan's limits, call the <code>/api_usage</code> endpoint.
+
 ### Parameter guidelines
 <ul>
 <li><b>Separator:</b> Use <code>&</code> to separate multiple parameters</li>
@@ -161,7 +166,7 @@ Structure your code to gracefully handle:
 
 ##### Best practices
 <ul>
-<li><b>Rate limits:</b> Adhere to your plan’s rate limits to avoid throttling. Check your dashboard for details.</li>
+<li><b>Rate limits:</b> Your plan limits API credits per minute. Only the Basic plan also has a daily cap of 800 API credits. Check your usage with the <code>/api_usage</code> endpoint.</li>
 <li><b>Error handling:</b> Implement retry logic for transient errors (e.g., <code>429 Too Many Requests</code>).</li>
 <li><b>Caching:</b> Cache responses for frequently accessed data to reduce API calls and improve performance.</li>
 <li><b>Secure storage:</b> Store your API key securely and never expose it in client-side code or public repositories.</li>
@@ -291,9 +296,9 @@ The Accumulation/Distribution (AD) endpoint provides data on the cumulative mone
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -500,9 +505,9 @@ The Addition (ADD) endpoint calculates the sum of two input data series, such as
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -723,9 +728,9 @@ The Accumulation/Distribution Oscillator endpoint (ADOSC) calculates a momentum 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -936,9 +941,9 @@ The Average Directional Index (ADX) endpoint provides data on the strength of a 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -1147,9 +1152,9 @@ The Average Directional Movement Index Rating (ADXR) endpoint provides a smoothe
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -1358,9 +1363,9 @@ The Absolute Price Oscillator (APO) endpoint calculates the difference between t
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -1589,9 +1594,9 @@ The Aroon Indicator endpoint provides data on the time elapsed since the highest
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -1801,9 +1806,9 @@ The Aroon Oscillator endpoint provides the calculated difference between the Aro
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -2012,9 +2017,9 @@ The Average True Range (ATR) endpoint provides data on market volatility by calc
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -2223,9 +2228,9 @@ The Average (AVG) endpoint calculates the arithmetic mean of a specified data se
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -2441,9 +2446,9 @@ The Average Price (AVGPRICE) endpoint calculates and returns the mean value of a
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -2650,9 +2655,9 @@ The Bollinger Bands (BBANDS) endpoint calculates and returns three key data poin
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -2883,9 +2888,9 @@ The Beta Indicator endpoint provides data on a security's sensitivity to market 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -3108,9 +3113,9 @@ The Balance of Power (BOP) endpoint provides data on the buying and selling pres
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -3317,9 +3322,9 @@ The Commodity Channel Index (CCI) endpoint provides data on the CCI values for a
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -3528,9 +3533,9 @@ The Ceiling (CEIL) endpoint rounds each value in the input data series up to the
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -3744,9 +3749,9 @@ The Chande Momentum Oscillator (CMO) endpoint provides data on the momentum of a
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -3962,9 +3967,9 @@ The Coppock Curve is a momentum oscillator used to detect potential long-term tr
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -4184,9 +4189,9 @@ The Correlation (CORREL) endpoint calculates the statistical relationship betwee
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -4409,9 +4414,9 @@ The Connors Relative Strength Index (CRSI) endpoint provides a detailed analysis
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -4631,9 +4636,9 @@ The Double Exponential Moving Average (DEMA) endpoint provides a data series tha
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -4849,9 +4854,9 @@ The Division (DIV) endpoint calculates the result of dividing one data series by
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -5072,9 +5077,9 @@ The Detrended Price Oscillator (DPO) endpoint calculates and returns the DPO val
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -5292,9 +5297,9 @@ Retrieve the Directional Movement Index (DX) values for a given security to asse
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -5503,9 +5508,9 @@ The Exponential Moving Average (EMA) endpoint calculates the EMA for a specified
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -5721,9 +5726,9 @@ The Exponential (EXP) Indicator endpoint computes the exponential value of a spe
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -5937,9 +5942,9 @@ The Floor (FLOOR) endpoint processes numerical input data by rounding each value
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -6153,9 +6158,9 @@ The heikinashi candles endpoint provides smoothed candlestick data by averaging 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -6365,9 +6370,9 @@ The High, Low, Close Average (HLC3) endpoint calculates and returns the average 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -6574,9 +6579,9 @@ The Hilbert Transform Dominant Cycle Period (HT_DCPERIOD) endpoint calculates th
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -6790,9 +6795,9 @@ The Hilbert Transform Dominant Cycle Phase (HT_DCPHASE) endpoint provides the cu
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -7006,9 +7011,9 @@ The Hilbert Transform Phasor Components (HT_PHASOR) endpoint analyzes a price se
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -7223,9 +7228,9 @@ The Hilbert Transform Sine Wave (HT_SINE) endpoint provides sine and cosine wave
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -7440,9 +7445,9 @@ The Hilbert Transform Instantaneous Trendline (HT_TRENDLINE) endpoint provides a
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -7656,9 +7661,9 @@ The Hilbert Transform Trend vs Cycle Mode (HT_TRENDMODE) endpoint identifies whe
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -7872,9 +7877,9 @@ The Ichimoku Cloud endpoint provides data on the Ichimoku Kinko Hyo indicator, o
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -8090,9 +8095,9 @@ The Kaufman Adaptive Moving Average (KAMA) endpoint calculates the KAMA for a sp
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -8308,9 +8313,9 @@ The Keltner Channel endpoint provides data for a volatility-based technical indi
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -8543,9 +8548,9 @@ The Know Sure Thing (KST) endpoint provides a momentum oscillator that combines 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -8771,9 +8776,9 @@ The Linear Regression endpoint (LINEARREG) calculates the best-fit straight line
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -8989,9 +8994,9 @@ The Linear Regression Angle endpoint (LINEARREGANGLE) calculates the angle of th
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -9207,9 +9212,9 @@ The Linear Regression Intercept endpoint (LINEARREGINTERCEPT) calculates the y-i
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -9425,9 +9430,9 @@ The Linear Regression Slope endpoint (LINEARREGSLOPE) calculates the slope of a 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -9643,9 +9648,9 @@ The Natural Logarithm (LN) endpoint computes the natural logarithm of a specifie
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -9859,9 +9864,9 @@ The Base-10 Logarithm (LOG10) endpoint computes the base-10 logarithm of a speci
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -10075,9 +10080,9 @@ The Moving Average (MA) endpoint provides the average price of a security over a
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -10304,9 +10309,9 @@ This endpoint calculates the Moving Average Convergence Divergence (MACD) for a 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -10528,9 +10533,9 @@ The Moving Average Convergence Divergence (MACD) Slope endpoint provides the rat
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -10754,9 +10759,9 @@ The Moving Average Convergence Divergence Extension (MACDEXT) endpoint provides 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -11011,9 +11016,9 @@ The MESA Adaptive Moving Average (MAMA) endpoint calculates a moving average tha
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -11232,9 +11237,9 @@ The Maximum (MAX) endpoint calculates and returns the highest value within a spe
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -11450,9 +11455,9 @@ The Maximum Index (MAXINDEX) endpoint identifies the position of the highest val
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -11668,9 +11673,9 @@ This endpoint calculates the McGinley Dynamic (MCGINLEY_DYNAMIC) indicator, whic
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -11879,9 +11884,9 @@ The Median Price (MEDPRICE) endpoint calculates and returns the average of the h
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -12088,9 +12093,9 @@ The Money Flow Index (MFI) endpoint provides a volume-weighted momentum oscillat
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -12299,9 +12304,9 @@ The Midpoint (MIDPOINT) endpoint calculates the average value between the highes
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -12517,9 +12522,9 @@ The Midprice (MIDPRICE) endpoint calculates and returns the average of a financi
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -12728,9 +12733,9 @@ The Minimum (MIN) Indicator endpoint provides the lowest value of a specified da
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -12946,9 +12951,9 @@ The Minimum Index (MININDEX) endpoint identifies the position of the lowest valu
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -13164,9 +13169,9 @@ The Minimum and Maximum (MINMAX) endpoint identifies the lowest and highest valu
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -13383,9 +13388,9 @@ The Minimum and Maximum Index (MINMAXINDEX) endpoint identifies the positions of
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -13602,9 +13607,9 @@ The Minus Directional Indicator (MINUS_DI) endpoint calculates and returns the s
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -13813,9 +13818,9 @@ The Minus Directional Movement endpoint (MINUS_DM) calculates the downward price
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -14024,9 +14029,9 @@ The Momentum (MOM) endpoint provides data on the rate of change in a security's 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -14242,9 +14247,9 @@ The Multiplication (MULT) endpoint calculates the product of two input data seri
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -14465,9 +14470,9 @@ The Normalized Average True Range (NATR) endpoint provides a volatility indicato
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -14676,9 +14681,9 @@ The On Balance Volume (OBV) endpoint provides a time series of the OBV indicator
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -14892,9 +14897,9 @@ The Percent B (%B) endpoint calculates and returns the %B value, which indicates
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -15123,9 +15128,9 @@ The Pivot Points High Low (PIVOT_POINTS_HL) endpoint calculates key support and 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -15335,9 +15340,9 @@ The Plus Directional Indicator endpoint (/plus_di) provides data on the strength
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -15546,9 +15551,9 @@ The Plus Directional Movement (PLUS_DM) endpoint calculates the upward price mov
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -15757,9 +15762,9 @@ The Percentage Price Oscillator (PPO) endpoint calculates the percentage differe
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -15988,9 +15993,9 @@ The Rate of Change (ROC) endpoint calculates the percentage change in a security
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -16206,9 +16211,9 @@ The Rate of Change Percentage (ROCP) endpoint calculates and returns the percent
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -16424,9 +16429,9 @@ The Rate of Change Ratio (ROCR) endpoint calculates and returns the ratio of a s
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -16642,9 +16647,9 @@ The Rate of Change Ratio 100 (ROCR100) endpoint calculates the percentage change
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -16860,9 +16865,9 @@ The Relative Strength Index (RSI) endpoint provides data on the RSI values for a
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -17078,9 +17083,9 @@ The Relative Volume endpoint (/rvol) provides a ratio comparing a security's cur
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -17289,9 +17294,9 @@ The Parabolic Stop and Reverse (SAR) endpoint provides data on potential support
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -17502,9 +17507,9 @@ The Parabolic SAR Extended (SAREXT) endpoint provides a customizable version of 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -17727,9 +17732,9 @@ The Simple Moving Average (SMA) endpoint calculates and returns the average pric
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -17945,9 +17950,9 @@ The Square Root (SQRT) endpoint computes the square root of a specified numerica
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -18161,9 +18166,9 @@ The Standard Deviation (STDDEV) endpoint calculates the dispersion of a financia
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -18381,9 +18386,9 @@ The Stochastic Oscillator endpoint provides data on a momentum indicator that ev
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -18619,9 +18624,9 @@ The Stochastic Fast (STOCHF) endpoint calculates the fast version of the Stochas
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -18844,9 +18849,9 @@ The Stochastic Relative Strength Index (Stochastic RSI) endpoint calculates the 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -19070,9 +19075,9 @@ The Subtraction (SUB) endpoint calculates the difference between two input data 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -19293,9 +19298,9 @@ The Summation (SUM) endpoint calculates the cumulative total of a specified data
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -19511,9 +19516,9 @@ The Supertrend endpoint provides data on the Supertrend indicator, a tool used t
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -19724,9 +19729,9 @@ The Supertrend Heikin Ashi candles endpoint provides data combining Supertrend s
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -19941,9 +19946,9 @@ The Triple Exponential Moving Average (T3MA) endpoint calculates a smoothed movi
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -20161,9 +20166,9 @@ The Triple Exponential Moving Average (TEMA) endpoint calculates and returns the
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -20379,9 +20384,9 @@ The True Range (TRANGE) endpoint calculates the range of price movement for a sp
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -20588,9 +20593,9 @@ The Triangular Moving Average (TRIMA) endpoint calculates and returns the smooth
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -20806,9 +20811,9 @@ The Time Series Forecast (TSF) endpoint provides projected future price levels u
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -21024,9 +21029,9 @@ The Typical Price (TYPPRICE) endpoint calculates and returns the average of a fi
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -21233,9 +21238,9 @@ The Ultimate Oscillator endpoint (/ultosc) calculates a momentum oscillator that
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -21448,9 +21453,9 @@ The Variance (VAR) endpoint calculates the statistical variance of a financial d
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -21666,9 +21671,9 @@ The Volume Weighted Average Price (VWAP) endpoint provides the VWAP value for a 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -21876,9 +21881,9 @@ The Weighted Close Price (WCLPRICE) endpoint calculates a security's average pri
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -22085,9 +22090,9 @@ The Williams %R (WILLR) endpoint calculates the Williams Percent Range, a moment
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -22296,9 +22301,9 @@ The Weighted Moving Average (WMA) endpoint calculates and returns the WMA values
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -22517,8 +22522,8 @@ The analyst ratings snapshot endpoint provides a streamlined summary of ratings 
 |---|---|---|---|---|
 |symbol|query|string|false|Filter by symbol|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |exchange|query|string|false|Filter by exchange name|
 |mic_code|query|string|false|The Market Identifier Code (MIC) of the exchange where the instrument is traded, e.g., XNAS, XLON.|
 |rating_change|query|[RatingChangeEnum](#schemaratingchangeenum)|false|Filter by rating change action|
@@ -22673,8 +22678,8 @@ The analyst ratings US equities endpoint provides detailed information on analys
 |---|---|---|---|---|
 |symbol|query|string|false|Filter by symbol|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |exchange|query|string|false|Filter by exchange name|
 |mic_code|query|string|false|The Market Identifier Code (MIC) of the exchange where the instrument is traded, e.g., XNAS, XLON.|
 |rating_change|query|[RatingChangeEnum](#schemaratingchangeenum)|false|Filter by rating change action|
@@ -22833,8 +22838,8 @@ The earnings estimate endpoint provides access to analysts' projected earnings p
 |---|---|---|---|---|
 |symbol|query|string|false|Filter by symbol|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |country|query|string|false|The country where the instrument is traded, e.g., `United States` or `US`|
 |exchange|query|string|false|Exchange where instrument is traded|
 |mic_code|query|string|false|The Market Identifier Code (MIC) of the exchange where the instrument is traded, e.g., XNAS, XLON.|
@@ -22979,8 +22984,8 @@ The EPS revisions endpoint provides updated analyst forecasts for a company's ea
 |---|---|---|---|---|
 |symbol|query|string|false|Filter by symbol|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |country|query|string|false|Filter by country name or alpha code, e.g., `United States` or `US`|
 |exchange|query|string|false|Filter by exchange name|
 |mic_code|query|string|false|The Market Identifier Code (MIC) of the exchange where the instrument is traded, e.g., XNAS, XLON.|
@@ -23124,8 +23129,8 @@ The EPS trend endpoint provides detailed historical data on Earnings Per Share (
 |---|---|---|---|---|
 |symbol|query|string|false|Filter by symbol|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |country|query|string|false|Filter by country name or alpha code, e.g., `United States` or `US`|
 |exchange|query|string|false|Filter by exchange name|
 |mic_code|query|string|false|The Market Identifier Code (MIC) of the exchange where the instrument is traded, e.g., XNAS, XLON.|
@@ -23262,7 +23267,7 @@ curl https://api.twelvedata.com/growth_estimates \
 
 `GET /growth_estimates`
 
-The growth estimates endpoint provides consensus analyst projections on a company's growth rates over various timeframes. It aggregates and averages estimates from multiple analysts, focusing on key financial metrics such as earnings per share and revenue. This endpoint is useful for obtaining a comprehensive view of expected company performance based on expert analysis.
+Consensus analyst estimates of EPS growth (adjusted, diluted) for the current and next quarter, current and next year, and the next 5 years, plus actual growth over the past 5 years.
 
 <h3 id="growth-estimates-parameters">Parameters</h3>
 
@@ -23270,8 +23275,8 @@ The growth estimates endpoint provides consensus analyst projections on a compan
 |---|---|---|---|---|
 |symbol|query|string|false|Filter by symbol|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |country|query|string|false|The country where the instrument is traded, e.g., `United States` or `US`|
 |exchange|query|string|false|Exchange where instrument is traded|
 |mic_code|query|string|false|The Market Identifier Code (MIC) of the exchange where the instrument is traded, e.g., XNAS, XLON.|
@@ -23413,8 +23418,8 @@ The price target endpoint provides detailed projections of a security's future p
 |---|---|---|---|---|
 |symbol|query|string|false|Filter by symbol|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |country|query|string|false|Filter by country name or alpha code, e.g., `United States` or `US`|
 |exchange|query|string|false|Filter by exchange name|
 |mic_code|query|string|false|The Market Identifier Code (MIC) of the exchange where the instrument is traded, e.g., XNAS, XLON.|
@@ -23556,8 +23561,8 @@ The recommendations endpoint provides a summary of analyst opinions for a specif
 |---|---|---|---|---|
 |symbol|query|string|false|Filter by symbol|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |country|query|string|false|The country where the instrument is traded, e.g., `United States` or `US`|
 |exchange|query|string|false|The exchange name where the instrument is traded, e.g., `Nasdaq`, `NSE`.|
 |mic_code|query|string|false|The Market Identifier Code (MIC) of the exchange where the instrument is traded, e.g., XNAS, XLON.|
@@ -23722,8 +23727,8 @@ The revenue estimate endpoint provides a company's projected quarterly and annua
 |---|---|---|---|---|
 |symbol|query|string|false|Filter by symbol|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |country|query|string|false|Filter by country name or alpha code, e.g., `United States` or `US`|
 |exchange|query|string|false|Filter by exchange name|
 |mic_code|query|string|false|The Market Identifier Code (MIC) of the exchange where the instrument is traded, e.g., XNAS, XLON.|
@@ -23864,7 +23869,7 @@ curl https://api.twelvedata.com/api_usage \
 
 `GET /api_usage`
 
-The API Usage endpoint provides detailed information on your current API usage statistics. It returns data such as the number of requests made, remaining requests, and the reset time for your usage limits. This endpoint is essential for monitoring and managing your API consumption to ensure you stay within your allocated limits.
+The API Usage endpoint returns your API credit usage for the current minute (`current_usage`) and your plan's per-minute limit (`plan_limit`). API credits are counted per minute on every plan. Only the Basic plan has a daily cap of 800 API credits, which resets at midnight UTC. Paid plans have no daily limit, so `daily_usage` and `plan_daily_limit` are returned only on the Basic plan. Use this endpoint to check how close you are to your limit before sending more requests.
 
 <h3 id="api-usage-parameters">Parameters</h3>
 
@@ -23888,11 +23893,11 @@ The API Usage endpoint provides detailed information on your current API usage s
 ```json
 {
   "timestamp": "2025-05-07 11:10:12",
-  "current_usage": 4003,
-  "plan_limit": 20000,
-  "daily_usage": 12500,
-  "plan_daily_limit": 100000,
-  "plan_category": "enterprise"
+  "current_usage": 3,
+  "plan_limit": 8,
+  "daily_usage": 120,
+  "plan_daily_limit": 800,
+  "plan_category": "basic"
 }
 ```
 
@@ -24220,8 +24225,8 @@ The balance sheet endpoint provides a detailed financial statement for a company
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of instrument.<br>For preferred stocks use dot(.) delimiter.<br>E.g. `BRK.A` or `BRK.B` will be correct|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |exchange|query|string|false|Exchange where instrument is traded|
 |mic_code|query|string|false|Market Identifier Code (MIC) under ISO 10383 standard|
 |country|query|string|false|Country where instrument is traded, e.g., `United States` or `US`|
@@ -24435,8 +24440,8 @@ The balance sheet consolidated endpoint provides a detailed overview of a compan
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of instrument.<br>For preferred stocks use dot(.) delimiter.<br>E.g. `BRK.A` or `BRK.B` will be correct|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |exchange|query|string|false|Exchange where instrument is traded|
 |mic_code|query|string|false|Market Identifier Code (MIC) under ISO 10383 standard|
 |country|query|string|false|Country where instrument is traded, e.g., `United States` or `US`|
@@ -24749,8 +24754,8 @@ The cash flow endpoint provides detailed information on a company's cash flow ac
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of instrument.<br>For preferred stocks use dot(.) delimiter.<br>E.g. `BRK.A` or `BRK.B` will be correct|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |exchange|query|string|false|Exchange where instrument is traded|
 |mic_code|query|string|false|Market Identifier Code (MIC) under ISO 10383 standard|
 |country|query|string|false|Country where instrument is traded, e.g., `United States` or `US`|
@@ -24935,8 +24940,8 @@ The cash flow consolidated endpoint provides raw data on a company's consolidate
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of instrument.<br>For preferred stocks use dot(.) delimiter.<br>E.g. `BRK.A` or `BRK.B` will be correct|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |exchange|query|string|false|Exchange where instrument is traded|
 |mic_code|query|string|false|Market Identifier Code (MIC) under ISO 10383 standard|
 |country|query|string|false|Country where instrument is traded, e.g., `United States` or `US`|
@@ -25215,8 +25220,8 @@ The dividends endpoint provides historical dividend data for a specified stock, 
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of instrument. For preferred stocks use dot(.) delimiter.<br>E.g. `BRK.A` or `BRK.B` will be correct|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |exchange|query|string|false|Exchange where instrument is traded|
 |mic_code|query|string|false|Market Identifier Code (MIC) under ISO 10383 standard|
 |country|query|string|false|Country where instrument is traded, e.g., `United States` or `US`|
@@ -25373,8 +25378,8 @@ The dividends calendar endpoint provides a detailed schedule of upcoming and pas
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of instrument. For preferred stocks use dot(.) delimiter.<br>E.g. `BRK.A` or `BRK.B` will be correct|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |exchange|query|string|false|Exchange where instrument is traded|
 |mic_code|query|string|false|Market Identifier Code (MIC) under ISO 10383 standard|
 |country|query|string|false|Country where instrument is traded, e.g., `United States` or `US`|
@@ -25517,8 +25522,8 @@ The earnings endpoint provides comprehensive earnings data for a specified compa
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of instrument.<br>For preferred stocks use dot(.) delimiter.<br>E.g. `BRK.A` or `BRK.B` will be correct|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |exchange|query|string|false|Exchange where instrument is traded|
 |mic_code|query|string|false|Market Identifier Code (MIC) under ISO 10383 standard|
 |country|query|string|false|Country where instrument is traded, e.g., `United States` or `US`|
@@ -25864,8 +25869,8 @@ The income statement endpoint provides detailed financial data on a company's in
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of instrument.<br>For preferred stocks use dot(.) delimiter.<br>E.g. `BRK.A` or `BRK.B` will be correct|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |exchange|query|string|false|Exchange where instrument is traded|
 |mic_code|query|string|false|Market Identifier Code (MIC) under ISO 10383 standard|
 |country|query|string|false|Country where instrument is traded, e.g., `United States` or `US`|
@@ -26042,8 +26047,8 @@ The income statement consolidated endpoint provides a company's raw income state
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of instrument.<br>For preferred stocks use dot(.) delimiter.<br>E.g. `BRK.A` or `BRK.B` will be correct|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |exchange|query|string|false|Exchange where instrument is traded|
 |mic_code|query|string|false|Market Identifier Code (MIC) under ISO 10383 standard|
 |country|query|string|false|Country where instrument is traded, e.g., `United States` or `US`|
@@ -26475,8 +26480,8 @@ The key executives endpoint provides detailed information about a company's key 
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of instrument.<br>For preferred stocks use dot(.) delimiter.<br>E.g. `BRK.A` or `BRK.B` will be correct|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |exchange|query|string|false|Exchange where instrument is traded|
 |mic_code|query|string|false|Market Identifier Code (MIC) under ISO 10383 standard|
 |country|query|string|false|Country where instrument is traded, e.g., `United States` or `US`|
@@ -26920,8 +26925,8 @@ The Market Capitalization History endpoint provides historical data on a company
 |---|---|---|---|---|
 |symbol|query|string|false|Filter by symbol|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |exchange|query|string|false|Filter by exchange name|
 |mic_code|query|string|false|Filter by market identifier code (MIC) under ISO 10383 standard|
 |country|query|string|false|Filter by country name or alpha code, e.g., `United States` or `US`|
@@ -27071,8 +27076,8 @@ The press releases endpoint offers structured, real-time access to official comp
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of instrument.<br>For preferred stocks use dot(.) delimiter.<br>E.g. `BRK.A` or `BRK.B` will be correct|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |exchange|query|string|false|Exchange where instrument is traded|
 |mic_code|query|string|false|Market Identifier Code (MIC) under ISO 10383 standard|
 |start_date|query|string|false|Begin date for filtering items.<br>Returns press releases with release date on or after this date. Format `2025-12-24T02:07:00`|
@@ -27219,8 +27224,8 @@ The profile endpoint provides detailed company information, including the compan
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of instrument. For preferred stocks use dot(.) delimiter.<br>E.g. `BRK.A` or `BRK.B` will be correct|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |exchange|query|string|false|Exchange where instrument is traded|
 |mic_code|query|string|false|Market Identifier Code (MIC) under ISO 10383 standard|
 |country|query|string|false|Country where instrument is traded, e.g., `United States` or `US`|
@@ -27362,8 +27367,8 @@ The splits endpoint provides historical data on stock split events for a specifi
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of instrument. For preferred stocks use dot(.) delimiter. E.g. `BRK.A` or `BRK.B` will be correct|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |exchange|query|string|false|Exchange where instrument is traded|
 |mic_code|query|string|false|Market Identifier Code (MIC) under ISO 10383 standard|
 |country|query|string|false|Country where instrument is traded, e.g., `United States` or `US`|
@@ -27513,7 +27518,7 @@ curl https://api.twelvedata.com/splits_calendar \
 
 `GET /splits_calendar`
 
-The splits calendar endpoint provides a detailed calendar of stock split events within a specified date range. By setting the `start_date` and `end_date` parameters, users can retrieve a list of upcoming or past stock splits, including the company name, split ratio, and effective date. This endpoint is useful for tracking changes in stock structure and planning investment strategies around these events.
+The splits calendar endpoint provides a detailed calendar of past stock split events within a specified date range. By setting the `start_date` and `end_date` parameters, users can retrieve a list of stock splits, including the company name, split ratio, and effective date. This endpoint is useful for tracking changes in stock structure and analyzing how past splits affected stock prices.
 
 <h3 id="splits-calendar-parameters">Parameters</h3>
 
@@ -27521,8 +27526,8 @@ The splits calendar endpoint provides a detailed calendar of stock split events 
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of instrument. For preferred stocks use dot(.) delimiter.<br>E.g. `BRK.A` or `BRK.B` will be correct|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |exchange|query|string|false|Exchange where instrument is traded|
 |mic_code|query|string|false|Market Identifier Code (MIC) under ISO 10383 standard|
 |country|query|string|false|Country where instrument is traded, e.g., `United States` or `US`|
@@ -27668,8 +27673,8 @@ The statistics endpoint provides a comprehensive snapshot of a company's key fin
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of instrument.<br>For preferred stocks use dot(.) delimiter.<br>E.g. `BRK.A` or `BRK.B` will be correct|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |exchange|query|string|false|Exchange where instrument is traded|
 |mic_code|query|string|false|Market Identifier Code (MIC) under ISO 10383 standard|
 |country|query|string|false|Country where instrument is traded, e.g., `United States` or `US`|
@@ -28755,8 +28760,8 @@ The earliest_timestamp endpoint provides the earliest available date and time fo
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument.|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series.|
 |exchange|query|string|false|Exchange where instrument is traded.|
 |mic_code|query|string|false|Market Identifier Code (MIC) under ISO 10383 standard.|
@@ -28900,8 +28905,8 @@ The ETFs endpoint provides a daily updated list of all available Exchange-Traded
 |---|---|---|---|---|
 |symbol|query|string|false|The ticker symbol of an instrument for which data is requested|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |cik|query|string|false|The CIK of an instrument for which data is requested|
 |exchange|query|string|false|Filter by exchange name|
 |mic_code|query|string|false|Filter by market identifier code (MIC) under ISO 10383 standard|
@@ -29508,8 +29513,8 @@ The funds endpoint provides a daily updated list of available investment funds. 
 |---|---|---|---|---|
 |symbol|query|string|false|The ticker symbol of an instrument for which data is requested|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |cik|query|string|false|The CIK of an instrument for which data is requested|
 |exchange|query|string|false|Filter by exchange name|
 |mic_code|query|string|false|Filter by market identifier code (MIC) under ISO 10383 standard|
@@ -30078,8 +30083,8 @@ The stocks endpoint provides a daily updated list of all available stock symbols
 |---|---|---|---|---|
 |symbol|query|string|false|The ticker symbol of an instrument for which data is requested|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |cik|query|string|false|The CIK of an instrument for which data is requested|
 |exchange|query|string|false|Filter by exchange name|
 |mic_code|query|string|false|Filter by market identifier code (MIC) under ISO 10383 standard|
@@ -30258,7 +30263,7 @@ The symbol search endpoint allows users to find financial instruments by name or
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|symbol|query|string|true|Symbol to search. Supports:<br><ul><br><li>Ticker symbol of instrument.</li><br><li>International securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section</li><br><li>The FIGI (Financial Instrument Global Identifier) parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.</li><br><li>Composite FIGI parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.</li><br><li>Share Class FIGI parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.</li><br></ul>|
+|symbol|query|string|true|Symbol to search. Supports:<br><ul><br><li>Ticker symbol of instrument.</li><br><li>Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.</li><br><li>The FIGI (Financial Instrument Global Identifier) parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.</li><br><li>Composite FIGI parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.</li><br><li>Share Class FIGI parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.</li><br></ul>|
 |outputsize|query|integer(int64)|false|Number of matches in response. Max <code>120</code>|
 |show_plan|query|boolean|false|Adds info on which plan symbol is available.|
 
@@ -30861,8 +30866,8 @@ The direct holders endpoint provides detailed information about the number of sh
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of instrument.<br>For preferred stocks use dot(.) delimiter.<br>E.g. `BRK.A` or `BRK.B` will be correct|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |exchange|query|string|false|Exchange where instrument is traded|
 |mic_code|query|string|false|Market Identifier Code (MIC) under ISO 10383 standard|
 |country|query|string|false|Country where instrument is traded, e.g., `United States` or `US`|
@@ -31003,8 +31008,8 @@ The EDGAR fillings endpoint provides access to a comprehensive collection of fin
 |---|---|---|---|---|
 |symbol|query|string|false|The ticker symbol of an instrument for which data is requested|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |exchange|query|string|false|Filter by exchange name|
 |mic_code|query|string|false|Filter by market identifier code (MIC) under ISO 10383 standard|
 |country|query|string|false|Filter by country name or alpha code, e.g., `United States` or `US`|
@@ -31158,8 +31163,8 @@ The fund holders endpoint provides detailed information about the proportion of 
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of instrument.<br>For preferred stocks use dot(.) delimiter.<br>E.g. `BRK.A` or `BRK.B` will be correct|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |exchange|query|string|false|Exchange where instrument is traded|
 |mic_code|query|string|false|Market Identifier Code (MIC) under ISO 10383 standard|
 |country|query|string|false|Country where instrument is traded, e.g., `United States` or `US`|
@@ -31300,8 +31305,8 @@ The insider transaction endpoint provides detailed data on trades executed by co
 |---|---|---|---|---|
 |symbol|query|string|false|The ticker symbol of an instrument for which data is requested, e.g., `AAPL`, `TSLA`.<br>For preferred stocks use dot(.) delimiter.<br>E.g. `BRK.A` or `BRK.B` will be correct|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |exchange|query|string|false|Exchange where instrument is traded, e.g., `Nasdaq`, `NSE`|
 |mic_code|query|string|false|Market Identifier Code (MIC) under ISO 10383 standard|
 |country|query|string|false|Country where instrument is traded, e.g., United States or US.|
@@ -31444,8 +31449,8 @@ The institutional holders endpoint provides detailed information on the percenta
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of instrument.<br>For preferred stocks use dot(.) delimiter.<br>E.g. `BRK.A` or `BRK.B` will be correct|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |exchange|query|string|false|Exchange where instrument is traded|
 |mic_code|query|string|false|Market Identifier Code (MIC) under ISO 10383 standard|
 |country|query|string|false|Country where instrument is traded, e.g., `United States` or `US`|
@@ -31734,9 +31739,9 @@ The tax information endpoint provides detailed tax-related data for a specified 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|The ticker symbol of an instrument for which data is requested, e.g., `SKYQ`, `AIRE`, `ALM:BME`, `HSI:HKEX`.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |exchange|query|string|false|The exchange name where the instrument is traded, e.g., `Nasdaq`, `Euronext`|
 |mic_code|query|string|false|The Market Identifier Code (MIC) of the exchange where the instrument is traded, e.g., `XNAS`, `XLON`|
 
@@ -31872,8 +31877,8 @@ The End of Day (EOD) Prices endpoint provides the closing price and other releva
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |exchange|query|string|false|Exchange where instrument is traded|
 |mic_code|query|string|false|Market Identifier Code (MIC) under ISO 10383 standard|
 |country|query|string|false|Country where instrument is traded, e.g., `United States` or `US`|
@@ -32184,8 +32189,8 @@ The latest price endpoint provides the latest market price for a specified finan
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |exchange|query|string|false|Exchange where instrument is traded|
 |mic_code|query|string|false|Market Identifier Code (MIC) under ISO 10383 standard|
 |country|query|string|false|Country where instrument is traded, e.g., `United States` or `US`|
@@ -32342,8 +32347,8 @@ The quote endpoint provides real-time data for a selected financial instrument, 
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|false|Interval of the quote|
 |exchange|query|string|false|Exchange where instrument is traded|
 |mic_code|query|string|false|Market Identifier Code (MIC) under ISO 10383 standard|
@@ -32549,9 +32554,9 @@ The time series endpoint provides detailed historical data for a specified finan
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of the instrument. E.g. `AAPL`, `EUR/USD`, `ETH/BTC`, ...|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |figi|query|string|false|The FIGI of an instrument for which data is requested. This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |interval|query|[IntervalEnum](#schemaintervalenum)|true|Interval between two consecutive points in time series|
 |outputsize|query|integer(int64)|false|Number of data points to retrieve. Supports values in the range from `1` to `5000`. Default `30` when no date parameters are set, otherwise set to maximum|
 |exchange|query|string|false|Exchange where instrument is traded|
@@ -33061,8 +33066,8 @@ The ETFs directory endpoint provides a daily updated list of exchange-traded fun
 |---|---|---|---|---|
 |symbol|query|string|false|Filter by symbol|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |cik|query|string|false|The CIK of an instrument for which data is requested|
 |country|query|string|false|Filter by country name or alpha code, e.g., `United States` or `US`|
 |fund_family|query|string|false|Filter by investment company that manages the fund|
@@ -33344,8 +33349,8 @@ The ETF full data endpoint provides detailed information about global Exchange-T
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of etf|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |country|query|string|false|Filter by country name or alpha code, e.g., `United States` or `US`|
 |dp|query|integer(int64)|false|Number of decimal places for floating values. Accepts value in range [0,11]|
 
@@ -33577,8 +33582,8 @@ The ETFs composition endpoint provides detailed information about the compositio
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of etf|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |country|query|string|false|Filter by country name or alpha code, e.g., `United States` or `US`|
 |dp|query|integer(int64)|false|Number of decimal places for floating values. Accepts value in range [0,11]|
 
@@ -33751,8 +33756,8 @@ The ETFs performance endpoint provides comprehensive performance data for exchan
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of etf|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |country|query|string|false|Filter by country name or alpha code, e.g., `United States` or `US`|
 |dp|query|integer(int64)|false|Number of decimal places for floating values. Accepts value in range [0,11]|
 
@@ -33894,8 +33899,8 @@ The ETFs risk endpoint provides essential risk metrics for global Exchange Trade
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of etf|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |country|query|string|false|Filter by country name or alpha code, e.g., `United States` or `US`|
 |dp|query|integer(int64)|false|Number of decimal places for floating values. Accepts value in range [0,11]|
 
@@ -34048,8 +34053,8 @@ The ETFs summary endpoint provides a concise overview of global Exchange-Traded 
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of etf|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |country|query|string|false|Filter by country name or alpha code, e.g., `United States` or `US`|
 |dp|query|integer(int64)|false|Number of decimal places for floating values. Accepts value in range [0,11]|
 
@@ -34340,7 +34345,7 @@ The money market fund full data endpoint provides detailed information about a g
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of money market fund|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
 |dp|query|integer(int64)|false|Number of decimal places for floating values|
 
 > Example responses
@@ -34661,8 +34666,8 @@ The mutual funds directory endpoint provides a daily updated list of mutual fund
 |---|---|---|---|---|
 |symbol|query|string|false|Filter by symbol|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |cik|query|string|false|The CIK of an instrument for which data is requested|
 |country|query|string|false|Filter by country name or alpha code, e.g., `United States` or `US`|
 |fund_family|query|string|false|Filter by investment company that manages the fund|
@@ -34956,8 +34961,8 @@ The mutual full data endpoint provides detailed information about global mutual 
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of mutual fund|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |country|query|string|false|Filter by country name or alpha code, e.g., `United States` or `US`|
 |dp|query|integer(int64)|false|Number of decimal places for floating values. Accepts value in range [0,11]|
 
@@ -35247,8 +35252,8 @@ The mutual funds compositions endpoint provides detailed information about the p
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of mutual fund|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |country|query|string|false|Filter by country name or alpha code, e.g., `United States` or `US`|
 |dp|query|integer(int64)|false|Number of decimal places for floating values. Accepts value in range [0,11]|
 
@@ -35266,14 +35271,6 @@ The mutual funds compositions endpoint provides detailed information about the p
           "weight": 0.1742
         }
       ],
-      "asset_allocation": {
-        "cash": 0.0043,
-        "stocks": 0.9956,
-        "preferred_stocks": 0,
-        "convertables": 0,
-        "bonds": 0,
-        "others": 0
-      },
       "top_holdings": [
         {
           "symbol": "BBWI",
@@ -35283,6 +35280,14 @@ The mutual funds compositions endpoint provides detailed information about the p
           "weight": 0.00624
         }
       ],
+      "asset_allocation": {
+        "cash": 0.0043,
+        "stocks": 0.9956,
+        "preferred_stocks": 0,
+        "convertables": 0,
+        "bonds": 0,
+        "others": 0
+      },
       "bond_breakdown": {
         "average_maturity": {
           "fund": 0,
@@ -35415,8 +35420,8 @@ The mutual funds performances endpoint provides comprehensive performance data f
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of mutual fund|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |country|query|string|false|Filter by country name or alpha code, e.g., `United States` or `US`|
 |dp|query|integer(int64)|false|Number of decimal places for floating values. Accepts value in range [0,11]|
 
@@ -35574,8 +35579,8 @@ The mutual funds purchase information endpoint provides detailed purchasing deta
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of mutual fund|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |country|query|string|false|Filter by country name or alpha code, e.g., `United States` or `US`|
 |dp|query|integer(int64)|false|Number of decimal places for floating values. Accepts value in range [0,11]|
 
@@ -35720,8 +35725,8 @@ The mutual funds ratings endpoint provides detailed ratings for mutual funds acr
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of mutual fund|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |country|query|string|false|Filter by country name or alpha code, e.g., `United States` or `US`|
 |dp|query|integer(int64)|false|Number of decimal places for floating values. Accepts value in range [0,11]|
 
@@ -35852,8 +35857,8 @@ The mutual funds risk endpoint provides detailed risk metrics for global mutual 
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of mutual fund|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |country|query|string|false|Filter by country name or alpha code, e.g., `United States` or `US`|
 |dp|query|integer(int64)|false|Number of decimal places for floating values. Accepts value in range [0,11]|
 
@@ -36014,8 +36019,8 @@ The mutual funds summary endpoint provides a concise overview of global mutual f
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of mutual fund|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |country|query|string|false|Filter by country name or alpha code, e.g., `United States` or `US`|
 |dp|query|integer(int64)|false|Number of decimal places for floating values. Accepts value in range [0,11]|
 
@@ -36163,8 +36168,8 @@ The mutual funds sustainability endpoint provides detailed information on the su
 |---|---|---|---|---|
 |symbol|query|string|false|Symbol ticker of mutual fund|
 |figi|query|string|false|Filter by financial instrument global identifier (FIGI). This parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and the <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.|
-|isin|query|string|false|Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
-|cusip|query|string|false|The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section|
+|isin|query|string|false|Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.|
+|cusip|query|string|false|Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.|
 |country|query|string|false|Filter by country name or alpha code, e.g., `United States` or `US`|
 |dp|query|integer(int64)|false|Number of decimal places for floating values. Accepts value in range [0,11]|
 
@@ -38591,14 +38596,6 @@ upstream wire shape and the documented response block, so the two cannot drift a
       "weight": 0.1742
     }
   ],
-  "asset_allocation": {
-    "cash": 0.0043,
-    "stocks": 0.9956,
-    "preferred_stocks": 0,
-    "convertables": 0,
-    "bonds": 0,
-    "others": 0
-  },
   "top_holdings": [
     {
       "symbol": "BBWI",
@@ -38608,6 +38605,14 @@ upstream wire shape and the documented response block, so the two cannot drift a
       "weight": 0.00624
     }
   ],
+  "asset_allocation": {
+    "cash": 0.0043,
+    "stocks": 0.9956,
+    "preferred_stocks": 0,
+    "convertables": 0,
+    "bonds": 0,
+    "others": 0
+  },
   "bond_breakdown": {
     "average_maturity": {
       "fund": 0,
@@ -38634,8 +38639,8 @@ Mutual fund composition
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |major_market_sectors|[[GetMutualFundsWorld_200_response_mutual_fund_composition_major_market_sectors_inner](#schemagetmutualfundsworld_200_response_mutual_fund_composition_major_market_sectors_inner)]|false|none|Breakdown of the fund’s portfolio by major industry sectors and their respective weights|
-|asset_allocation|[GetMutualFundsWorld_200_response_mutual_fund_composition_asset_allocation](#schemagetmutualfundsworld_200_response_mutual_fund_composition_asset_allocation)|false|none|Asset allocation of the fund by different asset classes and their respective weights|
 |top_holdings|[[GetMutualFundsWorld_200_response_mutual_fund_composition_top_holdings_inner](#schemagetmutualfundsworld_200_response_mutual_fund_composition_top_holdings_inner)]|false|none|Top holdings of the fund with their respective weights in the overall portfolio composition|
+|asset_allocation|[GetMutualFundsWorld_200_response_mutual_fund_composition_asset_allocation](#schemagetmutualfundsworld_200_response_mutual_fund_composition_asset_allocation)|false|none|Asset allocation of the fund by different asset classes and their respective weights|
 |bond_breakdown|[GetMutualFundsWorld_200_response_mutual_fund_composition_bond_breakdown](#schemagetmutualfundsworld_200_response_mutual_fund_composition_bond_breakdown)|false|none|Breakdown of the fund’s bond holdings by maturity, duration, and credit quality|
 
 <h2 id="tocS_ResponseMutualFundWorldPerformance">ResponseMutualFundWorldPerformance</h2>
@@ -40248,11 +40253,11 @@ Meta information about the instrument
 ```json
 {
   "timestamp": "2025-05-07 11:10:12",
-  "current_usage": 4003,
-  "plan_limit": 20000,
-  "daily_usage": 12500,
-  "plan_daily_limit": 100000,
-  "plan_category": "enterprise"
+  "current_usage": 3,
+  "plan_limit": 8,
+  "daily_usage": 120,
+  "plan_daily_limit": 800,
+  "plan_category": "basic"
 }
 ```
 
@@ -40263,8 +40268,8 @@ Meta information about the instrument
 |timestamp|string|true|none|Current timestamp in UTC timezone|
 |current_usage|integer(int64)|true|none|Number of requests made in last minute|
 |plan_limit|integer(int64)|true|none|Your personal API limit (requests/minute) depending on the plan|
-|daily_usage|integer(int64)|false|none|Number of requests made in the current day. Returned only when the plan has a daily limit.|
-|plan_daily_limit|integer(int64)|false|none|Your personal API limit (requests/day) depending on the plan. Returned only when the plan has a daily limit.|
+|daily_usage|integer(int64)|false|none|API credits used today, counted from midnight UTC. Returned only on the Basic plan; paid plans have no daily limit.|
+|plan_daily_limit|integer(int64)|false|none|Daily cap of API credits. Returned only on the Basic plan, where it is 800; paid plans have no daily limit.|
 |plan_category|string|false|none|Plan category name|
 
 <h2 id="tocS_GetTimeSeriesApo_200_response_meta_indicator">GetTimeSeriesApo_200_response_meta_indicator</h2>
@@ -47220,12 +47225,12 @@ Growth estimates data
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|current_quarter|number(double)|false|none|Projected growth of the current quarter in percentage (%)|
-|next_quarter|number(double)|false|none|Projected growth of the next quarter in percentage (%)|
-|current_year|number(double)|false|none|Projected growth of the current year in percentage (%)|
-|next_year|number(double)|false|none|Projected growth of the next year in percentage (%)|
-|next_5_years_pa|number(double)|false|none|Projected growth during the next 5 years in percentage (%) per annum|
-|past_5_years_pa|number(double)|false|none|Actual growth over the last 5 years in percentage (%) per annum|
+|current_quarter|number(double)|false|none|Estimated EPS growth for the current quarter vs a year ago, as a decimal (0.1 = 10%)|
+|next_quarter|number(double)|false|none|Estimated EPS growth for the next quarter vs a year ago, as a decimal (0.1 = 10%)|
+|current_year|number(double)|false|none|Estimated EPS growth for the current fiscal year vs a year ago, as a decimal (0.1 = 10%)|
+|next_year|number(double)|false|none|Estimated EPS growth for the next fiscal year vs a year ago, as a decimal (0.1 = 10%)|
+|next_5_years_pa|number(double)|false|none|Estimated annual EPS growth over the next 5 years, as a decimal (0.1 = 10%). Derived from consensus EPS estimates for the current and next fiscal year, converging to the company's historical 5-year growth; not a separate long-term analyst consensus. `null` if fewer than 3 analysts cover the company.|
+|past_5_years_pa|number(double)|false|none|Annual EPS growth over the past 5 years, as a decimal (0.1 = 10%)|
 
 <h2 id="tocS_GetGrowthEstimates_200_response">GetGrowthEstimates_200_response</h2>
 <!-- backwards compatibility -->
@@ -54957,14 +54962,6 @@ Mutual fund information
         "weight": 0.1742
       }
     ],
-    "asset_allocation": {
-      "cash": 0.0043,
-      "stocks": 0.9956,
-      "preferred_stocks": 0,
-      "convertables": 0,
-      "bonds": 0,
-      "others": 0
-    },
     "top_holdings": [
       {
         "symbol": "BBWI",
@@ -54974,6 +54971,14 @@ Mutual fund information
         "weight": 0.00624
       }
     ],
+    "asset_allocation": {
+      "cash": 0.0043,
+      "stocks": 0.9956,
+      "preferred_stocks": 0,
+      "convertables": 0,
+      "bonds": 0,
+      "others": 0
+    },
     "bond_breakdown": {
       "average_maturity": {
         "fund": 0,
@@ -55019,14 +55024,6 @@ Mutual fund information
           "weight": 0.1742
         }
       ],
-      "asset_allocation": {
-        "cash": 0.0043,
-        "stocks": 0.9956,
-        "preferred_stocks": 0,
-        "convertables": 0,
-        "bonds": 0,
-        "others": 0
-      },
       "top_holdings": [
         {
           "symbol": "BBWI",
@@ -55036,6 +55033,14 @@ Mutual fund information
           "weight": 0.00624
         }
       ],
+      "asset_allocation": {
+        "cash": 0.0043,
+        "stocks": 0.9956,
+        "preferred_stocks": 0,
+        "convertables": 0,
+        "bonds": 0,
+        "others": 0
+      },
       "bond_breakdown": {
         "average_maturity": {
           "fund": 0,

@@ -1,111 +1,140 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const GoogleCloudApigeeV1SchemaSchemaPropertySchema = z
+const GoogleCloudApigeeV1ScoreComponentRecommendationActionActionContextSchema = z
   .object({
-    createTime: z
+    documentationLink: z
       .string()
       .exactOptional()
-      .openapi({
-        description:
-          'Time the field was created in RFC3339 string form. For example: `2016-02-26T10:23:09.592Z`.',
-      }),
-    custom: z
-      .string()
+      .openapi({ description: 'Documentation link for the action.' }),
+  })
+  .openapi({
+    description: 'Action context are all the relevant details for the action.',
+    required: [],
+  })
+  .openapi('GoogleCloudApigeeV1ScoreComponentRecommendationActionActionContext')
+
+const GoogleCloudApigeeV1ScoreComponentRecommendationActionSchema = z
+  .object({
+    actionContext:
+      GoogleCloudApigeeV1ScoreComponentRecommendationActionActionContextSchema.exactOptional().openapi(
+        { description: 'Action context for the action.' },
+      ),
+    description: z.string().exactOptional().openapi({ description: 'Description of the action.' }),
+  })
+  .openapi({ description: 'Action to improve security score.', required: [] })
+  .openapi('GoogleCloudApigeeV1ScoreComponentRecommendationAction')
+
+const GoogleCloudApigeeV1ScoreComponentRecommendationSchema = z
+  .object({
+    actions: z
+      .array(GoogleCloudApigeeV1ScoreComponentRecommendationActionSchema)
       .exactOptional()
-      .openapi({
-        description:
-          'Flag that specifies whether the field is standard in the dataset or a custom field created by the customer. `true` indicates that it is a custom field.',
-      }),
-    type: z.string().exactOptional().openapi({ description: 'Data type of the field.' }),
-  })
-  .openapi({ description: 'Properties for the schema field.', required: [] })
-  .openapi('GoogleCloudApigeeV1SchemaSchemaProperty')
-
-const GoogleCloudApigeeV1SchemaSchemaElementSchema = z
-  .object({
-    name: z.string().exactOptional().openapi({ description: 'Name of the field.' }),
-    properties: GoogleCloudApigeeV1SchemaSchemaPropertySchema.exactOptional().openapi({
-      description:
-        'Properties for the schema field. For example: { "createTime": "2016-02-26T10:23:09.592Z", "custom": "false", "type": "string" }',
-    }),
-  })
-  .openapi({ description: 'Message type for the schema element', required: [] })
-  .openapi('GoogleCloudApigeeV1SchemaSchemaElement')
-
-type GoogleCloudApigeeV1SchemaType = {
-  dimensions?: z.infer<typeof GoogleCloudApigeeV1SchemaSchemaElementSchema>[]
-  meta?: string[]
-  metrics?: z.infer<typeof GoogleCloudApigeeV1SchemaSchemaElementSchema>[]
-}
-
-const EdgeConfigstoreBundleBadBundleViolationSchema = z
-  .object({
+      .openapi({ description: 'Actions for the recommendation to improve the security score.' }),
     description: z
       .string()
       .exactOptional()
-      .openapi({ description: 'A description of why the bundle is invalid and how to fix it.' }),
-    filename: z
+      .openapi({ description: 'Description of the recommendation.' }),
+    impact: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Potential impact of this recommendation on the overall score. This denotes how important this recommendation is to improve the score.',
+      }),
+    title: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Title represents recommendation title.' }),
+  })
+  .openapi({ description: 'Recommendation based on security concerns and score.', required: [] })
+  .openapi('GoogleCloudApigeeV1ScoreComponentRecommendation')
+
+const GoogleCloudApigeeV1ScoreComponentSchema = z
+  .object({
+    calculateTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Time when score was calculated.' }),
+    dataCaptureTime: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'The filename (including relative path from the bundle root) in which the error occurred.',
+          'Time in the requested time period when data was last captured to compute the score.',
       }),
-  })
-  .openapi({
-    description: 'A message type used to describe a single bundle validation error.',
-    required: [],
-  })
-  .openapi('EdgeConfigstoreBundleBadBundleViolation')
-
-const EdgeConfigstoreBundleBadBundleSchema = z
-  .object({
-    violations: z
-      .array(EdgeConfigstoreBundleBadBundleViolationSchema)
+    drilldownPaths: z
+      .array(z.string())
       .exactOptional()
-      .openapi({ description: 'Describes all precondition violations.' }),
-  })
-  .openapi({
-    description: 'Describes why a bundle is invalid. Intended for use in error details.',
-    required: [],
-  })
-  .openapi('EdgeConfigstoreBundleBadBundle')
-
-const GoogleApiHttpBodySchema = z
-  .object({
-    contentType: z
+      .openapi({ description: 'List of paths for next components.' }),
+    recommendations: z
+      .array(GoogleCloudApigeeV1ScoreComponentRecommendationSchema)
+      .exactOptional()
+      .openapi({ description: 'List of recommendations to improve API security.' }),
+    score: z.int32().exactOptional().openapi({ description: 'Score for the component.' }),
+    scorePath: z
       .string()
-      .exactOptional()
-      .openapi({
-        description: 'The HTTP Content-Type header value specifying the content type of the body.',
-      }),
-    data: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The HTTP request/response body as raw binary.' }),
-    extensions: z
-      .array(
-        z.record(
-          z.string(),
-          z
-            .any()
-            .openapi({
-              description: 'Properties of the object. Contains field @type with type URL.',
-            }),
-        ),
-      )
       .exactOptional()
       .openapi({
         description:
-          'Application specific response metadata. Must be set in the first response for streaming APIs.',
+          'Path of the component. Example: /org@myorg/envgroup@myenvgroup/proxies/proxy@myproxy',
+      }),
+  })
+  .openapi({
+    description: 'Component is an individual security element that is scored.',
+    required: [],
+  })
+  .openapi('GoogleCloudApigeeV1ScoreComponent')
+
+const GoogleTypeIntervalSchema = z
+  .object({
+    endTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Exclusive end of the interval. If specified, a Timestamp matching this interval will have to be before the end.',
+      }),
+    startTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Inclusive start of the interval. If specified, a Timestamp matching this interval will have to be the same or after the start.',
       }),
   })
   .openapi({
     description:
-      "Message that represents an arbitrary HTTP body. It should only be used for payload formats that can't be represented as JSON, such as raw binary or an HTML page. This message can be used both in streaming and non-streaming API methods in the request as well as the response. It can be used as a top-level request field, which is convenient if one wants to extract parameters from either the URL or HTTP template into the request fields and also want access to the raw HTTP body. Example: message GetResourceRequest { // A unique request id. string request_id = 1; // The raw HTTP body is bound to this field. google.api.HttpBody http_body = 2; } service ResourceService { rpc GetResource(GetResourceRequest) returns (google.api.HttpBody); rpc UpdateResource(google.api.HttpBody) returns (google.protobuf.Empty); } Example with streaming methods: service CaldavService { rpc GetCalendar(stream google.api.HttpBody) returns (stream google.api.HttpBody); rpc UpdateCalendar(stream google.api.HttpBody) returns (stream google.api.HttpBody); } Use of this type only changes how the request and response bodies are handled, all other features will continue to work unchanged.",
+      'Represents a time interval, encoded as a Timestamp start (inclusive) and a Timestamp end (exclusive). The start must be less than or equal to the end. When the start equals the end, the interval is empty (matches no time). When both start and end are unspecified, the interval matches any time.',
     required: [],
   })
-  .openapi('GoogleApiHttpBody')
+  .openapi('GoogleTypeInterval')
+
+type GoogleCloudApigeeV1ScoreType = {
+  component?: z.infer<typeof GoogleCloudApigeeV1ScoreComponentSchema>
+  subcomponents?: z.infer<typeof GoogleCloudApigeeV1ScoreComponentSchema>[]
+  timeRange?: z.infer<typeof GoogleTypeIntervalSchema>
+}
+
+const GoogleCloudApigeeV1ScoreSchema: z.ZodType<GoogleCloudApigeeV1ScoreType> = z
+  .object({
+    component: GoogleCloudApigeeV1ScoreComponentSchema.exactOptional().openapi({
+      description: 'Component containing score, recommendations and actions.',
+    }),
+    subcomponents: z
+      .array(GoogleCloudApigeeV1ScoreComponentSchema)
+      .exactOptional()
+      .openapi({ description: 'List of all the drilldown score components.' }),
+    timeRange: GoogleTypeIntervalSchema.exactOptional().openapi({
+      description: 'Start and end time for the score.',
+    }),
+  })
+  .openapi({ description: 'Represents Security Score.', required: [] })
+  .openapi('GoogleCloudApigeeV1Score')
+
+type GoogleCloudApigeeV1ComputeEnvironmentScoresResponseType = {
+  nextPageToken?: string
+  scores?: z.infer<typeof GoogleCloudApigeeV1ScoreSchema>[]
+}
 
 const GoogleCloudApigeeV1AccessGetSchema = z
   .object({ name: z.string().exactOptional(), value: z.string().exactOptional() })
@@ -146,261 +175,104 @@ const GoogleCloudApigeeV1AccessSchema = z
   .openapi({ required: [] })
   .openapi('GoogleCloudApigeeV1Access')
 
-const GoogleCloudApigeeV1ActivateNatAddressRequestSchema = z
-  .object({})
-  .openapi({
-    description: 'Request for ActivateNatAddressRequest. Activate the nat address request.',
-  })
-  .openapi('GoogleCloudApigeeV1ActivateNatAddressRequest')
-
-const GoogleCloudApigeeV1AdvancedApiOpsConfigSchema = z
+const GoogleCloudApigeeV1PropertySchema = z
   .object({
-    enabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Flag that specifies whether the Advanced API Ops add-on is enabled.',
-      }),
+    name: z.string().exactOptional().openapi({ description: 'The property key' }),
+    value: z.string().exactOptional().openapi({ description: 'The property value' }),
   })
-  .openapi({ description: 'Configuration for the Advanced API Ops add-on.', required: [] })
-  .openapi('GoogleCloudApigeeV1AdvancedApiOpsConfig')
+  .openapi({ description: 'A single property entry in the Properties message.', required: [] })
+  .openapi('GoogleCloudApigeeV1Property')
 
-const GoogleCloudApigeeV1ApiSecurityConfigSchema = z
+const GoogleCloudApigeeV1PropertiesSchema = z
   .object({
-    enabled: z
-      .boolean()
+    property: z
+      .array(GoogleCloudApigeeV1PropertySchema)
       .exactOptional()
-      .openapi({ description: 'Flag that specifies whether the API security add-on is enabled.' }),
-    expiresAt: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Time at which the API Security add-on expires in in milliseconds since epoch. If unspecified, the add-on will never expire.',
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'Configurations of the API Security add-on.', required: [] })
-  .openapi('GoogleCloudApigeeV1ApiSecurityConfig')
-
-const GoogleCloudApigeeV1ConnectorsPlatformConfigSchema = z
-  .object({
-    enabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Flag that specifies whether the Connectors Platform add-on is enabled.',
-      }),
-    expiresAt: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Time at which the Connectors Platform add-on expires in milliseconds since epoch. If unspecified, the add-on will never expire.',
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'Configuration for the Connectors Platform add-on.', required: [] })
-  .openapi('GoogleCloudApigeeV1ConnectorsPlatformConfig')
-
-const GoogleCloudApigeeV1IntegrationConfigSchema = z
-  .object({
-    enabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Flag that specifies whether the Integration add-on is enabled.' }),
-  })
-  .openapi({ description: 'Configuration for the Integration add-on.', required: [] })
-  .openapi('GoogleCloudApigeeV1IntegrationConfig')
-
-const GoogleCloudApigeeV1MonetizationConfigSchema = z
-  .object({
-    enabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Flag that specifies whether the Monetization add-on is enabled.' }),
-  })
-  .openapi({ description: 'Configuration for the Monetization add-on.', required: [] })
-  .openapi('GoogleCloudApigeeV1MonetizationConfig')
-
-const GoogleCloudApigeeV1AddonsConfigSchema = z
-  .object({
-    advancedApiOpsConfig: GoogleCloudApigeeV1AdvancedApiOpsConfigSchema.exactOptional().openapi({
-      description: 'Configuration for the Advanced API Ops add-on.',
-    }),
-    apiSecurityConfig: GoogleCloudApigeeV1ApiSecurityConfigSchema.exactOptional().openapi({
-      description: 'Configuration for the API Security add-on.',
-    }),
-    connectorsPlatformConfig:
-      GoogleCloudApigeeV1ConnectorsPlatformConfigSchema.exactOptional().openapi({
-        description: 'Configuration for the Connectors Platform add-on.',
-      }),
-    integrationConfig: GoogleCloudApigeeV1IntegrationConfigSchema.exactOptional().openapi({
-      description: 'Configuration for the Integration add-on.',
-    }),
-    monetizationConfig: GoogleCloudApigeeV1MonetizationConfigSchema.exactOptional().openapi({
-      description: 'Configuration for the Monetization add-on.',
-    }),
-  })
-  .openapi({ description: 'Add-on configurations for the Apigee organization.', required: [] })
-  .openapi('GoogleCloudApigeeV1AddonsConfig')
-
-const GoogleTypeMoneySchema = z
-  .object({
-    currencyCode: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The three-letter currency code defined in ISO 4217.' }),
-    nanos: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Number of nano (10^-9) units of the amount. The value must be between -999,999,999 and +999,999,999 inclusive. If `units` is positive, `nanos` must be positive or zero. If `units` is zero, `nanos` can be positive, zero, or negative. If `units` is negative, `nanos` must be negative or zero. For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.',
-      }),
-    units: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The whole units of the amount. For example if `currencyCode` is `"USD"`, then 1 unit is one US dollar.',
-      }),
-  })
-  .openapi({ description: 'Represents an amount of money with its currency type.', required: [] })
-  .openapi('GoogleTypeMoney')
-
-const GoogleCloudApigeeV1AdjustDeveloperBalanceRequestSchema = z
-  .object({
-    adjustment: GoogleTypeMoneySchema.exactOptional().openapi({
-      description:
-        '* A positive value of `adjustment` means that that the API provider wants to adjust the balance for an under-charged developer i.e. the balance of the developer will decrease. * A negative value of `adjustment` means that that the API provider wants to adjust the balance for an over-charged developer i.e. the balance of the developer will increase.',
-    }),
-  })
-  .openapi({ description: 'Request for AdjustDeveloperBalance.', required: [] })
-  .openapi('GoogleCloudApigeeV1AdjustDeveloperBalanceRequest')
-
-const GoogleCloudApigeeV1CertInfoSchema = z
-  .object({
-    basicConstraints: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'X.509 basic constraints extension.' }),
-    expiryDate: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'X.509 `notAfter` validity period in milliseconds since epoch.' }),
-    isValid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Flag that specifies whether the certificate is valid. Flag is set to `Yes` if the certificate is valid, `No` if expired, or `Not yet` if not yet valid.',
-      }),
-    issuer: z.string().exactOptional().openapi({ description: 'X.509 issuer.' }),
-    publicKey: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Public key component of the X.509 subject public key info.' }),
-    serialNumber: z.string().exactOptional().openapi({ description: 'X.509 serial number.' }),
-    sigAlgName: z.string().exactOptional().openapi({ description: 'X.509 signatureAlgorithm.' }),
-    subject: z.string().exactOptional().openapi({ description: 'X.509 subject.' }),
-    subjectAlternativeNames: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'X.509 subject alternative names (SANs) extension.' }),
-    validFrom: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'X.509 `notBefore` validity period in milliseconds since epoch.' }),
-    version: z.int32().exactOptional().openapi({ description: 'X.509 version.' }),
-  })
-  .openapi({ description: 'X.509 certificate as defined in RFC 5280.', required: [] })
-  .openapi('GoogleCloudApigeeV1CertInfo')
-
-const GoogleCloudApigeeV1CertificateSchema = z
-  .object({
-    certInfo: z
-      .array(GoogleCloudApigeeV1CertInfoSchema)
-      .exactOptional()
-      .openapi({ description: 'Chain of certificates under this name.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('GoogleCloudApigeeV1Certificate')
-
-const GoogleCloudApigeeV1AliasSchema = z
-  .object({
-    alias: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Resource ID for this alias. Values must match the regular expression `[^/]{1,255}`.',
-      }),
-    certsInfo: GoogleCloudApigeeV1CertificateSchema.exactOptional().openapi({
-      description: 'Chain of certificates under this alias.',
-    }),
-    type: z
-      .enum(['ALIAS_TYPE_UNSPECIFIED', 'CERT', 'KEY_CERT'])
-      .exactOptional()
-      .openapi({ description: 'Type of alias.' }),
-  })
-  .openapi({ description: 'Reference to a certificate or key/certificate pair.', required: [] })
-  .openapi('GoogleCloudApigeeV1Alias')
-
-const GoogleCloudApigeeV1AliasRevisionConfigSchema = z
-  .object({
-    location: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Location of the alias file. For example, a Google Cloud Storage URI.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Name of the alias revision included in the keystore in the following format: `organizations/{org}/environments/{env}/keystores/{keystore}/aliases/{alias}/revisions/{rev}`',
-      }),
-    type: z.enum(['ALIAS_TYPE_UNSPECIFIED', 'CERT', 'KEY_CERT']).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('GoogleCloudApigeeV1AliasRevisionConfig')
-
-const GoogleCloudApigeeV1ApiCategoryDataSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ description: 'ID of the category (a UUID).' }),
-    name: z.string().exactOptional().openapi({ description: 'Name of the category.' }),
-    siteId: z.string().exactOptional().openapi({ description: 'Name of the portal.' }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Time the category was last modified in milliseconds since epoch.' }),
-  })
-  .openapi({ description: 'the Api category resource.', required: [] })
-  .openapi('GoogleCloudApigeeV1ApiCategoryData')
-
-const GoogleCloudApigeeV1ApiCategorySchema = z
-  .object({
-    data: GoogleCloudApigeeV1ApiCategoryDataSchema.exactOptional().openapi({
-      description: 'Details of category.',
-    }),
-    errorCode: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'ID that can be used to find errors in the log files.' }),
-    message: z.string().exactOptional().openapi({ description: 'Description of the operation.' }),
-    requestId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'ID that can be used to find request details in the log files.' }),
-    status: z.string().exactOptional().openapi({ description: 'Status of the operation.' }),
+      .openapi({ description: 'List of all properties in the object' }),
   })
   .openapi({
-    description: 'the Api category resource wrapped with response status, error_code etc.',
+    description:
+      'Message for compatibility with legacy Edge specification for Java Properties object in JSON.',
     required: [],
   })
-  .openapi('GoogleCloudApigeeV1ApiCategory')
+  .openapi('GoogleCloudApigeeV1Properties')
+
+const GoogleCloudApigeeV1ResultSchema = z
+  .object({
+    ActionResult: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Type of the action result. Can be one of the five: DebugInfo, RequestMessage, ResponseMessage, ErrorMessage, VariableAccess',
+      }),
+    accessList: z
+      .array(GoogleCloudApigeeV1AccessSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of variable access actions agaist the api proxy. Supported values: Get, Set, Remove.',
+      }),
+    content: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Error message content. for example, "content" : "{\\"fault\\":{\\"faultstring\\":\\"API timed out\\",\\"detail\\":{\\"errorcode\\":\\"flow.APITimedOut\\"}}}"',
+      }),
+    headers: z
+      .array(GoogleCloudApigeeV1PropertySchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of HTTP headers. for example, \'"headers" : [ { "name" : "Content-Length", "value" : "83" }, { "name" : "Content-Type", "value" : "application/json" } ]\'',
+      }),
+    properties: GoogleCloudApigeeV1PropertiesSchema.exactOptional().openapi({
+      description: 'Name value pairs used for DebugInfo ActionResult.',
+    }),
+    reasonPhrase: z.string().exactOptional().openapi({ description: 'HTTP response phrase' }),
+    statusCode: z.string().exactOptional().openapi({ description: 'HTTP response code' }),
+    timestamp: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Timestamp of when the result is recorded. Its format is dd-mm-yy hh:mm:ss:xxx. For example, `"timestamp" : "12-08-19 00:31:59:960"`',
+      }),
+    uRI: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The relative path of the api proxy. for example, `"uRI" : "/iloveapis"`',
+      }),
+    verb: z.string().exactOptional().openapi({ description: 'HTTP method verb' }),
+  })
+  .openapi({
+    description:
+      'Result is short for "action result", could be different types identified by "action_result" field. Supported types: 1. DebugInfo : generic debug info collected by runtime recorded as a list of properties. For example, the contents could be virtual host info, state change result, or execution metadata. Required fields : properties, timestamp 2. RequestMessage: information of a http request. Contains headers, request URI and http methods type.Required fields : headers, uri, verb 3. ResponseMessage: information of a http response. Contains headers, reason phrase and http status code. Required fields : headers, reasonPhrase, statusCode 4. ErrorMessage: information of a http error message. Contains detail error message, reason phrase and status code. Required fields : content, headers, reasonPhrase, statusCode 5. VariableAccess: a list of variable access actions, can be Get, Set and Remove. Required fields : accessList',
+    required: [],
+  })
+  .openapi('GoogleCloudApigeeV1Result')
+
+const GoogleCloudApigeeV1PointSchema = z
+  .object({
+    id: z.string().exactOptional().openapi({ description: 'Name of a step in the transaction.' }),
+    results: z
+      .array(GoogleCloudApigeeV1ResultSchema)
+      .exactOptional()
+      .openapi({ description: 'List of results extracted from a given debug point.' }),
+  })
+  .openapi({
+    description:
+      'Point is a group of information collected by runtime plane at critical points of the message flow of the processed API request. This is a list of supported point IDs, categorized to three major buckets. For each category, debug points that we are currently supporting are listed below: - Flow status debug points: StateChange FlowInfo Condition Execution DebugMask Error - Flow control debug points: FlowCallout Paused Resumed FlowReturn BreakFlow Error - Runtime debug points: ScriptExecutor FlowCalloutStepDefinition CustomTarget StepDefinition Oauth2ServicePoint RaiseFault NodeJS The detail information of the given debug point is stored in a list of results.',
+    required: [],
+  })
+  .openapi('GoogleCloudApigeeV1Point')
+
+type GoogleCloudApigeeV1DebugSessionTransactionType = {
+  completed?: boolean
+  point?: z.infer<typeof GoogleCloudApigeeV1PointSchema>[]
+}
 
 const GoogleCloudApigeeV1AttributeSchema = z
   .object({
@@ -718,6 +590,434 @@ const GoogleCloudApigeeV1ApiProductSchema = z
   })
   .openapi({ required: [] })
   .openapi('GoogleCloudApigeeV1ApiProduct')
+
+type GoogleCloudApigeeV1ListApiProductsResponseType = {
+  apiProduct?: z.infer<typeof GoogleCloudApigeeV1ApiProductSchema>[]
+}
+
+const GoogleCloudApigeeV1MetricSchema = z
+  .object({
+    name: z.string().exactOptional().openapi({ description: 'Metric name.' }),
+    values: z
+      .array(z.any())
+      .exactOptional()
+      .openapi({
+        description:
+          'List of metric values. Possible value formats include: `"values":["39.0"]` or `"values":[ { "value": "39.0", "timestamp": 1232434354} ]`',
+      }),
+  })
+  .openapi({
+    description:
+      'Encapsulates the metric data point. For example: ```{ "name": "sum(message_count)", "values" : [ { "timestamp": 1549004400000, "value": "39.0" }, { "timestamp" : 1548997200000, "value" : "0.0" } ] }``` or ```{ "name": "sum(message_count)", "values" : ["39.0"] }```',
+    required: [],
+  })
+  .openapi('GoogleCloudApigeeV1Metric')
+
+const GoogleCloudApigeeV1DimensionMetricSchema = z
+  .object({
+    metrics: z
+      .array(GoogleCloudApigeeV1MetricSchema)
+      .exactOptional()
+      .openapi({ description: 'List of metrics.' }),
+    name: z.string().exactOptional().openapi({ description: 'Name of the dimension.' }),
+  })
+  .openapi({ description: 'Encapsulates a metric grouped by dimension.', required: [] })
+  .openapi('GoogleCloudApigeeV1DimensionMetric')
+
+const GoogleCloudApigeeV1StatsEnvironmentStatsSchema = z
+  .object({
+    dimensions: z
+      .array(GoogleCloudApigeeV1DimensionMetricSchema)
+      .exactOptional()
+      .openapi({ description: 'List of metrics grouped under dimensions.' }),
+    metrics: z
+      .array(GoogleCloudApigeeV1MetricSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'In the final response, only one of the following fields will be present based on the dimensions provided. If no dimensions are provided, then only top-level metrics is provided. If dimensions are included, then there will be a top-level dimensions field under environments which will contain metrics values and the dimension name. Example: ``` "environments": [ { "dimensions": [ { "metrics": [ { "name": "sum(message_count)", "values": [ "2.14049521E8" ] } ], "name": "nit_proxy" } ], "name": "prod" } ]``` or ```"environments": [ { "metrics": [ { "name": "sum(message_count)", "values": [ "2.19026331E8" ] } ], "name": "prod" } ]``` List of metric values.',
+      }),
+    name: z.string().exactOptional().openapi({ description: 'Name of the environment.' }),
+  })
+  .openapi({
+    description:
+      'Encapsulates the environment wrapper: ``` "environments": [ { "metrics": [ { "name": "sum(message_count)", "values": [ "2.52056245E8" ] } ], "name": "prod" } ]```',
+    required: [],
+  })
+  .openapi('GoogleCloudApigeeV1StatsEnvironmentStats')
+
+const GoogleCloudApigeeV1StatsHostStatsSchema = z
+  .object({
+    dimensions: z
+      .array(GoogleCloudApigeeV1DimensionMetricSchema)
+      .exactOptional()
+      .openapi({ description: 'List of metrics grouped under dimensions.' }),
+    metrics: z
+      .array(GoogleCloudApigeeV1MetricSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'In the final response, only one of the following fields will be present based on the dimensions provided. If no dimensions are provided, then only the top-level metrics are provided. If dimensions are included, then there will be a top-level dimensions field under hostnames which will contain metrics values and the dimension name. Example: ``` "hosts": [ { "dimensions": [ { "metrics": [ { "name": "sum(message_count)", "values": [ "2.14049521E8" ] } ], "name": "nit_proxy" } ], "name": "example.com" } ]``` OR ```"hosts": [ { "metrics": [ { "name": "sum(message_count)", "values": [ "2.19026331E8" ] } ], "name": "example.com" } ]``` List of metric values.',
+      }),
+    name: z.string().exactOptional().openapi({ description: 'Hostname used in query.' }),
+  })
+  .openapi({
+    description:
+      'Encapsulates the hostname wrapper: ``` "hosts": [ { "metrics": [ { "name": "sum(message_count)", "values": [ "2.52056245E8" ] } ], "name": "example.com" } ]```',
+    required: [],
+  })
+  .openapi('GoogleCloudApigeeV1StatsHostStats')
+
+const GoogleCloudApigeeV1MetadataSchema = z
+  .object({
+    errors: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'List of error messages as strings.' }),
+    notices: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'List of additional information such as data source, if result was truncated. For example: ``` "notices": [ "Source:Postgres", "PG Host:uappg0rw.e2e.apigeeks.net", "query served by:4b64601e-40de-4eb1-bfb9-eeee7ac929ed", "Table used: edge.api.uapgroup2.agg_api" ]```',
+      }),
+  })
+  .openapi({
+    description: 'Encapsulates additional information about query execution.',
+    required: [],
+  })
+  .openapi('GoogleCloudApigeeV1Metadata')
+
+type GoogleCloudApigeeV1StatsType = {
+  environments?: z.infer<typeof GoogleCloudApigeeV1StatsEnvironmentStatsSchema>[]
+  hosts?: z.infer<typeof GoogleCloudApigeeV1StatsHostStatsSchema>[]
+  metaData?: z.infer<typeof GoogleCloudApigeeV1MetadataSchema>
+}
+
+const EdgeConfigstoreBundleBadBundleViolationSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A description of why the bundle is invalid and how to fix it.' }),
+    filename: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The filename (including relative path from the bundle root) in which the error occurred.',
+      }),
+  })
+  .openapi({
+    description: 'A message type used to describe a single bundle validation error.',
+    required: [],
+  })
+  .openapi('EdgeConfigstoreBundleBadBundleViolation')
+
+const EdgeConfigstoreBundleBadBundleSchema = z
+  .object({
+    violations: z
+      .array(EdgeConfigstoreBundleBadBundleViolationSchema)
+      .exactOptional()
+      .openapi({ description: 'Describes all precondition violations.' }),
+  })
+  .openapi({
+    description: 'Describes why a bundle is invalid. Intended for use in error details.',
+    required: [],
+  })
+  .openapi('EdgeConfigstoreBundleBadBundle')
+
+const GoogleApiHttpBodySchema = z
+  .object({
+    contentType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The HTTP Content-Type header value specifying the content type of the body.',
+      }),
+    data: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The HTTP request/response body as raw binary.' }),
+    extensions: z
+      .array(
+        z.record(
+          z.string(),
+          z
+            .any()
+            .openapi({
+              description: 'Properties of the object. Contains field @type with type URL.',
+            }),
+        ),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'Application specific response metadata. Must be set in the first response for streaming APIs.',
+      }),
+  })
+  .openapi({
+    description:
+      "Message that represents an arbitrary HTTP body. It should only be used for payload formats that can't be represented as JSON, such as raw binary or an HTML page. This message can be used both in streaming and non-streaming API methods in the request as well as the response. It can be used as a top-level request field, which is convenient if one wants to extract parameters from either the URL or HTTP template into the request fields and also want access to the raw HTTP body. Example: message GetResourceRequest { // A unique request id. string request_id = 1; // The raw HTTP body is bound to this field. google.api.HttpBody http_body = 2; } service ResourceService { rpc GetResource(GetResourceRequest) returns (google.api.HttpBody); rpc UpdateResource(google.api.HttpBody) returns (google.protobuf.Empty); } Example with streaming methods: service CaldavService { rpc GetCalendar(stream google.api.HttpBody) returns (stream google.api.HttpBody); rpc UpdateCalendar(stream google.api.HttpBody) returns (stream google.api.HttpBody); } Use of this type only changes how the request and response bodies are handled, all other features will continue to work unchanged.",
+    required: [],
+  })
+  .openapi('GoogleApiHttpBody')
+
+const GoogleCloudApigeeV1ActivateNatAddressRequestSchema = z
+  .looseObject({})
+  .openapi({
+    description: 'Request for ActivateNatAddressRequest. Activate the nat address request.',
+  })
+  .openapi('GoogleCloudApigeeV1ActivateNatAddressRequest')
+
+const GoogleCloudApigeeV1AdvancedApiOpsConfigSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Flag that specifies whether the Advanced API Ops add-on is enabled.',
+      }),
+  })
+  .openapi({ description: 'Configuration for the Advanced API Ops add-on.', required: [] })
+  .openapi('GoogleCloudApigeeV1AdvancedApiOpsConfig')
+
+const GoogleCloudApigeeV1ApiSecurityConfigSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Flag that specifies whether the API security add-on is enabled.' }),
+    expiresAt: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Time at which the API Security add-on expires in in milliseconds since epoch. If unspecified, the add-on will never expire.',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'Configurations of the API Security add-on.', required: [] })
+  .openapi('GoogleCloudApigeeV1ApiSecurityConfig')
+
+const GoogleCloudApigeeV1ConnectorsPlatformConfigSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Flag that specifies whether the Connectors Platform add-on is enabled.',
+      }),
+    expiresAt: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Time at which the Connectors Platform add-on expires in milliseconds since epoch. If unspecified, the add-on will never expire.',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'Configuration for the Connectors Platform add-on.', required: [] })
+  .openapi('GoogleCloudApigeeV1ConnectorsPlatformConfig')
+
+const GoogleCloudApigeeV1IntegrationConfigSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Flag that specifies whether the Integration add-on is enabled.' }),
+  })
+  .openapi({ description: 'Configuration for the Integration add-on.', required: [] })
+  .openapi('GoogleCloudApigeeV1IntegrationConfig')
+
+const GoogleCloudApigeeV1MonetizationConfigSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Flag that specifies whether the Monetization add-on is enabled.' }),
+  })
+  .openapi({ description: 'Configuration for the Monetization add-on.', required: [] })
+  .openapi('GoogleCloudApigeeV1MonetizationConfig')
+
+const GoogleCloudApigeeV1AddonsConfigSchema = z
+  .object({
+    advancedApiOpsConfig: GoogleCloudApigeeV1AdvancedApiOpsConfigSchema.exactOptional().openapi({
+      description: 'Configuration for the Advanced API Ops add-on.',
+    }),
+    apiSecurityConfig: GoogleCloudApigeeV1ApiSecurityConfigSchema.exactOptional().openapi({
+      description: 'Configuration for the API Security add-on.',
+    }),
+    connectorsPlatformConfig:
+      GoogleCloudApigeeV1ConnectorsPlatformConfigSchema.exactOptional().openapi({
+        description: 'Configuration for the Connectors Platform add-on.',
+      }),
+    integrationConfig: GoogleCloudApigeeV1IntegrationConfigSchema.exactOptional().openapi({
+      description: 'Configuration for the Integration add-on.',
+    }),
+    monetizationConfig: GoogleCloudApigeeV1MonetizationConfigSchema.exactOptional().openapi({
+      description: 'Configuration for the Monetization add-on.',
+    }),
+  })
+  .openapi({ description: 'Add-on configurations for the Apigee organization.', required: [] })
+  .openapi('GoogleCloudApigeeV1AddonsConfig')
+
+const GoogleTypeMoneySchema = z
+  .object({
+    currencyCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The three-letter currency code defined in ISO 4217.' }),
+    nanos: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Number of nano (10^-9) units of the amount. The value must be between -999,999,999 and +999,999,999 inclusive. If `units` is positive, `nanos` must be positive or zero. If `units` is zero, `nanos` can be positive, zero, or negative. If `units` is negative, `nanos` must be negative or zero. For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.',
+      }),
+    units: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The whole units of the amount. For example if `currencyCode` is `"USD"`, then 1 unit is one US dollar.',
+      }),
+  })
+  .openapi({ description: 'Represents an amount of money with its currency type.', required: [] })
+  .openapi('GoogleTypeMoney')
+
+const GoogleCloudApigeeV1AdjustDeveloperBalanceRequestSchema = z
+  .object({
+    adjustment: GoogleTypeMoneySchema.exactOptional().openapi({
+      description:
+        '* A positive value of `adjustment` means that that the API provider wants to adjust the balance for an under-charged developer i.e. the balance of the developer will decrease. * A negative value of `adjustment` means that that the API provider wants to adjust the balance for an over-charged developer i.e. the balance of the developer will increase.',
+    }),
+  })
+  .openapi({ description: 'Request for AdjustDeveloperBalance.', required: [] })
+  .openapi('GoogleCloudApigeeV1AdjustDeveloperBalanceRequest')
+
+const GoogleCloudApigeeV1CertInfoSchema = z
+  .object({
+    basicConstraints: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'X.509 basic constraints extension.' }),
+    expiryDate: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'X.509 `notAfter` validity period in milliseconds since epoch.' }),
+    isValid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Flag that specifies whether the certificate is valid. Flag is set to `Yes` if the certificate is valid, `No` if expired, or `Not yet` if not yet valid.',
+      }),
+    issuer: z.string().exactOptional().openapi({ description: 'X.509 issuer.' }),
+    publicKey: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Public key component of the X.509 subject public key info.' }),
+    serialNumber: z.string().exactOptional().openapi({ description: 'X.509 serial number.' }),
+    sigAlgName: z.string().exactOptional().openapi({ description: 'X.509 signatureAlgorithm.' }),
+    subject: z.string().exactOptional().openapi({ description: 'X.509 subject.' }),
+    subjectAlternativeNames: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'X.509 subject alternative names (SANs) extension.' }),
+    validFrom: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'X.509 `notBefore` validity period in milliseconds since epoch.' }),
+    version: z.int32().exactOptional().openapi({ description: 'X.509 version.' }),
+  })
+  .openapi({ description: 'X.509 certificate as defined in RFC 5280.', required: [] })
+  .openapi('GoogleCloudApigeeV1CertInfo')
+
+const GoogleCloudApigeeV1CertificateSchema = z
+  .object({
+    certInfo: z
+      .array(GoogleCloudApigeeV1CertInfoSchema)
+      .exactOptional()
+      .openapi({ description: 'Chain of certificates under this name.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('GoogleCloudApigeeV1Certificate')
+
+const GoogleCloudApigeeV1AliasSchema = z
+  .object({
+    alias: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Resource ID for this alias. Values must match the regular expression `[^/]{1,255}`.',
+      }),
+    certsInfo: GoogleCloudApigeeV1CertificateSchema.exactOptional().openapi({
+      description: 'Chain of certificates under this alias.',
+    }),
+    type: z
+      .enum(['ALIAS_TYPE_UNSPECIFIED', 'CERT', 'KEY_CERT'])
+      .exactOptional()
+      .openapi({ description: 'Type of alias.' }),
+  })
+  .openapi({ description: 'Reference to a certificate or key/certificate pair.', required: [] })
+  .openapi('GoogleCloudApigeeV1Alias')
+
+const GoogleCloudApigeeV1AliasRevisionConfigSchema = z
+  .object({
+    location: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Location of the alias file. For example, a Google Cloud Storage URI.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Name of the alias revision included in the keystore in the following format: `organizations/{org}/environments/{env}/keystores/{keystore}/aliases/{alias}/revisions/{rev}`',
+      }),
+    type: z.enum(['ALIAS_TYPE_UNSPECIFIED', 'CERT', 'KEY_CERT']).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('GoogleCloudApigeeV1AliasRevisionConfig')
+
+const GoogleCloudApigeeV1ApiCategoryDataSchema = z
+  .object({
+    id: z.string().exactOptional().openapi({ description: 'ID of the category (a UUID).' }),
+    name: z.string().exactOptional().openapi({ description: 'Name of the category.' }),
+    siteId: z.string().exactOptional().openapi({ description: 'Name of the portal.' }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Time the category was last modified in milliseconds since epoch.' }),
+  })
+  .openapi({ description: 'the Api category resource.', required: [] })
+  .openapi('GoogleCloudApigeeV1ApiCategoryData')
+
+const GoogleCloudApigeeV1ApiCategorySchema = z
+  .object({
+    data: GoogleCloudApigeeV1ApiCategoryDataSchema.exactOptional().openapi({
+      description: 'Details of category.',
+    }),
+    errorCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'ID that can be used to find errors in the log files.' }),
+    message: z.string().exactOptional().openapi({ description: 'Description of the operation.' }),
+    requestId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'ID that can be used to find request details in the log files.' }),
+    status: z.string().exactOptional().openapi({ description: 'Status of the operation.' }),
+  })
+  .openapi({
+    description: 'the Api category resource wrapped with response status, error_code etc.',
+    required: [],
+  })
+  .openapi('GoogleCloudApigeeV1ApiCategory')
 
 const GoogleCloudApigeeV1ApiProductRefSchema = z
   .object({
@@ -1393,30 +1693,6 @@ const GoogleCloudApigeeV1ComputeEnvironmentScoresRequestFilterSchema = z
   })
   .openapi('GoogleCloudApigeeV1ComputeEnvironmentScoresRequestFilter')
 
-const GoogleTypeIntervalSchema = z
-  .object({
-    endTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Exclusive end of the interval. If specified, a Timestamp matching this interval will have to be before the end.',
-      }),
-    startTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Inclusive start of the interval. If specified, a Timestamp matching this interval will have to be the same or after the start.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents a time interval, encoded as a Timestamp start (inclusive) and a Timestamp end (exclusive). The start must be less than or equal to the end. When the start equals the end, the interval is empty (matches no time). When both start and end are unspecified, the interval matches any time.',
-    required: [],
-  })
-  .openapi('GoogleTypeInterval')
-
 const GoogleCloudApigeeV1ComputeEnvironmentScoresRequestSchema = z
   .object({
     filters: z
@@ -1448,123 +1724,23 @@ const GoogleCloudApigeeV1ComputeEnvironmentScoresRequestSchema = z
   .openapi({ description: 'Request for ComputeEnvironmentScores.', required: [] })
   .openapi('GoogleCloudApigeeV1ComputeEnvironmentScoresRequest')
 
-const GoogleCloudApigeeV1ScoreComponentRecommendationActionActionContextSchema = z
-  .object({
-    documentationLink: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Documentation link for the action.' }),
-  })
-  .openapi({
-    description: 'Action context are all the relevant details for the action.',
-    required: [],
-  })
-  .openapi('GoogleCloudApigeeV1ScoreComponentRecommendationActionActionContext')
-
-const GoogleCloudApigeeV1ScoreComponentRecommendationActionSchema = z
-  .object({
-    actionContext:
-      GoogleCloudApigeeV1ScoreComponentRecommendationActionActionContextSchema.exactOptional().openapi(
-        { description: 'Action context for the action.' },
-      ),
-    description: z.string().exactOptional().openapi({ description: 'Description of the action.' }),
-  })
-  .openapi({ description: 'Action to improve security score.', required: [] })
-  .openapi('GoogleCloudApigeeV1ScoreComponentRecommendationAction')
-
-const GoogleCloudApigeeV1ScoreComponentRecommendationSchema = z
-  .object({
-    actions: z
-      .array(GoogleCloudApigeeV1ScoreComponentRecommendationActionSchema)
-      .exactOptional()
-      .openapi({ description: 'Actions for the recommendation to improve the security score.' }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Description of the recommendation.' }),
-    impact: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Potential impact of this recommendation on the overall score. This denotes how important this recommendation is to improve the score.',
-      }),
-    title: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Title represents recommendation title.' }),
-  })
-  .openapi({ description: 'Recommendation based on security concerns and score.', required: [] })
-  .openapi('GoogleCloudApigeeV1ScoreComponentRecommendation')
-
-const GoogleCloudApigeeV1ScoreComponentSchema = z
-  .object({
-    calculateTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Time when score was calculated.' }),
-    dataCaptureTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Time in the requested time period when data was last captured to compute the score.',
-      }),
-    drilldownPaths: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'List of paths for next components.' }),
-    recommendations: z
-      .array(GoogleCloudApigeeV1ScoreComponentRecommendationSchema)
-      .exactOptional()
-      .openapi({ description: 'List of recommendations to improve API security.' }),
-    score: z.int32().exactOptional().openapi({ description: 'Score for the component.' }),
-    scorePath: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Path of the component. Example: /org@myorg/envgroup@myenvgroup/proxies/proxy@myproxy',
-      }),
-  })
-  .openapi({
-    description: 'Component is an individual security element that is scored.',
-    required: [],
-  })
-  .openapi('GoogleCloudApigeeV1ScoreComponent')
-
-const GoogleCloudApigeeV1ScoreSchema = z
-  .object({
-    component: GoogleCloudApigeeV1ScoreComponentSchema.exactOptional().openapi({
-      description: 'Component containing score, recommendations and actions.',
-    }),
-    subcomponents: z
-      .array(GoogleCloudApigeeV1ScoreComponentSchema)
-      .exactOptional()
-      .openapi({ description: 'List of all the drilldown score components.' }),
-    timeRange: GoogleTypeIntervalSchema.exactOptional().openapi({
-      description: 'Start and end time for the score.',
-    }),
-  })
-  .openapi({ description: 'Represents Security Score.', required: [] })
-  .openapi('GoogleCloudApigeeV1Score')
-
-const GoogleCloudApigeeV1ComputeEnvironmentScoresResponseSchema = z
-  .object({
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A page token, received from a previous `ComputeScore` call. Provide this to retrieve the subsequent page.',
-      }),
-    scores: z
-      .array(GoogleCloudApigeeV1ScoreSchema)
-      .exactOptional()
-      .openapi({ description: 'List of scores. One score per day.' }),
-  })
-  .openapi({ description: 'Response for ComputeEnvironmentScores.', required: [] })
-  .openapi('GoogleCloudApigeeV1ComputeEnvironmentScoresResponse')
+const GoogleCloudApigeeV1ComputeEnvironmentScoresResponseSchema: z.ZodType<GoogleCloudApigeeV1ComputeEnvironmentScoresResponseType> =
+  z
+    .object({
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'A page token, received from a previous `ComputeScore` call. Provide this to retrieve the subsequent page.',
+        }),
+      scores: z
+        .array(GoogleCloudApigeeV1ScoreSchema)
+        .exactOptional()
+        .openapi({ description: 'List of scores. One score per day.' }),
+    })
+    .openapi({ description: 'Response for ComputeEnvironmentScores.', required: [] })
+    .openapi('GoogleCloudApigeeV1ComputeEnvironmentScoresResponse')
 
 const GoogleCloudApigeeV1CreditDeveloperBalanceRequestSchema = z
   .object({
@@ -1988,120 +2164,27 @@ const GoogleCloudApigeeV1DebugSessionSchema = z
   .openapi({ required: [] })
   .openapi('GoogleCloudApigeeV1DebugSession')
 
-const GoogleCloudApigeeV1PropertySchema = z
-  .object({
-    name: z.string().exactOptional().openapi({ description: 'The property key' }),
-    value: z.string().exactOptional().openapi({ description: 'The property value' }),
-  })
-  .openapi({ description: 'A single property entry in the Properties message.', required: [] })
-  .openapi('GoogleCloudApigeeV1Property')
-
-const GoogleCloudApigeeV1PropertiesSchema = z
-  .object({
-    property: z
-      .array(GoogleCloudApigeeV1PropertySchema)
-      .exactOptional()
-      .openapi({ description: 'List of all properties in the object' }),
-  })
-  .openapi({
-    description:
-      'Message for compatibility with legacy Edge specification for Java Properties object in JSON.',
-    required: [],
-  })
-  .openapi('GoogleCloudApigeeV1Properties')
-
-const GoogleCloudApigeeV1ResultSchema = z
-  .object({
-    ActionResult: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Type of the action result. Can be one of the five: DebugInfo, RequestMessage, ResponseMessage, ErrorMessage, VariableAccess',
-      }),
-    accessList: z
-      .array(GoogleCloudApigeeV1AccessSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of variable access actions agaist the api proxy. Supported values: Get, Set, Remove.',
-      }),
-    content: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Error message content. for example, "content" : "{\\"fault\\":{\\"faultstring\\":\\"API timed out\\",\\"detail\\":{\\"errorcode\\":\\"flow.APITimedOut\\"}}}"',
-      }),
-    headers: z
-      .array(GoogleCloudApigeeV1PropertySchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of HTTP headers. for example, \'"headers" : [ { "name" : "Content-Length", "value" : "83" }, { "name" : "Content-Type", "value" : "application/json" } ]\'',
-      }),
-    properties: GoogleCloudApigeeV1PropertiesSchema.exactOptional().openapi({
-      description: 'Name value pairs used for DebugInfo ActionResult.',
-    }),
-    reasonPhrase: z.string().exactOptional().openapi({ description: 'HTTP response phrase' }),
-    statusCode: z.string().exactOptional().openapi({ description: 'HTTP response code' }),
-    timestamp: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Timestamp of when the result is recorded. Its format is dd-mm-yy hh:mm:ss:xxx. For example, `"timestamp" : "12-08-19 00:31:59:960"`',
-      }),
-    uRI: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The relative path of the api proxy. for example, `"uRI" : "/iloveapis"`',
-      }),
-    verb: z.string().exactOptional().openapi({ description: 'HTTP method verb' }),
-  })
-  .openapi({
-    description:
-      'Result is short for "action result", could be different types identified by "action_result" field. Supported types: 1. DebugInfo : generic debug info collected by runtime recorded as a list of properties. For example, the contents could be virtual host info, state change result, or execution metadata. Required fields : properties, timestamp 2. RequestMessage: information of a http request. Contains headers, request URI and http methods type.Required fields : headers, uri, verb 3. ResponseMessage: information of a http response. Contains headers, reason phrase and http status code. Required fields : headers, reasonPhrase, statusCode 4. ErrorMessage: information of a http error message. Contains detail error message, reason phrase and status code. Required fields : content, headers, reasonPhrase, statusCode 5. VariableAccess: a list of variable access actions, can be Get, Set and Remove. Required fields : accessList',
-    required: [],
-  })
-  .openapi('GoogleCloudApigeeV1Result')
-
-const GoogleCloudApigeeV1PointSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ description: 'Name of a step in the transaction.' }),
-    results: z
-      .array(GoogleCloudApigeeV1ResultSchema)
-      .exactOptional()
-      .openapi({ description: 'List of results extracted from a given debug point.' }),
-  })
-  .openapi({
-    description:
-      'Point is a group of information collected by runtime plane at critical points of the message flow of the processed API request. This is a list of supported point IDs, categorized to three major buckets. For each category, debug points that we are currently supporting are listed below: - Flow status debug points: StateChange FlowInfo Condition Execution DebugMask Error - Flow control debug points: FlowCallout Paused Resumed FlowReturn BreakFlow Error - Runtime debug points: ScriptExecutor FlowCalloutStepDefinition CustomTarget StepDefinition Oauth2ServicePoint RaiseFault NodeJS The detail information of the given debug point is stored in a list of results.',
-    required: [],
-  })
-  .openapi('GoogleCloudApigeeV1Point')
-
-const GoogleCloudApigeeV1DebugSessionTransactionSchema = z
-  .object({
-    completed: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Flag indicating whether a transaction is completed or not' }),
-    point: z
-      .array(GoogleCloudApigeeV1PointSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'List of debug data collected by runtime plane at various defined points in the flow.',
-      }),
-  })
-  .openapi({
-    description:
-      'A transaction contains all of the debug information of the entire message flow of an API call processed by the runtime plane. The information is collected and recorded at critical points of the message flow in the runtime apiproxy.',
-    required: [],
-  })
-  .openapi('GoogleCloudApigeeV1DebugSessionTransaction')
+const GoogleCloudApigeeV1DebugSessionTransactionSchema: z.ZodType<GoogleCloudApigeeV1DebugSessionTransactionType> =
+  z
+    .object({
+      completed: z
+        .boolean()
+        .exactOptional()
+        .openapi({ description: 'Flag indicating whether a transaction is completed or not' }),
+      point: z
+        .array(GoogleCloudApigeeV1PointSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'List of debug data collected by runtime plane at various defined points in the flow.',
+        }),
+    })
+    .openapi({
+      description:
+        'A transaction contains all of the debug information of the entire message flow of an API call processed by the runtime plane. The information is collected and recorded at critical points of the message flow in the runtime apiproxy.',
+      required: [],
+    })
+    .openapi('GoogleCloudApigeeV1DebugSessionTransaction')
 
 const GoogleCloudApigeeV1DeleteCustomReportResponseSchema = z
   .object({
@@ -2851,35 +2934,6 @@ const GoogleCloudApigeeV1DeveloperSubscriptionSchema = z
   })
   .openapi({ description: 'Structure of a DeveloperSubscription.', required: [] })
   .openapi('GoogleCloudApigeeV1DeveloperSubscription')
-
-const GoogleCloudApigeeV1MetricSchema = z
-  .object({
-    name: z.string().exactOptional().openapi({ description: 'Metric name.' }),
-    values: z
-      .array(z.any())
-      .exactOptional()
-      .openapi({
-        description:
-          'List of metric values. Possible value formats include: `"values":["39.0"]` or `"values":[ { "value": "39.0", "timestamp": 1232434354} ]`',
-      }),
-  })
-  .openapi({
-    description:
-      'Encapsulates the metric data point. For example: ```{ "name": "sum(message_count)", "values" : [ { "timestamp": 1549004400000, "value": "39.0" }, { "timestamp" : 1548997200000, "value" : "0.0" } ] }``` or ```{ "name": "sum(message_count)", "values" : ["39.0"] }```',
-    required: [],
-  })
-  .openapi('GoogleCloudApigeeV1Metric')
-
-const GoogleCloudApigeeV1DimensionMetricSchema = z
-  .object({
-    metrics: z
-      .array(GoogleCloudApigeeV1MetricSchema)
-      .exactOptional()
-      .openapi({ description: 'List of metrics.' }),
-    name: z.string().exactOptional().openapi({ description: 'Name of the dimension.' }),
-  })
-  .openapi({ description: 'Encapsulates a metric grouped by dimension.', required: [] })
-  .openapi('GoogleCloudApigeeV1DimensionMetric')
 
 const GoogleCloudApigeeV1EndpointAttachmentSchema = z
   .object({
@@ -3660,7 +3714,7 @@ const GoogleCloudApigeeV1EnvironmentGroupConfigSchema = z
   .openapi('GoogleCloudApigeeV1EnvironmentGroupConfig')
 
 const GoogleCloudApigeeV1ExpireDeveloperSubscriptionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request for ExpireDeveloperSubscription.' })
   .openapi('GoogleCloudApigeeV1ExpireDeveloperSubscriptionRequest')
 
@@ -3787,7 +3841,7 @@ const GoogleCloudApigeeV1FlowHookSchema = z
   .openapi('GoogleCloudApigeeV1FlowHook')
 
 const GoogleCloudApigeeV1GenerateDownloadUrlRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request for GenerateDownloadUrl method.' })
   .openapi('GoogleCloudApigeeV1GenerateDownloadUrlRequest')
 
@@ -3805,7 +3859,7 @@ const GoogleCloudApigeeV1GenerateDownloadUrlResponseSchema = z
   .openapi('GoogleCloudApigeeV1GenerateDownloadUrlResponse')
 
 const GoogleCloudApigeeV1GenerateUploadUrlRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request for GenerateUploadUrl method.' })
   .openapi('GoogleCloudApigeeV1GenerateUploadUrlRequest')
 
@@ -3856,7 +3910,7 @@ const GoogleCloudApigeeV1GetAsyncQueryResultUrlResponseSchema = z
   .openapi('GoogleCloudApigeeV1GetAsyncQueryResultUrlResponse')
 
 const GoogleCloudApigeeV1GetSyncAuthorizationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request for GetSyncAuthorization.' })
   .openapi('GoogleCloudApigeeV1GetSyncAuthorizationRequest')
 
@@ -4111,15 +4165,16 @@ const GoogleCloudApigeeV1ListApiCategoriesResponseSchema = z
   .openapi({ description: 'the response for ListApiCategoriesRequest.', required: [] })
   .openapi('GoogleCloudApigeeV1ListApiCategoriesResponse')
 
-const GoogleCloudApigeeV1ListApiProductsResponseSchema = z
-  .object({
-    apiProduct: z
-      .array(GoogleCloudApigeeV1ApiProductSchema)
-      .exactOptional()
-      .openapi({ description: 'Lists all API product names defined for an organization.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('GoogleCloudApigeeV1ListApiProductsResponse')
+const GoogleCloudApigeeV1ListApiProductsResponseSchema: z.ZodType<GoogleCloudApigeeV1ListApiProductsResponseType> =
+  z
+    .object({
+      apiProduct: z
+        .array(GoogleCloudApigeeV1ApiProductSchema)
+        .exactOptional()
+        .openapi({ description: 'Lists all API product names defined for an organization.' }),
+    })
+    .openapi({ required: [] })
+    .openapi('GoogleCloudApigeeV1ListApiProductsResponse')
 
 const GoogleCloudApigeeV1ListApiProxiesResponseSchema = z
   .object({ proxies: z.array(GoogleCloudApigeeV1ApiProxySchema).exactOptional() })
@@ -5116,26 +5171,6 @@ const GoogleCloudApigeeV1ListTraceConfigOverridesResponseSchema = z
   .openapi({ description: 'Response for ListTraceConfigOverrides.', required: [] })
   .openapi('GoogleCloudApigeeV1ListTraceConfigOverridesResponse')
 
-const GoogleCloudApigeeV1MetadataSchema = z
-  .object({
-    errors: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'List of error messages as strings.' }),
-    notices: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'List of additional information such as data source, if result was truncated. For example: ``` "notices": [ "Source:Postgres", "PG Host:uappg0rw.e2e.apigeeks.net", "query served by:4b64601e-40de-4eb1-bfb9-eeee7ac929ed", "Table used: edge.api.uapgroup2.agg_api" ]```',
-      }),
-  })
-  .openapi({
-    description: 'Encapsulates additional information about query execution.',
-    required: [],
-  })
-  .openapi('GoogleCloudApigeeV1Metadata')
-
 const GoogleCloudApigeeV1MetricAggregationSchema = z
   .object({
     aggregation: z
@@ -5843,7 +5878,7 @@ const GoogleCloudApigeeV1ReportInstanceStatusRequestSchema = z
   .openapi('GoogleCloudApigeeV1ReportInstanceStatusRequest')
 
 const GoogleCloudApigeeV1ReportInstanceStatusResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Placeholder for future enhancements to status reporting protocol' })
   .openapi('GoogleCloudApigeeV1ReportInstanceStatusResponse')
 
@@ -5879,31 +5914,60 @@ const GoogleCloudApigeeV1RuntimeConfigSchema = z
   })
   .openapi('GoogleCloudApigeeV1RuntimeConfig')
 
-const GoogleCloudApigeeV1SchemaSchema: z.ZodType<GoogleCloudApigeeV1SchemaType> = z
-  .lazy(() =>
-    z
-      .object({
-        dimensions: z
-          .array(GoogleCloudApigeeV1SchemaSchemaElementSchema)
-          .exactOptional()
-          .openapi({ description: 'List of schema fields grouped as dimensions.' }),
-        meta: z
-          .array(z.string())
-          .exactOptional()
-          .openapi({
-            description:
-              'Additional metadata associated with schema. This is a legacy field and usually consists of an empty array of strings.',
-          }),
-        metrics: z
-          .array(GoogleCloudApigeeV1SchemaSchemaElementSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'List of schema fields grouped as dimensions that can be used with an aggregate function such as `sum`, `avg`, `min`, and `max`.',
-          }),
-      })
-      .openapi({ description: 'Response for Schema call', required: [] }),
-  )
+const GoogleCloudApigeeV1SchemaSchemaPropertySchema = z
+  .object({
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Time the field was created in RFC3339 string form. For example: `2016-02-26T10:23:09.592Z`.',
+      }),
+    custom: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Flag that specifies whether the field is standard in the dataset or a custom field created by the customer. `true` indicates that it is a custom field.',
+      }),
+    type: z.string().exactOptional().openapi({ description: 'Data type of the field.' }),
+  })
+  .openapi({ description: 'Properties for the schema field.', required: [] })
+  .openapi('GoogleCloudApigeeV1SchemaSchemaProperty')
+
+const GoogleCloudApigeeV1SchemaSchemaElementSchema = z
+  .object({
+    name: z.string().exactOptional().openapi({ description: 'Name of the field.' }),
+    properties: GoogleCloudApigeeV1SchemaSchemaPropertySchema.exactOptional().openapi({
+      description:
+        'Properties for the schema field. For example: { "createTime": "2016-02-26T10:23:09.592Z", "custom": "false", "type": "string" }',
+    }),
+  })
+  .openapi({ description: 'Message type for the schema element', required: [] })
+  .openapi('GoogleCloudApigeeV1SchemaSchemaElement')
+
+const GoogleCloudApigeeV1SchemaSchema = z
+  .object({
+    dimensions: z
+      .array(GoogleCloudApigeeV1SchemaSchemaElementSchema)
+      .exactOptional()
+      .openapi({ description: 'List of schema fields grouped as dimensions.' }),
+    meta: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Additional metadata associated with schema. This is a legacy field and usually consists of an empty array of strings.',
+      }),
+    metrics: z
+      .array(GoogleCloudApigeeV1SchemaSchemaElementSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'List of schema fields grouped as dimensions that can be used with an aggregate function such as `sum`, `avg`, `min`, and `max`.',
+      }),
+  })
+  .openapi({ description: 'Response for Schema call', required: [] })
   .openapi('GoogleCloudApigeeV1Schema')
 
 const GoogleCloudApigeeV1SecurityProfileEnvironmentAssociationSchema = z
@@ -6134,51 +6198,7 @@ const GoogleCloudApigeeV1SharedFlowRevisionSchema = z
   .openapi({ description: 'The metadata describing a shared flow revision.', required: [] })
   .openapi('GoogleCloudApigeeV1SharedFlowRevision')
 
-const GoogleCloudApigeeV1StatsEnvironmentStatsSchema = z
-  .object({
-    dimensions: z
-      .array(GoogleCloudApigeeV1DimensionMetricSchema)
-      .exactOptional()
-      .openapi({ description: 'List of metrics grouped under dimensions.' }),
-    metrics: z
-      .array(GoogleCloudApigeeV1MetricSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'In the final response, only one of the following fields will be present based on the dimensions provided. If no dimensions are provided, then only top-level metrics is provided. If dimensions are included, then there will be a top-level dimensions field under environments which will contain metrics values and the dimension name. Example: ``` "environments": [ { "dimensions": [ { "metrics": [ { "name": "sum(message_count)", "values": [ "2.14049521E8" ] } ], "name": "nit_proxy" } ], "name": "prod" } ]``` or ```"environments": [ { "metrics": [ { "name": "sum(message_count)", "values": [ "2.19026331E8" ] } ], "name": "prod" } ]``` List of metric values.',
-      }),
-    name: z.string().exactOptional().openapi({ description: 'Name of the environment.' }),
-  })
-  .openapi({
-    description:
-      'Encapsulates the environment wrapper: ``` "environments": [ { "metrics": [ { "name": "sum(message_count)", "values": [ "2.52056245E8" ] } ], "name": "prod" } ]```',
-    required: [],
-  })
-  .openapi('GoogleCloudApigeeV1StatsEnvironmentStats')
-
-const GoogleCloudApigeeV1StatsHostStatsSchema = z
-  .object({
-    dimensions: z
-      .array(GoogleCloudApigeeV1DimensionMetricSchema)
-      .exactOptional()
-      .openapi({ description: 'List of metrics grouped under dimensions.' }),
-    metrics: z
-      .array(GoogleCloudApigeeV1MetricSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'In the final response, only one of the following fields will be present based on the dimensions provided. If no dimensions are provided, then only the top-level metrics are provided. If dimensions are included, then there will be a top-level dimensions field under hostnames which will contain metrics values and the dimension name. Example: ``` "hosts": [ { "dimensions": [ { "metrics": [ { "name": "sum(message_count)", "values": [ "2.14049521E8" ] } ], "name": "nit_proxy" } ], "name": "example.com" } ]``` OR ```"hosts": [ { "metrics": [ { "name": "sum(message_count)", "values": [ "2.19026331E8" ] } ], "name": "example.com" } ]``` List of metric values.',
-      }),
-    name: z.string().exactOptional().openapi({ description: 'Hostname used in query.' }),
-  })
-  .openapi({
-    description:
-      'Encapsulates the hostname wrapper: ``` "hosts": [ { "metrics": [ { "name": "sum(message_count)", "values": [ "2.52056245E8" ] } ], "name": "example.com" } ]```',
-    required: [],
-  })
-  .openapi('GoogleCloudApigeeV1StatsHostStats')
-
-const GoogleCloudApigeeV1StatsSchema = z
+const GoogleCloudApigeeV1StatsSchema: z.ZodType<GoogleCloudApigeeV1StatsType> = z
   .object({
     environments: z
       .array(GoogleCloudApigeeV1StatsEnvironmentStatsSchema)
@@ -6646,7 +6666,7 @@ const GoogleLongrunningListOperationsResponseSchema = z
   .openapi('GoogleLongrunningListOperationsResponse')
 
 const GoogleProtobufEmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',

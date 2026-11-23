@@ -123,41 +123,31 @@ const ValidationOptionsSchema = z
   })
   .openapi('ValidationOptions')
 
-type OptionsType = {
-  asyncOptions?: z.infer<typeof AsyncOptionsSchema>[]
-  inputMappings?: z.infer<typeof InputMappingSchema>[]
-  validationOptions?: z.infer<typeof ValidationOptionsSchema>
-  virtualProperties?: string
-}
-
-const OptionsSchema: z.ZodType<OptionsType> = z
-  .lazy(() =>
-    z
-      .object({
-        asyncOptions: z
-          .array(AsyncOptionsSchema)
-          .exactOptional()
-          .openapi({ description: 'Options regarding how to thread async requests.' }),
-        inputMappings: z
-          .array(InputMappingSchema)
-          .exactOptional()
-          .openapi({ description: 'The mappings that apply for requests.' }),
-        validationOptions: ValidationOptionsSchema.exactOptional().openapi({
-          description: 'Options for how to validate and process properties on a resource.',
-        }),
-        virtualProperties: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Additional properties block described as a jsonSchema, these properties will never be part of the json payload, but they can be consumed by InputMappings, this must be a valid json schema draft-04. The properties specified here will be decouple in a different section. This schema will be merged to the schema validation, and properties here will be extracted From the payload and consumed explicitly by InputMappings. ex: field1: type: string field2: type: number',
-          }),
-      })
+const OptionsSchema = z
+  .object({
+    asyncOptions: z
+      .array(AsyncOptionsSchema)
+      .exactOptional()
+      .openapi({ description: 'Options regarding how to thread async requests.' }),
+    inputMappings: z
+      .array(InputMappingSchema)
+      .exactOptional()
+      .openapi({ description: 'The mappings that apply for requests.' }),
+    validationOptions: ValidationOptionsSchema.exactOptional().openapi({
+      description: 'Options for how to validate and process properties on a resource.',
+    }),
+    virtualProperties: z
+      .string()
+      .exactOptional()
       .openapi({
-        description: 'Options allows customized resource handling by Deployment Manager.',
-        required: [],
+        description:
+          'Additional properties block described as a jsonSchema, these properties will never be part of the json payload, but they can be consumed by InputMappings, this must be a valid json schema draft-04. The properties specified here will be decouple in a different section. This schema will be merged to the schema validation, and properties here will be extracted From the payload and consumed explicitly by InputMappings. ex: field1: type: string field2: type: number',
       }),
-  )
+  })
+  .openapi({
+    description: 'Options allows customized resource handling by Deployment Manager.',
+    required: [],
+  })
   .openapi('Options')
 
 const CollectionOverrideSchema = z
@@ -217,33 +207,20 @@ const CredentialSchema = z
   })
   .openapi('Credential')
 
-const BaseTypeSchema = z
-  .object({
-    collectionOverrides: z
-      .array(CollectionOverrideSchema)
-      .exactOptional()
-      .openapi({ description: 'Allows resource handling overrides for specific collections' }),
-    credential: CredentialSchema.exactOptional().openapi({
-      description: 'Credential used when interacting with this type.',
-    }),
-    descriptorUrl: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Descriptor Url for the this type.' }),
-    options: OptionsSchema.exactOptional().openapi({
-      description: 'Options to apply when handling any resources in this service.',
-    }),
-  })
-  .openapi({ description: 'BaseType that describes a service-backed Type.', required: [] })
-  .openapi('BaseType')
+type BaseTypeType = {
+  collectionOverrides?: z.infer<typeof CollectionOverrideSchema>[]
+  credential?: z.infer<typeof CredentialSchema>
+  descriptorUrl?: string
+  options?: z.infer<typeof OptionsSchema>
+}
 
-const TypeLabelEntrySchema = z
+const CompositeTypeLabelEntrySchema = z
   .object({
     key: z.string().exactOptional().openapi({ description: 'Key of the label' }),
     value: z.string().exactOptional().openapi({ description: 'Value of the label' }),
   })
-  .openapi({ description: 'Label object for Types', required: [] })
-  .openapi('TypeLabelEntry')
+  .openapi({ description: 'Label object for CompositeTypes', required: [] })
+  .openapi('CompositeTypeLabelEntry')
 
 const OperationSchema = z
   .object({
@@ -519,159 +496,6 @@ const OperationSchema = z
   })
   .openapi('Operation')
 
-type TypeType = {
-  base?: z.infer<typeof BaseTypeSchema>
-  description?: string
-  id?: string
-  insertTime?: string
-  labels?: z.infer<typeof TypeLabelEntrySchema>[]
-  name?: string
-  operation?: z.infer<typeof OperationSchema>
-  selfLink?: string
-}
-
-const TypeInfoSchemaInfoSchema = z
-  .object({
-    input: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The properties that this composite type or base type collection accept as input, represented as a json blob, format is: JSON Schema Draft V4',
-      }),
-    output: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The properties that this composite type or base type collection exposes as output, these properties can be used for references, represented as json blob, format is: JSON Schema Draft V4',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('TypeInfoSchemaInfo')
-
-type TypeInfoType = {
-  description?: string
-  documentationLink?: string
-  kind?: string
-  name?: string
-  schema?: z.infer<typeof TypeInfoSchemaInfoSchema>
-  selfLink?: string
-  title?: string
-}
-
-const AuditLogConfigSchema = z
-  .object({
-    exemptedMembers: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies the identities that do not cause logging for this type of permission. Follows the same format of Binding.members.',
-      }),
-    logType: z
-      .enum(['LOG_TYPE_UNSPECIFIED', 'ADMIN_READ', 'DATA_WRITE', 'DATA_READ'])
-      .exactOptional()
-      .openapi({ description: 'The log type that this config enables.' }),
-  })
-  .openapi({
-    description:
-      'Provides the configuration for logging a type of permissions. Example: { "audit_log_configs": [ { "log_type": "DATA_READ", "exempted_members": [ "user:jose@example.com" ] }, { "log_type": "DATA_WRITE" } ] } This enables \'DATA_READ\' and \'DATA_WRITE\' logging, while exempting jose@example.com from DATA_READ logging.',
-    required: [],
-  })
-  .openapi('AuditLogConfig')
-
-const AuditConfigSchema = z
-  .object({
-    auditLogConfigs: z
-      .array(AuditLogConfigSchema)
-      .exactOptional()
-      .openapi({ description: 'The configuration for logging of each type of permission.' }),
-    service: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies a service that will be enabled for audit logging. For example, `storage.googleapis.com`, `cloudsql.googleapis.com`. `allServices` is a special value that covers all services.',
-      }),
-  })
-  .openapi({
-    description:
-      'Specifies the audit configuration for a service. The configuration determines which permission types are logged, and what identities, if any, are exempted from logging. An AuditConfig must have one or more AuditLogConfigs. If there are AuditConfigs for both `allServices` and a specific service, the union of the two AuditConfigs is used for that service: the log_types specified in each AuditConfig are enabled, and the exempted_members in each AuditLogConfig are exempted. Example Policy with multiple AuditConfigs: { "audit_configs": [ { "service": "allServices", "audit_log_configs": [ { "log_type": "DATA_READ", "exempted_members": [ "user:jose@example.com" ] }, { "log_type": "DATA_WRITE" }, { "log_type": "ADMIN_READ" } ] }, { "service": "sampleservice.googleapis.com", "audit_log_configs": [ { "log_type": "DATA_READ" }, { "log_type": "DATA_WRITE", "exempted_members": [ "user:aliya@example.com" ] } ] } ] } For sampleservice, this policy enables DATA_READ, DATA_WRITE and ADMIN_READ logging. It also exempts `jose@example.com` from DATA_READ logging, and `aliya@example.com` from DATA_WRITE logging.',
-    required: [],
-  })
-  .openapi('AuditConfig')
-
-const ExprSchema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.',
-      }),
-    expression: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Textual representation of an expression in Common Expression Language syntax.',
-      }),
-    location: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. String indicating the location of the expression for error reporting, e.g. a file name and a position in the file.',
-      }),
-    title: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Title for the expression, i.e. a short string describing its purpose. This can be used e.g. in UIs which allow to enter the expression.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents a textual expression in the Common Expression Language (CEL) syntax. CEL is a C-like expression language. The syntax and semantics of CEL are documented at https://github.com/google/cel-spec. Example (Comparison): title: "Summary size limit" description: "Determines if a summary is less than 100 chars" expression: "document.summary.size() < 100" Example (Equality): title: "Requestor is owner" description: "Determines if requestor is the document owner" expression: "document.owner == request.auth.claims.email" Example (Logic): title: "Public documents" description: "Determine whether the document should be publicly visible" expression: "document.type != \'private\' && document.type != \'internal\'" Example (Data Manipulation): title: "Notification string" description: "Create a notification string with a timestamp." expression: "\'New message received at \' + string(document.create_time)" The exact variables and functions that may be referenced within an expression are determined by the service that evaluates it. See the service documentation for additional information.',
-    required: [],
-  })
-  .openapi('Expr')
-
-const BindingSchema = z
-  .object({
-    condition: ExprSchema.exactOptional().openapi({
-      description:
-        'The condition that is associated with this binding. If the condition evaluates to `true`, then this binding applies to the current request. If the condition evaluates to `false`, then this binding does not apply to the current request. However, a different role binding might grant the same role to one or more of the principals in this binding. To learn which resources support conditions in their IAM policies, see the [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).',
-    }),
-    members: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies the principals requesting access for a Google Cloud resource. `members` can have the following values: * `allUsers`: A special identifier that represents anyone who is on the internet; with or without a Google account. * `allAuthenticatedUsers`: A special identifier that represents anyone who is authenticated with a Google account or a service account. Does not include identities that come from external identity providers (IdPs) through identity federation. * `user:{emailid}`: An email address that represents a specific Google account. For example, `alice@example.com` . * `serviceAccount:{emailid}`: An email address that represents a Google service account. For example, `my-other-app@appspot.gserviceaccount.com`. * `serviceAccount:{projectid}.svc.id.goog[{namespace}/{kubernetes-sa}]`: An identifier for a [Kubernetes service account](https://cloud.google.com/kubernetes-engine/docs/how-to/kubernetes-service-accounts). For example, `my-project.svc.id.goog[my-namespace/my-kubernetes-sa]`. * `group:{emailid}`: An email address that represents a Google group. For example, `admins@example.com`. * `domain:{domain}`: The G Suite domain (primary) that represents all the users of that domain. For example, `google.com` or `example.com`. * `deleted:user:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a user that has been recently deleted. For example, `alice@example.com?uid=123456789012345678901`. If the user is recovered, this value reverts to `user:{emailid}` and the recovered user retains the role in the binding. * `deleted:serviceAccount:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a service account that has been recently deleted. For example, `my-other-app@appspot.gserviceaccount.com?uid=123456789012345678901`. If the service account is undeleted, this value reverts to `serviceAccount:{emailid}` and the undeleted service account retains the role in the binding. * `deleted:group:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a Google group that has been recently deleted. For example, `admins@example.com?uid=123456789012345678901`. If the group is recovered, this value reverts to `group:{emailid}` and the recovered group retains the role in the binding.',
-      }),
-    role: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Role that is assigned to the list of `members`, or principals. For example, `roles/viewer`, `roles/editor`, or `roles/owner`.',
-      }),
-  })
-  .openapi({ description: 'Associates `members`, or principals, with a `role`.', required: [] })
-  .openapi('Binding')
-
-const CompositeTypeLabelEntrySchema = z
-  .object({
-    key: z.string().exactOptional().openapi({ description: 'Key of the label' }),
-    value: z.string().exactOptional().openapi({ description: 'Value of the label' }),
-  })
-  .openapi({ description: 'Label object for CompositeTypes', required: [] })
-  .openapi('CompositeTypeLabelEntry')
-
 const ImportFileSchema = z
   .object({
     content: z.string().exactOptional().openapi({ description: 'The contents of the file.' }),
@@ -755,32 +579,10 @@ const CompositeTypeSchema = z
   .openapi({ description: 'Holds the composite type.', required: [] })
   .openapi('CompositeType')
 
-const CompositeTypesListResponseSchema = z
-  .object({
-    compositeTypes: z
-      .array(CompositeTypeSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. A list of resource composite types supported by Deployment Manager.',
-      }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A token used to continue a truncated list request.' }),
-  })
-  .openapi({
-    description: 'A response that returns all Composite Types supported by Deployment Manager',
-    required: [],
-  })
-  .openapi('CompositeTypesListResponse')
-
-const ConfigFileSchema = z
-  .object({
-    content: z.string().exactOptional().openapi({ description: 'The contents of the file.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ConfigFile')
+type CompositeTypesListResponseType = {
+  compositeTypes?: z.infer<typeof CompositeTypeSchema>[]
+  nextPageToken?: string
+}
 
 const DeploymentLabelEntrySchema = z
   .object({
@@ -789,6 +591,13 @@ const DeploymentLabelEntrySchema = z
   })
   .openapi({ description: 'Label object for Deployments', required: [] })
   .openapi('DeploymentLabelEntry')
+
+const ConfigFileSchema = z
+  .object({
+    content: z.string().exactOptional().openapi({ description: 'The contents of the file.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ConfigFile')
 
 const TargetConfigurationSchema = z
   .object({
@@ -904,191 +713,10 @@ const DeploymentSchema = z
   .openapi({ required: [] })
   .openapi('Deployment')
 
-const DeploymentsCancelPreviewRequestSchema = z
-  .object({
-    fingerprint: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies a fingerprint for `cancelPreview()` requests. A fingerprint is a randomly generated value that must be provided in `cancelPreview()` requests to perform optimistic locking. This ensures optimistic concurrency so that the deployment does not have conflicting requests (e.g. if someone attempts to make a new update request while another user attempts to cancel a preview, this would prevent one of the requests). The fingerprint is initially generated by Deployment Manager and changes after every request to modify a deployment. To get the latest fingerprint value, perform a `get()` request on the deployment.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('DeploymentsCancelPreviewRequest')
-
-const DeploymentsListResponseSchema = z
-  .object({
-    deployments: z
-      .array(DeploymentSchema)
-      .exactOptional()
-      .openapi({ description: 'Output only. The deployments contained in this response.' }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. A token used to continue a truncated list request.' }),
-  })
-  .openapi({
-    description:
-      'A response containing a partial list of deployments and a page token used to build the next request if the request has been truncated.',
-    required: [],
-  })
-  .openapi('DeploymentsListResponse')
-
-const DeploymentsStopRequestSchema = z
-  .object({
-    fingerprint: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies a fingerprint for `stop()` requests. A fingerprint is a randomly generated value that must be provided in `stop()` requests to perform optimistic locking. This ensures optimistic concurrency so that the deployment does not have conflicting requests (e.g. if someone attempts to make a new update request while another user attempts to stop an ongoing update request, this would prevent a collision). The fingerprint is initially generated by Deployment Manager and changes after every request to modify a deployment. To get the latest fingerprint value, perform a `get()` request on the deployment.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('DeploymentsStopRequest')
-
-const PolicySchema = z
-  .object({
-    auditConfigs: z
-      .array(AuditConfigSchema)
-      .exactOptional()
-      .openapi({ description: 'Specifies cloud audit logging configuration for this policy.' }),
-    bindings: z
-      .array(BindingSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Associates a list of `members`, or principals, with a `role`. Optionally, may specify a `condition` that determines how and when the `bindings` are applied. Each of the `bindings` must contain at least one principal. The `bindings` in a `Policy` can refer to up to 1,500 principals; up to 250 of these principals can be Google groups. Each occurrence of a principal counts towards these limits. For example, if the `bindings` grant 50 different roles to `user:alice@example.com`, and not to any other principal, then you can add another 1,450 principals to the `bindings` in the `Policy`.',
-      }),
-    etag: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          '`etag` is used for optimistic concurrency control as a way to help prevent simultaneous updates of a policy from overwriting each other. It is strongly suggested that systems make use of the `etag` in the read-modify-write cycle to perform policy updates in order to avoid race conditions: An `etag` is returned in the response to `getIamPolicy`, and systems are expected to put that etag in the request to `setIamPolicy` to ensure that their change will be applied to the same version of the policy. **Important:** If you use IAM Conditions, you must include the `etag` field whenever you call `setIamPolicy`. If you omit this field, then IAM allows you to overwrite a version `3` policy with a version `1` policy, and all of the conditions in the version `3` policy are lost.',
-      }),
-    version: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies the format of the policy. Valid values are `0`, `1`, and `3`. Requests that specify an invalid value are rejected. Any operation that affects conditional role bindings must specify version `3`. This requirement applies to the following operations: * Getting a policy that includes a conditional role binding * Adding a conditional role binding to a policy * Changing a conditional role binding in a policy * Removing any role binding, with or without a condition, from a policy that includes conditions **Important:** If you use IAM Conditions, you must include the `etag` field whenever you call `setIamPolicy`. If you omit this field, then IAM allows you to overwrite a version `3` policy with a version `1` policy, and all of the conditions in the version `3` policy are lost. If a policy does not include any conditions, operations on that policy may specify any valid version or leave the field unset. To learn which resources support conditions in their IAM policies, see the [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).',
-      }),
-  })
-  .openapi({
-    description:
-      'An Identity and Access Management (IAM) policy, which specifies access controls for Google Cloud resources. A `Policy` is a collection of `bindings`. A `binding` binds one or more `members`, or principals, to a single `role`. Principals can be user accounts, service accounts, Google groups, and domains (such as G Suite). A `role` is a named list of permissions; each `role` can be an IAM predefined role or a user-created custom role. For some types of Google Cloud resources, a `binding` can also specify a `condition`, which is a logical expression that allows access to a resource only if the expression evaluates to `true`. A condition can add constraints based on attributes of the request, the resource, or both. To learn which resources support conditions in their IAM policies, see the [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies). **JSON example:** { "bindings": [ { "role": "roles/resourcemanager.organizationAdmin", "members": [ "user:mike@example.com", "group:admins@example.com", "domain:google.com", "serviceAccount:my-project-id@appspot.gserviceaccount.com" ] }, { "role": "roles/resourcemanager.organizationViewer", "members": [ "user:eve@example.com" ], "condition": { "title": "expirable access", "description": "Does not grant access after Sep 2020", "expression": "request.time < timestamp(\'2020-10-01T00:00:00.000Z\')", } } ], "etag": "BwWWja0YfJA=", "version": 3 } **YAML example:** bindings: - members: - user:mike@example.com - group:admins@example.com - domain:google.com - serviceAccount:my-project-id@appspot.gserviceaccount.com role: roles/resourcemanager.organizationAdmin - members: - user:eve@example.com role: roles/resourcemanager.organizationViewer condition: title: expirable access description: Does not grant access after Sep 2020 expression: request.time < timestamp(\'2020-10-01T00:00:00.000Z\') etag: BwWWja0YfJA= version: 3 For a description of IAM and its features, see the [IAM documentation](https://cloud.google.com/iam/docs/).',
-    required: [],
-  })
-  .openapi('Policy')
-
-const GlobalSetPolicyRequestSchema = z
-  .object({
-    bindings: z
-      .array(BindingSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "Flatten Policy to create a backward compatible wire-format. Deprecated. Use 'policy' to specify bindings.",
-      }),
-    etag: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Flatten Policy to create a backward compatible wire-format. Deprecated. Use 'policy' to specify the etag.",
-      }),
-    policy: PolicySchema.exactOptional().openapi({
-      description:
-        "REQUIRED: The complete policy to be applied to the 'resource'. The size of the policy is limited to a few 10s of KB. An empty policy is in general a valid policy but certain services (like Projects) might reject them.",
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('GlobalSetPolicyRequest')
-
-const ManifestSchema = z
-  .object({
-    config: ConfigFileSchema.exactOptional().openapi({
-      description: 'Output only. The YAML configuration for this manifest.',
-    }),
-    expandedConfig: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The fully-expanded configuration file, including any templates and references.',
-      }),
-    id: z.string().exactOptional(),
-    imports: z
-      .array(ImportFileSchema)
-      .exactOptional()
-      .openapi({ description: 'Output only. The imported files for this manifest.' }),
-    insertTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Creation timestamp in RFC3339 text format.' }),
-    layout: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. The YAML layout for this manifest.' }),
-    manifestSizeBytes: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. The computed size of the fully expanded manifest.' }),
-    manifestSizeLimitBytes: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The size limit for expanded manifests in the project.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. The name of the manifest.' }),
-    selfLink: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Self link for the manifest.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('Manifest')
-
-const ManifestsListResponseSchema = z
-  .object({
-    manifests: z
-      .array(ManifestSchema)
-      .exactOptional()
-      .openapi({ description: 'Output only. Manifests contained in this list response.' }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. A token used to continue a truncated list request.' }),
-  })
-  .openapi({
-    description:
-      'A response containing a partial list of manifests and a page token used to build the next request if the request has been truncated.',
-    required: [],
-  })
-  .openapi('ManifestsListResponse')
-
-const OperationsListResponseSchema = z
-  .object({
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. A token used to continue a truncated list request.' }),
-    operations: z
-      .array(OperationSchema)
-      .exactOptional()
-      .openapi({ description: 'Output only. Operations contained in this list response.' }),
-  })
-  .openapi({
-    description:
-      'A response containing a partial list of operations and a page token used to build the next request if the request has been truncated.',
-    required: [],
-  })
-  .openapi('OperationsListResponse')
+type DeploymentsListResponseType = {
+  deployments?: z.infer<typeof DeploymentSchema>[]
+  nextPageToken?: string
+}
 
 const ResourceAccessControlSchema = z
   .object({
@@ -1397,135 +1025,49 @@ const ResourceSchema = z
   .openapi({ required: [] })
   .openapi('Resource')
 
-const ResourcesListResponseSchema = z
+type ResourcesListResponseType = {
+  nextPageToken?: string
+  resources?: z.infer<typeof ResourceSchema>[]
+}
+
+const BaseTypeSchema: z.ZodType<BaseTypeType> = z
   .object({
-    nextPageToken: z
+    collectionOverrides: z
+      .array(CollectionOverrideSchema)
+      .exactOptional()
+      .openapi({ description: 'Allows resource handling overrides for specific collections' }),
+    credential: CredentialSchema.exactOptional().openapi({
+      description: 'Credential used when interacting with this type.',
+    }),
+    descriptorUrl: z
       .string()
       .exactOptional()
-      .openapi({ description: 'A token used to continue a truncated list request.' }),
-    resources: z
-      .array(ResourceSchema)
-      .exactOptional()
-      .openapi({ description: 'Resources contained in this list response.' }),
+      .openapi({ description: 'Descriptor Url for the this type.' }),
+    options: OptionsSchema.exactOptional().openapi({
+      description: 'Options to apply when handling any resources in this service.',
+    }),
   })
-  .openapi({
-    description:
-      'A response containing a partial list of resources and a page token used to build the next request if the request has been truncated.',
-    required: [],
-  })
-  .openapi('ResourcesListResponse')
+  .openapi({ description: 'BaseType that describes a service-backed Type.', required: [] })
+  .openapi('BaseType')
 
-const TestPermissionsRequestSchema = z
+const TypeLabelEntrySchema = z
   .object({
-    permissions: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          "The set of permissions to check for the 'resource'. Permissions with wildcards (such as '*' or 'storage.*') are not allowed.",
-      }),
+    key: z.string().exactOptional().openapi({ description: 'Key of the label' }),
+    value: z.string().exactOptional().openapi({ description: 'Value of the label' }),
   })
-  .openapi({ required: [] })
-  .openapi('TestPermissionsRequest')
+  .openapi({ description: 'Label object for Types', required: [] })
+  .openapi('TypeLabelEntry')
 
-const TestPermissionsResponseSchema = z
-  .object({
-    permissions: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'A subset of `TestPermissionsRequest.permissions` that the caller is allowed.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('TestPermissionsResponse')
-
-const TypeSchema: z.ZodType<TypeType> = z
-  .lazy(() =>
-    z
-      .object({
-        base: BaseTypeSchema.exactOptional().openapi({
-          description: 'Base Type (configurable service) that backs this Type.',
-        }),
-        description: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'An optional textual description of the resource; provided by the client when the resource is created.',
-          }),
-        id: z.string().exactOptional(),
-        insertTime: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Output only. Creation timestamp in RFC3339 text format.' }),
-        labels: z
-          .array(TypeLabelEntrySchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'Map of One Platform labels; provided by the client when the resource is created or updated. Specifically: Label keys must be between 1 and 63 characters long and must conform to the following regular expression: `[a-z]([-a-z0-9]*[a-z0-9])?` Label values must be between 0 and 63 characters long and must conform to the regular expression `([a-z]([-a-z0-9]*[a-z0-9])?)?`.',
-          }),
-        name: z.string().exactOptional().openapi({ description: 'Name of the type.' }),
-        operation: OperationSchema.exactOptional().openapi({
-          description:
-            'Output only. The Operation that most recently ran, or is currently running, on this type.',
-        }),
-        selfLink: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Output only. Server defined URL for the resource.' }),
-      })
-      .openapi({ description: 'A resource type supported by Deployment Manager.', required: [] }),
-  )
-  .openapi('Type')
-
-const TypeInfoSchema: z.ZodType<TypeInfoType> = z
-  .lazy(() =>
-    z
-      .object({
-        description: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The description of the type.' }),
-        documentationLink: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'For swagger 2.0 externalDocs field will be used. For swagger 1.2 this field will be empty.',
-          }),
-        kind: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Output only. Type of the output. Always `deploymentManager#TypeInfo` for TypeInfo.',
-          }),
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The base type or composite type name.' }),
-        schema: TypeInfoSchemaInfoSchema.exactOptional().openapi({
-          description:
-            'For base types with a collection, we return a schema and documentation link For template types, we return only a schema',
-        }),
-        selfLink: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Output only. Self link for the type provider.' }),
-        title: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The title on the API descriptor URL provided.' }),
-      })
-      .openapi({
-        description:
-          'Type Information. Contains detailed information about a composite type, base type, or base type with specific collection.',
-        required: [],
-      }),
-  )
-  .openapi('TypeInfo')
+type TypeType = {
+  base?: z.infer<typeof BaseTypeSchema>
+  description?: string
+  id?: string
+  insertTime?: string
+  labels?: z.infer<typeof TypeLabelEntrySchema>[]
+  name?: string
+  operation?: z.infer<typeof OperationSchema>
+  selfLink?: string
+}
 
 const TypeProviderLabelEntrySchema = z
   .object({
@@ -1535,7 +1077,22 @@ const TypeProviderLabelEntrySchema = z
   .openapi({ description: 'Label object for TypeProviders', required: [] })
   .openapi('TypeProviderLabelEntry')
 
-const TypeProviderSchema = z
+type TypeProviderType = {
+  collectionOverrides?: z.infer<typeof CollectionOverrideSchema>[]
+  credential?: z.infer<typeof CredentialSchema>
+  customCertificateAuthorityRoots?: string[]
+  description?: string
+  descriptorUrl?: string
+  id?: string
+  insertTime?: string
+  labels?: z.infer<typeof TypeProviderLabelEntrySchema>[]
+  name?: string
+  operation?: z.infer<typeof OperationSchema>
+  options?: z.infer<typeof OptionsSchema>
+  selfLink?: string
+}
+
+const TypeProviderSchema: z.ZodType<TypeProviderType> = z
   .object({
     collectionOverrides: z
       .array(CollectionOverrideSchema)
@@ -1601,7 +1158,468 @@ const TypeProviderSchema = z
   .openapi({ description: 'A type provider that describes a service-backed Type.', required: [] })
   .openapi('TypeProvider')
 
-const TypeProvidersListResponseSchema = z
+type TypeProvidersListResponseType = {
+  nextPageToken?: string
+  typeProviders?: z.infer<typeof TypeProviderSchema>[]
+}
+
+const TypeSchema: z.ZodType<TypeType> = z
+  .object({
+    base: BaseTypeSchema.exactOptional().openapi({
+      description: 'Base Type (configurable service) that backs this Type.',
+    }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'An optional textual description of the resource; provided by the client when the resource is created.',
+      }),
+    id: z.string().exactOptional(),
+    insertTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Creation timestamp in RFC3339 text format.' }),
+    labels: z
+      .array(TypeLabelEntrySchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Map of One Platform labels; provided by the client when the resource is created or updated. Specifically: Label keys must be between 1 and 63 characters long and must conform to the following regular expression: `[a-z]([-a-z0-9]*[a-z0-9])?` Label values must be between 0 and 63 characters long and must conform to the regular expression `([a-z]([-a-z0-9]*[a-z0-9])?)?`.',
+      }),
+    name: z.string().exactOptional().openapi({ description: 'Name of the type.' }),
+    operation: OperationSchema.exactOptional().openapi({
+      description:
+        'Output only. The Operation that most recently ran, or is currently running, on this type.',
+    }),
+    selfLink: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Server defined URL for the resource.' }),
+  })
+  .openapi({ description: 'A resource type supported by Deployment Manager.', required: [] })
+  .openapi('Type')
+
+type TypesListResponseType = { nextPageToken?: string; types?: z.infer<typeof TypeSchema>[] }
+
+const AuditLogConfigSchema = z
+  .object({
+    exemptedMembers: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the identities that do not cause logging for this type of permission. Follows the same format of Binding.members.',
+      }),
+    logType: z
+      .enum(['LOG_TYPE_UNSPECIFIED', 'ADMIN_READ', 'DATA_WRITE', 'DATA_READ'])
+      .exactOptional()
+      .openapi({ description: 'The log type that this config enables.' }),
+  })
+  .openapi({
+    description:
+      'Provides the configuration for logging a type of permissions. Example: { "audit_log_configs": [ { "log_type": "DATA_READ", "exempted_members": [ "user:jose@example.com" ] }, { "log_type": "DATA_WRITE" } ] } This enables \'DATA_READ\' and \'DATA_WRITE\' logging, while exempting jose@example.com from DATA_READ logging.',
+    required: [],
+  })
+  .openapi('AuditLogConfig')
+
+const AuditConfigSchema = z
+  .object({
+    auditLogConfigs: z
+      .array(AuditLogConfigSchema)
+      .exactOptional()
+      .openapi({ description: 'The configuration for logging of each type of permission.' }),
+    service: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies a service that will be enabled for audit logging. For example, `storage.googleapis.com`, `cloudsql.googleapis.com`. `allServices` is a special value that covers all services.',
+      }),
+  })
+  .openapi({
+    description:
+      'Specifies the audit configuration for a service. The configuration determines which permission types are logged, and what identities, if any, are exempted from logging. An AuditConfig must have one or more AuditLogConfigs. If there are AuditConfigs for both `allServices` and a specific service, the union of the two AuditConfigs is used for that service: the log_types specified in each AuditConfig are enabled, and the exempted_members in each AuditLogConfig are exempted. Example Policy with multiple AuditConfigs: { "audit_configs": [ { "service": "allServices", "audit_log_configs": [ { "log_type": "DATA_READ", "exempted_members": [ "user:jose@example.com" ] }, { "log_type": "DATA_WRITE" }, { "log_type": "ADMIN_READ" } ] }, { "service": "sampleservice.googleapis.com", "audit_log_configs": [ { "log_type": "DATA_READ" }, { "log_type": "DATA_WRITE", "exempted_members": [ "user:aliya@example.com" ] } ] } ] } For sampleservice, this policy enables DATA_READ, DATA_WRITE and ADMIN_READ logging. It also exempts `jose@example.com` from DATA_READ logging, and `aliya@example.com` from DATA_WRITE logging.',
+    required: [],
+  })
+  .openapi('AuditConfig')
+
+const ExprSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.',
+      }),
+    expression: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Textual representation of an expression in Common Expression Language syntax.',
+      }),
+    location: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. String indicating the location of the expression for error reporting, e.g. a file name and a position in the file.',
+      }),
+    title: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Title for the expression, i.e. a short string describing its purpose. This can be used e.g. in UIs which allow to enter the expression.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents a textual expression in the Common Expression Language (CEL) syntax. CEL is a C-like expression language. The syntax and semantics of CEL are documented at https://github.com/google/cel-spec. Example (Comparison): title: "Summary size limit" description: "Determines if a summary is less than 100 chars" expression: "document.summary.size() < 100" Example (Equality): title: "Requestor is owner" description: "Determines if requestor is the document owner" expression: "document.owner == request.auth.claims.email" Example (Logic): title: "Public documents" description: "Determine whether the document should be publicly visible" expression: "document.type != \'private\' && document.type != \'internal\'" Example (Data Manipulation): title: "Notification string" description: "Create a notification string with a timestamp." expression: "\'New message received at \' + string(document.create_time)" The exact variables and functions that may be referenced within an expression are determined by the service that evaluates it. See the service documentation for additional information.',
+    required: [],
+  })
+  .openapi('Expr')
+
+const BindingSchema = z
+  .object({
+    condition: ExprSchema.exactOptional().openapi({
+      description:
+        'The condition that is associated with this binding. If the condition evaluates to `true`, then this binding applies to the current request. If the condition evaluates to `false`, then this binding does not apply to the current request. However, a different role binding might grant the same role to one or more of the principals in this binding. To learn which resources support conditions in their IAM policies, see the [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).',
+    }),
+    members: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the principals requesting access for a Google Cloud resource. `members` can have the following values: * `allUsers`: A special identifier that represents anyone who is on the internet; with or without a Google account. * `allAuthenticatedUsers`: A special identifier that represents anyone who is authenticated with a Google account or a service account. Does not include identities that come from external identity providers (IdPs) through identity federation. * `user:{emailid}`: An email address that represents a specific Google account. For example, `alice@example.com` . * `serviceAccount:{emailid}`: An email address that represents a Google service account. For example, `my-other-app@appspot.gserviceaccount.com`. * `serviceAccount:{projectid}.svc.id.goog[{namespace}/{kubernetes-sa}]`: An identifier for a [Kubernetes service account](https://cloud.google.com/kubernetes-engine/docs/how-to/kubernetes-service-accounts). For example, `my-project.svc.id.goog[my-namespace/my-kubernetes-sa]`. * `group:{emailid}`: An email address that represents a Google group. For example, `admins@example.com`. * `domain:{domain}`: The G Suite domain (primary) that represents all the users of that domain. For example, `google.com` or `example.com`. * `deleted:user:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a user that has been recently deleted. For example, `alice@example.com?uid=123456789012345678901`. If the user is recovered, this value reverts to `user:{emailid}` and the recovered user retains the role in the binding. * `deleted:serviceAccount:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a service account that has been recently deleted. For example, `my-other-app@appspot.gserviceaccount.com?uid=123456789012345678901`. If the service account is undeleted, this value reverts to `serviceAccount:{emailid}` and the undeleted service account retains the role in the binding. * `deleted:group:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a Google group that has been recently deleted. For example, `admins@example.com?uid=123456789012345678901`. If the group is recovered, this value reverts to `group:{emailid}` and the recovered group retains the role in the binding.',
+      }),
+    role: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Role that is assigned to the list of `members`, or principals. For example, `roles/viewer`, `roles/editor`, or `roles/owner`.',
+      }),
+  })
+  .openapi({ description: 'Associates `members`, or principals, with a `role`.', required: [] })
+  .openapi('Binding')
+
+const CompositeTypesListResponseSchema: z.ZodType<CompositeTypesListResponseType> = z
+  .object({
+    compositeTypes: z
+      .array(CompositeTypeSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. A list of resource composite types supported by Deployment Manager.',
+      }),
+    nextPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A token used to continue a truncated list request.' }),
+  })
+  .openapi({
+    description: 'A response that returns all Composite Types supported by Deployment Manager',
+    required: [],
+  })
+  .openapi('CompositeTypesListResponse')
+
+const DeploymentsCancelPreviewRequestSchema = z
+  .object({
+    fingerprint: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies a fingerprint for `cancelPreview()` requests. A fingerprint is a randomly generated value that must be provided in `cancelPreview()` requests to perform optimistic locking. This ensures optimistic concurrency so that the deployment does not have conflicting requests (e.g. if someone attempts to make a new update request while another user attempts to cancel a preview, this would prevent one of the requests). The fingerprint is initially generated by Deployment Manager and changes after every request to modify a deployment. To get the latest fingerprint value, perform a `get()` request on the deployment.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('DeploymentsCancelPreviewRequest')
+
+const DeploymentsListResponseSchema: z.ZodType<DeploymentsListResponseType> = z
+  .object({
+    deployments: z
+      .array(DeploymentSchema)
+      .exactOptional()
+      .openapi({ description: 'Output only. The deployments contained in this response.' }),
+    nextPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. A token used to continue a truncated list request.' }),
+  })
+  .openapi({
+    description:
+      'A response containing a partial list of deployments and a page token used to build the next request if the request has been truncated.',
+    required: [],
+  })
+  .openapi('DeploymentsListResponse')
+
+const DeploymentsStopRequestSchema = z
+  .object({
+    fingerprint: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies a fingerprint for `stop()` requests. A fingerprint is a randomly generated value that must be provided in `stop()` requests to perform optimistic locking. This ensures optimistic concurrency so that the deployment does not have conflicting requests (e.g. if someone attempts to make a new update request while another user attempts to stop an ongoing update request, this would prevent a collision). The fingerprint is initially generated by Deployment Manager and changes after every request to modify a deployment. To get the latest fingerprint value, perform a `get()` request on the deployment.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('DeploymentsStopRequest')
+
+const PolicySchema = z
+  .object({
+    auditConfigs: z
+      .array(AuditConfigSchema)
+      .exactOptional()
+      .openapi({ description: 'Specifies cloud audit logging configuration for this policy.' }),
+    bindings: z
+      .array(BindingSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Associates a list of `members`, or principals, with a `role`. Optionally, may specify a `condition` that determines how and when the `bindings` are applied. Each of the `bindings` must contain at least one principal. The `bindings` in a `Policy` can refer to up to 1,500 principals; up to 250 of these principals can be Google groups. Each occurrence of a principal counts towards these limits. For example, if the `bindings` grant 50 different roles to `user:alice@example.com`, and not to any other principal, then you can add another 1,450 principals to the `bindings` in the `Policy`.',
+      }),
+    etag: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          '`etag` is used for optimistic concurrency control as a way to help prevent simultaneous updates of a policy from overwriting each other. It is strongly suggested that systems make use of the `etag` in the read-modify-write cycle to perform policy updates in order to avoid race conditions: An `etag` is returned in the response to `getIamPolicy`, and systems are expected to put that etag in the request to `setIamPolicy` to ensure that their change will be applied to the same version of the policy. **Important:** If you use IAM Conditions, you must include the `etag` field whenever you call `setIamPolicy`. If you omit this field, then IAM allows you to overwrite a version `3` policy with a version `1` policy, and all of the conditions in the version `3` policy are lost.',
+      }),
+    version: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the format of the policy. Valid values are `0`, `1`, and `3`. Requests that specify an invalid value are rejected. Any operation that affects conditional role bindings must specify version `3`. This requirement applies to the following operations: * Getting a policy that includes a conditional role binding * Adding a conditional role binding to a policy * Changing a conditional role binding in a policy * Removing any role binding, with or without a condition, from a policy that includes conditions **Important:** If you use IAM Conditions, you must include the `etag` field whenever you call `setIamPolicy`. If you omit this field, then IAM allows you to overwrite a version `3` policy with a version `1` policy, and all of the conditions in the version `3` policy are lost. If a policy does not include any conditions, operations on that policy may specify any valid version or leave the field unset. To learn which resources support conditions in their IAM policies, see the [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).',
+      }),
+  })
+  .openapi({
+    description:
+      'An Identity and Access Management (IAM) policy, which specifies access controls for Google Cloud resources. A `Policy` is a collection of `bindings`. A `binding` binds one or more `members`, or principals, to a single `role`. Principals can be user accounts, service accounts, Google groups, and domains (such as G Suite). A `role` is a named list of permissions; each `role` can be an IAM predefined role or a user-created custom role. For some types of Google Cloud resources, a `binding` can also specify a `condition`, which is a logical expression that allows access to a resource only if the expression evaluates to `true`. A condition can add constraints based on attributes of the request, the resource, or both. To learn which resources support conditions in their IAM policies, see the [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies). **JSON example:** { "bindings": [ { "role": "roles/resourcemanager.organizationAdmin", "members": [ "user:mike@example.com", "group:admins@example.com", "domain:google.com", "serviceAccount:my-project-id@appspot.gserviceaccount.com" ] }, { "role": "roles/resourcemanager.organizationViewer", "members": [ "user:eve@example.com" ], "condition": { "title": "expirable access", "description": "Does not grant access after Sep 2020", "expression": "request.time < timestamp(\'2020-10-01T00:00:00.000Z\')", } } ], "etag": "BwWWja0YfJA=", "version": 3 } **YAML example:** bindings: - members: - user:mike@example.com - group:admins@example.com - domain:google.com - serviceAccount:my-project-id@appspot.gserviceaccount.com role: roles/resourcemanager.organizationAdmin - members: - user:eve@example.com role: roles/resourcemanager.organizationViewer condition: title: expirable access description: Does not grant access after Sep 2020 expression: request.time < timestamp(\'2020-10-01T00:00:00.000Z\') etag: BwWWja0YfJA= version: 3 For a description of IAM and its features, see the [IAM documentation](https://cloud.google.com/iam/docs/).',
+    required: [],
+  })
+  .openapi('Policy')
+
+const GlobalSetPolicyRequestSchema = z
+  .object({
+    bindings: z
+      .array(BindingSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "Flatten Policy to create a backward compatible wire-format. Deprecated. Use 'policy' to specify bindings.",
+      }),
+    etag: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Flatten Policy to create a backward compatible wire-format. Deprecated. Use 'policy' to specify the etag.",
+      }),
+    policy: PolicySchema.exactOptional().openapi({
+      description:
+        "REQUIRED: The complete policy to be applied to the 'resource'. The size of the policy is limited to a few 10s of KB. An empty policy is in general a valid policy but certain services (like Projects) might reject them.",
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('GlobalSetPolicyRequest')
+
+const ManifestSchema = z
+  .object({
+    config: ConfigFileSchema.exactOptional().openapi({
+      description: 'Output only. The YAML configuration for this manifest.',
+    }),
+    expandedConfig: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The fully-expanded configuration file, including any templates and references.',
+      }),
+    id: z.string().exactOptional(),
+    imports: z
+      .array(ImportFileSchema)
+      .exactOptional()
+      .openapi({ description: 'Output only. The imported files for this manifest.' }),
+    insertTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Creation timestamp in RFC3339 text format.' }),
+    layout: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. The YAML layout for this manifest.' }),
+    manifestSizeBytes: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. The computed size of the fully expanded manifest.' }),
+    manifestSizeLimitBytes: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The size limit for expanded manifests in the project.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. The name of the manifest.' }),
+    selfLink: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Self link for the manifest.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('Manifest')
+
+const ManifestsListResponseSchema = z
+  .object({
+    manifests: z
+      .array(ManifestSchema)
+      .exactOptional()
+      .openapi({ description: 'Output only. Manifests contained in this list response.' }),
+    nextPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. A token used to continue a truncated list request.' }),
+  })
+  .openapi({
+    description:
+      'A response containing a partial list of manifests and a page token used to build the next request if the request has been truncated.',
+    required: [],
+  })
+  .openapi('ManifestsListResponse')
+
+const OperationsListResponseSchema = z
+  .object({
+    nextPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. A token used to continue a truncated list request.' }),
+    operations: z
+      .array(OperationSchema)
+      .exactOptional()
+      .openapi({ description: 'Output only. Operations contained in this list response.' }),
+  })
+  .openapi({
+    description:
+      'A response containing a partial list of operations and a page token used to build the next request if the request has been truncated.',
+    required: [],
+  })
+  .openapi('OperationsListResponse')
+
+const ResourcesListResponseSchema: z.ZodType<ResourcesListResponseType> = z
+  .object({
+    nextPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A token used to continue a truncated list request.' }),
+    resources: z
+      .array(ResourceSchema)
+      .exactOptional()
+      .openapi({ description: 'Resources contained in this list response.' }),
+  })
+  .openapi({
+    description:
+      'A response containing a partial list of resources and a page token used to build the next request if the request has been truncated.',
+    required: [],
+  })
+  .openapi('ResourcesListResponse')
+
+const TestPermissionsRequestSchema = z
+  .object({
+    permissions: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "The set of permissions to check for the 'resource'. Permissions with wildcards (such as '*' or 'storage.*') are not allowed.",
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('TestPermissionsRequest')
+
+const TestPermissionsResponseSchema = z
+  .object({
+    permissions: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'A subset of `TestPermissionsRequest.permissions` that the caller is allowed.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('TestPermissionsResponse')
+
+const TypeInfoSchemaInfoSchema = z
+  .object({
+    input: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The properties that this composite type or base type collection accept as input, represented as a json blob, format is: JSON Schema Draft V4',
+      }),
+    output: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The properties that this composite type or base type collection exposes as output, these properties can be used for references, represented as json blob, format is: JSON Schema Draft V4',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('TypeInfoSchemaInfo')
+
+const TypeInfoSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The description of the type.' }),
+    documentationLink: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'For swagger 2.0 externalDocs field will be used. For swagger 1.2 this field will be empty.',
+      }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Type of the output. Always `deploymentManager#TypeInfo` for TypeInfo.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The base type or composite type name.' }),
+    schema: TypeInfoSchemaInfoSchema.exactOptional().openapi({
+      description:
+        'For base types with a collection, we return a schema and documentation link For template types, we return only a schema',
+    }),
+    selfLink: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Self link for the type provider.' }),
+    title: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The title on the API descriptor URL provided.' }),
+  })
+  .openapi({
+    description:
+      'Type Information. Contains detailed information about a composite type, base type, or base type with specific collection.',
+    required: [],
+  })
+  .openapi('TypeInfo')
+
+const TypeProvidersListResponseSchema: z.ZodType<TypeProvidersListResponseType> = z
   .object({
     nextPageToken: z
       .string()
@@ -1635,7 +1653,7 @@ const TypeProvidersListTypesResponseSchema = z
   .openapi({ required: [] })
   .openapi('TypeProvidersListTypesResponse')
 
-const TypesListResponseSchema = z
+const TypesListResponseSchema: z.ZodType<TypesListResponseType> = z
   .object({
     nextPageToken: z
       .string()

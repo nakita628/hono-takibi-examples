@@ -1,7 +1,7 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
 const AerodromeDistanceResponseSchema = z
-  .object({ found: z.object({}).openapi({ title: 'Found' }) })
+  .object({ found: z.looseObject({}).openapi({ title: 'Found' }) })
   .openapi({
     example: {
       found: {
@@ -76,7 +76,7 @@ const AerodromeDistanceResponseSchema = z
   .openapi('AerodromeDistanceResponse')
 
 const AerodromePolyResponseSchema = z
-  .object({ found: z.object({}).openapi({ title: 'Found' }) })
+  .object({ found: z.looseObject({}).openapi({ title: 'Found' }) })
   .openapi({
     example: {
       found: {
@@ -139,7 +139,7 @@ const AerodromePolyResponseSchema = z
   .openapi('AerodromePolyResponse')
 
 const AerodromeRouteResponseSchema = z
-  .object({ found: z.object({}).openapi({ title: 'Found' }) })
+  .object({ found: z.looseObject({}).openapi({ title: 'Found' }) })
   .openapi({
     example: {
       found: {
@@ -240,7 +240,7 @@ const AerodromesByDistanceSchema = z
   .openapi('AerodromesByDistance')
 
 const AerodromesByPolygonSchema = z
-  .object({ poly: z.object({}).openapi({ title: 'Poly' }) })
+  .object({ poly: z.looseObject({}).openapi({ title: 'Poly' }) })
   .openapi({
     description: 'Geometry-defining arguments for polygon requests',
     example: {
@@ -262,7 +262,7 @@ const AerodromesByPolygonSchema = z
   .openapi('AerodromesByPolygon')
 
 const AerodromesByRouteSchema = z
-  .object({ route: z.object({}).openapi({ title: 'Route' }) })
+  .object({ route: z.looseObject({}).openapi({ title: 'Route' }) })
   .openapi({
     description: 'Geometry-defining arguments for along-route requests',
     example: {
@@ -298,7 +298,7 @@ const AirspaceByDistanceSchema = z
 const AirspaceByPolygonSchema = z
   .object({
     asptypes: z.array(z.string()).openapi({ title: 'Asptypes' }),
-    poly: z.object({}).openapi({ title: 'Poly' }),
+    poly: z.looseObject({}).openapi({ title: 'Poly' }),
   })
   .openapi({
     description: 'Geometry-defining arguments for polygon requests',
@@ -325,7 +325,7 @@ const AirspaceByPolygonSchema = z
 const AirspaceByRouteSchema = z
   .object({
     asptypes: z.array(z.string()).openapi({ title: 'Asptypes' }),
-    route: z.object({}).openapi({ title: 'Route' }),
+    route: z.looseObject({}).openapi({ title: 'Route' }),
   })
   .openapi({
     description: 'Geometry-defining arguments for along-route requests',
@@ -346,7 +346,7 @@ const AirspaceByRouteSchema = z
   .openapi('AirspaceByRoute')
 
 const AirspaceDistanceResponseSchema = z
-  .object({ found: z.array(z.object({})).openapi({ title: 'Found' }) })
+  .object({ found: z.array(z.looseObject({})).openapi({ title: 'Found' }) })
   .openapi({
     example: {
       found: [
@@ -471,7 +471,7 @@ const AirspaceDistanceResponseSchema = z
   .openapi('AirspaceDistanceResponse')
 
 const AirspacePolyResponseSchema = z
-  .object({ found: z.array(z.object({})).openapi({ title: 'Found' }) })
+  .object({ found: z.array(z.looseObject({})).openapi({ title: 'Found' }) })
   .openapi({
     example: {
       found: [
@@ -1136,7 +1136,7 @@ const AirspacePolyResponseSchema = z
   .openapi('AirspacePolyResponse')
 
 const AirspaceRouteResponseSchema = z
-  .object({ found: z.array(z.object({})).openapi({ title: 'Found' }) })
+  .object({ found: z.array(z.looseObject({})).openapi({ title: 'Found' }) })
   .openapi({
     example: {
       found: [
@@ -1363,7 +1363,7 @@ const NOTAMsByDistanceSchema = z
   .openapi('NOTAMsByDistance')
 
 const NOTAMsByPolygonSchema = z
-  .object({ poly: z.object({}).openapi({ title: 'Poly' }) })
+  .object({ poly: z.looseObject({}).openapi({ title: 'Poly' }) })
   .openapi({
     description: 'Geometry-defining arguments for polygon requests',
     example: {
@@ -1385,7 +1385,7 @@ const NOTAMsByPolygonSchema = z
   .openapi('NOTAMsByPolygon')
 
 const NOTAMsByRouteSchema = z
-  .object({ route: z.object({}).openapi({ title: 'Route' }) })
+  .object({ route: z.looseObject({}).openapi({ title: 'Route' }) })
   .openapi({
     description: 'Geometry-defining arguments for along-route requests',
     example: {
@@ -1405,7 +1405,7 @@ const NOTAMsByRouteSchema = z
   .openapi('NOTAMsByRoute')
 
 const NOTAMsDistanceResponseSchema = z
-  .object({ found: z.object({}).openapi({ title: 'Found' }) })
+  .object({ found: z.looseObject({}).openapi({ title: 'Found' }) })
   .openapi({
     example: {
       found: {
@@ -1491,7 +1491,7 @@ const NOTAMsDistanceResponseSchema = z
   .openapi('NOTAMsDistanceResponse')
 
 const NOTAMsPolyResponseSchema = z
-  .object({ found: z.object({}).openapi({ title: 'Found' }) })
+  .object({ found: z.looseObject({}).openapi({ title: 'Found' }) })
   .openapi({
     example: {
       found: {
@@ -1608,7 +1608,7 @@ const NOTAMsPolyResponseSchema = z
   .openapi('NOTAMsPolyResponse')
 
 const NOTAMsRouteResponseSchema = z
-  .object({ found: z.object({}).openapi({ title: 'Found' }) })
+  .object({ found: z.looseObject({}).openapi({ title: 'Found' }) })
   .openapi({
     example: {
       found: {
@@ -1687,7 +1687,7 @@ const NOTAMsRouteResponseSchema = z
   .openapi('NOTAMsRouteResponse')
 
 const ObstacleDistanceResponseSchema = z
-  .object({ found: z.object({}).openapi({ title: 'Found' }) })
+  .object({ found: z.looseObject({}).openapi({ title: 'Found' }) })
   .openapi({
     example: {
       found: {
@@ -1738,7 +1738,7 @@ const ObstacleDistanceResponseSchema = z
   .openapi('ObstacleDistanceResponse')
 
 const ObstaclePolyResponseSchema = z
-  .object({ found: z.object({}).openapi({ title: 'Found' }) })
+  .object({ found: z.looseObject({}).openapi({ title: 'Found' }) })
   .openapi({
     example: {
       found: {
@@ -1789,7 +1789,7 @@ const ObstaclePolyResponseSchema = z
   .openapi('ObstaclePolyResponse')
 
 const ObstacleRouteResponseSchema = z
-  .object({ found: z.object({}).openapi({ title: 'Found' }) })
+  .object({ found: z.looseObject({}).openapi({ title: 'Found' }) })
   .openapi({
     example: {
       found: {
@@ -1890,7 +1890,7 @@ const ObstaclesByDistanceSchema = z
   .openapi('ObstaclesByDistance')
 
 const ObstaclesByPolygonSchema = z
-  .object({ poly: z.object({}).openapi({ title: 'Poly' }) })
+  .object({ poly: z.looseObject({}).openapi({ title: 'Poly' }) })
   .openapi({
     description: 'Geometry-defining arguments for polygon requests',
     example: {
@@ -1912,7 +1912,7 @@ const ObstaclesByPolygonSchema = z
   .openapi('ObstaclesByPolygon')
 
 const ObstaclesByRouteSchema = z
-  .object({ route: z.object({}).openapi({ title: 'Route' }) })
+  .object({ route: z.looseObject({}).openapi({ title: 'Route' }) })
   .openapi({
     description: 'Geometry-defining arguments for along-route requests',
     example: {
@@ -1945,7 +1945,7 @@ const SSAByDistanceSchema = z
   .openapi('SSAByDistance')
 
 const SSAByPolygonSchema = z
-  .object({ poly: z.object({}).openapi({ title: 'Poly' }) })
+  .object({ poly: z.looseObject({}).openapi({ title: 'Poly' }) })
   .openapi({
     description: 'Geometry-defining arguments for polygon requests',
     example: {
@@ -1967,7 +1967,7 @@ const SSAByPolygonSchema = z
   .openapi('SSAByPolygon')
 
 const SSAByRouteSchema = z
-  .object({ route: z.object({}).openapi({ title: 'Route' }) })
+  .object({ route: z.looseObject({}).openapi({ title: 'Route' }) })
   .openapi({
     description: 'Geometry-defining arguments for along-route requests',
     example: {
@@ -1986,7 +1986,7 @@ const SSAByRouteSchema = z
   .openapi('SSAByRoute')
 
 const SSADistanceResponseSchema = z
-  .object({ found: z.object({}).openapi({ title: 'Found' }) })
+  .object({ found: z.looseObject({}).openapi({ title: 'Found' }) })
   .openapi({
     example: {
       found: {
@@ -2584,7 +2584,7 @@ const SSADistanceResponseSchema = z
   .openapi('SSADistanceResponse')
 
 const SSAPolyResponseSchema = z
-  .object({ found: z.object({}).openapi({ title: 'Found' }) })
+  .object({ found: z.looseObject({}).openapi({ title: 'Found' }) })
   .openapi({
     example: {
       found: {
@@ -2767,7 +2767,7 @@ const SSAPolyResponseSchema = z
   .openapi('SSAPolyResponse')
 
 const SSARouteResponseSchema = z
-  .object({ found: z.object({}).openapi({ title: 'Found' }) })
+  .object({ found: z.looseObject({}).openapi({ title: 'Found' }) })
   .openapi({
     example: {
       found: {
@@ -3192,7 +3192,7 @@ const UOAsByDistanceSchema = z
   .openapi('UOAsByDistance')
 
 const UOAsByPolygonSchema = z
-  .object({ poly: z.object({}).openapi({ title: 'Poly' }) })
+  .object({ poly: z.looseObject({}).openapi({ title: 'Poly' }) })
   .openapi({
     description: 'Geometry-defining arguments for polygon requests',
     example: {
@@ -3214,7 +3214,7 @@ const UOAsByPolygonSchema = z
   .openapi('UOAsByPolygon')
 
 const UOAsByRouteSchema = z
-  .object({ route: z.object({}).openapi({ title: 'Route' }) })
+  .object({ route: z.looseObject({}).openapi({ title: 'Route' }) })
   .openapi({
     description: 'Geometry-defining arguments for along-route requests',
     example: {
@@ -3233,7 +3233,7 @@ const UOAsByRouteSchema = z
   .openapi('UOAsByRoute')
 
 const UOAsDistanceResponseSchema = z
-  .object({ found: z.object({}).openapi({ title: 'Found' }) })
+  .object({ found: z.looseObject({}).openapi({ title: 'Found' }) })
   .openapi({
     example: {
       found: {
@@ -3382,7 +3382,7 @@ const UOAsDistanceResponseSchema = z
   .openapi('UOAsDistanceResponse')
 
 const UOAsPolyResponseSchema = z
-  .object({ found: z.object({}).openapi({ title: 'Found' }) })
+  .object({ found: z.looseObject({}).openapi({ title: 'Found' }) })
   .openapi({
     example: {
       found: {
@@ -3479,7 +3479,7 @@ const UOAsPolyResponseSchema = z
   .openapi('UOAsPolyResponse')
 
 const UOAsRouteResponseSchema = z
-  .object({ found: z.object({}).openapi({ title: 'Found' }) })
+  .object({ found: z.looseObject({}).openapi({ title: 'Found' }) })
   .openapi({
     example: {
       found: {
@@ -3734,7 +3734,7 @@ const UOAsRouteResponseSchema = z
   .openapi('UOAsRouteResponse')
 
 const VenueDistanceResponseSchema = z
-  .object({ found: z.object({}).openapi({ title: 'Found' }) })
+  .object({ found: z.looseObject({}).openapi({ title: 'Found' }) })
   .openapi({
     example: {
       found: {
@@ -3901,7 +3901,7 @@ const VenueDistanceResponseSchema = z
   .openapi('VenueDistanceResponse')
 
 const VenuePolyResponseSchema = z
-  .object({ found: z.object({}).openapi({ title: 'Found' }) })
+  .object({ found: z.looseObject({}).openapi({ title: 'Found' }) })
   .openapi({
     example: {
       found: {
@@ -5084,7 +5084,7 @@ const VenuePolyResponseSchema = z
   .openapi('VenuePolyResponse')
 
 const VenueRouteResponseSchema = z
-  .object({ found: z.object({}).openapi({ title: 'Found' }) })
+  .object({ found: z.looseObject({}).openapi({ title: 'Found' }) })
   .openapi({
     example: {
       found: {
@@ -6226,7 +6226,7 @@ const VenuesByDistanceSchema = z
   .openapi('VenuesByDistance')
 
 const VenuesByPolygonSchema = z
-  .object({ poly: z.object({}).openapi({ title: 'Poly' }) })
+  .object({ poly: z.looseObject({}).openapi({ title: 'Poly' }) })
   .openapi({
     description: 'Geometry-defining arguments for polygon requests',
     example: {
@@ -6248,7 +6248,7 @@ const VenuesByPolygonSchema = z
   .openapi('VenuesByPolygon')
 
 const VenuesByRouteSchema = z
-  .object({ route: z.object({}).openapi({ title: 'Route' }) })
+  .object({ route: z.looseObject({}).openapi({ title: 'Route' }) })
   .openapi({
     description: 'Geometry-defining arguments for along-route requests',
     example: {
@@ -6291,7 +6291,7 @@ const WxByDistanceSchema = z
 const WxByPolygonSchema = z
   .object({
     hours: z.int().openapi({ title: 'Hours' }),
-    poly: z.object({}).openapi({ title: 'Poly' }),
+    poly: z.looseObject({}).openapi({ title: 'Poly' }),
     wxtypes: z.array(z.string()).openapi({ title: 'Wxtypes' }),
   })
   .openapi({
@@ -6321,7 +6321,7 @@ const WxByPolygonSchema = z
 const WxByRouteSchema = z
   .object({
     hours: z.int().openapi({ title: 'Hours' }),
-    route: z.object({}).openapi({ title: 'Route' }),
+    route: z.looseObject({}).openapi({ title: 'Route' }),
     wxtypes: z.array(z.string()).openapi({ title: 'Wxtypes' }),
   })
   .openapi({
@@ -6346,7 +6346,7 @@ const WxByRouteSchema = z
   .openapi('WxByRoute')
 
 const WxDistanceResponseSchema = z
-  .object({ found: z.object({}).openapi({ title: 'Found' }) })
+  .object({ found: z.looseObject({}).openapi({ title: 'Found' }) })
   .openapi({
     example: {
       found: {
@@ -6433,7 +6433,7 @@ const WxDistanceResponseSchema = z
   .openapi('WxDistanceResponse')
 
 const WxPolyResponseSchema = z
-  .object({ found: z.object({}).openapi({ title: 'Found' }) })
+  .object({ found: z.looseObject({}).openapi({ title: 'Found' }) })
   .openapi({
     example: {
       found: {
@@ -6493,7 +6493,7 @@ const WxPolyResponseSchema = z
   .openapi('WxPolyResponse')
 
 const WxRouteResponseSchema = z
-  .object({ found: z.object({}).openapi({ title: 'Found' }) })
+  .object({ found: z.looseObject({}).openapi({ title: 'Found' }) })
   .openapi({
     example: {
       found: {

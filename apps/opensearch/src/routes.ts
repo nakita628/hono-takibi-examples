@@ -929,7 +929,10 @@ const CommonScriptLanguageSchema = z
     z
       .string()
       .refine((val) => !CommonBuiltinScriptLanguageSchema.safeParse(val).success)
-      .openapi({ title: 'custom' }),
+      .openapi({
+        title: 'custom',
+        not: { type: 'string', enum: ['expression', 'java', 'mustache', 'painless'] },
+      }),
   ])
   .openapi('CommonScriptLanguage')
 
@@ -1152,7 +1155,7 @@ const CommonGeoDistanceSortSchema: z.ZodType<CommonGeoDistanceSortType> = z
             description: 'The geo points to use for distance calculation.',
           }),
       )
-      .openapi({ description: 'The options for sorting by geo distance.' }),
+      .openapi({ description: 'The options for sorting by geo distance.', required: [] }),
   )
   .openapi('CommonGeoDistanceSort')
 
@@ -1263,7 +1266,14 @@ const CommonAggregationsBucketAggregationBaseSchema: z.ZodType<CommonAggregation
               .object({ aggregations: z.looseObject({}), aggs: z.looseObject({}) })
               .openapi({ required: ['aggregations', 'aggs'] })
               .safeParse(val).success,
-        ),
+        )
+        .openapi({
+          not: {
+            type: 'object',
+            properties: { aggregations: { type: 'object' }, aggs: { type: 'object' } },
+            required: ['aggregations', 'aggs'],
+          },
+        }),
     )
     .openapi('CommonAggregationsBucketAggregationBase')
 
@@ -4124,84 +4134,82 @@ const CommonAggregationsSingleBucketAggregateBaseSchema: z.ZodType<CommonAggrega
             })
             .openapi({ required: ['doc_count'] }),
         )
-        return z
-          .unknown()
-          .check((ctx) => {
-            const result = Schema.safeParse(ctx.value)
-            if (!result.success) {
-              for (const issue of result.error.issues) {
-                if (issue.code === 'invalid_type') {
-                  ctx.issues.push({ ...issue, input: issue.input })
-                } else if (issue.code === 'too_big') {
-                  ctx.issues.push({ ...issue, input: issue.input })
-                } else if (issue.code === 'too_small') {
-                  ctx.issues.push({ ...issue, input: issue.input })
-                } else if (issue.code === 'invalid_format') {
-                  ctx.issues.push({ ...issue, input: issue.input })
-                } else if (issue.code === 'not_multiple_of') {
-                  ctx.issues.push({ ...issue, input: issue.input })
-                } else if (issue.code === 'unrecognized_keys') {
-                  ctx.issues.push({ ...issue, input: issue.input })
-                } else if (issue.code === 'invalid_union') {
-                  ctx.issues.push({ ...issue, input: issue.input })
-                } else if (issue.code === 'invalid_key') {
-                  ctx.issues.push({ ...issue, input: issue.input })
-                } else if (issue.code === 'invalid_element') {
-                  ctx.issues.push({ ...issue, input: issue.input })
-                } else if (issue.code === 'invalid_value') {
-                  ctx.issues.push({ ...issue, input: issue.input })
-                } else if (issue.code === 'custom') {
-                  ctx.issues.push({ ...issue, input: issue.input })
-                }
+        return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+          const result = Schema.safeParse(ctx.value)
+          if (!result.success) {
+            for (const issue of result.error.issues) {
+              if (issue.code === 'invalid_type') {
+                ctx.issues.push({ ...issue, input: issue.input })
+              } else if (issue.code === 'too_big') {
+                ctx.issues.push({ ...issue, input: issue.input })
+              } else if (issue.code === 'too_small') {
+                ctx.issues.push({ ...issue, input: issue.input })
+              } else if (issue.code === 'invalid_format') {
+                ctx.issues.push({ ...issue, input: issue.input })
+              } else if (issue.code === 'not_multiple_of') {
+                ctx.issues.push({ ...issue, input: issue.input })
+              } else if (issue.code === 'unrecognized_keys') {
+                ctx.issues.push({ ...issue, input: issue.input })
+              } else if (issue.code === 'invalid_union') {
+                ctx.issues.push({ ...issue, input: issue.input })
+              } else if (issue.code === 'invalid_key') {
+                ctx.issues.push({ ...issue, input: issue.input })
+              } else if (issue.code === 'invalid_element') {
+                ctx.issues.push({ ...issue, input: issue.input })
+              } else if (issue.code === 'invalid_value') {
+                ctx.issues.push({ ...issue, input: issue.input })
+              } else if (issue.code === 'custom') {
+                ctx.issues.push({ ...issue, input: issue.input })
               }
             }
-            ;((ctx) => {
-              const o = ctx.value
-              if (typeof o !== 'object' || o === null || Array.isArray(o)) return
-              const e = new Set()
-              for (const k of ['meta']) {
-                e.add(k)
+          }
+          ;((ctx) => {
+            const o = ctx.value
+            if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+            const e = new Set()
+            for (const k of ['meta']) {
+              e.add(k)
+            }
+            for (const k of ['doc_count']) {
+              e.add(k)
+            }
+            const Schema = CommonAggregationsAggregateSchema.openapi({ title: 'aggregations' })
+            for (const [k, val] of Object.entries(o)) {
+              if (e.has(k)) {
+                continue
               }
-              for (const k of ['doc_count']) {
-                e.add(k)
-              }
-              const Schema = CommonAggregationsAggregateSchema.openapi({ title: 'aggregations' })
-              for (const [k, val] of Object.entries(o)) {
-                if (e.has(k)) {
-                  continue
-                }
-                const result = Schema.safeParse(val)
-                if (!result.success) {
-                  for (const issue of result.error.issues) {
-                    if (issue.code === 'invalid_type') {
-                      ctx.issues.push({ ...issue, path: [k, ...issue.path], input: issue.input })
-                    } else if (issue.code === 'too_big') {
-                      ctx.issues.push({ ...issue, path: [k, ...issue.path], input: issue.input })
-                    } else if (issue.code === 'too_small') {
-                      ctx.issues.push({ ...issue, path: [k, ...issue.path], input: issue.input })
-                    } else if (issue.code === 'invalid_format') {
-                      ctx.issues.push({ ...issue, path: [k, ...issue.path], input: issue.input })
-                    } else if (issue.code === 'not_multiple_of') {
-                      ctx.issues.push({ ...issue, path: [k, ...issue.path], input: issue.input })
-                    } else if (issue.code === 'unrecognized_keys') {
-                      ctx.issues.push({ ...issue, path: [k, ...issue.path], input: issue.input })
-                    } else if (issue.code === 'invalid_union') {
-                      ctx.issues.push({ ...issue, path: [k, ...issue.path], input: issue.input })
-                    } else if (issue.code === 'invalid_key') {
-                      ctx.issues.push({ ...issue, path: [k, ...issue.path], input: issue.input })
-                    } else if (issue.code === 'invalid_element') {
-                      ctx.issues.push({ ...issue, path: [k, ...issue.path], input: issue.input })
-                    } else if (issue.code === 'invalid_value') {
-                      ctx.issues.push({ ...issue, path: [k, ...issue.path], input: issue.input })
-                    } else if (issue.code === 'custom') {
-                      ctx.issues.push({ ...issue, path: [k, ...issue.path], input: issue.input })
-                    }
+              const result = Schema.safeParse(val)
+              if (!result.success) {
+                for (const issue of result.error.issues) {
+                  if (issue.code === 'invalid_type') {
+                    ctx.issues.push({ ...issue, path: [k, ...issue.path], input: issue.input })
+                  } else if (issue.code === 'too_big') {
+                    ctx.issues.push({ ...issue, path: [k, ...issue.path], input: issue.input })
+                  } else if (issue.code === 'too_small') {
+                    ctx.issues.push({ ...issue, path: [k, ...issue.path], input: issue.input })
+                  } else if (issue.code === 'invalid_format') {
+                    ctx.issues.push({ ...issue, path: [k, ...issue.path], input: issue.input })
+                  } else if (issue.code === 'not_multiple_of') {
+                    ctx.issues.push({ ...issue, path: [k, ...issue.path], input: issue.input })
+                  } else if (issue.code === 'unrecognized_keys') {
+                    ctx.issues.push({ ...issue, path: [k, ...issue.path], input: issue.input })
+                  } else if (issue.code === 'invalid_union') {
+                    ctx.issues.push({ ...issue, path: [k, ...issue.path], input: issue.input })
+                  } else if (issue.code === 'invalid_key') {
+                    ctx.issues.push({ ...issue, path: [k, ...issue.path], input: issue.input })
+                  } else if (issue.code === 'invalid_element') {
+                    ctx.issues.push({ ...issue, path: [k, ...issue.path], input: issue.input })
+                  } else if (issue.code === 'invalid_value') {
+                    ctx.issues.push({ ...issue, path: [k, ...issue.path], input: issue.input })
+                  } else if (issue.code === 'custom') {
+                    ctx.issues.push({ ...issue, path: [k, ...issue.path], input: issue.input })
                   }
                 }
               }
-            })(ctx)
-          })
-          .pipe(Schema)
+            }
+          })(ctx)
+          return val
+        }, Schema)
       })(),
     )
     .openapi('CommonAggregationsSingleBucketAggregateBase')
@@ -9151,7 +9159,8 @@ const CommonQueryDslGeoBoundingBoxQuerySchema: z.ZodType<CommonQueryDslGeoBoundi
         ignore_unmapped: CommonQueryDslIgnoreUnmappedSchema.exactOptional(),
       })
       .catchall(CommonGeoBoundsSchema.openapi({ title: 'bounding_box' }))
-      .refine((val) => Object.keys(val).length >= 1),
+      .refine((val) => Object.keys(val).length >= 1)
+      .openapi({ required: [] }),
   ).openapi('CommonQueryDslGeoBoundingBoxQuery')
 
 const CommonQueryDslGeoDistanceQuerySchema: z.ZodType<CommonQueryDslGeoDistanceQueryType> =
@@ -9184,7 +9193,8 @@ const CommonQueryDslGeoPolygonQuerySchema: z.ZodType<CommonQueryDslGeoPolygonQue
         ignore_unmapped: CommonQueryDslIgnoreUnmappedSchema.exactOptional(),
       })
       .catchall(CommonQueryDslGeoPolygonPointsSchema.openapi({ title: 'polygon' }))
-      .refine((val) => Object.keys(val).length >= 1),
+      .refine((val) => Object.keys(val).length >= 1)
+      .openapi({ required: [] }),
   ).openapi('CommonQueryDslGeoPolygonQuery')
 
 const CommonQueryDslFieldLookupSchema = z
@@ -9229,7 +9239,8 @@ const CommonQueryDslGeoShapeQuerySchema: z.ZodType<CommonQueryDslGeoShapeQueryTy
     z
       .object({ ignore_unmapped: CommonQueryDslIgnoreUnmappedSchema.exactOptional() })
       .catchall(CommonQueryDslGeoShapeQueryFieldSchema.openapi({ title: 'shape' }))
-      .refine((val) => Object.keys(val).length >= 1),
+      .refine((val) => Object.keys(val).length >= 1)
+      .openapi({ required: [] }),
   ).openapi('CommonQueryDslGeoShapeQuery')
 
 const CommonQueryDslHasChildQuerySchema: z.ZodType<CommonQueryDslHasChildQueryType> = z
@@ -10509,6 +10520,7 @@ const CommonQueryDslTermsQuerySchema: z.ZodType<CommonQueryDslTermsQueryType> = 
   })
   .catchall(CommonQueryDslTermsQueryFieldSchema.openapi({ title: 'terms' }))
   .refine((val) => Object.keys(val).length >= 1)
+  .openapi({ required: [] })
   .openapi('CommonQueryDslTermsQuery')
 
 type CommonQueryDslTermsSetQueryType = z.infer<typeof CommonQueryDslQueryBaseSchema> & {
@@ -10619,7 +10631,8 @@ const CommonQueryDslXyShapeQuerySchema: z.ZodType<CommonQueryDslXyShapeQueryType
     z
       .object({ ignore_unmapped: z.boolean().exactOptional() })
       .catchall(CommonQueryDslXyShapeQueryFieldSchema.openapi({ title: 'xy_shape' }))
-      .refine((val) => Object.keys(val).length >= 1),
+      .refine((val) => Object.keys(val).length >= 1)
+      .openapi({ required: [] }),
   )
     .openapi({ 'x-version-added': '2.4' })
     .openapi('CommonQueryDslXyShapeQuery')
@@ -11247,6 +11260,7 @@ const CoreSearchSuggesterSchema = z
       description: 'The named suggesters.',
     }),
   )
+  .openapi({ required: [] })
   .openapi('CoreSearchSuggester')
 
 type CoreMsearchMultisearchBodyType = {
@@ -12756,7 +12770,8 @@ const CoreSearchHitSchema: z.ZodType<CoreSearchHitType> = z
             title: 'meta_fields',
             description: 'Contains metadata values for the documents.',
           }),
-      ),
+      )
+      .openapi({ required: [] }),
   )
   .openapi('CoreSearchHit')
 
@@ -13366,7 +13381,7 @@ const IndicesCommonIndexSettingsSchema: z.ZodType<IndicesCommonIndexSettingsType
         }),
       })
       .catchall(z.any().openapi({ title: 'custom_settings' }))
-      .openapi({ description: 'The configuration settings for an index.' }),
+      .openapi({ description: 'The configuration settings for an index.', required: [] }),
   )
   .openapi('IndicesCommonIndexSettings')
 
@@ -19617,6 +19632,7 @@ const IsmCommonErrorNotificationDestinationSchema = z
       .openapi({ description: 'When the notification destination was last updated.' }),
   })
   .catchall(z.union([IsmCommonErrorNotificationChimeSchema, IsmCommonErrorNotificationSlackSchema]))
+  .openapi({ required: [] })
   .openapi('IsmCommonErrorNotificationDestination')
 
 const IsmCommonChannelSchema = z
@@ -20218,6 +20234,7 @@ const MlCommonAgentTypeSchema = z
 const MlCommonToolAttributesSchema = z
   .object({ input_schema: z.string().exactOptional(), strict: z.boolean().exactOptional() })
   .catchall(z.any().openapi({ title: 'attributes' }))
+  .openapi({ required: [] })
   .openapi('MlCommonToolAttributes')
 
 const MlCommonToolItemsSchema = z
@@ -31112,6 +31129,7 @@ const IsmCommonExplainIndexResponseSchema = z
       .openapi({ description: 'The total number of managed indices.' }),
   })
   .catchall(IsmCommonExplainPolicySchema)
+  .openapi({ required: [] })
   .openapi('IsmCommonExplainIndexResponse')
 
 const IsmCommonGetPoliciesResponseSchema: z.ZodType<IsmCommonGetPoliciesResponseType> = z
@@ -61962,6 +61980,7 @@ const SecurityAnalyticsGetAlertsQuerySizeParamsSchema = z
       schema: { type: 'integer', format: 'int64', default: 20 },
       required: false,
     },
+    default: 20,
   })
 
 const SecurityAnalyticsGetAlertsQuerySortOrderParamsSchema = z
@@ -62016,6 +62035,7 @@ const SecurityAnalyticsGetAlertsQueryStartIndexParamsSchema = z
       schema: { type: 'integer', format: 'int64', default: 0 },
       required: false,
     },
+    default: 0,
   })
 
 const SecurityAnalyticsGetAlertsQueryStartTimeParamsSchema = z
@@ -62165,6 +62185,7 @@ const SecurityAnalyticsGetFindingsQuerySizeParamsSchema = z
       schema: { type: 'integer', format: 'int64', default: 20 },
       required: false,
     },
+    default: 20,
   })
 
 const SecurityAnalyticsGetFindingsQuerySortOrderParamsSchema = z
@@ -62219,6 +62240,7 @@ const SecurityAnalyticsGetFindingsQueryStartIndexParamsSchema = z
       schema: { type: 'integer', format: 'int64', default: 0 },
       required: false,
     },
+    default: 0,
   })
 
 const SecurityAnalyticsGetFindingsQueryStartTimeParamsSchema = z
@@ -62283,6 +62305,7 @@ const SecurityAnalyticsSearchFindingCorrelationsQueryNearbyFindingsParamsSchema 
       schema: { type: 'integer', format: 'int64', default: 10 },
       required: false,
     },
+    default: 10,
   })
 
 const SecurityAnalyticsSearchFindingCorrelationsQueryTimeWindowParamsSchema = z
@@ -62303,6 +62326,7 @@ const SecurityAnalyticsSearchFindingCorrelationsQueryTimeWindowParamsSchema = z
       schema: { type: 'integer', format: 'int64', default: 300000 },
       required: false,
     },
+    default: 300000,
   })
 
 const SecurityAuthinfoQueryAuthTypeParamsSchema = z

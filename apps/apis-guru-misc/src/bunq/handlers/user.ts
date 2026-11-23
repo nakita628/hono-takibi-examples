@@ -1,0 +1,2089 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import {
+  deleteUserUserIDCardCardIDExportStatementCardCsvItemIdRoute,
+  deleteUserUserIDCardCardIDExportStatementCardPdfItemIdRoute,
+  deleteUserUserIDCertificatePinnedItemIdRoute,
+  deleteUserUserIDExportAnnualOverviewItemIdRoute,
+  deleteUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteAttachmentItemIdRoute,
+  deleteUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteTextItemIdRoute,
+  deleteUserUserIDMonetaryAccountMonetaryAccountIDCustomerStatementItemIdRoute,
+  deleteUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteAttachmentItemIdRoute,
+  deleteUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteTextItemIdRoute,
+  deleteUserUserIDMonetaryAccountMonetaryAccountIDExportRibItemIdRoute,
+  deleteUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteAttachmentItemIdRoute,
+  deleteUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteTextItemIdRoute,
+  deleteUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteAttachmentItemIdRoute,
+  deleteUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteTextItemIdRoute,
+  deleteUserUserIDMonetaryAccountMonetaryAccountIDPaymentAutoAllocateItemIdRoute,
+  deleteUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteAttachmentItemIdRoute,
+  deleteUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteTextItemIdRoute,
+  deleteUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteAttachmentItemIdRoute,
+  deleteUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteTextItemIdRoute,
+  deleteUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteAttachmentItemIdRoute,
+  deleteUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteTextItemIdRoute,
+  deleteUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteAttachmentItemIdRoute,
+  deleteUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteTextItemIdRoute,
+  deleteUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteAttachmentItemIdRoute,
+  deleteUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteTextItemIdRoute,
+  deleteUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchItemIdRoute,
+  deleteUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteAttachmentItemIdRoute,
+  deleteUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteTextItemIdRoute,
+  deleteUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentItemIdRoute,
+  deleteUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteAttachmentItemIdRoute,
+  deleteUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteTextItemIdRoute,
+  deleteUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteAttachmentItemIdRoute,
+  deleteUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteTextItemIdRoute,
+  deleteUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteAttachmentItemIdRoute,
+  deleteUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteTextItemIdRoute,
+  deleteUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteAttachmentItemIdRoute,
+  deleteUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteTextItemIdRoute,
+  deleteUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteAttachmentItemIdRoute,
+  deleteUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteTextItemIdRoute,
+  deleteUserUserIDOauthClientOauthClientIDCallbackUrlItemIdRoute,
+  deleteUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseRecipientItemIdRoute,
+  deleteUserUserIDWhitelistSddOneOffItemIdRoute,
+  deleteUserUserIDWhitelistSddRecurringItemIdRoute,
+  getUserItemIdRoute,
+  getUserRoute,
+  getUserUserIDAttachmentAttachmentIDContentRoute,
+  getUserUserIDAttachmentItemIdRoute,
+  getUserUserIDBillingContractSubscriptionRoute,
+  getUserUserIDBunqmeFundraiserProfileItemIdRoute,
+  getUserUserIDBunqmeFundraiserProfileRoute,
+  getUserUserIDCardCardIDExportStatementCardCsvItemIdRoute,
+  getUserUserIDCardCardIDExportStatementCardCsvRoute,
+  getUserUserIDCardCardIDExportStatementCardExportStatementCardIDContentRoute,
+  getUserUserIDCardCardIDExportStatementCardItemIdRoute,
+  getUserUserIDCardCardIDExportStatementCardPdfItemIdRoute,
+  getUserUserIDCardCardIDExportStatementCardPdfRoute,
+  getUserUserIDCardCardIDExportStatementCardRoute,
+  getUserUserIDCardCardIDGeneratedCvc2ItemIdRoute,
+  getUserUserIDCardCardIDGeneratedCvc2Route,
+  getUserUserIDCardItemIdRoute,
+  getUserUserIDCardNameRoute,
+  getUserUserIDCardRoute,
+  getUserUserIDCertificatePinnedItemIdRoute,
+  getUserUserIDCertificatePinnedRoute,
+  getUserUserIDChallengeRequestItemIdRoute,
+  getUserUserIDChatConversationChatConversationIDAttachmentAttachmentIDContentRoute,
+  getUserUserIDCompanyItemIdRoute,
+  getUserUserIDCompanyRoute,
+  getUserUserIDCredentialPasswordIpCredentialPasswordIpIDIpItemIdRoute,
+  getUserUserIDCredentialPasswordIpCredentialPasswordIpIDIpRoute,
+  getUserUserIDCredentialPasswordIpItemIdRoute,
+  getUserUserIDCredentialPasswordIpRoute,
+  getUserUserIDCurrencyCloudBeneficiaryItemIdRoute,
+  getUserUserIDCurrencyCloudBeneficiaryRequirementRoute,
+  getUserUserIDCurrencyCloudBeneficiaryRoute,
+  getUserUserIDEventItemIdRoute,
+  getUserUserIDEventRoute,
+  getUserUserIDExportAnnualOverviewExportAnnualOverviewIDContentRoute,
+  getUserUserIDExportAnnualOverviewItemIdRoute,
+  getUserUserIDExportAnnualOverviewRoute,
+  getUserUserIDFeatureAnnouncementItemIdRoute,
+  getUserUserIDInsightPreferenceDateRoute,
+  getUserUserIDInsightsRoute,
+  getUserUserIDInsightsSearchRoute,
+  getUserUserIDInvoiceInvoiceIDPdfContentRoute,
+  getUserUserIDInvoiceItemIdRoute,
+  getUserUserIDInvoiceRoute,
+  getUserUserIDLegalNameRoute,
+  getUserUserIDLimitRoute,
+  getUserUserIDMonetaryAccountBankItemIdRoute,
+  getUserUserIDMonetaryAccountBankRoute,
+  getUserUserIDMonetaryAccountExternalItemIdRoute,
+  getUserUserIDMonetaryAccountExternalRoute,
+  getUserUserIDMonetaryAccountItemIdRoute,
+  getUserUserIDMonetaryAccountJointItemIdRoute,
+  getUserUserIDMonetaryAccountJointRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDAttachmentAttachmentIDContentRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteAttachmentItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteAttachmentRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteTextItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteTextRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDBunqmeTabItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDBunqmeTabResultResponseItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDBunqmeTabRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDCurrencyConversionItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDCurrencyConversionQuoteItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDCurrencyConversionRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDCustomerStatementCustomerStatementIDContentRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDCustomerStatementItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDCustomerStatementRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteAttachmentItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteAttachmentRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteTextItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteTextRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDEventEventIDStatementItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDEventEventIDStatementStatementIDContentRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDExportRibExportRibIDContentRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDExportRibItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDExportRibRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteAttachmentItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteAttachmentRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteTextItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteTextRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDInvoiceItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDInvoiceRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteAttachmentItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteAttachmentRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteTextItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteTextRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDPaymentRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDNotificationFilterUrlRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDPaymentAutoAllocateItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDPaymentAutoAllocatePaymentAutoAllocateIDDefinitionRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDPaymentAutoAllocatePaymentAutoAllocateIDInstanceItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDPaymentAutoAllocatePaymentAutoAllocateIDInstanceRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDPaymentAutoAllocateRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteAttachmentItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteAttachmentRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteTextItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteTextRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDPaymentItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteAttachmentItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteAttachmentRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteTextItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteTextRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDPaymentRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteAttachmentItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteAttachmentRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteTextItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteTextRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteAttachmentItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteAttachmentRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteTextItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteTextRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteAttachmentItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteAttachmentRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteTextItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteTextRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDScheduleItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteAttachmentItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteAttachmentRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteTextItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteTextRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteAttachmentItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteAttachmentRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteTextItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteTextRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDScheduleRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteAttachmentItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteAttachmentRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteTextItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteTextRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDShareInviteMonetaryAccountInquiryItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDShareInviteMonetaryAccountInquiryRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteAttachmentItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteAttachmentRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteTextItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteTextRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteAttachmentItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteAttachmentRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteTextItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteTextRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDTranslinkTransactionItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDTranslinkTransactionRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDWhitelistSddItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDWhitelistSddRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteAttachmentItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteAttachmentRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteTextItemIdRoute,
+  getUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteTextRoute,
+  getUserUserIDMonetaryAccountRoute,
+  getUserUserIDMonetaryAccountSavingsItemIdRoute,
+  getUserUserIDMonetaryAccountSavingsRoute,
+  getUserUserIDNotificationFilterEmailRoute,
+  getUserUserIDNotificationFilterPushRoute,
+  getUserUserIDNotificationFilterUrlRoute,
+  getUserUserIDOauthClientItemIdRoute,
+  getUserUserIDOauthClientOauthClientIDCallbackUrlItemIdRoute,
+  getUserUserIDOauthClientOauthClientIDCallbackUrlRoute,
+  getUserUserIDOauthClientRoute,
+  getUserUserIDPaymentAutoAllocateRoute,
+  getUserUserIDPaymentServiceProviderDraftPaymentItemIdRoute,
+  getUserUserIDPaymentServiceProviderDraftPaymentRoute,
+  getUserUserIDRegistryRegistryIDRegistrySettlementItemIdRoute,
+  getUserUserIDRegistryRegistryIDRegistrySettlementRoute,
+  getUserUserIDRewardItemIdRoute,
+  getUserUserIDRewardRecipientItemIdRoute,
+  getUserUserIDRewardRecipientRoute,
+  getUserUserIDRewardRoute,
+  getUserUserIDRewardSenderItemIdRoute,
+  getUserUserIDRewardSenderRoute,
+  getUserUserIDScheduleRoute,
+  getUserUserIDShareInviteMonetaryAccountResponseItemIdRoute,
+  getUserUserIDShareInviteMonetaryAccountResponseRoute,
+  getUserUserIDTransferwiseCurrencyRoute,
+  getUserUserIDTransferwiseQuoteItemIdRoute,
+  getUserUserIDTransferwiseQuoteTemporaryItemIdRoute,
+  getUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseRecipientItemIdRoute,
+  getUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseRecipientRequirementRoute,
+  getUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseRecipientRoute,
+  getUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseTransferItemIdRoute,
+  getUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseTransferRoute,
+  getUserUserIDTransferwiseUserRoute,
+  getUserUserIDTreeProgressRoute,
+  getUserUserIDWhitelistSddItemIdRoute,
+  getUserUserIDWhitelistSddOneOffItemIdRoute,
+  getUserUserIDWhitelistSddOneOffRoute,
+  getUserUserIDWhitelistSddRecurringItemIdRoute,
+  getUserUserIDWhitelistSddRecurringRoute,
+  getUserUserIDWhitelistSddRoute,
+  postUserUserIDCardBatchReplaceRoute,
+  postUserUserIDCardBatchRoute,
+  postUserUserIDCardCardIDExportStatementCardCsvRoute,
+  postUserUserIDCardCardIDExportStatementCardPdfRoute,
+  postUserUserIDCardCardIDGeneratedCvc2Route,
+  postUserUserIDCardCardIDReplaceRoute,
+  postUserUserIDCardCreditRoute,
+  postUserUserIDCardDebitRoute,
+  postUserUserIDCertificatePinnedRoute,
+  postUserUserIDCompanyRoute,
+  postUserUserIDConfirmationOfFundsRoute,
+  postUserUserIDCredentialPasswordIpCredentialPasswordIpIDIpRoute,
+  postUserUserIDCurrencyCloudBeneficiaryRoute,
+  postUserUserIDExportAnnualOverviewRoute,
+  postUserUserIDMonetaryAccountBankRoute,
+  postUserUserIDMonetaryAccountJointRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDAttachmentRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteAttachmentRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteTextRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDBunqmeTabRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDCurrencyCloudPaymentQuoteRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDCurrencyConversionQuoteRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDCustomerStatementRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteAttachmentRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteTextRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDEventEventIDStatementRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDExportRibRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteAttachmentRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteTextRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteAttachmentRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteTextRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDNotificationFilterUrlRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDPaymentAutoAllocateRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteAttachmentRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteTextRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteAttachmentRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteTextRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDPaymentRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteAttachmentRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteTextRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteAttachmentRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteTextRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteAttachmentRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteTextRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteAttachmentRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteTextRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteAttachmentRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteTextRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteAttachmentRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteTextRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDShareInviteMonetaryAccountInquiryRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteAttachmentRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteTextRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteAttachmentRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteTextRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDTranslinkTransactionRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteAttachmentRoute,
+  postUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteTextRoute,
+  postUserUserIDMonetaryAccountSavingsRoute,
+  postUserUserIDNotificationFilterEmailRoute,
+  postUserUserIDNotificationFilterPushRoute,
+  postUserUserIDNotificationFilterUrlRoute,
+  postUserUserIDOauthClientOauthClientIDCallbackUrlRoute,
+  postUserUserIDOauthClientRoute,
+  postUserUserIDPaymentServiceProviderDraftPaymentRoute,
+  postUserUserIDRegistryRegistryIDRegistrySettlementRoute,
+  postUserUserIDTokenQrRequestIdealRoute,
+  postUserUserIDTokenQrRequestSofortRoute,
+  postUserUserIDTransferwiseQuoteRoute,
+  postUserUserIDTransferwiseQuoteTemporaryRoute,
+  postUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseRecipientRequirementRoute,
+  postUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseRecipientRoute,
+  postUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseTransferRequirementRoute,
+  postUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseTransferRoute,
+  postUserUserIDTransferwiseUserRoute,
+  postUserUserIDWhitelistSddOneOffRoute,
+  postUserUserIDWhitelistSddRecurringRoute,
+  putUserUserIDCardCardIDGeneratedCvc2ItemIdRoute,
+  putUserUserIDCardItemIdRoute,
+  putUserUserIDChallengeRequestItemIdRoute,
+  putUserUserIDCompanyItemIdRoute,
+  putUserUserIDCredentialPasswordIpCredentialPasswordIpIDIpItemIdRoute,
+  putUserUserIDMonetaryAccountBankItemIdRoute,
+  putUserUserIDMonetaryAccountJointItemIdRoute,
+  putUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteAttachmentItemIdRoute,
+  putUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteTextItemIdRoute,
+  putUserUserIDMonetaryAccountMonetaryAccountIDBunqmeTabItemIdRoute,
+  putUserUserIDMonetaryAccountMonetaryAccountIDCurrencyConversionQuoteItemIdRoute,
+  putUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteAttachmentItemIdRoute,
+  putUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteTextItemIdRoute,
+  putUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentItemIdRoute,
+  putUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteAttachmentItemIdRoute,
+  putUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteTextItemIdRoute,
+  putUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteAttachmentItemIdRoute,
+  putUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteTextItemIdRoute,
+  putUserUserIDMonetaryAccountMonetaryAccountIDPaymentAutoAllocateItemIdRoute,
+  putUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchItemIdRoute,
+  putUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteAttachmentItemIdRoute,
+  putUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteTextItemIdRoute,
+  putUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteAttachmentItemIdRoute,
+  putUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteTextItemIdRoute,
+  putUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchItemIdRoute,
+  putUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteAttachmentItemIdRoute,
+  putUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteTextItemIdRoute,
+  putUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryItemIdRoute,
+  putUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteAttachmentItemIdRoute,
+  putUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteTextItemIdRoute,
+  putUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseItemIdRoute,
+  putUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteAttachmentItemIdRoute,
+  putUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteTextItemIdRoute,
+  putUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchItemIdRoute,
+  putUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteAttachmentItemIdRoute,
+  putUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteTextItemIdRoute,
+  putUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentItemIdRoute,
+  putUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteAttachmentItemIdRoute,
+  putUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteTextItemIdRoute,
+  putUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceItemIdRoute,
+  putUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteAttachmentItemIdRoute,
+  putUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteTextItemIdRoute,
+  putUserUserIDMonetaryAccountMonetaryAccountIDShareInviteMonetaryAccountInquiryItemIdRoute,
+  putUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteAttachmentItemIdRoute,
+  putUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteTextItemIdRoute,
+  putUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteAttachmentItemIdRoute,
+  putUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteTextItemIdRoute,
+  putUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteAttachmentItemIdRoute,
+  putUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteTextItemIdRoute,
+  putUserUserIDMonetaryAccountSavingsItemIdRoute,
+  putUserUserIDOauthClientItemIdRoute,
+  putUserUserIDOauthClientOauthClientIDCallbackUrlItemIdRoute,
+  putUserUserIDPaymentServiceProviderDraftPaymentItemIdRoute,
+  putUserUserIDShareInviteMonetaryAccountResponseItemIdRoute,
+  putUserUserIDWhitelistSddOneOffItemIdRoute,
+  putUserUserIDWhitelistSddRecurringItemIdRoute,
+} from '../routes'
+
+const app = new OpenAPIHono()
+
+export const userHandler = app
+  .openapi(getUserRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDAttachmentAttachmentIDContentRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDAttachmentItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDBillingContractSubscriptionRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDBunqmeFundraiserProfileRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDBunqmeFundraiserProfileItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDCardRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDCardBatchRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDCardBatchReplaceRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDCardCreditRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDCardDebitRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDCardNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDCardCardIDExportStatementCardRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDCardCardIDExportStatementCardCsvRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDCardCardIDExportStatementCardCsvRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteUserUserIDCardCardIDExportStatementCardCsvItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDCardCardIDExportStatementCardCsvItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDCardCardIDExportStatementCardPdfRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDCardCardIDExportStatementCardPdfRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteUserUserIDCardCardIDExportStatementCardPdfItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDCardCardIDExportStatementCardPdfItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDCardCardIDExportStatementCardExportStatementCardIDContentRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDCardCardIDExportStatementCardItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDCardCardIDGeneratedCvc2Route, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDCardCardIDGeneratedCvc2Route, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDCardCardIDGeneratedCvc2ItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putUserUserIDCardCardIDGeneratedCvc2ItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDCardCardIDReplaceRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDCardItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putUserUserIDCardItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDCertificatePinnedRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDCertificatePinnedRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteUserUserIDCertificatePinnedItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDCertificatePinnedItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDChallengeRequestItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putUserUserIDChallengeRequestItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    getUserUserIDChatConversationChatConversationIDAttachmentAttachmentIDContentRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getUserUserIDCompanyRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDCompanyRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDCompanyItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putUserUserIDCompanyItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDConfirmationOfFundsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDCredentialPasswordIpRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDCredentialPasswordIpCredentialPasswordIpIDIpRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDCredentialPasswordIpCredentialPasswordIpIDIpRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDCredentialPasswordIpCredentialPasswordIpIDIpItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putUserUserIDCredentialPasswordIpCredentialPasswordIpIDIpItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDCredentialPasswordIpItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDCurrencyCloudBeneficiaryRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDCurrencyCloudBeneficiaryRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDCurrencyCloudBeneficiaryRequirementRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDCurrencyCloudBeneficiaryItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDEventRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDEventItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDExportAnnualOverviewRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDExportAnnualOverviewRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDExportAnnualOverviewExportAnnualOverviewIDContentRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteUserUserIDExportAnnualOverviewItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDExportAnnualOverviewItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDFeatureAnnouncementItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDInsightPreferenceDateRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDInsightsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDInsightsSearchRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDInvoiceRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDInvoiceInvoiceIDPdfContentRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDInvoiceItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDLegalNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDLimitRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDMonetaryAccountRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDMonetaryAccountBankRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDMonetaryAccountBankRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDMonetaryAccountBankItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putUserUserIDMonetaryAccountBankItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDMonetaryAccountExternalRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDMonetaryAccountExternalItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDMonetaryAccountJointRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDMonetaryAccountJointRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDMonetaryAccountJointItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putUserUserIDMonetaryAccountJointItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDMonetaryAccountSavingsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDMonetaryAccountSavingsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDMonetaryAccountSavingsItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putUserUserIDMonetaryAccountSavingsItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDMonetaryAccountItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDMonetaryAccountMonetaryAccountIDAttachmentRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDAttachmentAttachmentIDContentRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteAttachmentRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteAttachmentRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    deleteUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteAttachmentItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteAttachmentItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    putUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteAttachmentItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteTextRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteTextRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    deleteUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteTextItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteTextItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    putUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteTextItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDBunqmeTabRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDMonetaryAccountMonetaryAccountIDBunqmeTabRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDBunqmeTabResultResponseItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDBunqmeTabItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putUserUserIDMonetaryAccountMonetaryAccountIDBunqmeTabItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDMonetaryAccountMonetaryAccountIDCurrencyCloudPaymentQuoteRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDCurrencyConversionRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDMonetaryAccountMonetaryAccountIDCurrencyConversionQuoteRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDCurrencyConversionQuoteItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putUserUserIDMonetaryAccountMonetaryAccountIDCurrencyConversionQuoteItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDCurrencyConversionItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDCustomerStatementRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDMonetaryAccountMonetaryAccountIDCustomerStatementRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDCustomerStatementCustomerStatementIDContentRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(deleteUserUserIDMonetaryAccountMonetaryAccountIDCustomerStatementItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDCustomerStatementItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteAttachmentRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteAttachmentRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    deleteUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteAttachmentItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteAttachmentItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    putUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteAttachmentItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteTextRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteTextRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    deleteUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteTextItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteTextItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    putUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteTextItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDMonetaryAccountMonetaryAccountIDEventEventIDStatementRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDEventEventIDStatementItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDEventEventIDStatementStatementIDContentRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDExportRibRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDMonetaryAccountMonetaryAccountIDExportRibRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDExportRibExportRibIDContentRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteUserUserIDMonetaryAccountMonetaryAccountIDExportRibItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDExportRibItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteAttachmentRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteAttachmentRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    deleteUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteAttachmentItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteAttachmentItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    putUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteAttachmentItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteTextRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteTextRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    deleteUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteTextItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteTextItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    putUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteTextItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDInvoiceRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDInvoiceItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteAttachmentRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteAttachmentRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    deleteUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteAttachmentItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteAttachmentItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    putUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteAttachmentItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteTextRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteTextRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    deleteUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteTextItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteTextItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    putUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteTextItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDPaymentRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDNotificationFilterUrlRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDMonetaryAccountMonetaryAccountIDNotificationFilterUrlRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDPaymentRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDMonetaryAccountMonetaryAccountIDPaymentRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDPaymentAutoAllocateRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDMonetaryAccountMonetaryAccountIDPaymentAutoAllocateRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteUserUserIDMonetaryAccountMonetaryAccountIDPaymentAutoAllocateItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDPaymentAutoAllocateItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putUserUserIDMonetaryAccountMonetaryAccountIDPaymentAutoAllocateItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDPaymentAutoAllocatePaymentAutoAllocateIDDefinitionRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDPaymentAutoAllocatePaymentAutoAllocateIDInstanceRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDPaymentAutoAllocatePaymentAutoAllocateIDInstanceItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteAttachmentRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteAttachmentRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    deleteUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteAttachmentItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteAttachmentItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    putUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteAttachmentItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteTextRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteTextRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    deleteUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteTextItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteTextItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    putUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteTextItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDPaymentItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteAttachmentRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteAttachmentRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    deleteUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteAttachmentItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteAttachmentItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    putUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteAttachmentItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteTextRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteTextRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    deleteUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteTextItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteTextItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    putUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteTextItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteAttachmentRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteAttachmentRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    deleteUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteAttachmentItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteAttachmentItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    putUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteAttachmentItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteTextRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteTextRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    deleteUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteTextItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteTextItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    putUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteTextItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteAttachmentRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteAttachmentRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    deleteUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteAttachmentItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteAttachmentItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    putUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteAttachmentItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteTextRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteTextRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    deleteUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteTextItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteTextItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    putUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteTextItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteAttachmentRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteAttachmentRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    deleteUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteAttachmentItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteAttachmentItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    putUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteAttachmentItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteTextRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteTextRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    deleteUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteTextItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteTextItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    putUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteTextItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDScheduleRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteAttachmentRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteAttachmentRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    deleteUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteAttachmentItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteAttachmentItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    putUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteAttachmentItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteTextRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteTextRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    deleteUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteTextItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteTextItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    putUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteTextItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(deleteUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteAttachmentRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteAttachmentRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    deleteUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteAttachmentItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteAttachmentItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    putUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteAttachmentItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteTextRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteTextRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    deleteUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteTextItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteTextItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    putUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteTextItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDScheduleItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    putUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteAttachmentRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteAttachmentRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    deleteUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteAttachmentItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteAttachmentItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    putUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteAttachmentItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteTextRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteTextRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    deleteUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteTextItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteTextItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    putUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteTextItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDShareInviteMonetaryAccountInquiryRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postUserUserIDMonetaryAccountMonetaryAccountIDShareInviteMonetaryAccountInquiryRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDShareInviteMonetaryAccountInquiryItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    putUserUserIDMonetaryAccountMonetaryAccountIDShareInviteMonetaryAccountInquiryItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteAttachmentRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteAttachmentRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    deleteUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteAttachmentItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteAttachmentItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    putUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteAttachmentItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteTextRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteTextRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    deleteUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteTextItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteTextItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    putUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteTextItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteAttachmentRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteAttachmentRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    deleteUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteAttachmentItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteAttachmentItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    putUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteAttachmentItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteTextRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteTextRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    deleteUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteTextItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteTextItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    putUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteTextItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDTranslinkTransactionRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDMonetaryAccountMonetaryAccountIDTranslinkTransactionRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDTranslinkTransactionItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDWhitelistSddRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDWhitelistSddItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteAttachmentRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteAttachmentRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    deleteUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteAttachmentItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteAttachmentItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    putUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteAttachmentItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteTextRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteTextRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    deleteUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteTextItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteTextItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    putUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteTextItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getUserUserIDNotificationFilterEmailRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDNotificationFilterEmailRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDNotificationFilterPushRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDNotificationFilterPushRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDNotificationFilterUrlRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDNotificationFilterUrlRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDOauthClientRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDOauthClientRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDOauthClientItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putUserUserIDOauthClientItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDOauthClientOauthClientIDCallbackUrlRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDOauthClientOauthClientIDCallbackUrlRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteUserUserIDOauthClientOauthClientIDCallbackUrlItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDOauthClientOauthClientIDCallbackUrlItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putUserUserIDOauthClientOauthClientIDCallbackUrlItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDPaymentAutoAllocateRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDPaymentServiceProviderDraftPaymentRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDPaymentServiceProviderDraftPaymentRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDPaymentServiceProviderDraftPaymentItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putUserUserIDPaymentServiceProviderDraftPaymentItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDRegistryRegistryIDRegistrySettlementRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDRegistryRegistryIDRegistrySettlementRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDRegistryRegistryIDRegistrySettlementItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDRewardRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDRewardRecipientRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDRewardRecipientItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDRewardSenderRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDRewardSenderItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDRewardItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDScheduleRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDShareInviteMonetaryAccountResponseRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDShareInviteMonetaryAccountResponseItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putUserUserIDShareInviteMonetaryAccountResponseItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDTokenQrRequestIdealRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDTokenQrRequestSofortRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDTransferwiseCurrencyRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDTransferwiseQuoteRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDTransferwiseQuoteTemporaryRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDTransferwiseQuoteTemporaryItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDTransferwiseQuoteItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseRecipientRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseRecipientRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    getUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseRecipientRequirementRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseRecipientRequirementRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    deleteUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseRecipientItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseRecipientItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseTransferRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseTransferRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    postUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseTransferRequirementRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseTransferItemIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getUserUserIDTransferwiseUserRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDTransferwiseUserRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDTreeProgressRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDWhitelistSddRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDWhitelistSddOneOffRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDWhitelistSddOneOffRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteUserUserIDWhitelistSddOneOffItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDWhitelistSddOneOffItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putUserUserIDWhitelistSddOneOffItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDWhitelistSddRecurringRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUserUserIDWhitelistSddRecurringRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteUserUserIDWhitelistSddRecurringItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDWhitelistSddRecurringItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putUserUserIDWhitelistSddRecurringItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUserUserIDWhitelistSddItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })

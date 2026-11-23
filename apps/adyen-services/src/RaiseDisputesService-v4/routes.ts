@@ -205,7 +205,7 @@ const CancelledInfoUpdateSchema = z
           'Indicates if the cardholder attempted to return the merchandise but was unable to.\n\nPossible values: **true**, **false**.\n\nRequired if the value of `didCardholderReturn` is **false**.\n\nIf the value of this parameter is **true**, provide information in `descriptionOfIssue` about how the cardholder attempted to return the goods, and what they did with the goods (for example, destroyed them).',
       }),
     certificationGuaranteedReservation: z
-      .xor([CertificationGuaranteedReservationSchema, z.null().nullable()])
+      .xor([z.looseObject({}).and(CertificationGuaranteedReservationSchema), z.null().nullable()])
       .exactOptional()
       .openapi({
         description:
@@ -298,21 +298,21 @@ const CancelledInfoUpdateSchema = z
           'The date, in **YYYY-MM-DD** format, that the merchant promised delivery.\n\nRequired if the value of `goodsOrServices` is **goods**.',
       }),
     merchantRefuseAdvise: z
-      .xor([MerchantRefuseAdviseSchema, z.null().nullable()])
+      .xor([z.looseObject({}).and(MerchantRefuseAdviseSchema), z.null().nullable()])
       .exactOptional()
       .openapi({
         description:
           'The reason the merchant gave for refusing the return.\n\nRequired if the value of `attemptedToReturn` is **true**.\n\nPossible values:\n\n * **MRRA**: The merchant refused to provide return authorization.\n\n * **MRRM**: The merchant refused to accept returned merchandise.\n\n * **MICNRM**: The merchant informed cardholder not to return the merchandise.',
       }),
     returnMethod: z
-      .xor([ReturnMethodSchema, z.null().nullable()])
+      .xor([z.looseObject({}).and(ReturnMethodSchema), z.null().nullable()])
       .exactOptional()
       .openapi({
         description:
           'The method used to return the merchandise.\n\nRequired if the value of `didCardholderReturn` is **true**.\n\nPossible values: **faceToFace**, **fedEx**, **dhl**, **ups**, **postalService**, **other**.\n\nIf the value of this parameter is **other**, or if the cardholder attempted a return but did not complete it, provide information in `descriptionOfIssue` about how the cardholder attempted to return the goods or services.',
       }),
     serviceType: z
-      .xor([ServiceTypeSchema, z.null().nullable()])
+      .xor([z.looseObject({}).and(ServiceTypeSchema), z.null().nullable()])
       .exactOptional()
       .openapi({
         description:
@@ -344,7 +344,7 @@ const CancelledInfoUpdateSchema = z
           'Indicates if the merchant provided the cardholder with a cancellation policy.\n\nPossible values: **true**, **false**.\n\nRequired if the value of `didCardholderReceiveGoods` is **false**, the value of `didCardholderCancelBeforeShipment` is **true**, or the value of `serviceType` is **guaranteedReservation**.',
       }),
     whoCancelled: z
-      .xor([CancellingEntitySchema, z.null().nullable()])
+      .xor([z.looseObject({}).and(CancellingEntitySchema), z.null().nullable()])
       .exactOptional()
       .openapi({
         description:
@@ -974,7 +974,7 @@ const NotAsDescribedInfoUpdateSchema = z
           'Indicates if the cardholder attempted to negotiate a resolution with the merchant before raising the dispute. Required if more than 120 days have passed since both the `lastExpectedDate` and the transaction processing date.\n\nPossible values: **true**, **false**.\n\nIf the value of this parameter is **true**, provide information in `descriptionOfIssue` about the negotiations that took place with the merchant.',
       }),
     goodsOrServices: z
-      .xor([ProductTypeSchema, z.null().nullable()])
+      .xor([z.looseObject({}).and(ProductTypeSchema), z.null().nullable()])
       .exactOptional()
       .openapi({
         description:
@@ -997,7 +997,7 @@ const NotAsDescribedInfoUpdateSchema = z
           'The date, in **YYYY-MM-DD** format, that the merchant promised delivery of the goods or services.',
       }),
     reasonMerchantRefused: z
-      .xor([NotAsDescribedMerchantRefuseAdviseSchema, z.null().nullable()])
+      .xor([z.looseObject({}).and(NotAsDescribedMerchantRefuseAdviseSchema), z.null().nullable()])
       .exactOptional()
       .openapi({
         description:
@@ -1012,7 +1012,7 @@ const NotAsDescribedInfoUpdateSchema = z
           'Indicates if local law prohibits the cardholder from attempting to resolve the issue with the merchant. Required if the value of `didAttemptToResolve` is **false**. If this value is also **false**, the dispute cannot proceed.\n\nPossible values: **true**, **false**.',
       }),
     returnMethod: z
-      .xor([ReturnMethodSchema, z.null().nullable()])
+      .xor([z.looseObject({}).and(ReturnMethodSchema), z.null().nullable()])
       .exactOptional()
       .openapi({
         description:
@@ -1028,7 +1028,7 @@ const NotAsDescribedInfoUpdateSchema = z
         description: 'The tracking number for the shipment used to return the merchandise.',
       }),
     whoCancelled: z
-      .xor([CancellingEntitySchema, z.null().nullable()])
+      .xor([z.looseObject({}).and(CancellingEntitySchema), z.null().nullable()])
       .exactOptional()
       .openapi({
         description:
@@ -1181,7 +1181,7 @@ const PatchableNotDeliveredInfoSchema = z
         'The type of product that you expected to receive.\n\nPossible values: **goods**, **services**.',
     }),
     whoCancelled: z
-      .xor([CancellingEntitySchema, z.null().nullable()])
+      .xor([z.looseObject({}).and(CancellingEntitySchema), z.null().nullable()])
       .exactOptional()
       .openapi({
         description:
@@ -1258,7 +1258,7 @@ const PatchableDisputeRequestSchema = z
           'Additional information for raising a dispute of `type` **other**. Required for disputes of `type` **other**.\n\n**Note:** The **other** dispute `type` is deprecated. Do not create or submit any disputes for this dispute `type`.',
       }),
     status: z
-      .xor([DisputeStatusSchema, z.null().nullable()])
+      .xor([z.looseObject({}).and(DisputeStatusSchema), z.null().nullable()])
       .exactOptional()
       .openapi({
         description:

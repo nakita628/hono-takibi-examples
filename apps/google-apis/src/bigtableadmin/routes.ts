@@ -1,5 +1,354 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const SplitSchema = z
+  .object({
+    key: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Row key to use as an initial tablet boundary.' }),
+  })
+  .openapi({ description: 'An initial split point for a newly created table.', required: [] })
+  .openapi('Split')
+
+const StatusSchema = z
+  .object({
+    code: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The status code, which should be an enum value of google.rpc.Code.',
+      }),
+    details: z
+      .array(
+        z.record(
+          z.string(),
+          z
+            .any()
+            .openapi({
+              description: 'Properties of the object. Contains field @type with type URL.',
+            }),
+        ),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of messages that carry the error details. There is a common set of message types for APIs to use.',
+      }),
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.',
+      }),
+  })
+  .openapi({
+    description:
+      'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).',
+    required: [],
+  })
+  .openapi('Status')
+
+const EncryptionInfoSchema = z
+  .object({
+    encryptionStatus: StatusSchema.exactOptional().openapi({
+      description:
+        'Output only. The status of encrypt/decrypt calls on underlying data for this resource. Regardless of status, the existing data is always encrypted at rest.',
+      readOnly: true,
+    }),
+    encryptionType: z
+      .enum([
+        'ENCRYPTION_TYPE_UNSPECIFIED',
+        'GOOGLE_DEFAULT_ENCRYPTION',
+        'CUSTOMER_MANAGED_ENCRYPTION',
+      ])
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The type of encryption used to protect this resource.',
+        readOnly: true,
+      }),
+    kmsKeyVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The version of the Cloud KMS key specified in the parent cluster that is in use for the data underlying this table.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      'Encryption information for a given resource. If this resource is protected with customer managed encryption, the in-use Cloud Key Management Service (Cloud KMS) key version is specified along with its status.',
+    required: [],
+  })
+  .openapi('EncryptionInfo')
+
+const ClusterStateSchema = z
+  .object({
+    encryptionInfo: z
+      .array(EncryptionInfoSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The encryption information for the table in this cluster. If the encryption key protecting this resource is customer managed, then its version can be rotated in Cloud Key Management Service (Cloud KMS). The primary version of the key and its status will be reflected here when changes propagate from Cloud KMS.',
+        readOnly: true,
+      }),
+    replicationState: z
+      .enum([
+        'STATE_NOT_KNOWN',
+        'INITIALIZING',
+        'PLANNED_MAINTENANCE',
+        'UNPLANNED_MAINTENANCE',
+        'READY',
+        'READY_OPTIMIZING',
+      ])
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The state of replication for the table in this cluster.',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: "The state of a table's data in a particular cluster.", required: [] })
+  .openapi('ClusterState')
+
+const GcRuleSchema: z.ZodType<GcRuleType> = z
+  .lazy(() =>
+    z
+      .object({
+        intersection: IntersectionSchema.exactOptional().openapi({
+          description: 'Delete cells that would be deleted by every nested rule.',
+        }),
+        maxAge: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Delete cells in a column older than the given age. Values must be at least one millisecond, and will be truncated to microsecond granularity.',
+          }),
+        maxNumVersions: z
+          .int32()
+          .exactOptional()
+          .openapi({ description: 'Delete all cells in a column except the most recent N.' }),
+        union: UnionSchema.exactOptional().openapi({
+          description: 'Delete cells that would be deleted by any nested rule.',
+        }),
+      })
+      .openapi({
+        description: 'Rule for determining which cells to delete during garbage collection.',
+        required: [],
+      }),
+  )
+  .openapi('GcRule')
+
+const ColumnFamilyStatsSchema = z
+  .object({
+    averageCellsPerColumn: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'How many cells are present per column qualifier in this column family, averaged over all rows containing any column in the column family. e.g. For column family "family" in a table with 3 rows: * A row with 3 cells in "family:col" and 1 cell in "other:col" (3 cells / 1 column in "family") * A row with 1 cell in "family:col", 7 cells in "family:other_col", and 7 cells in "other:data" (8 cells / 2 columns in "family") * A row with 3 cells in "other:col" (0 columns in "family", "family" not present) would report (3 + 8 + 0)/(1 + 2 + 0) = 3.66 in this field.',
+      }),
+    averageColumnsPerRow: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'How many column qualifiers are present in this column family, averaged over all rows in the table. e.g. For column family "family" in a table with 3 rows: * A row with cells in "family:col" and "other:col" (1 column in "family") * A row with cells in "family:col", "family:other_col", and "other:data" (2 columns in "family") * A row with cells in "other:col" (0 columns in "family", "family" not present) would report (1 + 2 + 0)/3 = 1.5 in this field.',
+      }),
+    logicalDataBytes: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'How much space the data in the column family occupies. This is roughly how many bytes would be needed to read the contents of the entire column family (e.g. by streaming all contents out).',
+      }),
+  })
+  .openapi({
+    description:
+      'Approximate statistics related to a single column family within a table. This information may change rapidly, interpreting these values at a point in time may already preset out-of-date information. Everything below is approximate, unless otherwise specified.',
+    required: [],
+  })
+  .openapi('ColumnFamilyStats')
+
+const ColumnFamilySchema = z
+  .object({
+    gcRule: GcRuleSchema.exactOptional().openapi({
+      description:
+        "Garbage collection rule specified as a protobuf. Must serialize to at most 500 bytes. NOTE: Garbage collection executes opportunistically in the background, and so it's possible for reads to return a cell even if it matches the active GC expression for its family.",
+    }),
+    stats: ColumnFamilyStatsSchema.exactOptional().openapi({
+      description:
+        'Only available with STATS_VIEW, this includes summary statistics about column family contents. For statistics over an entire table, see TableStats above.',
+    }),
+  })
+  .openapi({
+    description: 'A set of columns within a table which share a common configuration.',
+    required: [],
+  })
+  .openapi('ColumnFamily')
+
+const BackupInfoSchema = z
+  .object({
+    backup: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Name of the backup.', readOnly: true }),
+    endTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. This time that the backup was finished. Row data in the backup will be no newer than this timestamp.',
+        readOnly: true,
+      }),
+    sourceBackup: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Name of the backup from which this backup was copied. If a backup is not created by copying a backup, this field will be empty. Values are of the form: projects//instances//backups/.',
+        readOnly: true,
+      }),
+    sourceTable: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Name of the table the backup was created from.',
+        readOnly: true,
+      }),
+    startTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The time that the backup was started. Row data in the backup will be no older than this timestamp.',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'Information about a backup.', required: [] })
+  .openapi('BackupInfo')
+
+const RestoreInfoSchema = z
+  .object({
+    backupInfo: BackupInfoSchema.exactOptional().openapi({
+      description:
+        'Information about the backup used to restore the table. The backup may no longer exist.',
+    }),
+    sourceType: z
+      .enum(['RESTORE_SOURCE_TYPE_UNSPECIFIED', 'BACKUP'])
+      .exactOptional()
+      .openapi({ description: 'The type of the restore source.' }),
+  })
+  .openapi({ description: 'Information about a table restore.', required: [] })
+  .openapi('RestoreInfo')
+
+const TableStatsSchema = z
+  .object({
+    averageCellsPerColumn: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'How many cells are present per column (column family, column qualifier) combinations, averaged over all columns in all rows in the table. e.g. A table with 2 rows: * A row with 3 cells in "family:col" and 1 cell in "other:col" (4 cells / 2 columns) * A row with 1 cell in "family:col", 7 cells in "family:other_col", and 7 cells in "other:data" (15 cells / 3 columns) would report (4 + 15)/(2 + 3) = 3.8 in this field.',
+      }),
+    averageColumnsPerRow: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'How many (column family, column qualifier) combinations are present per row in the table, averaged over all rows in the table. e.g. A table with 2 rows: * A row with cells in "family:col" and "other:col" (2 distinct columns) * A row with cells in "family:col", "family:other_col", and "other:data" (3 distinct columns) would report (2 + 3)/2 = 2.5 in this field.',
+      }),
+    logicalDataBytes: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This is roughly how many bytes would be needed to read the entire table (e.g. by streaming all contents out).',
+      }),
+    rowCount: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'How many rows are in the table.' }),
+  })
+  .openapi({
+    description:
+      'Approximate statistics related to a table. These statistics are calculated infrequently, while simultaneously, data in the table can change rapidly. Thus the values reported here (e.g. row count) are very likely out-of date, even the instant they are received in this API. Thus, only treat these values as approximate. IMPORTANT: Everything below is approximate, unless otherwise specified.',
+    required: [],
+  })
+  .openapi('TableStats')
+
+type TableType = {
+  clusterStates?: { [key: string]: z.infer<typeof ClusterStateSchema> }
+  columnFamilies?: { [key: string]: z.infer<typeof ColumnFamilySchema> }
+  deletionProtection?: boolean
+  granularity?: 'TIMESTAMP_GRANULARITY_UNSPECIFIED' | 'MILLIS'
+  name?: string
+  restoreInfo?: z.infer<typeof RestoreInfoSchema>
+  stats?: z.infer<typeof TableStatsSchema>
+}
+
+const TableSchema: z.ZodType<TableType> = z
+  .object({
+    clusterStates: z
+      .record(z.string(), ClusterStateSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Map from cluster ID to per-cluster table state. If it could not be determined whether or not the table has data in a particular cluster (for example, if its zone is unavailable), then there will be an entry for the cluster with UNKNOWN `replication_status`. Views: `REPLICATION_VIEW`, `ENCRYPTION_VIEW`, `FULL`',
+        readOnly: true,
+      }),
+    columnFamilies: z
+      .record(z.string(), ColumnFamilySchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The column families configured for this table, mapped by column family ID. Views: `SCHEMA_VIEW`, `STATS_VIEW`, `FULL`',
+      }),
+    deletionProtection: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Set to true to make the table protected against data loss. i.e. deleting the following resources through Admin APIs are prohibited: * The table. * The column families in the table. * The instance containing the table. Note one can still delete the data stored in the table through Data APIs.',
+      }),
+    granularity: z
+      .enum(['TIMESTAMP_GRANULARITY_UNSPECIFIED', 'MILLIS'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Immutable. The granularity (i.e. `MILLIS`) at which timestamps are stored in this table. Timestamps not matching the granularity will be rejected. If unspecified at creation time, the value will be set to `MILLIS`. Views: `SCHEMA_VIEW`, `FULL`.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique name of the table. Values are of the form `projects/{project}/instances/{instance}/tables/_a-zA-Z0-9*`. Views: `NAME_ONLY`, `SCHEMA_VIEW`, `REPLICATION_VIEW`, `STATS_VIEW`, `FULL`',
+      }),
+    restoreInfo: RestoreInfoSchema.exactOptional().openapi({
+      description:
+        'Output only. If this table was restored from another data source (e.g. a backup), this field will be populated with information about the restore.',
+      readOnly: true,
+    }),
+    stats: TableStatsSchema.exactOptional().openapi({
+      description:
+        'Only available with STATS_VIEW, this includes summary statistics about the entire table contents. For statistics about a specific column family, see ColumnFamilyStats in the mapped ColumnFamily collection above.',
+    }),
+  })
+  .openapi({
+    description:
+      'A collection of user data indexed by row, column, and timestamp. Each table is served using the resources of its parent cluster.',
+    required: [],
+  })
+  .openapi('Table')
+
+type CreateTableRequestType = {
+  initialSplits?: z.infer<typeof SplitSchema>[]
+  table?: z.infer<typeof TableSchema>
+  tableId?: string
+}
+
 const IntersectionSchema: z.ZodType<IntersectionType> = z
   .lazy(() =>
     z
@@ -43,36 +392,9 @@ type GcRuleType = {
   union?: z.infer<typeof UnionSchema>
 }
 
-const GcRuleSchema: z.ZodType<GcRuleType> = z
-  .lazy(() =>
-    z
-      .object({
-        intersection: IntersectionSchema.exactOptional().openapi({
-          description: 'Delete cells that would be deleted by every nested rule.',
-        }),
-        maxAge: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Delete cells in a column older than the given age. Values must be at least one millisecond, and will be truncated to microsecond granularity.',
-          }),
-        maxNumVersions: z
-          .int32()
-          .exactOptional()
-          .openapi({ description: 'Delete all cells in a column except the most recent N.' }),
-        union: UnionSchema.exactOptional().openapi({
-          description: 'Delete cells that would be deleted by any nested rule.',
-        }),
-      })
-      .openapi({
-        description: 'Rule for determining which cells to delete during garbage collection.',
-        required: [],
-      }),
-  )
-  .openapi('GcRule')
-
 type IntersectionType = { rules?: z.infer<typeof GcRuleSchema>[] }
+
+type ListTablesResponseType = { nextPageToken?: string; tables?: z.infer<typeof TableSchema>[] }
 
 type UnionType = { rules?: z.infer<typeof GcRuleSchema>[] }
 
@@ -230,79 +552,6 @@ const AutoscalingTargetsSchema = z
   })
   .openapi('AutoscalingTargets')
 
-const StatusSchema = z
-  .object({
-    code: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'The status code, which should be an enum value of google.rpc.Code.',
-      }),
-    details: z
-      .array(
-        z.record(
-          z.string(),
-          z
-            .any()
-            .openapi({
-              description: 'Properties of the object. Contains field @type with type URL.',
-            }),
-        ),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of messages that carry the error details. There is a common set of message types for APIs to use.',
-      }),
-    message: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.',
-      }),
-  })
-  .openapi({
-    description:
-      'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).',
-    required: [],
-  })
-  .openapi('Status')
-
-const EncryptionInfoSchema = z
-  .object({
-    encryptionStatus: StatusSchema.exactOptional().openapi({
-      description:
-        'Output only. The status of encrypt/decrypt calls on underlying data for this resource. Regardless of status, the existing data is always encrypted at rest.',
-      readOnly: true,
-    }),
-    encryptionType: z
-      .enum([
-        'ENCRYPTION_TYPE_UNSPECIFIED',
-        'GOOGLE_DEFAULT_ENCRYPTION',
-        'CUSTOMER_MANAGED_ENCRYPTION',
-      ])
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The type of encryption used to protect this resource.',
-        readOnly: true,
-      }),
-    kmsKeyVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The version of the Cloud KMS key specified in the parent cluster that is in use for the data underlying this table.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      'Encryption information for a given resource. If this resource is protected with customer managed encryption, the in-use Cloud Key Management Service (Cloud KMS) key version is specified along with its status.',
-    required: [],
-  })
-  .openapi('EncryptionInfo')
-
 const BackupSchema = z
   .object({
     encryptionInfo: EncryptionInfoSchema.exactOptional().openapi({
@@ -365,47 +614,6 @@ const BackupSchema = z
   })
   .openapi({ description: 'A backup of a Cloud Bigtable table.', required: [] })
   .openapi('Backup')
-
-const BackupInfoSchema = z
-  .object({
-    backup: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Name of the backup.', readOnly: true }),
-    endTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. This time that the backup was finished. Row data in the backup will be no newer than this timestamp.',
-        readOnly: true,
-      }),
-    sourceBackup: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Name of the backup from which this backup was copied. If a backup is not created by copying a backup, this field will be empty. Values are of the form: projects//instances//backups/.',
-        readOnly: true,
-      }),
-    sourceTable: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Name of the table the backup was created from.',
-        readOnly: true,
-      }),
-    startTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The time that the backup was started. Row data in the backup will be no older than this timestamp.',
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'Information about a backup.', required: [] })
-  .openapi('BackupInfo')
 
 const ExprSchema = z
   .object({
@@ -585,82 +793,6 @@ const ClusterSchema = z
     required: [],
   })
   .openapi('Cluster')
-
-const ClusterStateSchema = z
-  .object({
-    encryptionInfo: z
-      .array(EncryptionInfoSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The encryption information for the table in this cluster. If the encryption key protecting this resource is customer managed, then its version can be rotated in Cloud Key Management Service (Cloud KMS). The primary version of the key and its status will be reflected here when changes propagate from Cloud KMS.',
-        readOnly: true,
-      }),
-    replicationState: z
-      .enum([
-        'STATE_NOT_KNOWN',
-        'INITIALIZING',
-        'PLANNED_MAINTENANCE',
-        'UNPLANNED_MAINTENANCE',
-        'READY',
-        'READY_OPTIMIZING',
-      ])
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The state of replication for the table in this cluster.',
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: "The state of a table's data in a particular cluster.", required: [] })
-  .openapi('ClusterState')
-
-const ColumnFamilyStatsSchema = z
-  .object({
-    averageCellsPerColumn: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'How many cells are present per column qualifier in this column family, averaged over all rows containing any column in the column family. e.g. For column family "family" in a table with 3 rows: * A row with 3 cells in "family:col" and 1 cell in "other:col" (3 cells / 1 column in "family") * A row with 1 cell in "family:col", 7 cells in "family:other_col", and 7 cells in "other:data" (8 cells / 2 columns in "family") * A row with 3 cells in "other:col" (0 columns in "family", "family" not present) would report (3 + 8 + 0)/(1 + 2 + 0) = 3.66 in this field.',
-      }),
-    averageColumnsPerRow: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'How many column qualifiers are present in this column family, averaged over all rows in the table. e.g. For column family "family" in a table with 3 rows: * A row with cells in "family:col" and "other:col" (1 column in "family") * A row with cells in "family:col", "family:other_col", and "other:data" (2 columns in "family") * A row with cells in "other:col" (0 columns in "family", "family" not present) would report (1 + 2 + 0)/3 = 1.5 in this field.',
-      }),
-    logicalDataBytes: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'How much space the data in the column family occupies. This is roughly how many bytes would be needed to read the contents of the entire column family (e.g. by streaming all contents out).',
-      }),
-  })
-  .openapi({
-    description:
-      'Approximate statistics related to a single column family within a table. This information may change rapidly, interpreting these values at a point in time may already preset out-of-date information. Everything below is approximate, unless otherwise specified.',
-    required: [],
-  })
-  .openapi('ColumnFamilyStats')
-
-const ColumnFamilySchema = z
-  .object({
-    gcRule: GcRuleSchema.exactOptional().openapi({
-      description:
-        "Garbage collection rule specified as a protobuf. Must serialize to at most 500 bytes. NOTE: Garbage collection executes opportunistically in the background, and so it's possible for reads to return a cell even if it matches the active GC expression for its family.",
-    }),
-    stats: ColumnFamilyStatsSchema.exactOptional().openapi({
-      description:
-        'Only available with STATS_VIEW, this includes summary statistics about column family contents. For statistics over an entire table, see TableStats above.',
-    }),
-  })
-  .openapi({
-    description: 'A set of columns within a table which share a common configuration.',
-    required: [],
-  })
-  .openapi('ColumnFamily')
 
 const OperationProgressSchema = z
   .object({
@@ -951,121 +1083,7 @@ const CreateInstanceMetadataSchema = z
   })
   .openapi('CreateInstanceMetadata')
 
-const SplitSchema = z
-  .object({
-    key: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Row key to use as an initial tablet boundary.' }),
-  })
-  .openapi({ description: 'An initial split point for a newly created table.', required: [] })
-  .openapi('Split')
-
-const RestoreInfoSchema = z
-  .object({
-    backupInfo: BackupInfoSchema.exactOptional().openapi({
-      description:
-        'Information about the backup used to restore the table. The backup may no longer exist.',
-    }),
-    sourceType: z
-      .enum(['RESTORE_SOURCE_TYPE_UNSPECIFIED', 'BACKUP'])
-      .exactOptional()
-      .openapi({ description: 'The type of the restore source.' }),
-  })
-  .openapi({ description: 'Information about a table restore.', required: [] })
-  .openapi('RestoreInfo')
-
-const TableStatsSchema = z
-  .object({
-    averageCellsPerColumn: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'How many cells are present per column (column family, column qualifier) combinations, averaged over all columns in all rows in the table. e.g. A table with 2 rows: * A row with 3 cells in "family:col" and 1 cell in "other:col" (4 cells / 2 columns) * A row with 1 cell in "family:col", 7 cells in "family:other_col", and 7 cells in "other:data" (15 cells / 3 columns) would report (4 + 15)/(2 + 3) = 3.8 in this field.',
-      }),
-    averageColumnsPerRow: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'How many (column family, column qualifier) combinations are present per row in the table, averaged over all rows in the table. e.g. A table with 2 rows: * A row with cells in "family:col" and "other:col" (2 distinct columns) * A row with cells in "family:col", "family:other_col", and "other:data" (3 distinct columns) would report (2 + 3)/2 = 2.5 in this field.',
-      }),
-    logicalDataBytes: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'This is roughly how many bytes would be needed to read the entire table (e.g. by streaming all contents out).',
-      }),
-    rowCount: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'How many rows are in the table.' }),
-  })
-  .openapi({
-    description:
-      'Approximate statistics related to a table. These statistics are calculated infrequently, while simultaneously, data in the table can change rapidly. Thus the values reported here (e.g. row count) are very likely out-of date, even the instant they are received in this API. Thus, only treat these values as approximate. IMPORTANT: Everything below is approximate, unless otherwise specified.',
-    required: [],
-  })
-  .openapi('TableStats')
-
-const TableSchema = z
-  .object({
-    clusterStates: z
-      .record(z.string(), ClusterStateSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Map from cluster ID to per-cluster table state. If it could not be determined whether or not the table has data in a particular cluster (for example, if its zone is unavailable), then there will be an entry for the cluster with UNKNOWN `replication_status`. Views: `REPLICATION_VIEW`, `ENCRYPTION_VIEW`, `FULL`',
-        readOnly: true,
-      }),
-    columnFamilies: z
-      .record(z.string(), ColumnFamilySchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The column families configured for this table, mapped by column family ID. Views: `SCHEMA_VIEW`, `STATS_VIEW`, `FULL`',
-      }),
-    deletionProtection: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Set to true to make the table protected against data loss. i.e. deleting the following resources through Admin APIs are prohibited: * The table. * The column families in the table. * The instance containing the table. Note one can still delete the data stored in the table through Data APIs.',
-      }),
-    granularity: z
-      .enum(['TIMESTAMP_GRANULARITY_UNSPECIFIED', 'MILLIS'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Immutable. The granularity (i.e. `MILLIS`) at which timestamps are stored in this table. Timestamps not matching the granularity will be rejected. If unspecified at creation time, the value will be set to `MILLIS`. Views: `SCHEMA_VIEW`, `FULL`.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique name of the table. Values are of the form `projects/{project}/instances/{instance}/tables/_a-zA-Z0-9*`. Views: `NAME_ONLY`, `SCHEMA_VIEW`, `REPLICATION_VIEW`, `STATS_VIEW`, `FULL`',
-      }),
-    restoreInfo: RestoreInfoSchema.exactOptional().openapi({
-      description:
-        'Output only. If this table was restored from another data source (e.g. a backup), this field will be populated with information about the restore.',
-      readOnly: true,
-    }),
-    stats: TableStatsSchema.exactOptional().openapi({
-      description:
-        'Only available with STATS_VIEW, this includes summary statistics about the entire table contents. For statistics about a specific column family, see ColumnFamilyStats in the mapped ColumnFamily collection above.',
-    }),
-  })
-  .openapi({
-    description:
-      'A collection of user data indexed by row, column, and timestamp. Each table is served using the resources of its parent cluster.',
-    required: [],
-  })
-  .openapi('Table')
-
-const CreateTableRequestSchema = z
+const CreateTableRequestSchema: z.ZodType<CreateTableRequestType> = z
   .object({
     initialSplits: z
       .array(SplitSchema)
@@ -1110,7 +1128,7 @@ const DropRowRangeRequestSchema = z
   .openapi('DropRowRangeRequest')
 
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
@@ -1118,7 +1136,7 @@ const EmptySchema = z
   .openapi('Empty')
 
 const GenerateConsistencyTokenRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Request message for google.bigtable.admin.v2.BigtableTableAdmin.GenerateConsistencyToken',
@@ -1454,7 +1472,7 @@ const ListOperationsResponseSchema = z
   .openapi({ description: 'The response message for Operations.ListOperations.', required: [] })
   .openapi('ListOperationsResponse')
 
-const ListTablesResponseSchema = z
+const ListTablesResponseSchema: z.ZodType<ListTablesResponseType> = z
   .object({
     nextPageToken: z
       .string()
@@ -1744,14 +1762,14 @@ const UndeleteTableMetadataSchema = z
   .openapi('UndeleteTableMetadata')
 
 const UndeleteTableRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'Request message for google.bigtable.admin.v2.BigtableTableAdmin.UndeleteTable',
   })
   .openapi('UndeleteTableRequest')
 
 const UpdateAppProfileMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The metadata for the Operation returned by UpdateAppProfile.' })
   .openapi('UpdateAppProfileMetadata')
 

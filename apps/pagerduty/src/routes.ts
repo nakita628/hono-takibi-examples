@@ -38,33 +38,1940 @@ const ReferenceSchema = z
       }),
   })
   .openapi({ required: [] })
-  .and(z.object({}).openapi({ required: ['type', 'id'] }))
+  .and(z.looseObject({}).openapi({ required: ['type', 'id'] }))
   .openapi('Reference')
+
+const AuditRecordSchema = z
+  .object({
+    id: z.string(),
+    self: z.string().nullable().exactOptional().openapi({ description: 'Record URL.' }),
+    execution_time: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description:
+          'The date/time the action executed, in ISO8601 format and millisecond precision.',
+      }),
+    execution_context: z
+      .object({
+        request_id: z.string().nullable().exactOptional().openapi({ description: 'Request Id' }),
+        remote_address: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'remote address' }),
+      })
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Action execution context', required: [] }),
+    actors: z.array(ReferenceSchema).nullable().exactOptional(),
+    method: z
+      .object({
+        description: z.string().nullable().exactOptional(),
+        truncated_token: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: "Truncated token containing the last 4 chars of the token's actual value.",
+            example: '3xyz',
+          }),
+        type: z
+          .enum(['browser', 'oauth', 'api_token', 'identity_provider', 'other'])
+          .openapi({
+            description:
+              'Describes the method used to perform the action:\n\n`browser` -- authenticated user session. Session value is not returned in the `truncated_token` field.\n\n`oauth` -- access token obtained via the OAuth flow. Truncated token value is returned in the `truncated_token` field.\n\n`api_token` -- Pagerduty API token. Truncated token value is returned in the `truncated_token` field.\n\n`identity_provider` -- action performed by an Identity provider on behalf of a user. No value is returned in the `truncated_token` field.\n\n`other` -- Method that does not fall in the predefined categories. Truncated token value MAY be returned in the `truncated_token` field.\n',
+          }),
+      })
+      .openapi({ description: 'The method information', required: ['type'] }),
+    root_resource: ReferenceSchema,
+    action: z.string().openapi({ example: 'create' }),
+    details: z
+      .object({
+        resource: ReferenceSchema,
+        fields: z
+          .array(
+            z
+              .object({
+                name: z
+                  .string()
+                  .openapi({ description: 'Name of the resource field', example: 'name' }),
+                description: z
+                  .string()
+                  .nullable()
+                  .exactOptional()
+                  .openapi({
+                    description: 'Human readable description of the resource field',
+                    example: 'First and Last name',
+                  }),
+                value: z
+                  .string()
+                  .nullable()
+                  .exactOptional()
+                  .openapi({
+                    description: 'new or updated value of the field',
+                    example: 'Jonathan',
+                  }),
+                before_value: z
+                  .string()
+                  .nullable()
+                  .exactOptional()
+                  .openapi({
+                    description: 'previous or deleted value of the field',
+                    example: 'John',
+                  }),
+              })
+              .openapi({
+                description:
+                  "Information about the affected field.\nWhen available, field's before and after values are returned:\n  \n#### Resource creation\n- `value` MAY be returned\n\n#### Resource update\n- `value` MAY be returned\n- `before_value` MAY be returned\n\n#### Resource deletion\n- `before_value` MAY be returned\n",
+                required: ['name'],
+              }),
+          )
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'A set of fields that have been affected.\nThe fields that have not been affected MAY be returned.\n',
+          }),
+        references: z
+          .array(
+            z
+              .object({
+                name: z
+                  .string()
+                  .openapi({ description: 'Name of the reference field', example: 'team_members' }),
+                description: z
+                  .string()
+                  .nullable()
+                  .exactOptional()
+                  .openapi({
+                    description: 'Human readable description of the references field',
+                    example: 'First and Last name',
+                  }),
+                added: z.array(ReferenceSchema).nullable().exactOptional(),
+                removed: z.array(ReferenceSchema).nullable().exactOptional(),
+              })
+              .openapi({ required: ['name'] }),
+          )
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'A set of references that have been affected.' }),
+      })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Additional details to provide further information about the action or\nthe resource that has been audited.\n',
+        required: ['resource'],
+      }),
+  })
+  .openapi({
+    readOnly: true,
+    description: 'An Audit Trail record',
+    required: ['id', 'execution_time', 'method', 'root_resource', 'action'],
+  })
+  .openapi('AuditRecord')
+
+const AuditMetadataSchema = z
+  .object({
+    messages: z
+      .array(z.string().openapi({ example: 'Message about the result' }))
+      .nullable()
+      .exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('AuditMetadata')
+
+const CursorPaginationSchema = z
+  .object({
+    limit: z
+      .int()
+      .openapi({
+        description:
+          'The minimum of the `limit` parameter used in the request or the maximum request size of the API.',
+        readOnly: true,
+      }),
+    next_cursor: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'An opaque string than will deliver the next set of results when provided as the `cursor` parameter in a subsequent request.  A `null` value for this field indicates that there are no additional results.\n',
+        example: 'dXNlcjaVMzc5V0ZYTlo=',
+        readOnly: true,
+      }),
+  })
+  .openapi({ required: ['limit', 'next_cursor'] })
+  .openapi('CursorPagination')
+
+type AuditRecordResponseSchemaType = {
+  records: z.infer<typeof AuditRecordSchema>[]
+  response_metadata?: z.infer<typeof AuditMetadataSchema> | null
+} & z.infer<typeof CursorPaginationSchema>
+
+const EventEnrichmentReferenceSchema = z
+  .object({
+    id: z.string().exactOptional().openapi({ description: 'The ID of the Event Enrichment.' }),
+    type: z
+      .literal('event_enrichment_reference')
+      .exactOptional()
+      .openapi({ description: 'A string that determines the schema of the object.' }),
+    summary: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
+        readOnly: true,
+      }),
+    self: z
+      .url()
+      .exactOptional()
+      .openapi({
+        description: 'The API show URL at which the object is accessible.',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'A reference to an Event Enrichment object.', required: [] })
+  .openapi('EventEnrichmentReference')
+
+const EventEnrichmentRuleSchema = z
+  .object({
+    id: z.string().exactOptional().openapi({ description: 'The ID of this rule.', readOnly: true }),
+    label: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "A description of this rule's purpose." }),
+    conditions: z
+      .array(
+        z
+          .object({
+            expression: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description: 'A PCL condition expression.',
+                example: "event.summary matches part 'my service error'",
+              }),
+          })
+          .openapi({ required: [] }),
+      )
+      .exactOptional()
+      .openapi({
+        description: "Conditions that must be satisfied for this rule's actions to execute.",
+      }),
+    actions: z
+      .xor([
+        z
+          .object({
+            extractions: z
+              .array(
+                z
+                  .object({
+                    target: z
+                      .string()
+                      .exactOptional()
+                      .openapi({
+                        description: 'The PD-CEF field to set with the extracted value.',
+                      }),
+                    template: z
+                      .string()
+                      .nullable()
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'A string template used to populate the target field. Supports event field interpolation. Used for template-based extraction.',
+                      }),
+                    source: z
+                      .string()
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'The path to the event field where the regex will be applied. Used for regex-based extraction.',
+                      }),
+                    regex: z
+                      .string()
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'A RE2 regular expression. If it contains capture groups, their values are extracted and appended. If no capture groups, the whole match is used. Used for regex-based extraction.',
+                      }),
+                  })
+                  .openapi({ required: [] }),
+              )
+              .openapi({
+                description:
+                  'Modify the event payload using regex-based extraction or template-based composition. Maximum 25 extractions per rule.',
+              }),
+          })
+          .openapi({
+            title: 'Extractions',
+            description:
+              'Modify the event payload using regex-based extraction or template-based composition.',
+            required: ['extractions'],
+          }),
+        z
+          .object({
+            enrichments: z
+              .array(
+                z
+                  .object({
+                    schema_to_search: z
+                      .string()
+                      .exactOptional()
+                      .openapi({ description: 'The ID of the Enrichment Schema to query.' }),
+                    search_values: z
+                      .array(
+                        z
+                          .object({
+                            path: z
+                              .string()
+                              .exactOptional()
+                              .openapi({
+                                description:
+                                  'The PD-CEF field whose value is used to search the Enrichment Schema. Used for path-based configuration.',
+                              }),
+                            template: z
+                              .string()
+                              .exactOptional()
+                              .openapi({
+                                description:
+                                  'A string template used to build the search value. Supports event field interpolation. Used for template-based configuration.',
+                              }),
+                            query_field_name: z
+                              .string()
+                              .exactOptional()
+                              .openapi({
+                                description:
+                                  'The name of the Enrichment Schema field to search against. Must be a field of type `query`.',
+                              }),
+                          })
+                          .openapi({ required: [] }),
+                      )
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'Configurations that specify how to read values from the event to query the Enrichment Schema.',
+                      }),
+                    target: z
+                      .string()
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'The PD-CEF field to set with the data retrieved from the Enrichment Schema.',
+                      }),
+                  })
+                  .openapi({ required: [] }),
+              )
+              .openapi({
+                description:
+                  'Query a CDP enrichment schema using event values and write results back into the event payload. Maximum 1 enrichment action per rule; maximum 5 enrichment actions applied per event per Event Enrichment.',
+              }),
+          })
+          .openapi({
+            title: 'Enrichments',
+            description:
+              'Query a CDP enrichment schema using event values and write results back into the event payload.',
+            required: ['enrichments'],
+          }),
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Actions to perform when the rule conditions are met. Must be one of `extractions` or `enrichments`.',
+      }),
+    disabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Indicates whether the rule is disabled and would therefore not be evaluated.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('EventEnrichmentRule')
+
+type EventEnrichmentOrchestrationPathType = {
+  type?: 'event_enrichment'
+  parent?: z.infer<typeof EventEnrichmentReferenceSchema>
+  self?: string
+  sets?: { id?: string; rules?: z.infer<typeof EventEnrichmentRuleSchema>[] }[]
+  created_at?: string
+  created_by?: { id?: string; type?: string; self?: string } | null
+  updated_at?: string
+  updated_by?: { id?: string; type?: string; self?: string } | null
+  version?: string
+}
 
 const ServiceReferenceSchema = ReferenceSchema.and(
   z.object({ type: z.literal('service_reference').exactOptional() }).openapi({ required: [] }),
 ).openapi('ServiceReference')
 
-const ExtensionSchemaReferenceSchema = ReferenceSchema.and(
+const EscalationPolicyReferenceSchema = ReferenceSchema.and(
   z
-    .object({ type: z.literal('extension_schema_reference').exactOptional() })
+    .object({ type: z.literal('escalation_policy_reference').exactOptional() })
     .openapi({ required: [] }),
-).openapi('ExtensionSchemaReference')
+).openapi('EscalationPolicyReference')
 
-type ExtensionType = {
+const TeamReferenceSchema = ReferenceSchema.and(
+  z.object({ type: z.literal('team_reference').exactOptional() }).openapi({ required: [] }),
+).openapi('TeamReference')
+
+const IntegrationReferenceSchema = ReferenceSchema.and(
+  z
+    .object({
+      type: z
+        .enum([
+          'aws_cloudwatch_inbound_integration_reference',
+          'cloudkick_inbound_integration_reference',
+          'event_transformer_api_inbound_integration_reference',
+          'generic_email_inbound_integration_reference',
+          'generic_events_api_inbound_integration_reference',
+          'keynote_inbound_integration_reference',
+          'nagios_inbound_integration_reference',
+          'pingdom_inbound_integration_reference',
+          'sql_monitor_inbound_integration_reference',
+          'events_api_v2_inbound_integration_reference',
+          'inbound_integration_reference',
+        ])
+        .exactOptional(),
+    })
+    .openapi({ required: [] }),
+).openapi('IntegrationReference')
+
+const IncidentUrgencyTypeSchema = z
+  .object({
+    type: z
+      .enum(['constant', 'use_support_hours'])
+      .default('constant')
+      .exactOptional()
+      .openapi({
+        description:
+          "The type of incident urgency: whether it's constant, or it's dependent on the support hours.",
+      }),
+    urgency: z
+      .enum(['low', 'high', 'severity_based'])
+      .default('high')
+      .exactOptional()
+      .openapi({ description: "The incidents' urgency, if type is constant." }),
+  })
+  .openapi({ required: [] })
+  .openapi('IncidentUrgencyType')
+
+const IncidentUrgencyRuleSchema = IncidentUrgencyTypeSchema.and(
+  z
+    .object({
+      during_support_hours: IncidentUrgencyTypeSchema.exactOptional(),
+      outside_support_hours: IncidentUrgencyTypeSchema.exactOptional(),
+    })
+    .openapi({ required: [] }),
+).openapi('IncidentUrgencyRule')
+
+const SupportHoursSchema = z
+  .object({
+    type: z
+      .literal('fixed_time_per_day')
+      .default('fixed_time_per_day')
+      .exactOptional()
+      .openapi({ description: 'The type of support hours' }),
+    time_zone: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The time zone for the support hours' }),
+    days_of_week: z
+      .array(
+        z
+          .int()
+          .openapi({
+            readOnly: true,
+            description: 'The days of the week (1 through 7, for Monday through Sunday)',
+          }),
+      )
+      .exactOptional()
+      .openapi({ readOnly: true }),
+    start_time: z
+      .string()
+      .regex(
+        /^(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|[+-](?:[01]\d|2[0-3]):[0-5]\d)?$/,
+      )
+      .exactOptional()
+      .openapi({
+        format: 'time',
+        description: "The support hours' starting time of day (date portion is ignored)",
+      }),
+    end_time: z
+      .string()
+      .regex(
+        /^(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|[+-](?:[01]\d|2[0-3]):[0-5]\d)?$/,
+      )
+      .exactOptional()
+      .openapi({
+        format: 'time',
+        description: "The support hours' ending time of day (date portion is ignored)",
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('SupportHours')
+
+const ScheduledActionSchema = z
+  .object({
+    type: z
+      .literal('urgency_change')
+      .openapi({ description: 'The type of schedule action. Must be set to urgency_change.' }),
+    at: z
+      .object({
+        type: z.literal('named_time').openapi({ description: 'Must be set to named_time.' }),
+        name: z
+          .enum(['support_hours_start', 'support_hours_end'])
+          .openapi({ description: 'Designates either the start or the end of support hours.' }),
+      })
+      .openapi({
+        description: 'Represents when scheduled action will occur.',
+        required: ['type', 'name'],
+      }),
+    to_urgency: z.literal('high').openapi({ description: 'Urgency level. Must be set to high.' }),
+  })
+  .openapi({ required: ['type', 'at', 'to_urgency'] })
+  .openapi('ScheduledAction')
+
+const AddonReferenceSchema = ReferenceSchema.and(
+  z
+    .object({
+      src: z.url().exactOptional().openapi({ description: 'The URL source of the Addon' }),
+      name: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The user entered name of the Addon.' }),
+      type: z.enum(['full_page_addon_reference', 'incident_show_addon_reference']).exactOptional(),
+    })
+    .openapi({ required: [] }),
+).openapi('AddonReference')
+
+const FlexibleTimeWindowIntelligentAlertGroupingConfigSchema = z
+  .object({
+    time_window: z
+      .int()
+      .min(300)
+      .max(3600)
+      .exactOptional()
+      .openapi({
+        description:
+          'The maximum amount of time allowed between Alerts. Any Alerts arriving greater than `time_window` seconds apart will not be grouped together. This is a rolling time window and is counted from the most recently grouped alert. The window is extended every time a new alert is added to the group, up to 24 hours. To use the "recommended_time_window," set the value to 0, otherwise the value must be between 300 and 3600.',
+      }),
+    recommended_time_window: z
+      .int()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description:
+          "In order to ensure your Service has the optimal grouping window, we use data science to calculate your Service's average Alert inter-arrival time. We encourage customers to use this value. Please set `time_window` to 0 to use the `recommended_time_window`.",
+      }),
+  })
+  .openapi({
+    title: 'Intelligent Alert Grouping',
+    description:
+      'The configuration for Intelligent Alert Grouping. Note that this configuration is only available for certain plans.',
+    required: [],
+  })
+  .openapi('FlexibleTimeWindowIntelligentAlertGroupingConfig')
+
+const TimeBasedAlertGroupingConfigurationSchema = z
+  .object({
+    timeout: z
+      .int()
+      .min(1)
+      .max(1440)
+      .exactOptional()
+      .openapi({
+        description:
+          'The duration in minutes within which to automatically group incoming Alerts. To continue grouping Alerts until the Incident is resolved, set this value to 0.',
+      }),
+  })
+  .openapi({
+    title: 'Time Grouping',
+    description: 'The configuration for Time Based Alert Grouping',
+    required: [],
+  })
+  .openapi('TimeBasedAlertGroupingConfiguration')
+
+const ContentBasedAlertGroupingConfigurationSchema = z
+  .object({
+    aggregate: z
+      .literal('all, any')
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether Alerts should be grouped if `all` or `any` specified fields match. If `all` is selected, an exact match on every specified field name must occur for Alerts to be grouped. If `any` is selected, Alerts will be grouped when there is an exact match on at least one of the specified fields.',
+      }),
+    fields: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'An array of strings which represent the fields with which to group against. Depending on the aggregate, Alerts will group if some or all the fields match.',
+      }),
+    time_window: z
+      .int()
+      .min(300)
+      .max(86400)
+      .exactOptional()
+      .openapi({
+        description:
+          'The maximum amount of time allowed between Alerts. Any Alerts arriving greater than `time_window` seconds apart will not be grouped together. This is a rolling time window up to 24 hours and is counted from the most recently grouped alert. The window is extended every time a new alert is added to the group, up to 24 hours (24 hours only applies to single-service settings). To use the "recommended_time_window," set the value to 0, otherwise the value must be between 300 <= time_window <= 3600 or 86400(i.e. 24 hours).',
+      }),
+    recommended_time_window: z
+      .int()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description:
+          "In order to ensure your Service has the optimal grouping window, we use data science to calculate your Service's average Alert inter-arrival time. We encourage customers to use this value. Please set `time_window` to 0 to use the `recommended_time_window`.",
+      }),
+  })
+  .openapi({
+    title: 'Content Only Grouping',
+    description: 'The configuration for Content Based Alert Grouping',
+    required: [],
+  })
+  .openapi('ContentBasedAlertGroupingConfiguration')
+
+const AlertGroupingParametersSchema = z
+  .object({
+    type: z
+      .union([
+        z.literal('time'),
+        z.literal('intelligent'),
+        z.literal('content_based'),
+        z.literal(null),
+      ])
+      .nullable()
+      .exactOptional(),
+    config: z
+      .xor([
+        FlexibleTimeWindowIntelligentAlertGroupingConfigSchema,
+        TimeBasedAlertGroupingConfigurationSchema,
+        ContentBasedAlertGroupingConfigurationSchema,
+      ])
+      .exactOptional(),
+  })
+  .openapi({
+    title: 'Alert Grouping Parameters',
+    deprecated: true,
+    description:
+      'Defines how alerts on this service will be automatically grouped into incidents. Note that the alert grouping features are available only on certain plans. To turn grouping off set the type to null.\nThis attribute has been deprecated and configuration via [Alert Grouping Settings](https://developer.pagerduty.com/api-reference/587edbc8ff416-create-an-alert-grouping-setting) resource is encouraged.\n',
+    required: [],
+  })
+  .openapi('AlertGroupingParameters')
+
+const AutoPauseNotificationsParametersSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether alerts should be automatically suspended when identified as transient',
+      }),
+    timeout: z
+      .union([
+        z.literal(0),
+        z.literal(120),
+        z.literal(180),
+        z.literal(300),
+        z.literal(600),
+        z.literal(900),
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates in seconds how long alerts should be suspended before triggering. To automatically select the recommended timeout for a service, set this value to `0`.',
+      }),
+    recommended_timeout: z
+      .union([z.literal(120), z.literal(180), z.literal(300), z.literal(600), z.literal(900)])
+      .exactOptional()
+      .openapi({
+        description:
+          'The recommended timeout setting for this service based on prior alert patterns.',
+      }),
+  })
+  .openapi({
+    title: 'AutoPauseNotificationsParameters',
+    description:
+      'Defines how alerts on this service are automatically suspended for a period of time before triggering, when identified as likely being transient. Note that automatically pausing notifications is only available on certain plans.',
+    example: { enabled: true, timeout: 300 },
+    required: [],
+  })
+  .openapi('AutoPauseNotificationsParameters')
+
+const ServiceSchema = z
+  .object({
+    id: z.string().exactOptional().openapi({ readOnly: true }),
+    summary: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description:
+          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
+      }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description:
+          'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
+      }),
+    self: z
+      .url()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description: 'the API show URL at which the object is accessible',
+      }),
+    html_url: z
+      .url()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description: 'a URL at which the entity is uniquely displayed in the Web app',
+      }),
+  })
+  .openapi({ required: [] })
+  .and(
+    z
+      .object({
+        type: z
+          .literal('service')
+          .default('service')
+          .openapi({ description: 'The type of object being created.' }),
+        name: z.string().exactOptional().openapi({ description: 'The name of the service.' }),
+        description: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The user-provided description of the service.' }),
+        auto_resolve_timeout: z
+          .int()
+          .default(14400)
+          .exactOptional()
+          .openapi({
+            description:
+              'Time in seconds that an incident is automatically resolved if left open for that long. Value is `null` if the feature is disabled. Value must not be negative. Setting this field to `0`, `null` (or unset in POST request) will disable the feature.',
+          }),
+        acknowledgement_timeout: z
+          .int()
+          .default(1800)
+          .exactOptional()
+          .openapi({
+            description:
+              'Time in seconds that an incident changes to the Triggered State after being Acknowledged. Value is `null` if the feature is disabled. Value must not be negative. Setting this field to `0`, `null` (or unset in POST request) will disable the feature.',
+          }),
+        created_at: z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({ description: 'The date/time when this service was created', readOnly: true }),
+        status: z
+          .enum(['active', 'warning', 'critical', 'maintenance', 'disabled'])
+          .default('active')
+          .exactOptional()
+          .openapi({
+            description:
+              'The current state of the Service. Valid statuses are:\n\n\n- `active`: The service is enabled and has no open incidents. This is the only status a service can be created with.\n- `warning`: The service is enabled and has one or more acknowledged incidents.\n- `critical`: The service is enabled and has one or more triggered incidents.\n- `maintenance`: The service is under maintenance, no new incidents will be triggered during maintenance mode.\n- `disabled`: The service is disabled and will not have any new triggered incidents.\n',
+          }),
+        last_incident_timestamp: z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({
+            description:
+              'The date/time when the most recent incident was created for this service.',
+            readOnly: true,
+          }),
+        escalation_policy: EscalationPolicyReferenceSchema,
+        response_play: z
+          .any()
+          .exactOptional()
+          .openapi({
+            deprecated: true,
+            description: 'Response plays associated with this service.',
+          }),
+        teams: z
+          .array(TeamReferenceSchema)
+          .exactOptional()
+          .openapi({
+            description: 'The set of teams associated with this service.',
+            readOnly: true,
+          }),
+        integrations: z
+          .array(IntegrationReferenceSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              'An array containing Integration objects that belong to this service. If `integrations` is passed as an argument, these are full objects - otherwise, these are references.',
+            readOnly: true,
+          }),
+        incident_urgency_rule: IncidentUrgencyRuleSchema.exactOptional(),
+        support_hours: SupportHoursSchema.exactOptional(),
+        scheduled_actions: z
+          .array(ScheduledActionSchema)
+          .exactOptional()
+          .openapi({ description: 'An array containing scheduled actions for the service.' }),
+        addons: z
+          .array(AddonReferenceSchema)
+          .exactOptional()
+          .openapi({
+            description: 'The array of Add-ons associated with this service.',
+            readOnly: true,
+          }),
+        alert_creation: z
+          .enum(['create_incidents', 'create_alerts_and_incidents'])
+          .default('create_alerts_and_incidents')
+          .exactOptional()
+          .openapi({
+            deprecated: true,
+            description:
+              'Whether a service creates only incidents, or both alerts and incidents. A service must create alerts in order to enable incident merging.\n* "create_incidents" - The service will create one incident and zero alerts for each incoming event.\n* "create_alerts_and_incidents" - The service will create one incident and one associated alert for each incoming event.\nThis attribute has been deprecated as all services will be migrated to use alerts and incidents. Afterward, the incident only service setting will no longer be available. For details, please refer to the knowledge base: https://support.pagerduty.com/docs/alerts#enable-and-disable-alerts-on-a-service.\n',
+          }),
+        alert_grouping_parameters: z
+          .xor([
+            AlertGroupingParametersSchema,
+            z
+              .object({
+                id: z
+                  .string()
+                  .exactOptional()
+                  .openapi({
+                    readOnly: true,
+                    description: 'id of the related alert grouping setting',
+                  }),
+                type: z
+                  .string()
+                  .exactOptional()
+                  .openapi({
+                    readOnly: true,
+                    description: 'type of reference eg. alert_grouping_setting_reference',
+                  }),
+                summary: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ readOnly: true, description: 'an explanation of this reference' }),
+                self: z
+                  .string()
+                  .exactOptional()
+                  .openapi({
+                    readOnly: true,
+                    description: 'link to api endpoint for this setting',
+                  }),
+                html_url: z
+                  .string()
+                  .exactOptional()
+                  .openapi({
+                    readOnly: true,
+                    description: 'link to the ui page to edit the setting',
+                  }),
+              })
+              .openapi({
+                title: 'Alert Grouping Settings Reference',
+                deprecated: true,
+                description:
+                  "When a service uses alert grouping configuration that is unsupported via the services api, and can only be configured via the [Alert Grouping Settings API](https://developer.pagerduty.com/api-reference/587edbc8ff416-create-an-alert-grouping-setting). The reference object includes the new location details for the service's Alert Grouping Setting. When an `alert_grouping_settings_reference` is included in a create or update request it will be ignored and no changes are applied to the service.",
+                required: [],
+              }),
+          ])
+          .exactOptional()
+          .openapi({ description: 'Alert Grouping Parameters', deprecated: true }),
+        alert_grouping: z
+          .enum(['time', 'intelligent'])
+          .exactOptional()
+          .openapi({
+            deprecated: true,
+            description:
+              'Defines how alerts on this service will be automatically grouped into incidents. Note that the alert grouping features are available only on certain plans. There are three available options:\n* null - No alert grouping on the service. Each alert will create a separate incident;\n* "time" - All alerts within a specified duration will be grouped into the same incident. This duration is set in the `alert_grouping_timeout` setting (described below). Available on Standard, Enterprise, and Event Intelligence plans;\n* "intelligent" - Alerts will be intelligently grouped based on a machine learning model that looks at the alert summary, timing, and the history of grouped alerts. Available on Enterprise and Event Intelligence plans\n\nThis attribute has been deprecated and configuration via [Alert Grouping Settings](https://developer.pagerduty.com/api-reference/587edbc8ff416-create-an-alert-grouping-setting) resource is encouraged.\n',
+          }),
+        alert_grouping_timeout: z
+          .int()
+          .exactOptional()
+          .openapi({
+            deprecated: true,
+            description:
+              'The duration in minutes within which to automatically group incoming alerts. This setting applies only when `alert_grouping` is set to `time`. To continue grouping alerts until the Incident is resolved, set this value to `0`.\n\nThis attribute has been deprecated and configuration via [Alert Grouping Settings](https://developer.pagerduty.com/api-reference/587edbc8ff416-create-an-alert-grouping-setting) resource is encouraged.\n',
+          }),
+        auto_pause_notifications_parameters: AutoPauseNotificationsParametersSchema.exactOptional(),
+      })
+      .openapi({
+        required: ['type', 'escalation_policy'],
+        example: {
+          id: 'PSI2I2O',
+          summary: 'string',
+          type: 'service',
+          self: 'string',
+          html_url: 'string',
+          name: 'My Web App',
+          description: 'My cool web application that does things.',
+          auto_resolve_timeout: 14400,
+          acknowledgement_timeout: 600,
+          status: 'active',
+          escalation_policy: { id: 'PWIP6CQ', type: 'escalation_policy_reference' },
+          incident_urgency_rule: {
+            type: 'use_support_hours',
+            during_support_hours: { type: 'constant', urgency: 'high' },
+            outside_support_hours: { type: 'constant', urgency: 'low' },
+          },
+          support_hours: {
+            type: 'fixed_time_per_day',
+            time_zone: 'America/Lima',
+            start_time: '09:00:00',
+            end_time: '17:00:00',
+            days_of_week: [1, 2, 3, 4, 5],
+          },
+          scheduled_actions: [
+            {
+              type: 'urgency_change',
+              at: { type: 'named_time', name: 'support_hours_start' },
+              to_urgency: 'high',
+            },
+          ],
+          alert_creation: 'create_alerts_and_incidents',
+          auto_pause_notifications_parameters: { enabled: true, timeout: 300 },
+        },
+      }),
+  )
+  .openapi('Service')
+
+const UserReferenceSchema = ReferenceSchema.and(
+  z.object({ type: z.literal('user_reference').exactOptional() }).openapi({ required: [] }),
+).openapi('UserReference')
+
+const ContactMethodReferenceSchema = ReferenceSchema.and(
+  z
+    .object({
+      type: z
+        .enum([
+          'email_contact_method_reference',
+          'phone_contact_method_reference',
+          'push_notification_contact_method_reference',
+          'sms_contact_method_reference',
+          'whatsapp_contact_method_reference',
+        ])
+        .exactOptional(),
+    })
+    .openapi({ required: [] }),
+).openapi('ContactMethodReference')
+
+const NotificationRuleReferenceSchema = ReferenceSchema.and(
+  z
+    .object({ type: z.literal('assignment_notification_rule_reference').exactOptional() })
+    .openapi({ required: [] }),
+).openapi('NotificationRuleReference')
+
+const UserSchema = z
+  .object({
+    id: z.string().exactOptional().openapi({ readOnly: true }),
+    summary: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description:
+          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
+      }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description:
+          'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
+      }),
+    self: z
+      .url()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description: 'the API show URL at which the object is accessible',
+      }),
+    html_url: z
+      .url()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description: 'a URL at which the entity is uniquely displayed in the Web app',
+      }),
+  })
+  .openapi({ required: [] })
+  .and(
+    z
+      .object({
+        name: z.string().max(100).openapi({ description: 'The name of the user.' }),
+        type: z
+          .literal('user')
+          .default('user')
+          .openapi({ description: 'The type of object being created.' }),
+        email: z.email().min(6).max(100).openapi({ description: "The user's email address." }),
+        time_zone: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              "The preferred time zone name. If null, the account's time zone will be used.",
+          }),
+        color: z.string().exactOptional().openapi({ description: 'The schedule color.' }),
+        role: z
+          .enum([
+            'admin',
+            'limited_user',
+            'observer',
+            'owner',
+            'read_only_user',
+            'restricted_access',
+            'read_only_limited_user',
+            'user',
+          ])
+          .exactOptional()
+          .openapi({
+            description:
+              'The user role. Account must have the `read_only_users` ability to set a user as a `read_only_user` or a `read_only_limited_user`, and must have advanced permissions abilities to set a user as `observer` or `restricted_access`.',
+          }),
+        avatar_url: z
+          .url()
+          .exactOptional()
+          .openapi({ description: "The URL of the user's avatar.", readOnly: true }),
+        description: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: "The user's bio." }),
+        invitation_sent: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            readOnly: true,
+            description: 'If true, the user has an outstanding invitation.',
+          }),
+        job_title: z
+          .string()
+          .max(100)
+          .exactOptional()
+          .openapi({ description: "The user's title." }),
+        created_via_sso: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            readOnly: true,
+            description: 'If true, the user was created via Single Sign-On (SSO).',
+          }),
+        teams: z
+          .array(TeamReferenceSchema)
+          .exactOptional()
+          .openapi({
+            readOnly: true,
+            description:
+              'The list of teams to which the user belongs. Account must have the `teams` ability to set this.',
+          }),
+        contact_methods: z
+          .array(ContactMethodReferenceSchema)
+          .exactOptional()
+          .openapi({ readOnly: true, description: 'The list of contact methods for the user.' }),
+        notification_rules: z
+          .array(NotificationRuleReferenceSchema)
+          .exactOptional()
+          .openapi({ readOnly: true, description: 'The list of notification rules for the user.' }),
+        http_cal_url: z
+          .url()
+          .exactOptional()
+          .openapi({
+            readOnly: true,
+            description:
+              "iCal HTTP feed URL for this user's on-call shifts. Only returned on the `GET /users/{id}` detail endpoint: automatically when viewing your own profile with a user-level token, or when an account admin with `can_update_user` passes `include[]=calendar_urls` for another user. Not returned on list endpoints or with account-level read-only keys.\n\n**Security:** this URL is a bearer credential. Anyone with the URL can read the user's on-call calendar without further authentication. Rotate via `POST /users/{id}/regenerate_private_url_key` if it may have been exposed.",
+          }),
+        web_cal_url: z
+          .url()
+          .exactOptional()
+          .openapi({
+            readOnly: true,
+            description:
+              "iCal webcal URL for this user's on-call shifts. Only returned on the `GET /users/{id}` detail endpoint: automatically when viewing your own profile with a user-level token, or when an account admin with `can_update_user` passes `include[]=calendar_urls` for another user. Not returned on list endpoints or with account-level read-only keys.\n\n**Security:** this URL is a bearer credential. Anyone with the URL can read the user's on-call calendar without further authentication. Rotate via `POST /users/{id}/regenerate_private_url_key` if it may have been exposed.",
+          }),
+      })
+      .openapi({
+        required: ['name', 'email', 'type'],
+        example: {
+          type: 'user',
+          name: 'Earline Greenholt',
+          email: '125.greenholt.earline@graham.name',
+          time_zone: 'America/Lima',
+          color: 'green',
+          role: 'admin',
+          job_title: 'Director of Engineering',
+          created_via_sso: false,
+          avatar_url: 'https://pd-static-assets.pagerduty.com/users/blank-avatar.png',
+          description: "I'm the boss",
+        },
+      }),
+  )
+  .openapi('User')
+
+const AssignmentSchema = z
+  .object({
+    at: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'Time at which the assignment was created.' }),
+    assignee: z.xor([UserReferenceSchema, UserSchema]),
+  })
+  .openapi({ required: ['at', 'assignee'] })
+  .openapi('Assignment')
+
+const LogEntryReferenceSchema = ReferenceSchema.and(
+  z
+    .object({
+      type: z
+        .enum([
+          'acknowledge_log_entry_reference',
+          'annotate_log_entry_reference',
+          'assign_log_entry_reference',
+          'escalate_log_entry_reference',
+          'exhaust_escalation_path_log_entry_reference',
+          'notify_log_entry_reference',
+          'reach_trigger_limit_log_entry_reference',
+          'repeat_escalation_path_log_entry_reference',
+          'resolve_log_entry_reference',
+          'snooze_log_entry_reference',
+          'trigger_log_entry_reference',
+          'unacknowledge_log_entry_reference',
+        ])
+        .exactOptional(),
+    })
+    .openapi({ required: [] }),
+).openapi('LogEntryReference')
+
+const NotificationSchema = z
+  .object({
+    id: z.string().exactOptional().openapi({ readOnly: true }),
+    type: z
+      .enum(['sms_notification', 'email_notification', 'phone_notification', 'push_notification'])
+      .exactOptional()
+      .openapi({ description: 'The type of notification.', readOnly: true }),
+    started_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The time at which the notification was sent', readOnly: true }),
+    address: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The address where the notification was sent. This will be null for notification type `push_notification`.',
+        readOnly: true,
+      }),
+    user: UserReferenceSchema.exactOptional(),
+    conferenceAddress: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The address of the conference bridge' }),
+    status: z.string().exactOptional(),
+    '': z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Notification')
+
+const ChannelSchema = z
+  .xor([
+    z
+      .object({
+        type: z.string().exactOptional().openapi({ description: 'Will be `nagios`' }),
+        summary: z.string().exactOptional().openapi({ description: 'Same as `host`' }),
+        host: z.string().exactOptional().openapi({ description: 'Nagios host' }),
+        service: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Nagios service that created the event, if applicable' }),
+        state: z.string().exactOptional().openapi({ description: 'State that caused the event' }),
+        details: z
+          .looseObject({})
+          .exactOptional()
+          .openapi({ description: 'Additional details of the incident' }),
+      })
+      .openapi({ title: 'NagiosChannel', required: [] }),
+    z
+      .object({
+        type: z.string().exactOptional().openapi({ description: 'Will be `api`' }),
+        summary: z.string().exactOptional().openapi({ description: 'Same as `description`' }),
+        service_key: z.string().exactOptional().openapi({ description: 'API service key' }),
+        description: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Description of the event' }),
+        incident_key: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Incident deduping string' }),
+        details: z
+          .looseObject({})
+          .exactOptional()
+          .openapi({ description: 'Additional details of the incident' }),
+      })
+      .openapi({ title: 'APIChannel', required: [] }),
+    z
+      .object({
+        type: z.string().exactOptional().openapi({ description: 'Will be `email`' }),
+        summary: z.string().exactOptional().openapi({ description: 'Same as `subject`' }),
+        to: z.string().exactOptional().openapi({ description: 'To address of the email' }),
+        from: z.string().exactOptional().openapi({ description: 'From address of the email' }),
+        subject: z.string().exactOptional().openapi({ description: 'Subject of the email' }),
+        body: z.string().exactOptional().openapi({ description: 'Body of the email' }),
+        body_content_type: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Content type of the email body. Will be `text/plain` or `text/html`',
+          }),
+        raw_url: z.string().exactOptional().openapi({ description: 'URL for raw text of email' }),
+        html_url: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'URL for html rendered version of the email. Only present if `content_type` is `text/html`',
+          }),
+      })
+      .openapi({ title: 'EmailChannel', required: [] }),
+    z
+      .object({
+        type: z.string().exactOptional().openapi({ description: 'Will be `web_trigger`' }),
+        summary: z.string().exactOptional().openapi({ description: 'Same as `subject`' }),
+        subject: z.string().exactOptional().openapi({ description: 'Subject of the web trigger' }),
+        details: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Details about the web trigger' }),
+      })
+      .openapi({ title: 'WebTriggerChannel', required: [] }),
+    z
+      .object({
+        type: z.string().openapi({ description: 'Will be `website`' }),
+        duration: z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'For `snooze` log entries, this is the number of seconds that the incident was snoozed for.',
+          }),
+      })
+      .openapi({ title: 'WebsiteChannel', required: ['type'] }),
+  ])
+  .and(
+    z
+      .object({
+        type: z.string().openapi({ description: 'type' }),
+        user: z.looseObject({}).exactOptional(),
+        team: z.looseObject({}).exactOptional(),
+        notification: NotificationSchema.exactOptional(),
+        channel: z.looseObject({}).exactOptional().openapi({ description: 'channel' }),
+        changeset: z
+          .object({
+            customer_fields: z
+              .array(
+                z
+                  .object({
+                    id: z.string().exactOptional().openapi({ example: 'PDB5RLI' }),
+                    name: z.string().exactOptional().openapi({ example: 'serial_number_hardware' }),
+                    value: z.xor([z.int(), z.array(z.string())]).exactOptional(),
+                    namespace: z.string().exactOptional().openapi({ example: 'incidents' }),
+                    old_value: z.string().nullable().exactOptional().openapi({ example: null }),
+                  })
+                  .openapi({ required: [] }),
+              )
+              .exactOptional()
+              .openapi({
+                description:
+                  'Customer Fields present in CustomFieldsValueChange and FieldValueChange log entries.',
+              }),
+            application_fields: z
+              .array(
+                z
+                  .object({
+                    id: z.string().exactOptional().openapi({ example: 'PIJ90N7' }),
+                    name: z.string().exactOptional().openapi({ example: 'service' }),
+                    value: z
+                      .xor([
+                        z.string().openapi({ example: 'PIZW265' }),
+                        z.int().openapi({ example: 130 }),
+                        z.array(z.string()),
+                      ])
+                      .exactOptional(),
+                    namespace: z.string().exactOptional().openapi({ example: 'incidents' }),
+                    old_value: z.string().nullable().exactOptional().openapi({ example: null }),
+                  })
+                  .openapi({ required: [] }),
+              )
+              .exactOptional()
+              .openapi({
+                description:
+                  'Application Fields present in CustomFieldsValueChange and FieldValueChange log entries.',
+              }),
+            custom_attributes: z
+              .record(z.string(), z.string())
+              .exactOptional()
+              .openapi({ description: 'Custom attributes for the changeset.' }),
+            customer_schema: z
+              .object({
+                old_value: z.string().nullable().exactOptional().openapi({ example: null }),
+              })
+              .exactOptional()
+              .openapi({ required: [] }),
+          })
+          .exactOptional()
+          .openapi({
+            description:
+              'Changeset present in CustomFieldsValueChange and FieldValueChange log entries.',
+            required: [],
+          }),
+      })
+      .openapi({ required: ['type'] }),
+  )
+  .openapi({
+    description:
+      'Polymorphic object representation of the means by which the action was channeled. Has different formats depending on type, indicated by channel[type]. Will be one of `auto`, `email`, `api`, `nagios`, or `timeout` if `agent[type]` is `service`. Will be one of `email`, `sms`, `website`, `web_trigger`, or `note` if `agent[type]` is `user`.',
+    required: ['type'],
+  })
+  .openapi('Channel')
+
+const AgentReferenceSchema = ReferenceSchema.and(
+  z
+    .object({
+      type: z
+        .enum(['user_reference', 'service_reference', 'integration_reference'])
+        .exactOptional(),
+    })
+    .openapi({
+      description:
+        'The agent (user, service or integration) that created or modified the Incident Log Entry.',
+      readOnly: true,
+      required: [],
+    }),
+).openapi('AgentReference')
+
+const ContextSchema = z
+  .object({
+    type: z
+      .enum(['link', 'image'])
+      .openapi({ description: 'The type of context being attached to the incident.' }),
+    href: z.string().exactOptional().openapi({ description: "The link's target url" }),
+    src: z.string().exactOptional().openapi({ description: "The image's source url" }),
+    text: z.string().exactOptional().openapi({ description: 'The alternate display for an image' }),
+  })
+  .openapi({ discriminator: { propertyName: 'type' }, required: ['type'] })
+  .openapi('Context')
+
+const IncidentReferenceSchema = ReferenceSchema.and(
+  z.object({ type: z.literal('incident_reference').exactOptional() }).openapi({ required: [] }),
+).openapi('IncidentReference')
+
+const LogEntrySchema = z
+  .object({
+    id: z.string().exactOptional().openapi({ readOnly: true }),
+    summary: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description:
+          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
+      }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description:
+          'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
+      }),
+    self: z
+      .url()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description: 'the API show URL at which the object is accessible',
+      }),
+    html_url: z
+      .url()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description: 'a URL at which the entity is uniquely displayed in the Web app',
+      }),
+  })
+  .openapi({ required: [] })
+  .and(
+    z
+      .object({
+        type: z
+          .enum([
+            'acknowledge_log_entry',
+            'annotate_log_entry',
+            'assign_log_entry',
+            'delegate_log_entry',
+            'escalate_log_entry',
+            'exhaust_escalation_path_log_entry',
+            'notify_log_entry',
+            'reach_ack_limit_log_entry',
+            'reach_trigger_limit_log_entry',
+            'repeat_escalation_path_log_entry',
+            'resolve_log_entry',
+            'snooze_log_entry',
+            'trigger_log_entry',
+            'unacknowledge_log_entry',
+            'urgency_change_log_entry',
+            'field_value_change_log_entry',
+            'custom_field_value_change_log_entry',
+          ])
+          .exactOptional(),
+        created_at: z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({ readOnly: true, description: 'Time at which the log entry was created.' }),
+        channel: ChannelSchema.exactOptional(),
+        agent: AgentReferenceSchema.exactOptional(),
+        note: z
+          .string()
+          .exactOptional()
+          .openapi({
+            readOnly: true,
+            description:
+              'Optional field containing a note, if one was included with the log entry.',
+          }),
+        contexts: z
+          .array(ContextSchema)
+          .exactOptional()
+          .openapi({
+            readOnly: true,
+            description:
+              'Contexts to be included with the trigger such as links to graphs or images.',
+          }),
+        service: ServiceReferenceSchema.exactOptional(),
+        incident: IncidentReferenceSchema.exactOptional(),
+        teams: z
+          .array(TeamReferenceSchema)
+          .exactOptional()
+          .openapi({ readOnly: true, description: 'Will consist of references unless included' }),
+        event_details: z
+          .object({
+            description: z
+              .string()
+              .exactOptional()
+              .openapi({ description: 'Additional details about the event.' }),
+          })
+          .exactOptional()
+          .openapi({ readOnly: true, required: [] }),
+        changeset: z
+          .array(z.string())
+          .exactOptional()
+          .openapi({
+            description: 'String record of custom field updates',
+            example: ['Updated serial_number to 123', 'Updated affected_room to ["Queen West"]'],
+          }),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi('LogEntry')
+
+const TriggerLogEntrySchema = LogEntrySchema.and(
+  z.object({ type: z.literal('trigger_log_entry').exactOptional() }).openapi({ required: [] }),
+).openapi('TriggerLogEntry')
+
+const AlertCountSchema = z
+  .object({
+    triggered: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The count of triggered alerts grouped into this incident' }),
+    resolved: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The count of resolved alerts grouped into this incident' }),
+    all: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The total count of alerts grouped into this incident' }),
+  })
+  .openapi({ required: [] })
+  .openapi('AlertCount')
+
+const EscalationTargetReferenceSchema = ReferenceSchema.and(
+  z
+    .object({
+      type: z
+        .enum(['user', 'schedule', 'user_reference', 'schedule_reference', 'schedule_v3_reference'])
+        .exactOptional(),
+    })
+    .openapi({
+      description:
+        'The escalation target is the entity that will be assigned an incident upon escalation.',
+      required: [],
+    }),
+).openapi('EscalationTargetReference')
+
+const EscalationRuleSchema = z
+  .object({
+    id: z.string().exactOptional().openapi({ readOnly: true }),
+    escalation_delay_in_minutes: z
+      .int()
+      .openapi({
+        description:
+          'The number of minutes before an unacknowledged incident escalates away from this rule.',
+      }),
+    targets: z
+      .array(EscalationTargetReferenceSchema)
+      .min(1)
+      .max(10)
+      .openapi({
+        description: 'The targets an incident should be assigned to upon reaching this rule.',
+      }),
+    escalation_rule_assignment_strategy: z
+      .enum(['round_robin', 'assign_to_everyone'])
+      .exactOptional()
+      .openapi({ description: 'The strategy used to assign the escalation rule to an incident.' }),
+  })
+  .openapi({
+    required: ['escalation_delay_in_minutes', 'targets'],
+    example: {
+      escalation_delay_in_minutes: 30,
+      targets: [
+        { id: 'PAM4FGS', type: 'user_reference' },
+        { id: 'PI7DH85', type: 'schedule_reference' },
+      ],
+    },
+  })
+  .openapi('EscalationRule')
+
+const EscalationPolicySchema = z
+  .object({
+    id: z.string().exactOptional().openapi({ readOnly: true }),
+    summary: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description:
+          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
+      }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description:
+          'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
+      }),
+    self: z
+      .url()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description: 'the API show URL at which the object is accessible',
+      }),
+    html_url: z
+      .url()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description: 'a URL at which the entity is uniquely displayed in the Web app',
+      }),
+  })
+  .openapi({ required: [] })
+  .and(
+    z
+      .object({
+        type: z
+          .literal('escalation_policy')
+          .default('escalation_policy')
+          .openapi({ description: 'The type of object being created.' }),
+        name: z.string().openapi({ description: 'The name of the escalation policy.' }),
+        description: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Escalation policy description.' }),
+        num_loops: z
+          .int()
+          .min(0)
+          .default(0)
+          .exactOptional()
+          .openapi({
+            description:
+              'The number of times the escalation policy will repeat after reaching the end of its escalation.',
+          }),
+        on_call_handoff_notifications: z
+          .enum(['if_has_services', 'always'])
+          .exactOptional()
+          .openapi({
+            description:
+              'Determines how on call handoff notifications will be sent for users on the escalation policy. Defaults to "if_has_services".',
+          }),
+        escalation_rules: z.array(EscalationRuleSchema),
+        services: z.array(ServiceReferenceSchema).exactOptional().openapi({ readOnly: true }),
+        teams: z
+          .array(TeamReferenceSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              'Team associated with the policy. Account must have the `teams` ability to use this parameter. Only one team may be associated with the policy.',
+          }),
+      })
+      .openapi({
+        required: ['type', 'name', 'escalation_rules'],
+        example: {
+          id: 'PQIL2IX',
+          type: 'escalation_policy',
+          name: 'Engineering Escalation Policy',
+          escalation_rules: [
+            {
+              escalation_delay_in_minutes: 30,
+              targets: [{ id: 'PEYSGVF', type: 'user_reference' }],
+              escalation_rule_assignment_strategy: [{ type: 'round_robin' }],
+            },
+          ],
+          services: [{ id: 'PIJ90N7', type: 'service_reference' }],
+          num_loops: 2,
+          on_call_handoff_notifications: 'if_has_services',
+          teams: [{ id: 'PQ9K7I8', type: 'team_reference' }],
+          description: 'Here is the ep for the engineering team.',
+        },
+      }),
+  )
+  .openapi('EscalationPolicy')
+
+const TeamSchema = z
+  .object({
+    id: z.string().exactOptional().openapi({ readOnly: true }),
+    summary: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description:
+          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
+      }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description:
+          'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
+      }),
+    self: z
+      .url()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description: 'the API show URL at which the object is accessible',
+      }),
+    html_url: z
+      .url()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description: 'a URL at which the entity is uniquely displayed in the Web app',
+      }),
+  })
+  .openapi({ required: [] })
+  .and(
+    z
+      .object({
+        type: z
+          .literal('team')
+          .default('team')
+          .openapi({ description: 'The type of object being created.' }),
+        name: z.string().max(100).openapi({ description: 'The name of the team.' }),
+        description: z
+          .string()
+          .max(1024)
+          .exactOptional()
+          .openapi({ description: 'The description of the team.' }),
+        default_role: z
+          .enum(['manager', 'none'])
+          .default('manager')
+          .exactOptional()
+          .openapi({
+            description:
+              'The team is private if the value is "none", or public if it is "manager" (the default permissions for a non-member of the team are either "none", or their base role up until "manager").',
+          }),
+      })
+      .openapi({
+        required: ['name', 'type'],
+        example: { type: 'team', name: 'Engineering', description: 'The engineering team' },
+      }),
+  )
+  .openapi('Team')
+
+const IncidentActionSchema = z
+  .object({
+    type: z.enum(['unacknowledge', 'escalate', 'resolve', 'urgency_change']),
+    at: z.iso.datetime({ offset: true }),
+    to: z
+      .literal('high')
+      .exactOptional()
+      .openapi({
+        description:
+          'The urgency that the incident will change to. This field is only present when the type is `urgency_change`.',
+      }),
+  })
+  .openapi({
+    description:
+      'An incident action is a pending change to an incident that will automatically happen at some future time.',
+    discriminator: { propertyName: 'type' },
+    required: ['type', 'at'],
+  })
+  .openapi('IncidentAction')
+
+const AcknowledgerReferenceSchema = ReferenceSchema.and(
+  z
+    .object({ type: z.enum(['user_reference', 'service_reference']).exactOptional() })
+    .openapi({
+      description:
+        'The acknowledger represents the entity that made the acknowledgement for an incident.',
+      required: [],
+    }),
+).openapi('AcknowledgerReference')
+
+const AcknowledgementSchema = z
+  .object({
+    at: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'Time at which the acknowledgement was created.' }),
+    acknowledger: z.xor([AcknowledgerReferenceSchema, UserSchema, ServiceSchema]),
+  })
+  .openapi({ required: ['at', 'acknowledger'] })
+  .openapi('Acknowledgement')
+
+const PrioritySchema = z
+  .object({
+    id: z.string().exactOptional().openapi({ readOnly: true }),
+    summary: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description:
+          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
+      }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description:
+          'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
+      }),
+    self: z
+      .url()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description: 'the API show URL at which the object is accessible',
+      }),
+    html_url: z
+      .url()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description: 'a URL at which the entity is uniquely displayed in the Web app',
+      }),
+  })
+  .openapi({ required: [] })
+  .and(
+    z
+      .object({
+        name: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The user-provided short name of the priority.' }),
+        description: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The user-provided description of the priority.' }),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi('Priority')
+
+const ResolveReasonSchema = z
+  .object({
+    type: z
+      .literal('merge_resolve_reason')
+      .default('merge_resolve_reason')
+      .exactOptional()
+      .openapi({
+        description:
+          'The reason the incident was resolved. The only reason currently supported is merge.',
+      }),
+    incident: IncidentReferenceSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ResolveReason')
+
+const ConferenceBridgeSchema = z
+  .object({
+    conference_number: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The phone number of the conference call for the conference bridge. Phone numbers should be formatted like +1 415-555-1212,,,,1234#, where a comma (,) represents a one-second wait and pound (#) completes access code input.',
+      }),
+    conference_url: z
+      .url()
+      .exactOptional()
+      .openapi({
+        description:
+          'An URL for the conference bridge. This could be a link to a web conference or Slack channel.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ConferenceBridge')
+
+const IncidentsRespondersReferenceSchema = z
+  .object({
+    state: z
+      .enum(['pending', 'joined', 'declined', 'user_cancelled'])
+      .exactOptional()
+      .openapi({
+        description: 'The status of the responder being added to the incident',
+        example: 'pending',
+      }),
+    user: UserReferenceSchema.exactOptional(),
+    incident: IncidentReferenceSchema.exactOptional(),
+    updated_at: z.string().exactOptional(),
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The message sent with the responder request' }),
+    requester: UserReferenceSchema.exactOptional(),
+    requested_at: z.string().exactOptional(),
+    escalation_policy_requests: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Names of escalation policies that this responder was requested through, if applicable',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('IncidentsRespondersReference')
+
+const ResponderRequestTargetReferenceSchema = z
+  .object({
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The type of target (either a user or an escalation policy)' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The id of the user or escalation policy' }),
+    summary: z.string().exactOptional(),
+    incident_responders: z
+      .array(IncidentsRespondersReferenceSchema)
+      .exactOptional()
+      .openapi({ description: 'An array of responders associated with the specified incident' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ResponderRequestTargetReference')
+
+const ResponderRequestSchema = z
+  .object({
+    id: z.string().exactOptional().openapi({ description: 'The ID of the responder request' }),
+    incident: IncidentReferenceSchema.exactOptional(),
+    requester: UserReferenceSchema.exactOptional(),
+    requested_at: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The time the request was made' }),
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The message sent with the responder request' }),
+    responder_request_targets: z
+      .array(ResponderRequestTargetReferenceSchema)
+      .exactOptional()
+      .openapi({ description: 'The array of targets the responder request is being sent to' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ResponderRequest')
+
+const IncidentBodySchema = z
+  .object({
+    details: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'Additional incident details.' }),
+  })
+  .openapi({ required: ['type'] })
+  .openapi('IncidentBody')
+
+type IncidentType = {
   id?: string
   summary?: string | null
   type?: string
   self?: string | null
   html_url?: string | null
 } & {
-  name: string
-  type?: 'extension'
-  endpoint_url?: string
-  extension_objects: z.infer<typeof ServiceReferenceSchema>[]
-  extension_schema: z.infer<typeof ExtensionSchemaReferenceSchema>
-  temporarily_disabled?: boolean
-  config?: { [key: string]: unknown }
+  incident_number?: number
+  title?: string
+  created_at?: string
+  updated_at?: string
+  status?: 'triggered' | 'acknowledged' | 'resolved'
+  incident_key?: string
+  service?: z.infer<typeof ServiceReferenceSchema> | z.infer<typeof ServiceSchema>
+  assignments?: z.infer<typeof AssignmentSchema>[]
+  assigned_via?: 'escalation_policy' | 'direct_assignment'
+  last_status_change_at?: string
+  resolved_at?: string
+  first_trigger_log_entry?:
+    | z.infer<typeof LogEntryReferenceSchema>
+    | z.infer<typeof TriggerLogEntrySchema>
+  alert_counts?: z.infer<typeof AlertCountSchema>
+  is_mergeable?: boolean
+  incident_type?: { name?: string }
+  escalation_policy?:
+    | z.infer<typeof EscalationPolicyReferenceSchema>
+    | z.infer<typeof EscalationPolicySchema>
+  teams?: (z.infer<typeof TeamReferenceSchema> | z.infer<typeof TeamSchema>)[]
+  pending_actions?: z.infer<typeof IncidentActionSchema>[]
+  acknowledgements?: z.infer<typeof AcknowledgementSchema>[]
+  alert_grouping?: {
+    grouping_type?: 'basic' | 'advanced' | 'rules'
+    started_at?: string
+    ended_at?: string
+    alert_grouping_active?: boolean
+  }
+  last_status_change_by?:
+    | z.infer<typeof AgentReferenceSchema>
+    | z.infer<typeof UserSchema>
+    | z.infer<typeof ServiceSchema>
+  priority?: z.infer<typeof PrioritySchema>
+  resolve_reason?: z.infer<typeof ResolveReasonSchema>
+  conference_bridge?: z.infer<typeof ConferenceBridgeSchema>
+  incidents_responders?: z.infer<typeof IncidentsRespondersReferenceSchema>[]
+  responder_requests?: z.infer<typeof ResponderRequestSchema>[]
+  urgency?: 'high' | 'low'
+  body?: z.infer<typeof IncidentBodySchema>
 }
 
 type CustomFieldsFieldValueType = {
@@ -402,164 +2309,503 @@ type ServiceCustomFieldsFieldOptionReadModelType = {
   updated_at?: z.infer<typeof ServiceCustomFieldsFieldReadModelSchema>
 }
 
-const UserReferenceSchema = ReferenceSchema.and(
-  z.object({ type: z.literal('user_reference').exactOptional() }).openapi({ required: [] }),
-).openapi('UserReference')
-
-const ScheduleLayerUserSchema = z
-  .object({ user: UserReferenceSchema })
-  .openapi({ required: ['user'] })
-  .openapi('ScheduleLayerUser')
-
-const RestrictionSchema = z
-  .object({
-    type: z
-      .enum(['daily_restriction', 'weekly_restriction'])
-      .openapi({ description: 'Specify the types of `restriction`.' }),
-    duration_seconds: z
-      .int()
-      .openapi({ description: 'The duration of the restriction in seconds.' }),
-    start_time_of_day: z.string().openapi({ description: 'The start time in HH:mm:ss format.' }),
-    start_day_of_week: z
-      .int()
-      .min(1)
-      .max(7)
-      .exactOptional()
-      .openapi({
-        description:
-          'Only required for use with a `weekly_restriction` restriction type. The first day of the weekly rotation schedule as [ISO 8601 day](https://en.wikipedia.org/wiki/ISO_week_date) (1 is Monday, etc.)',
-      }),
-  })
-  .openapi({
-    discriminator: { propertyName: 'type' },
-    required: ['type', 'duration_seconds', 'start_time_of_day'],
-  })
-  .openapi('Restriction')
-
-const ScheduleLayerEntrySchema = z
-  .object({
-    user: UserReferenceSchema.exactOptional(),
-    start: z.iso
-      .datetime({ offset: true })
-      .openapi({ readOnly: true, description: 'The start time of this entry.' }),
-    end: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        readOnly: true,
-        description: 'The end time of this entry. If null, the entry does not end.',
-      }),
-  })
-  .openapi({ required: ['start', 'end'] })
-  .openapi('ScheduleLayerEntry')
-
-const ScheduleLayerSchema = z
-  .object({
-    id: z.string().exactOptional(),
-    start: z.iso
-      .datetime({ offset: true })
-      .openapi({ description: 'The start time of this layer.' }),
-    end: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The end time of this layer. If `null`, the layer does not end.' }),
-    users: z
-      .array(ScheduleLayerUserSchema)
-      .openapi({
-        description:
-          'The ordered list of users on this layer. The position of the user on the list determines their order in the layer.',
-      }),
-    restrictions: z
-      .array(RestrictionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'An array of restrictions for the layer. A restriction is a limit on which period of the day or week the schedule layer can accept assignments. Restrictions respect the `time_zone` parameter of the request.',
-      }),
-    rotation_virtual_start: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description:
-          'The effective start time of the layer. This can be before the start time of the schedule.',
-      }),
-    rotation_turn_length_seconds: z
-      .int()
-      .openapi({ description: 'The duration of each on-call shift in seconds.' }),
-    name: z.string().exactOptional().openapi({ description: 'The name of the schedule layer.' }),
-    rendered_schedule_entries: z
-      .array(ScheduleLayerEntrySchema)
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'This is a list of entries on the computed layer for the current time range. Since or until must be set in order for this field to be populated.',
-      }),
-    rendered_coverage_percentage: z
-      .number()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'The percentage of the time range covered by this layer. Returns null unless since or until are set.',
-      }),
-  })
-  .openapi({
-    required: ['start', 'users', 'rotation_virtual_start', 'rotation_turn_length_seconds'],
-  })
-  .openapi('ScheduleLayer')
-
-const SubScheduleSchema = z
-  .object({
-    name: z
-      .enum(['Final Schedule', 'Overrides'])
-      .openapi({ readOnly: true, description: 'The name of the subschedule' }),
-    rendered_schedule_entries: z
-      .array(ScheduleLayerEntrySchema)
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'This is a list of entries on the computed layer for the current time range. Since or until must be set in order for this field to be populated.',
-      }),
-    rendered_coverage_percentage: z
-      .number()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'The percentage of the time range covered by this layer. Returns null unless since or until are set.',
-      }),
-  })
-  .openapi({ required: ['name'] })
-  .openapi('SubSchedule')
-
-const EscalationPolicyReferenceSchema = ReferenceSchema.and(
-  z
-    .object({ type: z.literal('escalation_policy_reference').exactOptional() })
-    .openapi({ required: [] }),
-).openapi('EscalationPolicyReference')
-
-const TeamReferenceSchema = ReferenceSchema.and(
-  z.object({ type: z.literal('team_reference').exactOptional() }).openapi({ required: [] }),
-).openapi('TeamReference')
-
-type ScheduleType = {
+type IncidentWorkflowType = {
   id?: string
   summary?: string | null
   type?: string
   self?: string | null
   html_url?: string | null
 } & {
-  type: 'schedule'
-  schedule_layers?: z.infer<typeof ScheduleLayerSchema>[]
-  time_zone: string
+  type?: 'incident_workflow'
   name?: string
   description?: string
-  final_schedule?: z.infer<typeof SubScheduleSchema>
-  overrides_subschedule?: z.infer<typeof SubScheduleSchema>
-  escalation_policies?: z.infer<typeof EscalationPolicyReferenceSchema>[]
-  users?: z.infer<typeof UserReferenceSchema>[]
-  teams?: z.infer<typeof TeamReferenceSchema>[]
-  next_oncall_for_user?: { start?: string; end?: string; user?: z.infer<typeof ReferenceSchema> }
+  created_at?: string
+  team?: { type?: 'team_reference'; id?: string }
+  is_enabled?: boolean
+  steps?: ({
+    id?: string
+    summary?: string | null
+    type?: string
+    self?: string | null
+    html_url?: string | null
+  } & {
+    type?: 'step'
+    name: string
+    description?: string
+    action_configuration: {
+      action_id: string
+      description?: string
+      inputs: { name: string; parameter_type?: string; value: string }[]
+      inline_steps_inputs?: {
+        name: string
+        value: {
+          steps?: ({
+            id?: string
+            summary?: string | null
+            type?: string
+            self?: string | null
+            html_url?: string | null
+          } & {
+            type?: 'step'
+            name: string
+            action_configuration: {
+              action_id: string
+              description?: string
+              inputs: { name: string; parameter_type?: string; value: string }[]
+              outputs?: { name: string; reference_name?: string; parameter_type?: string }[]
+            }
+          })[]
+        }
+      }[]
+      outputs?: { name: string; reference_name?: string; parameter_type?: string }[]
+    }
+  })[]
+}
+
+const WebhookObjectSchema = ReferenceSchema.and(
+  z
+    .object({ type: z.enum(['service', 'service_reference']).exactOptional() })
+    .openapi({
+      description: 'The webhook object (service) that the webhook belongs to.',
+      required: [],
+    }),
+).openapi('WebhookObject')
+
+const OutboundIntegrationReferenceSchema = ReferenceSchema.and(
+  z
+    .object({ type: z.literal('outbound_integration_reference').exactOptional() })
+    .openapi({ required: [] }),
+).openapi('OutboundIntegrationReference')
+
+const WebhookSchema = z
+  .object({
+    endpoint_url: z
+      .url()
+      .exactOptional()
+      .openapi({ description: 'The url endpoint the webhook payload is sent to.' }),
+    name: z.string().exactOptional().openapi({ description: 'The name of the webhook.' }),
+    webhook_object: WebhookObjectSchema.exactOptional(),
+    config: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({
+        description:
+          'The object that contains webhook configuration values depending on the webhook type specification.',
+      }),
+    outbound_integration: OutboundIntegrationReferenceSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'Information about the configured webhook.',
+    readOnly: true,
+    example: {
+      id: 'PPGPXHO',
+      type: 'webhook',
+      summary: 'webhook',
+      name: 'My Webhook',
+      endpoint_url: 'https://example.com',
+      webhook_object: { id: 'PNTDJ30', type: 'service_reference' },
+      config: { anykey: 'anyvalue' },
+      outbound_integration: { id: 'PJFWPEP', type: 'outbound_integration_reference' },
+    },
+    required: [],
+  })
+  .openapi('Webhook')
+
+const ActionSchema = z
+  .object({
+    id: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description:
+          'Uniquely identifies this outgoing webhook message; can be used for idempotency when processing the messages.',
+        readOnly: true,
+      }),
+    triggered_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The date/time when this message was was sent.', readOnly: true }),
+    webhook: WebhookSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'A message containing information about a single PagerDuty action.',
+    readOnly: true,
+    required: [],
+  })
+  .openapi('Action')
+
+const IncidentSchema: z.ZodType<IncidentType> = z
+  .object({
+    id: z.string().exactOptional().openapi({ readOnly: true }),
+    summary: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description:
+          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
+      }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description:
+          'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
+      }),
+    self: z
+      .url()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description: 'the API show URL at which the object is accessible',
+      }),
+    html_url: z
+      .url()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description: 'a URL at which the entity is uniquely displayed in the Web app',
+      }),
+  })
+  .openapi({ required: [] })
+  .and(
+    z
+      .object({
+        incident_number: z
+          .int()
+          .exactOptional()
+          .openapi({
+            readOnly: true,
+            description: 'The number of the incident. This is unique across your account.',
+          }),
+        title: z
+          .string()
+          .exactOptional()
+          .openapi({
+            readOnly: false,
+            description:
+              'A succinct description of the nature, symptoms, cause, or effect of the incident.',
+          }),
+        created_at: z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({
+            description: 'The time the incident was first triggered.',
+            example: '2019-12-01T20:00:00Z',
+            readOnly: true,
+          }),
+        updated_at: z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({
+            example: '2019-12-01T21:02:00Z',
+            description: 'The time the incident was last modified.',
+          }),
+        status: z
+          .enum(['triggered', 'acknowledged', 'resolved'])
+          .exactOptional()
+          .openapi({ description: 'The current status of the incident.' }),
+        incident_key: z
+          .string()
+          .exactOptional()
+          .openapi({ readOnly: true, description: "The incident's de-duplication key." }),
+        service: z
+          .xor([ServiceReferenceSchema, ServiceSchema])
+          .exactOptional()
+          .openapi({
+            description:
+              'The service the incident is on. If the `include[]=services` query parameter is provided, the full service definition will be returned.',
+          }),
+        assignments: z
+          .array(AssignmentSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              'List of all assignments for this incident. This list will be empty if the `Incident.status` is `resolved`. Returns a user reference for each assignment. Full user definitions will be returned if the `include[]=assignees` query parameter is provided.',
+          }),
+        assigned_via: z
+          .enum(['escalation_policy', 'direct_assignment'])
+          .exactOptional()
+          .openapi({
+            description:
+              'How the current incident assignments were decided.  Note that `direct_assignment` incidents will not escalate up the attached `escalation_policy`',
+            readOnly: true,
+          }),
+        last_status_change_at: z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({
+            description:
+              "The time the status of the incident last changed. If the incident is not currently acknowledged or resolved, this will be the incident's `updated_at`.",
+            example: '2019-12-01T21:01:00Z',
+            readOnly: true,
+          }),
+        resolved_at: z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({
+            example: '2019-12-01T21:01:00Z',
+            description:
+              'The time the incident became "resolved" or `null` if the incident is not resolved.',
+          }),
+        first_trigger_log_entry: z
+          .xor([LogEntryReferenceSchema, TriggerLogEntrySchema])
+          .exactOptional()
+          .openapi({
+            description:
+              'The first log entry on the incident. The log entry will be of type `TriggerLogEntry` and will represent information about how the incident was triggered. If the `include[]=first_trigger_log_entries` query parameter is provided, the full log entry definition will be returned.',
+          }),
+        alert_counts: AlertCountSchema.exactOptional(),
+        is_mergeable: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether the incident is mergeable. Only incidents that have alerts, or that are manually created can be merged.',
+            readOnly: true,
+          }),
+        incident_type: z
+          .object({
+            name: z
+              .string()
+              .exactOptional()
+              .openapi({ description: 'The name of the Incident Type.' }),
+          })
+          .exactOptional()
+          .openapi({ description: 'The incident type of the incident.', required: [] }),
+        escalation_policy: z
+          .xor([EscalationPolicyReferenceSchema, EscalationPolicySchema])
+          .exactOptional()
+          .openapi({
+            description:
+              'The escalation policy attached to the service that the incident is on. If the `include[]=escalation_policies` query parameter is provided, the full escalation policy definition will be returned.',
+          }),
+        teams: z
+          .array(z.xor([TeamReferenceSchema, TeamSchema]))
+          .exactOptional()
+          .openapi({
+            description:
+              'The teams involved in the incident’s lifecycle. If the `include[]=teams` query parameter is provided, the full team definitions will be returned.',
+          }),
+        pending_actions: z
+          .array(IncidentActionSchema)
+          .exactOptional()
+          .openapi({
+            readOnly: true,
+            description:
+              'The list of pending_actions on the incident. A pending_action object contains a type of action which can be escalate, unacknowledge, resolve or urgency_change. A pending_action object contains at, the time at which the action will take place. An urgency_change pending_action will contain to, the urgency that the incident will change to.',
+          }),
+        acknowledgements: z
+          .array(AcknowledgementSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              'List of all acknowledgements for this incident. This list will be empty if the `Incident.status` is `resolved` or `triggered`. If the `include[]=acknowledgers` query parameter is provided, the full user or service definitions will be returned for each acknowledgement entry.',
+          }),
+        alert_grouping: z
+          .object({
+            grouping_type: z.enum(['basic', 'advanced', 'rules']).exactOptional(),
+            started_at: z.iso.datetime({ offset: true }).exactOptional(),
+            ended_at: z.iso.datetime({ offset: true }).exactOptional(),
+            alert_grouping_active: z.boolean().exactOptional(),
+          })
+          .exactOptional()
+          .openapi({
+            description:
+              'Describes the alert grouping state of this incident. Will be null if the incident has no alerts.',
+            required: [],
+          }),
+        last_status_change_by: z
+          .xor([AgentReferenceSchema, UserSchema, ServiceSchema])
+          .exactOptional()
+          .openapi({
+            description:
+              'The entity that last changed the status of the incident. If the `include[]=agents` query parameter is provided, the full user/service/integration definition will be returned.',
+          }),
+        priority: PrioritySchema.exactOptional(),
+        resolve_reason: ResolveReasonSchema.exactOptional(),
+        conference_bridge: ConferenceBridgeSchema.exactOptional().openapi({
+          description:
+            'The conference bridge information attached to the incident. Only returned if the `include[]=conference_bridge` query parameter is provided.',
+        }),
+        incidents_responders: z
+          .array(IncidentsRespondersReferenceSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              'The responders on the incident. Only returned if the account has access to the [responder requests](https://support.pagerduty.com/docs/add-responders) feature.',
+            readOnly: true,
+          }),
+        responder_requests: z
+          .array(ResponderRequestSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              'Previous responder requests made on this incident. Only returned if the account has access to the [responder requests](https://support.pagerduty.com/docs/add-responders) feature.',
+            readOnly: true,
+          }),
+        urgency: z
+          .enum(['high', 'low'])
+          .exactOptional()
+          .openapi({ description: 'The current urgency of the incident.' }),
+        body: IncidentBodySchema.exactOptional().openapi({
+          description:
+            'The additional incident body details. Only returned if the `include[]=body` query parameter is provided.',
+        }),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi('Incident')
+
+const AcknowledgeLogEntrySchema = LogEntrySchema.and(
+  z
+    .object({
+      acknowledgement_timeout: z
+        .int()
+        .exactOptional()
+        .openapi({
+          description:
+            'Duration for which the acknowledgement lasts, in seconds. Services can contain an `acknowledgement_timeout` property, which specifies the length of time acknowledgements should last for. Each time an incident is acknowledged, this timeout is copied into the acknowledgement log entry. This property is optional, as older log entries may not contain it. It may also be `null`, as acknowledgements can be performed on incidents whose services have no `acknowledgement_timeout` set.',
+        }),
+      type: z.literal('acknowledgement_log_entry').exactOptional(),
+    })
+    .openapi({ required: [] }),
+).openapi('AcknowledgeLogEntry')
+
+const AnnotateLogEntrySchema = LogEntrySchema.and(
+  z.object({ type: z.literal('annotate_log_entry').exactOptional() }).openapi({ required: [] }),
+).openapi('AnnotateLogEntry')
+
+const AssignLogEntrySchema = LogEntrySchema.and(
+  z
+    .object({
+      assignees: z
+        .array(UserReferenceSchema)
+        .exactOptional()
+        .openapi({ readOnly: true, description: 'An array of assigned Users for this log entry' }),
+      type: z.literal('assign_log_entry').exactOptional(),
+    })
+    .openapi({ required: [] }),
+).openapi('AssignLogEntry')
+
+const DelegateLogEntrySchema = LogEntrySchema.and(
+  z
+    .object({
+      assignees: z
+        .array(UserReferenceSchema)
+        .exactOptional()
+        .openapi({ readOnly: true, description: 'An array of assigned Users for this log entry' }),
+      type: z.literal('delegate_log_entry').exactOptional(),
+    })
+    .openapi({ required: [] }),
+).openapi('DelegateLogEntry')
+
+const EscalateLogEntrySchema = LogEntrySchema.and(
+  z
+    .object({
+      assignees: z
+        .array(UserReferenceSchema)
+        .exactOptional()
+        .openapi({ readOnly: true, description: 'An array of assigned Users for this log entry' }),
+      type: z.literal('escalate_log_entry').exactOptional(),
+    })
+    .openapi({ required: [] }),
+).openapi('EscalateLogEntry')
+
+const ExhaustEscalationPathLogEntrySchema = LogEntrySchema.and(
+  z
+    .object({ type: z.literal('exhaust_escalation_path_log_entry').exactOptional() })
+    .openapi({ required: [] }),
+).openapi('ExhaustEscalationPathLogEntry')
+
+const NotifyLogEntrySchema = LogEntrySchema.and(
+  z
+    .object({
+      created_at: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({ readOnly: true, description: 'Time at which the log entry was created' }),
+      user: UserReferenceSchema.exactOptional(),
+      type: z.literal('notify_log_entry').exactOptional(),
+    })
+    .openapi({ required: [] }),
+).openapi('NotifyLogEntry')
+
+const ReachAckLimitLogEntrySchema = LogEntrySchema.and(
+  z
+    .object({ type: z.literal('reach_ack_limit_log_entry').exactOptional() })
+    .openapi({ required: [] }),
+).openapi('ReachAckLimitLogEntry')
+
+const ReachTriggerLimitLogEntrySchema = LogEntrySchema.and(
+  z
+    .object({ type: z.literal('reach_trigger_limit_log_entry').exactOptional() })
+    .openapi({ required: [] }),
+).openapi('ReachTriggerLimitLogEntry')
+
+const RepeatEscalationPathLogEntrySchema = LogEntrySchema.and(
+  z
+    .object({ type: z.literal('repeat_escalation_path_log_entry').exactOptional() })
+    .openapi({ required: [] }),
+).openapi('RepeatEscalationPathLogEntry')
+
+const ResolveLogEntrySchema = LogEntrySchema.and(
+  z.object({ type: z.literal('resolve_log_entry').exactOptional() }).openapi({ required: [] }),
+).openapi('ResolveLogEntry')
+
+const SnoozeLogEntrySchema = LogEntrySchema.and(
+  z
+    .object({
+      changed_actions: z.array(IncidentActionSchema).exactOptional(),
+      type: z.literal('snooze_log_entry').exactOptional(),
+    })
+    .openapi({ required: [] }),
+).openapi('SnoozeLogEntry')
+
+const UnacknowledgeLogEntrySchema = LogEntrySchema.and(
+  z
+    .object({ type: z.literal('unacknowledge_log_entry').exactOptional() })
+    .openapi({ required: [] }),
+).openapi('UnacknowledgeLogEntry')
+
+const UrgencyChangeLogEntrySchema = LogEntrySchema.and(
+  z
+    .object({ type: z.literal('urgency_change_log_entry').exactOptional() })
+    .openapi({ required: [] }),
+).openapi('UrgencyChangeLogEntry')
+
+type WebhookIncidentActionType = z.infer<typeof ActionSchema> & {
+  type?:
+    | 'incident.trigger'
+    | 'incident.acknowledge'
+    | 'incident.unacknowledge'
+    | 'incident.resolve'
+    | 'incident.assign'
+    | 'incident.escalate'
+    | 'incident.delegate'
+    | 'incident.annotate'
+  incident?: z.infer<typeof IncidentSchema>
+  log_entries?: (
+    | z.infer<typeof AcknowledgeLogEntrySchema>
+    | z.infer<typeof AnnotateLogEntrySchema>
+    | z.infer<typeof AssignLogEntrySchema>
+    | z.infer<typeof DelegateLogEntrySchema>
+    | z.infer<typeof EscalateLogEntrySchema>
+    | z.infer<typeof ExhaustEscalationPathLogEntrySchema>
+    | z.infer<typeof NotifyLogEntrySchema>
+    | z.infer<typeof ReachAckLimitLogEntrySchema>
+    | z.infer<typeof ReachTriggerLimitLogEntrySchema>
+    | z.infer<typeof RepeatEscalationPathLogEntrySchema>
+    | z.infer<typeof ResolveLogEntrySchema>
+    | z.infer<typeof SnoozeLogEntrySchema>
+    | z.infer<typeof TriggerLogEntrySchema>
+    | z.infer<typeof UnacknowledgeLogEntrySchema>
+    | z.infer<typeof UrgencyChangeLogEntrySchema>
+  )[]
 }
 
 type MatchPredicateType = {
@@ -569,59 +2815,402 @@ type MatchPredicateType = {
   children: MatchPredicateType[]
 }
 
-const EditableTemplateSchema = z
+type OrchestrationGlobalType = {
+  orchestration_path: {
+    type?: string
+    parent?: { id?: string; type?: string; self?: string }
+    sets?: {
+      id?: string
+      rules?: {
+        id?: string
+        label?: string
+        conditions?: { expression?: string }[]
+        actions?: { [key: string]: unknown }
+        disabled?: boolean
+      }[]
+    }[]
+    catch_all?: { actions?: { [key: string]: unknown } }
+    created_at?: string
+    created_by?: { id?: string; type?: string; self?: string }
+    updated_at?: string
+    updated_by?: { id?: string; type?: string; self?: string }
+    version?: string
+  }
+} & {
+  orchestration_path?: {
+    type?: unknown
+    parent?: { id?: unknown; type?: 'event_orchestration_reference' }
+    sets?: unknown
+    catch_all?: {
+      actions?: { suppress?: boolean; suspend?: number; drop_event?: boolean } & {
+        priority?: string
+        escalation_policy?: string
+        annotate?: string
+      } & {
+        severity?: 'info' | 'error' | 'warning' | 'critical'
+        event_action?: 'trigger' | 'resolve'
+        variables?: { name?: string; path?: string; type?: 'regex'; value?: string }[]
+        extractions?: (
+          | { target?: string; template?: string }
+          | { target?: string; regex?: string; source?: string }
+        )[]
+      } & {
+        automation_actions?: {
+          name?: string
+          url?: string
+          auto_send?: boolean
+          headers?: { key?: string; value?: string }[]
+          trigger_types?: ('alert_triggered' | 'alert_suppressed' | 'alert_suspended')[]
+          parameters?: { key?: string; value?: string }[]
+        }[]
+      } & { incident_type?: string | null } & {
+        incident_custom_field_updates?: { id?: string; value?: string }[]
+      }
+    }
+  }
+}
+
+type OrchestrationRouterType = {
+  orchestration_path: {
+    type?: string
+    parent?: { id?: string; type?: string; self?: string }
+    sets?: {
+      id?: string
+      rules?: {
+        id?: string
+        label?: string
+        conditions?: { expression?: string }[]
+        actions?: { [key: string]: unknown }
+        disabled?: boolean
+      }[]
+    }[]
+    catch_all?: { actions?: { [key: string]: unknown } }
+    created_at?: string
+    created_by?: { id?: string; type?: string; self?: string }
+    updated_at?: string
+    updated_by?: { id?: string; type?: string; self?: string }
+    version?: string
+  }
+} & {
+  orchestration_path?: {
+    type?: unknown
+    parent?: { id?: unknown; type?: 'event_orchestration_reference' }
+    sets?: unknown
+    catch_all?: { actions?: { route_to?: string } }
+  }
+}
+
+type OrchestrationUnroutedType = {
+  orchestration_path: {
+    type?: string
+    parent?: { id?: string; type?: string; self?: string }
+    sets?: {
+      id?: string
+      rules?: {
+        id?: string
+        label?: string
+        conditions?: { expression?: string }[]
+        actions?: { [key: string]: unknown }
+        disabled?: boolean
+      }[]
+    }[]
+    catch_all?: { actions?: { [key: string]: unknown } }
+    created_at?: string
+    created_by?: { id?: string; type?: string; self?: string }
+    updated_at?: string
+    updated_by?: { id?: string; type?: string; self?: string }
+    version?: string
+  }
+} & {
+  orchestration_path?: {
+    type?: unknown
+    parent?: { id?: unknown; type?: 'event_orchestration_reference' }
+    sets?: unknown
+    catch_all?: {
+      actions?: {
+        severity?: 'info' | 'error' | 'warning' | 'critical'
+        event_action?: 'trigger' | 'resolve'
+        variables?: { name?: string; path?: string; type?: 'regex'; value?: string }[]
+        extractions?: (
+          | { target?: string; template?: string }
+          | { target?: string; regex?: string; source?: string }
+        )[]
+      }
+    }
+  }
+}
+
+type ServiceOrchestrationType = {
+  orchestration_path: {
+    type?: string
+    parent?: { id?: string; type?: string; self?: string }
+    sets?: {
+      id?: string
+      rules?: {
+        id?: string
+        label?: string
+        conditions?: { expression?: string }[]
+        actions?: { [key: string]: unknown }
+        disabled?: boolean
+      }[]
+    }[]
+    catch_all?: { actions?: { [key: string]: unknown } }
+    created_at?: string
+    created_by?: { id?: string; type?: string; self?: string }
+    updated_at?: string
+    updated_by?: { id?: string; type?: string; self?: string }
+    version?: string
+  }
+} & {
+  orchestration_path?: {
+    migrated_at?: string
+    migrated_by?: { id?: string; type?: string; self?: string }
+    migrated_from?: { id?: string; type?: string; self?: string }
+    migrated_status?: 'completed'
+    migrated_via?: 'API' | 'UI'
+  } & {
+    type?: unknown
+    parent?: { id?: unknown; type?: 'service_reference' }
+    sets?: unknown
+    catch_all?: {
+      actions?: { suppress?: boolean; suspend?: number } & {
+        priority?: string
+        escalation_policy?: string
+        annotate?: string
+      } & {
+        severity?: 'info' | 'error' | 'warning' | 'critical'
+        event_action?: 'trigger' | 'resolve'
+        variables?: { name?: string; path?: string; type?: 'regex'; value?: string }[]
+        extractions?: (
+          | { target?: string; template?: string }
+          | { target?: string; regex?: string; source?: string }
+        )[]
+      } & {
+        pagerduty_automation_actions?: {
+          action_id?: string
+          trigger_types?: ('alert_triggered' | 'alert_suppressed' | 'alert_suspended')[]
+        }[]
+      } & {
+        automation_actions?: {
+          name?: string
+          url?: string
+          auto_send?: boolean
+          headers?: { key?: string; value?: string }[]
+          trigger_types?: ('alert_triggered' | 'alert_suppressed' | 'alert_suspended')[]
+          parameters?: { key?: string; value?: string }[]
+        }[]
+      } & { incident_type?: string | null } & {
+        incident_custom_field_updates?: { id?: string; value?: string }[]
+      }
+    }
+  }
+}
+
+const ZonedDateTimeSchema = z
   .object({
-    template_type: z
-      .literal('status_update')
+    date_time: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'The date and time', example: '2025-03-03T09:00:00Z' }),
+    time_zone: z
+      .string()
+      .openapi({ description: 'IANA timezone identifier', example: 'America/New_York' }),
+  })
+  .openapi({
+    description:
+      'A time-of-day value with an explicit time zone. Used for event\n`start_time` and `end_time` to define the recurring window of coverage\n(e.g., 9 AM–5 PM every Monday in New York).\n',
+    required: ['date_time', 'time_zone'],
+  })
+  .openapi('ZonedDateTime')
+
+const ShiftMemberSchema = z
+  .object({
+    type: z
+      .enum(['user_member', 'empty_member'])
+      .openapi({
+        description:
+          '`user_member` — a specific user is assigned.\n`empty_member` — the slot is intentionally unassigned.\n',
+      }),
+    user_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The ID of the user. Required when type is `user_member`.',
+        example: 'PUSER123',
+      }),
+  })
+  .openapi({
+    description: 'A member (user) assigned to a shift or rotation slot',
+    required: ['type'],
+  })
+  .openapi('ShiftMember')
+
+const EventAssignmentStrategySchema = z
+  .object({
+    type: z.enum(['rotating_member_assignment_strategy', 'every_member_assignment_strategy']),
+    shifts_per_member: z
+      .int()
+      .min(1)
       .exactOptional()
       .openapi({
         description:
-          'The type of template (`status_update` is the only supported template at this time)',
+          'Required for `rotating_member_assignment_strategy`. Number of\nconsecutive shift occurrences each member covers before the\nnext member takes over.\n\nMust be omitted (or null) for `every_member_assignment_strategy`.\n\n**UI editor constraint:** When `recurrence` uses `FREQ=WEEKLY`,\n`shifts_per_member` must be evenly divisible by the number of days\nlisted in the RRULE `BYDAY` parameter. Events that violate this\nare fully functional via the API but cannot be loaded in the\nweb schedule editor.\n',
+        example: 1,
       }),
-    name: z.string().exactOptional().openapi({ description: 'The name of the template' }),
-    description: z
+    members: z.array(ShiftMemberSchema).min(1).max(60),
+  })
+  .openapi({
+    description:
+      "Defines how users are assigned on-call within an event's time window.\n\n- `rotating_member_assignment_strategy`: users rotate in sequence.\n  `shifts_per_member` controls how many consecutive shift periods each\n  member covers before rotating.\n- `every_member_assignment_strategy`: all listed members are on-call\n  simultaneously for every occurrence.\n",
+    required: ['type', 'members'],
+  })
+  .openapi('EventAssignmentStrategy')
+
+const EventSchema = z
+  .object({
+    id: z.string().openapi({ example: 'ABCDEFGHIJKLMNOPQRSTUVWXY2' }),
+    type: z.literal('schedule_event'),
+    name: z
       .string()
+      .openapi({ description: 'Display name for this event', example: 'Weekly On-Call' }),
+    start_time: ZonedDateTimeSchema,
+    end_time: ZonedDateTimeSchema,
+    effective_since: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'When this event starts producing shifts (UTC)',
+        example: '2025-03-03T00:00:00Z',
+      }),
+    effective_until: z.iso
+      .datetime({ offset: true })
       .nullable()
       .exactOptional()
-      .openapi({ description: 'Description of the template' }),
-    templated_fields: z
-      .object({
-        email_subject: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'The subject of the e-mail' }),
-        email_body: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'The HTML body of the e-mail message' }),
-        message: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'The short-message of the template (SMS, Push notification, Slack,\netc)',
-          }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
+      .openapi({
+        description: 'When this event stops producing shifts (UTC). Null means indefinite.',
+        example: '2025-09-01T00:00:00Z',
+      }),
+    recurrence: z
+      .array(z.string())
+      .openapi({
+        description:
+          'RFC 5545 recurrence rules defining the repeating pattern. This must be an array containing:  <br> - Exactly one <b>RRULE</b> <br>- Zero or more <b>EXDATE</b> <br>- Zero or more <b>RDATE</b>',
+        example: ['RRULE:FREQ=WEEKLY'],
+      }),
+    assignment_strategy: EventAssignmentStrategySchema,
+    self: z.url().exactOptional(),
+    html_url: z.url().exactOptional(),
   })
-  .openapi({ required: [] })
-  .openapi('EditableTemplate')
+  .openapi({
+    description:
+      'An event defines when and how users are on-call within a rotation.\nIt combines a recurring time window (`start_time`, `end_time`,\n`recurrence`) with an assignment strategy and an effective date range\n(`effective_since`, `effective_until`).\n',
+    required: [
+      'id',
+      'type',
+      'name',
+      'start_time',
+      'end_time',
+      'effective_since',
+      'recurrence',
+      'assignment_strategy',
+    ],
+  })
+  .openapi('Event')
 
-type TemplateType = z.infer<typeof EditableTemplateSchema> & {
-  id?: string
-  summary?: string | null
-  self?: string | null
-  html_url?: string | null
-  type?: 'template'
-  created_by?:
-    | z.infer<typeof UserReferenceSchema>
-    | (z.infer<typeof ReferenceSchema> & { type?: 'account_reference' })
-  updated_by?:
-    | z.infer<typeof UserReferenceSchema>
-    | (z.infer<typeof ReferenceSchema> & { type?: 'account_reference' })
+const RotationSchema = z
+  .object({
+    id: z.string().openapi({ example: 'ABCDEFGHIJKLMNOPQRSTUVWXY2' }),
+    type: z.literal('schedule_rotation'),
+    events: z
+      .array(EventSchema)
+      .exactOptional()
+      .openapi({ description: 'Events in this rotation' }),
+    self: z.url().exactOptional(),
+    html_url: z.url().exactOptional(),
+  })
+  .openapi({
+    description:
+      "A rotation within a schedule. All scheduling logic (recurrence,\nassignment strategy, members) is defined on the rotation's events.\n",
+    required: ['id', 'type'],
+  })
+  .openapi('Rotation')
+
+const ShiftSourceSchema = z
+  .object({
+    type: z.enum([
+      'schedule_rotation',
+      'custom_shift',
+      'schedule_rotation_override',
+      'custom_shift_override',
+    ]),
+    rotation_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Present for schedule_rotation and schedule_rotation_override sources',
+        example: 'ABCDEFGHIJKLMNOPQRSTUVWXY2',
+      }),
+    shift_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Present for custom_shift and custom_shift_override sources' }),
+    override_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Present for schedule_rotation_override and custom_shift_override sources',
+      }),
+  })
+  .openapi({ description: 'Where a computed shift assignment originated', required: ['type'] })
+  .openapi('ShiftSource')
+
+const ComputedShiftAssignmentSchema = z
+  .object({
+    type: z.literal('computed_shift_assignment'),
+    start_time: z.iso.datetime({ offset: true }).openapi({ example: '2025-01-06T09:00:00Z' }),
+    end_time: z.iso.datetime({ offset: true }).openapi({ example: '2025-01-13T09:00:00Z' }),
+    member: ShiftMemberSchema,
+    source: ShiftSourceSchema,
+  })
+  .openapi({
+    description: 'A single computed on-call assignment within the final schedule',
+    required: ['type', 'start_time', 'end_time', 'member', 'source'],
+  })
+  .openapi('ComputedShiftAssignment')
+
+const FinalScheduleSchema = z
+  .object({
+    type: z.literal('final_schedule'),
+    rendered_coverage_percentage: z
+      .float64()
+      .openapi({
+        description: 'Percentage of the requested time range that has on-call coverage (0–100)',
+        example: 100,
+      }),
+    computed_shift_assignments: z.array(ComputedShiftAssignmentSchema),
+  })
+  .openapi({
+    description:
+      'Computed on-call assignments for the requested time range.\nOnly present when `include[]=final_schedule` is specified and\n`since`/`until` are provided.\n',
+    required: ['type', 'rendered_coverage_percentage', 'computed_shift_assignments'],
+  })
+  .openapi('FinalSchedule')
+
+type ScheduleResponseType = {
+  schedule: {
+    id: string
+    type: 'schedule_v3'
+    name: string
+    time_zone: string
+    description?: string
+    teams?: z.infer<typeof TeamReferenceSchema>[]
+    escalation_policies?: z.infer<typeof EscalationPolicyReferenceSchema>[]
+    users?: z.infer<typeof UserReferenceSchema>[]
+    rotations?: z.infer<typeof RotationSchema>[]
+    final_schedule?: z.infer<typeof FinalScheduleSchema>
+    http_cal_url?: string
+    web_cal_url?: string
+    self?: string
+    html_url?: string
+  }
 }
 
 const ServiceNowFieldMappingSchema = z
@@ -1003,22 +3592,6 @@ const EnrichmentRecordSchema = z
   })
   .openapi({ required: [] })
   .openapi('EnrichmentRecord')
-
-const ContactMethodReferenceSchema = ReferenceSchema.and(
-  z
-    .object({
-      type: z
-        .enum([
-          'email_contact_method_reference',
-          'phone_contact_method_reference',
-          'push_notification_contact_method_reference',
-          'sms_contact_method_reference',
-          'whatsapp_contact_method_reference',
-        ])
-        .exactOptional(),
-    })
-    .openapi({ required: [] }),
-).openapi('ContactMethodReference')
 
 const StatusUpdateNotificationRuleSchema = z
   .object({ contact_method: ContactMethodReferenceSchema })
@@ -2608,240 +5181,6 @@ const AnalyticsUserMetricsSchema = z
   .openapi({ title: 'Analytics User Metrics', required: [] })
   .openapi('AnalyticsUserMetrics')
 
-const ChannelSchema = z
-  .xor([
-    z
-      .object({
-        type: z.string().exactOptional().openapi({ description: 'Will be `nagios`' }),
-        summary: z.string().exactOptional().openapi({ description: 'Same as `host`' }),
-        host: z.string().exactOptional().openapi({ description: 'Nagios host' }),
-        service: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Nagios service that created the event, if applicable' }),
-        state: z.string().exactOptional().openapi({ description: 'State that caused the event' }),
-        details: z
-          .object({})
-          .exactOptional()
-          .openapi({ description: 'Additional details of the incident' }),
-      })
-      .openapi({ title: 'NagiosChannel', required: [] }),
-    z
-      .object({
-        type: z.string().exactOptional().openapi({ description: 'Will be `api`' }),
-        summary: z.string().exactOptional().openapi({ description: 'Same as `description`' }),
-        service_key: z.string().exactOptional().openapi({ description: 'API service key' }),
-        description: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Description of the event' }),
-        incident_key: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Incident deduping string' }),
-        details: z
-          .object({})
-          .exactOptional()
-          .openapi({ description: 'Additional details of the incident' }),
-      })
-      .openapi({ title: 'APIChannel', required: [] }),
-    z
-      .object({
-        type: z.string().exactOptional().openapi({ description: 'Will be `email`' }),
-        summary: z.string().exactOptional().openapi({ description: 'Same as `subject`' }),
-        to: z.string().exactOptional().openapi({ description: 'To address of the email' }),
-        from: z.string().exactOptional().openapi({ description: 'From address of the email' }),
-        subject: z.string().exactOptional().openapi({ description: 'Subject of the email' }),
-        body: z.string().exactOptional().openapi({ description: 'Body of the email' }),
-        body_content_type: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Content type of the email body. Will be `text/plain` or `text/html`',
-          }),
-        raw_url: z.string().exactOptional().openapi({ description: 'URL for raw text of email' }),
-        html_url: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'URL for html rendered version of the email. Only present if `content_type` is `text/html`',
-          }),
-      })
-      .openapi({ title: 'EmailChannel', required: [] }),
-    z
-      .object({
-        type: z.string().exactOptional().openapi({ description: 'Will be `web_trigger`' }),
-        summary: z.string().exactOptional().openapi({ description: 'Same as `subject`' }),
-        subject: z.string().exactOptional().openapi({ description: 'Subject of the web trigger' }),
-        details: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Details about the web trigger' }),
-      })
-      .openapi({ title: 'WebTriggerChannel', required: [] }),
-    z
-      .object({
-        type: z.string().openapi({ description: 'Will be `website`' }),
-        duration: z
-          .int()
-          .exactOptional()
-          .openapi({
-            description:
-              'For `snooze` log entries, this is the number of seconds that the incident was snoozed for.',
-          }),
-      })
-      .openapi({ title: 'WebsiteChannel', required: ['type'] }),
-  ])
-  .openapi({
-    description:
-      'Polymorphic object representation of the means by which the action was channeled. Has different formats depending on type, indicated by channel[type]. Will be one of `auto`, `email`, `api`, `nagios`, or `timeout` if `agent[type]` is `service`. Will be one of `email`, `sms`, `website`, `web_trigger`, or `note` if `agent[type]` is `user`.',
-    required: ['type'],
-  })
-  .openapi('Channel')
-
-const AgentReferenceSchema = ReferenceSchema.and(
-  z
-    .object({
-      type: z
-        .enum(['user_reference', 'service_reference', 'integration_reference'])
-        .exactOptional(),
-    })
-    .openapi({
-      description:
-        'The agent (user, service or integration) that created or modified the Incident Log Entry.',
-      readOnly: true,
-      required: [],
-    }),
-).openapi('AgentReference')
-
-const ContextSchema = z
-  .object({
-    type: z
-      .enum(['link', 'image'])
-      .openapi({ description: 'The type of context being attached to the incident.' }),
-    href: z.string().exactOptional().openapi({ description: "The link's target url" }),
-    src: z.string().exactOptional().openapi({ description: "The image's source url" }),
-    text: z.string().exactOptional().openapi({ description: 'The alternate display for an image' }),
-  })
-  .openapi({ discriminator: { propertyName: 'type' }, required: ['type'] })
-  .openapi('Context')
-
-const IncidentReferenceSchema = ReferenceSchema.and(
-  z.object({ type: z.literal('incident_reference').exactOptional() }).openapi({ required: [] }),
-).openapi('IncidentReference')
-
-const LogEntrySchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ readOnly: true }),
-    summary: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-      }),
-    self: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'the API show URL at which the object is accessible',
-      }),
-    html_url: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'a URL at which the entity is uniquely displayed in the Web app',
-      }),
-  })
-  .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        type: z
-          .enum([
-            'acknowledge_log_entry',
-            'annotate_log_entry',
-            'assign_log_entry',
-            'delegate_log_entry',
-            'escalate_log_entry',
-            'exhaust_escalation_path_log_entry',
-            'notify_log_entry',
-            'reach_ack_limit_log_entry',
-            'reach_trigger_limit_log_entry',
-            'repeat_escalation_path_log_entry',
-            'resolve_log_entry',
-            'snooze_log_entry',
-            'trigger_log_entry',
-            'unacknowledge_log_entry',
-            'urgency_change_log_entry',
-            'field_value_change_log_entry',
-            'custom_field_value_change_log_entry',
-          ])
-          .exactOptional(),
-        created_at: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({ readOnly: true, description: 'Time at which the log entry was created.' }),
-        channel: ChannelSchema.exactOptional(),
-        agent: AgentReferenceSchema.exactOptional(),
-        note: z
-          .string()
-          .exactOptional()
-          .openapi({
-            readOnly: true,
-            description:
-              'Optional field containing a note, if one was included with the log entry.',
-          }),
-        contexts: z
-          .array(ContextSchema)
-          .exactOptional()
-          .openapi({
-            readOnly: true,
-            description:
-              'Contexts to be included with the trigger such as links to graphs or images.',
-          }),
-        service: ServiceReferenceSchema.exactOptional(),
-        incident: IncidentReferenceSchema.exactOptional(),
-        teams: z
-          .array(TeamReferenceSchema)
-          .exactOptional()
-          .openapi({ readOnly: true, description: 'Will consist of references unless included' }),
-        event_details: z
-          .object({
-            description: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'Additional details about the event.' }),
-          })
-          .exactOptional()
-          .openapi({ readOnly: true, required: [] }),
-        changeset: z
-          .array(z.string())
-          .exactOptional()
-          .openapi({
-            description: 'String record of custom field updates',
-            example: ['Updated serial_number to 123', 'Updated affected_room to ["Queen West"]'],
-          }),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('LogEntry')
-
 const FieldValueChangeLogEntrySchema = LogEntrySchema.and(
   z
     .object({ type: z.literal('field_value_change_log_entry').exactOptional() })
@@ -2854,169 +5193,7 @@ const CustomFieldValueChangeLogEntrySchema = LogEntrySchema.and(
     .openapi({ required: [] }),
 ).openapi('CustomFieldValueChangeLogEntry')
 
-const AuditRecordSchema = z
-  .object({
-    id: z.string(),
-    self: z.string().nullable().exactOptional().openapi({ description: 'Record URL.' }),
-    execution_time: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description:
-          'The date/time the action executed, in ISO8601 format and millisecond precision.',
-      }),
-    execution_context: z
-      .object({
-        request_id: z.string().nullable().exactOptional().openapi({ description: 'Request Id' }),
-        remote_address: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'remote address' }),
-      })
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Action execution context', required: [] }),
-    actors: z.array(ReferenceSchema).nullable().exactOptional(),
-    method: z
-      .object({
-        description: z.string().nullable().exactOptional(),
-        truncated_token: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: "Truncated token containing the last 4 chars of the token's actual value.",
-            example: '3xyz',
-          }),
-        type: z
-          .enum(['browser', 'oauth', 'api_token', 'identity_provider', 'other'])
-          .openapi({
-            description:
-              'Describes the method used to perform the action:\n\n`browser` -- authenticated user session. Session value is not returned in the `truncated_token` field.\n\n`oauth` -- access token obtained via the OAuth flow. Truncated token value is returned in the `truncated_token` field.\n\n`api_token` -- Pagerduty API token. Truncated token value is returned in the `truncated_token` field.\n\n`identity_provider` -- action performed by an Identity provider on behalf of a user. No value is returned in the `truncated_token` field.\n\n`other` -- Method that does not fall in the predefined categories. Truncated token value MAY be returned in the `truncated_token` field.\n',
-          }),
-      })
-      .openapi({ description: 'The method information', required: ['type'] }),
-    root_resource: ReferenceSchema,
-    action: z.string().openapi({ example: 'create' }),
-    details: z
-      .object({
-        resource: ReferenceSchema,
-        fields: z
-          .array(
-            z
-              .object({
-                name: z
-                  .string()
-                  .openapi({ description: 'Name of the resource field', example: 'name' }),
-                description: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description: 'Human readable description of the resource field',
-                    example: 'First and Last name',
-                  }),
-                value: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description: 'new or updated value of the field',
-                    example: 'Jonathan',
-                  }),
-                before_value: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description: 'previous or deleted value of the field',
-                    example: 'John',
-                  }),
-              })
-              .openapi({
-                description:
-                  "Information about the affected field.\nWhen available, field's before and after values are returned:\n  \n#### Resource creation\n- `value` MAY be returned\n\n#### Resource update\n- `value` MAY be returned\n- `before_value` MAY be returned\n\n#### Resource deletion\n- `before_value` MAY be returned\n",
-                required: ['name'],
-              }),
-          )
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'A set of fields that have been affected.\nThe fields that have not been affected MAY be returned.\n',
-          }),
-        references: z
-          .array(
-            z
-              .object({
-                name: z
-                  .string()
-                  .openapi({ description: 'Name of the reference field', example: 'team_members' }),
-                description: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description: 'Human readable description of the references field',
-                    example: 'First and Last name',
-                  }),
-                added: z.array(ReferenceSchema).nullable().exactOptional(),
-                removed: z.array(ReferenceSchema).nullable().exactOptional(),
-              })
-              .openapi({ required: ['name'] }),
-          )
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'A set of references that have been affected.' }),
-      })
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Additional details to provide further information about the action or\nthe resource that has been audited.\n',
-        required: ['resource'],
-      }),
-  })
-  .openapi({
-    readOnly: true,
-    description: 'An Audit Trail record',
-    required: ['id', 'execution_time', 'method', 'root_resource', 'action'],
-  })
-  .openapi('AuditRecord')
-
-const AuditMetadataSchema = z
-  .object({
-    messages: z
-      .array(z.string().openapi({ example: 'Message about the result' }))
-      .nullable()
-      .exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AuditMetadata')
-
-const CursorPaginationSchema = z
-  .object({
-    limit: z
-      .int()
-      .openapi({
-        description:
-          'The minimum of the `limit` parameter used in the request or the maximum request size of the API.',
-        readOnly: true,
-      }),
-    next_cursor: z
-      .string()
-      .nullable()
-      .openapi({
-        description:
-          'An opaque string than will deliver the next set of results when provided as the `cursor` parameter in a subsequent request.  A `null` value for this field indicates that there are no additional results.\n',
-        example: 'dXNlcjaVMzc5V0ZYTlo=',
-        readOnly: true,
-      }),
-  })
-  .openapi({ required: ['limit', 'next_cursor'] })
-  .openapi('CursorPagination')
-
-const AuditRecordResponseSchemaSchema = z
+const AuditRecordResponseSchemaSchema: z.ZodType<AuditRecordResponseSchemaType> = z
   .object({
     records: z.array(AuditRecordSchema),
     response_metadata: z.union([AuditMetadataSchema]).nullable().exactOptional(),
@@ -3024,47 +5201,6 @@ const AuditRecordResponseSchemaSchema = z
   .openapi({ required: ['records'] })
   .and(CursorPaginationSchema)
   .openapi('AuditRecordResponseSchema')
-
-const AutoPauseNotificationsParametersSchema = z
-  .object({
-    enabled: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether alerts should be automatically suspended when identified as transient',
-      }),
-    timeout: z
-      .union([
-        z.literal(0),
-        z.literal(120),
-        z.literal(180),
-        z.literal(300),
-        z.literal(600),
-        z.literal(900),
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates in seconds how long alerts should be suspended before triggering. To automatically select the recommended timeout for a service, set this value to `0`.',
-      }),
-    recommended_timeout: z
-      .union([z.literal(120), z.literal(180), z.literal(300), z.literal(600), z.literal(900)])
-      .exactOptional()
-      .openapi({
-        description:
-          'The recommended timeout setting for this service based on prior alert patterns.',
-      }),
-  })
-  .openapi({
-    title: 'AutoPauseNotificationsParameters',
-    description:
-      'Defines how alerts on this service are automatically suspended for a period of time before triggering, when identified as likely being transient. Note that automatically pausing notifications is only available on certain plans.',
-    example: { enabled: true, timeout: 300 },
-    required: [],
-  })
-  .openapi('AutoPauseNotificationsParameters')
 
 const AutomationActionsRunnerTypeEnumSchema = z
   .enum(['sidecar', 'runbook'])
@@ -3186,7 +5322,7 @@ const AutomationActionsRunnerSchema = z
             description:
               'References to at most 3 actions associated with the Runner. Use appropriate endpoints to retrieve the full list of associated actions.',
           }),
-        metadata: z.object({}).exactOptional().openapi({ description: 'Additional metadata' }),
+        metadata: z.looseObject({}).exactOptional().openapi({ description: 'Additional metadata' }),
       })
       .openapi({
         description:
@@ -3551,7 +5687,7 @@ const AutomationActionsAbstractActionSchema = z
         runner_type: AutomationActionsRunnerTypeEnumSchema.exactOptional(),
         services: z.array(ServiceReferenceSchema).exactOptional(),
         privileges: AutomationActionsUserPermissionsSchema.exactOptional(),
-        metadata: z.object({}).exactOptional(),
+        metadata: z.looseObject({}).exactOptional(),
         creation_time: z.iso.datetime({ offset: true }).openapi({ description: 'The date/time' }),
         modify_time: z.iso.datetime({ offset: true }).openapi({ description: 'The date/time' }),
         last_run: z.iso
@@ -3994,7 +6130,7 @@ const ServiceEventRuleSchema = z
                       }),
                     value: z.string().openapi({ description: 'Value to apply to the operator.' }),
                     options: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({ description: 'Options to configure the operator.' }),
                   })
@@ -4281,32 +6417,6 @@ const EventEnrichmentAssociationSchema = z
   })
   .openapi('EventEnrichmentAssociation')
 
-const EventEnrichmentReferenceSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ description: 'The ID of the Event Enrichment.' }),
-    type: z
-      .literal('event_enrichment_reference')
-      .exactOptional()
-      .openapi({ description: 'A string that determines the schema of the object.' }),
-    summary: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
-        readOnly: true,
-      }),
-    self: z
-      .url()
-      .exactOptional()
-      .openapi({
-        description: 'The API show URL at which the object is accessible.',
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'A reference to an Event Enrichment object.', required: [] })
-  .openapi('EventEnrichmentReference')
-
 const EventEnrichmentDefaultSchema = z
   .object({
     default: EventEnrichmentReferenceSchema.nullable()
@@ -4328,162 +6438,7 @@ const EventEnrichmentDefaultSchema = z
   })
   .openapi('EventEnrichmentDefault')
 
-const EventEnrichmentRuleSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ description: 'The ID of this rule.', readOnly: true }),
-    label: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "A description of this rule's purpose." }),
-    conditions: z
-      .array(
-        z
-          .object({
-            expression: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'A PCL condition expression.',
-                example: "event.summary matches part 'my service error'",
-              }),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional()
-      .openapi({
-        description: "Conditions that must be satisfied for this rule's actions to execute.",
-      }),
-    actions: z
-      .xor([
-        z
-          .object({
-            extractions: z
-              .array(
-                z
-                  .object({
-                    target: z
-                      .string()
-                      .exactOptional()
-                      .openapi({
-                        description: 'The PD-CEF field to set with the extracted value.',
-                      }),
-                    template: z
-                      .string()
-                      .nullable()
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          'A string template used to populate the target field. Supports event field interpolation. Used for template-based extraction.',
-                      }),
-                    source: z
-                      .string()
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          'The path to the event field where the regex will be applied. Used for regex-based extraction.',
-                      }),
-                    regex: z
-                      .string()
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          'A RE2 regular expression. If it contains capture groups, their values are extracted and appended. If no capture groups, the whole match is used. Used for regex-based extraction.',
-                      }),
-                  })
-                  .openapi({ required: [] }),
-              )
-              .openapi({
-                description:
-                  'Modify the event payload using regex-based extraction or template-based composition. Maximum 25 extractions per rule.',
-              }),
-          })
-          .openapi({
-            title: 'Extractions',
-            description:
-              'Modify the event payload using regex-based extraction or template-based composition.',
-            required: ['extractions'],
-          }),
-        z
-          .object({
-            enrichments: z
-              .array(
-                z
-                  .object({
-                    schema_to_search: z
-                      .string()
-                      .exactOptional()
-                      .openapi({ description: 'The ID of the Enrichment Schema to query.' }),
-                    search_values: z
-                      .array(
-                        z
-                          .object({
-                            path: z
-                              .string()
-                              .exactOptional()
-                              .openapi({
-                                description:
-                                  'The PD-CEF field whose value is used to search the Enrichment Schema. Used for path-based configuration.',
-                              }),
-                            template: z
-                              .string()
-                              .exactOptional()
-                              .openapi({
-                                description:
-                                  'A string template used to build the search value. Supports event field interpolation. Used for template-based configuration.',
-                              }),
-                            query_field_name: z
-                              .string()
-                              .exactOptional()
-                              .openapi({
-                                description:
-                                  'The name of the Enrichment Schema field to search against. Must be a field of type `query`.',
-                              }),
-                          })
-                          .openapi({ required: [] }),
-                      )
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          'Configurations that specify how to read values from the event to query the Enrichment Schema.',
-                      }),
-                    target: z
-                      .string()
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          'The PD-CEF field to set with the data retrieved from the Enrichment Schema.',
-                      }),
-                  })
-                  .openapi({ required: [] }),
-              )
-              .openapi({
-                description:
-                  'Query a CDP enrichment schema using event values and write results back into the event payload. Maximum 1 enrichment action per rule; maximum 5 enrichment actions applied per event per Event Enrichment.',
-              }),
-          })
-          .openapi({
-            title: 'Enrichments',
-            description:
-              'Query a CDP enrichment schema using event values and write results back into the event payload.',
-            required: ['enrichments'],
-          }),
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Actions to perform when the rule conditions are met. Must be one of `extractions` or `enrichments`.',
-      }),
-    disabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Indicates whether the rule is disabled and would therefore not be evaluated.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('EventEnrichmentRule')
-
-const EventEnrichmentOrchestrationPathSchema = z
+const EventEnrichmentOrchestrationPathSchema: z.ZodType<EventEnrichmentOrchestrationPathType> = z
   .object({
     type: z
       .literal('event_enrichment')
@@ -4641,7 +6596,7 @@ const EventRuleSchema = z
                       }),
                     value: z.string().openapi({ description: 'Value to apply to the operator.' }),
                     options: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({ description: 'Options to configure the operator.' }),
                   })
@@ -4777,34 +6732,6 @@ const EventRuleSchema = z
       .openapi({ required: [] }),
   )
   .openapi('EventRule')
-
-const FlexibleTimeWindowIntelligentAlertGroupingConfigSchema = z
-  .object({
-    time_window: z
-      .int()
-      .min(300)
-      .max(3600)
-      .exactOptional()
-      .openapi({
-        description:
-          'The maximum amount of time allowed between Alerts. Any Alerts arriving greater than `time_window` seconds apart will not be grouped together. This is a rolling time window and is counted from the most recently grouped alert. The window is extended every time a new alert is added to the group, up to 24 hours. To use the "recommended_time_window," set the value to 0, otherwise the value must be between 300 and 3600.',
-      }),
-    recommended_time_window: z
-      .int()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          "In order to ensure your Service has the optimal grouping window, we use data science to calculate your Service's average Alert inter-arrival time. We encourage customers to use this value. Please set `time_window` to 0 to use the `recommended_time_window`.",
-      }),
-  })
-  .openapi({
-    title: 'Intelligent Alert Grouping',
-    description:
-      'The configuration for Intelligent Alert Grouping. Note that this configuration is only available for certain plans.',
-    required: [],
-  })
-  .openapi('FlexibleTimeWindowIntelligentAlertGroupingConfig')
 
 const RecommendedRuleSchema = z
   .object({
@@ -5087,183 +7014,6 @@ const RulesetSchema = z
   })
   .openapi('Ruleset')
 
-const AcknowledgeLogEntrySchema = LogEntrySchema.and(
-  z
-    .object({
-      acknowledgement_timeout: z
-        .int()
-        .exactOptional()
-        .openapi({
-          description:
-            'Duration for which the acknowledgement lasts, in seconds. Services can contain an `acknowledgement_timeout` property, which specifies the length of time acknowledgements should last for. Each time an incident is acknowledged, this timeout is copied into the acknowledgement log entry. This property is optional, as older log entries may not contain it. It may also be `null`, as acknowledgements can be performed on incidents whose services have no `acknowledgement_timeout` set.',
-        }),
-      type: z.literal('acknowledgement_log_entry').exactOptional(),
-    })
-    .openapi({ required: [] }),
-).openapi('AcknowledgeLogEntry')
-
-const AnnotateLogEntrySchema = LogEntrySchema.and(
-  z.object({ type: z.literal('annotate_log_entry').exactOptional() }).openapi({ required: [] }),
-).openapi('AnnotateLogEntry')
-
-const AssignLogEntrySchema = LogEntrySchema.and(
-  z
-    .object({
-      assignees: z
-        .array(UserReferenceSchema)
-        .exactOptional()
-        .openapi({ readOnly: true, description: 'An array of assigned Users for this log entry' }),
-      type: z.literal('assign_log_entry').exactOptional(),
-    })
-    .openapi({ required: [] }),
-).openapi('AssignLogEntry')
-
-const DelegateLogEntrySchema = LogEntrySchema.and(
-  z
-    .object({
-      assignees: z
-        .array(UserReferenceSchema)
-        .exactOptional()
-        .openapi({ readOnly: true, description: 'An array of assigned Users for this log entry' }),
-      type: z.literal('delegate_log_entry').exactOptional(),
-    })
-    .openapi({ required: [] }),
-).openapi('DelegateLogEntry')
-
-const EscalateLogEntrySchema = LogEntrySchema.and(
-  z
-    .object({
-      assignees: z
-        .array(UserReferenceSchema)
-        .exactOptional()
-        .openapi({ readOnly: true, description: 'An array of assigned Users for this log entry' }),
-      type: z.literal('escalate_log_entry').exactOptional(),
-    })
-    .openapi({ required: [] }),
-).openapi('EscalateLogEntry')
-
-const ExhaustEscalationPathLogEntrySchema = LogEntrySchema.and(
-  z
-    .object({ type: z.literal('exhaust_escalation_path_log_entry').exactOptional() })
-    .openapi({ required: [] }),
-).openapi('ExhaustEscalationPathLogEntry')
-
-const LogEntryReferenceSchema = ReferenceSchema.and(
-  z
-    .object({
-      type: z
-        .enum([
-          'acknowledge_log_entry_reference',
-          'annotate_log_entry_reference',
-          'assign_log_entry_reference',
-          'escalate_log_entry_reference',
-          'exhaust_escalation_path_log_entry_reference',
-          'notify_log_entry_reference',
-          'reach_trigger_limit_log_entry_reference',
-          'repeat_escalation_path_log_entry_reference',
-          'resolve_log_entry_reference',
-          'snooze_log_entry_reference',
-          'trigger_log_entry_reference',
-          'unacknowledge_log_entry_reference',
-        ])
-        .exactOptional(),
-    })
-    .openapi({ required: [] }),
-).openapi('LogEntryReference')
-
-const NotifyLogEntrySchema = LogEntrySchema.and(
-  z
-    .object({
-      created_at: z.iso
-        .datetime({ offset: true })
-        .exactOptional()
-        .openapi({ readOnly: true, description: 'Time at which the log entry was created' }),
-      user: UserReferenceSchema.exactOptional(),
-      type: z.literal('notify_log_entry').exactOptional(),
-    })
-    .openapi({ required: [] }),
-).openapi('NotifyLogEntry')
-
-const ReachAckLimitLogEntrySchema = LogEntrySchema.and(
-  z
-    .object({ type: z.literal('reach_ack_limit_log_entry').exactOptional() })
-    .openapi({ required: [] }),
-).openapi('ReachAckLimitLogEntry')
-
-const ReachTriggerLimitLogEntrySchema = LogEntrySchema.and(
-  z
-    .object({ type: z.literal('reach_trigger_limit_log_entry').exactOptional() })
-    .openapi({ required: [] }),
-).openapi('ReachTriggerLimitLogEntry')
-
-const RepeatEscalationPathLogEntrySchema = LogEntrySchema.and(
-  z
-    .object({ type: z.literal('repeat_escalation_path_log_entry').exactOptional() })
-    .openapi({ required: [] }),
-).openapi('RepeatEscalationPathLogEntry')
-
-const ResolveLogEntrySchema = LogEntrySchema.and(
-  z.object({ type: z.literal('resolve_log_entry').exactOptional() }).openapi({ required: [] }),
-).openapi('ResolveLogEntry')
-
-const IncidentActionSchema = z
-  .object({
-    type: z.enum(['unacknowledge', 'escalate', 'resolve', 'urgency_change']),
-    at: z.iso.datetime({ offset: true }),
-    to: z
-      .literal('high')
-      .exactOptional()
-      .openapi({
-        description:
-          'The urgency that the incident will change to. This field is only present when the type is `urgency_change`.',
-      }),
-  })
-  .openapi({
-    description:
-      'An incident action is a pending change to an incident that will automatically happen at some future time.',
-    discriminator: { propertyName: 'type' },
-    required: ['type', 'at'],
-  })
-  .openapi('IncidentAction')
-
-const SnoozeLogEntrySchema = LogEntrySchema.and(
-  z
-    .object({
-      changed_actions: z.array(IncidentActionSchema).exactOptional(),
-      type: z.literal('snooze_log_entry').exactOptional(),
-    })
-    .openapi({ required: [] }),
-).openapi('SnoozeLogEntry')
-
-const TriggerLogEntrySchema = LogEntrySchema.and(
-  z.object({ type: z.literal('trigger_log_entry').exactOptional() }).openapi({ required: [] }),
-).openapi('TriggerLogEntry')
-
-const UnacknowledgeLogEntrySchema = LogEntrySchema.and(
-  z
-    .object({ type: z.literal('unacknowledge_log_entry').exactOptional() })
-    .openapi({ required: [] }),
-).openapi('UnacknowledgeLogEntry')
-
-const UrgencyChangeLogEntrySchema = LogEntrySchema.and(
-  z
-    .object({ type: z.literal('urgency_change_log_entry').exactOptional() })
-    .openapi({ required: [] }),
-).openapi('UrgencyChangeLogEntry')
-
-const AddonReferenceSchema = ReferenceSchema.and(
-  z
-    .object({
-      src: z.url().exactOptional().openapi({ description: 'The URL source of the Addon' }),
-      name: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'The user entered name of the Addon.' }),
-      type: z.enum(['full_page_addon_reference', 'incident_show_addon_reference']).exactOptional(),
-    })
-    .openapi({ required: [] }),
-).openapi('AddonReference')
-
 const AddonSchema = z
   .object({
     id: z.string().exactOptional().openapi({ readOnly: true }),
@@ -5430,28 +7180,6 @@ const BusinessServiceReferenceSchema = ReferenceSchema.and(
     .openapi({ required: [] }),
 ).openapi('BusinessServiceReference')
 
-const IntegrationReferenceSchema = ReferenceSchema.and(
-  z
-    .object({
-      type: z
-        .enum([
-          'aws_cloudwatch_inbound_integration_reference',
-          'cloudkick_inbound_integration_reference',
-          'event_transformer_api_inbound_integration_reference',
-          'generic_email_inbound_integration_reference',
-          'generic_events_api_inbound_integration_reference',
-          'keynote_inbound_integration_reference',
-          'nagios_inbound_integration_reference',
-          'pingdom_inbound_integration_reference',
-          'sql_monitor_inbound_integration_reference',
-          'events_api_v2_inbound_integration_reference',
-          'inbound_integration_reference',
-        ])
-        .exactOptional(),
-    })
-    .openapi({ required: [] }),
-).openapi('IntegrationReference')
-
 const ChangeEventSchema = z
   .object({
     id: z.string().exactOptional().openapi({ readOnly: true }),
@@ -5513,11 +7241,7 @@ const ChangeEventSchema = z
             description:
               'An array containing Service objects that this change event is associated with.',
           }),
-        integration: z
-          .any()
-          .openapi({ readOnly: true })
-          .and(IntegrationReferenceSchema)
-          .exactOptional(),
+        integration: IntegrationReferenceSchema.exactOptional().openapi({ readOnly: true }),
         routing_key: z
           .string()
           .exactOptional()
@@ -5562,7 +7286,7 @@ const ChangeEventSchema = z
           .exactOptional()
           .openapi({ readOnly: true }),
         custom_details: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({
             description: 'Additional details about the change event.',
@@ -5683,34 +7407,6 @@ const IncidentAddonSchema = AddonSchema.and(
   })
   .openapi('IncidentAddon')
 
-const IncidentUrgencyTypeSchema = z
-  .object({
-    type: z
-      .enum(['constant', 'use_support_hours'])
-      .default('constant')
-      .exactOptional()
-      .openapi({
-        description:
-          "The type of incident urgency: whether it's constant, or it's dependent on the support hours.",
-      }),
-    urgency: z
-      .enum(['low', 'high', 'severity_based'])
-      .default('high')
-      .exactOptional()
-      .openapi({ description: "The incidents' urgency, if type is constant." }),
-  })
-  .openapi({ required: [] })
-  .openapi('IncidentUrgencyType')
-
-const IncidentUrgencyRuleSchema = IncidentUrgencyTypeSchema.and(
-  z
-    .object({
-      during_support_hours: IncidentUrgencyTypeSchema.exactOptional(),
-      outside_support_hours: IncidentUrgencyTypeSchema.exactOptional(),
-    })
-    .openapi({ required: [] }),
-).openapi('IncidentUrgencyRule')
-
 const LicenseWithCountsSchema = z
   .object({
     id: z.string().openapi({ description: 'Uniquely identifies the resource' }),
@@ -5760,52 +7456,6 @@ const LicenseWithCountsSchema = z
 const LicenseReferenceSchema = ReferenceSchema.and(
   z.object({ type: z.literal('license_reference').exactOptional() }).openapi({ required: [] }),
 ).openapi('LicenseReference')
-
-const SupportHoursSchema = z
-  .object({
-    type: z
-      .literal('fixed_time_per_day')
-      .default('fixed_time_per_day')
-      .exactOptional()
-      .openapi({ description: 'The type of support hours' }),
-    time_zone: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The time zone for the support hours' }),
-    days_of_week: z
-      .array(
-        z
-          .int()
-          .openapi({
-            readOnly: true,
-            description: 'The days of the week (1 through 7, for Monday through Sunday)',
-          }),
-      )
-      .exactOptional()
-      .openapi({ readOnly: true }),
-    start_time: z
-      .string()
-      .regex(
-        /^(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|[+-](?:[01]\d|2[0-3]):[0-5]\d)?$/,
-      )
-      .exactOptional()
-      .openapi({
-        format: 'time',
-        description: "The support hours' starting time of day (date portion is ignored)",
-      }),
-    end_time: z
-      .string()
-      .regex(
-        /^(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|[+-](?:[01]\d|2[0-3]):[0-5]\d)?$/,
-      )
-      .exactOptional()
-      .openapi({
-        format: 'time',
-        description: "The support hours' ending time of day (date portion is ignored)",
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('SupportHours')
 
 const IncidentNoteSchema = z
   .object({
@@ -5866,36 +7516,6 @@ const IncidentNoteSchema = z
   })
   .openapi({ required: ['content'], example: { content: 'Firefighters are on the scene.' } })
   .openapi('IncidentNote')
-
-const NotificationSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ readOnly: true }),
-    type: z
-      .enum(['sms_notification', 'email_notification', 'phone_notification', 'push_notification'])
-      .exactOptional()
-      .openapi({ description: 'The type of notification.', readOnly: true }),
-    started_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The time at which the notification was sent', readOnly: true }),
-    address: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The address where the notification was sent. This will be null for notification type `push_notification`.',
-        readOnly: true,
-      }),
-    user: UserReferenceSchema.exactOptional(),
-    conferenceAddress: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The address of the conference bridge' }),
-    status: z.string().exactOptional(),
-    '': z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Notification')
 
 const OAuthDelegationSchema = z
   .object({
@@ -5969,33 +7589,6 @@ const UserOAuthDelegationsSchema = z
   })
   .openapi({ required: ['oauth_delegations', 'limit', 'more'] })
   .openapi('UserOAuthDelegations')
-
-const ScheduledActionSchema = z
-  .object({
-    type: z
-      .literal('urgency_change')
-      .openapi({ description: 'The type of schedule action. Must be set to urgency_change.' }),
-    at: z
-      .object({
-        type: z.literal('named_time').openapi({ description: 'Must be set to named_time.' }),
-        name: z
-          .enum(['support_hours_start', 'support_hours_end'])
-          .openapi({ description: 'Designates either the start or the end of support hours.' }),
-      })
-      .openapi({
-        description: 'Represents when scheduled action will occur.',
-        required: ['type', 'name'],
-      }),
-    to_urgency: z.literal('high').openapi({ description: 'Urgency level. Must be set to high.' }),
-  })
-  .openapi({ required: ['type', 'at', 'to_urgency'] })
-  .openapi('ScheduledAction')
-
-const NotificationRuleReferenceSchema = ReferenceSchema.and(
-  z
-    .object({ type: z.literal('assignment_notification_rule_reference').exactOptional() })
-    .openapi({ required: [] }),
-).openapi('NotificationRuleReference')
 
 const NotificationRuleSchema = z
   .object({
@@ -6354,223 +7947,6 @@ const UserSessionSchema = z
   })
   .openapi('UserSession')
 
-const UserSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ readOnly: true }),
-    summary: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-      }),
-    self: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'the API show URL at which the object is accessible',
-      }),
-    html_url: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'a URL at which the entity is uniquely displayed in the Web app',
-      }),
-  })
-  .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        name: z.string().max(100).openapi({ description: 'The name of the user.' }),
-        type: z
-          .literal('user')
-          .default('user')
-          .openapi({ description: 'The type of object being created.' }),
-        email: z.email().min(6).max(100).openapi({ description: "The user's email address." }),
-        time_zone: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              "The preferred time zone name. If null, the account's time zone will be used.",
-          }),
-        color: z.string().exactOptional().openapi({ description: 'The schedule color.' }),
-        role: z
-          .enum([
-            'admin',
-            'limited_user',
-            'observer',
-            'owner',
-            'read_only_user',
-            'restricted_access',
-            'read_only_limited_user',
-            'user',
-          ])
-          .exactOptional()
-          .openapi({
-            description:
-              'The user role. Account must have the `read_only_users` ability to set a user as a `read_only_user` or a `read_only_limited_user`, and must have advanced permissions abilities to set a user as `observer` or `restricted_access`.',
-          }),
-        avatar_url: z
-          .url()
-          .exactOptional()
-          .openapi({ description: "The URL of the user's avatar.", readOnly: true }),
-        description: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: "The user's bio." }),
-        invitation_sent: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            readOnly: true,
-            description: 'If true, the user has an outstanding invitation.',
-          }),
-        job_title: z
-          .string()
-          .max(100)
-          .exactOptional()
-          .openapi({ description: "The user's title." }),
-        created_via_sso: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            readOnly: true,
-            description: 'If true, the user was created via Single Sign-On (SSO).',
-          }),
-        teams: z
-          .array(TeamReferenceSchema)
-          .exactOptional()
-          .openapi({
-            readOnly: true,
-            description:
-              'The list of teams to which the user belongs. Account must have the `teams` ability to set this.',
-          }),
-        contact_methods: z
-          .array(ContactMethodReferenceSchema)
-          .exactOptional()
-          .openapi({ readOnly: true, description: 'The list of contact methods for the user.' }),
-        notification_rules: z
-          .array(NotificationRuleReferenceSchema)
-          .exactOptional()
-          .openapi({ readOnly: true, description: 'The list of notification rules for the user.' }),
-        http_cal_url: z
-          .url()
-          .exactOptional()
-          .openapi({
-            readOnly: true,
-            description:
-              "iCal HTTP feed URL for this user's on-call shifts. Only returned on the `GET /users/{id}` detail endpoint: automatically when viewing your own profile with a user-level token, or when an account admin with `can_update_user` passes `include[]=calendar_urls` for another user. Not returned on list endpoints or with account-level read-only keys.\n\n**Security:** this URL is a bearer credential. Anyone with the URL can read the user's on-call calendar without further authentication. Rotate via `POST /users/{id}/regenerate_private_url_key` if it may have been exposed.",
-          }),
-        web_cal_url: z
-          .url()
-          .exactOptional()
-          .openapi({
-            readOnly: true,
-            description:
-              "iCal webcal URL for this user's on-call shifts. Only returned on the `GET /users/{id}` detail endpoint: automatically when viewing your own profile with a user-level token, or when an account admin with `can_update_user` passes `include[]=calendar_urls` for another user. Not returned on list endpoints or with account-level read-only keys.\n\n**Security:** this URL is a bearer credential. Anyone with the URL can read the user's on-call calendar without further authentication. Rotate via `POST /users/{id}/regenerate_private_url_key` if it may have been exposed.",
-          }),
-      })
-      .openapi({
-        required: ['name', 'email', 'type'],
-        example: {
-          type: 'user',
-          name: 'Earline Greenholt',
-          email: '125.greenholt.earline@graham.name',
-          time_zone: 'America/Lima',
-          color: 'green',
-          role: 'admin',
-          job_title: 'Director of Engineering',
-          created_via_sso: false,
-          avatar_url: 'https://pd-static-assets.pagerduty.com/users/blank-avatar.png',
-          description: "I'm the boss",
-        },
-      }),
-  )
-  .openapi('User')
-
-const TeamSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ readOnly: true }),
-    summary: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-      }),
-    self: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'the API show URL at which the object is accessible',
-      }),
-    html_url: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'a URL at which the entity is uniquely displayed in the Web app',
-      }),
-  })
-  .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        type: z
-          .literal('team')
-          .default('team')
-          .openapi({ description: 'The type of object being created.' }),
-        name: z.string().max(100).openapi({ description: 'The name of the team.' }),
-        description: z
-          .string()
-          .max(1024)
-          .exactOptional()
-          .openapi({ description: 'The description of the team.' }),
-        default_role: z
-          .enum(['manager', 'none'])
-          .default('manager')
-          .exactOptional()
-          .openapi({
-            description:
-              'The team is private if the value is "none", or public if it is "manager" (the default permissions for a non-member of the team are either "none", or their base role up until "manager").',
-          }),
-      })
-      .openapi({
-        required: ['name', 'type'],
-        example: { type: 'team', name: 'Engineering', description: 'The engineering team' },
-      }),
-  )
-  .openapi('Team')
-
 const ImpactSchema = z
   .object({
     id: z.string().exactOptional().openapi({ readOnly: true }),
@@ -6636,7 +8012,7 @@ const IncidentReviewSectionSchema = z
       .openapi({
         readOnly: true,
         description:
-          'The display order of the section within the Incident Review. Lower values sort first.',
+          'The display order of the section within the Post-Incident Review. Lower values sort first.',
         example: 0,
       }),
     required: z
@@ -6645,7 +8021,7 @@ const IncidentReviewSectionSchema = z
       .openapi({
         readOnly: true,
         description:
-          'Whether this section must be filled in before the Incident Review can be moved to the `completed` status.',
+          'Whether this section must be filled in before the Post-Incident Review can be moved to the `completed` status.',
         example: true,
       }),
     completed_at: z.iso
@@ -6661,7 +8037,7 @@ const IncidentReviewSectionSchema = z
   })
   .openapi({
     description:
-      'A single section of an Incident Review. The set of sections is determined by the template the Incident Review follows.',
+      'A single section of a Post-Incident Review. The set of sections is determined by the template the Post-Incident Review follows.',
     required: [],
   })
   .openapi('IncidentReviewSection')
@@ -6673,7 +8049,7 @@ const IncidentReviewSchema = z
       .exactOptional()
       .openapi({
         readOnly: true,
-        description: 'The unique identifier of the Incident Review.',
+        description: 'The unique identifier of the Post-Incident Review.',
         example: 'AGOBAMKTT5Z3RO7CR7T2ZGSMJA',
       }),
     incident_id: z
@@ -6681,14 +8057,14 @@ const IncidentReviewSchema = z
       .exactOptional()
       .openapi({
         readOnly: true,
-        description: 'The ID of the Incident this Incident Review describes.',
+        description: 'The ID of the Incident this Post-Incident Review describes.',
         example: 'P1234ABC',
       }),
     title: z
       .string()
       .exactOptional()
       .openapi({
-        description: 'The title of the Incident Review.',
+        description: 'The title of the Post-Incident Review.',
         example: 'Database outage review',
       }),
     status: z
@@ -6696,7 +8072,7 @@ const IncidentReviewSchema = z
       .exactOptional()
       .openapi({
         description:
-          'The status of the Incident Review.\n\nMoving to `completed` is rejected while any required section is still unfilled.\n\nOn accounts where completed Incident Reviews are read-only, a `completed` Incident Review cannot be changed until it is reopened by setting another status.\n',
+          'The status of the Post-Incident Review.\n\nMoving to `completed` is rejected while any required section is still unfilled.\n\nOn accounts where completed Post-Incident Reviews are read-only, a `completed` Post-Incident Review cannot be changed until it is reopened by setting another status.\n',
         example: 'started',
       }),
     sections: z
@@ -6704,7 +8080,7 @@ const IncidentReviewSchema = z
       .exactOptional()
       .openapi({
         readOnly: true,
-        description: 'The sections of the Incident Review, ordered by `priority`.',
+        description: 'The sections of the Post-Incident Review, ordered by `priority`.',
       }),
     generation_status: z
       .enum(['idle', 'generating'])
@@ -6712,7 +8088,7 @@ const IncidentReviewSchema = z
       .openapi({
         readOnly: true,
         description:
-          'Whether an AI draft is currently being generated for this Incident Review. While this is `generating`, section content is still being written and the Incident Review should be re-fetched to see the result.\n',
+          'Whether an AI draft is currently being generated for this Post-Incident Review. While this is `generating`, section content is still being written and the Post-Incident Review should be re-fetched to see the result.\n',
         example: 'idle',
       }),
     ai_generated: z
@@ -6720,7 +8096,7 @@ const IncidentReviewSchema = z
       .exactOptional()
       .openapi({
         readOnly: true,
-        description: 'Whether this Incident Review has been through the AI draft flow.',
+        description: 'Whether this Post-Incident Review has been through the AI draft flow.',
         example: false,
       }),
     template_id: z
@@ -6730,7 +8106,7 @@ const IncidentReviewSchema = z
       .openapi({
         readOnly: true,
         description:
-          'The ID of the template this Incident Review currently follows, or `null` if it does not follow one.',
+          'The ID of the template this Post-Incident Review currently follows, or `null` if it does not follow one.',
         example: 'AGOBAMKTT5Z3RO7CR7T2ZGSMJA',
       }),
     has_events: z
@@ -6738,7 +8114,7 @@ const IncidentReviewSchema = z
       .exactOptional()
       .openapi({
         readOnly: true,
-        description: 'Whether the Incident Review has at least one event on its timeline.',
+        description: 'Whether the Post-Incident Review has at least one event on its timeline.',
         example: true,
       }),
     action_item_count: z
@@ -6746,7 +8122,7 @@ const IncidentReviewSchema = z
       .exactOptional()
       .openapi({
         readOnly: true,
-        description: 'The total number of action items on this Incident Review.',
+        description: 'The total number of action items on this Post-Incident Review.',
         example: 5,
       }),
     completed_action_item_count: z
@@ -6754,7 +8130,7 @@ const IncidentReviewSchema = z
       .exactOptional()
       .openapi({
         readOnly: true,
-        description: 'The number of completed action items on this Incident Review.',
+        description: 'The number of completed action items on this Post-Incident Review.',
         example: 3,
       }),
     created_by: z
@@ -6764,7 +8140,7 @@ const IncidentReviewSchema = z
       .openapi({
         readOnly: true,
         description:
-          'The ID of the User who created this Incident Review, or `null` if it was not created by a User.',
+          'The ID of the User who created this Post-Incident Review, or `null` if it was not created by a User.',
         example: 'PUSER123',
       }),
     created_at: z.iso
@@ -6772,7 +8148,7 @@ const IncidentReviewSchema = z
       .exactOptional()
       .openapi({
         readOnly: true,
-        description: 'The time the Incident Review was created.',
+        description: 'The time the Post-Incident Review was created.',
         example: '2026-09-01T20:00:00Z',
       }),
     updated_at: z.iso
@@ -6780,7 +8156,7 @@ const IncidentReviewSchema = z
       .exactOptional()
       .openapi({
         readOnly: true,
-        description: 'The time the Incident Review was last modified.',
+        description: 'The time the Post-Incident Review was last modified.',
         example: '2026-09-01T21:02:00Z',
       }),
     completed_at: z.iso
@@ -6790,13 +8166,13 @@ const IncidentReviewSchema = z
       .openapi({
         readOnly: true,
         description:
-          'The time the Incident Review was completed, or `null` if it has not been completed.',
+          'The time the Post-Incident Review was completed, or `null` if it has not been completed.',
         example: '2026-09-02T14:30:00Z',
       }),
   })
   .openapi({
     description:
-      'An Incident Review is a structured, post-resolution record of what happened during an Incident. Each Incident has at most one Incident Review.',
+      'A Post-Incident Review is a structured, post-resolution record of what happened during an Incident. Each Incident has at most one Post-Incident Review.',
     required: [],
   })
   .openapi('IncidentReview')
@@ -6808,7 +8184,7 @@ const IncidentReviewListItemSchema = z
       .exactOptional()
       .openapi({
         readOnly: true,
-        description: 'The unique identifier of the Incident Review.',
+        description: 'The unique identifier of the Post-Incident Review.',
         example: 'AGOBAMKTT5Z3RO7CR7T2ZGSMJA',
       }),
     incident_id: z
@@ -6816,7 +8192,7 @@ const IncidentReviewListItemSchema = z
       .exactOptional()
       .openapi({
         readOnly: true,
-        description: 'The ID of the Incident this Incident Review describes.',
+        description: 'The ID of the Incident this Post-Incident Review describes.',
         example: 'P1234ABC',
       }),
     title: z
@@ -6824,7 +8200,7 @@ const IncidentReviewListItemSchema = z
       .exactOptional()
       .openapi({
         readOnly: true,
-        description: 'The title of the Incident Review.',
+        description: 'The title of the Post-Incident Review.',
         example: 'Database outage review',
       }),
     status: z
@@ -6832,7 +8208,7 @@ const IncidentReviewListItemSchema = z
       .exactOptional()
       .openapi({
         readOnly: true,
-        description: 'The status of the Incident Review.',
+        description: 'The status of the Post-Incident Review.',
         example: 'started',
       }),
     action_item_count: z
@@ -6840,7 +8216,7 @@ const IncidentReviewListItemSchema = z
       .exactOptional()
       .openapi({
         readOnly: true,
-        description: 'The total number of action items on this Incident Review.',
+        description: 'The total number of action items on this Post-Incident Review.',
         example: 5,
       }),
     completed_action_item_count: z
@@ -6848,7 +8224,7 @@ const IncidentReviewListItemSchema = z
       .exactOptional()
       .openapi({
         readOnly: true,
-        description: 'The number of completed action items on this Incident Review.',
+        description: 'The number of completed action items on this Post-Incident Review.',
         example: 3,
       }),
     created_at: z.iso
@@ -6856,7 +8232,7 @@ const IncidentReviewListItemSchema = z
       .exactOptional()
       .openapi({
         readOnly: true,
-        description: 'The time the Incident Review was created.',
+        description: 'The time the Post-Incident Review was created.',
         example: '2026-09-01T20:00:00Z',
       }),
     updated_at: z.iso
@@ -6864,7 +8240,7 @@ const IncidentReviewListItemSchema = z
       .exactOptional()
       .openapi({
         readOnly: true,
-        description: 'The time the Incident Review was last modified.',
+        description: 'The time the Post-Incident Review was last modified.',
         example: '2026-09-01T21:02:00Z',
       }),
     completed_at: z.iso
@@ -6874,13 +8250,13 @@ const IncidentReviewListItemSchema = z
       .openapi({
         readOnly: true,
         description:
-          'The time the Incident Review was completed, or `null` if it has not been completed.',
+          'The time the Post-Incident Review was completed, or `null` if it has not been completed.',
         example: '2026-09-02T14:30:00Z',
       }),
   })
   .openapi({
     description:
-      'A summary of an Incident Review, as returned when listing Incident Reviews. Fetch the Incident Review by its Incident to get its sections.',
+      'A summary of a Post-Incident Review, as returned when listing Post-Incident Reviews. Fetch the Post-Incident Review by its Incident to get its sections.',
     required: [],
   })
   .openapi('IncidentReviewListItem')
@@ -6900,7 +8276,8 @@ const IncidentReviewActionItemSchema = z
       .exactOptional()
       .openapi({
         readOnly: true,
-        description: 'The ID of the Incident whose Incident Review this action item belongs to.',
+        description:
+          'The ID of the Incident whose Post-Incident Review this action item belongs to.',
         example: 'P1234ABC',
       }),
     name: z
@@ -6919,7 +8296,7 @@ const IncidentReviewActionItemSchema = z
       .string()
       .exactOptional()
       .openapi({
-        description: 'The status of the action item on the Incident Review.',
+        description: 'The status of the action item on the Post-Incident Review.',
         example: 'incomplete',
       }),
     priority: z
@@ -7000,7 +8377,7 @@ const IncidentReviewActionItemSchema = z
   })
   .openapi({
     description:
-      'An action item captured on an Incident Review: a follow-up task identified while reviewing the Incident.',
+      'An action item captured on a Post-Incident Review: a follow-up task identified while reviewing the Incident.',
     required: [],
   })
   .openapi('IncidentReviewActionItem')
@@ -7033,7 +8410,7 @@ const IncidentReviewMarkerEventSchema = z
   })
   .openapi({
     description:
-      'A free-text note attached to an Incident Review marker. Each note supplied when creating a marker is stored as its own event on the Incident Review timeline.',
+      'A free-text note attached to a Post-Incident Review marker. Each note supplied when creating a marker is stored as its own event on the Post-Incident Review timeline.',
     required: [],
   })
   .openapi('IncidentReviewMarkerEvent')
@@ -7053,7 +8430,7 @@ const IncidentReviewMarkerSchema = z
       .exactOptional()
       .openapi({
         readOnly: true,
-        description: 'The ID of the Incident Review this marker was added to.',
+        description: 'The ID of the Post-Incident Review this marker was added to.',
         example: 'AGOBAMKTT5Z3RO7CR7T2ZGSMJA',
       }),
     type: z
@@ -7086,7 +8463,7 @@ const IncidentReviewMarkerSchema = z
   })
   .openapi({
     description:
-      'A marker highlights a point of interest on an Incident Review timeline, along with the notes captured as supporting evidence for it.',
+      'A marker highlights a point of interest on a Post-Incident Review timeline, along with the notes captured as supporting evidence for it.',
     required: [],
   })
   .openapi('IncidentReviewMarker')
@@ -7251,1009 +8628,98 @@ const IncidentTypeReferenceSchema = z
   .openapi({ required: [] })
   .openapi('IncidentTypeReference')
 
-const TimeBasedAlertGroupingConfigurationSchema = z
-  .object({
-    timeout: z
-      .int()
-      .min(1)
-      .max(1440)
-      .exactOptional()
-      .openapi({
-        description:
-          'The duration in minutes within which to automatically group incoming Alerts. To continue grouping Alerts until the Incident is resolved, set this value to 0.',
-      }),
-  })
-  .openapi({
-    title: 'Time Grouping',
-    description: 'The configuration for Time Based Alert Grouping',
-    required: [],
-  })
-  .openapi('TimeBasedAlertGroupingConfiguration')
-
-const ContentBasedAlertGroupingConfigurationSchema = z
-  .object({
-    aggregate: z
-      .literal('all, any')
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether Alerts should be grouped if `all` or `any` specified fields match. If `all` is selected, an exact match on every specified field name must occur for Alerts to be grouped. If `any` is selected, Alerts will be grouped when there is an exact match on at least one of the specified fields.',
-      }),
-    fields: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'An array of strings which represent the fields with which to group against. Depending on the aggregate, Alerts will group if some or all the fields match.',
-      }),
-    time_window: z
-      .int()
-      .min(300)
-      .max(86400)
-      .exactOptional()
-      .openapi({
-        description:
-          'The maximum amount of time allowed between Alerts. Any Alerts arriving greater than `time_window` seconds apart will not be grouped together. This is a rolling time window up to 24 hours and is counted from the most recently grouped alert. The window is extended every time a new alert is added to the group, up to 24 hours (24 hours only applies to single-service settings). To use the "recommended_time_window," set the value to 0, otherwise the value must be between 300 <= time_window <= 3600 or 86400(i.e. 24 hours).',
-      }),
-    recommended_time_window: z
-      .int()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          "In order to ensure your Service has the optimal grouping window, we use data science to calculate your Service's average Alert inter-arrival time. We encourage customers to use this value. Please set `time_window` to 0 to use the `recommended_time_window`.",
-      }),
-  })
-  .openapi({
-    title: 'Content Only Grouping',
-    description: 'The configuration for Content Based Alert Grouping',
-    required: [],
-  })
-  .openapi('ContentBasedAlertGroupingConfiguration')
-
-const AlertGroupingParametersSchema = z
-  .object({
-    type: z
-      .union([
-        z.literal('time'),
-        z.literal('intelligent'),
-        z.literal('content_based'),
-        z.literal(null),
-      ])
-      .nullable()
-      .exactOptional(),
-    config: z
-      .xor([
-        FlexibleTimeWindowIntelligentAlertGroupingConfigSchema,
-        TimeBasedAlertGroupingConfigurationSchema,
-        ContentBasedAlertGroupingConfigurationSchema,
-      ])
-      .exactOptional(),
-  })
-  .openapi({
-    title: 'Alert Grouping Parameters',
-    deprecated: true,
-    description:
-      'Defines how alerts on this service will be automatically grouped into incidents. Note that the alert grouping features are available only on certain plans. To turn grouping off set the type to null.\nThis attribute has been deprecated and configuration via [Alert Grouping Settings](https://developer.pagerduty.com/api-reference/587edbc8ff416-create-an-alert-grouping-setting) resource is encouraged.\n',
-    required: [],
-  })
-  .openapi('AlertGroupingParameters')
-
-const ServiceSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ readOnly: true }),
-    summary: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-      }),
-    self: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'the API show URL at which the object is accessible',
-      }),
-    html_url: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'a URL at which the entity is uniquely displayed in the Web app',
-      }),
-  })
-  .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        type: z
-          .literal('service')
-          .default('service')
-          .openapi({ description: 'The type of object being created.' }),
-        name: z.string().exactOptional().openapi({ description: 'The name of the service.' }),
-        description: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The user-provided description of the service.' }),
-        auto_resolve_timeout: z
-          .int()
-          .default(14400)
-          .exactOptional()
-          .openapi({
-            description:
-              'Time in seconds that an incident is automatically resolved if left open for that long. Value is `null` if the feature is disabled. Value must not be negative. Setting this field to `0`, `null` (or unset in POST request) will disable the feature.',
-          }),
-        acknowledgement_timeout: z
-          .int()
-          .default(1800)
-          .exactOptional()
-          .openapi({
-            description:
-              'Time in seconds that an incident changes to the Triggered State after being Acknowledged. Value is `null` if the feature is disabled. Value must not be negative. Setting this field to `0`, `null` (or unset in POST request) will disable the feature.',
-          }),
-        created_at: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({ description: 'The date/time when this service was created', readOnly: true }),
-        status: z
-          .enum(['active', 'warning', 'critical', 'maintenance', 'disabled'])
-          .default('active')
-          .exactOptional()
-          .openapi({
-            description:
-              'The current state of the Service. Valid statuses are:\n\n\n- `active`: The service is enabled and has no open incidents. This is the only status a service can be created with.\n- `warning`: The service is enabled and has one or more acknowledged incidents.\n- `critical`: The service is enabled and has one or more triggered incidents.\n- `maintenance`: The service is under maintenance, no new incidents will be triggered during maintenance mode.\n- `disabled`: The service is disabled and will not have any new triggered incidents.\n',
-          }),
-        last_incident_timestamp: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({
-            description:
-              'The date/time when the most recent incident was created for this service.',
-            readOnly: true,
-          }),
-        escalation_policy: EscalationPolicyReferenceSchema,
-        response_play: z
-          .any()
-          .exactOptional()
-          .openapi({
-            deprecated: true,
-            description: 'Response plays associated with this service.',
-          }),
-        teams: z
-          .array(TeamReferenceSchema)
-          .exactOptional()
-          .openapi({
-            description: 'The set of teams associated with this service.',
-            readOnly: true,
-          }),
-        integrations: z
-          .array(IntegrationReferenceSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'An array containing Integration objects that belong to this service. If `integrations` is passed as an argument, these are full objects - otherwise, these are references.',
-            readOnly: true,
-          }),
-        incident_urgency_rule: IncidentUrgencyRuleSchema.exactOptional(),
-        support_hours: SupportHoursSchema.exactOptional(),
-        scheduled_actions: z
-          .array(ScheduledActionSchema)
-          .exactOptional()
-          .openapi({ description: 'An array containing scheduled actions for the service.' }),
-        addons: z
-          .array(AddonReferenceSchema)
-          .exactOptional()
-          .openapi({
-            description: 'The array of Add-ons associated with this service.',
-            readOnly: true,
-          }),
-        alert_creation: z
-          .enum(['create_incidents', 'create_alerts_and_incidents'])
-          .default('create_alerts_and_incidents')
-          .exactOptional()
-          .openapi({
-            deprecated: true,
-            description:
-              'Whether a service creates only incidents, or both alerts and incidents. A service must create alerts in order to enable incident merging.\n* "create_incidents" - The service will create one incident and zero alerts for each incoming event.\n* "create_alerts_and_incidents" - The service will create one incident and one associated alert for each incoming event.\nThis attribute has been deprecated as all services will be migrated to use alerts and incidents. Afterward, the incident only service setting will no longer be available. For details, please refer to the knowledge base: https://support.pagerduty.com/docs/alerts#enable-and-disable-alerts-on-a-service.\n',
-          }),
-        alert_grouping_parameters: z
-          .xor([
-            AlertGroupingParametersSchema,
-            z
-              .object({
-                id: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    readOnly: true,
-                    description: 'id of the related alert grouping setting',
-                  }),
-                type: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    readOnly: true,
-                    description: 'type of reference eg. alert_grouping_setting_reference',
-                  }),
-                summary: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ readOnly: true, description: 'an explanation of this reference' }),
-                self: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    readOnly: true,
-                    description: 'link to api endpoint for this setting',
-                  }),
-                html_url: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    readOnly: true,
-                    description: 'link to the ui page to edit the setting',
-                  }),
-              })
-              .openapi({
-                title: 'Alert Grouping Settings Reference',
-                deprecated: true,
-                description:
-                  "When a service uses alert grouping configuration that is unsupported via the services api, and can only be configured via the [Alert Grouping Settings API](https://developer.pagerduty.com/api-reference/587edbc8ff416-create-an-alert-grouping-setting). The reference object includes the new location details for the service's Alert Grouping Setting. When an `alert_grouping_settings_reference` is included in a create or update request it will be ignored and no changes are applied to the service.",
-                required: [],
-              }),
-          ])
-          .exactOptional()
-          .openapi({ description: 'Alert Grouping Parameters', deprecated: true }),
-        alert_grouping: z
-          .enum(['time', 'intelligent'])
-          .exactOptional()
-          .openapi({
-            deprecated: true,
-            description:
-              'Defines how alerts on this service will be automatically grouped into incidents. Note that the alert grouping features are available only on certain plans. There are three available options:\n* null - No alert grouping on the service. Each alert will create a separate incident;\n* "time" - All alerts within a specified duration will be grouped into the same incident. This duration is set in the `alert_grouping_timeout` setting (described below). Available on Standard, Enterprise, and Event Intelligence plans;\n* "intelligent" - Alerts will be intelligently grouped based on a machine learning model that looks at the alert summary, timing, and the history of grouped alerts. Available on Enterprise and Event Intelligence plans\n\nThis attribute has been deprecated and configuration via [Alert Grouping Settings](https://developer.pagerduty.com/api-reference/587edbc8ff416-create-an-alert-grouping-setting) resource is encouraged.\n',
-          }),
-        alert_grouping_timeout: z
-          .int()
-          .exactOptional()
-          .openapi({
-            deprecated: true,
-            description:
-              'The duration in minutes within which to automatically group incoming alerts. This setting applies only when `alert_grouping` is set to `time`. To continue grouping alerts until the Incident is resolved, set this value to `0`.\n\nThis attribute has been deprecated and configuration via [Alert Grouping Settings](https://developer.pagerduty.com/api-reference/587edbc8ff416-create-an-alert-grouping-setting) resource is encouraged.\n',
-          }),
-        auto_pause_notifications_parameters: AutoPauseNotificationsParametersSchema.exactOptional(),
-      })
-      .openapi({
-        required: ['type', 'escalation_policy'],
-        example: {
-          id: 'PSI2I2O',
-          summary: 'string',
-          type: 'service',
-          self: 'string',
-          html_url: 'string',
-          name: 'My Web App',
-          description: 'My cool web application that does things.',
-          auto_resolve_timeout: 14400,
-          acknowledgement_timeout: 600,
-          status: 'active',
-          escalation_policy: { id: 'PWIP6CQ', type: 'escalation_policy_reference' },
-          incident_urgency_rule: {
-            type: 'use_support_hours',
-            during_support_hours: { type: 'constant', urgency: 'high' },
-            outside_support_hours: { type: 'constant', urgency: 'low' },
-          },
-          support_hours: {
-            type: 'fixed_time_per_day',
-            time_zone: 'America/Lima',
-            start_time: '09:00:00',
-            end_time: '17:00:00',
-            days_of_week: [1, 2, 3, 4, 5],
-          },
-          scheduled_actions: [
-            {
-              type: 'urgency_change',
-              at: { type: 'named_time', name: 'support_hours_start' },
-              to_urgency: 'high',
-            },
-          ],
-          alert_creation: 'create_alerts_and_incidents',
-          auto_pause_notifications_parameters: { enabled: true, timeout: 300 },
-        },
-      }),
-  )
-  .openapi('Service')
-
-const AssignmentSchema = z
-  .object({
-    at: z.iso
-      .datetime({ offset: true })
-      .openapi({ description: 'Time at which the assignment was created.' }),
-    assignee: z.xor([UserReferenceSchema, UserSchema]),
-  })
-  .openapi({ required: ['at', 'assignee'] })
-  .openapi('Assignment')
-
-const AlertCountSchema = z
-  .object({
-    triggered: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The count of triggered alerts grouped into this incident' }),
-    resolved: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The count of resolved alerts grouped into this incident' }),
-    all: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The total count of alerts grouped into this incident' }),
-  })
-  .openapi({ required: [] })
-  .openapi('AlertCount')
-
-const EscalationTargetReferenceSchema = ReferenceSchema.and(
-  z
-    .object({
-      type: z
-        .enum(['user', 'schedule', 'user_reference', 'schedule_reference', 'schedule_v3_reference'])
-        .exactOptional(),
-    })
-    .openapi({
-      description:
-        'The escalation target is the entity that will be assigned an incident upon escalation.',
-      required: [],
-    }),
-).openapi('EscalationTargetReference')
-
-const EscalationRuleSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ readOnly: true }),
-    escalation_delay_in_minutes: z
-      .int()
-      .openapi({
-        description:
-          'The number of minutes before an unacknowledged incident escalates away from this rule.',
-      }),
-    targets: z
-      .array(EscalationTargetReferenceSchema)
-      .min(1)
-      .max(10)
-      .openapi({
-        description: 'The targets an incident should be assigned to upon reaching this rule.',
-      }),
-    escalation_rule_assignment_strategy: z
-      .enum(['round_robin', 'assign_to_everyone'])
-      .exactOptional()
-      .openapi({ description: 'The strategy used to assign the escalation rule to an incident.' }),
-  })
-  .openapi({
-    required: ['escalation_delay_in_minutes', 'targets'],
-    example: {
-      escalation_delay_in_minutes: 30,
-      targets: [
-        { id: 'PAM4FGS', type: 'user_reference' },
-        { id: 'PI7DH85', type: 'schedule_reference' },
-      ],
-    },
-  })
-  .openapi('EscalationRule')
-
-const EscalationPolicySchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ readOnly: true }),
-    summary: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-      }),
-    self: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'the API show URL at which the object is accessible',
-      }),
-    html_url: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'a URL at which the entity is uniquely displayed in the Web app',
-      }),
-  })
-  .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        type: z
-          .literal('escalation_policy')
-          .default('escalation_policy')
-          .openapi({ description: 'The type of object being created.' }),
-        name: z.string().openapi({ description: 'The name of the escalation policy.' }),
-        description: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Escalation policy description.' }),
-        num_loops: z
-          .int()
-          .min(0)
-          .default(0)
-          .exactOptional()
-          .openapi({
-            description:
-              'The number of times the escalation policy will repeat after reaching the end of its escalation.',
-          }),
-        on_call_handoff_notifications: z
-          .enum(['if_has_services', 'always'])
-          .exactOptional()
-          .openapi({
-            description:
-              'Determines how on call handoff notifications will be sent for users on the escalation policy. Defaults to "if_has_services".',
-          }),
-        escalation_rules: z.array(EscalationRuleSchema),
-        services: z.array(ServiceReferenceSchema).exactOptional().openapi({ readOnly: true }),
-        teams: z
-          .array(TeamReferenceSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'Team associated with the policy. Account must have the `teams` ability to use this parameter. Only one team may be associated with the policy.',
-          }),
-      })
-      .openapi({
-        required: ['type', 'name', 'escalation_rules'],
-        example: {
-          id: 'PQIL2IX',
-          type: 'escalation_policy',
-          name: 'Engineering Escalation Policy',
-          escalation_rules: [
-            {
-              escalation_delay_in_minutes: 30,
-              targets: [{ id: 'PEYSGVF', type: 'user_reference' }],
-              escalation_rule_assignment_strategy: [{ type: 'round_robin' }],
-            },
-          ],
-          services: [{ id: 'PIJ90N7', type: 'service_reference' }],
-          num_loops: 2,
-          on_call_handoff_notifications: 'if_has_services',
-          teams: [{ id: 'PQ9K7I8', type: 'team_reference' }],
-          description: 'Here is the ep for the engineering team.',
-        },
-      }),
-  )
-  .openapi('EscalationPolicy')
-
-const AcknowledgerReferenceSchema = ReferenceSchema.and(
-  z
-    .object({ type: z.enum(['user_reference', 'service_reference']).exactOptional() })
-    .openapi({
-      description:
-        'The acknowledger represents the entity that made the acknowledgement for an incident.',
-      required: [],
-    }),
-).openapi('AcknowledgerReference')
-
-const AcknowledgementSchema = z
-  .object({
-    at: z.iso
-      .datetime({ offset: true })
-      .openapi({ description: 'Time at which the acknowledgement was created.' }),
-    acknowledger: z.xor([AcknowledgerReferenceSchema, UserSchema, ServiceSchema]),
-  })
-  .openapi({ required: ['at', 'acknowledger'] })
-  .openapi('Acknowledgement')
-
-const PrioritySchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ readOnly: true }),
-    summary: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-      }),
-    self: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'the API show URL at which the object is accessible',
-      }),
-    html_url: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'a URL at which the entity is uniquely displayed in the Web app',
-      }),
-  })
-  .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The user-provided short name of the priority.' }),
-        description: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The user-provided description of the priority.' }),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('Priority')
-
-const ResolveReasonSchema = z
-  .object({
-    type: z
-      .literal('merge_resolve_reason')
-      .default('merge_resolve_reason')
-      .exactOptional()
-      .openapi({
-        description:
-          'The reason the incident was resolved. The only reason currently supported is merge.',
-      }),
-    incident: IncidentReferenceSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ResolveReason')
-
-const ConferenceBridgeSchema = z
-  .object({
-    conference_number: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The phone number of the conference call for the conference bridge. Phone numbers should be formatted like +1 415-555-1212,,,,1234#, where a comma (,) represents a one-second wait and pound (#) completes access code input.',
-      }),
-    conference_url: z
-      .url()
-      .exactOptional()
-      .openapi({
-        description:
-          'An URL for the conference bridge. This could be a link to a web conference or Slack channel.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ConferenceBridge')
-
-const IncidentsRespondersReferenceSchema = z
-  .object({
-    state: z
-      .enum(['pending', 'joined', 'declined', 'user_cancelled'])
-      .exactOptional()
-      .openapi({
-        description: 'The status of the responder being added to the incident',
-        example: 'pending',
-      }),
-    user: UserReferenceSchema.exactOptional(),
-    incident: IncidentReferenceSchema.exactOptional(),
-    updated_at: z.string().exactOptional(),
-    message: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The message sent with the responder request' }),
-    requester: UserReferenceSchema.exactOptional(),
-    requested_at: z.string().exactOptional(),
-    escalation_policy_requests: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Names of escalation policies that this responder was requested through, if applicable',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('IncidentsRespondersReference')
-
-const ResponderRequestTargetReferenceSchema = z
-  .object({
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The type of target (either a user or an escalation policy)' }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The id of the user or escalation policy' }),
-    summary: z.string().exactOptional(),
-    incident_responders: z
-      .array(IncidentsRespondersReferenceSchema)
-      .exactOptional()
-      .openapi({ description: 'An array of responders associated with the specified incident' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ResponderRequestTargetReference')
-
-const ResponderRequestSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ description: 'The ID of the responder request' }),
-    incident: IncidentReferenceSchema.exactOptional(),
-    requester: UserReferenceSchema.exactOptional(),
-    requested_at: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The time the request was made' }),
-    message: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The message sent with the responder request' }),
-    responder_request_targets: z
-      .array(ResponderRequestTargetReferenceSchema)
-      .exactOptional()
-      .openapi({ description: 'The array of targets the responder request is being sent to' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ResponderRequest')
-
-const IncidentBodySchema = z
-  .object({
-    details: z.object({}).exactOptional().openapi({ description: 'Additional incident details.' }),
-  })
-  .openapi({ required: ['type'] })
-  .openapi('IncidentBody')
-
-const IncidentSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ readOnly: true }),
-    summary: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-      }),
-    self: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'the API show URL at which the object is accessible',
-      }),
-    html_url: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'a URL at which the entity is uniquely displayed in the Web app',
-      }),
-  })
-  .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        incident_number: z
-          .int()
-          .exactOptional()
-          .openapi({
-            readOnly: true,
-            description: 'The number of the incident. This is unique across your account.',
-          }),
-        title: z
-          .string()
-          .exactOptional()
-          .openapi({
-            readOnly: false,
-            description:
-              'A succinct description of the nature, symptoms, cause, or effect of the incident.',
-          }),
-        created_at: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({
-            description: 'The time the incident was first triggered.',
-            example: '2019-12-01T20:00:00Z',
-            readOnly: true,
-          }),
-        updated_at: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({
-            example: '2019-12-01T21:02:00Z',
-            description: 'The time the incident was last modified.',
-          }),
-        status: z
-          .enum(['triggered', 'acknowledged', 'resolved'])
-          .exactOptional()
-          .openapi({ description: 'The current status of the incident.' }),
-        incident_key: z
-          .string()
-          .exactOptional()
-          .openapi({ readOnly: true, description: "The incident's de-duplication key." }),
-        service: z
-          .xor([ServiceReferenceSchema, ServiceSchema])
-          .exactOptional()
-          .openapi({
-            description:
-              'The service the incident is on. If the `include[]=services` query parameter is provided, the full service definition will be returned.',
-          }),
-        assignments: z
-          .array(AssignmentSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'List of all assignments for this incident. This list will be empty if the `Incident.status` is `resolved`. Returns a user reference for each assignment. Full user definitions will be returned if the `include[]=assignees` query parameter is provided.',
-          }),
-        assigned_via: z
-          .enum(['escalation_policy', 'direct_assignment'])
-          .exactOptional()
-          .openapi({
-            description:
-              'How the current incident assignments were decided.  Note that `direct_assignment` incidents will not escalate up the attached `escalation_policy`',
-            readOnly: true,
-          }),
-        last_status_change_at: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({
-            description:
-              "The time the status of the incident last changed. If the incident is not currently acknowledged or resolved, this will be the incident's `updated_at`.",
-            example: '2019-12-01T21:01:00Z',
-            readOnly: true,
-          }),
-        resolved_at: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({
-            example: '2019-12-01T21:01:00Z',
-            description:
-              'The time the incident became "resolved" or `null` if the incident is not resolved.',
-          }),
-        first_trigger_log_entry: z
-          .xor([LogEntryReferenceSchema, TriggerLogEntrySchema])
-          .exactOptional()
-          .openapi({
-            description:
-              'The first log entry on the incident. The log entry will be of type `TriggerLogEntry` and will represent information about how the incident was triggered. If the `include[]=first_trigger_log_entries` query parameter is provided, the full log entry definition will be returned.',
-          }),
-        alert_counts: AlertCountSchema.exactOptional(),
-        is_mergeable: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'Whether the incident is mergeable. Only incidents that have alerts, or that are manually created can be merged.',
-            readOnly: true,
-          }),
-        incident_type: z
-          .object({
-            name: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'The name of the Incident Type.' }),
-          })
-          .exactOptional()
-          .openapi({ description: 'The incident type of the incident.', required: [] }),
-        escalation_policy: z
-          .xor([EscalationPolicyReferenceSchema, EscalationPolicySchema])
-          .exactOptional()
-          .openapi({
-            description:
-              'The escalation policy attached to the service that the incident is on. If the `include[]=escalation_policies` query parameter is provided, the full escalation policy definition will be returned.',
-          }),
-        teams: z
-          .array(z.xor([TeamReferenceSchema, TeamSchema]))
-          .exactOptional()
-          .openapi({
-            description:
-              'The teams involved in the incident’s lifecycle. If the `include[]=teams` query parameter is provided, the full team definitions will be returned.',
-          }),
-        pending_actions: z
-          .array(IncidentActionSchema)
-          .exactOptional()
-          .openapi({
-            readOnly: true,
-            description:
-              'The list of pending_actions on the incident. A pending_action object contains a type of action which can be escalate, unacknowledge, resolve or urgency_change. A pending_action object contains at, the time at which the action will take place. An urgency_change pending_action will contain to, the urgency that the incident will change to.',
-          }),
-        acknowledgements: z
-          .array(AcknowledgementSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'List of all acknowledgements for this incident. This list will be empty if the `Incident.status` is `resolved` or `triggered`. If the `include[]=acknowledgers` query parameter is provided, the full user or service definitions will be returned for each acknowledgement entry.',
-          }),
-        alert_grouping: z
-          .object({
-            grouping_type: z.enum(['basic', 'advanced', 'rules']).exactOptional(),
-            started_at: z.iso.datetime({ offset: true }).exactOptional(),
-            ended_at: z.iso.datetime({ offset: true }).exactOptional(),
-            alert_grouping_active: z.boolean().exactOptional(),
-          })
-          .exactOptional()
-          .openapi({
-            description:
-              'Describes the alert grouping state of this incident. Will be null if the incident has no alerts.',
-            required: [],
-          }),
-        last_status_change_by: z
-          .xor([AgentReferenceSchema, UserSchema, ServiceSchema])
-          .exactOptional()
-          .openapi({
-            description:
-              'The entity that last changed the status of the incident. If the `include[]=agents` query parameter is provided, the full user/service/integration definition will be returned.',
-          }),
-        priority: PrioritySchema.exactOptional(),
-        resolve_reason: ResolveReasonSchema.exactOptional(),
-        conference_bridge: ConferenceBridgeSchema.exactOptional().openapi({
-          description:
-            'The conference bridge information attached to the incident. Only returned if the `include[]=conference_bridge` query parameter is provided.',
-        }),
-        incidents_responders: z
-          .array(IncidentsRespondersReferenceSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'The responders on the incident. Only returned if the account has access to the [responder requests](https://support.pagerduty.com/docs/add-responders) feature.',
-            readOnly: true,
-          }),
-        responder_requests: z
-          .array(ResponderRequestSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'Previous responder requests made on this incident. Only returned if the account has access to the [responder requests](https://support.pagerduty.com/docs/add-responders) feature.',
-            readOnly: true,
-          }),
-        urgency: z
-          .enum(['high', 'low'])
-          .exactOptional()
-          .openapi({ description: 'The current urgency of the incident.' }),
-        body: IncidentBodySchema.exactOptional().openapi({
-          description:
-            'The additional incident body details. Only returned if the `include[]=body` query parameter is provided.',
-        }),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('Incident')
-
 const ExtensionReferenceSchema = ReferenceSchema.and(
   z.object({ type: z.literal('extension_reference').exactOptional() }).openapi({ required: [] }),
 ).openapi('ExtensionReference')
 
-const ExtensionSchema: z.ZodType<ExtensionType> = z
-  .lazy(() =>
+const ExtensionSchemaReferenceSchema = ReferenceSchema.and(
+  z
+    .object({ type: z.literal('extension_schema_reference').exactOptional() })
+    .openapi({ required: [] }),
+).openapi('ExtensionSchemaReference')
+
+const ExtensionSchema = z
+  .object({
+    id: z.string().exactOptional().openapi({ readOnly: true }),
+    summary: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description:
+          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
+      }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description:
+          'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
+      }),
+    self: z
+      .url()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description: 'the API show URL at which the object is accessible',
+      }),
+    html_url: z
+      .url()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description: 'a URL at which the entity is uniquely displayed in the Web app',
+      }),
+  })
+  .openapi({ required: [] })
+  .and(
     z
       .object({
-        id: z.string().exactOptional().openapi({ readOnly: true }),
-        summary: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            readOnly: true,
-            description:
-              'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
-          }),
+        name: z.string().openapi({ description: 'The name of the extension.' }),
         type: z
-          .string()
+          .literal('extension')
+          .default('extension')
+          .exactOptional()
+          .openapi({ description: 'The type of object being created.' }),
+        endpoint_url: z.url().exactOptional().openapi({ description: 'The url of the extension.' }),
+        extension_objects: z
+          .array(ServiceReferenceSchema)
+          .openapi({ description: 'The objects for which the extension applies' }),
+        extension_schema: ExtensionSchemaReferenceSchema,
+        temporarily_disabled: z
+          .boolean()
+          .default(false)
           .exactOptional()
           .openapi({
             readOnly: true,
             description:
-              'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
+              'Whether or not this extension is temporarily disabled; for example, a webhook extension that is repeatedly rejected by the server.',
           }),
-        self: z
-          .url()
-          .nullable()
+        config: z
+          .looseObject({})
           .exactOptional()
           .openapi({
-            readOnly: true,
-            description: 'the API show URL at which the object is accessible',
-          }),
-        html_url: z
-          .url()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            readOnly: true,
-            description: 'a URL at which the entity is uniquely displayed in the Web app',
+            description:
+              'The object that contains extension configuration values depending on the extension schema specification.',
           }),
       })
-      .openapi({ required: [] })
-      .and(
-        z
-          .object({
-            name: z.string().openapi({ description: 'The name of the extension.' }),
-            type: z
-              .literal('extension')
-              .default('extension')
-              .exactOptional()
-              .openapi({ description: 'The type of object being created.' }),
-            endpoint_url: z
-              .url()
-              .exactOptional()
-              .openapi({ description: 'The url of the extension.' }),
-            extension_objects: z
-              .array(ServiceReferenceSchema)
-              .openapi({ description: 'The objects for which the extension applies' }),
-            extension_schema: ExtensionSchemaReferenceSchema,
-            temporarily_disabled: z
-              .boolean()
-              .default(false)
-              .exactOptional()
-              .openapi({
-                readOnly: true,
-                description:
-                  'Whether or not this extension is temporarily disabled; for example, a webhook extension that is repeatedly rejected by the server.',
-              }),
-            config: z
-              .object({})
-              .exactOptional()
-              .openapi({
-                description:
-                  'The object that contains extension configuration values depending on the extension schema specification.',
-              }),
-          })
-          .openapi({
-            required: ['extension_objects', 'extension_schema', 'name'],
-            example: {
-              id: 'PJU23I3',
-              endpoint_url: 'https://example.com/receive_a_pagerduty_webhook',
-              name: 'My Webhook',
-              summary: 'My Webhook',
-              type: 'extension',
-              extension_schema: { id: 'PJFWPEP', type: 'extension_schema_reference' },
-              extension_objects: [{ id: 'PIJ90N7', type: 'service_reference' }],
-              config: { anykey: 'anyvalue' },
-            },
-          }),
-      ),
+      .openapi({
+        required: ['extension_objects', 'extension_schema', 'name'],
+        example: {
+          id: 'PJU23I3',
+          endpoint_url: 'https://example.com/receive_a_pagerduty_webhook',
+          name: 'My Webhook',
+          summary: 'My Webhook',
+          type: 'extension',
+          extension_schema: { id: 'PJFWPEP', type: 'extension_schema_reference' },
+          extension_objects: [{ id: 'PIJ90N7', type: 'service_reference' }],
+          config: { anykey: 'anyvalue' },
+        },
+      }),
   )
   .openapi('Extension')
 
@@ -8709,128 +9175,251 @@ const ScheduleReferenceSchema = ReferenceSchema.and(
   z.object({ type: z.literal('schedule_reference').exactOptional() }).openapi({ required: [] }),
 ).openapi('ScheduleReference')
 
-const ScheduleSchema: z.ZodType<ScheduleType> = z
-  .lazy(() =>
+const ScheduleLayerUserSchema = z
+  .object({ user: UserReferenceSchema })
+  .openapi({ required: ['user'] })
+  .openapi('ScheduleLayerUser')
+
+const RestrictionSchema = z
+  .object({
+    type: z
+      .enum(['daily_restriction', 'weekly_restriction'])
+      .openapi({ description: 'Specify the types of `restriction`.' }),
+    duration_seconds: z
+      .int()
+      .openapi({ description: 'The duration of the restriction in seconds.' }),
+    start_time_of_day: z.string().openapi({ description: 'The start time in HH:mm:ss format.' }),
+    start_day_of_week: z
+      .int()
+      .min(1)
+      .max(7)
+      .exactOptional()
+      .openapi({
+        description:
+          'Only required for use with a `weekly_restriction` restriction type. The first day of the weekly rotation schedule as [ISO 8601 day](https://en.wikipedia.org/wiki/ISO_week_date) (1 is Monday, etc.)',
+      }),
+  })
+  .openapi({
+    discriminator: { propertyName: 'type' },
+    required: ['type', 'duration_seconds', 'start_time_of_day'],
+  })
+  .openapi('Restriction')
+
+const ScheduleLayerEntrySchema = z
+  .object({
+    user: UserReferenceSchema.exactOptional(),
+    start: z.iso
+      .datetime({ offset: true })
+      .openapi({ readOnly: true, description: 'The start time of this entry.' }),
+    end: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        readOnly: true,
+        description: 'The end time of this entry. If null, the entry does not end.',
+      }),
+  })
+  .openapi({ required: ['start', 'end'] })
+  .openapi('ScheduleLayerEntry')
+
+const ScheduleLayerSchema = z
+  .object({
+    id: z.string().exactOptional(),
+    start: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'The start time of this layer.' }),
+    end: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The end time of this layer. If `null`, the layer does not end.' }),
+    users: z
+      .array(ScheduleLayerUserSchema)
+      .openapi({
+        description:
+          'The ordered list of users on this layer. The position of the user on the list determines their order in the layer.',
+      }),
+    restrictions: z
+      .array(RestrictionSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'An array of restrictions for the layer. A restriction is a limit on which period of the day or week the schedule layer can accept assignments. Restrictions respect the `time_zone` parameter of the request.',
+      }),
+    rotation_virtual_start: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description:
+          'The effective start time of the layer. This can be before the start time of the schedule.',
+      }),
+    rotation_turn_length_seconds: z
+      .int()
+      .openapi({ description: 'The duration of each on-call shift in seconds.' }),
+    name: z.string().exactOptional().openapi({ description: 'The name of the schedule layer.' }),
+    rendered_schedule_entries: z
+      .array(ScheduleLayerEntrySchema)
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description:
+          'This is a list of entries on the computed layer for the current time range. Since or until must be set in order for this field to be populated.',
+      }),
+    rendered_coverage_percentage: z
+      .number()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description:
+          'The percentage of the time range covered by this layer. Returns null unless since or until are set.',
+      }),
+  })
+  .openapi({
+    required: ['start', 'users', 'rotation_virtual_start', 'rotation_turn_length_seconds'],
+  })
+  .openapi('ScheduleLayer')
+
+const SubScheduleSchema = z
+  .object({
+    name: z
+      .enum(['Final Schedule', 'Overrides'])
+      .openapi({ readOnly: true, description: 'The name of the subschedule' }),
+    rendered_schedule_entries: z
+      .array(ScheduleLayerEntrySchema)
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description:
+          'This is a list of entries on the computed layer for the current time range. Since or until must be set in order for this field to be populated.',
+      }),
+    rendered_coverage_percentage: z
+      .number()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description:
+          'The percentage of the time range covered by this layer. Returns null unless since or until are set.',
+      }),
+  })
+  .openapi({ required: ['name'] })
+  .openapi('SubSchedule')
+
+const ScheduleSchema = z
+  .object({
+    id: z.string().exactOptional().openapi({ readOnly: true }),
+    summary: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description:
+          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
+      }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description:
+          'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
+      }),
+    self: z
+      .url()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description: 'the API show URL at which the object is accessible',
+      }),
+    html_url: z
+      .url()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description: 'a URL at which the entity is uniquely displayed in the Web app',
+      }),
+  })
+  .openapi({ required: [] })
+  .and(
     z
       .object({
-        id: z.string().exactOptional().openapi({ readOnly: true }),
-        summary: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            readOnly: true,
-            description:
-              'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
-          }),
         type: z
+          .literal('schedule')
+          .default('schedule')
+          .openapi({ description: 'The type of object being created.' }),
+        schedule_layers: z
+          .array(ScheduleLayerSchema)
+          .exactOptional()
+          .openapi({ description: 'A list of schedule layers.' }),
+        time_zone: z.string().openapi({ description: 'The time zone of the schedule.' }),
+        name: z.string().exactOptional().openapi({ description: 'The name of the schedule' }),
+        description: z
           .string()
           .exactOptional()
-          .openapi({
-            readOnly: true,
-            description:
-              'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-          }),
-        self: z
-          .url()
-          .nullable()
+          .openapi({ description: 'The description of the schedule' }),
+        final_schedule: SubScheduleSchema.exactOptional(),
+        overrides_subschedule: SubScheduleSchema.exactOptional(),
+        escalation_policies: z
+          .array(EscalationPolicyReferenceSchema)
           .exactOptional()
           .openapi({
             readOnly: true,
-            description: 'the API show URL at which the object is accessible',
+            description: 'An array of all of the escalation policies that uses this schedule.',
           }),
-        html_url: z
-          .url()
-          .nullable()
+        users: z
+          .array(UserReferenceSchema)
           .exactOptional()
           .openapi({
             readOnly: true,
-            description: 'a URL at which the entity is uniquely displayed in the Web app',
+            description: 'An array of all of the users on the schedule.',
           }),
-      })
-      .openapi({ required: [] })
-      .and(
-        z
+        teams: z
+          .array(TeamReferenceSchema)
+          .exactOptional()
+          .openapi({
+            readOnly: true,
+            description: 'An array of all of the teams on the schedule.',
+          }),
+        next_oncall_for_user: z
           .object({
-            type: z
-              .literal('schedule')
-              .default('schedule')
-              .openapi({ description: 'The type of object being created.' }),
-            schedule_layers: z
-              .array(ScheduleLayerSchema)
-              .exactOptional()
-              .openapi({ description: 'A list of schedule layers.' }),
-            time_zone: z.string().openapi({ description: 'The time zone of the schedule.' }),
-            name: z.string().exactOptional().openapi({ description: 'The name of the schedule' }),
-            description: z
+            start: z
               .string()
               .exactOptional()
-              .openapi({ description: 'The description of the schedule' }),
-            final_schedule: SubScheduleSchema.exactOptional(),
-            overrides_subschedule: SubScheduleSchema.exactOptional(),
-            escalation_policies: z
-              .array(EscalationPolicyReferenceSchema)
+              .openapi({ readOnly: true, description: 'The start date for the User shift' }),
+            end: z
+              .string()
               .exactOptional()
-              .openapi({
-                readOnly: true,
-                description: 'An array of all of the escalation policies that uses this schedule.',
-              }),
-            users: z
-              .array(UserReferenceSchema)
-              .exactOptional()
-              .openapi({
-                readOnly: true,
-                description: 'An array of all of the users on the schedule.',
-              }),
-            teams: z
-              .array(TeamReferenceSchema)
-              .exactOptional()
-              .openapi({
-                readOnly: true,
-                description: 'An array of all of the teams on the schedule.',
-              }),
-            next_oncall_for_user: z
-              .object({
-                start: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ readOnly: true, description: 'The start date for the User shift' }),
-                end: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ readOnly: true, description: 'The end date for the User shift' }),
-                user: ReferenceSchema.exactOptional(),
-              })
-              .exactOptional()
-              .openapi({ required: [] }),
+              .openapi({ readOnly: true, description: 'The end date for the User shift' }),
+            user: ReferenceSchema.exactOptional(),
           })
-          .openapi({
-            required: ['time_zone', 'type'],
-            example: {
-              name: 'Daily Engineering Rotation',
-              type: 'schedule',
-              time_zone: 'America/New_York',
-              description: 'Rotation schedule for engineering',
-              schedule_layers: [
+          .exactOptional()
+          .openapi({ required: [] }),
+      })
+      .openapi({
+        required: ['time_zone', 'type'],
+        example: {
+          name: 'Daily Engineering Rotation',
+          type: 'schedule',
+          time_zone: 'America/New_York',
+          description: 'Rotation schedule for engineering',
+          schedule_layers: [
+            {
+              name: 'Night Shift',
+              start: '2015-11-06T20:00:00-05:00',
+              end: '2016-11-06T20:00:00-05:00',
+              rotation_virtual_start: '2015-11-06T20:00:00-05:00',
+              rotation_turn_length_seconds: 86400,
+              users: [{ user: { id: 'PXPGF42', type: 'user_reference' } }],
+              restrictions: [
                 {
-                  name: 'Night Shift',
-                  start: '2015-11-06T20:00:00-05:00',
-                  end: '2016-11-06T20:00:00-05:00',
-                  rotation_virtual_start: '2015-11-06T20:00:00-05:00',
-                  rotation_turn_length_seconds: 86400,
-                  users: [{ user: { id: 'PXPGF42', type: 'user_reference' } }],
-                  restrictions: [
-                    {
-                      type: 'daily_restriction',
-                      start_time_of_day: '08:00:00',
-                      duration_seconds: 32400,
-                    },
-                  ],
+                  type: 'daily_restriction',
+                  start_time_of_day: '08:00:00',
+                  duration_seconds: 32400,
                 },
               ],
             },
-          }),
-      ),
+          ],
+        },
+      }),
   )
   .openapi('Schedule')
 
@@ -9398,7 +9987,7 @@ const AlertSchema = z
                   'Contexts to be included with the body such as links to graphs or images.',
               }),
             details: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({
                 readOnly: true,
@@ -9494,7 +10083,7 @@ const IncidentPrivilegeSchema = z
   .openapi({ required: [] })
   .openapi('IncidentPrivilege')
 
-const IncidentWorkflowSchema = z
+const IncidentWorkflowSchema: z.ZodType<IncidentWorkflowType> = z
   .object({
     id: z.string().exactOptional().openapi({ readOnly: true }),
     summary: z
@@ -10488,6 +11077,20 @@ const CidrEntrySchema = z
   .openapi({ description: 'A single CIDR entry within an IP allow list.', required: ['cidr'] })
   .openapi('CidrEntry')
 
+const IpAllowListTargetSchema = z
+  .object({
+    type: z.literal('surface').openapi({ description: 'The kind of target.' }),
+    value: z
+      .enum(['web', 'mobile'])
+      .openapi({ description: 'The surface to enforce the allow list on.' }),
+  })
+  .openapi({
+    description: 'A surface that the IP allow list is enforced on.',
+    required: ['type', 'value'],
+    example: { type: 'surface', value: 'web' },
+  })
+  .openapi('IpAllowListTarget')
+
 const IpAllowListSchema = z
   .object({
     id: z
@@ -10518,11 +11121,26 @@ const IpAllowListSchema = z
         description:
           'The CIDR ranges that are allowed when the allow list is `enabled`. Must\nbe non-empty when `state` is `enabled`.\n',
       }),
+    targets: z
+      .array(IpAllowListTargetSchema)
+      .min(1)
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .openapi({
+        description:
+          'The surfaces the allow list is enforced on. Must be non-empty and must\nnot contain duplicates.\n',
+      }),
   })
   .openapi({
     description:
-      "An IP allow list restricts access to a PagerDuty account's subdomain to a set\nof IPv4 CIDR ranges. Enforcement currently applies to web and mobile\napplication traffic.\n",
-    required: ['state', 'cidr_entries'],
+      "An IP allow list restricts access to a PagerDuty account's subdomain to a set\nof IPv4 CIDR ranges. Enforcement applies to the surfaces listed in\n`targets`.\n",
+    required: ['state', 'cidr_entries', 'targets'],
     example: {
       id: 'AGIS47HYOV6BDODBTMQKMPQPHU',
       type: 'ip_allow_list',
@@ -10531,9 +11149,27 @@ const IpAllowListSchema = z
         { cidr: '192.168.1.0/24', description: 'Office VPN' },
         { cidr: '10.0.0.0/24', description: 'Data Center' },
       ],
+      targets: [
+        { type: 'surface', value: 'web' },
+        { type: 'surface', value: 'mobile' },
+      ],
     },
   })
   .openapi('IpAllowList')
+
+const IpAllowListUpdateSchema = z
+  .object({
+    type: z.lazy(() => IpAllowListSchema).exactOptional(),
+    state: z.lazy(() => IpAllowListSchema).exactOptional(),
+    cidr_entries: z.lazy(() => IpAllowListSchema).exactOptional(),
+    targets: z.lazy(() => IpAllowListSchema).exactOptional(),
+  })
+  .openapi({
+    description:
+      'The writable fields of an IP allow list for an update. Every field is\noptional; any omitted field is left unchanged. A provided `cidr_entries`\nor `targets` array fully replaces the existing one.\n',
+    required: [],
+  })
+  .openapi('IpAllowListUpdate')
 
 const StatusUpdateSchema = z
   .object({
@@ -10565,79 +11201,7 @@ const StatusUpdateSchema = z
   .openapi({ required: [] })
   .openapi('StatusUpdate')
 
-const WebhookObjectSchema = ReferenceSchema.and(
-  z
-    .object({ type: z.enum(['service', 'service_reference']).exactOptional() })
-    .openapi({
-      description: 'The webhook object (service) that the webhook belongs to.',
-      required: [],
-    }),
-).openapi('WebhookObject')
-
-const OutboundIntegrationReferenceSchema = ReferenceSchema.and(
-  z
-    .object({ type: z.literal('outbound_integration_reference').exactOptional() })
-    .openapi({ required: [] }),
-).openapi('OutboundIntegrationReference')
-
-const WebhookSchema = z
-  .object({
-    endpoint_url: z
-      .url()
-      .exactOptional()
-      .openapi({ description: 'The url endpoint the webhook payload is sent to.' }),
-    name: z.string().exactOptional().openapi({ description: 'The name of the webhook.' }),
-    webhook_object: WebhookObjectSchema.exactOptional(),
-    config: z
-      .object({})
-      .exactOptional()
-      .openapi({
-        description:
-          'The object that contains webhook configuration values depending on the webhook type specification.',
-      }),
-    outbound_integration: OutboundIntegrationReferenceSchema.exactOptional(),
-  })
-  .openapi({
-    description: 'Information about the configured webhook.',
-    readOnly: true,
-    example: {
-      id: 'PPGPXHO',
-      type: 'webhook',
-      summary: 'webhook',
-      name: 'My Webhook',
-      endpoint_url: 'https://example.com',
-      webhook_object: { id: 'PNTDJ30', type: 'service_reference' },
-      config: { anykey: 'anyvalue' },
-      outbound_integration: { id: 'PJFWPEP', type: 'outbound_integration_reference' },
-    },
-    required: [],
-  })
-  .openapi('Webhook')
-
-const ActionSchema = z
-  .object({
-    id: z
-      .uuid()
-      .exactOptional()
-      .openapi({
-        description:
-          'Uniquely identifies this outgoing webhook message; can be used for idempotency when processing the messages.',
-        readOnly: true,
-      }),
-    triggered_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The date/time when this message was was sent.', readOnly: true }),
-    webhook: WebhookSchema.exactOptional(),
-  })
-  .openapi({
-    description: 'A message containing information about a single PagerDuty action.',
-    readOnly: true,
-    required: [],
-  })
-  .openapi('Action')
-
-const WebhookIncidentActionSchema = ActionSchema.and(
+const WebhookIncidentActionSchema: z.ZodType<WebhookIncidentActionType> = ActionSchema.and(
   z
     .object({
       type: z
@@ -12264,7 +12828,7 @@ const OrchestrationCacheVariableExternalDataSchema = z
   .openapi({ title: 'External Data' })
   .openapi('OrchestrationCacheVariableExternalData')
 
-const OrchestrationGlobalSchema = z
+const OrchestrationGlobalSchema: z.ZodType<OrchestrationGlobalType> = z
   .object({
     orchestration_path: z
       .object({
@@ -12339,7 +12903,7 @@ const OrchestrationGlobalSchema = z
                               'Each of these conditions is evaluated to check if an event matches this rule. The rule is considered a match if **any** of these conditions match.',
                           }),
                         actions: z
-                          .object({})
+                          .looseObject({})
                           .exactOptional()
                           .openapi({
                             description:
@@ -12367,7 +12931,7 @@ const OrchestrationGlobalSchema = z
         catch_all: z
           .object({
             actions: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({
                 description:
@@ -12786,6 +13350,21 @@ const OrchestrationGlobalSchema = z
                                       .and(
                                         z
                                           .object({
+                                            incident_type: z
+                                              .string()
+                                              .nullable()
+                                              .exactOptional()
+                                              .openapi({
+                                                description:
+                                                  'The ID of the Incident Type to set on the incident created from the event. You can find the list of IDs by calling the List Incident Types endpoint. Omit it or set it to `null` to leave the Incident Type unset (the key is omitted from responses when unset). If multiple rules set an Incident Type, the last matching rule wins. This action is only available to accounts with access to Incident Types in Event Orchestration.',
+                                                example: 'PT10C33',
+                                              }),
+                                          })
+                                          .openapi({ required: [] }),
+                                      )
+                                      .and(
+                                        z
+                                          .object({
                                             incident_custom_field_updates: z
                                               .array(
                                                 z
@@ -13124,6 +13703,21 @@ const OrchestrationGlobalSchema = z
                   .and(
                     z
                       .object({
+                        incident_type: z
+                          .string()
+                          .nullable()
+                          .exactOptional()
+                          .openapi({
+                            description:
+                              'The ID of the Incident Type to set on the incident created from the event. You can find the list of IDs by calling the List Incident Types endpoint. Omit it or set it to `null` to leave the Incident Type unset (the key is omitted from responses when unset). If multiple rules set an Incident Type, the last matching rule wins. This action is only available to accounts with access to Incident Types in Event Orchestration.',
+                            example: 'PT10C33',
+                          }),
+                      })
+                      .openapi({ required: [] }),
+                  )
+                  .and(
+                    z
+                      .object({
                         incident_custom_field_updates: z
                           .array(
                             z
@@ -13204,6 +13798,7 @@ const OrchestrationGlobalSchema = z
                           target: 'event.source',
                         },
                       ],
+                      incident_type: 'PT10C33',
                       incident_custom_field_updates: [
                         { id: 'PEXCK89', value: '#my-team-channel' },
                         { id: 'PN1C4A2', value: '{{event.timestamp}}' },
@@ -13283,7 +13878,7 @@ const OrchestrationGlobalSchema = z
   )
   .openapi('OrchestrationGlobal')
 
-const OrchestrationRouterSchema = z
+const OrchestrationRouterSchema: z.ZodType<OrchestrationRouterType> = z
   .object({
     orchestration_path: z
       .object({
@@ -13358,7 +13953,7 @@ const OrchestrationRouterSchema = z
                               'Each of these conditions is evaluated to check if an event matches this rule. The rule is considered a match if **any** of these conditions match.',
                           }),
                         actions: z
-                          .object({})
+                          .looseObject({})
                           .exactOptional()
                           .openapi({
                             description:
@@ -13386,7 +13981,7 @@ const OrchestrationRouterSchema = z
         catch_all: z
           .object({
             actions: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({
                 description:
@@ -13656,7 +14251,7 @@ const OrchestrationRouterSchema = z
   )
   .openapi('OrchestrationRouter')
 
-const OrchestrationUnroutedSchema = z
+const OrchestrationUnroutedSchema: z.ZodType<OrchestrationUnroutedType> = z
   .object({
     orchestration_path: z
       .object({
@@ -13731,7 +14326,7 @@ const OrchestrationUnroutedSchema = z
                               'Each of these conditions is evaluated to check if an event matches this rule. The rule is considered a match if **any** of these conditions match.',
                           }),
                         actions: z
-                          .object({})
+                          .looseObject({})
                           .exactOptional()
                           .openapi({
                             description:
@@ -13759,7 +14354,7 @@ const OrchestrationUnroutedSchema = z
         catch_all: z
           .object({
             actions: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({
                 description:
@@ -14229,7 +14824,7 @@ const OrchestrationUnroutedSchema = z
   )
   .openapi('OrchestrationUnrouted')
 
-const ServiceOrchestrationSchema = z
+const ServiceOrchestrationSchema: z.ZodType<ServiceOrchestrationType> = z
   .object({
     orchestration_path: z
       .object({
@@ -14304,7 +14899,7 @@ const ServiceOrchestrationSchema = z
                               'Each of these conditions is evaluated to check if an event matches this rule. The rule is considered a match if **any** of these conditions match.',
                           }),
                         actions: z
-                          .object({})
+                          .looseObject({})
                           .exactOptional()
                           .openapi({
                             description:
@@ -14332,7 +14927,7 @@ const ServiceOrchestrationSchema = z
         catch_all: z
           .object({
             actions: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({
                 description:
@@ -14884,6 +15479,21 @@ const ServiceOrchestrationSchema = z
                                           .and(
                                             z
                                               .object({
+                                                incident_type: z
+                                                  .string()
+                                                  .nullable()
+                                                  .exactOptional()
+                                                  .openapi({
+                                                    description:
+                                                      'The ID of the Incident Type to set on the incident created from the event. You can find the list of IDs by calling the List Incident Types endpoint. Omit it or set it to `null` to leave the Incident Type unset (the key is omitted from responses when unset). If multiple rules set an Incident Type, the last matching rule wins. This action is only available to accounts with access to Incident Types in Event Orchestration.',
+                                                    example: 'PT10C33',
+                                                  }),
+                                              })
+                                              .openapi({ required: [] }),
+                                          )
+                                          .and(
+                                            z
+                                              .object({
                                                 incident_custom_field_updates: z
                                                   .array(
                                                     z
@@ -15262,6 +15872,21 @@ const ServiceOrchestrationSchema = z
                       .and(
                         z
                           .object({
+                            incident_type: z
+                              .string()
+                              .nullable()
+                              .exactOptional()
+                              .openapi({
+                                description:
+                                  'The ID of the Incident Type to set on the incident created from the event. You can find the list of IDs by calling the List Incident Types endpoint. Omit it or set it to `null` to leave the Incident Type unset (the key is omitted from responses when unset). If multiple rules set an Incident Type, the last matching rule wins. This action is only available to accounts with access to Incident Types in Event Orchestration.',
+                                example: 'PT10C33',
+                              }),
+                          })
+                          .openapi({ required: [] }),
+                      )
+                      .and(
+                        z
+                          .object({
                             incident_custom_field_updates: z
                               .array(
                                 z
@@ -15525,7 +16150,7 @@ const OrchestrationWarningInvalidDataSchema = z
       .exactOptional()
       .openapi({
         description:
-          'The feature that includes invalid data.\n\nExample values include:\n  * `incident_custom_field_updates`\n  * `escalation_policy`\n  * `cache_variable:annotate`\n  * `cache_variable:conditions`\n  * `cache_variable:automation_actions`\n',
+          'The feature that includes invalid data.\n\nExample values include:\n  * `incident_type`\n  * `incident_custom_field_updates`\n  * `escalation_policy`\n  * `cache_variable:annotate`\n  * `cache_variable:conditions`\n  * `cache_variable:automation_actions`\n',
       }),
     feature_type: z
       .string()
@@ -15542,65 +16167,102 @@ const OrchestrationWarningInvalidDataSchema = z
   .openapi({ description: 'This rule includes invalid data for a feature item.', required: [] })
   .openapi('OrchestrationWarningInvalidData')
 
-const TemplateSchema: z.ZodType<TemplateType> = z
-  .lazy(() =>
-    EditableTemplateSchema.and(
-      z
-        .object({
-          id: z.string().exactOptional().openapi({ readOnly: true }),
-          summary: z
-            .string()
-            .nullable()
-            .exactOptional()
-            .openapi({
-              readOnly: true,
-              description:
-                'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
-            }),
-          self: z
-            .url()
-            .nullable()
-            .exactOptional()
-            .openapi({
-              readOnly: true,
-              description: 'the API show URL at which the object is accessible',
-            }),
-          html_url: z
-            .url()
-            .nullable()
-            .exactOptional()
-            .openapi({
-              readOnly: true,
-              description: 'a URL at which the entity is uniquely displayed in the Web app',
-            }),
-          type: z.literal('template').exactOptional(),
-          created_by: z
-            .xor([
-              UserReferenceSchema,
-              ReferenceSchema.and(
-                z
-                  .object({ type: z.literal('account_reference').exactOptional() })
-                  .openapi({ required: [] }),
-              ),
-            ])
-            .exactOptional()
-            .openapi({ description: 'User/Account object reference of the creator' }),
-          updated_by: z
-            .xor([
-              UserReferenceSchema,
-              ReferenceSchema.and(
-                z
-                  .object({ type: z.literal('account_reference').exactOptional() })
-                  .openapi({ required: [] }),
-              ),
-            ])
-            .exactOptional()
-            .openapi({ description: 'User/Account object reference of the updator' }),
-        })
-        .openapi({ required: [] }),
-    ),
-  )
-  .openapi('Template')
+const EditableTemplateSchema = z
+  .object({
+    template_type: z
+      .literal('status_update')
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of template (`status_update` is the only supported template at this time)',
+      }),
+    name: z.string().exactOptional().openapi({ description: 'The name of the template' }),
+    description: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Description of the template' }),
+    templated_fields: z
+      .object({
+        email_subject: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'The subject of the e-mail' }),
+        email_body: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'The HTML body of the e-mail message' }),
+        message: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'The short-message of the template (SMS, Push notification, Slack,\netc)',
+          }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+  })
+  .openapi({ required: [] })
+  .openapi('EditableTemplate')
+
+const TemplateSchema = EditableTemplateSchema.and(
+  z
+    .object({
+      id: z.string().exactOptional().openapi({ readOnly: true }),
+      summary: z
+        .string()
+        .nullable()
+        .exactOptional()
+        .openapi({
+          readOnly: true,
+          description:
+            'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
+        }),
+      self: z
+        .url()
+        .nullable()
+        .exactOptional()
+        .openapi({
+          readOnly: true,
+          description: 'the API show URL at which the object is accessible',
+        }),
+      html_url: z
+        .url()
+        .nullable()
+        .exactOptional()
+        .openapi({
+          readOnly: true,
+          description: 'a URL at which the entity is uniquely displayed in the Web app',
+        }),
+      type: z.literal('template').exactOptional(),
+      created_by: z
+        .xor([
+          UserReferenceSchema,
+          ReferenceSchema.and(
+            z
+              .object({ type: z.literal('account_reference').exactOptional() })
+              .openapi({ required: [] }),
+          ),
+        ])
+        .exactOptional()
+        .openapi({ description: 'User/Account object reference of the creator' }),
+      updated_by: z
+        .xor([
+          UserReferenceSchema,
+          ReferenceSchema.and(
+            z
+              .object({ type: z.literal('account_reference').exactOptional() })
+              .openapi({ required: [] }),
+          ),
+        ])
+        .exactOptional()
+        .openapi({ description: 'User/Account object reference of the updator' }),
+    })
+    .openapi({ required: [] }),
+).openapi('Template')
 
 const RenderedTemplateSchema = z
   .object({
@@ -15711,6 +16373,62 @@ const CustomFieldsFieldSchema = z
       .openapi({ description: 'The date/time the object was last updated.', readOnly: true }),
   })
   .openapi({ required: [] })
+  .and(
+    z
+      .looseObject({})
+      .openapi({
+        required: [
+          'id',
+          'summary',
+          'self',
+          'type',
+          'created_at',
+          'updated_at',
+          'data_type',
+          'namespace',
+          'name',
+          'display_name',
+          'field_type',
+        ],
+      }),
+  )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'summary')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'self')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'created_at')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'updated_at')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'data_type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'namespace')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'display_name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'field_type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .openapi({
     required: [
       'id',
@@ -15729,7 +16447,7 @@ const CustomFieldsFieldSchema = z
   .openapi('CustomFieldsField')
 
 const CustomFieldsFieldOptionSchema = CustomFieldsEditableFieldOptionSchema.and(
-  z.object({}).openapi({ required: ['id', 'data', 'created_at', 'updated_at'] }),
+  z.looseObject({}).openapi({ required: ['id', 'data', 'created_at', 'updated_at'] }),
 ).openapi('CustomFieldsFieldOption')
 
 const CustomFieldsFieldWithOptionsSchema = z
@@ -15779,6 +16497,62 @@ const CustomFieldsFieldWithOptionsSchema = z
       .openapi({ description: 'The date/time the object was last updated.', readOnly: true }),
   })
   .openapi({ required: [] })
+  .and(
+    z
+      .looseObject({})
+      .openapi({
+        required: [
+          'id',
+          'summary',
+          'self',
+          'type',
+          'created_at',
+          'updated_at',
+          'data_type',
+          'namespace',
+          'name',
+          'display_name',
+          'field_type',
+        ],
+      }),
+  )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'summary')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'self')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'created_at')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'updated_at')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'data_type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'namespace')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'display_name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'field_type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .openapi({
     required: [
       'id',
@@ -16889,14 +17663,14 @@ const WorkflowIntegrationSchema = z
           .exactOptional()
           .openapi({ description: 'The application that this integration is associated with' }),
         configuration_schema: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({
             description:
               'The JSON schema for the configuration of the integration. This is a dynamic field and is different for every integration',
           }),
         secrets_schema: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({
             description:
@@ -17056,11 +17830,11 @@ const WorkflowIntegrationConnectionSchema = z
           .exactOptional()
           .openapi({ readOnly: true, required: [] }),
         configuration: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'The configuration for this connection' }),
         secrets: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({
             description:
@@ -17221,195 +17995,7 @@ const UpdateScheduleRequestSchema = z
   .openapi({ required: ['schedule'] })
   .openapi('UpdateScheduleRequest')
 
-const ZonedDateTimeSchema = z
-  .object({
-    date_time: z.iso
-      .datetime({ offset: true })
-      .openapi({ description: 'The date and time', example: '2025-03-03T09:00:00Z' }),
-    time_zone: z
-      .string()
-      .openapi({ description: 'IANA timezone identifier', example: 'America/New_York' }),
-  })
-  .openapi({
-    description:
-      'A time-of-day value with an explicit time zone. Used for event\n`start_time` and `end_time` to define the recurring window of coverage\n(e.g., 9 AM–5 PM every Monday in New York).\n',
-    required: ['date_time', 'time_zone'],
-  })
-  .openapi('ZonedDateTime')
-
-const ShiftMemberSchema = z
-  .object({
-    type: z
-      .enum(['user_member', 'empty_member'])
-      .openapi({
-        description:
-          '`user_member` — a specific user is assigned.\n`empty_member` — the slot is intentionally unassigned.\n',
-      }),
-    user_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The ID of the user. Required when type is `user_member`.',
-        example: 'PUSER123',
-      }),
-  })
-  .openapi({
-    description: 'A member (user) assigned to a shift or rotation slot',
-    required: ['type'],
-  })
-  .openapi('ShiftMember')
-
-const EventAssignmentStrategySchema = z
-  .object({
-    type: z.enum(['rotating_member_assignment_strategy', 'every_member_assignment_strategy']),
-    shifts_per_member: z
-      .int()
-      .min(1)
-      .exactOptional()
-      .openapi({
-        description:
-          'Required for `rotating_member_assignment_strategy`. Number of\nconsecutive shift occurrences each member covers before the\nnext member takes over.\n\nMust be omitted (or null) for `every_member_assignment_strategy`.\n\n**UI editor constraint:** When `recurrence` uses `FREQ=WEEKLY`,\n`shifts_per_member` must be evenly divisible by the number of days\nlisted in the RRULE `BYDAY` parameter. Events that violate this\nare fully functional via the API but cannot be loaded in the\nweb schedule editor.\n',
-        example: 1,
-      }),
-    members: z.array(ShiftMemberSchema).min(1).max(60),
-  })
-  .openapi({
-    description:
-      "Defines how users are assigned on-call within an event's time window.\n\n- `rotating_member_assignment_strategy`: users rotate in sequence.\n  `shifts_per_member` controls how many consecutive shift periods each\n  member covers before rotating.\n- `every_member_assignment_strategy`: all listed members are on-call\n  simultaneously for every occurrence.\n",
-    required: ['type', 'members'],
-  })
-  .openapi('EventAssignmentStrategy')
-
-const EventSchema = z
-  .object({
-    id: z.string().openapi({ example: 'ABCDEFGHIJKLMNOPQRSTUVWXY2' }),
-    type: z.literal('schedule_event'),
-    name: z
-      .string()
-      .openapi({ description: 'Display name for this event', example: 'Weekly On-Call' }),
-    start_time: ZonedDateTimeSchema,
-    end_time: ZonedDateTimeSchema,
-    effective_since: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'When this event starts producing shifts (UTC)',
-        example: '2025-03-03T00:00:00Z',
-      }),
-    effective_until: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'When this event stops producing shifts (UTC). Null means indefinite.',
-        example: '2025-09-01T00:00:00Z',
-      }),
-    recurrence: z
-      .array(z.string())
-      .openapi({
-        description:
-          'RFC 5545 recurrence rules defining the repeating pattern. This must be an array containing:  <br> - Exactly one <b>RRULE</b> <br>- Zero or more <b>EXDATE</b> <br>- Zero or more <b>RDATE</b>',
-        example: ['RRULE:FREQ=WEEKLY'],
-      }),
-    assignment_strategy: EventAssignmentStrategySchema,
-    self: z.url().exactOptional(),
-    html_url: z.url().exactOptional(),
-  })
-  .openapi({
-    description:
-      'An event defines when and how users are on-call within a rotation.\nIt combines a recurring time window (`start_time`, `end_time`,\n`recurrence`) with an assignment strategy and an effective date range\n(`effective_since`, `effective_until`).\n',
-    required: [
-      'id',
-      'type',
-      'name',
-      'start_time',
-      'end_time',
-      'effective_since',
-      'recurrence',
-      'assignment_strategy',
-    ],
-  })
-  .openapi('Event')
-
-const RotationSchema = z
-  .object({
-    id: z.string().openapi({ example: 'ABCDEFGHIJKLMNOPQRSTUVWXY2' }),
-    type: z.literal('schedule_rotation'),
-    events: z
-      .array(EventSchema)
-      .exactOptional()
-      .openapi({ description: 'Events in this rotation' }),
-    self: z.url().exactOptional(),
-    html_url: z.url().exactOptional(),
-  })
-  .openapi({
-    description:
-      "A rotation within a schedule. All scheduling logic (recurrence,\nassignment strategy, members) is defined on the rotation's events.\n",
-    required: ['id', 'type'],
-  })
-  .openapi('Rotation')
-
-const ShiftSourceSchema = z
-  .object({
-    type: z.enum([
-      'schedule_rotation',
-      'custom_shift',
-      'schedule_rotation_override',
-      'custom_shift_override',
-    ]),
-    rotation_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Present for schedule_rotation and schedule_rotation_override sources',
-        example: 'ABCDEFGHIJKLMNOPQRSTUVWXY2',
-      }),
-    shift_id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Present for custom_shift and custom_shift_override sources' }),
-    override_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Present for schedule_rotation_override and custom_shift_override sources',
-      }),
-  })
-  .openapi({ description: 'Where a computed shift assignment originated', required: ['type'] })
-  .openapi('ShiftSource')
-
-const ComputedShiftAssignmentSchema = z
-  .object({
-    type: z.literal('computed_shift_assignment'),
-    start_time: z.iso.datetime({ offset: true }).openapi({ example: '2025-01-06T09:00:00Z' }),
-    end_time: z.iso.datetime({ offset: true }).openapi({ example: '2025-01-13T09:00:00Z' }),
-    member: ShiftMemberSchema,
-    source: ShiftSourceSchema,
-  })
-  .openapi({
-    description: 'A single computed on-call assignment within the final schedule',
-    required: ['type', 'start_time', 'end_time', 'member', 'source'],
-  })
-  .openapi('ComputedShiftAssignment')
-
-const FinalScheduleSchema = z
-  .object({
-    type: z.literal('final_schedule'),
-    rendered_coverage_percentage: z
-      .float64()
-      .openapi({
-        description: 'Percentage of the requested time range that has on-call coverage (0–100)',
-        example: 100,
-      }),
-    computed_shift_assignments: z.array(ComputedShiftAssignmentSchema),
-  })
-  .openapi({
-    description:
-      'Computed on-call assignments for the requested time range.\nOnly present when `include[]=final_schedule` is specified and\n`since`/`until` are provided.\n',
-    required: ['type', 'rendered_coverage_percentage', 'computed_shift_assignments'],
-  })
-  .openapi('FinalSchedule')
-
-const ScheduleResponseSchema = z
+const ScheduleResponseSchema: z.ZodType<ScheduleResponseType> = z
   .object({
     schedule: z
       .object({
@@ -18599,6 +19185,7 @@ const OrchestrationPathServiceTypeResponseResponse = {
                           },
                         ],
                         route_to: 'step-two',
+                        incident_type: 'PT10C33',
                         incident_custom_field_updates: [
                           { id: 'PEXCK89', value: '#my-team-channel' },
                           { id: 'PN1C4A2', value: '{{event.timestamp}}' },
@@ -20837,7 +21424,7 @@ const IncidentReviewsStatusParamsSchema = z
       in: 'query',
       required: false,
       description:
-        'Only return Incident Reviews with one of these statuses. Repeat the parameter to pass more than one.',
+        'Only return Post-Incident Reviews with one of these statuses. Repeat the parameter to pass more than one.',
       explode: true,
       schema: {
         type: 'array',
@@ -20858,7 +21445,7 @@ const IncidentReviewsStatusNotParamsSchema = z
       in: 'query',
       required: false,
       description:
-        'Exclude Incident Reviews with any of these statuses. Repeat the parameter to pass more than one.',
+        'Exclude Post-Incident Reviews with any of these statuses. Repeat the parameter to pass more than one.',
       explode: true,
       schema: {
         type: 'array',
@@ -20875,7 +21462,7 @@ const IncidentReviewsStatusNotEmptyParamsSchema = z
       name: 'status_not_empty',
       in: 'query',
       required: false,
-      description: 'When `true`, only return Incident Reviews that have a status set.',
+      description: 'When `true`, only return Post-Incident Reviews that have a status set.',
       schema: { type: 'boolean' },
     },
   })
@@ -20889,7 +21476,7 @@ const IncidentReviewsHasOpenActionItemsParamsSchema = z
       in: 'query',
       required: false,
       description:
-        'When `true`, only return Incident Reviews that have at least one action item that is not complete.',
+        'When `true`, only return Post-Incident Reviews that have at least one action item that is not complete.',
       schema: { type: 'boolean' },
     },
   })
@@ -25154,6 +25741,7 @@ const OrchestrationPathGlobalTypeResponseExample = {
                   { template: '{{variables.hostname}}', target: 'event.custom_details.hostname' },
                   { source: 'event.source', regex: 'www (.*) service', target: 'event.source' },
                 ],
+                incident_type: 'PT10C33',
                 incident_custom_field_updates: [
                   { id: 'PEXCK89', value: '#my-team-channel' },
                   { id: 'PN1C4A2', value: '{{event.timestamp}}' },
@@ -25351,6 +25939,10 @@ const IpAllowListResponseExample = {
       cidr_entries: [
         { cidr: '192.168.1.0/24', description: 'Office VPN' },
         { cidr: '10.0.0.0/24', description: 'Data Center' },
+      ],
+      targets: [
+        { type: 'surface', value: 'web' },
+        { type: 'surface', value: 'mobile' },
       ],
     },
   },
@@ -26053,14 +26645,14 @@ const CreateWorkflowIntegrationConnectionRequestBody = {
             .exactOptional()
             .openapi({ readOnly: true, required: [] }),
           configuration: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({
               description:
                 "The configuration for this connection.\nThe configuration schema is defined in the Workflow Integration's `configuration_schema` property.\nIt is dynamic based on the specific Workflow Integration.\n",
             }),
           secrets: z
-            .object({})
+            .looseObject({})
             .openapi({
               description:
                 "The secrets for this connection.\nThe secrets schema is defined in the Workflow Integration's `secrets_schema` property.\nIt is dynamic based on the specific Workflow Integration.\nThis field is write-only and will always be `null` on a response so that secrets are not leaked.\n",
@@ -26179,14 +26771,14 @@ const UpdateWorkflowIntegrationConnectionRequestBody = {
             .exactOptional()
             .openapi({ readOnly: true, required: [] }),
           configuration: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({
               description:
                 "The configuration for this connection.\nThe configuration schema is defined in the Workflow Integration's `configuration_schema` property.\nIt is dynamic based on the specific Workflow Integration.\n",
             }),
           secrets: z
-            .object({})
+            .looseObject({})
             .openapi({
               description:
                 "The secrets for this connection.\nThe secrets schema is defined in the Workflow Integration's `secrets_schema` property.\nIt is dynamic based on the specific Workflow Integration.\nThis field is write-only and will always be `null` on a response so that secrets are not leaked.\n",
@@ -26910,7 +27502,7 @@ export const postEntityTypeIdChangeTagsRoute = createRoute({
       description: 'The tags were added and/or removed.',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               summary: 'Request Example',
@@ -30827,7 +31419,7 @@ export const postAutomationActionsActionsIdInvocationsRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({ invocation: AutomationActionsInvocationSchema.and(z.object({})) })
+            .object({ invocation: AutomationActionsInvocationSchema.and(z.looseObject({})) })
             .openapi({ required: ['invocation'] }),
           examples: {
             response: {
@@ -34985,6 +35577,7 @@ export const putEventOrchestrationsIdGlobalRoute = createRoute({
                                 target: 'event.source',
                               },
                             ],
+                            incident_type: 'PT10C33',
                             incident_custom_field_updates: [
                               { id: 'PEXCK89', value: '#my-team-channel' },
                               { id: 'PN1C4A2', value: '{{event.timestamp}}' },
@@ -35110,6 +35703,7 @@ export const putEventOrchestrationsIdGlobalRoute = createRoute({
                                 target: 'event.source',
                               },
                             ],
+                            incident_type: 'PT10C33',
                             incident_custom_field_updates: [
                               { id: 'PEXCK89', value: '#my-team-channel' },
                               { id: 'PN1C4A2', value: '{{event.timestamp}}' },
@@ -35720,6 +36314,7 @@ export const putEventOrchestrationsServicesServiceIdRoute = createRoute({
                                 trigger_types: ['alert_triggered'],
                               },
                             ],
+                            incident_type: 'PT10C33',
                             incident_custom_field_updates: [
                               { id: 'PEXCK89', value: '#my-team-channel' },
                               { id: 'PN1C4A2', value: '{{event.timestamp}}' },
@@ -35890,6 +36485,7 @@ export const putEventOrchestrationsServicesServiceIdRoute = createRoute({
                                 trigger_types: ['alert_triggered'],
                               },
                             ],
+                            incident_type: 'PT10C33',
                             incident_custom_field_updates: [
                               { id: 'PEXCK89', value: '#my-team-channel' },
                               { id: 'PN1C4A2', value: '{{event.timestamp}}' },
@@ -41828,10 +42424,10 @@ export const putIncidentsIdResponderRequestsCancelRoute = createRoute({
 export const getIncidentsReviewsRoute = createRoute({
   method: 'get',
   path: '/incidents/reviews',
-  tags: ['Incident Reviews'],
-  summary: 'List Incident Reviews',
+  tags: ['Post-Incident Reviews'],
+  summary: 'List Post-Incident Reviews',
   description:
-    'List the Incident Reviews on the account, newest first by creation time.\n\nOnly Incident Reviews on Incidents the caller can see are returned. Each entry is a summary; fetch the Incident Review by its Incident to get its sections.\n\nThis endpoint uses cursor pagination. Omit `cursor` for the first page, then pass the `next_cursor` from the previous response until it is `null`.\n\nScoped OAuth requires: `incident_reviews.read`\n',
+    'List the Post-Incident Reviews on the account, newest first by creation time.\n\nOnly Post-Incident Reviews on Incidents the caller can see are returned. Each entry is a summary; fetch the Post-Incident Review by its Incident to get its sections.\n\nThis endpoint uses cursor pagination. Omit `cursor` for the first page, then pass the `next_cursor` from the previous response until it is `null`.\n\nScoped OAuth requires: `incident_reviews.read`\n',
   operationId: 'listIncidentReviews',
   request: {
     headers: z.object({
@@ -41851,7 +42447,7 @@ export const getIncidentsReviewsRoute = createRoute({
   },
   responses: {
     200: {
-      description: 'A page of Incident Reviews on the account.',
+      description: 'A page of Post-Incident Reviews on the account.',
       content: {
         'application/json': {
           schema: z
@@ -41864,7 +42460,9 @@ export const getIncidentsReviewsRoute = createRoute({
               more: z
                 .boolean()
                 .exactOptional()
-                .openapi({ description: 'Whether more Incident Reviews exist after this page.' }),
+                .openapi({
+                  description: 'Whether more Post-Incident Reviews exist after this page.',
+                }),
               next_cursor: z
                 .string()
                 .nullable()
@@ -41911,10 +42509,10 @@ export const getIncidentsReviewsRoute = createRoute({
 export const getIncidentsReviewsActionItemsRoute = createRoute({
   method: 'get',
   path: '/incidents/reviews/action_items',
-  tags: ['Incident Reviews'],
-  summary: 'List action items across all Incident Reviews',
+  tags: ['Post-Incident Reviews'],
+  summary: 'List action items across all Post-Incident Reviews',
   description:
-    "List the action items across every Incident Review on the account, oldest first by creation time.\n\nOnly action items on Incident Reviews the caller can see are returned. Each action item's `incident_id` identifies the Incident Review it belongs to.\n\nThis endpoint uses cursor pagination. Omit `cursor` for the first page, then pass the `next_cursor` from the previous response until it is `null`.\n\nScoped OAuth requires: `incident_reviews.read`\n",
+    "List the action items across every Post-Incident Review on the account, oldest first by creation time.\n\nOnly action items on Post-Incident Reviews the caller can see are returned. Each action item's `incident_id` identifies the Post-Incident Review it belongs to.\n\nThis endpoint uses cursor pagination. Omit `cursor` for the first page, then pass the `next_cursor` from the previous response until it is `null`.\n\nScoped OAuth requires: `incident_reviews.read`\n",
   operationId: 'listAccountIncidentReviewActionItems',
   request: {
     headers: z.object({
@@ -41936,7 +42534,7 @@ export const getIncidentsReviewsActionItemsRoute = createRoute({
   },
   responses: {
     200: {
-      description: "A page of action items across the account's Incident Reviews.",
+      description: "A page of action items across the account's Post-Incident Reviews.",
       content: {
         'application/json': {
           schema: z
@@ -42001,10 +42599,10 @@ export const getIncidentsReviewsActionItemsRoute = createRoute({
 export const getIncidentsIdReviewRoute = createRoute({
   method: 'get',
   path: '/incidents/{id}/review',
-  tags: ['Incident Reviews'],
-  summary: 'Get an Incident Review',
+  tags: ['Post-Incident Reviews'],
+  summary: 'Get a Post-Incident Review',
   description:
-    'Get the Incident Review for the specified Incident.\n\nAn Incident Review is a structured, post-resolution record of what happened during an Incident. Each Incident has at most one Incident Review.\n\nReturns `404` if the Incident has no Incident Review, or if the caller cannot see it.\n\nScoped OAuth requires: `incident_reviews.read`\n',
+    'Get the Post-Incident Review for the specified Incident.\n\nA Post-Incident Review is a structured, post-resolution record of what happened during an Incident. Each Incident has at most one Post-Incident Review.\n\nReturns `404` if the Incident has no Post-Incident Review, or if the caller cannot see it.\n\nScoped OAuth requires: `incident_reviews.read`\n',
   operationId: 'getIncidentReview',
   request: {
     headers: z.object({
@@ -42015,7 +42613,7 @@ export const getIncidentsIdReviewRoute = createRoute({
   },
   responses: {
     200: {
-      description: 'The Incident Review for the specified Incident.',
+      description: 'The Post-Incident Review for the specified Incident.',
       content: {
         'application/json': {
           schema: z
@@ -42073,10 +42671,10 @@ export const getIncidentsIdReviewRoute = createRoute({
 export const putIncidentsIdReviewRoute = createRoute({
   method: 'put',
   path: '/incidents/{id}/review',
-  tags: ['Incident Reviews'],
-  summary: 'Update an Incident Review',
+  tags: ['Post-Incident Reviews'],
+  summary: 'Update a Post-Incident Review',
   description:
-    'Update the Incident Review for the specified Incident.\n\nThis is a partial update: an omitted field leaves the current value unchanged.\n\nMoving `status` to `completed` is rejected with `409` while any required section is still unfilled.\n\nOn accounts where completed Incident Reviews are read-only, any other change to a `completed` Incident Review is rejected with `409` until it is reopened by setting `status` to another value. Completing or reopening an Incident Review requires permission to complete it, or the request is rejected with `403`.\n\n`409` is also returned if the Incident Review is locked, or if it uses a format this version of the API cannot edit.\n\nScoped OAuth requires: `incident_reviews.write`\n',
+    'Update the Post-Incident Review for the specified Incident.\n\nThis is a partial update: an omitted field leaves the current value unchanged.\n\nMoving `status` to `completed` is rejected with `409` while any required section is still unfilled.\n\nOn accounts where completed Post-Incident Reviews are read-only, any other change to a `completed` Post-Incident Review is rejected with `409` until it is reopened by setting `status` to another value. Completing or reopening a Post-Incident Review requires permission to complete it, or the request is rejected with `403`.\n\n`409` is also returned if the Post-Incident Review is locked, or if it uses a format this version of the API cannot edit.\n\nScoped OAuth requires: `incident_reviews.write`\n',
   operationId: 'updateIncidentReview',
   request: {
     headers: z.object({
@@ -42094,11 +42692,11 @@ export const putIncidentsIdReviewRoute = createRoute({
                 .min(1)
                 .max(255)
                 .exactOptional()
-                .openapi({ description: 'The updated title of the Incident Review.' }),
+                .openapi({ description: 'The updated title of the Post-Incident Review.' }),
               status: z
                 .enum(['started', 'in_review', 'completed'])
                 .exactOptional()
-                .openapi({ description: 'The updated status of the Incident Review.' }),
+                .openapi({ description: 'The updated status of the Post-Incident Review.' }),
             })
             .openapi({ required: [] }),
           examples: {
@@ -42114,7 +42712,7 @@ export const putIncidentsIdReviewRoute = createRoute({
   },
   responses: {
     200: {
-      description: 'The Incident Review updated.',
+      description: 'The Post-Incident Review updated.',
       content: {
         'application/json': {
           schema: z
@@ -42167,10 +42765,10 @@ export const putIncidentsIdReviewRoute = createRoute({
 export const postIncidentsIdReviewRoute = createRoute({
   method: 'post',
   path: '/incidents/{id}/review',
-  tags: ['Incident Reviews'],
-  summary: 'Create an Incident Review',
+  tags: ['Post-Incident Reviews'],
+  summary: 'Create a Post-Incident Review',
   description:
-    "Create an Incident Review for the specified Incident.\n\nAn Incident can have at most one Incident Review, so this returns `400` if the Incident already has one. A caller that wants create-or-fetch behaviour should fall back to `GET` on failure.\n\nThe new Incident Review follows the account's default template, which determines its sections.\n\nWhen called with a User API token, the caller owns the new Incident Review. An account API key may name an owner with `owner_user_id`.\n\nReturns `400` if `owner_user_id` is not a User on the account, or if a User API token names someone other than the caller.\n\nScoped OAuth requires: `incident_reviews.write`\n",
+    "Create a Post-Incident Review for the specified Incident.\n\nAn Incident can have at most one Post-Incident Review, so this returns `400` if the Incident already has one. A caller that wants create-or-fetch behaviour should fall back to `GET` on failure.\n\nThe new Post-Incident Review follows the account's default template, which determines its sections.\n\nWhen called with a User API token, the caller owns the new Post-Incident Review. An account API key may name an owner with `owner_user_id`.\n\nReturns `400` if `owner_user_id` is not a User on the account, or if a User API token names someone other than the caller.\n\nScoped OAuth requires: `incident_reviews.write`\n",
   operationId: 'createIncidentReview',
   request: {
     headers: z.object({
@@ -42186,13 +42784,13 @@ export const postIncidentsIdReviewRoute = createRoute({
               title: z
                 .string()
                 .max(255)
-                .openapi({ description: 'The title of the Incident Review.' }),
+                .openapi({ description: 'The title of the Post-Incident Review.' }),
               owner_user_id: z
                 .string()
                 .exactOptional()
                 .openapi({
                   description:
-                    'The ID of the User who should own the Incident Review. Only for account API keys, whose Incident Reviews would otherwise have no owner; with a User API token the caller is the owner, and naming anyone else is rejected with `400`. The User must belong to the account. Ignored unless the account has per-review permissions.\n',
+                    'The ID of the User who should own the Post-Incident Review. Only for account API keys, whose Post-Incident Reviews would otherwise have no owner; with a User API token the caller is the owner, and naming anyone else is rejected with `400`. The User must belong to the account. Ignored unless the account has per-review permissions.\n',
                 }),
             })
             .openapi({ required: ['title'] }),
@@ -42206,7 +42804,7 @@ export const postIncidentsIdReviewRoute = createRoute({
   },
   responses: {
     201: {
-      description: 'The Incident Review created.',
+      description: 'The Post-Incident Review created.',
       content: {
         'application/json': {
           schema: z
@@ -42257,10 +42855,10 @@ export const postIncidentsIdReviewRoute = createRoute({
 export const getIncidentsIdReviewActionItemsRoute = createRoute({
   method: 'get',
   path: '/incidents/{id}/review/action_items',
-  tags: ['Incident Reviews'],
-  summary: 'List action items for an Incident Review',
+  tags: ['Post-Incident Reviews'],
+  summary: 'List action items for a Post-Incident Review',
   description:
-    'List the action items on the Incident Review for the specified Incident, oldest first by creation time.\n\nReturns an empty list for an Incident Review that has no action items, and `404` when the Incident has no Incident Review, or if the caller cannot see it.\n\nThis endpoint uses cursor pagination. Omit `cursor` for the first page, then pass the `next_cursor` from the previous response until it is `null`.\n\nScoped OAuth requires: `incident_reviews.read`\n',
+    'List the action items on the Post-Incident Review for the specified Incident, oldest first by creation time.\n\nReturns an empty list for a Post-Incident Review that has no action items, and `404` when the Incident has no Post-Incident Review, or if the caller cannot see it.\n\nThis endpoint uses cursor pagination. Omit `cursor` for the first page, then pass the `next_cursor` from the previous response until it is `null`.\n\nScoped OAuth requires: `incident_reviews.read`\n',
   operationId: 'listIncidentReviewActionItems',
   request: {
     headers: z.object({
@@ -42272,7 +42870,7 @@ export const getIncidentsIdReviewActionItemsRoute = createRoute({
   },
   responses: {
     200: {
-      description: 'An array of action items on the Incident Review.',
+      description: 'An array of action items on the Post-Incident Review.',
       content: {
         'application/json': {
           schema: z
@@ -42338,10 +42936,10 @@ export const getIncidentsIdReviewActionItemsRoute = createRoute({
 export const postIncidentsIdReviewMarkersRoute = createRoute({
   method: 'post',
   path: '/incidents/{id}/review/markers',
-  tags: ['Incident Reviews'],
-  summary: 'Add a marker to an Incident Review timeline',
+  tags: ['Post-Incident Reviews'],
+  summary: 'Add a marker to a Post-Incident Review timeline',
   description:
-    'Add a marker to the timeline of the Incident Review for the specified Incident.\n\nA marker highlights a point of interest on the timeline. Each entry in `notes` is added as its own event attached to the new marker.\n\nReturns `404` when the Incident has no Incident Review, or if the caller cannot see it, and `409` when the Incident Review is `completed` and must be reopened first.\n\n`409` is also returned if the Incident Review is locked, or if it uses a format this version of the API cannot edit.\n\nScoped OAuth requires: `incident_reviews.write`\n',
+    'Add a marker to the timeline of the Post-Incident Review for the specified Incident.\n\nA marker highlights a point of interest on the timeline. Each entry in `notes` is added as its own event attached to the new marker.\n\nReturns `404` when the Incident has no Post-Incident Review, or if the caller cannot see it, and `409` when the Post-Incident Review is `completed` and must be reopened first.\n\n`409` is also returned if the Post-Incident Review is locked, or if it uses a format this version of the API cannot edit.\n\nScoped OAuth requires: `incident_reviews.write`\n',
   operationId: 'createIncidentReviewMarker',
   request: {
     headers: z.object({
@@ -44836,6 +45434,10 @@ export const getIpAllowListsRoute = createRoute({
                       { cidr: '192.168.1.0/24', description: 'Office VPN' },
                       { cidr: '10.0.0.0/24', description: 'Data Center' },
                     ],
+                    targets: [
+                      { type: 'surface', value: 'web' },
+                      { type: 'surface', value: 'mobile' },
+                    ],
                   },
                 ],
               },
@@ -44858,7 +45460,7 @@ export const postIpAllowListsRoute = createRoute({
   tags: ['IP Allow Lists'],
   summary: 'Create an IP allow list',
   description:
-    "Create the account's IP allow list.\n\nOnly Account Owners, Global Admins, and Account API Keys can call this endpoint.\n\nScoped OAuth requires: `ip_allow_lists.write`\n",
+    "Create the account's IP allow list.\n\n`targets` is required. A `400` is returned when `targets` is missing or empty, contains duplicates, or contains a value other than `web` or `mobile`.\n\nOnly Account Owners, Global Admins, and Account API Keys can call this endpoint.\n\nScoped OAuth requires: `ip_allow_lists.write`\n",
   operationId: 'createIpAllowList',
   request: {
     headers: z.object({
@@ -44879,6 +45481,10 @@ export const postIpAllowListsRoute = createRoute({
                   type: 'ip_allow_list',
                   state: 'enabled',
                   cidr_entries: [{ cidr: '192.168.1.0/24', description: 'Office VPN' }],
+                  targets: [
+                    { type: 'surface', value: 'web' },
+                    { type: 'surface', value: 'mobile' },
+                  ],
                 },
               },
             },
@@ -44947,7 +45553,7 @@ export const putIpAllowListsIdRoute = createRoute({
   tags: ['IP Allow Lists'],
   summary: 'Update an IP allow list',
   description:
-    'Update the IP allow list with the given `id`. The request body fully replaces the writable fields.\n\nOnly Account Owners, Global Admins, and Account API Keys can call this endpoint.\n\nScoped OAuth requires: `ip_allow_lists.write`\n',
+    'Update the IP allow list with the given `id`. Updates are applied per field: any field omitted from the request body is left unchanged, and a provided `cidr_entries` or `targets` array fully replaces the existing one.\n\nA `400` is returned when `targets` is empty, contains duplicates, or contains a value other than `web` or `mobile`.\n\nOnly Account Owners, Global Admins, and Account API Keys can call this endpoint.\n\nScoped OAuth requires: `ip_allow_lists.write`\n',
   operationId: 'updateIpAllowList',
   request: {
     params: z.object({ id: IdParamsSchema }),
@@ -44959,7 +45565,7 @@ export const putIpAllowListsIdRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({ ip_allow_list: IpAllowListSchema })
+            .object({ ip_allow_list: IpAllowListUpdateSchema })
             .openapi({ required: ['ip_allow_list'] }),
           examples: {
             update: {
@@ -44971,6 +45577,10 @@ export const putIpAllowListsIdRoute = createRoute({
                   cidr_entries: [
                     { cidr: '192.168.1.0/24', description: 'Office VPN' },
                     { cidr: '10.0.0.0/24', description: 'Data Center' },
+                  ],
+                  targets: [
+                    { type: 'surface', value: 'web' },
+                    { type: 'surface', value: 'mobile' },
                   ],
                 },
               },
@@ -46667,7 +47277,9 @@ export const postRulesetsRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({ ruleset: RulesetSchema.and(z.object({}).openapi({ required: ['name'] })) })
+            .object({
+              ruleset: RulesetSchema.and(z.looseObject({}).openapi({ required: ['name'] })),
+            })
             .openapi({ required: ['ruleset'] }),
           examples: {
             request: {
@@ -55865,11 +56477,9 @@ export const postUsersRoute = createRoute({
               user: UserSchema.and(
                 z
                   .object({
-                    license: z
-                      .any()
-                      .openapi({ description: 'The License assigned to the User' })
-                      .and(LicenseReferenceSchema)
-                      .exactOptional(),
+                    license: LicenseReferenceSchema.exactOptional().openapi({
+                      description: 'The License assigned to the User',
+                    }),
                   })
                   .openapi({ required: [] }),
               ),
@@ -56073,11 +56683,9 @@ export const putUsersIdRoute = createRoute({
               user: UserSchema.and(
                 z
                   .object({
-                    license: z
-                      .any()
-                      .openapi({ description: 'The License assigned to the User' })
-                      .and(LicenseReferenceSchema)
-                      .exactOptional(),
+                    license: LicenseReferenceSchema.exactOptional().openapi({
+                      description: 'The License assigned to the User',
+                    }),
                   })
                   .openapi({ required: [] }),
               ),
@@ -59069,7 +59677,7 @@ export const postV3SchedulesIdRotationsRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({})
+            .looseObject({})
             .openapi({
               description: 'Empty body — rotations carry no configuration at creation time',
             }),

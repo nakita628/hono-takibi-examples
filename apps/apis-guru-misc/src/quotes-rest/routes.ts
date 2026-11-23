@@ -9,30 +9,24 @@ const NewQuoteSchema = z
   .openapi({ required: ['quote'] })
   .openapi('NewQuote')
 
-type QuoteType = z.infer<typeof NewQuoteSchema> & { id: string; image?: string; length?: number }
-
-const QuoteSchema: z.ZodType<QuoteType> = z
-  .lazy(() =>
-    NewQuoteSchema.and(
-      z
-        .object({
-          id: z
-            .string()
-            .openapi({
-              description: 'Unique identifier representing a specific quote in theysaidso.com.',
-            }),
-          image: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Image URL that can be used for background to display this quote.',
-            }),
-          length: z.int32().exactOptional().openapi({ description: 'Length of the quote string.' }),
-        })
-        .openapi({ required: ['id'] }),
-    ),
-  )
-  .openapi('Quote')
+const QuoteSchema = NewQuoteSchema.and(
+  z
+    .object({
+      id: z
+        .string()
+        .openapi({
+          description: 'Unique identifier representing a specific quote in theysaidso.com.',
+        }),
+      image: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'Image URL that can be used for background to display this quote.',
+        }),
+      length: z.int32().exactOptional().openapi({ description: 'Length of the quote string.' }),
+    })
+    .openapi({ required: ['id'] }),
+).openapi('Quote')
 
 const QODSchema = QuoteSchema.and(
   z

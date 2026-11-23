@@ -35,153 +35,111 @@ type GoogleCloudDatacatalogV1ColumnSchemaType = {
   type?: string
 }
 
-type GoogleCloudDatacatalogV1beta1ColumnSchemaType = {
-  column?: string
-  description?: string
-  mode?: string
-  subcolumns?: GoogleCloudDatacatalogV1beta1ColumnSchemaType[]
-  type?: string
-}
-
-type GoogleCloudDatacatalogV1beta1SerializedPolicyTagType = {
-  childPolicyTags?: GoogleCloudDatacatalogV1beta1SerializedPolicyTagType[]
-  description?: string
-  displayName?: string
-  policyTag?: string
-}
-
-const ExprSchema = z
+const GoogleCloudDatacatalogV1TagFieldEnumValueSchema = z
   .object({
-    description: z
+    displayName: z
       .string()
       .exactOptional()
-      .openapi({
-        description:
-          'Optional. Description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.',
-      }),
-    expression: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Textual representation of an expression in Common Expression Language syntax.',
-      }),
-    location: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. String indicating the location of the expression for error reporting, e.g. a file name and a position in the file.',
-      }),
-    title: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Title for the expression, i.e. a short string describing its purpose. This can be used e.g. in UIs which allow to enter the expression.',
-      }),
+      .openapi({ description: 'The display name of the enum value.' }),
   })
-  .openapi({
-    description:
-      'Represents a textual expression in the Common Expression Language (CEL) syntax. CEL is a C-like expression language. The syntax and semantics of CEL are documented at https://github.com/google/cel-spec. Example (Comparison): title: "Summary size limit" description: "Determines if a summary is less than 100 chars" expression: "document.summary.size() < 100" Example (Equality): title: "Requestor is owner" description: "Determines if requestor is the document owner" expression: "document.owner == request.auth.claims.email" Example (Logic): title: "Public documents" description: "Determine whether the document should be publicly visible" expression: "document.type != \'private\' && document.type != \'internal\'" Example (Data Manipulation): title: "Notification string" description: "Create a notification string with a timestamp." expression: "\'New message received at \' + string(document.create_time)" The exact variables and functions that may be referenced within an expression are determined by the service that evaluates it. See the service documentation for additional information.',
-    required: [],
-  })
-  .openapi('Expr')
+  .openapi({ description: 'An enum value.', required: [] })
+  .openapi('GoogleCloudDatacatalogV1TagFieldEnumValue')
 
-const BindingSchema = z
+const GoogleCloudDatacatalogV1TagFieldSchema = z
   .object({
-    condition: ExprSchema.exactOptional().openapi({
+    boolValue: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'The value of a tag field with a boolean type.' }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. The display name of this field.', readOnly: true }),
+    doubleValue: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'The value of a tag field with a double type.' }),
+    enumValue: GoogleCloudDatacatalogV1TagFieldEnumValueSchema.exactOptional().openapi({
       description:
-        'The condition that is associated with this binding. If the condition evaluates to `true`, then this binding applies to the current request. If the condition evaluates to `false`, then this binding does not apply to the current request. However, a different role binding might grant the same role to one or more of the principals in this binding. To learn which resources support conditions in their IAM policies, see the [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).',
+        'The value of a tag field with an enum type. This value must be one of the allowed values listed in this enum.',
     }),
-    members: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies the principals requesting access for a Google Cloud resource. `members` can have the following values: * `allUsers`: A special identifier that represents anyone who is on the internet; with or without a Google account. * `allAuthenticatedUsers`: A special identifier that represents anyone who is authenticated with a Google account or a service account. Does not include identities that come from external identity providers (IdPs) through identity federation. * `user:{emailid}`: An email address that represents a specific Google account. For example, `alice@example.com` . * `serviceAccount:{emailid}`: An email address that represents a Google service account. For example, `my-other-app@appspot.gserviceaccount.com`. * `serviceAccount:{projectid}.svc.id.goog[{namespace}/{kubernetes-sa}]`: An identifier for a [Kubernetes service account](https://cloud.google.com/kubernetes-engine/docs/how-to/kubernetes-service-accounts). For example, `my-project.svc.id.goog[my-namespace/my-kubernetes-sa]`. * `group:{emailid}`: An email address that represents a Google group. For example, `admins@example.com`. * `domain:{domain}`: The G Suite domain (primary) that represents all the users of that domain. For example, `google.com` or `example.com`. * `deleted:user:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a user that has been recently deleted. For example, `alice@example.com?uid=123456789012345678901`. If the user is recovered, this value reverts to `user:{emailid}` and the recovered user retains the role in the binding. * `deleted:serviceAccount:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a service account that has been recently deleted. For example, `my-other-app@appspot.gserviceaccount.com?uid=123456789012345678901`. If the service account is undeleted, this value reverts to `serviceAccount:{emailid}` and the undeleted service account retains the role in the binding. * `deleted:group:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a Google group that has been recently deleted. For example, `admins@example.com?uid=123456789012345678901`. If the group is recovered, this value reverts to `group:{emailid}` and the recovered group retains the role in the binding.',
-      }),
-    role: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Role that is assigned to the list of `members`, or principals. For example, `roles/viewer`, `roles/editor`, or `roles/owner`.',
-      }),
-  })
-  .openapi({ description: 'Associates `members`, or principals, with a `role`.', required: [] })
-  .openapi('Binding')
-
-const EmptySchema = z
-  .object({})
-  .openapi({
-    description:
-      'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
-  })
-  .openapi('Empty')
-
-const GetPolicyOptionsSchema = z
-  .object({
-    requestedPolicyVersion: z
+    order: z
       .int32()
       .exactOptional()
       .openapi({
         description:
-          'Optional. The maximum policy version that will be used to format the policy. Valid values are 0, 1, and 3. Requests specifying an invalid value will be rejected. Requests for policies with any conditional role bindings must specify version 3. Policies with no conditional role bindings may specify any valid value or leave the field unset. The policy in the response might use the policy version that you specified, or it might use a lower policy version. For example, if you specify version 3, but the policy has no conditional role bindings, the response uses version 1. To learn which resources support conditions in their IAM policies, see the [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).',
+          "Output only. The order of this field with respect to other fields in this tag. Can be set by Tag. For example, a higher value can indicate a more important field. The value can be negative. Multiple fields can have the same order, and field orders within a tag don't have to be sequential.",
+        readOnly: true,
       }),
-  })
-  .openapi({ description: 'Encapsulates settings provided to GetIamPolicy.', required: [] })
-  .openapi('GetPolicyOptions')
-
-const GetIamPolicyRequestSchema = z
-  .object({
-    options: GetPolicyOptionsSchema.exactOptional().openapi({
-      description:
-        'OPTIONAL: A `GetPolicyOptions` object for specifying options to `GetIamPolicy`.',
-    }),
-  })
-  .openapi({ description: 'Request message for `GetIamPolicy` method.', required: [] })
-  .openapi('GetIamPolicyRequest')
-
-const GoogleCloudDatacatalogV1CloudSqlBigQueryConnectionSpecSchema = z
-  .object({
-    database: z.string().exactOptional().openapi({ description: 'Database name.' }),
-    instanceId: z
+    richtextValue: z
       .string()
       .exactOptional()
       .openapi({
-        description: 'Cloud SQL instance ID in the format of `project:location:instance`.',
+        description:
+          'The value of a tag field with a rich text type. The maximum length is 10 MiB as this value holds HTML descriptions including encoded images. The maximum length of the text without images is 100 KiB.',
       }),
-    type: z
-      .enum(['DATABASE_TYPE_UNSPECIFIED', 'POSTGRES', 'MYSQL'])
-      .exactOptional()
-      .openapi({ description: 'Type of the Cloud SQL database.' }),
-  })
-  .openapi({
-    description: 'Specification for the BigQuery connection to a Cloud SQL instance.',
-    required: [],
-  })
-  .openapi('GoogleCloudDatacatalogV1CloudSqlBigQueryConnectionSpec')
-
-const GoogleCloudDatacatalogV1BigQueryConnectionSpecSchema = z
-  .object({
-    cloudSql: GoogleCloudDatacatalogV1CloudSqlBigQueryConnectionSpecSchema.exactOptional().openapi({
-      description: 'Specification for the BigQuery connection to a Cloud SQL instance.',
-    }),
-    connectionType: z
-      .enum(['CONNECTION_TYPE_UNSPECIFIED', 'CLOUD_SQL'])
-      .exactOptional()
-      .openapi({ description: 'The type of the BigQuery connection.' }),
-    hasCredential: z
-      .boolean()
+    stringValue: z
+      .string()
       .exactOptional()
       .openapi({
         description:
-          'True if there are credentials attached to the BigQuery connection; false otherwise.',
+          'The value of a tag field with a string type. The maximum length is 2000 UTF-8 characters.',
+      }),
+    timestampValue: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The value of a tag field with a timestamp type.' }),
+  })
+  .openapi({
+    description: 'Contains the value and additional information on a field within a Tag.',
+    required: [],
+  })
+  .openapi('GoogleCloudDatacatalogV1TagField')
+
+const GoogleCloudDatacatalogV1TagSchema = z
+  .object({
+    column: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Resources like entry can have schemas associated with them. This scope allows you to attach tags to an individual column based on that schema. To attach a tag to a nested column, separate column names with a dot (`.`). Example: `column.nested_column`.',
+      }),
+    fields: z
+      .record(z.string(), GoogleCloudDatacatalogV1TagFieldSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Maps the ID of a tag field to its value and additional information about that field. Tag template defines valid field IDs. A tag must have at least 1 field and at most 500 fields.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The resource name of the tag in URL format where tag ID is a system-generated identifier. Note: The tag itself might not be stored in the location specified in its name.',
+      }),
+    template: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The resource name of the tag template this tag uses. Example: `projects/{PROJECT_ID}/locations/{LOCATION}/tagTemplates/{TAG_TEMPLATE_ID}` This field cannot be modified after creation.',
+      }),
+    templateDisplayName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The display name of the tag template.',
+        readOnly: true,
       }),
   })
-  .openapi({ description: 'Specification for the BigQuery connection.', required: [] })
-  .openapi('GoogleCloudDatacatalogV1BigQueryConnectionSpec')
+  .openapi({
+    description:
+      'Tags contain custom metadata and are attached to Data Catalog resources. Tags conform with the specification of their tag template. See [Data Catalog IAM](https://cloud.google.com/data-catalog/docs/concepts/iam) for information on the permissions needed to create or view tags.',
+    required: [],
+  })
+  .openapi('GoogleCloudDatacatalogV1Tag')
 
 const GoogleCloudDatacatalogV1BigQueryDateShardedSpecSchema = z
   .object({
@@ -219,16 +177,6 @@ const GoogleCloudDatacatalogV1BigQueryDateShardedSpecSchema = z
     required: [],
   })
   .openapi('GoogleCloudDatacatalogV1BigQueryDateShardedSpec')
-
-const GoogleCloudDatacatalogV1BigQueryRoutineSpecSchema = z
-  .object({
-    importedLibraries: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Paths of the imported libraries.' }),
-  })
-  .openapi({ description: 'Fields specific for BigQuery routines.', required: [] })
-  .openapi('GoogleCloudDatacatalogV1BigQueryRoutineSpec')
 
 const GoogleCloudDatacatalogV1TableSpecSchema = z
   .object({
@@ -334,42 +282,6 @@ const GoogleCloudDatacatalogV1BusinessContextSchema = z
   .openapi({ description: 'Business Context of the entry.', required: [] })
   .openapi('GoogleCloudDatacatalogV1BusinessContext')
 
-const GoogleCloudDatacatalogV1CloudBigtableInstanceSpecCloudBigtableClusterSpecSchema = z
-  .object({
-    displayName: z.string().exactOptional().openapi({ description: 'Name of the cluster.' }),
-    linkedResource: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A link back to the parent resource, in this case Instance.' }),
-    location: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Location of the cluster, typically a Cloud zone.' }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Type of the resource. For a cluster this would be "CLUSTER".' }),
-  })
-  .openapi({
-    description: 'Spec that applies to clusters of an Instance of Cloud Bigtable.',
-    required: [],
-  })
-  .openapi('GoogleCloudDatacatalogV1CloudBigtableInstanceSpecCloudBigtableClusterSpec')
-
-const GoogleCloudDatacatalogV1CloudBigtableInstanceSpecSchema = z
-  .object({
-    cloudBigtableClusterSpecs: z
-      .array(GoogleCloudDatacatalogV1CloudBigtableInstanceSpecCloudBigtableClusterSpecSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of clusters for the Instance.' }),
-  })
-  .openapi({
-    description:
-      'Specification that applies to Instance entries that are part of `CLOUD_BIGTABLE` system. (user_specified_type)',
-    required: [],
-  })
-  .openapi('GoogleCloudDatacatalogV1CloudBigtableInstanceSpec')
-
 const GoogleCloudDatacatalogV1CloudBigtableSystemSpecSchema = z
   .object({
     instanceDisplayName: z
@@ -386,93 +298,6 @@ const GoogleCloudDatacatalogV1CloudBigtableSystemSpecSchema = z
     required: [],
   })
   .openapi('GoogleCloudDatacatalogV1CloudBigtableSystemSpec')
-
-const GoogleCloudDatacatalogV1ColumnSchemaSchema: z.ZodType<GoogleCloudDatacatalogV1ColumnSchemaType> =
-  z
-    .lazy(() =>
-      z
-        .object({
-          column: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Required. Name of the column. Must be a UTF-8 string without dots (.). The maximum size is 64 bytes.',
-            }),
-          defaultValue: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'Optional. Default value for the column.' }),
-          description: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Optional. Description of the column. Default value is an empty string. The description must be a UTF-8 string with the maximum size of 2000 bytes.',
-            }),
-          gcRule: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Optional. Garbage collection policy for the column or column family. Applies to systems like Cloud Bigtable.',
-            }),
-          highestIndexingType: z
-            .enum([
-              'INDEXING_TYPE_UNSPECIFIED',
-              'INDEXING_TYPE_NONE',
-              'INDEXING_TYPE_NON_UNIQUE',
-              'INDEXING_TYPE_UNIQUE',
-              'INDEXING_TYPE_PRIMARY_KEY',
-            ])
-            .exactOptional()
-            .openapi({ description: 'Optional. Most important inclusion of this column.' }),
-          lookerColumnSpec:
-            GoogleCloudDatacatalogV1ColumnSchemaLookerColumnSpecSchema.exactOptional().openapi({
-              description: 'Looker specific column info of this column.',
-            }),
-          mode: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                "Optional. A column's mode indicates whether values in this column are required, nullable, or repeated. Only `NULLABLE`, `REQUIRED`, and `REPEATED` values are supported. Default mode is `NULLABLE`.",
-            }),
-          ordinalPosition: z
-            .int32()
-            .exactOptional()
-            .openapi({ description: 'Optional. Ordinal position' }),
-          subcolumns: z
-            .array(GoogleCloudDatacatalogV1ColumnSchemaSchema)
-            .exactOptional()
-            .openapi({
-              description:
-                'Optional. Schema of sub-columns. A column can have zero or more sub-columns.',
-            }),
-          type: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Required. Type of the column. Must be a UTF-8 string with the maximum size of 128 bytes.',
-            }),
-        })
-        .openapi({
-          description: 'A column within a schema. Columns can be nested inside other columns.',
-          required: [],
-        }),
-    )
-    .openapi('GoogleCloudDatacatalogV1ColumnSchema')
-
-const GoogleCloudDatacatalogV1CommonUsageStatsSchema = z
-  .object({
-    viewCount: z.string().exactOptional().openapi({ description: 'View count in source system.' }),
-  })
-  .openapi({
-    description: "Common statistics on the entry's usage. They can be set on any system.",
-    required: [],
-  })
-  .openapi('GoogleCloudDatacatalogV1CommonUsageStats')
 
 const GoogleCloudDatacatalogV1StoragePropertiesSchema = z
   .object({
@@ -518,6 +343,46 @@ const GoogleCloudDatacatalogV1DataSourceSchema = z
   .openapi({ description: 'Physical location of an entry.', required: [] })
   .openapi('GoogleCloudDatacatalogV1DataSource')
 
+const GoogleCloudDatacatalogV1CloudSqlBigQueryConnectionSpecSchema = z
+  .object({
+    database: z.string().exactOptional().openapi({ description: 'Database name.' }),
+    instanceId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Cloud SQL instance ID in the format of `project:location:instance`.',
+      }),
+    type: z
+      .enum(['DATABASE_TYPE_UNSPECIFIED', 'POSTGRES', 'MYSQL'])
+      .exactOptional()
+      .openapi({ description: 'Type of the Cloud SQL database.' }),
+  })
+  .openapi({
+    description: 'Specification for the BigQuery connection to a Cloud SQL instance.',
+    required: [],
+  })
+  .openapi('GoogleCloudDatacatalogV1CloudSqlBigQueryConnectionSpec')
+
+const GoogleCloudDatacatalogV1BigQueryConnectionSpecSchema = z
+  .object({
+    cloudSql: GoogleCloudDatacatalogV1CloudSqlBigQueryConnectionSpecSchema.exactOptional().openapi({
+      description: 'Specification for the BigQuery connection to a Cloud SQL instance.',
+    }),
+    connectionType: z
+      .enum(['CONNECTION_TYPE_UNSPECIFIED', 'CLOUD_SQL'])
+      .exactOptional()
+      .openapi({ description: 'The type of the BigQuery connection.' }),
+    hasCredential: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'True if there are credentials attached to the BigQuery connection; false otherwise.',
+      }),
+  })
+  .openapi({ description: 'Specification for the BigQuery connection.', required: [] })
+  .openapi('GoogleCloudDatacatalogV1BigQueryConnectionSpec')
+
 const GoogleCloudDatacatalogV1DataSourceConnectionSpecSchema = z
   .object({
     bigqueryConnectionSpec:
@@ -558,17 +423,17 @@ const GoogleCloudDatacatalogV1PhysicalSchemaAvroSchemaSchema = z
   .openapi('GoogleCloudDatacatalogV1PhysicalSchemaAvroSchema')
 
 const GoogleCloudDatacatalogV1PhysicalSchemaCsvSchemaSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Marks a CSV-encoded data source.' })
   .openapi('GoogleCloudDatacatalogV1PhysicalSchemaCsvSchema')
 
 const GoogleCloudDatacatalogV1PhysicalSchemaOrcSchemaSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Marks an ORC-encoded data source.' })
   .openapi('GoogleCloudDatacatalogV1PhysicalSchemaOrcSchema')
 
 const GoogleCloudDatacatalogV1PhysicalSchemaParquetSchemaSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Marks a Parquet-encoded data source.' })
   .openapi('GoogleCloudDatacatalogV1PhysicalSchemaParquetSchema')
 
@@ -733,112 +598,6 @@ const GoogleCloudDatacatalogV1DataplexFilesetSpecSchema = z
   .openapi({ description: 'Entry specyfication for a Dataplex fileset.', required: [] })
   .openapi('GoogleCloudDatacatalogV1DataplexFilesetSpec')
 
-const GoogleCloudDatacatalogV1TagFieldEnumValueSchema = z
-  .object({
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The display name of the enum value.' }),
-  })
-  .openapi({ description: 'An enum value.', required: [] })
-  .openapi('GoogleCloudDatacatalogV1TagFieldEnumValue')
-
-const GoogleCloudDatacatalogV1TagFieldSchema = z
-  .object({
-    boolValue: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'The value of a tag field with a boolean type.' }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. The display name of this field.', readOnly: true }),
-    doubleValue: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'The value of a tag field with a double type.' }),
-    enumValue: GoogleCloudDatacatalogV1TagFieldEnumValueSchema.exactOptional().openapi({
-      description:
-        'The value of a tag field with an enum type. This value must be one of the allowed values listed in this enum.',
-    }),
-    order: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          "Output only. The order of this field with respect to other fields in this tag. Can be set by Tag. For example, a higher value can indicate a more important field. The value can be negative. Multiple fields can have the same order, and field orders within a tag don't have to be sequential.",
-        readOnly: true,
-      }),
-    richtextValue: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The value of a tag field with a rich text type. The maximum length is 10 MiB as this value holds HTML descriptions including encoded images. The maximum length of the text without images is 100 KiB.',
-      }),
-    stringValue: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The value of a tag field with a string type. The maximum length is 2000 UTF-8 characters.',
-      }),
-    timestampValue: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The value of a tag field with a timestamp type.' }),
-  })
-  .openapi({
-    description: 'Contains the value and additional information on a field within a Tag.',
-    required: [],
-  })
-  .openapi('GoogleCloudDatacatalogV1TagField')
-
-const GoogleCloudDatacatalogV1TagSchema = z
-  .object({
-    column: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Resources like entry can have schemas associated with them. This scope allows you to attach tags to an individual column based on that schema. To attach a tag to a nested column, separate column names with a dot (`.`). Example: `column.nested_column`.',
-      }),
-    fields: z
-      .record(z.string(), GoogleCloudDatacatalogV1TagFieldSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Maps the ID of a tag field to its value and additional information about that field. Tag template defines valid field IDs. A tag must have at least 1 field and at most 500 fields.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The resource name of the tag in URL format where tag ID is a system-generated identifier. Note: The tag itself might not be stored in the location specified in its name.',
-      }),
-    template: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The resource name of the tag template this tag uses. Example: `projects/{PROJECT_ID}/locations/{LOCATION}/tagTemplates/{TAG_TEMPLATE_ID}` This field cannot be modified after creation.',
-      }),
-    templateDisplayName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The display name of the tag template.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      'Tags contain custom metadata and are attached to Data Catalog resources. Tags conform with the specification of their tag template. See [Data Catalog IAM](https://cloud.google.com/data-catalog/docs/concepts/iam) for information on the permissions needed to create or view tags.',
-    required: [],
-  })
-  .openapi('GoogleCloudDatacatalogV1Tag')
-
 const GoogleCloudDatacatalogV1FilesetSpecSchema = z
   .object({
     dataplexFileset: GoogleCloudDatacatalogV1DataplexFilesetSpecSchema.exactOptional().openapi({
@@ -975,6 +734,16 @@ const GoogleCloudDatacatalogV1PersonalDetailsSchema = z
   })
   .openapi('GoogleCloudDatacatalogV1PersonalDetails')
 
+const GoogleCloudDatacatalogV1BigQueryRoutineSpecSchema = z
+  .object({
+    importedLibraries: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Paths of the imported libraries.' }),
+  })
+  .openapi({ description: 'Fields specific for BigQuery routines.', required: [] })
+  .openapi('GoogleCloudDatacatalogV1BigQueryRoutineSpec')
+
 const GoogleCloudDatacatalogV1RoutineSpecArgumentSchema = z
   .object({
     mode: z
@@ -1038,6 +807,83 @@ const GoogleCloudDatacatalogV1RoutineSpecSchema = z
   })
   .openapi('GoogleCloudDatacatalogV1RoutineSpec')
 
+const GoogleCloudDatacatalogV1ColumnSchemaSchema: z.ZodType<GoogleCloudDatacatalogV1ColumnSchemaType> =
+  z
+    .lazy(() =>
+      z
+        .object({
+          column: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'Required. Name of the column. Must be a UTF-8 string without dots (.). The maximum size is 64 bytes.',
+            }),
+          defaultValue: z
+            .string()
+            .exactOptional()
+            .openapi({ description: 'Optional. Default value for the column.' }),
+          description: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'Optional. Description of the column. Default value is an empty string. The description must be a UTF-8 string with the maximum size of 2000 bytes.',
+            }),
+          gcRule: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'Optional. Garbage collection policy for the column or column family. Applies to systems like Cloud Bigtable.',
+            }),
+          highestIndexingType: z
+            .enum([
+              'INDEXING_TYPE_UNSPECIFIED',
+              'INDEXING_TYPE_NONE',
+              'INDEXING_TYPE_NON_UNIQUE',
+              'INDEXING_TYPE_UNIQUE',
+              'INDEXING_TYPE_PRIMARY_KEY',
+            ])
+            .exactOptional()
+            .openapi({ description: 'Optional. Most important inclusion of this column.' }),
+          lookerColumnSpec:
+            GoogleCloudDatacatalogV1ColumnSchemaLookerColumnSpecSchema.exactOptional().openapi({
+              description: 'Looker specific column info of this column.',
+            }),
+          mode: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                "Optional. A column's mode indicates whether values in this column are required, nullable, or repeated. Only `NULLABLE`, `REQUIRED`, and `REPEATED` values are supported. Default mode is `NULLABLE`.",
+            }),
+          ordinalPosition: z
+            .int32()
+            .exactOptional()
+            .openapi({ description: 'Optional. Ordinal position' }),
+          subcolumns: z
+            .array(GoogleCloudDatacatalogV1ColumnSchemaSchema)
+            .exactOptional()
+            .openapi({
+              description:
+                'Optional. Schema of sub-columns. A column can have zero or more sub-columns.',
+            }),
+          type: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'Required. Type of the column. Must be a UTF-8 string with the maximum size of 128 bytes.',
+            }),
+        })
+        .openapi({
+          description: 'A column within a schema. Columns can be nested inside other columns.',
+          required: [],
+        }),
+    )
+    .openapi('GoogleCloudDatacatalogV1ColumnSchema')
+
 const GoogleCloudDatacatalogV1SchemaSchema = z
   .object({
     columns: z
@@ -1053,6 +899,42 @@ const GoogleCloudDatacatalogV1SchemaSchema = z
     required: [],
   })
   .openapi('GoogleCloudDatacatalogV1Schema')
+
+const GoogleCloudDatacatalogV1CloudBigtableInstanceSpecCloudBigtableClusterSpecSchema = z
+  .object({
+    displayName: z.string().exactOptional().openapi({ description: 'Name of the cluster.' }),
+    linkedResource: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A link back to the parent resource, in this case Instance.' }),
+    location: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Location of the cluster, typically a Cloud zone.' }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Type of the resource. For a cluster this would be "CLUSTER".' }),
+  })
+  .openapi({
+    description: 'Spec that applies to clusters of an Instance of Cloud Bigtable.',
+    required: [],
+  })
+  .openapi('GoogleCloudDatacatalogV1CloudBigtableInstanceSpecCloudBigtableClusterSpec')
+
+const GoogleCloudDatacatalogV1CloudBigtableInstanceSpecSchema = z
+  .object({
+    cloudBigtableClusterSpecs: z
+      .array(GoogleCloudDatacatalogV1CloudBigtableInstanceSpecCloudBigtableClusterSpecSchema)
+      .exactOptional()
+      .openapi({ description: 'The list of clusters for the Instance.' }),
+  })
+  .openapi({
+    description:
+      'Specification that applies to Instance entries that are part of `CLOUD_BIGTABLE` system. (user_specified_type)',
+    required: [],
+  })
+  .openapi('GoogleCloudDatacatalogV1CloudBigtableInstanceSpec')
 
 const GoogleCloudDatacatalogV1ServiceSpecSchema = z
   .object({
@@ -1095,6 +977,16 @@ const GoogleCloudDatacatalogV1SqlDatabaseSystemSpecSchema = z
     required: [],
   })
   .openapi('GoogleCloudDatacatalogV1SqlDatabaseSystemSpec')
+
+const GoogleCloudDatacatalogV1CommonUsageStatsSchema = z
+  .object({
+    viewCount: z.string().exactOptional().openapi({ description: 'View count in source system.' }),
+  })
+  .openapi({
+    description: "Common statistics on the entry's usage. They can be set on any system.",
+    required: [],
+  })
+  .openapi('GoogleCloudDatacatalogV1CommonUsageStats')
 
 const GoogleCloudDatacatalogV1UsageStatsSchema = z
   .object({
@@ -1362,7 +1254,119 @@ const GoogleCloudDatacatalogV1TaggedEntrySchema = z
   })
   .openapi('GoogleCloudDatacatalogV1TaggedEntry')
 
-const GoogleCloudDatacatalogV1DumpItemSchema = z
+type GoogleCloudDatacatalogV1DumpItemType = {
+  taggedEntry?: z.infer<typeof GoogleCloudDatacatalogV1TaggedEntrySchema>
+}
+
+type GoogleCloudDatacatalogV1beta1ColumnSchemaType = {
+  column?: string
+  description?: string
+  mode?: string
+  subcolumns?: GoogleCloudDatacatalogV1beta1ColumnSchemaType[]
+  type?: string
+}
+
+type GoogleCloudDatacatalogV1beta1SerializedPolicyTagType = {
+  childPolicyTags?: GoogleCloudDatacatalogV1beta1SerializedPolicyTagType[]
+  description?: string
+  displayName?: string
+  policyTag?: string
+}
+
+const ExprSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.',
+      }),
+    expression: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Textual representation of an expression in Common Expression Language syntax.',
+      }),
+    location: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. String indicating the location of the expression for error reporting, e.g. a file name and a position in the file.',
+      }),
+    title: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Title for the expression, i.e. a short string describing its purpose. This can be used e.g. in UIs which allow to enter the expression.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents a textual expression in the Common Expression Language (CEL) syntax. CEL is a C-like expression language. The syntax and semantics of CEL are documented at https://github.com/google/cel-spec. Example (Comparison): title: "Summary size limit" description: "Determines if a summary is less than 100 chars" expression: "document.summary.size() < 100" Example (Equality): title: "Requestor is owner" description: "Determines if requestor is the document owner" expression: "document.owner == request.auth.claims.email" Example (Logic): title: "Public documents" description: "Determine whether the document should be publicly visible" expression: "document.type != \'private\' && document.type != \'internal\'" Example (Data Manipulation): title: "Notification string" description: "Create a notification string with a timestamp." expression: "\'New message received at \' + string(document.create_time)" The exact variables and functions that may be referenced within an expression are determined by the service that evaluates it. See the service documentation for additional information.',
+    required: [],
+  })
+  .openapi('Expr')
+
+const BindingSchema = z
+  .object({
+    condition: ExprSchema.exactOptional().openapi({
+      description:
+        'The condition that is associated with this binding. If the condition evaluates to `true`, then this binding applies to the current request. If the condition evaluates to `false`, then this binding does not apply to the current request. However, a different role binding might grant the same role to one or more of the principals in this binding. To learn which resources support conditions in their IAM policies, see the [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).',
+    }),
+    members: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the principals requesting access for a Google Cloud resource. `members` can have the following values: * `allUsers`: A special identifier that represents anyone who is on the internet; with or without a Google account. * `allAuthenticatedUsers`: A special identifier that represents anyone who is authenticated with a Google account or a service account. Does not include identities that come from external identity providers (IdPs) through identity federation. * `user:{emailid}`: An email address that represents a specific Google account. For example, `alice@example.com` . * `serviceAccount:{emailid}`: An email address that represents a Google service account. For example, `my-other-app@appspot.gserviceaccount.com`. * `serviceAccount:{projectid}.svc.id.goog[{namespace}/{kubernetes-sa}]`: An identifier for a [Kubernetes service account](https://cloud.google.com/kubernetes-engine/docs/how-to/kubernetes-service-accounts). For example, `my-project.svc.id.goog[my-namespace/my-kubernetes-sa]`. * `group:{emailid}`: An email address that represents a Google group. For example, `admins@example.com`. * `domain:{domain}`: The G Suite domain (primary) that represents all the users of that domain. For example, `google.com` or `example.com`. * `deleted:user:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a user that has been recently deleted. For example, `alice@example.com?uid=123456789012345678901`. If the user is recovered, this value reverts to `user:{emailid}` and the recovered user retains the role in the binding. * `deleted:serviceAccount:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a service account that has been recently deleted. For example, `my-other-app@appspot.gserviceaccount.com?uid=123456789012345678901`. If the service account is undeleted, this value reverts to `serviceAccount:{emailid}` and the undeleted service account retains the role in the binding. * `deleted:group:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a Google group that has been recently deleted. For example, `admins@example.com?uid=123456789012345678901`. If the group is recovered, this value reverts to `group:{emailid}` and the recovered group retains the role in the binding.',
+      }),
+    role: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Role that is assigned to the list of `members`, or principals. For example, `roles/viewer`, `roles/editor`, or `roles/owner`.',
+      }),
+  })
+  .openapi({ description: 'Associates `members`, or principals, with a `role`.', required: [] })
+  .openapi('Binding')
+
+const EmptySchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
+  })
+  .openapi('Empty')
+
+const GetPolicyOptionsSchema = z
+  .object({
+    requestedPolicyVersion: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The maximum policy version that will be used to format the policy. Valid values are 0, 1, and 3. Requests specifying an invalid value will be rejected. Requests for policies with any conditional role bindings must specify version 3. Policies with no conditional role bindings may specify any valid value or leave the field unset. The policy in the response might use the policy version that you specified, or it might use a lower policy version. For example, if you specify version 3, but the policy has no conditional role bindings, the response uses version 1. To learn which resources support conditions in their IAM policies, see the [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).',
+      }),
+  })
+  .openapi({ description: 'Encapsulates settings provided to GetIamPolicy.', required: [] })
+  .openapi('GetPolicyOptions')
+
+const GetIamPolicyRequestSchema = z
+  .object({
+    options: GetPolicyOptionsSchema.exactOptional().openapi({
+      description:
+        'OPTIONAL: A `GetPolicyOptions` object for specifying options to `GetIamPolicy`.',
+    }),
+  })
+  .openapi({ description: 'Request message for `GetIamPolicy` method.', required: [] })
+  .openapi('GetIamPolicyRequest')
+
+const GoogleCloudDatacatalogV1DumpItemSchema: z.ZodType<GoogleCloudDatacatalogV1DumpItemType> = z
   .object({
     taggedEntry: GoogleCloudDatacatalogV1TaggedEntrySchema.exactOptional().openapi({
       description: 'Entry and its tags.',

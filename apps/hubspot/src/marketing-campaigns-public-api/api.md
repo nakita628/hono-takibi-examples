@@ -27,12 +27,6 @@ Base URLs:
 |marketing.campaigns.revenue.read||
 |marketing.campaigns.write||
 
-* API Key (private_apps)
-    - Parameter Name: **private-app**, in: header.
-
-* API Key (private_apps_legacy)
-    - Parameter Name: **private-app-legacy**, in: header.
-
 <h1 id="marketing-campaigns-public-api-advanced">Advanced</h1>
 
 ## Clone a campaign

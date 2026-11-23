@@ -1,64 +1,16 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const CustomerIdSchema = z
+  .string()
+  .regex(/^(\d{12})$/)
+  .openapi('CustomerId')
+
 const DirectoryIdSchema = z
   .string()
   .regex(/^d-[0-9a-f]{10}$/)
   .openapi('DirectoryId')
 
-const DirectoryNameSchema = z
-  .string()
-  .regex(/^([a-zA-Z0-9]+[\\.-])+([a-zA-Z0-9])+$/)
-  .openapi('DirectoryName')
-
-const DirectoryShortNameSchema = z
-  .string()
-  .regex(/^[^\\\/:*?"<>|.]+[^\\\/:*?"<>|]*$/)
-  .openapi('DirectoryShortName')
-
-const DirectorySizeSchema = z.enum(['Small', 'Large']).openapi('DirectorySize')
-
-const DirectoryEditionSchema = z.enum(['Enterprise', 'Standard']).openapi('DirectoryEdition')
-
-const AliasNameSchema = z
-  .string()
-  .regex(/^(?!D-|d-)([\da-zA-Z]+)([-]*[\da-zA-Z])*/)
-  .min(1)
-  .max(62)
-  .openapi('AliasName')
-
-const AccessUrlSchema = z.string().min(1).max(128).openapi('AccessUrl')
-
-const DescriptionSchema = z
-  .string()
-  .regex(/^([a-zA-Z0-9_])[\\a-zA-Z0-9_@#%*+=:?.\/!\s-]*$/)
-  .min(0)
-  .max(128)
-  .openapi('Description')
-
-const IpAddrSchema = z
-  .string()
-  .regex(
-    /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/,
-  )
-  .openapi('IpAddr')
-
-const DnsIpAddrsSchema = z.array(IpAddrSchema).openapi('DnsIpAddrs')
-
-const DirectoryStageSchema = z
-  .enum([
-    'Requested',
-    'Creating',
-    'Created',
-    'Active',
-    'Inoperable',
-    'Impaired',
-    'Restoring',
-    'RestoreFailed',
-    'Deleting',
-    'Deleted',
-    'Failed',
-  ])
-  .openapi('DirectoryStage')
+const ShareMethodSchema = z.enum(['ORGANIZATIONS', 'HANDSHAKE']).openapi('ShareMethod')
 
 const ShareStatusSchema = z
   .enum([
@@ -74,368 +26,46 @@ const ShareStatusSchema = z
   ])
   .openapi('ShareStatus')
 
-const ShareMethodSchema = z.enum(['ORGANIZATIONS', 'HANDSHAKE']).openapi('ShareMethod')
-
 const NotesSchema = z.string().max(1024).openapi('Notes')
-
-const LaunchTimeSchema = z.iso.datetime({ offset: true }).openapi('LaunchTime')
-
-const LastUpdatedDateTimeSchema = z.iso.datetime({ offset: true }).openapi('LastUpdatedDateTime')
-
-const DirectoryTypeSchema = z
-  .enum(['SimpleAD', 'ADConnector', 'MicrosoftAD', 'SharedMicrosoftAD'])
-  .openapi('DirectoryType')
-
-const VpcIdSchema = z
-  .string()
-  .regex(/^(vpc-[0-9a-f]{8}|vpc-[0-9a-f]{17})$/)
-  .openapi('VpcId')
-
-const SubnetIdSchema = z
-  .string()
-  .regex(/^(subnet-[0-9a-f]{8}|subnet-[0-9a-f]{17})$/)
-  .openapi('SubnetId')
-
-const SubnetIdsSchema = z.array(SubnetIdSchema).openapi('SubnetIds')
-
-const SecurityGroupIdSchema = z
-  .string()
-  .regex(/^(sg-[0-9a-f]{8}|sg-[0-9a-f]{17})$/)
-  .openapi('SecurityGroupId')
-
-const AvailabilityZoneSchema = z.string().openapi('AvailabilityZone')
-
-const AvailabilityZonesSchema = z.array(AvailabilityZoneSchema).openapi('AvailabilityZones')
-
-const DirectoryVpcSettingsDescriptionSchema = z
-  .object({
-    VpcId: VpcIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the VPC that the directory is in.' }),
-    ).exactOptional(),
-    SubnetIds: SubnetIdsSchema.and(
-      z.any().openapi({ description: 'The identifiers of the subnets for the directory servers.' }),
-    ).exactOptional(),
-    SecurityGroupId: SecurityGroupIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The domain controller security group identifier for the directory.',
-        }),
-    ).exactOptional(),
-    AvailabilityZones: AvailabilityZonesSchema.and(
-      z.any().openapi({ description: 'The list of Availability Zones that the directory is in.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Contains information about the directory.', required: [] })
-  .openapi('DirectoryVpcSettingsDescription')
-
-const UserNameSchema = z
-  .string()
-  .regex(/[a-zA-Z0-9._-]+/)
-  .min(1)
-  .openapi('UserName')
-
-const IpAddrsSchema = z.array(IpAddrSchema).openapi('IpAddrs')
-
-const DirectoryConnectSettingsDescriptionSchema = z
-  .object({
-    VpcId: VpcIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the VPC that the AD Connector is in.' }),
-    ).exactOptional(),
-    SubnetIds: SubnetIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of subnet identifiers in the VPC that the AD Connector is in.',
-        }),
-    ).exactOptional(),
-    CustomerUserName: UserNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The user name of the service account in your self-managed directory.',
-        }),
-    ).exactOptional(),
-    SecurityGroupId: SecurityGroupIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The security group identifier for the AD Connector directory.' }),
-    ).exactOptional(),
-    AvailabilityZones: AvailabilityZonesSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of the Availability Zones that the directory is in.' }),
-    ).exactOptional(),
-    ConnectIps: IpAddrsSchema.and(
-      z.any().openapi({ description: 'The IP addresses of the AD Connector servers.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Contains information about an AD Connector directory.', required: [] })
-  .openapi('DirectoryConnectSettingsDescription')
-
-const ServerSchema = z.string().min(1).max(256).openapi('Server')
-
-const ServersSchema = z.array(ServerSchema).openapi('Servers')
-
-const PortNumberSchema = z.int().min(1025).max(65535).openapi('PortNumber')
-
-const RadiusTimeoutSchema = z.int().min(1).max(20).openapi('RadiusTimeout')
-
-const RadiusRetriesSchema = z.int().min(0).max(10).openapi('RadiusRetries')
-
-const RadiusSharedSecretSchema = z
-  .string()
-  .min(8)
-  .max(512)
-  .openapi({ pattern: '^(\\p{LD}|\\p{Punct}| )+$' })
-  .openapi('RadiusSharedSecret')
-
-const RadiusAuthenticationProtocolSchema = z
-  .enum(['PAP', 'CHAP', 'MS-CHAPv1', 'MS-CHAPv2'])
-  .openapi('RadiusAuthenticationProtocol')
-
-const RadiusDisplayLabelSchema = z.string().min(1).max(64).openapi('RadiusDisplayLabel')
-
-const UseSameUsernameSchema = z.boolean().openapi('UseSameUsername')
-
-const RadiusSettingsSchema = z
-  .object({
-    RadiusServers: ServersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of strings that contains the fully qualified domain name (FQDN) or IP addresses of the RADIUS server endpoints, or the FQDN or IP addresses of your RADIUS server load balancer.',
-        }),
-    ).exactOptional(),
-    RadiusPort: PortNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The port that your RADIUS server is using for communications. Your self-managed network must allow inbound traffic over this port from the Directory Service servers.',
-        }),
-    ).exactOptional(),
-    RadiusTimeout: RadiusTimeoutSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The amount of time, in seconds, to wait for the RADIUS server to respond.',
-        }),
-    ).exactOptional(),
-    RadiusRetries: RadiusRetriesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of times that communication with the RADIUS server is attempted.',
-        }),
-    ).exactOptional(),
-    SharedSecret: RadiusSharedSecretSchema.and(
-      z.any().openapi({ description: 'Required for enabling RADIUS on the directory.' }),
-    ).exactOptional(),
-    AuthenticationProtocol: RadiusAuthenticationProtocolSchema.and(
-      z.any().openapi({ description: 'The protocol specified for your RADIUS endpoints.' }),
-    ).exactOptional(),
-    DisplayLabel: RadiusDisplayLabelSchema.and(
-      z.any().openapi({ description: 'Not currently used.' }),
-    ).exactOptional(),
-    UseSameUsername: UseSameUsernameSchema.and(
-      z.any().openapi({ description: 'Not currently used.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Contains information about a Remote Authentication Dial In User Service (RADIUS) server.',
-    required: [],
-  })
-  .openapi('RadiusSettings')
-
-const RadiusStatusSchema = z.enum(['Creating', 'Completed', 'Failed']).openapi('RadiusStatus')
-
-const StageReasonSchema = z.string().openapi('StageReason')
-
-const SsoEnabledSchema = z.boolean().openapi('SsoEnabled')
-
-const DesiredNumberOfDomainControllersSchema = z
-  .int()
-  .min(2)
-  .openapi('DesiredNumberOfDomainControllers')
-
-const CustomerIdSchema = z
-  .string()
-  .regex(/^(\d{12})$/)
-  .openapi('CustomerId')
-
-const OwnerDirectoryDescriptionSchema = z
-  .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Identifier of the Managed Microsoft AD directory in the directory owner account.',
-        }),
-    ).exactOptional(),
-    AccountId: CustomerIdSchema.and(
-      z.any().openapi({ description: 'Identifier of the directory owner account.' }),
-    ).exactOptional(),
-    DnsIpAddrs: DnsIpAddrsSchema.and(
-      z.any().openapi({ description: 'IP address of the directory’s domain controllers.' }),
-    ).exactOptional(),
-    VpcSettings: DirectoryVpcSettingsDescriptionSchema.and(
-      z.any().openapi({ description: 'Information about the VPC settings for the directory.' }),
-    ).exactOptional(),
-    RadiusSettings: RadiusSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <a>RadiusSettings</a> object that contains information about the RADIUS server.',
-        }),
-    ).exactOptional(),
-    RadiusStatus: RadiusStatusSchema.and(
-      z.any().openapi({ description: 'Information about the status of the RADIUS server.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Describes the directory owner account details that have been shared to the directory consumer account.',
-    required: [],
-  })
-  .openapi('OwnerDirectoryDescription')
-
-const RegionNameSchema = z.string().min(8).max(32).openapi('RegionName')
-
-const AdditionalRegionsSchema = z.array(RegionNameSchema).openapi('AdditionalRegions')
-
-const RegionsInfoSchema = z
-  .object({
-    PrimaryRegion: RegionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Region where the Managed Microsoft AD directory was originally created.',
-        }),
-    ).exactOptional(),
-    AdditionalRegions: AdditionalRegionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Lists the Regions where the directory has been replicated, excluding the primary Region.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Provides information about the Regions that are configured for multi-Region replication.',
-    required: [],
-  })
-  .openapi('RegionsInfo')
-
-const OSVersionSchema = z.enum(['SERVER_2012', 'SERVER_2019']).openapi('OSVersion')
-
-type DirectoryDescriptionType = {
-  DirectoryId?: z.infer<typeof DirectoryIdSchema> & { [key: string]: unknown }
-  Name?: z.infer<typeof DirectoryNameSchema> & { [key: string]: unknown }
-  ShortName?: z.infer<typeof DirectoryShortNameSchema> & { [key: string]: unknown }
-  Size?: z.infer<typeof DirectorySizeSchema> & { [key: string]: unknown }
-  Edition?: z.infer<typeof DirectoryEditionSchema> & { [key: string]: unknown }
-  Alias?: z.infer<typeof AliasNameSchema> & { [key: string]: unknown }
-  AccessUrl?: z.infer<typeof AccessUrlSchema> & { [key: string]: unknown }
-  Description?: z.infer<typeof DescriptionSchema> & { [key: string]: unknown }
-  DnsIpAddrs?: z.infer<typeof DnsIpAddrsSchema> & { [key: string]: unknown }
-  Stage?: z.infer<typeof DirectoryStageSchema> & { [key: string]: unknown }
-  ShareStatus?: z.infer<typeof ShareStatusSchema> & { [key: string]: unknown }
-  ShareMethod?: z.infer<typeof ShareMethodSchema> & { [key: string]: unknown }
-  ShareNotes?: z.infer<typeof NotesSchema> & { [key: string]: unknown }
-  LaunchTime?: z.infer<typeof LaunchTimeSchema> & { [key: string]: unknown }
-  StageLastUpdatedDateTime?: z.infer<typeof LastUpdatedDateTimeSchema> & { [key: string]: unknown }
-  Type?: z.infer<typeof DirectoryTypeSchema> & { [key: string]: unknown }
-  VpcSettings?: z.infer<typeof DirectoryVpcSettingsDescriptionSchema> & { [key: string]: unknown }
-  ConnectSettings?: z.infer<typeof DirectoryConnectSettingsDescriptionSchema> & {
-    [key: string]: unknown
-  }
-  RadiusSettings?: z.infer<typeof RadiusSettingsSchema> & { [key: string]: unknown }
-  RadiusStatus?: z.infer<typeof RadiusStatusSchema> & { [key: string]: unknown }
-  StageReason?: z.infer<typeof StageReasonSchema> & { [key: string]: unknown }
-  SsoEnabled?: z.infer<typeof SsoEnabledSchema> & { [key: string]: unknown }
-  DesiredNumberOfDomainControllers?: z.infer<typeof DesiredNumberOfDomainControllersSchema> & {
-    [key: string]: unknown
-  }
-  OwnerDirectoryDescription?: z.infer<typeof OwnerDirectoryDescriptionSchema> & {
-    [key: string]: unknown
-  }
-  RegionsInfo?: z.infer<typeof RegionsInfoSchema> & { [key: string]: unknown }
-  OsVersion?: z.infer<typeof OSVersionSchema> & { [key: string]: unknown }
-}
 
 const CreatedDateTimeSchema = z.iso.datetime({ offset: true }).openapi('CreatedDateTime')
 
+const LastUpdatedDateTimeSchema = z.iso.datetime({ offset: true }).openapi('LastUpdatedDateTime')
+
 const SharedDirectorySchema = z
   .object({
-    OwnerAccountId: CustomerIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Identifier of the directory owner account, which contains the directory that has been shared to the consumer account.',
-        }),
-    ).exactOptional(),
-    OwnerDirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Identifier of the directory in the directory owner account. ' }),
-    ).exactOptional(),
-    ShareMethod: ShareMethodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The method used when sharing a directory to determine whether the directory should be shared within your Amazon Web Services organization (<code>ORGANIZATIONS</code>) or with any Amazon Web Services account by sending a shared directory request (<code>HANDSHAKE</code>).',
-        }),
-    ).exactOptional(),
-    SharedAccountId: CustomerIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Identifier of the directory consumer account that has access to the shared directory (<code>OwnerDirectoryId</code>) in the directory owner account.',
-        }),
-    ).exactOptional(),
-    SharedDirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Identifier of the shared directory in the directory consumer account. This identifier is different for each directory owner account.',
-        }),
-    ).exactOptional(),
-    ShareStatus: ShareStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Current directory status of the shared Managed Microsoft AD directory.',
-        }),
-    ).exactOptional(),
-    ShareNotes: NotesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A directory share request that is sent by the directory owner to the directory consumer. The request includes a typed message to help the directory consumer administrator determine whether to approve or reject the share invitation.',
-        }),
-    ).exactOptional(),
-    CreatedDateTime: CreatedDateTimeSchema.and(
-      z.any().openapi({ description: 'The date and time that the shared directory was created.' }),
-    ).exactOptional(),
-    LastUpdatedDateTime: LastUpdatedDateTimeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date and time that the shared directory was last updated.' }),
-    ).exactOptional(),
+    OwnerAccountId: CustomerIdSchema.exactOptional().openapi({
+      description:
+        'Identifier of the directory owner account, which contains the directory that has been shared to the consumer account.',
+    }),
+    OwnerDirectoryId: DirectoryIdSchema.exactOptional().openapi({
+      description: 'Identifier of the directory in the directory owner account. ',
+    }),
+    ShareMethod: ShareMethodSchema.exactOptional().openapi({
+      description:
+        'The method used when sharing a directory to determine whether the directory should be shared within your Amazon Web Services organization (<code>ORGANIZATIONS</code>) or with any Amazon Web Services account by sending a shared directory request (<code>HANDSHAKE</code>).',
+    }),
+    SharedAccountId: CustomerIdSchema.exactOptional().openapi({
+      description:
+        'Identifier of the directory consumer account that has access to the shared directory (<code>OwnerDirectoryId</code>) in the directory owner account.',
+    }),
+    SharedDirectoryId: DirectoryIdSchema.exactOptional().openapi({
+      description:
+        'Identifier of the shared directory in the directory consumer account. This identifier is different for each directory owner account.',
+    }),
+    ShareStatus: ShareStatusSchema.exactOptional().openapi({
+      description: 'Current directory status of the shared Managed Microsoft AD directory.',
+    }),
+    ShareNotes: NotesSchema.exactOptional().openapi({
+      description:
+        'A directory share request that is sent by the directory owner to the directory consumer. The request includes a typed message to help the directory consumer administrator determine whether to approve or reject the share invitation.',
+    }),
+    CreatedDateTime: CreatedDateTimeSchema.exactOptional().openapi({
+      description: 'The date and time that the shared directory was created.',
+    }),
+    LastUpdatedDateTime: LastUpdatedDateTimeSchema.exactOptional().openapi({
+      description: 'The date and time that the shared directory was last updated.',
+    }),
   })
   .openapi({
     description:
@@ -446,23 +76,19 @@ const SharedDirectorySchema = z
 
 const AcceptSharedDirectoryResultSchema = z
   .object({
-    SharedDirectory: SharedDirectorySchema.and(
-      z.any().openapi({ description: 'The shared directory in the directory consumer account.' }),
-    ).exactOptional(),
+    SharedDirectory: SharedDirectorySchema.exactOptional().openapi({
+      description: 'The shared directory in the directory consumer account.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AcceptSharedDirectoryResult')
 
 const AcceptSharedDirectoryRequestSchema = z
   .object({
-    SharedDirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Identifier of the shared directory in the directory consumer account. This identifier is different for each directory owner account. ',
-        }),
-    ),
+    SharedDirectoryId: DirectoryIdSchema.openapi({
+      description:
+        'Identifier of the shared directory in the directory consumer account. This identifier is different for each directory owner account. ',
+    }),
   })
   .openapi({ required: ['SharedDirectoryId'], title: 'AcceptSharedDirectoryRequest' })
   .openapi('AcceptSharedDirectoryRequest')
@@ -477,7 +103,7 @@ const ClientExceptionSchema = z.any().openapi('ClientException')
 
 const ServiceExceptionSchema = z.any().openapi('ServiceException')
 
-const AddIpRoutesResultSchema = z.object({}).openapi('AddIpRoutesResult')
+const AddIpRoutesResultSchema = z.looseObject({}).openapi('AddIpRoutesResult')
 
 const CidrIpSchema = z
   .string()
@@ -486,19 +112,22 @@ const CidrIpSchema = z
   )
   .openapi('CidrIp')
 
+const DescriptionSchema = z
+  .string()
+  .regex(/^([a-zA-Z0-9_])[\\a-zA-Z0-9_@#%*+=:?.\/!\s-]*$/)
+  .min(0)
+  .max(128)
+  .openapi('Description')
+
 const IpRouteSchema = z
   .object({
-    CidrIp: CidrIpSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'IP address block using CIDR format, for example 10.0.0.0/24. This is often the address block of the DNS server used for your self-managed domain. For a single IP address use a CIDR address block with /32. For example 10.0.0.0/32.',
-        }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'Description of the address block.' }),
-    ).exactOptional(),
+    CidrIp: CidrIpSchema.exactOptional().openapi({
+      description:
+        'IP address block using CIDR format, for example 10.0.0.0/24. This is often the address block of the DNS server used for your self-managed domain. For a single IP address use a CIDR address block with /32. For example 10.0.0.0/32.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'Description of the address block.',
+    }),
   })
   .openapi({
     description:
@@ -515,30 +144,18 @@ const UpdateSecurityGroupForDirectoryControllersSchema = z
 
 const AddIpRoutesRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Identifier (ID) of the directory to which to add the address block.',
-        }),
-    ),
-    IpRoutes: IpRoutesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'IP address blocks, using CIDR format, of the traffic to route. This is often the IP address block of the DNS server used for your self-managed domain.',
-        }),
-    ),
+    DirectoryId: DirectoryIdSchema.openapi({
+      description: 'Identifier (ID) of the directory to which to add the address block.',
+    }),
+    IpRoutes: IpRoutesSchema.openapi({
+      description:
+        'IP address blocks, using CIDR format, of the traffic to route. This is often the IP address block of the DNS server used for your self-managed domain.',
+    }),
     UpdateSecurityGroupForDirectoryControllers:
-      UpdateSecurityGroupForDirectoryControllersSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              '<p>If set to true, updates the inbound and outbound rules of the security group that has the description: "Amazon Web Services created security group for <i>directory ID</i> directory controllers." Following are the new rules: </p> <p>Inbound:</p> <ul> <li> <p>Type: Custom UDP Rule, Protocol: UDP, Range: 88, Source: 0.0.0.0/0</p> </li> <li> <p>Type: Custom UDP Rule, Protocol: UDP, Range: 123, Source: 0.0.0.0/0</p> </li> <li> <p>Type: Custom UDP Rule, Protocol: UDP, Range: 138, Source: 0.0.0.0/0</p> </li> <li> <p>Type: Custom UDP Rule, Protocol: UDP, Range: 389, Source: 0.0.0.0/0</p> </li> <li> <p>Type: Custom UDP Rule, Protocol: UDP, Range: 464, Source: 0.0.0.0/0</p> </li> <li> <p>Type: Custom UDP Rule, Protocol: UDP, Range: 445, Source: 0.0.0.0/0</p> </li> <li> <p>Type: Custom TCP Rule, Protocol: TCP, Range: 88, Source: 0.0.0.0/0</p> </li> <li> <p>Type: Custom TCP Rule, Protocol: TCP, Range: 135, Source: 0.0.0.0/0</p> </li> <li> <p>Type: Custom TCP Rule, Protocol: TCP, Range: 445, Source: 0.0.0.0/0</p> </li> <li> <p>Type: Custom TCP Rule, Protocol: TCP, Range: 464, Source: 0.0.0.0/0</p> </li> <li> <p>Type: Custom TCP Rule, Protocol: TCP, Range: 636, Source: 0.0.0.0/0</p> </li> <li> <p>Type: Custom TCP Rule, Protocol: TCP, Range: 1024-65535, Source: 0.0.0.0/0</p> </li> <li> <p>Type: Custom TCP Rule, Protocol: TCP, Range: 3268-33269, Source: 0.0.0.0/0</p> </li> <li> <p>Type: DNS (UDP), Protocol: UDP, Range: 53, Source: 0.0.0.0/0</p> </li> <li> <p>Type: DNS (TCP), Protocol: TCP, Range: 53, Source: 0.0.0.0/0</p> </li> <li> <p>Type: LDAP, Protocol: TCP, Range: 389, Source: 0.0.0.0/0</p> </li> <li> <p>Type: All ICMP, Protocol: All, Range: N/A, Source: 0.0.0.0/0</p> </li> </ul> <p/> <p>Outbound:</p> <ul> <li> <p>Type: All traffic, Protocol: All, Range: All, Destination: 0.0.0.0/0</p> </li> </ul> <p>These security rules impact an internal network interface that is not exposed publicly.</p>',
-          }),
-      ).exactOptional(),
+      UpdateSecurityGroupForDirectoryControllersSchema.exactOptional().openapi({
+        description:
+          '<p>If set to true, updates the inbound and outbound rules of the security group that has the description: "Amazon Web Services created security group for <i>directory ID</i> directory controllers." Following are the new rules: </p> <p>Inbound:</p> <ul> <li> <p>Type: Custom UDP Rule, Protocol: UDP, Range: 88, Source: 0.0.0.0/0</p> </li> <li> <p>Type: Custom UDP Rule, Protocol: UDP, Range: 123, Source: 0.0.0.0/0</p> </li> <li> <p>Type: Custom UDP Rule, Protocol: UDP, Range: 138, Source: 0.0.0.0/0</p> </li> <li> <p>Type: Custom UDP Rule, Protocol: UDP, Range: 389, Source: 0.0.0.0/0</p> </li> <li> <p>Type: Custom UDP Rule, Protocol: UDP, Range: 464, Source: 0.0.0.0/0</p> </li> <li> <p>Type: Custom UDP Rule, Protocol: UDP, Range: 445, Source: 0.0.0.0/0</p> </li> <li> <p>Type: Custom TCP Rule, Protocol: TCP, Range: 88, Source: 0.0.0.0/0</p> </li> <li> <p>Type: Custom TCP Rule, Protocol: TCP, Range: 135, Source: 0.0.0.0/0</p> </li> <li> <p>Type: Custom TCP Rule, Protocol: TCP, Range: 445, Source: 0.0.0.0/0</p> </li> <li> <p>Type: Custom TCP Rule, Protocol: TCP, Range: 464, Source: 0.0.0.0/0</p> </li> <li> <p>Type: Custom TCP Rule, Protocol: TCP, Range: 636, Source: 0.0.0.0/0</p> </li> <li> <p>Type: Custom TCP Rule, Protocol: TCP, Range: 1024-65535, Source: 0.0.0.0/0</p> </li> <li> <p>Type: Custom TCP Rule, Protocol: TCP, Range: 3268-33269, Source: 0.0.0.0/0</p> </li> <li> <p>Type: DNS (UDP), Protocol: UDP, Range: 53, Source: 0.0.0.0/0</p> </li> <li> <p>Type: DNS (TCP), Protocol: TCP, Range: 53, Source: 0.0.0.0/0</p> </li> <li> <p>Type: LDAP, Protocol: TCP, Range: 389, Source: 0.0.0.0/0</p> </li> <li> <p>Type: All ICMP, Protocol: All, Range: N/A, Source: 0.0.0.0/0</p> </li> </ul> <p/> <p>Outbound:</p> <ul> <li> <p>Type: All traffic, Protocol: All, Range: All, Destination: 0.0.0.0/0</p> </li> </ul> <p>These security rules impact an internal network interface that is not exposed publicly.</p>',
+      }),
   })
   .openapi({ required: ['DirectoryId', 'IpRoutes'], title: 'AddIpRoutesRequest' })
   .openapi('AddIpRoutesRequest')
@@ -549,23 +166,31 @@ const DirectoryUnavailableExceptionSchema = z.any().openapi('DirectoryUnavailabl
 
 const IpRouteLimitExceededExceptionSchema = z.any().openapi('IpRouteLimitExceededException')
 
-const AddRegionResultSchema = z.object({}).openapi('AddRegionResult')
+const AddRegionResultSchema = z.looseObject({}).openapi('AddRegionResult')
+
+const RegionNameSchema = z.string().min(8).max(32).openapi('RegionName')
+
+const VpcIdSchema = z
+  .string()
+  .regex(/^(vpc-[0-9a-f]{8}|vpc-[0-9a-f]{17})$/)
+  .openapi('VpcId')
+
+const SubnetIdSchema = z
+  .string()
+  .regex(/^(subnet-[0-9a-f]{8}|subnet-[0-9a-f]{17})$/)
+  .openapi('SubnetId')
+
+const SubnetIdsSchema = z.array(SubnetIdSchema).openapi('SubnetIds')
 
 const DirectoryVpcSettingsSchema = z
   .object({
-    VpcId: VpcIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The identifier of the VPC in which to create the directory.' }),
-    ),
-    SubnetIds: SubnetIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifiers of the subnets for the directory servers. The two subnets must be in different Availability Zones. Directory Service creates a directory server and a DNS server in each of these subnets.',
-        }),
-    ),
+    VpcId: VpcIdSchema.openapi({
+      description: 'The identifier of the VPC in which to create the directory.',
+    }),
+    SubnetIds: SubnetIdsSchema.openapi({
+      description:
+        'The identifiers of the subnets for the directory servers. The two subnets must be in different Availability Zones. Directory Service creates a directory server and a DNS server in each of these subnets.',
+    }),
   })
   .openapi({
     required: ['VpcId', 'SubnetIds'],
@@ -576,22 +201,13 @@ const DirectoryVpcSettingsSchema = z
 
 const AddRegionRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the directory to which you want to add Region replication.',
-        }),
-    ),
-    RegionName: RegionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Region where you want to add domain controllers for replication. For example, <code>us-east-1</code>.',
-        }),
-    ),
+    DirectoryId: DirectoryIdSchema.openapi({
+      description: 'The identifier of the directory to which you want to add Region replication.',
+    }),
+    RegionName: RegionNameSchema.openapi({
+      description:
+        'The name of the Region where you want to add domain controllers for replication. For example, <code>us-east-1</code>.',
+    }),
     VPCSettings: DirectoryVpcSettingsSchema,
   })
   .openapi({ required: ['DirectoryId', 'RegionName', 'VPCSettings'], title: 'AddRegionRequest' })
@@ -607,7 +223,7 @@ const RegionLimitExceededExceptionSchema = z.any().openapi('RegionLimitExceededE
 
 const AccessDeniedExceptionSchema = z.any().openapi('AccessDeniedException')
 
-const AddTagsToResourceResultSchema = z.object({}).openapi('AddTagsToResourceResult')
+const AddTagsToResourceResultSchema = z.looseObject({}).openapi('AddTagsToResourceResult')
 
 const ResourceIdSchema = z
   .string()
@@ -630,22 +246,14 @@ const TagValueSchema = z
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Required name of the tag. The string value can be Unicode characters and cannot be prefixed with \"aws:\". The string can contain only the set of Unicode letters, digits, white-space, '_', '.', '/', '=', '+', '-' (Java regex: \"^([\\\\p{L}\\\\p{Z}\\\\p{N}_.:/=+\\\\-]*)$\").",
-        }),
-    ),
-    Value: TagValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The optional value of the tag. The string value can be Unicode characters. The string can contain only the set of Unicode letters, digits, white-space, '_', '.', '/', '=', '+', '-' (Java regex: \"^([\\\\p{L}\\\\p{Z}\\\\p{N}_.:/=+\\\\-]*)$\").",
-        }),
-    ),
+    Key: TagKeySchema.openapi({
+      description:
+        "Required name of the tag. The string value can be Unicode characters and cannot be prefixed with \"aws:\". The string can contain only the set of Unicode letters, digits, white-space, '_', '.', '/', '=', '+', '-' (Java regex: \"^([\\\\p{L}\\\\p{Z}\\\\p{N}_.:/=+\\\\-]*)$\").",
+    }),
+    Value: TagValueSchema.openapi({
+      description:
+        "The optional value of the tag. The string value can be Unicode characters. The string can contain only the set of Unicode letters, digits, white-space, '_', '.', '/', '=', '+', '-' (Java regex: \"^([\\\\p{L}\\\\p{Z}\\\\p{N}_.:/=+\\\\-]*)$\").",
+    }),
   })
   .openapi({
     required: ['Key', 'Value'],
@@ -657,21 +265,17 @@ const TagsSchema = z.array(TagSchema).openapi('Tags')
 
 const AddTagsToResourceRequestSchema = z
   .object({
-    ResourceId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Identifier (ID) for the directory to which to add the tag.' }),
-    ),
-    Tags: TagsSchema.and(
-      z.any().openapi({ description: 'The tags to be assigned to the directory.' }),
-    ),
+    ResourceId: ResourceIdSchema.openapi({
+      description: 'Identifier (ID) for the directory to which to add the tag.',
+    }),
+    Tags: TagsSchema.openapi({ description: 'The tags to be assigned to the directory.' }),
   })
   .openapi({ required: ['ResourceId', 'Tags'], title: 'AddTagsToResourceRequest' })
   .openapi('AddTagsToResourceRequest')
 
 const TagLimitExceededExceptionSchema = z.any().openapi('TagLimitExceededException')
 
-const CancelSchemaExtensionResultSchema = z.object({}).openapi('CancelSchemaExtensionResult')
+const CancelSchemaExtensionResultSchema = z.looseObject({}).openapi('CancelSchemaExtensionResult')
 
 const SchemaExtensionIdSchema = z
   .string()
@@ -680,18 +284,12 @@ const SchemaExtensionIdSchema = z
 
 const CancelSchemaExtensionRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the directory whose schema extension will be canceled.',
-        }),
-    ),
-    SchemaExtensionId: SchemaExtensionIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The identifier of the schema extension that will be canceled.' }),
-    ),
+    DirectoryId: DirectoryIdSchema.openapi({
+      description: 'The identifier of the directory whose schema extension will be canceled.',
+    }),
+    SchemaExtensionId: SchemaExtensionIdSchema.openapi({
+      description: 'The identifier of the schema extension that will be canceled.',
+    }),
   })
   .openapi({
     required: ['DirectoryId', 'SchemaExtensionId'],
@@ -701,9 +299,9 @@ const CancelSchemaExtensionRequestSchema = z
 
 const ConnectDirectoryResultSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the new directory.' }),
-    ).exactOptional(),
+    DirectoryId: DirectoryIdSchema.exactOptional().openapi({
+      description: 'The identifier of the new directory.',
+    }),
   })
   .openapi({
     description: 'Contains the results of the <a>ConnectDirectory</a> operation.',
@@ -711,41 +309,51 @@ const ConnectDirectoryResultSchema = z
   })
   .openapi('ConnectDirectoryResult')
 
+const DirectoryNameSchema = z
+  .string()
+  .regex(/^([a-zA-Z0-9]+[\\.-])+([a-zA-Z0-9])+$/)
+  .openapi('DirectoryName')
+
+const DirectoryShortNameSchema = z
+  .string()
+  .regex(/^[^\\\/:*?"<>|.]+[^\\\/:*?"<>|]*$/)
+  .openapi('DirectoryShortName')
+
 const ConnectPasswordSchema = z.string().min(1).max(128).openapi('ConnectPassword')
+
+const DirectorySizeSchema = z.enum(['Small', 'Large']).openapi('DirectorySize')
+
+const IpAddrSchema = z
+  .string()
+  .regex(
+    /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/,
+  )
+  .openapi('IpAddr')
+
+const DnsIpAddrsSchema = z.array(IpAddrSchema).openapi('DnsIpAddrs')
+
+const UserNameSchema = z
+  .string()
+  .regex(/[a-zA-Z0-9._-]+/)
+  .min(1)
+  .openapi('UserName')
 
 const DirectoryConnectSettingsSchema = z
   .object({
-    VpcId: VpcIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the VPC in which the AD Connector is created.',
-        }),
-    ),
-    SubnetIds: SubnetIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of subnet identifiers in the VPC in which the AD Connector is created.',
-        }),
-    ),
-    CustomerDnsIps: DnsIpAddrsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of one or more IP addresses of DNS servers or domain controllers in your self-managed directory.',
-        }),
-    ),
-    CustomerUserName: UserNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The user name of an account in your self-managed directory that is used to connect to the directory. This account must have the following permissions:</p> <ul> <li> <p>Read users and groups</p> </li> <li> <p>Create computer objects</p> </li> <li> <p>Join computers to the domain</p> </li> </ul>',
-        }),
-    ),
+    VpcId: VpcIdSchema.openapi({
+      description: 'The identifier of the VPC in which the AD Connector is created.',
+    }),
+    SubnetIds: SubnetIdsSchema.openapi({
+      description: 'A list of subnet identifiers in the VPC in which the AD Connector is created.',
+    }),
+    CustomerDnsIps: DnsIpAddrsSchema.openapi({
+      description:
+        'A list of one or more IP addresses of DNS servers or domain controllers in your self-managed directory.',
+    }),
+    CustomerUserName: UserNameSchema.openapi({
+      description:
+        '<p>The user name of an account in your self-managed directory that is used to connect to the directory. This account must have the following permissions:</p> <ul> <li> <p>Read users and groups</p> </li> <li> <p>Create computer objects</p> </li> <li> <p>Join computers to the domain</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['VpcId', 'SubnetIds', 'CustomerDnsIps', 'CustomerUserName'],
@@ -756,40 +364,27 @@ const DirectoryConnectSettingsSchema = z
 
 const ConnectDirectoryRequestSchema = z
   .object({
-    Name: DirectoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The fully qualified name of your self-managed directory, such as <code>corp.example.com</code>.',
-        }),
-    ),
-    ShortName: DirectoryShortNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The NetBIOS name of your self-managed directory, such as <code>CORP</code>.',
-        }),
-    ).exactOptional(),
-    Password: ConnectPasswordSchema.and(
-      z.any().openapi({ description: 'The password for your self-managed user account.' }),
-    ),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description for the directory.' }),
-    ).exactOptional(),
-    Size: DirectorySizeSchema.and(z.any().openapi({ description: 'The size of the directory.' })),
-    ConnectSettings: DirectoryConnectSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <a>DirectoryConnectSettings</a> object that contains additional information for the operation.',
-        }),
-    ),
-    Tags: TagsSchema.and(
-      z.any().openapi({ description: 'The tags to be assigned to AD Connector.' }),
-    ).exactOptional(),
+    Name: DirectoryNameSchema.openapi({
+      description:
+        'The fully qualified name of your self-managed directory, such as <code>corp.example.com</code>.',
+    }),
+    ShortName: DirectoryShortNameSchema.exactOptional().openapi({
+      description: 'The NetBIOS name of your self-managed directory, such as <code>CORP</code>.',
+    }),
+    Password: ConnectPasswordSchema.openapi({
+      description: 'The password for your self-managed user account.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description for the directory.',
+    }),
+    Size: DirectorySizeSchema.openapi({ description: 'The size of the directory.' }),
+    ConnectSettings: DirectoryConnectSettingsSchema.openapi({
+      description:
+        'A <a>DirectoryConnectSettings</a> object that contains additional information for the operation.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description: 'The tags to be assigned to AD Connector.',
+    }),
   })
   .openapi({
     required: ['Name', 'Password', 'Size', 'ConnectSettings'],
@@ -800,14 +395,19 @@ const ConnectDirectoryRequestSchema = z
 
 const DirectoryLimitExceededExceptionSchema = z.any().openapi('DirectoryLimitExceededException')
 
+const AliasNameSchema = z
+  .string()
+  .regex(/^(?!D-|d-)([\da-zA-Z]+)([-]*[\da-zA-Z])*/)
+  .min(1)
+  .max(62)
+  .openapi('AliasName')
+
 const CreateAliasResultSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the directory.' }),
-    ).exactOptional(),
-    Alias: AliasNameSchema.and(
-      z.any().openapi({ description: 'The alias for the directory.' }),
-    ).exactOptional(),
+    DirectoryId: DirectoryIdSchema.exactOptional().openapi({
+      description: 'The identifier of the directory.',
+    }),
+    Alias: AliasNameSchema.exactOptional().openapi({ description: 'The alias for the directory.' }),
   })
   .openapi({
     description: 'Contains the results of the <a>CreateAlias</a> operation.',
@@ -817,19 +417,13 @@ const CreateAliasResultSchema = z
 
 const CreateAliasRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The identifier of the directory for which to create the alias.' }),
-    ),
-    Alias: AliasNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The requested alias.</p> <p>The alias must be unique amongst all aliases in Amazon Web Services. This operation throws an <code>EntityAlreadyExistsException</code> error if the alias already exists.</p>',
-        }),
-    ),
+    DirectoryId: DirectoryIdSchema.openapi({
+      description: 'The identifier of the directory for which to create the alias.',
+    }),
+    Alias: AliasNameSchema.openapi({
+      description:
+        '<p>The requested alias.</p> <p>The alias must be unique amongst all aliases in Amazon Web Services. This operation throws an <code>EntityAlreadyExistsException</code> error if the alias already exists.</p>',
+    }),
   })
   .openapi({
     required: ['DirectoryId', 'Alias'],
@@ -853,12 +447,12 @@ const AttributeValueSchema = z.string().openapi('AttributeValue')
 
 const AttributeSchema = z
   .object({
-    Name: AttributeNameSchema.and(
-      z.any().openapi({ description: 'The name of the attribute.' }),
-    ).exactOptional(),
-    Value: AttributeValueSchema.and(
-      z.any().openapi({ description: 'The value of the attribute.' }),
-    ).exactOptional(),
+    Name: AttributeNameSchema.exactOptional().openapi({
+      description: 'The name of the attribute.',
+    }),
+    Value: AttributeValueSchema.exactOptional().openapi({
+      description: 'The value of the attribute.',
+    }),
   })
   .openapi({ description: 'Represents a named directory attribute.', required: [] })
   .openapi('Attribute')
@@ -867,20 +461,14 @@ const AttributesSchema = z.array(AttributeSchema).openapi('Attributes')
 
 const ComputerSchema = z
   .object({
-    ComputerId: SIDSchema.and(
-      z.any().openapi({ description: 'The identifier of the computer.' }),
-    ).exactOptional(),
-    ComputerName: ComputerNameSchema.and(
-      z.any().openapi({ description: 'The computer name.' }),
-    ).exactOptional(),
-    ComputerAttributes: AttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of <a>Attribute</a> objects containing the LDAP attributes that belong to the computer account.',
-        }),
-    ).exactOptional(),
+    ComputerId: SIDSchema.exactOptional().openapi({
+      description: 'The identifier of the computer.',
+    }),
+    ComputerName: ComputerNameSchema.exactOptional().openapi({ description: 'The computer name.' }),
+    ComputerAttributes: AttributesSchema.exactOptional().openapi({
+      description:
+        'An array of <a>Attribute</a> objects containing the LDAP attributes that belong to the computer account.',
+    }),
   })
   .openapi({
     description: 'Contains information about a computer account in a directory.',
@@ -890,11 +478,9 @@ const ComputerSchema = z
 
 const CreateComputerResultSchema = z
   .object({
-    Computer: ComputerSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A <a>Computer</a> object that represents the computer account.' }),
-    ).exactOptional(),
+    Computer: ComputerSchema.exactOptional().openapi({
+      description: 'A <a>Computer</a> object that represents the computer account.',
+    }),
   })
   .openapi({
     description: 'Contains the results for the <a>CreateComputer</a> operation.',
@@ -913,40 +499,22 @@ const OrganizationalUnitDNSchema = z.string().min(1).max(2000).openapi('Organiza
 
 const CreateComputerRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the directory in which to create the computer account.',
-        }),
-    ),
-    ComputerName: ComputerNameSchema.and(
-      z.any().openapi({ description: 'The name of the computer account.' }),
-    ),
-    Password: ComputerPasswordSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A one-time password that is used to join the computer to the directory. You should generate a random, strong password to use for this parameter.',
-        }),
-    ),
-    OrganizationalUnitDistinguishedName: OrganizationalUnitDNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The fully-qualified distinguished name of the organizational unit to place the computer account in.',
-        }),
-    ).exactOptional(),
-    ComputerAttributes: AttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of <a>Attribute</a> objects that contain any LDAP attributes to apply to the computer account.',
-        }),
-    ).exactOptional(),
+    DirectoryId: DirectoryIdSchema.openapi({
+      description: 'The identifier of the directory in which to create the computer account.',
+    }),
+    ComputerName: ComputerNameSchema.openapi({ description: 'The name of the computer account.' }),
+    Password: ComputerPasswordSchema.openapi({
+      description:
+        'A one-time password that is used to join the computer to the directory. You should generate a random, strong password to use for this parameter.',
+    }),
+    OrganizationalUnitDistinguishedName: OrganizationalUnitDNSchema.exactOptional().openapi({
+      description:
+        'The fully-qualified distinguished name of the organizational unit to place the computer account in.',
+    }),
+    ComputerAttributes: AttributesSchema.exactOptional().openapi({
+      description:
+        'An array of <a>Attribute</a> objects that contain any LDAP attributes to apply to the computer account.',
+    }),
   })
   .openapi({
     required: ['DirectoryId', 'ComputerName', 'Password'],
@@ -958,7 +526,7 @@ const CreateComputerRequestSchema = z
 const AuthenticationFailedExceptionSchema = z.any().openapi('AuthenticationFailedException')
 
 const CreateConditionalForwarderResultSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The result of a CreateConditinalForwarder request.' })
   .openapi('CreateConditionalForwarderResult')
 
@@ -969,30 +537,17 @@ const RemoteDomainNameSchema = z
 
 const CreateConditionalForwarderRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The directory ID of the Amazon Web Services directory for which you are creating the conditional forwarder.',
-        }),
-    ),
-    RemoteDomainName: RemoteDomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The fully qualified domain name (FQDN) of the remote domain with which you will set up a trust relationship.',
-        }),
-    ),
-    DnsIpAddrs: DnsIpAddrsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IP addresses of the remote DNS server associated with RemoteDomainName.',
-        }),
-    ),
+    DirectoryId: DirectoryIdSchema.openapi({
+      description:
+        'The directory ID of the Amazon Web Services directory for which you are creating the conditional forwarder.',
+    }),
+    RemoteDomainName: RemoteDomainNameSchema.openapi({
+      description:
+        'The fully qualified domain name (FQDN) of the remote domain with which you will set up a trust relationship.',
+    }),
+    DnsIpAddrs: DnsIpAddrsSchema.openapi({
+      description: 'The IP addresses of the remote DNS server associated with RemoteDomainName.',
+    }),
   })
   .openapi({
     required: ['DirectoryId', 'RemoteDomainName', 'DnsIpAddrs'],
@@ -1004,9 +559,9 @@ const CreateConditionalForwarderRequestSchema = z
 
 const CreateDirectoryResultSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the directory that was created.' }),
-    ).exactOptional(),
+    DirectoryId: DirectoryIdSchema.exactOptional().openapi({
+      description: 'The identifier of the directory that was created.',
+    }),
   })
   .openapi({
     description: 'Contains the results of the <a>CreateDirectory</a> operation.',
@@ -1023,42 +578,28 @@ const PasswordSchema = z
 
 const CreateDirectoryRequestSchema = z
   .object({
-    Name: DirectoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The fully qualified name for the directory, such as <code>corp.example.com</code>.',
-        }),
-    ),
-    ShortName: DirectoryShortNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The NetBIOS name of the directory, such as <code>CORP</code>.' }),
-    ).exactOptional(),
-    Password: PasswordSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The password for the directory administrator. The directory creation process creates a directory administrator account with the user name <code>Administrator</code> and this password.</p> <p>If you need to change the password for the administrator account, you can use the <a>ResetUserPassword</a> API call.</p> <p>The regex pattern for this string is made up of the following conditions:</p> <ul> <li> <p>Length (?=^.{8,64}$) – Must be between 8 and 64 characters</p> </li> </ul> <p>AND any 3 of the following password complexity rules required by Active Directory:</p> <ul> <li> <p>Numbers and upper case and lowercase (?=.*\\d)(?=.*[A-Z])(?=.*[a-z])</p> </li> <li> <p>Numbers and special characters and lower case (?=.*\\d)(?=.*[^A-Za-z0-9\\s])(?=.*[a-z])</p> </li> <li> <p>Special characters and upper case and lower case (?=.*[^A-Za-z0-9\\s])(?=.*[A-Z])(?=.*[a-z])</p> </li> <li> <p>Numbers and upper case and special characters (?=.*\\d)(?=.*[A-Z])(?=.*[^A-Za-z0-9\\s])</p> </li> </ul> <p>For additional information about how Active Directory passwords are enforced, see <a href="https://docs.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/password-must-meet-complexity-requirements">Password must meet complexity requirements</a> on the Microsoft website.</p>',
-        }),
-    ),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description for the directory.' }),
-    ).exactOptional(),
-    Size: DirectorySizeSchema.and(z.any().openapi({ description: 'The size of the directory.' })),
-    VpcSettings: DirectoryVpcSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <a>DirectoryVpcSettings</a> object that contains additional information for the operation.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z.any().openapi({ description: 'The tags to be assigned to the Simple AD directory.' }),
-    ).exactOptional(),
+    Name: DirectoryNameSchema.openapi({
+      description:
+        'The fully qualified name for the directory, such as <code>corp.example.com</code>.',
+    }),
+    ShortName: DirectoryShortNameSchema.exactOptional().openapi({
+      description: 'The NetBIOS name of the directory, such as <code>CORP</code>.',
+    }),
+    Password: PasswordSchema.openapi({
+      description:
+        '<p>The password for the directory administrator. The directory creation process creates a directory administrator account with the user name <code>Administrator</code> and this password.</p> <p>If you need to change the password for the administrator account, you can use the <a>ResetUserPassword</a> API call.</p> <p>The regex pattern for this string is made up of the following conditions:</p> <ul> <li> <p>Length (?=^.{8,64}$) – Must be between 8 and 64 characters</p> </li> </ul> <p>AND any 3 of the following password complexity rules required by Active Directory:</p> <ul> <li> <p>Numbers and upper case and lowercase (?=.*\\d)(?=.*[A-Z])(?=.*[a-z])</p> </li> <li> <p>Numbers and special characters and lower case (?=.*\\d)(?=.*[^A-Za-z0-9\\s])(?=.*[a-z])</p> </li> <li> <p>Special characters and upper case and lower case (?=.*[^A-Za-z0-9\\s])(?=.*[A-Z])(?=.*[a-z])</p> </li> <li> <p>Numbers and upper case and special characters (?=.*\\d)(?=.*[A-Z])(?=.*[^A-Za-z0-9\\s])</p> </li> </ul> <p>For additional information about how Active Directory passwords are enforced, see <a href="https://docs.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/password-must-meet-complexity-requirements">Password must meet complexity requirements</a> on the Microsoft website.</p>',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description for the directory.',
+    }),
+    Size: DirectorySizeSchema.openapi({ description: 'The size of the directory.' }),
+    VpcSettings: DirectoryVpcSettingsSchema.exactOptional().openapi({
+      description:
+        'A <a>DirectoryVpcSettings</a> object that contains additional information for the operation.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description: 'The tags to be assigned to the Simple AD directory.',
+    }),
   })
   .openapi({
     required: ['Name', 'Password', 'Size'],
@@ -1067,7 +608,7 @@ const CreateDirectoryRequestSchema = z
   })
   .openapi('CreateDirectoryRequest')
 
-const CreateLogSubscriptionResultSchema = z.object({}).openapi('CreateLogSubscriptionResult')
+const CreateLogSubscriptionResultSchema = z.looseObject({}).openapi('CreateLogSubscriptionResult')
 
 const LogGroupNameSchema = z
   .string()
@@ -1078,22 +619,14 @@ const LogGroupNameSchema = z
 
 const CreateLogSubscriptionRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Identifier of the directory to which you want to subscribe and receive real-time logs to your specified CloudWatch log group.',
-        }),
-    ),
-    LogGroupName: LogGroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the CloudWatch log group where the real-time domain controller logs are forwarded.',
-        }),
-    ),
+    DirectoryId: DirectoryIdSchema.openapi({
+      description:
+        'Identifier of the directory to which you want to subscribe and receive real-time logs to your specified CloudWatch log group.',
+    }),
+    LogGroupName: LogGroupNameSchema.openapi({
+      description:
+        'The name of the CloudWatch log group where the real-time domain controller logs are forwarded.',
+    }),
   })
   .openapi({ required: ['DirectoryId', 'LogGroupName'], title: 'CreateLogSubscriptionRequest' })
   .openapi('CreateLogSubscriptionRequest')
@@ -1102,68 +635,44 @@ const InsufficientPermissionsExceptionSchema = z.any().openapi('InsufficientPerm
 
 const CreateMicrosoftADResultSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the directory that was created.' }),
-    ).exactOptional(),
+    DirectoryId: DirectoryIdSchema.exactOptional().openapi({
+      description: 'The identifier of the directory that was created.',
+    }),
   })
   .openapi({ description: 'Result of a CreateMicrosoftAD request.', required: [] })
   .openapi('CreateMicrosoftADResult')
 
+const DirectoryEditionSchema = z.enum(['Enterprise', 'Standard']).openapi('DirectoryEdition')
+
 const CreateMicrosoftADRequestSchema = z
   .object({
-    Name: DirectoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The fully qualified domain name for the Managed Microsoft AD directory, such as <code>corp.example.com</code>. This name will resolve inside your VPC only. It does not need to be publicly resolvable.',
-        }),
-    ),
-    ShortName: DirectoryShortNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The NetBIOS name for your domain, such as <code>CORP</code>. If you don't specify a NetBIOS name, it will default to the first part of your directory DNS. For example, <code>CORP</code> for the directory DNS <code>corp.example.com</code>. ",
-        }),
-    ).exactOptional(),
-    Password: PasswordSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The password for the default administrative user named <code>Admin</code>.</p> <p>If you need to change the password for the administrator account, you can use the <a>ResetUserPassword</a> API call.</p>',
-        }),
-    ),
-    Description: DescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A description for the directory. This label will appear on the Amazon Web Services console <code>Directory Details</code> page after the directory is created.',
-        }),
-    ).exactOptional(),
-    VpcSettings: DirectoryVpcSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains VPC information for the <a>CreateDirectory</a> or <a>CreateMicrosoftAD</a> operation.',
-        }),
-    ),
-    Edition: DirectoryEditionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Managed Microsoft AD is available in two editions: <code>Standard</code> and <code>Enterprise</code>. <code>Enterprise</code> is the default.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The tags to be assigned to the Managed Microsoft AD directory.' }),
-    ).exactOptional(),
+    Name: DirectoryNameSchema.openapi({
+      description:
+        'The fully qualified domain name for the Managed Microsoft AD directory, such as <code>corp.example.com</code>. This name will resolve inside your VPC only. It does not need to be publicly resolvable.',
+    }),
+    ShortName: DirectoryShortNameSchema.exactOptional().openapi({
+      description:
+        "The NetBIOS name for your domain, such as <code>CORP</code>. If you don't specify a NetBIOS name, it will default to the first part of your directory DNS. For example, <code>CORP</code> for the directory DNS <code>corp.example.com</code>. ",
+    }),
+    Password: PasswordSchema.openapi({
+      description:
+        '<p>The password for the default administrative user named <code>Admin</code>.</p> <p>If you need to change the password for the administrator account, you can use the <a>ResetUserPassword</a> API call.</p>',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description:
+        'A description for the directory. This label will appear on the Amazon Web Services console <code>Directory Details</code> page after the directory is created.',
+    }),
+    VpcSettings: DirectoryVpcSettingsSchema.openapi({
+      description:
+        'Contains VPC information for the <a>CreateDirectory</a> or <a>CreateMicrosoftAD</a> operation.',
+    }),
+    Edition: DirectoryEditionSchema.exactOptional().openapi({
+      description:
+        'Managed Microsoft AD is available in two editions: <code>Standard</code> and <code>Enterprise</code>. <code>Enterprise</code> is the default.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description: 'The tags to be assigned to the Managed Microsoft AD directory.',
+    }),
   })
   .openapi({
     required: ['Name', 'Password', 'VpcSettings'],
@@ -1179,9 +688,9 @@ const SnapshotIdSchema = z
 
 const CreateSnapshotResultSchema = z
   .object({
-    SnapshotId: SnapshotIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the snapshot that was created.' }),
-    ).exactOptional(),
+    SnapshotId: SnapshotIdSchema.exactOptional().openapi({
+      description: 'The identifier of the snapshot that was created.',
+    }),
   })
   .openapi({
     description: 'Contains the results of the <a>CreateSnapshot</a> operation.',
@@ -1198,14 +707,12 @@ const SnapshotNameSchema = z
 
 const CreateSnapshotRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The identifier of the directory of which to take a snapshot.' }),
-    ),
-    Name: SnapshotNameSchema.and(
-      z.any().openapi({ description: 'The descriptive name to apply to the snapshot.' }),
-    ).exactOptional(),
+    DirectoryId: DirectoryIdSchema.openapi({
+      description: 'The identifier of the directory of which to take a snapshot.',
+    }),
+    Name: SnapshotNameSchema.exactOptional().openapi({
+      description: 'The descriptive name to apply to the snapshot.',
+    }),
   })
   .openapi({
     required: ['DirectoryId'],
@@ -1223,13 +730,9 @@ const TrustIdSchema = z
 
 const CreateTrustResultSchema = z
   .object({
-    TrustId: TrustIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A unique identifier for the trust relationship that was created.',
-        }),
-    ).exactOptional(),
+    TrustId: TrustIdSchema.exactOptional().openapi({
+      description: 'A unique identifier for the trust relationship that was created.',
+    }),
   })
   .openapi({ description: 'The result of a CreateTrust request.', required: [] })
   .openapi('CreateTrustResult')
@@ -1251,55 +754,30 @@ const SelectiveAuthSchema = z.enum(['Enabled', 'Disabled']).openapi('SelectiveAu
 
 const CreateTrustRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Directory ID of the Managed Microsoft AD directory for which to establish the trust relationship.',
-        }),
-    ),
-    RemoteDomainName: RemoteDomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Fully Qualified Domain Name (FQDN) of the external domain for which to create the trust relationship.',
-        }),
-    ),
-    TrustPassword: TrustPasswordSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The trust password. The must be the same password that was used when creating the trust relationship on the external domain.',
-        }),
-    ),
-    TrustDirection: TrustDirectionSchema.and(
-      z.any().openapi({ description: 'The direction of the trust relationship.' }),
-    ),
-    TrustType: TrustTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The trust relationship type. <code>Forest</code> is the default.',
-        }),
-    ).exactOptional(),
-    ConditionalForwarderIpAddrs: DnsIpAddrsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IP addresses of the remote DNS server associated with RemoteDomainName.',
-        }),
-    ).exactOptional(),
-    SelectiveAuth: SelectiveAuthSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Optional parameter to enable selective authentication for the trust.',
-        }),
-    ).exactOptional(),
+    DirectoryId: DirectoryIdSchema.openapi({
+      description:
+        'The Directory ID of the Managed Microsoft AD directory for which to establish the trust relationship.',
+    }),
+    RemoteDomainName: RemoteDomainNameSchema.openapi({
+      description:
+        'The Fully Qualified Domain Name (FQDN) of the external domain for which to create the trust relationship.',
+    }),
+    TrustPassword: TrustPasswordSchema.openapi({
+      description:
+        'The trust password. The must be the same password that was used when creating the trust relationship on the external domain.',
+    }),
+    TrustDirection: TrustDirectionSchema.openapi({
+      description: 'The direction of the trust relationship.',
+    }),
+    TrustType: TrustTypeSchema.exactOptional().openapi({
+      description: 'The trust relationship type. <code>Forest</code> is the default.',
+    }),
+    ConditionalForwarderIpAddrs: DnsIpAddrsSchema.exactOptional().openapi({
+      description: 'The IP addresses of the remote DNS server associated with RemoteDomainName.',
+    }),
+    SelectiveAuth: SelectiveAuthSchema.exactOptional().openapi({
+      description: 'Optional parameter to enable selective authentication for the trust.',
+    }),
   })
   .openapi({
     required: ['DirectoryId', 'RemoteDomainName', 'TrustPassword', 'TrustDirection'],
@@ -1310,27 +788,19 @@ const CreateTrustRequestSchema = z
   .openapi('CreateTrustRequest')
 
 const DeleteConditionalForwarderResultSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The result of a DeleteConditionalForwarder request.' })
   .openapi('DeleteConditionalForwarderResult')
 
 const DeleteConditionalForwarderRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The directory ID for which you are deleting the conditional forwarder.',
-        }),
-    ),
-    RemoteDomainName: RemoteDomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The fully qualified domain name (FQDN) of the remote domain with which you are deleting the conditional forwarder.',
-        }),
-    ),
+    DirectoryId: DirectoryIdSchema.openapi({
+      description: 'The directory ID for which you are deleting the conditional forwarder.',
+    }),
+    RemoteDomainName: RemoteDomainNameSchema.openapi({
+      description:
+        'The fully qualified domain name (FQDN) of the remote domain with which you are deleting the conditional forwarder.',
+    }),
   })
   .openapi({
     required: ['DirectoryId', 'RemoteDomainName'],
@@ -1341,9 +811,9 @@ const DeleteConditionalForwarderRequestSchema = z
 
 const DeleteDirectoryResultSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z.any().openapi({ description: 'The directory identifier.' }),
-    ).exactOptional(),
+    DirectoryId: DirectoryIdSchema.exactOptional().openapi({
+      description: 'The directory identifier.',
+    }),
   })
   .openapi({
     description: 'Contains the results of the <a>DeleteDirectory</a> operation.',
@@ -1353,9 +823,9 @@ const DeleteDirectoryResultSchema = z
 
 const DeleteDirectoryRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the directory to delete.' }),
-    ),
+    DirectoryId: DirectoryIdSchema.openapi({
+      description: 'The identifier of the directory to delete.',
+    }),
   })
   .openapi({
     required: ['DirectoryId'],
@@ -1364,28 +834,22 @@ const DeleteDirectoryRequestSchema = z
   })
   .openapi('DeleteDirectoryRequest')
 
-const DeleteLogSubscriptionResultSchema = z.object({}).openapi('DeleteLogSubscriptionResult')
+const DeleteLogSubscriptionResultSchema = z.looseObject({}).openapi('DeleteLogSubscriptionResult')
 
 const DeleteLogSubscriptionRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Identifier of the directory whose log subscription you want to delete.',
-        }),
-    ),
+    DirectoryId: DirectoryIdSchema.openapi({
+      description: 'Identifier of the directory whose log subscription you want to delete.',
+    }),
   })
   .openapi({ required: ['DirectoryId'], title: 'DeleteLogSubscriptionRequest' })
   .openapi('DeleteLogSubscriptionRequest')
 
 const DeleteSnapshotResultSchema = z
   .object({
-    SnapshotId: SnapshotIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The identifier of the directory snapshot that was deleted.' }),
-    ).exactOptional(),
+    SnapshotId: SnapshotIdSchema.exactOptional().openapi({
+      description: 'The identifier of the directory snapshot that was deleted.',
+    }),
   })
   .openapi({
     description: 'Contains the results of the <a>DeleteSnapshot</a> operation.',
@@ -1395,9 +859,9 @@ const DeleteSnapshotResultSchema = z
 
 const DeleteSnapshotRequestSchema = z
   .object({
-    SnapshotId: SnapshotIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the directory snapshot to be deleted.' }),
-    ),
+    SnapshotId: SnapshotIdSchema.openapi({
+      description: 'The identifier of the directory snapshot to be deleted.',
+    }),
   })
   .openapi({
     required: ['SnapshotId'],
@@ -1408,9 +872,9 @@ const DeleteSnapshotRequestSchema = z
 
 const DeleteTrustResultSchema = z
   .object({
-    TrustId: TrustIdSchema.and(
-      z.any().openapi({ description: 'The Trust ID of the trust relationship that was deleted.' }),
-    ).exactOptional(),
+    TrustId: TrustIdSchema.exactOptional().openapi({
+      description: 'The Trust ID of the trust relationship that was deleted.',
+    }),
   })
   .openapi({ description: 'The result of a DeleteTrust request.', required: [] })
   .openapi('DeleteTrustResult')
@@ -1421,16 +885,13 @@ const DeleteAssociatedConditionalForwarderSchema = z
 
 const DeleteTrustRequestSchema = z
   .object({
-    TrustId: TrustIdSchema.and(
-      z.any().openapi({ description: 'The Trust ID of the trust relationship to be deleted.' }),
-    ),
-    DeleteAssociatedConditionalForwarder: DeleteAssociatedConditionalForwarderSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Delete a conditional forwarder as part of a DeleteTrustRequest.',
-        }),
-    ).exactOptional(),
+    TrustId: TrustIdSchema.openapi({
+      description: 'The Trust ID of the trust relationship to be deleted.',
+    }),
+    DeleteAssociatedConditionalForwarder:
+      DeleteAssociatedConditionalForwarderSchema.exactOptional().openapi({
+        description: 'Delete a conditional forwarder as part of a DeleteTrustRequest.',
+      }),
   })
   .openapi({
     required: ['TrustId'],
@@ -1440,7 +901,7 @@ const DeleteTrustRequestSchema = z
   })
   .openapi('DeleteTrustRequest')
 
-const DeregisterCertificateResultSchema = z.object({}).openapi('DeregisterCertificateResult')
+const DeregisterCertificateResultSchema = z.looseObject({}).openapi('DeregisterCertificateResult')
 
 const CertificateIdSchema = z
   .string()
@@ -1449,12 +910,10 @@ const CertificateIdSchema = z
 
 const DeregisterCertificateRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the directory.' }),
-    ),
-    CertificateId: CertificateIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the certificate.' }),
-    ),
+    DirectoryId: DirectoryIdSchema.openapi({ description: 'The identifier of the directory.' }),
+    CertificateId: CertificateIdSchema.openapi({
+      description: 'The identifier of the certificate.',
+    }),
   })
   .openapi({ required: ['DirectoryId', 'CertificateId'], title: 'DeregisterCertificateRequest' })
   .openapi('DeregisterCertificateRequest')
@@ -1464,7 +923,7 @@ const CertificateDoesNotExistExceptionSchema = z.any().openapi('CertificateDoesN
 const CertificateInUseExceptionSchema = z.any().openapi('CertificateInUseException')
 
 const DeregisterEventTopicResultSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The result of a DeregisterEventTopic request.' })
   .openapi('DeregisterEventTopicResult')
 
@@ -1477,22 +936,14 @@ const TopicNameSchema = z
 
 const DeregisterEventTopicRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Directory ID to remove as a publisher. This directory will no longer send messages to the specified Amazon SNS topic.',
-        }),
-    ),
-    TopicName: TopicNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Amazon SNS topic from which to remove the directory as a publisher.',
-        }),
-    ),
+    DirectoryId: DirectoryIdSchema.openapi({
+      description:
+        'The Directory ID to remove as a publisher. This directory will no longer send messages to the specified Amazon SNS topic.',
+    }),
+    TopicName: TopicNameSchema.openapi({
+      description:
+        'The name of the Amazon SNS topic from which to remove the directory as a publisher.',
+    }),
   })
   .openapi({
     required: ['DirectoryId', 'TopicName'],
@@ -1536,14 +987,10 @@ const OCSPUrlSchema = z
 
 const ClientCertAuthSettingsSchema = z
   .object({
-    OCSPUrl: OCSPUrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the URL of the default OCSP server used to check for revocation status. A secondary value to any OCSP address found in the AIA extension of the user certificate.',
-        }),
-    ).exactOptional(),
+    OCSPUrl: OCSPUrlSchema.exactOptional().openapi({
+      description:
+        'Specifies the URL of the default OCSP server used to check for revocation status. A secondary value to any OCSP address found in the AIA extension of the user certificate.',
+    }),
   })
   .openapi({
     description:
@@ -1554,66 +1001,52 @@ const ClientCertAuthSettingsSchema = z
 
 const CertificateSchema = z
   .object({
-    CertificateId: CertificateIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the certificate.' }),
-    ).exactOptional(),
-    State: CertificateStateSchema.and(
-      z.any().openapi({ description: 'The state of the certificate.' }),
-    ).exactOptional(),
-    StateReason: CertificateStateReasonSchema.and(
-      z.any().openapi({ description: 'Describes a state change for the certificate.' }),
-    ).exactOptional(),
-    CommonName: CertificateCNSchema.and(
-      z.any().openapi({ description: 'The common name for the certificate.' }),
-    ).exactOptional(),
-    RegisteredDateTime: CertificateRegisteredDateTimeSchema.and(
-      z.any().openapi({ description: 'The date and time that the certificate was registered.' }),
-    ).exactOptional(),
-    ExpiryDateTime: CertificateExpiryDateTimeSchema.and(
-      z.any().openapi({ description: 'The date and time when the certificate will expire.' }),
-    ).exactOptional(),
-    Type: CertificateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The function that the registered certificate performs. Valid values include <code>ClientLDAPS</code> or <code>ClientCertAuth</code>. The default value is <code>ClientLDAPS</code>.',
-        }),
-    ).exactOptional(),
-    ClientCertAuthSettings: ClientCertAuthSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>ClientCertAuthSettings</code> object that contains client certificate authentication settings.',
-        }),
-    ).exactOptional(),
+    CertificateId: CertificateIdSchema.exactOptional().openapi({
+      description: 'The identifier of the certificate.',
+    }),
+    State: CertificateStateSchema.exactOptional().openapi({
+      description: 'The state of the certificate.',
+    }),
+    StateReason: CertificateStateReasonSchema.exactOptional().openapi({
+      description: 'Describes a state change for the certificate.',
+    }),
+    CommonName: CertificateCNSchema.exactOptional().openapi({
+      description: 'The common name for the certificate.',
+    }),
+    RegisteredDateTime: CertificateRegisteredDateTimeSchema.exactOptional().openapi({
+      description: 'The date and time that the certificate was registered.',
+    }),
+    ExpiryDateTime: CertificateExpiryDateTimeSchema.exactOptional().openapi({
+      description: 'The date and time when the certificate will expire.',
+    }),
+    Type: CertificateTypeSchema.exactOptional().openapi({
+      description:
+        'The function that the registered certificate performs. Valid values include <code>ClientLDAPS</code> or <code>ClientCertAuth</code>. The default value is <code>ClientLDAPS</code>.',
+    }),
+    ClientCertAuthSettings: ClientCertAuthSettingsSchema.exactOptional().openapi({
+      description:
+        'A <code>ClientCertAuthSettings</code> object that contains client certificate authentication settings.',
+    }),
   })
   .openapi({ description: 'Information about the certificate.', required: [] })
   .openapi('Certificate')
 
 const DescribeCertificateResultSchema = z
   .object({
-    Certificate: CertificateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the certificate, including registered date time, certificate state, the reason for the state, expiration date time, and certificate common name.',
-        }),
-    ).exactOptional(),
+    Certificate: CertificateSchema.exactOptional().openapi({
+      description:
+        'Information about the certificate, including registered date time, certificate state, the reason for the state, expiration date time, and certificate common name.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeCertificateResult')
 
 const DescribeCertificateRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the directory.' }),
-    ),
-    CertificateId: CertificateIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the certificate.' }),
-    ),
+    DirectoryId: DirectoryIdSchema.openapi({ description: 'The identifier of the directory.' }),
+    CertificateId: CertificateIdSchema.openapi({
+      description: 'The identifier of the certificate.',
+    }),
   })
   .openapi({ required: ['DirectoryId', 'CertificateId'], title: 'DescribeCertificateRequest' })
   .openapi('DescribeCertificateRequest')
@@ -1628,30 +1061,18 @@ const ClientAuthenticationStatusSchema = z
 
 const ClientAuthenticationSettingInfoSchema = z
   .object({
-    Type: ClientAuthenticationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of client authentication for the specified directory. If no type is specified, a list of all client authentication types that are supported for the directory is retrieved. ',
-        }),
-    ).exactOptional(),
-    Status: ClientAuthenticationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether the client authentication type is enabled or disabled for the specified directory.',
-        }),
-    ).exactOptional(),
-    LastUpdatedDateTime: LastUpdatedDateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time when the status of the client authentication type was last updated.',
-        }),
-    ).exactOptional(),
+    Type: ClientAuthenticationTypeSchema.exactOptional().openapi({
+      description:
+        'The type of client authentication for the specified directory. If no type is specified, a list of all client authentication types that are supported for the directory is retrieved. ',
+    }),
+    Status: ClientAuthenticationStatusSchema.exactOptional().openapi({
+      description:
+        'Whether the client authentication type is enabled or disabled for the specified directory.',
+    }),
+    LastUpdatedDateTime: LastUpdatedDateTimeSchema.exactOptional().openapi({
+      description:
+        'The date and time when the status of the client authentication type was last updated.',
+    }),
   })
   .openapi({
     description: 'Contains information about a client authentication method for a directory.',
@@ -1667,22 +1088,15 @@ const NextTokenSchema = z.string().openapi('NextToken')
 
 const DescribeClientAuthenticationSettingsResultSchema = z
   .object({
-    ClientAuthenticationSettingsInfo: ClientAuthenticationSettingsInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the type of client authentication for the specified directory. The following information is retrieved: The date and time when the status of the client authentication type was last updated, whether the client authentication type is enabled or disabled, and the type of client authentication.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The next token used to retrieve the client authentication settings if the number of setting types exceeds page limit and there is another page.',
-        }),
-    ).exactOptional(),
+    ClientAuthenticationSettingsInfo:
+      ClientAuthenticationSettingsInfoSchema.exactOptional().openapi({
+        description:
+          'Information about the type of client authentication for the specified directory. The following information is retrieved: The date and time when the status of the client authentication type was last updated, whether the client authentication type is enabled or disabled, and the type of client authentication.',
+      }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The next token used to retrieve the client authentication settings if the number of setting types exceeds page limit and there is another page.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeClientAuthenticationSettingsResult')
@@ -1691,37 +1105,21 @@ const PageLimitSchema = z.int().min(1).max(50).openapi('PageLimit')
 
 const DescribeClientAuthenticationSettingsRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the directory for which to retrieve information.',
-        }),
-    ),
-    Type: ClientAuthenticationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of client authentication for which to retrieve information. If no type is specified, a list of all client authentication types that are supported for the specified directory is retrieved.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <i>DescribeClientAuthenticationSettingsResult.NextToken</i> value from a previous call to <a>DescribeClientAuthenticationSettings</a>. Pass null if this is the first call.',
-        }),
-    ).exactOptional(),
-    Limit: PageLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of items to return. If this value is zero, the maximum number of items is specified by the limitations of the operation. ',
-        }),
-    ).exactOptional(),
+    DirectoryId: DirectoryIdSchema.openapi({
+      description: 'The identifier of the directory for which to retrieve information.',
+    }),
+    Type: ClientAuthenticationTypeSchema.exactOptional().openapi({
+      description:
+        'The type of client authentication for which to retrieve information. If no type is specified, a list of all client authentication types that are supported for the specified directory is retrieved.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <i>DescribeClientAuthenticationSettingsResult.NextToken</i> value from a previous call to <a>DescribeClientAuthenticationSettings</a>. Pass null if this is the first call.',
+    }),
+    Limit: PageLimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of items to return. If this value is zero, the maximum number of items is specified by the limitations of the operation. ',
+    }),
   })
   .openapi({ required: ['DirectoryId'], title: 'DescribeClientAuthenticationSettingsRequest' })
   .openapi('DescribeClientAuthenticationSettingsRequest')
@@ -1730,30 +1128,18 @@ const ReplicationScopeSchema = z.literal('Domain').openapi('ReplicationScope')
 
 const ConditionalForwarderSchema = z
   .object({
-    RemoteDomainName: RemoteDomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The fully qualified domain name (FQDN) of the remote domains pointed to by the conditional forwarder.',
-        }),
-    ).exactOptional(),
-    DnsIpAddrs: DnsIpAddrsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IP addresses of the remote DNS server associated with RemoteDomainName. This is the IP address of the DNS server that your conditional forwarder points to.',
-        }),
-    ).exactOptional(),
-    ReplicationScope: ReplicationScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The replication scope of the conditional forwarder. The only allowed value is <code>Domain</code>, which will replicate the conditional forwarder to all of the domain controllers for your Amazon Web Services directory.',
-        }),
-    ).exactOptional(),
+    RemoteDomainName: RemoteDomainNameSchema.exactOptional().openapi({
+      description:
+        'The fully qualified domain name (FQDN) of the remote domains pointed to by the conditional forwarder.',
+    }),
+    DnsIpAddrs: DnsIpAddrsSchema.exactOptional().openapi({
+      description:
+        'The IP addresses of the remote DNS server associated with RemoteDomainName. This is the IP address of the DNS server that your conditional forwarder points to.',
+    }),
+    ReplicationScope: ReplicationScopeSchema.exactOptional().openapi({
+      description:
+        'The replication scope of the conditional forwarder. The only allowed value is <code>Domain</code>, which will replicate the conditional forwarder to all of the domain controllers for your Amazon Web Services directory.',
+    }),
   })
   .openapi({
     description:
@@ -1768,11 +1154,9 @@ const ConditionalForwardersSchema = z
 
 const DescribeConditionalForwardersResultSchema = z
   .object({
-    ConditionalForwarders: ConditionalForwardersSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The list of conditional forwarders that have been created.' }),
-    ).exactOptional(),
+    ConditionalForwarders: ConditionalForwardersSchema.exactOptional().openapi({
+      description: 'The list of conditional forwarders that have been created.',
+    }),
   })
   .openapi({ description: 'The result of a DescribeConditionalForwarder request.', required: [] })
   .openapi('DescribeConditionalForwardersResult')
@@ -1781,22 +1165,14 @@ const RemoteDomainNamesSchema = z.array(RemoteDomainNameSchema).openapi('RemoteD
 
 const DescribeConditionalForwardersRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The directory ID for which to get the list of associated conditional forwarders.',
-        }),
-    ),
-    RemoteDomainNames: RemoteDomainNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The fully qualified domain names (FQDN) of the remote domains for which to get the list of associated conditional forwarders. If this member is null, all conditional forwarders are returned.',
-        }),
-    ).exactOptional(),
+    DirectoryId: DirectoryIdSchema.openapi({
+      description:
+        'The directory ID for which to get the list of associated conditional forwarders.',
+    }),
+    RemoteDomainNames: RemoteDomainNamesSchema.exactOptional().openapi({
+      description:
+        'The fully qualified domain names (FQDN) of the remote domains for which to get the list of associated conditional forwarders. If this member is null, all conditional forwarders are returned.',
+    }),
   })
   .openapi({
     required: ['DirectoryId'],
@@ -1805,153 +1181,299 @@ const DescribeConditionalForwardersRequestSchema = z
   })
   .openapi('DescribeConditionalForwardersRequest')
 
-const DirectoryDescriptionSchema: z.ZodType<DirectoryDescriptionType> = z
-  .lazy(() =>
-    z
-      .object({
-        DirectoryId: DirectoryIdSchema.and(
-          z.any().openapi({ description: 'The directory identifier.' }),
-        ).exactOptional(),
-        Name: DirectoryNameSchema.and(
-          z.any().openapi({ description: 'The fully qualified name of the directory.' }),
-        ).exactOptional(),
-        ShortName: DirectoryShortNameSchema.and(
-          z.any().openapi({ description: 'The short name of the directory.' }),
-        ).exactOptional(),
-        Size: DirectorySizeSchema.and(
-          z.any().openapi({ description: 'The directory size.' }),
-        ).exactOptional(),
-        Edition: DirectoryEditionSchema.and(
-          z.any().openapi({ description: 'The edition associated with this directory.' }),
-        ).exactOptional(),
-        Alias: AliasNameSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The alias for the directory. If no alias has been created for the directory, the alias is the directory identifier, such as <code>d-XXXXXXXXXX</code>.',
-            }),
-        ).exactOptional(),
-        AccessUrl: AccessUrlSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The access URL for the directory, such as <code>http://&lt;alias&gt;.awsapps.com</code>. If no alias has been created for the directory, <code>&lt;alias&gt;</code> is the directory identifier, such as <code>d-XXXXXXXXXX</code>.',
-            }),
-        ).exactOptional(),
-        Description: DescriptionSchema.and(
-          z.any().openapi({ description: 'The description for the directory.' }),
-        ).exactOptional(),
-        DnsIpAddrs: DnsIpAddrsSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The IP addresses of the DNS servers for the directory. For a Simple AD or Microsoft AD directory, these are the IP addresses of the Simple AD or Microsoft AD directory servers. For an AD Connector directory, these are the IP addresses of the DNS servers or domain controllers in your self-managed directory to which the AD Connector is connected.',
-            }),
-        ).exactOptional(),
-        Stage: DirectoryStageSchema.and(
-          z.any().openapi({ description: 'The current stage of the directory.' }),
-        ).exactOptional(),
-        ShareStatus: ShareStatusSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'Current directory status of the shared Managed Microsoft AD directory.',
-            }),
-        ).exactOptional(),
-        ShareMethod: ShareMethodSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The method used when sharing a directory to determine whether the directory should be shared within your Amazon Web Services organization (<code>ORGANIZATIONS</code>) or with any Amazon Web Services account by sending a shared directory request (<code>HANDSHAKE</code>).',
-            }),
-        ).exactOptional(),
-        ShareNotes: NotesSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'A directory share request that is sent by the directory owner to the directory consumer. The request includes a typed message to help the directory consumer administrator determine whether to approve or reject the share invitation.',
-            }),
-        ).exactOptional(),
-        LaunchTime: LaunchTimeSchema.and(
-          z.any().openapi({ description: 'Specifies when the directory was created.' }),
-        ).exactOptional(),
-        StageLastUpdatedDateTime: LastUpdatedDateTimeSchema.and(
-          z.any().openapi({ description: 'The date and time that the stage was last updated.' }),
-        ).exactOptional(),
-        Type: DirectoryTypeSchema.and(
-          z.any().openapi({ description: 'The directory size.' }),
-        ).exactOptional(),
-        VpcSettings: DirectoryVpcSettingsDescriptionSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'A <a>DirectoryVpcSettingsDescription</a> object that contains additional information about a directory. This member is only present if the directory is a Simple AD or Managed Microsoft AD directory.',
-            }),
-        ).exactOptional(),
-        ConnectSettings: DirectoryConnectSettingsDescriptionSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'A <a>DirectoryConnectSettingsDescription</a> object that contains additional information about an AD Connector directory. This member is only present if the directory is an AD Connector directory.',
-            }),
-        ).exactOptional(),
-        RadiusSettings: RadiusSettingsSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'A <a>RadiusSettings</a> object that contains information about the RADIUS server configured for this directory.',
-            }),
-        ).exactOptional(),
-        RadiusStatus: RadiusStatusSchema.and(
-          z.any().openapi({ description: 'The status of the RADIUS MFA server connection.' }),
-        ).exactOptional(),
-        StageReason: StageReasonSchema.and(
-          z.any().openapi({ description: 'Additional information about the directory stage.' }),
-        ).exactOptional(),
-        SsoEnabled: SsoEnabledSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Indicates if single sign-on is enabled for the directory. For more information, see <a>EnableSso</a> and <a>DisableSso</a>.',
-            }),
-        ).exactOptional(),
-        DesiredNumberOfDomainControllers: DesiredNumberOfDomainControllersSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The desired number of domain controllers in the directory if the directory is Microsoft AD.',
-            }),
-        ).exactOptional(),
-        OwnerDirectoryDescription: OwnerDirectoryDescriptionSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Describes the Managed Microsoft AD directory in the directory owner account.',
-            }),
-        ).exactOptional(),
-        RegionsInfo: RegionsInfoSchema.and(
-          z.any().openapi({ description: 'Lists the Regions where the directory has replicated.' }),
-        ).exactOptional(),
-        OsVersion: OSVersionSchema.and(
-          z.any().openapi({ description: 'The operating system (OS) version of the directory.' }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description: 'Contains information about an Directory Service directory.',
-        required: [],
+const AccessUrlSchema = z.string().min(1).max(128).openapi('AccessUrl')
+
+const DirectoryStageSchema = z
+  .enum([
+    'Requested',
+    'Creating',
+    'Created',
+    'Active',
+    'Inoperable',
+    'Impaired',
+    'Restoring',
+    'RestoreFailed',
+    'Deleting',
+    'Deleted',
+    'Failed',
+  ])
+  .openapi('DirectoryStage')
+
+const LaunchTimeSchema = z.iso.datetime({ offset: true }).openapi('LaunchTime')
+
+const DirectoryTypeSchema = z
+  .enum(['SimpleAD', 'ADConnector', 'MicrosoftAD', 'SharedMicrosoftAD'])
+  .openapi('DirectoryType')
+
+const SecurityGroupIdSchema = z
+  .string()
+  .regex(/^(sg-[0-9a-f]{8}|sg-[0-9a-f]{17})$/)
+  .openapi('SecurityGroupId')
+
+const AvailabilityZoneSchema = z.string().openapi('AvailabilityZone')
+
+const AvailabilityZonesSchema = z.array(AvailabilityZoneSchema).openapi('AvailabilityZones')
+
+const DirectoryVpcSettingsDescriptionSchema = z
+  .object({
+    VpcId: VpcIdSchema.exactOptional().openapi({
+      description: 'The identifier of the VPC that the directory is in.',
+    }),
+    SubnetIds: SubnetIdsSchema.exactOptional().openapi({
+      description: 'The identifiers of the subnets for the directory servers.',
+    }),
+    SecurityGroupId: SecurityGroupIdSchema.exactOptional().openapi({
+      description: 'The domain controller security group identifier for the directory.',
+    }),
+    AvailabilityZones: AvailabilityZonesSchema.exactOptional().openapi({
+      description: 'The list of Availability Zones that the directory is in.',
+    }),
+  })
+  .openapi({ description: 'Contains information about the directory.', required: [] })
+  .openapi('DirectoryVpcSettingsDescription')
+
+const IpAddrsSchema = z.array(IpAddrSchema).openapi('IpAddrs')
+
+const DirectoryConnectSettingsDescriptionSchema = z
+  .object({
+    VpcId: VpcIdSchema.exactOptional().openapi({
+      description: 'The identifier of the VPC that the AD Connector is in.',
+    }),
+    SubnetIds: SubnetIdsSchema.exactOptional().openapi({
+      description: 'A list of subnet identifiers in the VPC that the AD Connector is in.',
+    }),
+    CustomerUserName: UserNameSchema.exactOptional().openapi({
+      description: 'The user name of the service account in your self-managed directory.',
+    }),
+    SecurityGroupId: SecurityGroupIdSchema.exactOptional().openapi({
+      description: 'The security group identifier for the AD Connector directory.',
+    }),
+    AvailabilityZones: AvailabilityZonesSchema.exactOptional().openapi({
+      description: 'A list of the Availability Zones that the directory is in.',
+    }),
+    ConnectIps: IpAddrsSchema.exactOptional().openapi({
+      description: 'The IP addresses of the AD Connector servers.',
+    }),
+  })
+  .openapi({ description: 'Contains information about an AD Connector directory.', required: [] })
+  .openapi('DirectoryConnectSettingsDescription')
+
+const ServerSchema = z.string().min(1).max(256).openapi('Server')
+
+const ServersSchema = z.array(ServerSchema).openapi('Servers')
+
+const PortNumberSchema = z.int().min(1025).max(65535).openapi('PortNumber')
+
+const RadiusTimeoutSchema = z.int().min(1).max(20).openapi('RadiusTimeout')
+
+const RadiusRetriesSchema = z.int().min(0).max(10).openapi('RadiusRetries')
+
+const RadiusSharedSecretSchema = z
+  .string()
+  .min(8)
+  .max(512)
+  .openapi({ pattern: '^(\\p{LD}|\\p{Punct}| )+$' })
+  .openapi('RadiusSharedSecret')
+
+const RadiusAuthenticationProtocolSchema = z
+  .enum(['PAP', 'CHAP', 'MS-CHAPv1', 'MS-CHAPv2'])
+  .openapi('RadiusAuthenticationProtocol')
+
+const RadiusDisplayLabelSchema = z.string().min(1).max(64).openapi('RadiusDisplayLabel')
+
+const UseSameUsernameSchema = z.boolean().openapi('UseSameUsername')
+
+const RadiusSettingsSchema = z
+  .object({
+    RadiusServers: ServersSchema.exactOptional().openapi({
+      description:
+        'An array of strings that contains the fully qualified domain name (FQDN) or IP addresses of the RADIUS server endpoints, or the FQDN or IP addresses of your RADIUS server load balancer.',
+    }),
+    RadiusPort: PortNumberSchema.exactOptional().openapi({
+      description:
+        'The port that your RADIUS server is using for communications. Your self-managed network must allow inbound traffic over this port from the Directory Service servers.',
+    }),
+    RadiusTimeout: RadiusTimeoutSchema.exactOptional().openapi({
+      description: 'The amount of time, in seconds, to wait for the RADIUS server to respond.',
+    }),
+    RadiusRetries: RadiusRetriesSchema.exactOptional().openapi({
+      description:
+        'The maximum number of times that communication with the RADIUS server is attempted.',
+    }),
+    SharedSecret: RadiusSharedSecretSchema.exactOptional().openapi({
+      description: 'Required for enabling RADIUS on the directory.',
+    }),
+    AuthenticationProtocol: RadiusAuthenticationProtocolSchema.exactOptional().openapi({
+      description: 'The protocol specified for your RADIUS endpoints.',
+    }),
+    DisplayLabel: RadiusDisplayLabelSchema.exactOptional().openapi({
+      description: 'Not currently used.',
+    }),
+    UseSameUsername: UseSameUsernameSchema.exactOptional().openapi({
+      description: 'Not currently used.',
+    }),
+  })
+  .openapi({
+    description:
+      'Contains information about a Remote Authentication Dial In User Service (RADIUS) server.',
+    required: [],
+  })
+  .openapi('RadiusSettings')
+
+const RadiusStatusSchema = z.enum(['Creating', 'Completed', 'Failed']).openapi('RadiusStatus')
+
+const StageReasonSchema = z.string().openapi('StageReason')
+
+const SsoEnabledSchema = z.boolean().openapi('SsoEnabled')
+
+const DesiredNumberOfDomainControllersSchema = z
+  .int()
+  .min(2)
+  .openapi('DesiredNumberOfDomainControllers')
+
+const OwnerDirectoryDescriptionSchema = z
+  .object({
+    DirectoryId: DirectoryIdSchema.exactOptional().openapi({
+      description:
+        'Identifier of the Managed Microsoft AD directory in the directory owner account.',
+    }),
+    AccountId: CustomerIdSchema.exactOptional().openapi({
+      description: 'Identifier of the directory owner account.',
+    }),
+    DnsIpAddrs: DnsIpAddrsSchema.exactOptional().openapi({
+      description: 'IP address of the directory’s domain controllers.',
+    }),
+    VpcSettings: DirectoryVpcSettingsDescriptionSchema.exactOptional().openapi({
+      description: 'Information about the VPC settings for the directory.',
+    }),
+    RadiusSettings: RadiusSettingsSchema.exactOptional().openapi({
+      description:
+        'A <a>RadiusSettings</a> object that contains information about the RADIUS server.',
+    }),
+    RadiusStatus: RadiusStatusSchema.exactOptional().openapi({
+      description: 'Information about the status of the RADIUS server.',
+    }),
+  })
+  .openapi({
+    description:
+      'Describes the directory owner account details that have been shared to the directory consumer account.',
+    required: [],
+  })
+  .openapi('OwnerDirectoryDescription')
+
+const AdditionalRegionsSchema = z.array(RegionNameSchema).openapi('AdditionalRegions')
+
+const RegionsInfoSchema = z
+  .object({
+    PrimaryRegion: RegionNameSchema.exactOptional().openapi({
+      description: 'The Region where the Managed Microsoft AD directory was originally created.',
+    }),
+    AdditionalRegions: AdditionalRegionsSchema.exactOptional().openapi({
+      description:
+        'Lists the Regions where the directory has been replicated, excluding the primary Region.',
+    }),
+  })
+  .openapi({
+    description:
+      'Provides information about the Regions that are configured for multi-Region replication.',
+    required: [],
+  })
+  .openapi('RegionsInfo')
+
+const OSVersionSchema = z.enum(['SERVER_2012', 'SERVER_2019']).openapi('OSVersion')
+
+const DirectoryDescriptionSchema = z
+  .object({
+    DirectoryId: DirectoryIdSchema.exactOptional().openapi({
+      description: 'The directory identifier.',
+    }),
+    Name: DirectoryNameSchema.exactOptional().openapi({
+      description: 'The fully qualified name of the directory.',
+    }),
+    ShortName: DirectoryShortNameSchema.exactOptional().openapi({
+      description: 'The short name of the directory.',
+    }),
+    Size: DirectorySizeSchema.exactOptional().openapi({ description: 'The directory size.' }),
+    Edition: DirectoryEditionSchema.exactOptional().openapi({
+      description: 'The edition associated with this directory.',
+    }),
+    Alias: AliasNameSchema.exactOptional().openapi({
+      description:
+        'The alias for the directory. If no alias has been created for the directory, the alias is the directory identifier, such as <code>d-XXXXXXXXXX</code>.',
+    }),
+    AccessUrl: AccessUrlSchema.exactOptional().openapi({
+      description:
+        'The access URL for the directory, such as <code>http://&lt;alias&gt;.awsapps.com</code>. If no alias has been created for the directory, <code>&lt;alias&gt;</code> is the directory identifier, such as <code>d-XXXXXXXXXX</code>.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description for the directory.',
+    }),
+    DnsIpAddrs: DnsIpAddrsSchema.exactOptional().openapi({
+      description:
+        'The IP addresses of the DNS servers for the directory. For a Simple AD or Microsoft AD directory, these are the IP addresses of the Simple AD or Microsoft AD directory servers. For an AD Connector directory, these are the IP addresses of the DNS servers or domain controllers in your self-managed directory to which the AD Connector is connected.',
+    }),
+    Stage: DirectoryStageSchema.exactOptional().openapi({
+      description: 'The current stage of the directory.',
+    }),
+    ShareStatus: ShareStatusSchema.exactOptional().openapi({
+      description: 'Current directory status of the shared Managed Microsoft AD directory.',
+    }),
+    ShareMethod: ShareMethodSchema.exactOptional().openapi({
+      description:
+        'The method used when sharing a directory to determine whether the directory should be shared within your Amazon Web Services organization (<code>ORGANIZATIONS</code>) or with any Amazon Web Services account by sending a shared directory request (<code>HANDSHAKE</code>).',
+    }),
+    ShareNotes: NotesSchema.exactOptional().openapi({
+      description:
+        'A directory share request that is sent by the directory owner to the directory consumer. The request includes a typed message to help the directory consumer administrator determine whether to approve or reject the share invitation.',
+    }),
+    LaunchTime: LaunchTimeSchema.exactOptional().openapi({
+      description: 'Specifies when the directory was created.',
+    }),
+    StageLastUpdatedDateTime: LastUpdatedDateTimeSchema.exactOptional().openapi({
+      description: 'The date and time that the stage was last updated.',
+    }),
+    Type: DirectoryTypeSchema.exactOptional().openapi({ description: 'The directory size.' }),
+    VpcSettings: DirectoryVpcSettingsDescriptionSchema.exactOptional().openapi({
+      description:
+        'A <a>DirectoryVpcSettingsDescription</a> object that contains additional information about a directory. This member is only present if the directory is a Simple AD or Managed Microsoft AD directory.',
+    }),
+    ConnectSettings: DirectoryConnectSettingsDescriptionSchema.exactOptional().openapi({
+      description:
+        'A <a>DirectoryConnectSettingsDescription</a> object that contains additional information about an AD Connector directory. This member is only present if the directory is an AD Connector directory.',
+    }),
+    RadiusSettings: RadiusSettingsSchema.exactOptional().openapi({
+      description:
+        'A <a>RadiusSettings</a> object that contains information about the RADIUS server configured for this directory.',
+    }),
+    RadiusStatus: RadiusStatusSchema.exactOptional().openapi({
+      description: 'The status of the RADIUS MFA server connection.',
+    }),
+    StageReason: StageReasonSchema.exactOptional().openapi({
+      description: 'Additional information about the directory stage.',
+    }),
+    SsoEnabled: SsoEnabledSchema.exactOptional().openapi({
+      description:
+        'Indicates if single sign-on is enabled for the directory. For more information, see <a>EnableSso</a> and <a>DisableSso</a>.',
+    }),
+    DesiredNumberOfDomainControllers:
+      DesiredNumberOfDomainControllersSchema.exactOptional().openapi({
+        description:
+          'The desired number of domain controllers in the directory if the directory is Microsoft AD.',
       }),
-  )
+    OwnerDirectoryDescription: OwnerDirectoryDescriptionSchema.exactOptional().openapi({
+      description: 'Describes the Managed Microsoft AD directory in the directory owner account.',
+    }),
+    RegionsInfo: RegionsInfoSchema.exactOptional().openapi({
+      description: 'Lists the Regions where the directory has replicated.',
+    }),
+    OsVersion: OSVersionSchema.exactOptional().openapi({
+      description: 'The operating system (OS) version of the directory.',
+    }),
+  })
+  .openapi({
+    description: 'Contains information about an Directory Service directory.',
+    required: [],
+  })
   .openapi('DirectoryDescription')
 
 const DirectoryDescriptionsSchema = z
@@ -1961,22 +1483,14 @@ const DirectoryDescriptionsSchema = z
 
 const DescribeDirectoriesResultSchema = z
   .object({
-    DirectoryDescriptions: DirectoryDescriptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The list of <a>DirectoryDescription</a> objects that were retrieved.</p> <p>It is possible that this list contains less than the number of items specified in the <code>Limit</code> member of the request. This occurs if there are less than the requested number of items left to retrieve, or if the limitations of the operation have been exceeded.</p>',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If not null, more results are available. Pass this value for the <code>NextToken</code> parameter in a subsequent call to <a>DescribeDirectories</a> to retrieve the next set of items.',
-        }),
-    ).exactOptional(),
+    DirectoryDescriptions: DirectoryDescriptionsSchema.exactOptional().openapi({
+      description:
+        '<p>The list of <a>DirectoryDescription</a> objects that were retrieved.</p> <p>It is possible that this list contains less than the number of items specified in the <code>Limit</code> member of the request. This occurs if there are less than the requested number of items left to retrieve, or if the limitations of the operation have been exceeded.</p>',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If not null, more results are available. Pass this value for the <code>NextToken</code> parameter in a subsequent call to <a>DescribeDirectories</a> to retrieve the next set of items.',
+    }),
   })
   .openapi({
     description: 'Contains the results of the <a>DescribeDirectories</a> operation.',
@@ -1993,30 +1507,18 @@ const LimitSchema = z.int().min(0).openapi('Limit')
 
 const DescribeDirectoriesRequestSchema = z
   .object({
-    DirectoryIds: DirectoryIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of identifiers of the directories for which to obtain the information. If this member is null, all directories that belong to the current account are returned.</p> <p>An empty list results in an <code>InvalidParameterException</code> being thrown.</p>',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>DescribeDirectoriesResult.NextToken</code> value from a previous call to <a>DescribeDirectories</a>. Pass null if this is the first call.',
-        }),
-    ).exactOptional(),
-    Limit: LimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of items to return. If this value is zero, the maximum number of items is specified by the limitations of the operation.',
-        }),
-    ).exactOptional(),
+    DirectoryIds: DirectoryIdsSchema.exactOptional().openapi({
+      description:
+        '<p>A list of identifiers of the directories for which to obtain the information. If this member is null, all directories that belong to the current account are returned.</p> <p>An empty list results in an <code>InvalidParameterException</code> being thrown.</p>',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>DescribeDirectoriesResult.NextToken</code> value from a previous call to <a>DescribeDirectories</a>. Pass null if this is the first call.',
+    }),
+    Limit: LimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of items to return. If this value is zero, the maximum number of items is specified by the limitations of the operation.',
+    }),
   })
   .openapi({
     title: 'DescribeDirectoriesRequest',
@@ -2040,48 +1542,36 @@ const DomainControllerStatusReasonSchema = z.string().openapi('DomainControllerS
 
 const DomainControllerSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Identifier of the directory where the domain controller resides.',
-        }),
-    ).exactOptional(),
-    DomainControllerId: DomainControllerIdSchema.and(
-      z.any().openapi({ description: 'Identifies a specific domain controller in the directory.' }),
-    ).exactOptional(),
-    DnsIpAddr: IpAddrSchema.and(
-      z.any().openapi({ description: 'The IP address of the domain controller.' }),
-    ).exactOptional(),
-    VpcId: VpcIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The identifier of the VPC that contains the domain controller.' }),
-    ).exactOptional(),
-    SubnetId: SubnetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Identifier of the subnet in the VPC that contains the domain controller.',
-        }),
-    ).exactOptional(),
-    AvailabilityZone: AvailabilityZoneSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Availability Zone where the domain controller is located.' }),
-    ).exactOptional(),
-    Status: DomainControllerStatusSchema.and(
-      z.any().openapi({ description: 'The status of the domain controller.' }),
-    ).exactOptional(),
-    StatusReason: DomainControllerStatusReasonSchema.and(
-      z.any().openapi({ description: 'A description of the domain controller state.' }),
-    ).exactOptional(),
-    LaunchTime: LaunchTimeSchema.and(
-      z.any().openapi({ description: 'Specifies when the domain controller was created.' }),
-    ).exactOptional(),
-    StatusLastUpdatedDateTime: LastUpdatedDateTimeSchema.and(
-      z.any().openapi({ description: 'The date and time that the status was last updated.' }),
-    ).exactOptional(),
+    DirectoryId: DirectoryIdSchema.exactOptional().openapi({
+      description: 'Identifier of the directory where the domain controller resides.',
+    }),
+    DomainControllerId: DomainControllerIdSchema.exactOptional().openapi({
+      description: 'Identifies a specific domain controller in the directory.',
+    }),
+    DnsIpAddr: IpAddrSchema.exactOptional().openapi({
+      description: 'The IP address of the domain controller.',
+    }),
+    VpcId: VpcIdSchema.exactOptional().openapi({
+      description: 'The identifier of the VPC that contains the domain controller.',
+    }),
+    SubnetId: SubnetIdSchema.exactOptional().openapi({
+      description: 'Identifier of the subnet in the VPC that contains the domain controller.',
+    }),
+    AvailabilityZone: AvailabilityZoneSchema.exactOptional().openapi({
+      description: 'The Availability Zone where the domain controller is located.',
+    }),
+    Status: DomainControllerStatusSchema.exactOptional().openapi({
+      description: 'The status of the domain controller.',
+    }),
+    StatusReason: DomainControllerStatusReasonSchema.exactOptional().openapi({
+      description: 'A description of the domain controller state.',
+    }),
+    LaunchTime: LaunchTimeSchema.exactOptional().openapi({
+      description: 'Specifies when the domain controller was created.',
+    }),
+    StatusLastUpdatedDateTime: LastUpdatedDateTimeSchema.exactOptional().openapi({
+      description: 'The date and time that the status was last updated.',
+    }),
   })
   .openapi({
     description: 'Contains information about the domain controllers for a specified directory.',
@@ -2093,21 +1583,13 @@ const DomainControllersSchema = z.array(DomainControllerSchema).openapi('DomainC
 
 const DescribeDomainControllersResultSchema = z
   .object({
-    DomainControllers: DomainControllersSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'List of the <a>DomainController</a> objects that were retrieved.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If not null, more results are available. Pass this value for the <code>NextToken</code> parameter in a subsequent call to <a>DescribeDomainControllers</a> retrieve the next set of items.',
-        }),
-    ).exactOptional(),
+    DomainControllers: DomainControllersSchema.exactOptional().openapi({
+      description: 'List of the <a>DomainController</a> objects that were retrieved.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If not null, more results are available. Pass this value for the <code>NextToken</code> parameter in a subsequent call to <a>DescribeDomainControllers</a> retrieve the next set of items.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeDomainControllersResult')
@@ -2116,33 +1598,21 @@ const DomainControllerIdsSchema = z.array(DomainControllerIdSchema).openapi('Dom
 
 const DescribeDomainControllersRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Identifier of the directory for which to retrieve the domain controller information.',
-        }),
-    ),
-    DomainControllerIds: DomainControllerIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of identifiers for the domain controllers whose information will be provided.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <i>DescribeDomainControllers.NextToken</i> value from a previous call to <a>DescribeDomainControllers</a>. Pass null if this is the first call. ',
-        }),
-    ).exactOptional(),
-    Limit: LimitSchema.and(
-      z.any().openapi({ description: 'The maximum number of items to return.' }),
-    ).exactOptional(),
+    DirectoryId: DirectoryIdSchema.openapi({
+      description:
+        'Identifier of the directory for which to retrieve the domain controller information.',
+    }),
+    DomainControllerIds: DomainControllerIdsSchema.exactOptional().openapi({
+      description:
+        'A list of identifiers for the domain controllers whose information will be provided.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <i>DescribeDomainControllers.NextToken</i> value from a previous call to <a>DescribeDomainControllers</a>. Pass null if this is the first call. ',
+    }),
+    Limit: LimitSchema.exactOptional().openapi({
+      description: 'The maximum number of items to return.',
+    }),
   })
   .openapi({ required: ['DirectoryId'], title: 'DescribeDomainControllersRequest' })
   .openapi('DescribeDomainControllersRequest')
@@ -2155,36 +1625,24 @@ const TopicStatusSchema = z
 
 const EventTopicSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Directory ID of an Directory Service directory that will publish status messages to an Amazon SNS topic.',
-        }),
-    ).exactOptional(),
-    TopicName: TopicNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of an Amazon SNS topic the receives status messages from the directory.',
-        }),
-    ).exactOptional(),
-    TopicArn: TopicArnSchema.and(
-      z.any().openapi({ description: 'The Amazon SNS topic ARN (Amazon Resource Name).' }),
-    ).exactOptional(),
-    CreatedDateTime: CreatedDateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time of when you associated your directory with the Amazon SNS topic.',
-        }),
-    ).exactOptional(),
-    Status: TopicStatusSchema.and(
-      z.any().openapi({ description: 'The topic registration status.' }),
-    ).exactOptional(),
+    DirectoryId: DirectoryIdSchema.exactOptional().openapi({
+      description:
+        'The Directory ID of an Directory Service directory that will publish status messages to an Amazon SNS topic.',
+    }),
+    TopicName: TopicNameSchema.exactOptional().openapi({
+      description:
+        'The name of an Amazon SNS topic the receives status messages from the directory.',
+    }),
+    TopicArn: TopicArnSchema.exactOptional().openapi({
+      description: 'The Amazon SNS topic ARN (Amazon Resource Name).',
+    }),
+    CreatedDateTime: CreatedDateTimeSchema.exactOptional().openapi({
+      description:
+        'The date and time of when you associated your directory with the Amazon SNS topic.',
+    }),
+    Status: TopicStatusSchema.exactOptional().openapi({
+      description: 'The topic registration status.',
+    }),
   })
   .openapi({
     description: 'Information about Amazon SNS topic and Directory Service directory associations.',
@@ -2196,14 +1654,10 @@ const EventTopicsSchema = z.array(EventTopicSchema).openapi('EventTopics')
 
 const DescribeEventTopicsResultSchema = z
   .object({
-    EventTopics: EventTopicsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of Amazon SNS topic names that receive status messages from the specified Directory ID.',
-        }),
-    ).exactOptional(),
+    EventTopics: EventTopicsSchema.exactOptional().openapi({
+      description:
+        'A list of Amazon SNS topic names that receive status messages from the specified Directory ID.',
+    }),
   })
   .openapi({ description: 'The result of a DescribeEventTopic request.', required: [] })
   .openapi('DescribeEventTopicsResult')
@@ -2212,22 +1666,14 @@ const TopicNamesSchema = z.array(TopicNameSchema).openapi('TopicNames')
 
 const DescribeEventTopicsRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Directory ID for which to get the list of associated Amazon SNS topics. If this member is null, associations for all Directory IDs are returned.',
-        }),
-    ).exactOptional(),
-    TopicNames: TopicNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of Amazon SNS topic names for which to obtain the information. If this member is null, all associations for the specified Directory ID are returned.</p> <p>An empty list results in an <code>InvalidParameterException</code> being thrown.</p>',
-        }),
-    ).exactOptional(),
+    DirectoryId: DirectoryIdSchema.exactOptional().openapi({
+      description:
+        'The Directory ID for which to get the list of associated Amazon SNS topics. If this member is null, associations for all Directory IDs are returned.',
+    }),
+    TopicNames: TopicNamesSchema.exactOptional().openapi({
+      description:
+        '<p>A list of Amazon SNS topic names for which to obtain the information. If this member is null, all associations for the specified Directory ID are returned.</p> <p>An empty list results in an <code>InvalidParameterException</code> being thrown.</p>',
+    }),
   })
   .openapi({
     title: 'DescribeEventTopicsRequest',
@@ -2244,17 +1690,15 @@ const LDAPSStatusReasonSchema = z.string().openapi('LDAPSStatusReason')
 
 const LDAPSSettingInfoSchema = z
   .object({
-    LDAPSStatus: LDAPSStatusSchema.and(
-      z.any().openapi({ description: 'The state of the LDAPS settings.' }),
-    ).exactOptional(),
-    LDAPSStatusReason: LDAPSStatusReasonSchema.and(
-      z.any().openapi({ description: 'Describes a state change for LDAPS.' }),
-    ).exactOptional(),
-    LastUpdatedDateTime: LastUpdatedDateTimeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date and time when the LDAPS settings were last updated.' }),
-    ).exactOptional(),
+    LDAPSStatus: LDAPSStatusSchema.exactOptional().openapi({
+      description: 'The state of the LDAPS settings.',
+    }),
+    LDAPSStatusReason: LDAPSStatusReasonSchema.exactOptional().openapi({
+      description: 'Describes a state change for LDAPS.',
+    }),
+    LastUpdatedDateTime: LastUpdatedDateTimeSchema.exactOptional().openapi({
+      description: 'The date and time when the LDAPS settings were last updated.',
+    }),
   })
   .openapi({ description: 'Contains general information about the LDAPS settings.', required: [] })
   .openapi('LDAPSSettingInfo')
@@ -2263,22 +1707,14 @@ const LDAPSSettingsInfoSchema = z.array(LDAPSSettingInfoSchema).openapi('LDAPSSe
 
 const DescribeLDAPSSettingsResultSchema = z
   .object({
-    LDAPSSettingsInfo: LDAPSSettingsInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about LDAP security for the specified directory, including status of enablement, state last updated date time, and the reason for the state.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The next token used to retrieve the LDAPS settings if the number of setting types exceeds page limit and there is another page.',
-        }),
-    ).exactOptional(),
+    LDAPSSettingsInfo: LDAPSSettingsInfoSchema.exactOptional().openapi({
+      description:
+        'Information about LDAP security for the specified directory, including status of enablement, state last updated date time, and the reason for the state.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The next token used to retrieve the LDAPS settings if the number of setting types exceeds page limit and there is another page.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeLDAPSSettingsResult')
@@ -2287,27 +1723,17 @@ const LDAPSTypeSchema = z.literal('Client').openapi('LDAPSType')
 
 const DescribeLDAPSSettingsRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the directory.' }),
-    ),
-    Type: LDAPSTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of LDAP security to enable. Currently only the value <code>Client</code> is supported.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The type of next token used for pagination.' }),
-    ).exactOptional(),
-    Limit: PageLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the number of items that should be displayed on one page.',
-        }),
-    ).exactOptional(),
+    DirectoryId: DirectoryIdSchema.openapi({ description: 'The identifier of the directory.' }),
+    Type: LDAPSTypeSchema.exactOptional().openapi({
+      description:
+        'The type of LDAP security to enable. Currently only the value <code>Client</code> is supported.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The type of next token used for pagination.',
+    }),
+    Limit: PageLimitSchema.exactOptional().openapi({
+      description: 'Specifies the number of items that should be displayed on one page.',
+    }),
   })
   .openapi({ required: ['DirectoryId'], title: 'DescribeLDAPSSettingsRequest' })
   .openapi('DescribeLDAPSSettingsRequest')
@@ -2320,53 +1746,33 @@ const StateLastUpdatedDateTimeSchema = z.iso
 
 const RegionDescriptionSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the directory.' }),
-    ).exactOptional(),
-    RegionName: RegionNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the Region. For example, <code>us-east-1</code>.' }),
-    ).exactOptional(),
-    RegionType: RegionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the Region is the primary Region or an additional Region.',
-        }),
-    ).exactOptional(),
-    Status: DirectoryStageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The status of the replication process for the specified Region.',
-        }),
-    ).exactOptional(),
+    DirectoryId: DirectoryIdSchema.exactOptional().openapi({
+      description: 'The identifier of the directory.',
+    }),
+    RegionName: RegionNameSchema.exactOptional().openapi({
+      description: 'The name of the Region. For example, <code>us-east-1</code>.',
+    }),
+    RegionType: RegionTypeSchema.exactOptional().openapi({
+      description: 'Specifies whether the Region is the primary Region or an additional Region.',
+    }),
+    Status: DirectoryStageSchema.exactOptional().openapi({
+      description: 'The status of the replication process for the specified Region.',
+    }),
     VpcSettings: DirectoryVpcSettingsSchema.exactOptional(),
-    DesiredNumberOfDomainControllers: DesiredNumberOfDomainControllersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The desired number of domain controllers in the specified Region for the specified directory.',
-        }),
-    ).exactOptional(),
-    LaunchTime: LaunchTimeSchema.and(
-      z.any().openapi({ description: 'Specifies when the Region replication began.' }),
-    ).exactOptional(),
-    StatusLastUpdatedDateTime: StateLastUpdatedDateTimeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date and time that the Region status was last updated.' }),
-    ).exactOptional(),
-    LastUpdatedDateTime: LastUpdatedDateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time that the Region description was last updated.',
-        }),
-    ).exactOptional(),
+    DesiredNumberOfDomainControllers:
+      DesiredNumberOfDomainControllersSchema.exactOptional().openapi({
+        description:
+          'The desired number of domain controllers in the specified Region for the specified directory.',
+      }),
+    LaunchTime: LaunchTimeSchema.exactOptional().openapi({
+      description: 'Specifies when the Region replication began.',
+    }),
+    StatusLastUpdatedDateTime: StateLastUpdatedDateTimeSchema.exactOptional().openapi({
+      description: 'The date and time that the Region status was last updated.',
+    }),
+    LastUpdatedDateTime: LastUpdatedDateTimeSchema.exactOptional().openapi({
+      description: 'The date and time that the Region description was last updated.',
+    }),
   })
   .openapi({ description: 'The replicated Region information for a directory.', required: [] })
   .openapi('RegionDescription')
@@ -2375,44 +1781,28 @@ const RegionsDescriptionSchema = z.array(RegionDescriptionSchema).openapi('Regio
 
 const DescribeRegionsResultSchema = z
   .object({
-    RegionsDescription: RegionsDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'List of Region information related to the directory for each replicated Region.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If not null, more results are available. Pass this value for the <code>NextToken</code> parameter in a subsequent call to <a>DescribeRegions</a> to retrieve the next set of items.',
-        }),
-    ).exactOptional(),
+    RegionsDescription: RegionsDescriptionSchema.exactOptional().openapi({
+      description:
+        'List of Region information related to the directory for each replicated Region.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If not null, more results are available. Pass this value for the <code>NextToken</code> parameter in a subsequent call to <a>DescribeRegions</a> to retrieve the next set of items.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeRegionsResult')
 
 const DescribeRegionsRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the directory.' }),
-    ),
-    RegionName: RegionNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the Region. For example, <code>us-east-1</code>.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>DescribeRegionsResult.NextToken</code> value from a previous call to <a>DescribeRegions</a>. Pass null if this is the first call.',
-        }),
-    ).exactOptional(),
+    DirectoryId: DirectoryIdSchema.openapi({ description: 'The identifier of the directory.' }),
+    RegionName: RegionNameSchema.exactOptional().openapi({
+      description: 'The name of the Region. For example, <code>us-east-1</code>.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>DescribeRegionsResult.NextToken</code> value from a previous call to <a>DescribeRegions</a>. Pass null if this is the first call.',
+    }),
   })
   .openapi({ required: ['DirectoryId'], title: 'DescribeRegionsRequest' })
   .openapi('DescribeRegionsRequest')
@@ -2461,69 +1851,45 @@ const DirectoryConfigurationSettingLastRequestedDateTimeSchema = z.iso
 
 const SettingEntrySchema = z
   .object({
-    Type: DirectoryConfigurationSettingTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of directory setting. For example, <code>Protocol</code> or <code>Cipher</code>.',
-        }),
-    ).exactOptional(),
-    Name: DirectoryConfigurationSettingNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the directory setting. For example:</p> <p> <code>TLS_1_0</code> </p>',
-        }),
-    ).exactOptional(),
-    AllowedValues: DirectoryConfigurationSettingAllowedValuesSchema.and(
-      z.any().openapi({ description: 'The valid range of values for the directory setting.' }),
-    ).exactOptional(),
-    AppliedValue: DirectoryConfigurationSettingValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value of the directory setting that is applied to the directory.',
-        }),
-    ).exactOptional(),
-    RequestedValue: DirectoryConfigurationSettingValueSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The value that was last requested for the directory setting.' }),
-    ).exactOptional(),
-    RequestStatus: DirectoryConfigurationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The overall status of the request to update the directory setting request. If the directory setting is deployed in more than one region, and the request fails in any region, the overall status is <code>Failed</code>.',
-        }),
-    ).exactOptional(),
-    RequestDetailedStatus: DirectoryConfigurationSettingRequestDetailedStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Details about the status of the request to update the directory setting. If the directory setting is deployed in more than one region, status is returned for the request in each region where the setting is deployed.',
-        }),
-    ).exactOptional(),
-    RequestStatusMessage: DirectoryConfigurationSettingRequestStatusMessageSchema.and(
-      z.any().openapi({ description: 'The last status message for the directory status request.' }),
-    ).exactOptional(),
-    LastUpdatedDateTime: DirectoryConfigurationSettingLastUpdatedDateTimeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date and time when the directory setting was last updated.' }),
-    ).exactOptional(),
-    LastRequestedDateTime: DirectoryConfigurationSettingLastRequestedDateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time when the request to update a directory setting was last submitted.',
-        }),
-    ).exactOptional(),
+    Type: DirectoryConfigurationSettingTypeSchema.exactOptional().openapi({
+      description:
+        'The type of directory setting. For example, <code>Protocol</code> or <code>Cipher</code>.',
+    }),
+    Name: DirectoryConfigurationSettingNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the directory setting. For example:</p> <p> <code>TLS_1_0</code> </p>',
+    }),
+    AllowedValues: DirectoryConfigurationSettingAllowedValuesSchema.exactOptional().openapi({
+      description: 'The valid range of values for the directory setting.',
+    }),
+    AppliedValue: DirectoryConfigurationSettingValueSchema.exactOptional().openapi({
+      description: 'The value of the directory setting that is applied to the directory.',
+    }),
+    RequestedValue: DirectoryConfigurationSettingValueSchema.exactOptional().openapi({
+      description: 'The value that was last requested for the directory setting.',
+    }),
+    RequestStatus: DirectoryConfigurationStatusSchema.exactOptional().openapi({
+      description:
+        'The overall status of the request to update the directory setting request. If the directory setting is deployed in more than one region, and the request fails in any region, the overall status is <code>Failed</code>.',
+    }),
+    RequestDetailedStatus:
+      DirectoryConfigurationSettingRequestDetailedStatusSchema.exactOptional().openapi({
+        description:
+          'Details about the status of the request to update the directory setting. If the directory setting is deployed in more than one region, status is returned for the request in each region where the setting is deployed.',
+      }),
+    RequestStatusMessage:
+      DirectoryConfigurationSettingRequestStatusMessageSchema.exactOptional().openapi({
+        description: 'The last status message for the directory status request.',
+      }),
+    LastUpdatedDateTime:
+      DirectoryConfigurationSettingLastUpdatedDateTimeSchema.exactOptional().openapi({
+        description: 'The date and time when the directory setting was last updated.',
+      }),
+    LastRequestedDateTime:
+      DirectoryConfigurationSettingLastRequestedDateTimeSchema.exactOptional().openapi({
+        description:
+          'The date and time when the request to update a directory setting was last submitted.',
+      }),
   })
   .openapi({
     description: 'Contains information about the specified configurable setting for a directory.',
@@ -2535,53 +1901,33 @@ const SettingEntriesSchema = z.array(SettingEntrySchema).openapi('SettingEntries
 
 const DescribeSettingsResultSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the directory.' }),
-    ).exactOptional(),
-    SettingEntries: SettingEntriesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The list of <a>SettingEntry</a> objects that were retrieved.</p> <p>It is possible that this list contains less than the number of items specified in the <code>Limit</code> member of the request. This occurs if there are less than the requested number of items left to retrieve, or if the limitations of the operation have been exceeded.</p>',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If not null, token that indicates that more results are available. Pass this value for the <code>NextToken</code> parameter in a subsequent call to <code>DescribeSettings</code> to retrieve the next set of items. ',
-        }),
-    ).exactOptional(),
+    DirectoryId: DirectoryIdSchema.exactOptional().openapi({
+      description: 'The identifier of the directory.',
+    }),
+    SettingEntries: SettingEntriesSchema.exactOptional().openapi({
+      description:
+        '<p>The list of <a>SettingEntry</a> objects that were retrieved.</p> <p>It is possible that this list contains less than the number of items specified in the <code>Limit</code> member of the request. This occurs if there are less than the requested number of items left to retrieve, or if the limitations of the operation have been exceeded.</p>',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If not null, token that indicates that more results are available. Pass this value for the <code>NextToken</code> parameter in a subsequent call to <code>DescribeSettings</code> to retrieve the next set of items. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeSettingsResult')
 
 const DescribeSettingsRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the directory for which to retrieve information.',
-        }),
-    ),
-    Status: DirectoryConfigurationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The status of the directory settings for which to retrieve information.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>DescribeSettingsResult.NextToken</code> value from a previous call to <a>DescribeSettings</a>. Pass null if this is the first call.',
-        }),
-    ).exactOptional(),
+    DirectoryId: DirectoryIdSchema.openapi({
+      description: 'The identifier of the directory for which to retrieve information.',
+    }),
+    Status: DirectoryConfigurationStatusSchema.exactOptional().openapi({
+      description: 'The status of the directory settings for which to retrieve information.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>DescribeSettingsResult.NextToken</code> value from a previous call to <a>DescribeSettings</a>. Pass null if this is the first call.',
+    }),
   })
   .openapi({ required: ['DirectoryId'], title: 'DescribeSettingsRequest' })
   .openapi('DescribeSettingsRequest')
@@ -2590,52 +1936,32 @@ const SharedDirectoriesSchema = z.array(SharedDirectorySchema).openapi('SharedDi
 
 const DescribeSharedDirectoriesResultSchema = z
   .object({
-    SharedDirectories: SharedDirectoriesSchema.and(
-      z.any().openapi({ description: 'A list of all shared directories in your account.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If not null, token that indicates that more results are available. Pass this value for the <code>NextToken</code> parameter in a subsequent call to <a>DescribeSharedDirectories</a> to retrieve the next set of items.',
-        }),
-    ).exactOptional(),
+    SharedDirectories: SharedDirectoriesSchema.exactOptional().openapi({
+      description: 'A list of all shared directories in your account.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If not null, token that indicates that more results are available. Pass this value for the <code>NextToken</code> parameter in a subsequent call to <a>DescribeSharedDirectories</a> to retrieve the next set of items.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeSharedDirectoriesResult')
 
 const DescribeSharedDirectoriesRequestSchema = z
   .object({
-    OwnerDirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Returns the identifier of the directory in the directory owner account. ',
-        }),
-    ),
-    SharedDirectoryIds: DirectoryIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of identifiers of all shared directories in your account. ',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>DescribeSharedDirectoriesResult.NextToken</code> value from a previous call to <a>DescribeSharedDirectories</a>. Pass null if this is the first call. ',
-        }),
-    ).exactOptional(),
-    Limit: LimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of shared directories to return in the response object.',
-        }),
-    ).exactOptional(),
+    OwnerDirectoryId: DirectoryIdSchema.openapi({
+      description: 'Returns the identifier of the directory in the directory owner account. ',
+    }),
+    SharedDirectoryIds: DirectoryIdsSchema.exactOptional().openapi({
+      description: 'A list of identifiers of all shared directories in your account. ',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>DescribeSharedDirectoriesResult.NextToken</code> value from a previous call to <a>DescribeSharedDirectories</a>. Pass null if this is the first call. ',
+    }),
+    Limit: LimitSchema.exactOptional().openapi({
+      description: 'The number of shared directories to return in the response object.',
+    }),
   })
   .openapi({ required: ['OwnerDirectoryId'], title: 'DescribeSharedDirectoriesRequest' })
   .openapi('DescribeSharedDirectoriesRequest')
@@ -2648,24 +1974,20 @@ const StartTimeSchema = z.iso.datetime({ offset: true }).openapi('StartTime')
 
 const SnapshotSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z.any().openapi({ description: 'The directory identifier.' }),
-    ).exactOptional(),
-    SnapshotId: SnapshotIdSchema.and(
-      z.any().openapi({ description: 'The snapshot identifier.' }),
-    ).exactOptional(),
-    Type: SnapshotTypeSchema.and(
-      z.any().openapi({ description: 'The snapshot type.' }),
-    ).exactOptional(),
-    Name: SnapshotNameSchema.and(
-      z.any().openapi({ description: 'The descriptive name of the snapshot.' }),
-    ).exactOptional(),
-    Status: SnapshotStatusSchema.and(
-      z.any().openapi({ description: 'The snapshot status.' }),
-    ).exactOptional(),
-    StartTime: StartTimeSchema.and(
-      z.any().openapi({ description: 'The date and time that the snapshot was taken.' }),
-    ).exactOptional(),
+    DirectoryId: DirectoryIdSchema.exactOptional().openapi({
+      description: 'The directory identifier.',
+    }),
+    SnapshotId: SnapshotIdSchema.exactOptional().openapi({
+      description: 'The snapshot identifier.',
+    }),
+    Type: SnapshotTypeSchema.exactOptional().openapi({ description: 'The snapshot type.' }),
+    Name: SnapshotNameSchema.exactOptional().openapi({
+      description: 'The descriptive name of the snapshot.',
+    }),
+    Status: SnapshotStatusSchema.exactOptional().openapi({ description: 'The snapshot status.' }),
+    StartTime: StartTimeSchema.exactOptional().openapi({
+      description: 'The date and time that the snapshot was taken.',
+    }),
   })
   .openapi({ description: 'Describes a directory snapshot.', required: [] })
   .openapi('Snapshot')
@@ -2677,22 +1999,14 @@ const SnapshotsSchema = z
 
 const DescribeSnapshotsResultSchema = z
   .object({
-    Snapshots: SnapshotsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The list of <a>Snapshot</a> objects that were retrieved.</p> <p>It is possible that this list contains less than the number of items specified in the <i>Limit</i> member of the request. This occurs if there are less than the requested number of items left to retrieve, or if the limitations of the operation have been exceeded.</p>',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If not null, more results are available. Pass this value in the <i>NextToken</i> member of a subsequent call to <a>DescribeSnapshots</a>.',
-        }),
-    ).exactOptional(),
+    Snapshots: SnapshotsSchema.exactOptional().openapi({
+      description:
+        '<p>The list of <a>Snapshot</a> objects that were retrieved.</p> <p>It is possible that this list contains less than the number of items specified in the <i>Limit</i> member of the request. This occurs if there are less than the requested number of items left to retrieve, or if the limitations of the operation have been exceeded.</p>',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If not null, more results are available. Pass this value in the <i>NextToken</i> member of a subsequent call to <a>DescribeSnapshots</a>.',
+    }),
   })
   .openapi({
     description: 'Contains the results of the <a>DescribeSnapshots</a> operation.',
@@ -2707,33 +2021,20 @@ const SnapshotIdsSchema = z
 
 const DescribeSnapshotsRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the directory for which to retrieve snapshot information.',
-        }),
-    ).exactOptional(),
-    SnapshotIds: SnapshotIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of identifiers of the snapshots to obtain the information for. If this member is null or empty, all snapshots are returned using the <i>Limit</i> and <i>NextToken</i> members.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <i>DescribeSnapshotsResult.NextToken</i> value from a previous call to <a>DescribeSnapshots</a>. Pass null if this is the first call.',
-        }),
-    ).exactOptional(),
-    Limit: LimitSchema.and(
-      z.any().openapi({ description: 'The maximum number of objects to return.' }),
-    ).exactOptional(),
+    DirectoryId: DirectoryIdSchema.exactOptional().openapi({
+      description: 'The identifier of the directory for which to retrieve snapshot information.',
+    }),
+    SnapshotIds: SnapshotIdsSchema.exactOptional().openapi({
+      description:
+        'A list of identifiers of the snapshots to obtain the information for. If this member is null or empty, all snapshots are returned using the <i>Limit</i> and <i>NextToken</i> members.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <i>DescribeSnapshotsResult.NextToken</i> value from a previous call to <a>DescribeSnapshots</a>. Pass null if this is the first call.',
+    }),
+    Limit: LimitSchema.exactOptional().openapi({
+      description: 'The maximum number of objects to return.',
+    }),
   })
   .openapi({
     title: 'DescribeSnapshotsRequest',
@@ -2762,59 +2063,41 @@ const TrustStateReasonSchema = z.string().openapi('TrustStateReason')
 
 const TrustSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Directory ID of the Amazon Web Services directory involved in the trust relationship.',
-        }),
-    ).exactOptional(),
-    TrustId: TrustIdSchema.and(
-      z.any().openapi({ description: 'The unique ID of the trust relationship.' }),
-    ).exactOptional(),
-    RemoteDomainName: RemoteDomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Fully Qualified Domain Name (FQDN) of the external domain involved in the trust relationship.',
-        }),
-    ).exactOptional(),
-    TrustType: TrustTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The trust relationship type. <code>Forest</code> is the default.',
-        }),
-    ).exactOptional(),
-    TrustDirection: TrustDirectionSchema.and(
-      z.any().openapi({ description: 'The trust relationship direction.' }),
-    ).exactOptional(),
-    TrustState: TrustStateSchema.and(
-      z.any().openapi({ description: 'The trust relationship state.' }),
-    ).exactOptional(),
-    CreatedDateTime: CreatedDateTimeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date and time that the trust relationship was created.' }),
-    ).exactOptional(),
-    LastUpdatedDateTime: LastUpdatedDateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time that the trust relationship was last updated.',
-        }),
-    ).exactOptional(),
-    StateLastUpdatedDateTime: StateLastUpdatedDateTimeSchema.and(
-      z.any().openapi({ description: 'The date and time that the TrustState was last updated.' }),
-    ).exactOptional(),
-    TrustStateReason: TrustStateReasonSchema.and(
-      z.any().openapi({ description: 'The reason for the TrustState.' }),
-    ).exactOptional(),
-    SelectiveAuth: SelectiveAuthSchema.and(
-      z.any().openapi({ description: 'Current state of selective authentication for the trust.' }),
-    ).exactOptional(),
+    DirectoryId: DirectoryIdSchema.exactOptional().openapi({
+      description:
+        'The Directory ID of the Amazon Web Services directory involved in the trust relationship.',
+    }),
+    TrustId: TrustIdSchema.exactOptional().openapi({
+      description: 'The unique ID of the trust relationship.',
+    }),
+    RemoteDomainName: RemoteDomainNameSchema.exactOptional().openapi({
+      description:
+        'The Fully Qualified Domain Name (FQDN) of the external domain involved in the trust relationship.',
+    }),
+    TrustType: TrustTypeSchema.exactOptional().openapi({
+      description: 'The trust relationship type. <code>Forest</code> is the default.',
+    }),
+    TrustDirection: TrustDirectionSchema.exactOptional().openapi({
+      description: 'The trust relationship direction.',
+    }),
+    TrustState: TrustStateSchema.exactOptional().openapi({
+      description: 'The trust relationship state.',
+    }),
+    CreatedDateTime: CreatedDateTimeSchema.exactOptional().openapi({
+      description: 'The date and time that the trust relationship was created.',
+    }),
+    LastUpdatedDateTime: LastUpdatedDateTimeSchema.exactOptional().openapi({
+      description: 'The date and time that the trust relationship was last updated.',
+    }),
+    StateLastUpdatedDateTime: StateLastUpdatedDateTimeSchema.exactOptional().openapi({
+      description: 'The date and time that the TrustState was last updated.',
+    }),
+    TrustStateReason: TrustStateReasonSchema.exactOptional().openapi({
+      description: 'The reason for the TrustState.',
+    }),
+    SelectiveAuth: SelectiveAuthSchema.exactOptional().openapi({
+      description: 'Current state of selective authentication for the trust.',
+    }),
   })
   .openapi({
     description:
@@ -2827,22 +2110,14 @@ const TrustsSchema = z.array(TrustSchema).openapi('Trusts')
 
 const DescribeTrustsResultSchema = z
   .object({
-    Trusts: TrustsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The list of Trust objects that were retrieved.</p> <p>It is possible that this list contains less than the number of items specified in the <i>Limit</i> member of the request. This occurs if there are less than the requested number of items left to retrieve, or if the limitations of the operation have been exceeded.</p>',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If not null, more results are available. Pass this value for the <i>NextToken</i> parameter in a subsequent call to <a>DescribeTrusts</a> to retrieve the next set of items.',
-        }),
-    ).exactOptional(),
+    Trusts: TrustsSchema.exactOptional().openapi({
+      description:
+        '<p>The list of Trust objects that were retrieved.</p> <p>It is possible that this list contains less than the number of items specified in the <i>Limit</i> member of the request. This occurs if there are less than the requested number of items left to retrieve, or if the limitations of the operation have been exceeded.</p>',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If not null, more results are available. Pass this value for the <i>NextToken</i> parameter in a subsequent call to <a>DescribeTrusts</a> to retrieve the next set of items.',
+    }),
   })
   .openapi({ description: 'The result of a DescribeTrust request.', required: [] })
   .openapi('DescribeTrustsResult')
@@ -2851,33 +2126,21 @@ const TrustIdsSchema = z.array(TrustIdSchema).openapi('TrustIds')
 
 const DescribeTrustsRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Directory ID of the Amazon Web Services directory that is a part of the requested trust relationship.',
-        }),
-    ).exactOptional(),
-    TrustIds: TrustIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of identifiers of the trust relationships for which to obtain the information. If this member is null, all trust relationships that belong to the current account are returned.</p> <p>An empty list results in an <code>InvalidParameterException</code> being thrown.</p>',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <i>DescribeTrustsResult.NextToken</i> value from a previous call to <a>DescribeTrusts</a>. Pass null if this is the first call.',
-        }),
-    ).exactOptional(),
-    Limit: LimitSchema.and(
-      z.any().openapi({ description: 'The maximum number of objects to return.' }),
-    ).exactOptional(),
+    DirectoryId: DirectoryIdSchema.exactOptional().openapi({
+      description:
+        'The Directory ID of the Amazon Web Services directory that is a part of the requested trust relationship.',
+    }),
+    TrustIds: TrustIdsSchema.exactOptional().openapi({
+      description:
+        '<p>A list of identifiers of the trust relationships for which to obtain the information. If this member is null, all trust relationships that belong to the current account are returned.</p> <p>An empty list results in an <code>InvalidParameterException</code> being thrown.</p>',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <i>DescribeTrustsResult.NextToken</i> value from a previous call to <a>DescribeTrusts</a>. Pass null if this is the first call.',
+    }),
+    Limit: LimitSchema.exactOptional().openapi({
+      description: 'The maximum number of objects to return.',
+    }),
   })
   .openapi({
     title: 'DescribeTrustsRequest',
@@ -2895,18 +2158,18 @@ const InitiatedBySchema = z.string().openapi('InitiatedBy')
 
 const OSUpdateSettingsSchema = z
   .object({
-    OSVersion: OSVersionSchema.and(
-      z.any().openapi({ description: ' OS version that the directory needs to be updated to. ' }),
-    ).exactOptional(),
+    OSVersion: OSVersionSchema.exactOptional().openapi({
+      description: ' OS version that the directory needs to be updated to. ',
+    }),
   })
   .openapi({ description: ' OS version that the directory needs to be updated to. ', required: [] })
   .openapi('OSUpdateSettings')
 
 const UpdateValueSchema = z
   .object({
-    OSUpdateSettings: OSUpdateSettingsSchema.and(
-      z.any().openapi({ description: ' The OS update related settings. ' }),
-    ).exactOptional(),
+    OSUpdateSettings: OSUpdateSettingsSchema.exactOptional().openapi({
+      description: ' The OS update related settings. ',
+    }),
   })
   .openapi({
     description: ' The value for a given type of <code>UpdateSettings</code>. ',
@@ -2918,48 +2181,30 @@ const StartDateTimeSchema = z.iso.datetime({ offset: true }).openapi('StartDateT
 
 const UpdateInfoEntrySchema = z
   .object({
-    Region: RegionNameSchema.and(
-      z.any().openapi({ description: ' The name of the Region. ' }),
-    ).exactOptional(),
-    Status: UpdateStatusSchema.and(
-      z.any().openapi({ description: ' The status of the update performed on the directory. ' }),
-    ).exactOptional(),
-    StatusReason: UpdateStatusReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The reason for the current status of the update type activity. ',
-        }),
-    ).exactOptional(),
-    InitiatedBy: InitiatedBySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' This specifies if the update was initiated by the customer or by the service team. ',
-        }),
-    ).exactOptional(),
-    NewValue: UpdateValueSchema.and(
-      z.any().openapi({ description: ' The new value of the target setting. ' }),
-    ).exactOptional(),
-    PreviousValue: UpdateValueSchema.and(
-      z.any().openapi({ description: ' The old value of the target setting. ' }),
-    ).exactOptional(),
-    StartTime: StartDateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The start time of the <code>UpdateDirectorySetup</code> for the particular type. ',
-        }),
-    ).exactOptional(),
-    LastUpdatedDateTime: LastUpdatedDateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The last updated date and time of a particular directory setting. ',
-        }),
-    ).exactOptional(),
+    Region: RegionNameSchema.exactOptional().openapi({ description: ' The name of the Region. ' }),
+    Status: UpdateStatusSchema.exactOptional().openapi({
+      description: ' The status of the update performed on the directory. ',
+    }),
+    StatusReason: UpdateStatusReasonSchema.exactOptional().openapi({
+      description: ' The reason for the current status of the update type activity. ',
+    }),
+    InitiatedBy: InitiatedBySchema.exactOptional().openapi({
+      description:
+        ' This specifies if the update was initiated by the customer or by the service team. ',
+    }),
+    NewValue: UpdateValueSchema.exactOptional().openapi({
+      description: ' The new value of the target setting. ',
+    }),
+    PreviousValue: UpdateValueSchema.exactOptional().openapi({
+      description: ' The old value of the target setting. ',
+    }),
+    StartTime: StartDateTimeSchema.exactOptional().openapi({
+      description:
+        ' The start time of the <code>UpdateDirectorySetup</code> for the particular type. ',
+    }),
+    LastUpdatedDateTime: LastUpdatedDateTimeSchema.exactOptional().openapi({
+      description: ' The last updated date and time of a particular directory setting. ',
+    }),
   })
   .openapi({
     description: ' An entry of update information related to a requested update type. ',
@@ -2971,22 +2216,13 @@ const UpdateActivitiesSchema = z.array(UpdateInfoEntrySchema).openapi('UpdateAct
 
 const DescribeUpdateDirectoryResultSchema = z
   .object({
-    UpdateActivities: UpdateActivitiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The list of update activities on a directory for the requested update type. ',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' If not null, more results are available. Pass this value for the <code>NextToken</code> parameter. ',
-        }),
-    ).exactOptional(),
+    UpdateActivities: UpdateActivitiesSchema.exactOptional().openapi({
+      description: ' The list of update activities on a directory for the requested update type. ',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        ' If not null, more results are available. Pass this value for the <code>NextToken</code> parameter. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeUpdateDirectoryResult')
@@ -2995,67 +2231,49 @@ const UpdateTypeSchema = z.literal('OS').openapi('UpdateType')
 
 const DescribeUpdateDirectoryRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z.any().openapi({ description: ' The unique identifier of the directory. ' }),
-    ),
-    UpdateType: UpdateTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The type of updates you want to describe for the directory. ' }),
-    ),
-    RegionName: RegionNameSchema.and(
-      z.any().openapi({ description: ' The name of the Region. ' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The <code>DescribeUpdateDirectoryResult</code>. NextToken value from a previous call to <a>DescribeUpdateDirectory</a>. Pass null if this is the first call. ',
-        }),
-    ).exactOptional(),
+    DirectoryId: DirectoryIdSchema.openapi({
+      description: ' The unique identifier of the directory. ',
+    }),
+    UpdateType: UpdateTypeSchema.openapi({
+      description: ' The type of updates you want to describe for the directory. ',
+    }),
+    RegionName: RegionNameSchema.exactOptional().openapi({
+      description: ' The name of the Region. ',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        ' The <code>DescribeUpdateDirectoryResult</code>. NextToken value from a previous call to <a>DescribeUpdateDirectory</a>. Pass null if this is the first call. ',
+    }),
   })
   .openapi({ required: ['DirectoryId', 'UpdateType'], title: 'DescribeUpdateDirectoryRequest' })
   .openapi('DescribeUpdateDirectoryRequest')
 
 const DisableClientAuthenticationResultSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DisableClientAuthenticationResult')
 
 const DisableClientAuthenticationRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the directory ' }),
-    ),
-    Type: ClientAuthenticationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of client authentication to disable. Currently, only the parameter, <code>SmartCard</code> is supported.',
-        }),
-    ),
+    DirectoryId: DirectoryIdSchema.openapi({ description: 'The identifier of the directory ' }),
+    Type: ClientAuthenticationTypeSchema.openapi({
+      description:
+        'The type of client authentication to disable. Currently, only the parameter, <code>SmartCard</code> is supported.',
+    }),
   })
   .openapi({ required: ['DirectoryId', 'Type'], title: 'DisableClientAuthenticationRequest' })
   .openapi('DisableClientAuthenticationRequest')
 
 const InvalidClientAuthStatusExceptionSchema = z.any().openapi('InvalidClientAuthStatusException')
 
-const DisableLDAPSResultSchema = z.object({}).openapi('DisableLDAPSResult')
+const DisableLDAPSResultSchema = z.looseObject({}).openapi('DisableLDAPSResult')
 
 const DisableLDAPSRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the directory.' }),
-    ),
-    Type: LDAPSTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of LDAP security to enable. Currently only the value <code>Client</code> is supported.',
-        }),
-    ),
+    DirectoryId: DirectoryIdSchema.openapi({ description: 'The identifier of the directory.' }),
+    Type: LDAPSTypeSchema.openapi({
+      description:
+        'The type of LDAP security to enable. Currently only the value <code>Client</code> is supported.',
+    }),
   })
   .openapi({ required: ['DirectoryId', 'Type'], title: 'DisableLDAPSRequest' })
   .openapi('DisableLDAPSRequest')
@@ -3063,15 +2281,15 @@ const DisableLDAPSRequestSchema = z
 const InvalidLDAPSStatusExceptionSchema = z.any().openapi('InvalidLDAPSStatusException')
 
 const DisableRadiusResultSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Contains the results of the <a>DisableRadius</a> operation.' })
   .openapi('DisableRadiusResult')
 
 const DisableRadiusRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the directory for which to disable MFA.' }),
-    ),
+    DirectoryId: DirectoryIdSchema.openapi({
+      description: 'The identifier of the directory for which to disable MFA.',
+    }),
   })
   .openapi({
     required: ['DirectoryId'],
@@ -3081,35 +2299,23 @@ const DisableRadiusRequestSchema = z
   .openapi('DisableRadiusRequest')
 
 const DisableSsoResultSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Contains the results of the <a>DisableSso</a> operation.' })
   .openapi('DisableSsoResult')
 
 const DisableSsoRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the directory for which to disable single-sign on.',
-        }),
-    ),
-    UserName: UserNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The username of an alternate account to use to disable single-sign on. This is only used for AD Connector directories. This account must have privileges to remove a service principal name.</p> <p>If the AD Connector service account does not have privileges to remove a service principal name, you can specify an alternate account with the <i>UserName</i> and <i>Password</i> parameters. These credentials are only used to disable single sign-on and are not stored by the service. The AD Connector service account is not changed.</p>',
-        }),
-    ).exactOptional(),
-    Password: ConnectPasswordSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The password of an alternate account to use to disable single-sign on. This is only used for AD Connector directories. For more information, see the <i>UserName</i> parameter.',
-        }),
-    ).exactOptional(),
+    DirectoryId: DirectoryIdSchema.openapi({
+      description: 'The identifier of the directory for which to disable single-sign on.',
+    }),
+    UserName: UserNameSchema.exactOptional().openapi({
+      description:
+        '<p>The username of an alternate account to use to disable single-sign on. This is only used for AD Connector directories. This account must have privileges to remove a service principal name.</p> <p>If the AD Connector service account does not have privileges to remove a service principal name, you can specify an alternate account with the <i>UserName</i> and <i>Password</i> parameters. These credentials are only used to disable single sign-on and are not stored by the service. The AD Connector service account is not changed.</p>',
+    }),
+    Password: ConnectPasswordSchema.exactOptional().openapi({
+      description:
+        'The password of an alternate account to use to disable single-sign on. This is only used for AD Connector directories. For more information, see the <i>UserName</i> parameter.',
+    }),
   })
   .openapi({
     required: ['DirectoryId'],
@@ -3119,65 +2325,51 @@ const DisableSsoRequestSchema = z
   .openapi('DisableSsoRequest')
 
 const EnableClientAuthenticationResultSchema = z
-  .object({})
+  .looseObject({})
   .openapi('EnableClientAuthenticationResult')
 
 const EnableClientAuthenticationRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the specified directory. ' }),
-    ),
-    Type: ClientAuthenticationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of client authentication to enable. Currently only the value <code>SmartCard</code> is supported. Smart card authentication in AD Connector requires that you enable Kerberos Constrained Delegation for the Service User to the LDAP service in your self-managed AD. ',
-        }),
-    ),
+    DirectoryId: DirectoryIdSchema.openapi({
+      description: 'The identifier of the specified directory. ',
+    }),
+    Type: ClientAuthenticationTypeSchema.openapi({
+      description:
+        'The type of client authentication to enable. Currently only the value <code>SmartCard</code> is supported. Smart card authentication in AD Connector requires that you enable Kerberos Constrained Delegation for the Service User to the LDAP service in your self-managed AD. ',
+    }),
   })
   .openapi({ required: ['DirectoryId', 'Type'], title: 'EnableClientAuthenticationRequest' })
   .openapi('EnableClientAuthenticationRequest')
 
 const NoAvailableCertificateExceptionSchema = z.any().openapi('NoAvailableCertificateException')
 
-const EnableLDAPSResultSchema = z.object({}).openapi('EnableLDAPSResult')
+const EnableLDAPSResultSchema = z.looseObject({}).openapi('EnableLDAPSResult')
 
 const EnableLDAPSRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the directory.' }),
-    ),
-    Type: LDAPSTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of LDAP security to enable. Currently only the value <code>Client</code> is supported.',
-        }),
-    ),
+    DirectoryId: DirectoryIdSchema.openapi({ description: 'The identifier of the directory.' }),
+    Type: LDAPSTypeSchema.openapi({
+      description:
+        'The type of LDAP security to enable. Currently only the value <code>Client</code> is supported.',
+    }),
   })
   .openapi({ required: ['DirectoryId', 'Type'], title: 'EnableLDAPSRequest' })
   .openapi('EnableLDAPSRequest')
 
 const EnableRadiusResultSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Contains the results of the <a>EnableRadius</a> operation.' })
   .openapi('EnableRadiusResult')
 
 const EnableRadiusRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the directory for which to enable MFA.' }),
-    ),
-    RadiusSettings: RadiusSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <a>RadiusSettings</a> object that contains information about the RADIUS server.',
-        }),
-    ),
+    DirectoryId: DirectoryIdSchema.openapi({
+      description: 'The identifier of the directory for which to enable MFA.',
+    }),
+    RadiusSettings: RadiusSettingsSchema.openapi({
+      description:
+        'A <a>RadiusSettings</a> object that contains information about the RADIUS server.',
+    }),
   })
   .openapi({
     required: ['DirectoryId', 'RadiusSettings'],
@@ -3187,35 +2379,23 @@ const EnableRadiusRequestSchema = z
   .openapi('EnableRadiusRequest')
 
 const EnableSsoResultSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Contains the results of the <a>EnableSso</a> operation.' })
   .openapi('EnableSsoResult')
 
 const EnableSsoRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the directory for which to enable single-sign on.',
-        }),
-    ),
-    UserName: UserNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The username of an alternate account to use to enable single-sign on. This is only used for AD Connector directories. This account must have privileges to add a service principal name.</p> <p>If the AD Connector service account does not have privileges to add a service principal name, you can specify an alternate account with the <i>UserName</i> and <i>Password</i> parameters. These credentials are only used to enable single sign-on and are not stored by the service. The AD Connector service account is not changed.</p>',
-        }),
-    ).exactOptional(),
-    Password: ConnectPasswordSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The password of an alternate account to use to enable single-sign on. This is only used for AD Connector directories. For more information, see the <i>UserName</i> parameter.',
-        }),
-    ).exactOptional(),
+    DirectoryId: DirectoryIdSchema.openapi({
+      description: 'The identifier of the directory for which to enable single-sign on.',
+    }),
+    UserName: UserNameSchema.exactOptional().openapi({
+      description:
+        '<p>The username of an alternate account to use to enable single-sign on. This is only used for AD Connector directories. This account must have privileges to add a service principal name.</p> <p>If the AD Connector service account does not have privileges to add a service principal name, you can specify an alternate account with the <i>UserName</i> and <i>Password</i> parameters. These credentials are only used to enable single sign-on and are not stored by the service. The AD Connector service account is not changed.</p>',
+    }),
+    Password: ConnectPasswordSchema.exactOptional().openapi({
+      description:
+        'The password of an alternate account to use to enable single-sign on. This is only used for AD Connector directories. For more information, see the <i>UserName</i> parameter.',
+    }),
   })
   .openapi({
     required: ['DirectoryId'],
@@ -3234,70 +2414,46 @@ const ConnectedDirectoriesLimitReachedSchema = z
 
 const DirectoryLimitsSchema = z
   .object({
-    CloudOnlyDirectoriesLimit: LimitSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The maximum number of cloud directories allowed in the Region.' }),
-    ).exactOptional(),
-    CloudOnlyDirectoriesCurrentCount: LimitSchema.and(
-      z.any().openapi({ description: 'The current number of cloud directories in the Region.' }),
-    ).exactOptional(),
-    CloudOnlyDirectoriesLimitReached: CloudOnlyDirectoriesLimitReachedSchema.and(
-      z.any().openapi({ description: 'Indicates if the cloud directory limit has been reached.' }),
-    ).exactOptional(),
-    CloudOnlyMicrosoftADLimit: LimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of Managed Microsoft AD directories allowed in the region.',
-        }),
-    ).exactOptional(),
-    CloudOnlyMicrosoftADCurrentCount: LimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The current number of Managed Microsoft AD directories in the region.',
-        }),
-    ).exactOptional(),
-    CloudOnlyMicrosoftADLimitReached: CloudOnlyDirectoriesLimitReachedSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates if the Managed Microsoft AD directory limit has been reached.',
-        }),
-    ).exactOptional(),
-    ConnectedDirectoriesLimit: LimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of connected directories allowed in the Region.',
-        }),
-    ).exactOptional(),
-    ConnectedDirectoriesCurrentCount: LimitSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The current number of connected directories in the Region.' }),
-    ).exactOptional(),
-    ConnectedDirectoriesLimitReached: ConnectedDirectoriesLimitReachedSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Indicates if the connected directory limit has been reached.' }),
-    ).exactOptional(),
+    CloudOnlyDirectoriesLimit: LimitSchema.exactOptional().openapi({
+      description: 'The maximum number of cloud directories allowed in the Region.',
+    }),
+    CloudOnlyDirectoriesCurrentCount: LimitSchema.exactOptional().openapi({
+      description: 'The current number of cloud directories in the Region.',
+    }),
+    CloudOnlyDirectoriesLimitReached:
+      CloudOnlyDirectoriesLimitReachedSchema.exactOptional().openapi({
+        description: 'Indicates if the cloud directory limit has been reached.',
+      }),
+    CloudOnlyMicrosoftADLimit: LimitSchema.exactOptional().openapi({
+      description: 'The maximum number of Managed Microsoft AD directories allowed in the region.',
+    }),
+    CloudOnlyMicrosoftADCurrentCount: LimitSchema.exactOptional().openapi({
+      description: 'The current number of Managed Microsoft AD directories in the region.',
+    }),
+    CloudOnlyMicrosoftADLimitReached:
+      CloudOnlyDirectoriesLimitReachedSchema.exactOptional().openapi({
+        description: 'Indicates if the Managed Microsoft AD directory limit has been reached.',
+      }),
+    ConnectedDirectoriesLimit: LimitSchema.exactOptional().openapi({
+      description: 'The maximum number of connected directories allowed in the Region.',
+    }),
+    ConnectedDirectoriesCurrentCount: LimitSchema.exactOptional().openapi({
+      description: 'The current number of connected directories in the Region.',
+    }),
+    ConnectedDirectoriesLimitReached:
+      ConnectedDirectoriesLimitReachedSchema.exactOptional().openapi({
+        description: 'Indicates if the connected directory limit has been reached.',
+      }),
   })
   .openapi({ description: 'Contains directory limit information for a Region.', required: [] })
   .openapi('DirectoryLimits')
 
 const GetDirectoryLimitsResultSchema = z
   .object({
-    DirectoryLimits: DirectoryLimitsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <a>DirectoryLimits</a> object that contains the directory limits for the current Region.',
-        }),
-    ).exactOptional(),
+    DirectoryLimits: DirectoryLimitsSchema.exactOptional().openapi({
+      description:
+        'A <a>DirectoryLimits</a> object that contains the directory limits for the current Region.',
+    }),
   })
   .openapi({
     description: 'Contains the results of the <a>GetDirectoryLimits</a> operation.',
@@ -3306,7 +2462,7 @@ const GetDirectoryLimitsResultSchema = z
   .openapi('GetDirectoryLimitsResult')
 
 const GetDirectoryLimitsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetDirectoryLimitsRequest',
     description: 'Contains the inputs for the <a>GetDirectoryLimits</a> operation.',
@@ -3317,15 +2473,15 @@ const ManualSnapshotsLimitReachedSchema = z.boolean().openapi('ManualSnapshotsLi
 
 const SnapshotLimitsSchema = z
   .object({
-    ManualSnapshotsLimit: LimitSchema.and(
-      z.any().openapi({ description: 'The maximum number of manual snapshots allowed.' }),
-    ).exactOptional(),
-    ManualSnapshotsCurrentCount: LimitSchema.and(
-      z.any().openapi({ description: 'The current number of manual snapshots of the directory.' }),
-    ).exactOptional(),
-    ManualSnapshotsLimitReached: ManualSnapshotsLimitReachedSchema.and(
-      z.any().openapi({ description: 'Indicates if the manual snapshot limit has been reached.' }),
-    ).exactOptional(),
+    ManualSnapshotsLimit: LimitSchema.exactOptional().openapi({
+      description: 'The maximum number of manual snapshots allowed.',
+    }),
+    ManualSnapshotsCurrentCount: LimitSchema.exactOptional().openapi({
+      description: 'The current number of manual snapshots of the directory.',
+    }),
+    ManualSnapshotsLimitReached: ManualSnapshotsLimitReachedSchema.exactOptional().openapi({
+      description: 'Indicates if the manual snapshot limit has been reached.',
+    }),
   })
   .openapi({
     description: 'Contains manual snapshot limit information for a directory.',
@@ -3335,14 +2491,10 @@ const SnapshotLimitsSchema = z
 
 const GetSnapshotLimitsResultSchema = z
   .object({
-    SnapshotLimits: SnapshotLimitsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <a>SnapshotLimits</a> object that contains the manual snapshot limits for the specified directory.',
-        }),
-    ).exactOptional(),
+    SnapshotLimits: SnapshotLimitsSchema.exactOptional().openapi({
+      description:
+        'A <a>SnapshotLimits</a> object that contains the manual snapshot limits for the specified directory.',
+    }),
   })
   .openapi({
     description: 'Contains the results of the <a>GetSnapshotLimits</a> operation.',
@@ -3352,13 +2504,9 @@ const GetSnapshotLimitsResultSchema = z
 
 const GetSnapshotLimitsRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains the identifier of the directory to obtain the limits for.',
-        }),
-    ),
+    DirectoryId: DirectoryIdSchema.openapi({
+      description: 'Contains the identifier of the directory to obtain the limits for.',
+    }),
   })
   .openapi({
     required: ['DirectoryId'],
@@ -3369,26 +2517,22 @@ const GetSnapshotLimitsRequestSchema = z
 
 const CertificateInfoSchema = z
   .object({
-    CertificateId: CertificateIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the certificate.' }),
-    ).exactOptional(),
-    CommonName: CertificateCNSchema.and(
-      z.any().openapi({ description: 'The common name for the certificate.' }),
-    ).exactOptional(),
-    State: CertificateStateSchema.and(
-      z.any().openapi({ description: 'The state of the certificate.' }),
-    ).exactOptional(),
-    ExpiryDateTime: CertificateExpiryDateTimeSchema.and(
-      z.any().openapi({ description: 'The date and time when the certificate will expire.' }),
-    ).exactOptional(),
-    Type: CertificateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The function that the registered certificate performs. Valid values include <code>ClientLDAPS</code> or <code>ClientCertAuth</code>. The default value is <code>ClientLDAPS</code>.',
-        }),
-    ).exactOptional(),
+    CertificateId: CertificateIdSchema.exactOptional().openapi({
+      description: 'The identifier of the certificate.',
+    }),
+    CommonName: CertificateCNSchema.exactOptional().openapi({
+      description: 'The common name for the certificate.',
+    }),
+    State: CertificateStateSchema.exactOptional().openapi({
+      description: 'The state of the certificate.',
+    }),
+    ExpiryDateTime: CertificateExpiryDateTimeSchema.exactOptional().openapi({
+      description: 'The date and time when the certificate will expire.',
+    }),
+    Type: CertificateTypeSchema.exactOptional().openapi({
+      description:
+        'The function that the registered certificate performs. Valid values include <code>ClientLDAPS</code> or <code>ClientCertAuth</code>. The default value is <code>ClientLDAPS</code>.',
+    }),
   })
   .openapi({ description: 'Contains general information about a certificate.', required: [] })
   .openapi('CertificateInfo')
@@ -3397,42 +2541,28 @@ const CertificatesInfoSchema = z.array(CertificateInfoSchema).openapi('Certifica
 
 const ListCertificatesResultSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether another page of certificates is available when the number of available certificates exceeds the page limit.',
-        }),
-    ).exactOptional(),
-    CertificatesInfo: CertificatesInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of certificates with basic details including certificate ID, certificate common name, certificate state.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'Indicates whether another page of certificates is available when the number of available certificates exceeds the page limit.',
+    }),
+    CertificatesInfo: CertificatesInfoSchema.exactOptional().openapi({
+      description:
+        'A list of certificates with basic details including certificate ID, certificate common name, certificate state.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListCertificatesResult')
 
 const ListCertificatesRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the directory.' }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token for requesting another page of certificates if the <code>NextToken</code> response element indicates that more certificates are available. Use the value of the returned <code>NextToken</code> element in your request until the token comes back as <code>null</code>. Pass <code>null</code> if this is the first call.',
-        }),
-    ).exactOptional(),
-    Limit: PageLimitSchema.and(
-      z.any().openapi({ description: 'The number of items that should show up on one page' }),
-    ).exactOptional(),
+    DirectoryId: DirectoryIdSchema.openapi({ description: 'The identifier of the directory.' }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token for requesting another page of certificates if the <code>NextToken</code> response element indicates that more certificates are available. Use the value of the returned <code>NextToken</code> element in your request until the token comes back as <code>null</code>. Pass <code>null</code> if this is the first call.',
+    }),
+    Limit: PageLimitSchema.exactOptional().openapi({
+      description: 'The number of items that should show up on one page',
+    }),
   })
   .openapi({ required: ['DirectoryId'], title: 'ListCertificatesRequest' })
   .openapi('ListCertificatesRequest')
@@ -3447,32 +2577,24 @@ const IpRouteStatusReasonSchema = z.string().openapi('IpRouteStatusReason')
 
 const IpRouteInfoSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Identifier (ID) of the directory associated with the IP addresses.',
-        }),
-    ).exactOptional(),
-    CidrIp: CidrIpSchema.and(
-      z.any().openapi({ description: 'IP address block in the <a>IpRoute</a>.' }),
-    ).exactOptional(),
-    IpRouteStatusMsg: IpRouteStatusMsgSchema.and(
-      z.any().openapi({ description: 'The status of the IP address block.' }),
-    ).exactOptional(),
-    AddedDateTime: AddedDateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time the address block was added to the directory.',
-        }),
-    ).exactOptional(),
-    IpRouteStatusReason: IpRouteStatusReasonSchema.and(
-      z.any().openapi({ description: 'The reason for the IpRouteStatusMsg.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'Description of the <a>IpRouteInfo</a>.' }),
-    ).exactOptional(),
+    DirectoryId: DirectoryIdSchema.exactOptional().openapi({
+      description: 'Identifier (ID) of the directory associated with the IP addresses.',
+    }),
+    CidrIp: CidrIpSchema.exactOptional().openapi({
+      description: 'IP address block in the <a>IpRoute</a>.',
+    }),
+    IpRouteStatusMsg: IpRouteStatusMsgSchema.exactOptional().openapi({
+      description: 'The status of the IP address block.',
+    }),
+    AddedDateTime: AddedDateTimeSchema.exactOptional().openapi({
+      description: 'The date and time the address block was added to the directory.',
+    }),
+    IpRouteStatusReason: IpRouteStatusReasonSchema.exactOptional().openapi({
+      description: 'The reason for the IpRouteStatusMsg.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'Description of the <a>IpRouteInfo</a>.',
+    }),
   })
   .openapi({ description: 'Information about one or more IP address blocks.', required: [] })
   .openapi('IpRouteInfo')
@@ -3481,47 +2603,31 @@ const IpRoutesInfoSchema = z.array(IpRouteInfoSchema).openapi('IpRoutesInfo')
 
 const ListIpRoutesResultSchema = z
   .object({
-    IpRoutesInfo: IpRoutesInfoSchema.and(
-      z.any().openapi({ description: 'A list of <a>IpRoute</a>s.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If not null, more results are available. Pass this value for the <i>NextToken</i> parameter in a subsequent call to <a>ListIpRoutes</a> to retrieve the next set of items.',
-        }),
-    ).exactOptional(),
+    IpRoutesInfo: IpRoutesInfoSchema.exactOptional().openapi({
+      description: 'A list of <a>IpRoute</a>s.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If not null, more results are available. Pass this value for the <i>NextToken</i> parameter in a subsequent call to <a>ListIpRoutes</a> to retrieve the next set of items.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListIpRoutesResult')
 
 const ListIpRoutesRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Identifier (ID) of the directory for which you want to retrieve the IP addresses.',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <i>ListIpRoutes.NextToken</i> value from a previous call to <a>ListIpRoutes</a>. Pass null if this is the first call.',
-        }),
-    ).exactOptional(),
-    Limit: LimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Maximum number of items to return. If this value is zero, the maximum number of items is specified by the limitations of the operation.',
-        }),
-    ).exactOptional(),
+    DirectoryId: DirectoryIdSchema.openapi({
+      description:
+        'Identifier (ID) of the directory for which you want to retrieve the IP addresses.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <i>ListIpRoutes.NextToken</i> value from a previous call to <a>ListIpRoutes</a>. Pass null if this is the first call.',
+    }),
+    Limit: LimitSchema.exactOptional().openapi({
+      description:
+        'Maximum number of items to return. If this value is zero, the maximum number of items is specified by the limitations of the operation.',
+    }),
   })
   .openapi({ required: ['DirectoryId'], title: 'ListIpRoutesRequest' })
   .openapi('ListIpRoutesRequest')
@@ -3532,20 +2638,16 @@ const SubscriptionCreatedDateTimeSchema = z.iso
 
 const LogSubscriptionSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Identifier (ID) of the directory that you want to associate with the log subscription.',
-        }),
-    ).exactOptional(),
-    LogGroupName: LogGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the log group.' }),
-    ).exactOptional(),
-    SubscriptionCreatedDateTime: SubscriptionCreatedDateTimeSchema.and(
-      z.any().openapi({ description: 'The date and time that the log subscription was created.' }),
-    ).exactOptional(),
+    DirectoryId: DirectoryIdSchema.exactOptional().openapi({
+      description:
+        'Identifier (ID) of the directory that you want to associate with the log subscription.',
+    }),
+    LogGroupName: LogGroupNameSchema.exactOptional().openapi({
+      description: 'The name of the log group.',
+    }),
+    SubscriptionCreatedDateTime: SubscriptionCreatedDateTimeSchema.exactOptional().openapi({
+      description: 'The date and time that the log subscription was created.',
+    }),
   })
   .openapi({
     description:
@@ -3558,37 +2660,29 @@ const LogSubscriptionsSchema = z.array(LogSubscriptionSchema).openapi('LogSubscr
 
 const ListLogSubscriptionsResultSchema = z
   .object({
-    LogSubscriptions: LogSubscriptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of active <a>LogSubscription</a> objects for calling the Amazon Web Services account.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token for the next set of items to return.' }),
-    ).exactOptional(),
+    LogSubscriptions: LogSubscriptionsSchema.exactOptional().openapi({
+      description:
+        'A list of active <a>LogSubscription</a> objects for calling the Amazon Web Services account.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token for the next set of items to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListLogSubscriptionsResult')
 
 const ListLogSubscriptionsRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If a <i>DirectoryID</i> is provided, lists only the log subscription associated with that directory. If no <i>DirectoryId</i> is provided, lists all log subscriptions associated with your Amazon Web Services account. If there are no log subscriptions for the Amazon Web Services account or the directory, an empty list will be returned.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token for the next set of items to return.' }),
-    ).exactOptional(),
-    Limit: LimitSchema.and(
-      z.any().openapi({ description: 'The maximum number of items returned.' }),
-    ).exactOptional(),
+    DirectoryId: DirectoryIdSchema.exactOptional().openapi({
+      description:
+        'If a <i>DirectoryID</i> is provided, lists only the log subscription associated with that directory. If no <i>DirectoryId</i> is provided, lists all log subscriptions associated with your Amazon Web Services account. If there are no log subscriptions for the Amazon Web Services account or the directory, an empty list will be returned.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token for the next set of items to return.',
+    }),
+    Limit: LimitSchema.exactOptional().openapi({
+      description: 'The maximum number of items returned.',
+    }),
   })
   .openapi({ title: 'ListLogSubscriptionsRequest', required: [] })
   .openapi('ListLogSubscriptionsRequest')
@@ -3613,38 +2707,28 @@ const EndDateTimeSchema = z.iso.datetime({ offset: true }).openapi('EndDateTime'
 
 const SchemaExtensionInfoSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the directory to which the schema extension is applied.',
-        }),
-    ).exactOptional(),
-    SchemaExtensionId: SchemaExtensionIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the schema extension.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the schema extension.' }),
-    ).exactOptional(),
-    SchemaExtensionStatus: SchemaExtensionStatusSchema.and(
-      z.any().openapi({ description: 'The current status of the schema extension.' }),
-    ).exactOptional(),
-    SchemaExtensionStatusReason: SchemaExtensionStatusReasonSchema.and(
-      z.any().openapi({ description: 'The reason for the <code>SchemaExtensionStatus</code>.' }),
-    ).exactOptional(),
-    StartDateTime: StartDateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that the schema extension started being applied to the directory.',
-        }),
-    ).exactOptional(),
-    EndDateTime: EndDateTimeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date and time that the schema extension was completed.' }),
-    ).exactOptional(),
+    DirectoryId: DirectoryIdSchema.exactOptional().openapi({
+      description: 'The identifier of the directory to which the schema extension is applied.',
+    }),
+    SchemaExtensionId: SchemaExtensionIdSchema.exactOptional().openapi({
+      description: 'The identifier of the schema extension.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of the schema extension.',
+    }),
+    SchemaExtensionStatus: SchemaExtensionStatusSchema.exactOptional().openapi({
+      description: 'The current status of the schema extension.',
+    }),
+    SchemaExtensionStatusReason: SchemaExtensionStatusReasonSchema.exactOptional().openapi({
+      description: 'The reason for the <code>SchemaExtensionStatus</code>.',
+    }),
+    StartDateTime: StartDateTimeSchema.exactOptional().openapi({
+      description:
+        'The date and time that the schema extension started being applied to the directory.',
+    }),
+    EndDateTime: EndDateTimeSchema.exactOptional().openapi({
+      description: 'The date and time that the schema extension was completed.',
+    }),
   })
   .openapi({ description: 'Information about a schema extension.', required: [] })
   .openapi('SchemaExtensionInfo')
@@ -3655,88 +2739,60 @@ const SchemaExtensionsInfoSchema = z
 
 const ListSchemaExtensionsResultSchema = z
   .object({
-    SchemaExtensionsInfo: SchemaExtensionsInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the schema extensions applied to the directory.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If not null, more results are available. Pass this value for the <code>NextToken</code> parameter in a subsequent call to <code>ListSchemaExtensions</code> to retrieve the next set of items.',
-        }),
-    ).exactOptional(),
+    SchemaExtensionsInfo: SchemaExtensionsInfoSchema.exactOptional().openapi({
+      description: 'Information about the schema extensions applied to the directory.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If not null, more results are available. Pass this value for the <code>NextToken</code> parameter in a subsequent call to <code>ListSchemaExtensions</code> to retrieve the next set of items.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListSchemaExtensionsResult')
 
 const ListSchemaExtensionsRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the directory from which to retrieve the schema extension information.',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ListSchemaExtensions.NextToken</code> value from a previous call to <code>ListSchemaExtensions</code>. Pass null if this is the first call.',
-        }),
-    ).exactOptional(),
-    Limit: LimitSchema.and(
-      z.any().openapi({ description: 'The maximum number of items to return.' }),
-    ).exactOptional(),
+    DirectoryId: DirectoryIdSchema.openapi({
+      description:
+        'The identifier of the directory from which to retrieve the schema extension information.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>ListSchemaExtensions.NextToken</code> value from a previous call to <code>ListSchemaExtensions</code>. Pass null if this is the first call.',
+    }),
+    Limit: LimitSchema.exactOptional().openapi({
+      description: 'The maximum number of items to return.',
+    }),
   })
   .openapi({ required: ['DirectoryId'], title: 'ListSchemaExtensionsRequest' })
   .openapi('ListSchemaExtensionsRequest')
 
 const ListTagsForResourceResultSchema = z
   .object({
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'List of tags returned by the ListTagsForResource operation.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'Reserved for future use.' }),
-    ).exactOptional(),
+    Tags: TagsSchema.exactOptional().openapi({
+      description: 'List of tags returned by the ListTagsForResource operation.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({ description: 'Reserved for future use.' }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResult')
 
 const ListTagsForResourceRequestSchema = z
   .object({
-    ResourceId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Identifier (ID) of the directory for which you want to retrieve tags.',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'Reserved for future use.' }),
-    ).exactOptional(),
-    Limit: LimitSchema.and(
-      z.any().openapi({ description: 'Reserved for future use.' }),
-    ).exactOptional(),
+    ResourceId: ResourceIdSchema.openapi({
+      description: 'Identifier (ID) of the directory for which you want to retrieve tags.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({ description: 'Reserved for future use.' }),
+    Limit: LimitSchema.exactOptional().openapi({ description: 'Reserved for future use.' }),
   })
   .openapi({ required: ['ResourceId'], title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const RegisterCertificateResultSchema = z
   .object({
-    CertificateId: CertificateIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the certificate.' }),
-    ).exactOptional(),
+    CertificateId: CertificateIdSchema.exactOptional().openapi({
+      description: 'The identifier of the certificate.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('RegisterCertificateResult')
@@ -3745,28 +2801,18 @@ const CertificateDataSchema = z.string().min(1).max(8192).openapi('CertificateDa
 
 const RegisterCertificateRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the directory.' }),
-    ),
-    CertificateData: CertificateDataSchema.and(
-      z.any().openapi({ description: 'The certificate PEM string that needs to be registered.' }),
-    ),
-    Type: CertificateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The function that the registered certificate performs. Valid values include <code>ClientLDAPS</code> or <code>ClientCertAuth</code>. The default value is <code>ClientLDAPS</code>.',
-        }),
-    ).exactOptional(),
-    ClientCertAuthSettings: ClientCertAuthSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>ClientCertAuthSettings</code> object that contains client certificate authentication settings.',
-        }),
-    ).exactOptional(),
+    DirectoryId: DirectoryIdSchema.openapi({ description: 'The identifier of the directory.' }),
+    CertificateData: CertificateDataSchema.openapi({
+      description: 'The certificate PEM string that needs to be registered.',
+    }),
+    Type: CertificateTypeSchema.exactOptional().openapi({
+      description:
+        'The function that the registered certificate performs. Valid values include <code>ClientLDAPS</code> or <code>ClientCertAuth</code>. The default value is <code>ClientLDAPS</code>.',
+    }),
+    ClientCertAuthSettings: ClientCertAuthSettingsSchema.exactOptional().openapi({
+      description:
+        'A <code>ClientCertAuthSettings</code> object that contains client certificate authentication settings.',
+    }),
   })
   .openapi({ required: ['DirectoryId', 'CertificateData'], title: 'RegisterCertificateRequest' })
   .openapi('RegisterCertificateRequest')
@@ -3778,28 +2824,19 @@ const CertificateLimitExceededExceptionSchema = z.any().openapi('CertificateLimi
 const CertificateAlreadyExistsExceptionSchema = z.any().openapi('CertificateAlreadyExistsException')
 
 const RegisterEventTopicResultSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The result of a RegisterEventTopic request.' })
   .openapi('RegisterEventTopicResult')
 
 const RegisterEventTopicRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Directory ID that will publish status messages to the Amazon SNS topic.',
-        }),
-    ),
-    TopicName: TopicNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon SNS topic name to which the directory will publish status messages. This Amazon SNS topic must be in the same region as the specified Directory ID.',
-        }),
-    ),
+    DirectoryId: DirectoryIdSchema.openapi({
+      description: 'The Directory ID that will publish status messages to the Amazon SNS topic.',
+    }),
+    TopicName: TopicNameSchema.openapi({
+      description:
+        'The Amazon SNS topic name to which the directory will publish status messages. This Amazon SNS topic must be in the same region as the specified Directory ID.',
+    }),
   })
   .openapi({
     required: ['DirectoryId', 'TopicName'],
@@ -3810,87 +2847,65 @@ const RegisterEventTopicRequestSchema = z
 
 const RejectSharedDirectoryResultSchema = z
   .object({
-    SharedDirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Identifier of the shared directory in the directory consumer account.',
-        }),
-    ).exactOptional(),
+    SharedDirectoryId: DirectoryIdSchema.exactOptional().openapi({
+      description: 'Identifier of the shared directory in the directory consumer account.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('RejectSharedDirectoryResult')
 
 const RejectSharedDirectoryRequestSchema = z
   .object({
-    SharedDirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Identifier of the shared directory in the directory consumer account. This identifier is different for each directory owner account.',
-        }),
-    ),
+    SharedDirectoryId: DirectoryIdSchema.openapi({
+      description:
+        'Identifier of the shared directory in the directory consumer account. This identifier is different for each directory owner account.',
+    }),
   })
   .openapi({ required: ['SharedDirectoryId'], title: 'RejectSharedDirectoryRequest' })
   .openapi('RejectSharedDirectoryRequest')
 
-const RemoveIpRoutesResultSchema = z.object({}).openapi('RemoveIpRoutesResult')
+const RemoveIpRoutesResultSchema = z.looseObject({}).openapi('RemoveIpRoutesResult')
 
 const CidrIpsSchema = z.array(CidrIpSchema).openapi('CidrIps')
 
 const RemoveIpRoutesRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Identifier (ID) of the directory from which you want to remove the IP addresses.',
-        }),
-    ),
-    CidrIps: CidrIpsSchema.and(
-      z.any().openapi({ description: 'IP address blocks that you want to remove.' }),
-    ),
+    DirectoryId: DirectoryIdSchema.openapi({
+      description:
+        'Identifier (ID) of the directory from which you want to remove the IP addresses.',
+    }),
+    CidrIps: CidrIpsSchema.openapi({ description: 'IP address blocks that you want to remove.' }),
   })
   .openapi({ required: ['DirectoryId', 'CidrIps'], title: 'RemoveIpRoutesRequest' })
   .openapi('RemoveIpRoutesRequest')
 
-const RemoveRegionResultSchema = z.object({}).openapi('RemoveRegionResult')
+const RemoveRegionResultSchema = z.looseObject({}).openapi('RemoveRegionResult')
 
 const RemoveRegionRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the directory for which you want to remove Region replication.',
-        }),
-    ),
+    DirectoryId: DirectoryIdSchema.openapi({
+      description:
+        'The identifier of the directory for which you want to remove Region replication.',
+    }),
   })
   .openapi({ required: ['DirectoryId'], title: 'RemoveRegionRequest' })
   .openapi('RemoveRegionRequest')
 
-const RemoveTagsFromResourceResultSchema = z.object({}).openapi('RemoveTagsFromResourceResult')
+const RemoveTagsFromResourceResultSchema = z.looseObject({}).openapi('RemoveTagsFromResourceResult')
 
 const TagKeysSchema = z.array(TagKeySchema).openapi('TagKeys')
 
 const RemoveTagsFromResourceRequestSchema = z
   .object({
-    ResourceId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Identifier (ID) of the directory from which to remove the tag.' }),
-    ),
-    TagKeys: TagKeysSchema.and(
-      z.any().openapi({ description: 'The tag key (name) of the tag to be removed.' }),
-    ),
+    ResourceId: ResourceIdSchema.openapi({
+      description: 'Identifier (ID) of the directory from which to remove the tag.',
+    }),
+    TagKeys: TagKeysSchema.openapi({ description: 'The tag key (name) of the tag to be removed.' }),
   })
   .openapi({ required: ['ResourceId', 'TagKeys'], title: 'RemoveTagsFromResourceRequest' })
   .openapi('RemoveTagsFromResourceRequest')
 
-const ResetUserPasswordResultSchema = z.object({}).openapi('ResetUserPasswordResult')
+const ResetUserPasswordResultSchema = z.looseObject({}).openapi('ResetUserPasswordResult')
 
 const CustomerUserNameSchema = z
   .string()
@@ -3903,20 +2918,16 @@ const UserPasswordSchema = z.string().min(1).max(127).openapi('UserPassword')
 
 const ResetUserPasswordRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Identifier of the Managed Microsoft AD or Simple AD directory in which the user resides.',
-        }),
-    ),
-    UserName: CustomerUserNameSchema.and(
-      z.any().openapi({ description: 'The user name of the user whose password will be reset.' }),
-    ),
-    NewPassword: UserPasswordSchema.and(
-      z.any().openapi({ description: 'The new password that will be reset.' }),
-    ),
+    DirectoryId: DirectoryIdSchema.openapi({
+      description:
+        'Identifier of the Managed Microsoft AD or Simple AD directory in which the user resides.',
+    }),
+    UserName: CustomerUserNameSchema.openapi({
+      description: 'The user name of the user whose password will be reset.',
+    }),
+    NewPassword: UserPasswordSchema.openapi({
+      description: 'The new password that will be reset.',
+    }),
   })
   .openapi({
     required: ['DirectoryId', 'UserName', 'NewPassword'],
@@ -3929,15 +2940,15 @@ const UserDoesNotExistExceptionSchema = z.any().openapi('UserDoesNotExistExcepti
 const InvalidPasswordExceptionSchema = z.any().openapi('InvalidPasswordException')
 
 const RestoreFromSnapshotResultSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Contains the results of the <a>RestoreFromSnapshot</a> operation.' })
   .openapi('RestoreFromSnapshotResult')
 
 const RestoreFromSnapshotRequestSchema = z
   .object({
-    SnapshotId: SnapshotIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the snapshot to restore from.' }),
-    ),
+    SnapshotId: SnapshotIdSchema.openapi({
+      description: 'The identifier of the snapshot to restore from.',
+    }),
   })
   .openapi({
     required: ['SnapshotId'],
@@ -3948,14 +2959,10 @@ const RestoreFromSnapshotRequestSchema = z
 
 const ShareDirectoryResultSchema = z
   .object({
-    SharedDirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Identifier of the directory that is stored in the directory consumer account that is shared from the specified directory (<code>DirectoryId</code>).',
-        }),
-    ).exactOptional(),
+    SharedDirectoryId: DirectoryIdSchema.exactOptional().openapi({
+      description:
+        'Identifier of the directory that is stored in the directory consumer account that is shared from the specified directory (<code>DirectoryId</code>).',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ShareDirectoryResult')
@@ -3966,14 +2973,10 @@ const TargetTypeSchema = z.literal('ACCOUNT').openapi('TargetType')
 
 const ShareTargetSchema = z
   .object({
-    Id: TargetIdSchema.and(
-      z.any().openapi({ description: 'Identifier of the directory consumer account.' }),
-    ),
-    Type: TargetTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Type of identifier to be used in the <code>Id</code> field.' }),
-    ),
+    Id: TargetIdSchema.openapi({ description: 'Identifier of the directory consumer account.' }),
+    Type: TargetTypeSchema.openapi({
+      description: 'Type of identifier to be used in the <code>Id</code> field.',
+    }),
   })
   .openapi({
     required: ['Id', 'Type'],
@@ -3983,38 +2986,22 @@ const ShareTargetSchema = z
 
 const ShareDirectoryRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Identifier of the Managed Microsoft AD directory that you want to share with other Amazon Web Services accounts.',
-        }),
-    ),
-    ShareNotes: NotesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A directory share request that is sent by the directory owner to the directory consumer. The request includes a typed message to help the directory consumer administrator determine whether to approve or reject the share invitation.',
-        }),
-    ).exactOptional(),
-    ShareTarget: ShareTargetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Identifier for the directory consumer account with whom the directory is to be shared.',
-        }),
-    ),
-    ShareMethod: ShareMethodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The method used when sharing a directory to determine whether the directory should be shared within your Amazon Web Services organization (<code>ORGANIZATIONS</code>) or with any Amazon Web Services account by sending a directory sharing request (<code>HANDSHAKE</code>).',
-        }),
-    ),
+    DirectoryId: DirectoryIdSchema.openapi({
+      description:
+        'Identifier of the Managed Microsoft AD directory that you want to share with other Amazon Web Services accounts.',
+    }),
+    ShareNotes: NotesSchema.exactOptional().openapi({
+      description:
+        'A directory share request that is sent by the directory owner to the directory consumer. The request includes a typed message to help the directory consumer administrator determine whether to approve or reject the share invitation.',
+    }),
+    ShareTarget: ShareTargetSchema.openapi({
+      description:
+        'Identifier for the directory consumer account with whom the directory is to be shared.',
+    }),
+    ShareMethod: ShareMethodSchema.openapi({
+      description:
+        'The method used when sharing a directory to determine whether the directory should be shared within your Amazon Web Services organization (<code>ORGANIZATIONS</code>) or with any Amazon Web Services account by sending a directory sharing request (<code>HANDSHAKE</code>).',
+    }),
   })
   .openapi({
     required: ['DirectoryId', 'ShareTarget', 'ShareMethod'],
@@ -4030,11 +3017,9 @@ const OrganizationsExceptionSchema = z.any().openapi('OrganizationsException')
 
 const StartSchemaExtensionResultSchema = z
   .object({
-    SchemaExtensionId: SchemaExtensionIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The identifier of the schema extension that will be applied.' }),
-    ).exactOptional(),
+    SchemaExtensionId: SchemaExtensionIdSchema.exactOptional().openapi({
+      description: 'The identifier of the schema extension that will be applied.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartSchemaExtensionResult')
@@ -4047,33 +3032,21 @@ const LdifContentSchema = z.string().min(1).max(500000).openapi('LdifContent')
 
 const StartSchemaExtensionRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the directory for which the schema extension will be applied to.',
-        }),
-    ),
-    CreateSnapshotBeforeSchemaExtension: CreateSnapshotBeforeSchemaExtensionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If true, creates a snapshot of the directory before applying the schema extension.',
-        }),
-    ),
-    LdifContent: LdifContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The LDIF file represented as a string. To construct the LdifContent string, precede each line as it would be formatted in an ldif file with \\n. See the example request below for more details. The file size can be no larger than 1MB.',
-        }),
-    ),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the schema extension.' }),
-    ),
+    DirectoryId: DirectoryIdSchema.openapi({
+      description:
+        'The identifier of the directory for which the schema extension will be applied to.',
+    }),
+    CreateSnapshotBeforeSchemaExtension: CreateSnapshotBeforeSchemaExtensionSchema.openapi({
+      description:
+        'If true, creates a snapshot of the directory before applying the schema extension.',
+    }),
+    LdifContent: LdifContentSchema.openapi({
+      description:
+        'The LDIF file represented as a string. To construct the LdifContent string, precede each line as it would be formatted in an ldif file with \\n. See the example request below for more details. The file size can be no larger than 1MB.',
+    }),
+    Description: DescriptionSchema.openapi({
+      description: 'A description of the schema extension.',
+    }),
   })
   .openapi({
     required: ['DirectoryId', 'CreateSnapshotBeforeSchemaExtension', 'LdifContent', 'Description'],
@@ -4083,26 +3056,20 @@ const StartSchemaExtensionRequestSchema = z
 
 const UnshareDirectoryResultSchema = z
   .object({
-    SharedDirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Identifier of the directory stored in the directory consumer account that is to be unshared from the specified directory (<code>DirectoryId</code>).',
-        }),
-    ).exactOptional(),
+    SharedDirectoryId: DirectoryIdSchema.exactOptional().openapi({
+      description:
+        'Identifier of the directory stored in the directory consumer account that is to be unshared from the specified directory (<code>DirectoryId</code>).',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UnshareDirectoryResult')
 
 const UnshareTargetSchema = z
   .object({
-    Id: TargetIdSchema.and(
-      z.any().openapi({ description: 'Identifier of the directory consumer account.' }),
-    ),
-    Type: TargetTypeSchema.and(
-      z.any().openapi({ description: 'Type of identifier to be used in the <i>Id</i> field.' }),
-    ),
+    Id: TargetIdSchema.openapi({ description: 'Identifier of the directory consumer account.' }),
+    Type: TargetTypeSchema.openapi({
+      description: 'Type of identifier to be used in the <i>Id</i> field.',
+    }),
   })
   .openapi({
     required: ['Id', 'Type'],
@@ -4113,22 +3080,14 @@ const UnshareTargetSchema = z
 
 const UnshareDirectoryRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the Managed Microsoft AD directory that you want to stop sharing.',
-        }),
-    ),
-    UnshareTarget: UnshareTargetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Identifier for the directory consumer account with whom the directory has to be unshared.',
-        }),
-    ),
+    DirectoryId: DirectoryIdSchema.openapi({
+      description:
+        'The identifier of the Managed Microsoft AD directory that you want to stop sharing.',
+    }),
+    UnshareTarget: UnshareTargetSchema.openapi({
+      description:
+        'Identifier for the directory consumer account with whom the directory has to be unshared.',
+    }),
   })
   .openapi({ required: ['DirectoryId', 'UnshareTarget'], title: 'UnshareDirectoryRequest' })
   .openapi('UnshareDirectoryRequest')
@@ -4136,36 +3095,24 @@ const UnshareDirectoryRequestSchema = z
 const DirectoryNotSharedExceptionSchema = z.any().openapi('DirectoryNotSharedException')
 
 const UpdateConditionalForwarderResultSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The result of an UpdateConditionalForwarder request.' })
   .openapi('UpdateConditionalForwarderResult')
 
 const UpdateConditionalForwarderRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The directory ID of the Amazon Web Services directory for which to update the conditional forwarder.',
-        }),
-    ),
-    RemoteDomainName: RemoteDomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The fully qualified domain name (FQDN) of the remote domain with which you will set up a trust relationship.',
-        }),
-    ),
-    DnsIpAddrs: DnsIpAddrsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The updated IP addresses of the remote DNS server associated with the conditional forwarder.',
-        }),
-    ),
+    DirectoryId: DirectoryIdSchema.openapi({
+      description:
+        'The directory ID of the Amazon Web Services directory for which to update the conditional forwarder.',
+    }),
+    RemoteDomainName: RemoteDomainNameSchema.openapi({
+      description:
+        'The fully qualified domain name (FQDN) of the remote domain with which you will set up a trust relationship.',
+    }),
+    DnsIpAddrs: DnsIpAddrsSchema.openapi({
+      description:
+        'The updated IP addresses of the remote DNS server associated with the conditional forwarder.',
+    }),
   })
   .openapi({
     required: ['DirectoryId', 'RemoteDomainName', 'DnsIpAddrs'],
@@ -4174,43 +3121,26 @@ const UpdateConditionalForwarderRequestSchema = z
   })
   .openapi('UpdateConditionalForwarderRequest')
 
-const UpdateDirectorySetupResultSchema = z.object({}).openapi('UpdateDirectorySetupResult')
+const UpdateDirectorySetupResultSchema = z.looseObject({}).openapi('UpdateDirectorySetupResult')
 
 const CreateSnapshotBeforeUpdateSchema = z.boolean().openapi('CreateSnapshotBeforeUpdate')
 
 const UpdateDirectorySetupRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The identifier of the directory on which you want to perform the update. ',
-        }),
-    ),
-    UpdateType: UpdateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The type of update that needs to be performed on the directory. For example, OS. ',
-        }),
-    ),
-    OSUpdateSettings: OSUpdateSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The settings for the OS update that needs to be performed on the directory. ',
-        }),
-    ).exactOptional(),
-    CreateSnapshotBeforeUpdate: CreateSnapshotBeforeUpdateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The boolean that specifies if a snapshot for the directory needs to be taken before updating the directory. ',
-        }),
-    ).exactOptional(),
+    DirectoryId: DirectoryIdSchema.openapi({
+      description: ' The identifier of the directory on which you want to perform the update. ',
+    }),
+    UpdateType: UpdateTypeSchema.openapi({
+      description:
+        ' The type of update that needs to be performed on the directory. For example, OS. ',
+    }),
+    OSUpdateSettings: OSUpdateSettingsSchema.exactOptional().openapi({
+      description: ' The settings for the OS update that needs to be performed on the directory. ',
+    }),
+    CreateSnapshotBeforeUpdate: CreateSnapshotBeforeUpdateSchema.exactOptional().openapi({
+      description:
+        ' The boolean that specifies if a snapshot for the directory needs to be taken before updating the directory. ',
+    }),
   })
   .openapi({ required: ['DirectoryId', 'UpdateType'], title: 'UpdateDirectorySetupRequest' })
   .openapi('UpdateDirectorySetupRequest')
@@ -4218,24 +3148,18 @@ const UpdateDirectorySetupRequestSchema = z
 const DirectoryInDesiredStateExceptionSchema = z.any().openapi('DirectoryInDesiredStateException')
 
 const UpdateNumberOfDomainControllersResultSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateNumberOfDomainControllersResult')
 
 const UpdateNumberOfDomainControllersRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Identifier of the directory to which the domain controllers will be added or removed.',
-        }),
-    ),
-    DesiredNumber: DesiredNumberOfDomainControllersSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The number of domain controllers desired in the directory.' }),
-    ),
+    DirectoryId: DirectoryIdSchema.openapi({
+      description:
+        'Identifier of the directory to which the domain controllers will be added or removed.',
+    }),
+    DesiredNumber: DesiredNumberOfDomainControllersSchema.openapi({
+      description: 'The number of domain controllers desired in the directory.',
+    }),
   })
   .openapi({
     required: ['DirectoryId', 'DesiredNumber'],
@@ -4248,28 +3172,20 @@ const DomainControllerLimitExceededExceptionSchema = z
   .openapi('DomainControllerLimitExceededException')
 
 const UpdateRadiusResultSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Contains the results of the <a>UpdateRadius</a> operation.' })
   .openapi('UpdateRadiusResult')
 
 const UpdateRadiusRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the directory for which to update the RADIUS server information.',
-        }),
-    ),
-    RadiusSettings: RadiusSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <a>RadiusSettings</a> object that contains information about the RADIUS server.',
-        }),
-    ),
+    DirectoryId: DirectoryIdSchema.openapi({
+      description:
+        'The identifier of the directory for which to update the RADIUS server information.',
+    }),
+    RadiusSettings: RadiusSettingsSchema.openapi({
+      description:
+        'A <a>RadiusSettings</a> object that contains information about the RADIUS server.',
+    }),
   })
   .openapi({
     required: ['DirectoryId', 'RadiusSettings'],
@@ -4280,31 +3196,23 @@ const UpdateRadiusRequestSchema = z
 
 const UpdateSettingsResultSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the directory.' }),
-    ).exactOptional(),
+    DirectoryId: DirectoryIdSchema.exactOptional().openapi({
+      description: 'The identifier of the directory.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateSettingsResult')
 
 const SettingSchema = z
   .object({
-    Name: DirectoryConfigurationSettingNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the directory setting. For example:</p> <p> <code>TLS_1_0</code> </p>',
-        }),
-    ),
-    Value: DirectoryConfigurationSettingValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value of the directory setting for which to retrieve information. For example, for <code>TLS_1_0</code>, the valid values are: <code>Enable</code> and <code>Disable</code>.',
-        }),
-    ),
+    Name: DirectoryConfigurationSettingNameSchema.openapi({
+      description:
+        '<p>The name of the directory setting. For example:</p> <p> <code>TLS_1_0</code> </p>',
+    }),
+    Value: DirectoryConfigurationSettingValueSchema.openapi({
+      description:
+        'The value of the directory setting for which to retrieve information. For example, for <code>TLS_1_0</code>, the valid values are: <code>Enable</code> and <code>Disable</code>.',
+    }),
   })
   .openapi({
     required: ['Name', 'Value'],
@@ -4316,14 +3224,10 @@ const SettingsSchema = z.array(SettingSchema).openapi('Settings')
 
 const UpdateSettingsRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The identifier of the directory for which to update settings.' }),
-    ),
-    Settings: SettingsSchema.and(
-      z.any().openapi({ description: 'The list of <a>Setting</a> objects.' }),
-    ),
+    DirectoryId: DirectoryIdSchema.openapi({
+      description: 'The identifier of the directory for which to update settings.',
+    }),
+    Settings: SettingsSchema.openapi({ description: 'The list of <a>Setting</a> objects.' }),
   })
   .openapi({ required: ['DirectoryId', 'Settings'], title: 'UpdateSettingsRequest' })
   .openapi('UpdateSettingsRequest')
@@ -4341,43 +3245,37 @@ const RequestIdSchema = z
 const UpdateTrustResultSchema = z
   .object({
     RequestId: RequestIdSchema.exactOptional(),
-    TrustId: TrustIdSchema.and(
-      z.any().openapi({ description: 'Identifier of the trust relationship.' }),
-    ).exactOptional(),
+    TrustId: TrustIdSchema.exactOptional().openapi({
+      description: 'Identifier of the trust relationship.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateTrustResult')
 
 const UpdateTrustRequestSchema = z
   .object({
-    TrustId: TrustIdSchema.and(
-      z.any().openapi({ description: 'Identifier of the trust relationship.' }),
-    ),
-    SelectiveAuth: SelectiveAuthSchema.and(
-      z.any().openapi({ description: 'Updates selective authentication for the trust.' }),
-    ).exactOptional(),
+    TrustId: TrustIdSchema.openapi({ description: 'Identifier of the trust relationship.' }),
+    SelectiveAuth: SelectiveAuthSchema.exactOptional().openapi({
+      description: 'Updates selective authentication for the trust.',
+    }),
   })
   .openapi({ required: ['TrustId'], title: 'UpdateTrustRequest' })
   .openapi('UpdateTrustRequest')
 
 const VerifyTrustResultSchema = z
   .object({
-    TrustId: TrustIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The unique Trust ID of the trust relationship that was verified.',
-        }),
-    ).exactOptional(),
+    TrustId: TrustIdSchema.exactOptional().openapi({
+      description: 'The unique Trust ID of the trust relationship that was verified.',
+    }),
   })
   .openapi({ description: 'Result of a VerifyTrust request.', required: [] })
   .openapi('VerifyTrustResult')
 
 const VerifyTrustRequestSchema = z
   .object({
-    TrustId: TrustIdSchema.and(
-      z.any().openapi({ description: 'The unique Trust ID of the trust relationship to verify.' }),
-    ),
+    TrustId: TrustIdSchema.openapi({
+      description: 'The unique Trust ID of the trust relationship to verify.',
+    }),
   })
   .openapi({
     required: ['TrustId'],

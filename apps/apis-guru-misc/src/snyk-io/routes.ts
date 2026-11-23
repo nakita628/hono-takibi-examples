@@ -947,7 +947,7 @@ const IndividualProjectSchema = z.any().openapi('IndividualProject')
 
 const IntegrationSchema = z.any().openapi('Integration')
 
-const IntegrationCredentialsSchema = z.object({}).openapi('IntegrationCredentials')
+const IntegrationCredentialsSchema = z.looseObject({}).openapi('IntegrationCredentials')
 
 const IntegrationTypeSchema = z
   .enum([
@@ -1097,7 +1097,7 @@ const IntegrationsSchema = z
   .openapi({ required: [] })
   .openapi('Integrations')
 
-const IntegrationsBodySchema = z.object({}).openapi('IntegrationsBody')
+const IntegrationsBodySchema = z.looseObject({}).openapi('IntegrationsBody')
 
 const IssueCountsSchema = z
   .object({
@@ -1613,14 +1613,14 @@ const JiraIssueRequestSchema = z
     fields: z
       .object({
         issuetype: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({
             description:
               'See https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issues/#api-rest-api-3-issue-post for details of what to send as fields.',
           }),
         project: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({
             description:
@@ -1826,7 +1826,7 @@ const ProjectWithoutRemediationSchema = z
       .exactOptional()
       .openapi({ description: 'The origin the project was added from' }),
     owner: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
@@ -2495,7 +2495,7 @@ const ProjectSchema = z
       .exactOptional()
       .openapi({ description: 'The origin the project was added from' }),
     owner: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
@@ -2509,21 +2509,21 @@ const ProjectSchema = z
     remediation: z
       .object({
         patch: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({
             description:
               'Recommended patches to apply to the project\n\n(object)\n   paths (array) - List of paths to the vulnerable dependency that can be patched',
           }),
         pin: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({
             description:
               'Recommended pins to apply to the project (Python only)\n\n(object)\n    + upgradeTo (string, required) - `package@version` to upgrade to\n    + vulns (array[string], required) - List of vulnerability ids that will be fixed as part of this upgrade\n    + isTransitive (boolean) - Describes if the dependency to be pinned is a transitive dependency',
           }),
         upgrade: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({
             description:
@@ -3137,10 +3137,10 @@ const VulnerabilitySchema = z
         description:
           'Common Vulnerability Scoring System (CVSS) provides a way to capture the principal characteristics of a vulnerability, and produce a numerical score reflecting its severity, as well as a textual representation of that score.',
       }),
-    alternativeIds: z.object({}).exactOptional(),
+    alternativeIds: z.looseObject({}).exactOptional(),
     creationTime: z.string().exactOptional(),
     credit: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'The reporter of the vulnerability' }),
     cvssScore: z.number().exactOptional().openapi({ description: 'CVSS Score.' }),
@@ -3157,7 +3157,7 @@ const VulnerabilitySchema = z
           'Snyk exploit maturity for this issue. One of: `mature`, `proof-of-concept`, `no-known-exploit` or `no-data`.',
       }),
     from: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'Paths from which the vulnerable package is required in the code base.',
@@ -3167,7 +3167,7 @@ const VulnerabilitySchema = z
       .exactOptional()
       .openapi({ description: 'List of vulnerable functions inside the vulnerable packages.' }),
     identifiers: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Additional identifiers for this issue (CVE, CWE, etc).' }),
     isPatchable: z
@@ -3208,7 +3208,7 @@ const VulnerabilitySchema = z
           'Snyk severity for this issue. One of: `critical`, `medium`, `high`, `medium` or `low`.',
       }),
     title: z.string().exactOptional().openapi({ description: 'The title of the vulnerability' }),
-    upgradePath: z.object({}).exactOptional(),
+    upgradePath: z.looseObject({}).exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('Vulnerability')
@@ -4145,12 +4145,10 @@ export const postGroupGroupIdAuditRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        Link: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -4580,12 +4578,10 @@ export const getGroupGroupIdTagsRoute = createRoute({
         },
       },
       headers: z.object({
-        Link: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -5230,12 +5226,10 @@ export const postOrgOrgIdAuditRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        Link: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -5574,12 +5568,10 @@ export const postOrgOrgIdDependenciesRoute = createRoute({
         },
       },
       headers: z.object({
-        Link: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -5677,7 +5669,7 @@ export const getOrgOrgIdIntegrationsRoute = createRoute({
       description: 'OK',
       content: {
         'application/json; charset=utf-8': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -7015,12 +7007,10 @@ export const postOrgOrgIdIntegrationsIntegrationIdImportRoute = createRoute({
     201: {
       description: 'Created',
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -8523,7 +8513,7 @@ export const getOrgOrgIdProjectProjectIdRoute = createRoute({
                 .exactOptional()
                 .openapi({ description: 'The origin the project was added from' }),
               owner: z
-                .object({})
+                .looseObject({})
                 .nullable()
                 .exactOptional()
                 .openapi({
@@ -8537,21 +8527,21 @@ export const getOrgOrgIdProjectProjectIdRoute = createRoute({
               remediation: z
                 .object({
                   patch: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
                         'Recommended patches to apply to the project\n\n(object)\n   paths (array) - List of paths to the vulnerable dependency that can be patched',
                     }),
                   pin: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
                         'Recommended pins to apply to the project (Python only)\n\n(object)\n    + upgradeTo (string, required) - `package@version` to upgrade to\n    + vulns (array[string], required) - List of vulnerability ids that will be fixed as part of this upgrade\n    + isTransitive (boolean) - Describes if the dependency to be pinned is a transitive dependency',
                     }),
                   upgrade: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
@@ -8824,7 +8814,7 @@ export const putOrgOrgIdProjectProjectIdRoute = createRoute({
                 .exactOptional()
                 .openapi({ description: 'The origin the project was added from' }),
               owner: z
-                .object({})
+                .looseObject({})
                 .nullable()
                 .exactOptional()
                 .openapi({
@@ -8838,21 +8828,21 @@ export const putOrgOrgIdProjectProjectIdRoute = createRoute({
               remediation: z
                 .object({
                   patch: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
                         'Recommended patches to apply to the project\n\n(object)\n   paths (array) - List of paths to the vulnerable dependency that can be patched',
                     }),
                   pin: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
                         'Recommended pins to apply to the project (Python only)\n\n(object)\n    + upgradeTo (string, required) - `package@version` to upgrade to\n    + vulns (array[string], required) - List of vulnerability ids that will be fixed as part of this upgrade\n    + isTransitive (boolean) - Describes if the dependency to be pinned is a transitive dependency',
                     }),
                   upgrade: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
@@ -10003,12 +9993,10 @@ export const postOrgOrgIdProjectProjectIdHistoryRoute = createRoute({
         },
       },
       headers: z.object({
-        Link: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -10628,12 +10616,10 @@ export const getOrgOrgIdProjectProjectIdHistorySnapshotIdIssueIssueIdPathsRoute 
         },
       },
       headers: z.object({
-        Link: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -11108,14 +11094,14 @@ export const postOrgOrgIdProjectProjectIdIssueIssueIdJiraIssueRoute = createRout
               fields: z
                 .object({
                   issuetype: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
                         'See https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issues/#api-rest-api-3-issue-post for details of what to send as fields.',
                     }),
                   project: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
@@ -11350,12 +11336,10 @@ export const getOrgOrgIdProjectProjectIdIssueIssueIdPathsRoute = createRoute({
         },
       },
       headers: z.object({
-        Link: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -12312,7 +12296,7 @@ export const postOrgOrgIdProjectsRoute = createRoute({
                         .exactOptional()
                         .openapi({ description: 'The origin the project was added from' }),
                       owner: z
-                        .object({})
+                        .looseObject({})
                         .nullable()
                         .exactOptional()
                         .openapi({
@@ -13837,6 +13821,240 @@ export const postReportingIssuesIndexRoute = createRoute({
                         })
                         .openapi({ required: ['project'] }),
                     ])
+                    .and(
+                      z
+                        .object({
+                          fixedDate: z
+                            .string()
+                            .exactOptional()
+                            .openapi({ description: 'The date that the issue was fixed' }),
+                          introducedDate: z
+                            .string()
+                            .openapi({
+                              description:
+                                'The date that the issue was introduced into the project',
+                            }),
+                          isFixed: z
+                            .boolean()
+                            .openapi({ description: 'Whether the issue has been fixed' }),
+                          issue: z
+                            .object({
+                              CVSSv3: z
+                                .string()
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    'The CVSS v3 string that signifies how the CVSS score was calculated (not applicable to licenses)',
+                                }),
+                              credit: z
+                                .array(z.any())
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    'The list of people responsible for first uncovering or reporting the issue (not applicable to licenses)',
+                                }),
+                              cvssScore: z
+                                .number()
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    'The CVSS score that results from running the CVSSv3 string (not applicable to licenses)',
+                                }),
+                              disclosureTime: z
+                                .string()
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    'The date that the vulnerability was first disclosed (not applicable to licenses)',
+                                }),
+                              exploitMaturity: z
+                                .string()
+                                .openapi({ description: 'The exploit maturity of the issue' }),
+                              id: z
+                                .string()
+                                .openapi({ description: 'The identifier of the issue' }),
+                              identifiers: z
+                                .object({
+                                  CVE: z
+                                    .array(z.any())
+                                    .exactOptional()
+                                    .openapi({
+                                      description: 'Common Vulnerability Enumeration identifiers',
+                                    }),
+                                  CWE: z
+                                    .array(z.any())
+                                    .exactOptional()
+                                    .openapi({
+                                      description: 'Common Weakness Enumeration identifiers',
+                                    }),
+                                  OSVDB: z
+                                    .array(z.any())
+                                    .exactOptional()
+                                    .openapi({
+                                      description:
+                                        'Identifiers assigned by the Open Source Vulnerability Database (OSVDB)',
+                                    }),
+                                })
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    'External identifiers assigned to the issue (not applicable to licenses)',
+                                  required: [],
+                                }),
+                              ignored: z
+                                .array(z.any())
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    'The list of ignore rules that were applied to the issue (only present if issue was ignored and no `groupBy` in the API request)',
+                                }),
+                              isIgnored: z
+                                .boolean()
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    'Whether the issue has been ignored (only present if there is no `groupBy` in the API request)',
+                                }),
+                              isPatchable: z
+                                .boolean()
+                                .exactOptional()
+                                .openapi({ description: 'Whether the issue can be patched' }),
+                              isPatched: z
+                                .boolean()
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    'Whether the issue has been patched (not applicable to licenses and only present if there is no `groupBy` in the API request)',
+                                }),
+                              isPinnable: z
+                                .boolean()
+                                .exactOptional()
+                                .openapi({ description: 'Whether the issue can be pinned' }),
+                              isUpgradable: z
+                                .boolean()
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    'Whether the issue can be fixed by upgrading to a later version of the dependency',
+                                }),
+                              jiraIssueUrl: z
+                                .string()
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    'The link to the Jira issue attached to the vulnerability',
+                                }),
+                              language: z
+                                .string()
+                                .exactOptional()
+                                .openapi({ description: 'The language of the issue' }),
+                              originalSeverity: z
+                                .string()
+                                .openapi({
+                                  description:
+                                    'The original severity status of the issue, as retrieved from Snyk Vulnerability database, before policies are applied',
+                                }),
+                              package: z
+                                .string()
+                                .openapi({
+                                  description: 'The name of the package that the issue relates to',
+                                }),
+                              packageManager: z
+                                .string()
+                                .exactOptional()
+                                .openapi({ description: 'The package manager of the issue' }),
+                              patches: z
+                                .array(z.any())
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    'A list of patches available for the given issue (not applicable to licenses)',
+                                }),
+                              priorityScore: z
+                                .number()
+                                .exactOptional()
+                                .openapi({
+                                  description: 'The priority score ranging between 0-1000',
+                                }),
+                              publicationTime: z
+                                .string()
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    'The date that the vulnerability was first published by Snyk (not applicable to licenses)',
+                                }),
+                              semver: z
+                                .object({
+                                  unaffected: z
+                                    .string()
+                                    .exactOptional()
+                                    .openapi({
+                                      description: 'The ranges that are unaffected by the issue',
+                                    }),
+                                  vulnerable: z
+                                    .array(z.any())
+                                    .exactOptional()
+                                    .openapi({
+                                      description: 'The ranges that are vulnerable to the issue',
+                                    }),
+                                })
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    'The ranges that are vulnerable and unaffected by the issue',
+                                  required: [],
+                                }),
+                              severity: z
+                                .string()
+                                .openapi({
+                                  description:
+                                    'The severity status of the issue, after policies are applied',
+                                }),
+                              title: z.string().openapi({ description: 'The issue title' }),
+                              type: z
+                                .string()
+                                .openapi({
+                                  description: 'The issue type, can be "vuln", "license"',
+                                }),
+                              uniqueSeveritiesList: z
+                                .array(z.any())
+                                .exactOptional()
+                                .openapi({
+                                  description: 'A list of all severities in issue per projects',
+                                }),
+                              url: z
+                                .string()
+                                .openapi({
+                                  description:
+                                    'URL to a page containing information about the issue',
+                                }),
+                              version: z
+                                .string()
+                                .openapi({
+                                  description:
+                                    'The version of the package that the issue relates to',
+                                }),
+                            })
+                            .openapi({
+                              required: [
+                                'url',
+                                'id',
+                                'title',
+                                'type',
+                                'package',
+                                'version',
+                                'severity',
+                                'originalSeverity',
+                                'exploitMaturity',
+                              ],
+                            }),
+                          patchedDate: z
+                            .string()
+                            .exactOptional()
+                            .openapi({ description: 'The date that the issue was patched' }),
+                        })
+                        .openapi({ required: ['issue', 'isFixed', 'introducedDate'] }),
+                    )
                     .openapi({ required: ['issue', 'isFixed', 'introducedDate'] }),
                 )
                 .openapi({ description: 'A list of issues' }),
@@ -14117,6 +14335,240 @@ export const postReportingIssuesLatestRoute = createRoute({
                         })
                         .openapi({ required: ['project'] }),
                     ])
+                    .and(
+                      z
+                        .object({
+                          fixedDate: z
+                            .string()
+                            .exactOptional()
+                            .openapi({ description: 'The date that the issue was fixed' }),
+                          introducedDate: z
+                            .string()
+                            .openapi({
+                              description:
+                                'The date that the issue was introduced into the project',
+                            }),
+                          isFixed: z
+                            .boolean()
+                            .openapi({ description: 'Whether the issue has been fixed' }),
+                          issue: z
+                            .object({
+                              CVSSv3: z
+                                .string()
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    'The CVSS v3 string that signifies how the CVSS score was calculated (not applicable to licenses)',
+                                }),
+                              credit: z
+                                .array(z.any())
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    'The list of people responsible for first uncovering or reporting the issue (not applicable to licenses)',
+                                }),
+                              cvssScore: z
+                                .number()
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    'The CVSS score that results from running the CVSSv3 string (not applicable to licenses)',
+                                }),
+                              disclosureTime: z
+                                .string()
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    'The date that the vulnerability was first disclosed (not applicable to licenses)',
+                                }),
+                              exploitMaturity: z
+                                .string()
+                                .openapi({ description: 'The exploit maturity of the issue' }),
+                              id: z
+                                .string()
+                                .openapi({ description: 'The identifier of the issue' }),
+                              identifiers: z
+                                .object({
+                                  CVE: z
+                                    .array(z.any())
+                                    .exactOptional()
+                                    .openapi({
+                                      description: 'Common Vulnerability Enumeration identifiers',
+                                    }),
+                                  CWE: z
+                                    .array(z.any())
+                                    .exactOptional()
+                                    .openapi({
+                                      description: 'Common Weakness Enumeration identifiers',
+                                    }),
+                                  OSVDB: z
+                                    .array(z.any())
+                                    .exactOptional()
+                                    .openapi({
+                                      description:
+                                        'Identifiers assigned by the Open Source Vulnerability Database (OSVDB)',
+                                    }),
+                                })
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    'External identifiers assigned to the issue (not applicable to licenses)',
+                                  required: [],
+                                }),
+                              ignored: z
+                                .array(z.any())
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    'The list of ignore rules that were applied to the issue (only present if issue was ignored and no `groupBy` in the API request)',
+                                }),
+                              isIgnored: z
+                                .boolean()
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    'Whether the issue has been ignored (only present if there is no `groupBy` in the API request)',
+                                }),
+                              isPatchable: z
+                                .boolean()
+                                .exactOptional()
+                                .openapi({ description: 'Whether the issue can be patched' }),
+                              isPatched: z
+                                .boolean()
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    'Whether the issue has been patched (not applicable to licenses and only present if there is no `groupBy` in the API request)',
+                                }),
+                              isPinnable: z
+                                .boolean()
+                                .exactOptional()
+                                .openapi({ description: 'Whether the issue can be pinned' }),
+                              isUpgradable: z
+                                .boolean()
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    'Whether the issue can be fixed by upgrading to a later version of the dependency',
+                                }),
+                              jiraIssueUrl: z
+                                .string()
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    'The link to the Jira issue attached to the vulnerability',
+                                }),
+                              language: z
+                                .string()
+                                .exactOptional()
+                                .openapi({ description: 'The language of the issue' }),
+                              originalSeverity: z
+                                .string()
+                                .openapi({
+                                  description:
+                                    'The original severity status of the issue, as retrieved from Snyk Vulnerability database, before policies are applied',
+                                }),
+                              package: z
+                                .string()
+                                .openapi({
+                                  description: 'The name of the package that the issue relates to',
+                                }),
+                              packageManager: z
+                                .string()
+                                .exactOptional()
+                                .openapi({ description: 'The package manager of the issue' }),
+                              patches: z
+                                .array(z.any())
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    'A list of patches available for the given issue (not applicable to licenses)',
+                                }),
+                              priorityScore: z
+                                .number()
+                                .exactOptional()
+                                .openapi({
+                                  description: 'The priority score ranging between 0-1000',
+                                }),
+                              publicationTime: z
+                                .string()
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    'The date that the vulnerability was first published by Snyk (not applicable to licenses)',
+                                }),
+                              semver: z
+                                .object({
+                                  unaffected: z
+                                    .string()
+                                    .exactOptional()
+                                    .openapi({
+                                      description: 'The ranges that are unaffected by the issue',
+                                    }),
+                                  vulnerable: z
+                                    .array(z.any())
+                                    .exactOptional()
+                                    .openapi({
+                                      description: 'The ranges that are vulnerable to the issue',
+                                    }),
+                                })
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    'The ranges that are vulnerable and unaffected by the issue',
+                                  required: [],
+                                }),
+                              severity: z
+                                .string()
+                                .openapi({
+                                  description:
+                                    'The severity status of the issue, after policies are applied',
+                                }),
+                              title: z.string().openapi({ description: 'The issue title' }),
+                              type: z
+                                .string()
+                                .openapi({
+                                  description: 'The issue type, can be "vuln", "license"',
+                                }),
+                              uniqueSeveritiesList: z
+                                .array(z.any())
+                                .exactOptional()
+                                .openapi({
+                                  description: 'A list of all severities in issue per projects',
+                                }),
+                              url: z
+                                .string()
+                                .openapi({
+                                  description:
+                                    'URL to a page containing information about the issue',
+                                }),
+                              version: z
+                                .string()
+                                .openapi({
+                                  description:
+                                    'The version of the package that the issue relates to',
+                                }),
+                            })
+                            .openapi({
+                              required: [
+                                'url',
+                                'id',
+                                'title',
+                                'type',
+                                'package',
+                                'version',
+                                'severity',
+                                'originalSeverity',
+                                'exploitMaturity',
+                              ],
+                            }),
+                          patchedDate: z
+                            .string()
+                            .exactOptional()
+                            .openapi({ description: 'The date that the issue was patched' }),
+                        })
+                        .openapi({ required: ['issue', 'isFixed', 'introducedDate'] }),
+                    )
                     .openapi({ required: ['issue', 'isFixed', 'introducedDate'] }),
                 )
                 .openapi({ description: 'A list of issues' }),

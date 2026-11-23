@@ -12,45 +12,24 @@ const IdTokenSchema = z.string().openapi('IdToken')
 
 const CreateTokenResponseSchema = z
   .object({
-    accessToken: AccessTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An opaque token to access IAM Identity Center resources assigned to a user.',
-        }),
-    ).exactOptional(),
-    tokenType: TokenTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Used to notify the client that the returned token is an access token. The supported type is <code>BearerToken</code>.',
-        }),
-    ).exactOptional(),
-    expiresIn: ExpirationInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates the time in seconds when an access token will expire.',
-        }),
-    ).exactOptional(),
-    refreshToken: RefreshTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Currently, <code>refreshToken</code> is not yet implemented and is not supported. For more information about the features and limitations of the current IAM Identity Center OIDC implementation, see <i>Considerations for Using this Guide</i> in the <a href="https://docs.aws.amazon.com/singlesignon/latest/OIDCAPIReference/Welcome.html">IAM Identity Center OIDC API Reference</a>.</p> <p>A token that, if present, can be used to refresh a previously issued access token that might have expired.</p>',
-        }),
-    ).exactOptional(),
-    idToken: IdTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Currently, <code>idToken</code> is not yet implemented and is not supported. For more information about the features and limitations of the current IAM Identity Center OIDC implementation, see <i>Considerations for Using this Guide</i> in the <a href="https://docs.aws.amazon.com/singlesignon/latest/OIDCAPIReference/Welcome.html">IAM Identity Center OIDC API Reference</a>.</p> <p>The identifier of the user that associated with the access token, if present.</p>',
-        }),
-    ).exactOptional(),
+    accessToken: AccessTokenSchema.exactOptional().openapi({
+      description: 'An opaque token to access IAM Identity Center resources assigned to a user.',
+    }),
+    tokenType: TokenTypeSchema.exactOptional().openapi({
+      description:
+        'Used to notify the client that the returned token is an access token. The supported type is <code>BearerToken</code>.',
+    }),
+    expiresIn: ExpirationInSecondsSchema.exactOptional().openapi({
+      description: 'Indicates the time in seconds when an access token will expire.',
+    }),
+    refreshToken: RefreshTokenSchema.exactOptional().openapi({
+      description:
+        '<p>Currently, <code>refreshToken</code> is not yet implemented and is not supported. For more information about the features and limitations of the current IAM Identity Center OIDC implementation, see <i>Considerations for Using this Guide</i> in the <a href="https://docs.aws.amazon.com/singlesignon/latest/OIDCAPIReference/Welcome.html">IAM Identity Center OIDC API Reference</a>.</p> <p>A token that, if present, can be used to refresh a previously issued access token that might have expired.</p>',
+    }),
+    idToken: IdTokenSchema.exactOptional().openapi({
+      description:
+        '<p>Currently, <code>idToken</code> is not yet implemented and is not supported. For more information about the features and limitations of the current IAM Identity Center OIDC implementation, see <i>Considerations for Using this Guide</i> in the <a href="https://docs.aws.amazon.com/singlesignon/latest/OIDCAPIReference/Welcome.html">IAM Identity Center OIDC API Reference</a>.</p> <p>The identifier of the user that associated with the access token, if present.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateTokenResponse')
@@ -89,44 +68,28 @@ const URISchema = z.string().openapi('URI')
 
 const RegisterClientResponseSchema = z
   .object({
-    clientId: ClientIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier string for each client. This client uses this identifier to get authenticated by the service in subsequent calls.',
-        }),
-    ).exactOptional(),
-    clientSecret: ClientSecretSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A secret string generated for the client. The client will use this string to get authenticated by the service in subsequent calls.',
-        }),
-    ).exactOptional(),
-    clientIdIssuedAt: LongTimeStampTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates the time at which the <code>clientId</code> and <code>clientSecret</code> were issued.',
-        }),
-    ).exactOptional(),
-    clientSecretExpiresAt: LongTimeStampTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates the time at which the <code>clientId</code> and <code>clientSecret</code> will become invalid.',
-        }),
-    ).exactOptional(),
-    authorizationEndpoint: URISchema.and(
-      z.any().openapi({ description: 'The endpoint where the client can request authorization.' }),
-    ).exactOptional(),
-    tokenEndpoint: URISchema.and(
-      z.any().openapi({ description: 'The endpoint where the client can get an access token.' }),
-    ).exactOptional(),
+    clientId: ClientIdSchema.exactOptional().openapi({
+      description:
+        'The unique identifier string for each client. This client uses this identifier to get authenticated by the service in subsequent calls.',
+    }),
+    clientSecret: ClientSecretSchema.exactOptional().openapi({
+      description:
+        'A secret string generated for the client. The client will use this string to get authenticated by the service in subsequent calls.',
+    }),
+    clientIdIssuedAt: LongTimeStampTypeSchema.exactOptional().openapi({
+      description:
+        'Indicates the time at which the <code>clientId</code> and <code>clientSecret</code> were issued.',
+    }),
+    clientSecretExpiresAt: LongTimeStampTypeSchema.exactOptional().openapi({
+      description:
+        'Indicates the time at which the <code>clientId</code> and <code>clientSecret</code> will become invalid.',
+    }),
+    authorizationEndpoint: URISchema.exactOptional().openapi({
+      description: 'The endpoint where the client can request authorization.',
+    }),
+    tokenEndpoint: URISchema.exactOptional().openapi({
+      description: 'The endpoint where the client can get an access token.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('RegisterClientResponse')
@@ -141,54 +104,30 @@ const IntervalInSecondsSchema = z.int().openapi('IntervalInSeconds')
 
 const StartDeviceAuthorizationResponseSchema = z
   .object({
-    deviceCode: DeviceCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The short-lived code that is used by the device when polling for a session token.',
-        }),
-    ).exactOptional(),
-    userCode: UserCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A one-time user verification code. This is needed to authorize an in-use device.',
-        }),
-    ).exactOptional(),
-    verificationUri: URISchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URI of the verification page that takes the <code>userCode</code> to authorize the device.',
-        }),
-    ).exactOptional(),
-    verificationUriComplete: URISchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An alternate URL that the client can use to automatically launch a browser. This process skips the manual step in which the user visits the verification page and enters their code.',
-        }),
-    ).exactOptional(),
-    expiresIn: ExpirationInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates the number of seconds in which the verification code will become invalid.',
-        }),
-    ).exactOptional(),
-    interval: IntervalInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates the number of seconds the client must wait between attempts when polling for a session.',
-        }),
-    ).exactOptional(),
+    deviceCode: DeviceCodeSchema.exactOptional().openapi({
+      description:
+        'The short-lived code that is used by the device when polling for a session token.',
+    }),
+    userCode: UserCodeSchema.exactOptional().openapi({
+      description:
+        'A one-time user verification code. This is needed to authorize an in-use device.',
+    }),
+    verificationUri: URISchema.exactOptional().openapi({
+      description:
+        'The URI of the verification page that takes the <code>userCode</code> to authorize the device.',
+    }),
+    verificationUriComplete: URISchema.exactOptional().openapi({
+      description:
+        'An alternate URL that the client can use to automatically launch a browser. This process skips the manual step in which the user visits the verification page and enters their code.',
+    }),
+    expiresIn: ExpirationInSecondsSchema.exactOptional().openapi({
+      description:
+        'Indicates the number of seconds in which the verification code will become invalid.',
+    }),
+    interval: IntervalInSecondsSchema.exactOptional().openapi({
+      description:
+        'Indicates the number of seconds the client must wait between attempts when polling for a session.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartDeviceAuthorizationResponse')
@@ -205,125 +144,71 @@ const ScopesSchema = z.array(ScopeSchema).openapi('Scopes')
 
 const CreateTokenRequestSchema = z
   .object({
-    clientId: ClientIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier string for each client. This value should come from the persisted result of the <a>RegisterClient</a> API.',
-        }),
-    ),
-    clientSecret: ClientSecretSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A secret string generated for the client. This value should come from the persisted result of the <a>RegisterClient</a> API.',
-        }),
-    ),
-    grantType: GrantTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Supports grant types for the authorization code, refresh token, and device code request. For device code requests, specify the following value:</p> <p> <code>urn:ietf:params:oauth:grant-type:<i>device_code</i> </code> </p> <p>For information about how to obtain the device code, see the <a>StartDeviceAuthorization</a> topic.</p>',
-        }),
-    ),
-    deviceCode: DeviceCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Used only when calling this API for the device code grant type. This short-term code is used to identify this authentication attempt. This should come from an in-memory reference to the result of the <a>StartDeviceAuthorization</a> API.',
-        }),
-    ).exactOptional(),
-    code: AuthCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The authorization code received from the authorization service. This parameter is required to perform an authorization grant request to get access to a token.',
-        }),
-    ).exactOptional(),
-    refreshToken: RefreshTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Currently, <code>refreshToken</code> is not yet implemented and is not supported. For more information about the features and limitations of the current IAM Identity Center OIDC implementation, see <i>Considerations for Using this Guide</i> in the <a href="https://docs.aws.amazon.com/singlesignon/latest/OIDCAPIReference/Welcome.html">IAM Identity Center OIDC API Reference</a>.</p> <p>The token used to obtain an access token in the event that the access token is invalid or expired.</p>',
-        }),
-    ).exactOptional(),
-    scope: ScopesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of scopes that is defined by the client. Upon authorization, this list is used to restrict permissions when granting an access token.',
-        }),
-    ).exactOptional(),
-    redirectUri: URISchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The location of the application that will receive the authorization code. Users authorize the service to send the request to this location.',
-        }),
-    ).exactOptional(),
+    clientId: ClientIdSchema.openapi({
+      description:
+        'The unique identifier string for each client. This value should come from the persisted result of the <a>RegisterClient</a> API.',
+    }),
+    clientSecret: ClientSecretSchema.openapi({
+      description:
+        'A secret string generated for the client. This value should come from the persisted result of the <a>RegisterClient</a> API.',
+    }),
+    grantType: GrantTypeSchema.openapi({
+      description:
+        '<p>Supports grant types for the authorization code, refresh token, and device code request. For device code requests, specify the following value:</p> <p> <code>urn:ietf:params:oauth:grant-type:<i>device_code</i> </code> </p> <p>For information about how to obtain the device code, see the <a>StartDeviceAuthorization</a> topic.</p>',
+    }),
+    deviceCode: DeviceCodeSchema.exactOptional().openapi({
+      description:
+        'Used only when calling this API for the device code grant type. This short-term code is used to identify this authentication attempt. This should come from an in-memory reference to the result of the <a>StartDeviceAuthorization</a> API.',
+    }),
+    code: AuthCodeSchema.exactOptional().openapi({
+      description:
+        'The authorization code received from the authorization service. This parameter is required to perform an authorization grant request to get access to a token.',
+    }),
+    refreshToken: RefreshTokenSchema.exactOptional().openapi({
+      description:
+        '<p>Currently, <code>refreshToken</code> is not yet implemented and is not supported. For more information about the features and limitations of the current IAM Identity Center OIDC implementation, see <i>Considerations for Using this Guide</i> in the <a href="https://docs.aws.amazon.com/singlesignon/latest/OIDCAPIReference/Welcome.html">IAM Identity Center OIDC API Reference</a>.</p> <p>The token used to obtain an access token in the event that the access token is invalid or expired.</p>',
+    }),
+    scope: ScopesSchema.exactOptional().openapi({
+      description:
+        'The list of scopes that is defined by the client. Upon authorization, this list is used to restrict permissions when granting an access token.',
+    }),
+    redirectUri: URISchema.exactOptional().openapi({
+      description:
+        'The location of the application that will receive the authorization code. Users authorize the service to send the request to this location.',
+    }),
   })
   .openapi({ required: ['clientId', 'clientSecret', 'grantType'], title: 'CreateTokenRequest' })
   .openapi('CreateTokenRequest')
 
 const RegisterClientRequestSchema = z
   .object({
-    clientName: ClientNameSchema.and(
-      z.any().openapi({ description: 'The friendly name of the client.' }),
-    ),
-    clientType: ClientTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of client. The service supports only <code>public</code> as a client type. Anything other than public will be rejected by the service.',
-        }),
-    ),
-    scopes: ScopesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of scopes that are defined by the client. Upon authorization, this list is used to restrict permissions when granting an access token.',
-        }),
-    ).exactOptional(),
+    clientName: ClientNameSchema.openapi({ description: 'The friendly name of the client.' }),
+    clientType: ClientTypeSchema.openapi({
+      description:
+        'The type of client. The service supports only <code>public</code> as a client type. Anything other than public will be rejected by the service.',
+    }),
+    scopes: ScopesSchema.exactOptional().openapi({
+      description:
+        'The list of scopes that are defined by the client. Upon authorization, this list is used to restrict permissions when granting an access token.',
+    }),
   })
   .openapi({ required: ['clientName', 'clientType'], title: 'RegisterClientRequest' })
   .openapi('RegisterClientRequest')
 
 const StartDeviceAuthorizationRequestSchema = z
   .object({
-    clientId: ClientIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier string for the client that is registered with IAM Identity Center. This value should come from the persisted result of the <a>RegisterClient</a> API operation.',
-        }),
-    ),
-    clientSecret: ClientSecretSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A secret string that is generated for the client. This value should come from the persisted result of the <a>RegisterClient</a> API operation.',
-        }),
-    ),
-    startUrl: URISchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL for the AWS access portal. For more information, see <a href="https://docs.aws.amazon.com/singlesignon/latest/userguide/using-the-portal.html">Using the AWS access portal</a> in the <i>IAM Identity Center User Guide</i>.',
-        }),
-    ),
+    clientId: ClientIdSchema.openapi({
+      description:
+        'The unique identifier string for the client that is registered with IAM Identity Center. This value should come from the persisted result of the <a>RegisterClient</a> API operation.',
+    }),
+    clientSecret: ClientSecretSchema.openapi({
+      description:
+        'A secret string that is generated for the client. This value should come from the persisted result of the <a>RegisterClient</a> API operation.',
+    }),
+    startUrl: URISchema.openapi({
+      description:
+        'The URL for the AWS access portal. For more information, see <a href="https://docs.aws.amazon.com/singlesignon/latest/userguide/using-the-portal.html">Using the AWS access portal</a> in the <i>IAM Identity Center User Guide</i>.',
+    }),
   })
   .openapi({
     required: ['clientId', 'clientSecret', 'startUrl'],

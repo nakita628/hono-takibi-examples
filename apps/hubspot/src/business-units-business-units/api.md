@@ -23,12 +23,6 @@ Base URLs:
 |---|---|
 |business_units_view.read||
 
-* API Key (private_apps)
-    - Parameter Name: **private-app**, in: header.
-
-* API Key (private_apps_legacy)
-    - Parameter Name: **private-app-legacy**, in: header.
-
 <h1 id="business-units-basic">Basic</h1>
 
 ## Retrieve brands by associated user

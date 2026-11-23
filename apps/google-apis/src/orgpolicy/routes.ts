@@ -157,8 +157,40 @@ const GoogleCloudOrgpolicyV2AlternatePolicySpecSchema = z
   })
   .openapi('GoogleCloudOrgpolicyV2AlternatePolicySpec')
 
+const GoogleCloudOrgpolicyV2PolicySchema = z
+  .object({
+    alternate: GoogleCloudOrgpolicyV2AlternatePolicySpecSchema.exactOptional().openapi({
+      description: 'Deprecated.',
+    }),
+    dryRunSpec: GoogleCloudOrgpolicyV2PolicySpecSchema.exactOptional().openapi({
+      description:
+        "Dry-run policy. Audit-only policy, can be used to monitor how the policy would have impacted the existing and future resources if it's enforced.",
+    }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Immutable. The resource name of the policy. Must be one of the following forms, where constraint_name is the name of the constraint which this policy configures: * `projects/{project_number}/policies/{constraint_name}` * `folders/{folder_id}/policies/{constraint_name}` * `organizations/{organization_id}/policies/{constraint_name}` For example, "projects/123/policies/compute.disableSerialPortAccess". Note: `projects/{project_id}/policies/{constraint_name}` is also an acceptable name for API requests, but responses will return the name using the equivalent project number.',
+      }),
+    spec: GoogleCloudOrgpolicyV2PolicySpecSchema.exactOptional().openapi({
+      description: 'Basic information about the Organization Policy.',
+    }),
+  })
+  .openapi({
+    description:
+      'Defines an organization policy which is used to specify constraints for configurations of Google Cloud resources.',
+    required: [],
+  })
+  .openapi('GoogleCloudOrgpolicyV2Policy')
+
+type GoogleCloudOrgpolicyV2ListPoliciesResponseType = {
+  nextPageToken?: string
+  policies?: z.infer<typeof GoogleCloudOrgpolicyV2PolicySchema>[]
+}
+
 const GoogleCloudOrgpolicyV2ConstraintBooleanConstraintSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A constraint that is either enforced or not. For example, a constraint `constraints/compute.disableSerialPortAccess`. If it is enforced on a VM instance, serial port connections will not be opened to that instance.',
@@ -337,59 +369,33 @@ const GoogleCloudOrgpolicyV2ListCustomConstraintsResponseSchema = z
   })
   .openapi('GoogleCloudOrgpolicyV2ListCustomConstraintsResponse')
 
-const GoogleCloudOrgpolicyV2PolicySchema = z
-  .object({
-    alternate: GoogleCloudOrgpolicyV2AlternatePolicySpecSchema.exactOptional().openapi({
-      description: 'Deprecated.',
-    }),
-    dryRunSpec: GoogleCloudOrgpolicyV2PolicySpecSchema.exactOptional().openapi({
+const GoogleCloudOrgpolicyV2ListPoliciesResponseSchema: z.ZodType<GoogleCloudOrgpolicyV2ListPoliciesResponseType> =
+  z
+    .object({
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Page token used to retrieve the next page. This is currently not used, but the server may at any point start supplying a valid token.',
+        }),
+      policies: z
+        .array(GoogleCloudOrgpolicyV2PolicySchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'All policies that exist on the resource. It will be empty if no policies are set.',
+        }),
+    })
+    .openapi({
       description:
-        "Dry-run policy. Audit-only policy, can be used to monitor how the policy would have impacted the existing and future resources if it's enforced.",
-    }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Immutable. The resource name of the policy. Must be one of the following forms, where constraint_name is the name of the constraint which this policy configures: * `projects/{project_number}/policies/{constraint_name}` * `folders/{folder_id}/policies/{constraint_name}` * `organizations/{organization_id}/policies/{constraint_name}` For example, "projects/123/policies/compute.disableSerialPortAccess". Note: `projects/{project_id}/policies/{constraint_name}` is also an acceptable name for API requests, but responses will return the name using the equivalent project number.',
-      }),
-    spec: GoogleCloudOrgpolicyV2PolicySpecSchema.exactOptional().openapi({
-      description: 'Basic information about the Organization Policy.',
-    }),
-  })
-  .openapi({
-    description:
-      'Defines an organization policy which is used to specify constraints for configurations of Google Cloud resources.',
-    required: [],
-  })
-  .openapi('GoogleCloudOrgpolicyV2Policy')
-
-const GoogleCloudOrgpolicyV2ListPoliciesResponseSchema = z
-  .object({
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Page token used to retrieve the next page. This is currently not used, but the server may at any point start supplying a valid token.',
-      }),
-    policies: z
-      .array(GoogleCloudOrgpolicyV2PolicySchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'All policies that exist on the resource. It will be empty if no policies are set.',
-      }),
-  })
-  .openapi({
-    description:
-      'The response returned from the ListPolicies method. It will be empty if no policies are set on the resource.',
-    required: [],
-  })
-  .openapi('GoogleCloudOrgpolicyV2ListPoliciesResponse')
+        'The response returned from the ListPolicies method. It will be empty if no policies are set on the resource.',
+      required: [],
+    })
+    .openapi('GoogleCloudOrgpolicyV2ListPoliciesResponse')
 
 const GoogleProtobufEmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',

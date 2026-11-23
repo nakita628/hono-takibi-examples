@@ -1,73 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const CompactCustomPolicyResponseSchema = z
-  .object({
-    customPolicyId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique custom policy identifier for the policy being returned.<br/><br/><span class="tablenote"><strong>Note:</strong> This value is automatically assigned by the system when the policy is created.</span>',
-      }),
-    label: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Customer-facing label shown on View Item pages for items to which the policy applies. This seller-defined string is displayed as a system-generated hyperlink pointing to detailed policy information.<br/><br/><b>Max length:</b> 65',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The seller-defined name for the custom policy. Names must be unique for policies assigned to the same seller, policy type, and eBay marketplace.<br /><span class="tablenote"><strong>Note:</strong> This field is visible only to the seller. </span><br /><br /><b>Max length:</b> 65',
-      }),
-    policyType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Specifies the type of Custom Policy being returned. <br/><br/>Two Custom Policy types are supported: <ul><li>Product Compliance (PRODUCT_COMPLIANCE)</li> <li>Takeback (TAKE_BACK)</li></ul> For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/account/types/api:CustomPolicyTypeEnum'>eBay API documentation</a>",
-      }),
-  })
-  .openapi({
-    description: 'The response payload for requests that return a list of custom policies.',
-    required: [],
-  })
-  .openapi('CompactCustomPolicyResponse')
-
-type CustomPolicyResponseType = {
-  customPolicies?: z.infer<typeof CompactCustomPolicyResponseSchema>[]
-  href?: string
-  limit?: number
-  next?: string
-  offset?: number
-  prev?: string
-  total?: number
-}
-
-const AmountSchema = z
-  .object({
-    currency: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The base currency applied to the <b>value</b> field to establish a monetary amount.  <br/><br/>The currency is represented as a 3-letter <a href="https://www.iso.org/iso-4217-currency-codes.html " title="https://www.iso.org " target="_blank">ISO 4217</a> currency code. For example, the code for the Canadian Dollar is <code>CAD</code>.<br/><br/><b>Default:</b> The default currency of the eBay marketplace that hosts the listing. For implementation help, refer to <a href=\'https://developer.ebay.com/api-docs/sell/account/types/ba:CurrencyCodeEnum\'>eBay API documentation</a>',
-      }),
-    value: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The monetary amount in the specified <b>currency</b>.' }),
-  })
-  .openapi({
-    description:
-      'A complex type that describes the value of a monetary amount as represented by a global currency. When passing in an amount in a request payload, both <b>currency</b> and <b>value</b> fields are required, and both fields are also always returned for an amount in a response field.',
-    required: [],
-  })
-  .openapi('Amount')
-
 const CategoryTypeSchema = z
   .object({
     default: z
@@ -92,155 +24,6 @@ const CategoryTypeSchema = z
   })
   .openapi('CategoryType')
 
-const CustomPolicySchema = z
-  .object({
-    customPolicyId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique custom policy identifier for a policy.<br/><br/><span class="tablenote"><strong>Note:</strong> This value is automatically assigned by the system when the policy is created.</span>',
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Details of the seller's specific policy and terms associated with the policy. Buyers access this information from the View Item page for items to which the policy has been applied.<br/><br/><b>Max length:</b> 15,000",
-      }),
-    label: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Customer-facing label shown on View Item pages for items to which the policy applies. This seller-defined string is displayed as a system-generated hyperlink pointing to detailed policy information.<br/><br/><b>Max length:</b> 65',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The seller-defined name for the custom policy. Names must be unique for policies assigned to the same seller, policy type, and eBay marketplace.<br /><span class="tablenote"><strong>Note:</strong> This field is visible only to the seller. </span><br/><br/><b>Max length:</b> 65',
-      }),
-    policyType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Specifies the type of Custom Policy. <br/><br/>Two Custom Policy types are supported: <ul><li>Product Compliance (PRODUCT_COMPLIANCE)</li> <li>Takeback (TAKE_BACK)</li></ul> For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/account/types/api:CustomPolicyTypeEnum'>eBay API documentation</a>",
-      }),
-  })
-  .openapi({
-    description:
-      "This container defines a seller's custom policy identified by policy ID for the selected eBay marketplace. A successful call returns the requested policy information.",
-    required: [],
-  })
-  .openapi('CustomPolicy')
-
-const CustomPolicyCreateRequestSchema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Details of the seller's specific policy and terms for this policy.<br/><br/><b>Max length:</b> 15,000",
-      }),
-    label: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Customer-facing label shown on View Item pages for items to which the policy applies. This seller-defined string is displayed as a system-generated hyperlink pointing to detailed policy information.<br/><br/><b>Max length:</b> 65',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The seller-defined name for the custom policy. Names must be unique for policies assigned to the same seller, policy type, and eBay marketplace.<br /><span class="tablenote"><strong>Note:</strong> This field is visible only to the seller. </span><br/><br/><b>Max length:</b> 65',
-      }),
-    policyType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Specifies the type of custom policy being created. <br/><br/>Two Custom Policy types are supported: <ul><li>Product Compliance (PRODUCT_COMPLIANCE)</li> <li>Takeback (TAKE_BACK)</li></ul> For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/account/types/api:CustomPolicyTypeEnum'>eBay API documentation</a>",
-      }),
-  })
-  .openapi({
-    description:
-      'This type is used by the request payload of the createCustomPolicy method to define a new custom policy for a specific marketplace.',
-    required: [],
-  })
-  .openapi('CustomPolicyCreateRequest')
-
-const CustomPolicyRequestSchema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Details of the seller's specific policy and terms for this policy.<br/><br/><b>Max length:</b> 15,000",
-      }),
-    label: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Customer-facing label shown on View Item pages for items to which the policy applies. This seller-defined string is displayed as a system-generated hyperlink pointing to detailed policy information.<br/><br/><b>Max length:</b> 65',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The seller-defined name for the custom policy. Names must be unique for policies assigned to the same seller, policy type, and eBay marketplace.<br /><span class="tablenote"><strong>Note:</strong> This field is visible only to the seller. </span><br/><br/><b>Max length:</b> 65',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('CustomPolicyRequest')
-
-const CustomPolicyResponseSchema: z.ZodType<CustomPolicyResponseType> = z
-  .lazy(() =>
-    z
-      .object({
-        customPolicies: z
-          .array(CompactCustomPolicyResponseSchema)
-          .exactOptional()
-          .openapi({
-            description: 'This array contains the custom policies that match the input criteria.',
-          }),
-        href: z
-          .string()
-          .exactOptional()
-          .openapi({ description: '<i>This field is for future use.</i>' }),
-        limit: z
-          .int32()
-          .exactOptional()
-          .openapi({ description: '<i>This field is for future use.</i>' }),
-        next: z
-          .string()
-          .exactOptional()
-          .openapi({ description: '<i>This field is for future use.</i>' }),
-        offset: z
-          .int32()
-          .exactOptional()
-          .openapi({ description: '<i>This field is for future use.</i>' }),
-        prev: z
-          .string()
-          .exactOptional()
-          .openapi({ description: '<i>This field is for future use.</i>' }),
-        total: z
-          .int32()
-          .exactOptional()
-          .openapi({ description: '<i>This field is for future use.</i>' }),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('CustomPolicyResponse')
-
 const TimeDurationSchema = z
   .object({
     unit: z
@@ -264,177 +47,6 @@ const TimeDurationSchema = z
     required: [],
   })
   .openapi('TimeDuration')
-
-const RecipientAccountReferenceSchema = z
-  .object({
-    referenceId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          '<span class="tablenote"><b>Note</b>: DO NOT USE THIS FIELD. eBay now controls all electronic payment methods available for a marketplace, and a seller never has to specify any electronic payment methods.</span>',
-      }),
-    referenceType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          '<span class="tablenote"><b>Note</b>: DO NOT USE THIS FIELD. eBay now controls all electronic payment methods available for a marketplace, and a seller never has to specify any electronic payment methods.</span> For implementation help, refer to <a href=\'https://developer.ebay.com/api-docs/sell/account/types/api:RecipientAccountReferenceTypeEnum\'>eBay API documentation</a>',
-      }),
-  })
-  .openapi({
-    description:
-      '<span class="tablenote"><b>Note</b>: This type is no longer applicable. eBay now controls all electronic payment methods available for a marketplace, and a seller never has to specify any electronic payment methods.</span>',
-    required: [],
-  })
-  .openapi('RecipientAccountReference')
-
-const PaymentMethodSchema = z
-  .object({
-    brands: z
-      .array(
-        z
-          .string()
-          .openapi({
-            description:
-              " For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/account/types/api:PaymentInstrumentBrandEnum'>eBay API documentation</a>",
-          }),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          '<span class="tablenote"><b>Note</b>: This array is no longer applicable and should not be used. eBay now controls all electronic payment methods available for a marketplace, and a seller never has to specify any electronic payment methods, including any credit card brands accepted. </span>',
-      }),
-    paymentMethodType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "eBay now controls all electronic payment methods available for a marketplace, so only offline payment method enum values may be used in this field, and offline payment methods will only be applicable to listings that require or support offline payments. See the <b>PaymentMethodTypeEnum</b> type for supported offline payment method enum values. </p> For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/account/types/api:PaymentMethodTypeEnum'>eBay API documentation</a>",
-      }),
-    recipientAccountReference: RecipientAccountReferenceSchema.exactOptional().openapi({
-      description:
-        '<span class="tablenote"><b>Note</b>: This container is no longer applicable and should not be used. eBay now controls all electronic payment methods available for a marketplace, and a seller never has to specify any electronic payment methods, including PayPal. </span>',
-    }),
-  })
-  .openapi({
-    description:
-      'This type is used by the <b>paymentMethods</b> container, which is used by the seller to specify one or more offline payment methods. <br /><br /> <span class="tablenote"><b>Note</b>: eBay now controls all electronic payment methods available for a marketplace, so a seller will no longer use this type to specify any electronic payment methods.</span>',
-    required: [],
-  })
-  .openapi('PaymentMethod')
-
-const DepositSchema = z
-  .object({
-    amount: AmountSchema.exactOptional().openapi({
-      description:
-        'This value indicates the initial deposit amount required from the buyer in order to purchase a motor vehicle. This value can be as high as $2,000.00 if immediate payment is not required, and up to $500.00 if immediate payment is required.<br/><br/><b>Max</b>: <code>2000.0</code>',
-    }),
-    dueIn: TimeDurationSchema.exactOptional().openapi({
-      description:
-        'This value indicates the number of hours that the buyer has (after they commit to buy) to pay the initial deposit on a motor vehicle. Valid <b>dueIn</b> times are 24, 48, and 72 hours. <code>HOUR</code> is set as the <b>unit</b> value, and <code>24</code>, <code>48</code> or <code>72</code> are set in the <b>value</b> field.<br /><br /><span class="tablenote"><b>Note</b>: The <b>dueIn</b> value is overridden if the seller has set the motor vehicle listing to require immediate payment. If the listing requires immediate payment, the buyer must pay the deposit immediately in order to be eligible to purchase the motor vehicle.</span><br/><br/><b>Min</b>=24 (hours)<b>Max</b>=72 (hours), <b>Default</b>=48 (hours)',
-    }),
-    paymentMethods: z
-      .array(PaymentMethodSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'This array is no longer applicable and should not be used since eBay now manages the electronic payment options available to buyers to pay the deposit.',
-      }),
-  })
-  .openapi({
-    description:
-      'This type is used to specify/indicate that an initial deposit is required for a motor vehicle listing.',
-    required: [],
-  })
-  .openapi('Deposit')
-
-const ErrorParameterSchema = z
-  .object({
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Name of the parameter that caused the error.' }),
-    value: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The value of the parameter that caused the error.' }),
-  })
-  .openapi({
-    description:
-      'A complex type that indicates a parameter that caused an error and the value of the parameter which caused the error.',
-    required: [],
-  })
-  .openapi('ErrorParameter')
-
-const ErrorSchema = z
-  .object({
-    category: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The category type for this error or warning. It is a string that can have one of three values:<ul><li><code>Application</code>: Indicates an exception or error occurred in the application code or at runtime. Examples include catching an exception in a service\'s business logic, system failures, or request errors from a dependency.</li><li><code>Business</code>: Used when your service or a dependent service refused to continue processing on the resource because of a business rule violation such as "Seller does not ship item to Antarctica" or "Buyer ineligible to purchase an alcoholic item". Business errors are not syntactical input errors.</li><li><code>Request</code>: Used when there is anything wrong with the request, such as authentication, syntactical errors, rate limiting or missing headers, bad HTTP header values, and so on.</li></ul>',
-      }),
-    domain: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Name of the domain ,or primary system, of the service or application where the error occurred.',
-      }),
-    errorId: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'A positive integer that uniquely identifies the specific error condition that occurred. Your application can use error codes as identifiers in your customized error-handling algorithms.',
-      }),
-    inputRefIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          "Identifies specific request elements associated with the error, if any. inputRefId's response is format specific. For JSON, use <i>JSONPath</i> notation.",
-      }),
-    longMessage: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A more detailed explanation of the error than given in the <code>message</code> error field.',
-      }),
-    message: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Information on how to correct the problem, in the end user's terms and language where applicable. Its value is at most 50 characters long. If applicable, the value is localized in the end user's requested locale.",
-      }),
-    outputRefIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies specific response elements associated with the error, if any. Path format is the same as <code>inputRefId</code>.',
-      }),
-    parameters: z
-      .array(ErrorParameterSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'This optional list of name/value pairs that contain context-specific <code>ErrorParameter</code> objects, with each item in the list being a parameter (or input field name) that caused an error condition. Each <code>ErrorParameter</code> object consists of two fields, a <code>name</code> and a <code>value</code>.',
-      }),
-    subdomain: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'If present, indicates the subsystem in which the error occurred.' }),
-  })
-  .openapi({
-    description: 'A container that defines the elements of error and warning messages.',
-    required: [],
-  })
-  .openapi('Error')
 
 const RegionSchema = z
   .object({
@@ -483,6 +95,27 @@ const RegionSetSchema = z
     required: [],
   })
   .openapi('RegionSet')
+
+const AmountSchema = z
+  .object({
+    currency: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The base currency applied to the <b>value</b> field to establish a monetary amount.  <br/><br/>The currency is represented as a 3-letter <a href="https://www.iso.org/iso-4217-currency-codes.html " title="https://www.iso.org " target="_blank">ISO 4217</a> currency code. For example, the code for the Canadian Dollar is <code>CAD</code>.<br/><br/><b>Default:</b> The default currency of the eBay marketplace that hosts the listing. For implementation help, refer to <a href=\'https://developer.ebay.com/api-docs/sell/account/types/ba:CurrencyCodeEnum\'>eBay API documentation</a>',
+      }),
+    value: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The monetary amount in the specified <b>currency</b>.' }),
+  })
+  .openapi({
+    description:
+      'A complex type that describes the value of a monetary amount as represented by a global currency. When passing in an amount in a request payload, both <b>currency</b> and <b>value</b> fields are required, and both fields are also always returned for an amount in a response field.',
+    required: [],
+  })
+  .openapi('Amount')
 
 const ShippingServiceSchema = z
   .object({
@@ -623,7 +256,36 @@ const ShippingOptionSchema = z
   })
   .openapi('ShippingOption')
 
-const FulfillmentPolicySchema = z
+type FulfillmentPolicyType = {
+  categoryTypes?: z.infer<typeof CategoryTypeSchema>[]
+  description?: string
+  freightShipping?: boolean
+  fulfillmentPolicyId?: string
+  globalShipping?: boolean
+  handlingTime?: z.infer<typeof TimeDurationSchema>
+  localPickup?: boolean
+  marketplaceId?: string
+  name?: string
+  pickupDropOff?: boolean
+  shipToLocations?: z.infer<typeof RegionSetSchema>
+  shippingOptions?: z.infer<typeof ShippingOptionSchema>[]
+}
+
+type FulfillmentPolicyRequestType = {
+  categoryTypes?: z.infer<typeof CategoryTypeSchema>[]
+  description?: string
+  freightShipping?: boolean
+  globalShipping?: boolean
+  handlingTime?: z.infer<typeof TimeDurationSchema>
+  localPickup?: boolean
+  marketplaceId?: string
+  name?: string
+  pickupDropOff?: boolean
+  shipToLocations?: z.infer<typeof RegionSetSchema>
+  shippingOptions?: z.infer<typeof ShippingOptionSchema>[]
+}
+
+const FulfillmentPolicySchema: z.ZodType<FulfillmentPolicyType> = z
   .object({
     categoryTypes: z
       .array(CategoryTypeSchema)
@@ -710,7 +372,387 @@ const FulfillmentPolicySchema = z
   })
   .openapi('FulfillmentPolicy')
 
-const FulfillmentPolicyRequestSchema = z
+type FulfillmentPolicyResponseType = {
+  fulfillmentPolicies?: z.infer<typeof FulfillmentPolicySchema>[]
+  href?: string
+  limit?: number
+  next?: string
+  offset?: number
+  prev?: string
+  total?: number
+}
+
+const ErrorParameterSchema = z
+  .object({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name of the parameter that caused the error.' }),
+    value: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The value of the parameter that caused the error.' }),
+  })
+  .openapi({
+    description:
+      'A complex type that indicates a parameter that caused an error and the value of the parameter which caused the error.',
+    required: [],
+  })
+  .openapi('ErrorParameter')
+
+const ErrorSchema = z
+  .object({
+    category: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The category type for this error or warning. It is a string that can have one of three values:<ul><li><code>Application</code>: Indicates an exception or error occurred in the application code or at runtime. Examples include catching an exception in a service\'s business logic, system failures, or request errors from a dependency.</li><li><code>Business</code>: Used when your service or a dependent service refused to continue processing on the resource because of a business rule violation such as "Seller does not ship item to Antarctica" or "Buyer ineligible to purchase an alcoholic item". Business errors are not syntactical input errors.</li><li><code>Request</code>: Used when there is anything wrong with the request, such as authentication, syntactical errors, rate limiting or missing headers, bad HTTP header values, and so on.</li></ul>',
+      }),
+    domain: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Name of the domain ,or primary system, of the service or application where the error occurred.',
+      }),
+    errorId: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'A positive integer that uniquely identifies the specific error condition that occurred. Your application can use error codes as identifiers in your customized error-handling algorithms.',
+      }),
+    inputRefIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "Identifies specific request elements associated with the error, if any. inputRefId's response is format specific. For JSON, use <i>JSONPath</i> notation.",
+      }),
+    longMessage: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A more detailed explanation of the error than given in the <code>message</code> error field.',
+      }),
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Information on how to correct the problem, in the end user's terms and language where applicable. Its value is at most 50 characters long. If applicable, the value is localized in the end user's requested locale.",
+      }),
+    outputRefIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies specific response elements associated with the error, if any. Path format is the same as <code>inputRefId</code>.',
+      }),
+    parameters: z
+      .array(ErrorParameterSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'This optional list of name/value pairs that contain context-specific <code>ErrorParameter</code> objects, with each item in the list being a parameter (or input field name) that caused an error condition. Each <code>ErrorParameter</code> object consists of two fields, a <code>name</code> and a <code>value</code>.',
+      }),
+    subdomain: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'If present, indicates the subsystem in which the error occurred.' }),
+  })
+  .openapi({
+    description: 'A container that defines the elements of error and warning messages.',
+    required: [],
+  })
+  .openapi('Error')
+
+type SetFulfillmentPolicyResponseType = {
+  categoryTypes?: z.infer<typeof CategoryTypeSchema>[]
+  description?: string
+  freightShipping?: boolean
+  fulfillmentPolicyId?: string
+  globalShipping?: boolean
+  handlingTime?: z.infer<typeof TimeDurationSchema>
+  localPickup?: boolean
+  marketplaceId?: string
+  name?: string
+  pickupDropOff?: boolean
+  shipToLocations?: z.infer<typeof RegionSetSchema>
+  shippingOptions?: z.infer<typeof ShippingOptionSchema>[]
+  warnings?: z.infer<typeof ErrorSchema>[]
+}
+
+const CompactCustomPolicyResponseSchema = z
+  .object({
+    customPolicyId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique custom policy identifier for the policy being returned.<br/><br/><span class="tablenote"><strong>Note:</strong> This value is automatically assigned by the system when the policy is created.</span>',
+      }),
+    label: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Customer-facing label shown on View Item pages for items to which the policy applies. This seller-defined string is displayed as a system-generated hyperlink pointing to detailed policy information.<br/><br/><b>Max length:</b> 65',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The seller-defined name for the custom policy. Names must be unique for policies assigned to the same seller, policy type, and eBay marketplace.<br /><span class="tablenote"><strong>Note:</strong> This field is visible only to the seller. </span><br /><br /><b>Max length:</b> 65',
+      }),
+    policyType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Specifies the type of Custom Policy being returned. <br/><br/>Two Custom Policy types are supported: <ul><li>Product Compliance (PRODUCT_COMPLIANCE)</li> <li>Takeback (TAKE_BACK)</li></ul> For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/account/types/api:CustomPolicyTypeEnum'>eBay API documentation</a>",
+      }),
+  })
+  .openapi({
+    description: 'The response payload for requests that return a list of custom policies.',
+    required: [],
+  })
+  .openapi('CompactCustomPolicyResponse')
+
+const CustomPolicySchema = z
+  .object({
+    customPolicyId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique custom policy identifier for a policy.<br/><br/><span class="tablenote"><strong>Note:</strong> This value is automatically assigned by the system when the policy is created.</span>',
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Details of the seller's specific policy and terms associated with the policy. Buyers access this information from the View Item page for items to which the policy has been applied.<br/><br/><b>Max length:</b> 15,000",
+      }),
+    label: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Customer-facing label shown on View Item pages for items to which the policy applies. This seller-defined string is displayed as a system-generated hyperlink pointing to detailed policy information.<br/><br/><b>Max length:</b> 65',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The seller-defined name for the custom policy. Names must be unique for policies assigned to the same seller, policy type, and eBay marketplace.<br /><span class="tablenote"><strong>Note:</strong> This field is visible only to the seller. </span><br/><br/><b>Max length:</b> 65',
+      }),
+    policyType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Specifies the type of Custom Policy. <br/><br/>Two Custom Policy types are supported: <ul><li>Product Compliance (PRODUCT_COMPLIANCE)</li> <li>Takeback (TAKE_BACK)</li></ul> For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/account/types/api:CustomPolicyTypeEnum'>eBay API documentation</a>",
+      }),
+  })
+  .openapi({
+    description:
+      "This container defines a seller's custom policy identified by policy ID for the selected eBay marketplace. A successful call returns the requested policy information.",
+    required: [],
+  })
+  .openapi('CustomPolicy')
+
+const CustomPolicyCreateRequestSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Details of the seller's specific policy and terms for this policy.<br/><br/><b>Max length:</b> 15,000",
+      }),
+    label: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Customer-facing label shown on View Item pages for items to which the policy applies. This seller-defined string is displayed as a system-generated hyperlink pointing to detailed policy information.<br/><br/><b>Max length:</b> 65',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The seller-defined name for the custom policy. Names must be unique for policies assigned to the same seller, policy type, and eBay marketplace.<br /><span class="tablenote"><strong>Note:</strong> This field is visible only to the seller. </span><br/><br/><b>Max length:</b> 65',
+      }),
+    policyType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Specifies the type of custom policy being created. <br/><br/>Two Custom Policy types are supported: <ul><li>Product Compliance (PRODUCT_COMPLIANCE)</li> <li>Takeback (TAKE_BACK)</li></ul> For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/account/types/api:CustomPolicyTypeEnum'>eBay API documentation</a>",
+      }),
+  })
+  .openapi({
+    description:
+      'This type is used by the request payload of the createCustomPolicy method to define a new custom policy for a specific marketplace.',
+    required: [],
+  })
+  .openapi('CustomPolicyCreateRequest')
+
+const CustomPolicyRequestSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Details of the seller's specific policy and terms for this policy.<br/><br/><b>Max length:</b> 15,000",
+      }),
+    label: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Customer-facing label shown on View Item pages for items to which the policy applies. This seller-defined string is displayed as a system-generated hyperlink pointing to detailed policy information.<br/><br/><b>Max length:</b> 65',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The seller-defined name for the custom policy. Names must be unique for policies assigned to the same seller, policy type, and eBay marketplace.<br /><span class="tablenote"><strong>Note:</strong> This field is visible only to the seller. </span><br/><br/><b>Max length:</b> 65',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('CustomPolicyRequest')
+
+const CustomPolicyResponseSchema = z
+  .object({
+    customPolicies: z
+      .array(CompactCustomPolicyResponseSchema)
+      .exactOptional()
+      .openapi({
+        description: 'This array contains the custom policies that match the input criteria.',
+      }),
+    href: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '<i>This field is for future use.</i>' }),
+    limit: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: '<i>This field is for future use.</i>' }),
+    next: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '<i>This field is for future use.</i>' }),
+    offset: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: '<i>This field is for future use.</i>' }),
+    prev: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '<i>This field is for future use.</i>' }),
+    total: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: '<i>This field is for future use.</i>' }),
+  })
+  .openapi({ required: [] })
+  .openapi('CustomPolicyResponse')
+
+const RecipientAccountReferenceSchema = z
+  .object({
+    referenceId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          '<span class="tablenote"><b>Note</b>: DO NOT USE THIS FIELD. eBay now controls all electronic payment methods available for a marketplace, and a seller never has to specify any electronic payment methods.</span>',
+      }),
+    referenceType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          '<span class="tablenote"><b>Note</b>: DO NOT USE THIS FIELD. eBay now controls all electronic payment methods available for a marketplace, and a seller never has to specify any electronic payment methods.</span> For implementation help, refer to <a href=\'https://developer.ebay.com/api-docs/sell/account/types/api:RecipientAccountReferenceTypeEnum\'>eBay API documentation</a>',
+      }),
+  })
+  .openapi({
+    description:
+      '<span class="tablenote"><b>Note</b>: This type is no longer applicable. eBay now controls all electronic payment methods available for a marketplace, and a seller never has to specify any electronic payment methods.</span>',
+    required: [],
+  })
+  .openapi('RecipientAccountReference')
+
+const PaymentMethodSchema = z
+  .object({
+    brands: z
+      .array(
+        z
+          .string()
+          .openapi({
+            description:
+              " For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/account/types/api:PaymentInstrumentBrandEnum'>eBay API documentation</a>",
+          }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          '<span class="tablenote"><b>Note</b>: This array is no longer applicable and should not be used. eBay now controls all electronic payment methods available for a marketplace, and a seller never has to specify any electronic payment methods, including any credit card brands accepted. </span>',
+      }),
+    paymentMethodType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "eBay now controls all electronic payment methods available for a marketplace, so only offline payment method enum values may be used in this field, and offline payment methods will only be applicable to listings that require or support offline payments. See the <b>PaymentMethodTypeEnum</b> type for supported offline payment method enum values. </p> For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/account/types/api:PaymentMethodTypeEnum'>eBay API documentation</a>",
+      }),
+    recipientAccountReference: RecipientAccountReferenceSchema.exactOptional().openapi({
+      description:
+        '<span class="tablenote"><b>Note</b>: This container is no longer applicable and should not be used. eBay now controls all electronic payment methods available for a marketplace, and a seller never has to specify any electronic payment methods, including PayPal. </span>',
+    }),
+  })
+  .openapi({
+    description:
+      'This type is used by the <b>paymentMethods</b> container, which is used by the seller to specify one or more offline payment methods. <br /><br /> <span class="tablenote"><b>Note</b>: eBay now controls all electronic payment methods available for a marketplace, so a seller will no longer use this type to specify any electronic payment methods.</span>',
+    required: [],
+  })
+  .openapi('PaymentMethod')
+
+const DepositSchema = z
+  .object({
+    amount: AmountSchema.exactOptional().openapi({
+      description:
+        'This value indicates the initial deposit amount required from the buyer in order to purchase a motor vehicle. This value can be as high as $2,000.00 if immediate payment is not required, and up to $500.00 if immediate payment is required.<br/><br/><b>Max</b>: <code>2000.0</code>',
+    }),
+    dueIn: TimeDurationSchema.exactOptional().openapi({
+      description:
+        'This value indicates the number of hours that the buyer has (after they commit to buy) to pay the initial deposit on a motor vehicle. Valid <b>dueIn</b> times are 24, 48, and 72 hours. <code>HOUR</code> is set as the <b>unit</b> value, and <code>24</code>, <code>48</code> or <code>72</code> are set in the <b>value</b> field.<br /><br /><span class="tablenote"><b>Note</b>: The <b>dueIn</b> value is overridden if the seller has set the motor vehicle listing to require immediate payment. If the listing requires immediate payment, the buyer must pay the deposit immediately in order to be eligible to purchase the motor vehicle.</span><br/><br/><b>Min</b>=24 (hours)<b>Max</b>=72 (hours), <b>Default</b>=48 (hours)',
+    }),
+    paymentMethods: z
+      .array(PaymentMethodSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'This array is no longer applicable and should not be used since eBay now manages the electronic payment options available to buyers to pay the deposit.',
+      }),
+  })
+  .openapi({
+    description:
+      'This type is used to specify/indicate that an initial deposit is required for a motor vehicle listing.',
+    required: [],
+  })
+  .openapi('Deposit')
+
+const FulfillmentPolicyRequestSchema: z.ZodType<FulfillmentPolicyRequestType> = z
   .object({
     categoryTypes: z
       .array(CategoryTypeSchema)
@@ -791,7 +833,7 @@ const FulfillmentPolicyRequestSchema = z
   })
   .openapi('FulfillmentPolicyRequest')
 
-const FulfillmentPolicyResponseSchema = z
+const FulfillmentPolicyResponseSchema: z.ZodType<FulfillmentPolicyResponseType> = z
   .object({
     fulfillmentPolicies: z
       .array(FulfillmentPolicySchema)
@@ -1641,7 +1683,7 @@ const SellingPrivilegesSchema = z
   })
   .openapi('SellingPrivileges')
 
-const SetFulfillmentPolicyResponseSchema = z
+const SetFulfillmentPolicyResponseSchema: z.ZodType<SetFulfillmentPolicyResponseType> = z
   .object({
     categoryTypes: z
       .array(CategoryTypeSchema)
@@ -2148,18 +2190,16 @@ export const postCustomPolicyIndexRoute = createRoute({
   responses: {
     201: {
       description: 'Created',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description:
-                'The <b>location</b> response header contains the URL to the newly created custom policy. The URL includes the eBay-assigned <code>custom_policy_id</code>, which can be used to reference the policy.',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description:
+              'The <b>location</b> response header contains the URL to the newly created custom policy. The URL includes the eBay-assigned <code>custom_policy_id</code>, which can be used to reference the policy.',
+          }),
       }),
     },
     400: { description: 'Bad Request' },
@@ -2349,16 +2389,14 @@ export const postFulfillmentPolicyIndexRoute = createRoute({
       description: 'Created',
       content: { 'application/json': { schema: SetFulfillmentPolicyResponseSchema } },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description:
-                'The <b>location</b> response header contains the URL to the newly created fulfillment policy. The URL includes the eBay-assigned <code>fulfillmentPolicyId</code>, which you can use to reference the policy.',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description:
+              'The <b>location</b> response header contains the URL to the newly created fulfillment policy. The URL includes the eBay-assigned <code>fulfillmentPolicyId</code>, which you can use to reference the policy.',
+          }),
       }),
     },
     400: { description: 'Bad Request' },
@@ -2628,16 +2666,14 @@ export const postPaymentPolicyRoute = createRoute({
       description: 'Created',
       content: { 'application/json': { schema: SetPaymentPolicyResponseSchema } },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description:
-                'The <b>location</b> response header contains the URL to the newly created payment policy. The URL includes the eBay-assigned <code>paymentPolicyId</code>, which you can use to reference the policy.',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description:
+              'The <b>location</b> response header contains the URL to the newly created payment policy. The URL includes the eBay-assigned <code>paymentPolicyId</code>, which you can use to reference the policy.',
+          }),
       }),
     },
     400: { description: 'Bad Request' },
@@ -2991,7 +3027,7 @@ export const postProgramOptInRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'Success', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'Success', content: { 'application/json': { schema: z.looseObject({}) } } },
     400: { description: 'Bad Request' },
     404: { description: 'Not Found' },
     409: { description: 'Conflict' },
@@ -3019,7 +3055,7 @@ export const postProgramOptOutRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'Success', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'Success', content: { 'application/json': { schema: z.looseObject({}) } } },
     400: { description: 'Bad Request' },
     404: { description: 'Not Found' },
     409: { description: 'Conflict' },
@@ -3134,16 +3170,14 @@ export const postReturnPolicyRoute = createRoute({
       description: 'Created',
       content: { 'application/json': { schema: SetReturnPolicyResponseSchema } },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description:
-                'The <b>location</b> response header contains the URL to the newly created return policy. The URL includes the eBay-assigned <code>returnPolicyId</code>, which you can use to reference the policy.',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description:
+              'The <b>location</b> response header contains the URL to the newly created return policy. The URL includes the eBay-assigned <code>returnPolicyId</code>, which you can use to reference the policy.',
+          }),
       }),
     },
     400: { description: 'Bad Request' },

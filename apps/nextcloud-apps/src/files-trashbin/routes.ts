@@ -39,6 +39,7 @@ export const getIndexPhpAppsFilesTrashbinPreviewRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: -1 },
             required: false,
           },
+          default: -1,
         }),
       x: z
         .preprocess((val) => {
@@ -58,6 +59,7 @@ export const getIndexPhpAppsFilesTrashbinPreviewRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 32 },
             required: false,
           },
+          default: 32,
         }),
       y: z
         .preprocess((val) => {
@@ -77,6 +79,7 @@ export const getIndexPhpAppsFilesTrashbinPreviewRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 32 },
             required: false,
           },
+          default: 32,
         }),
       a: z
         .stringbool()

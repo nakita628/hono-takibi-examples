@@ -160,7 +160,7 @@ const CreateSecretRequestSchema = z
 const RegisterEmailRequestSchema = z
   .object({
     application_ids: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:

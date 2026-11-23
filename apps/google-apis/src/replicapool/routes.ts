@@ -1,26 +1,69 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const AccessConfigSchema = z
+const HealthCheckSchema = z
   .object({
-    name: z.string().exactOptional().openapi({ description: 'Name of this access configuration.' }),
-    natIp: z
+    checkIntervalSec: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'How often (in seconds) to make HTTP requests for this healthcheck. The default value is 5 seconds.',
+      }),
+    description: z
       .string()
       .exactOptional()
-      .openapi({ description: 'An external IP address associated with this instance.' }),
-    type: z
+      .openapi({ description: 'The description for this health check.' }),
+    healthyThreshold: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The number of consecutive health check requests that need to succeed before the replica is considered healthy again. The default value is 2.',
+      }),
+    host: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'Type of this access configuration file. Currently only ONE_TO_ONE_NAT is supported.',
+          'The value of the host header in the HTTP health check request. If left empty (default value), the localhost IP 127.0.0.1 will be used.',
+      }),
+    name: z.string().exactOptional().openapi({ description: 'The name of this health check.' }),
+    path: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The localhost request path to send this health check, in the format /path/to/use. For example, /healthcheck.',
+      }),
+    port: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The TCP port for the health check requests.' }),
+    timeoutSec: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'How long (in seconds) to wait before a timeout failure for this healthcheck. The default value is 5 seconds.',
+      }),
+    unhealthyThreshold: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The number of consecutive health check requests that need to fail in order to consider the replica unhealthy. The default value is 2.',
       }),
   })
-  .openapi({
-    description:
-      'A Compute Engine network accessConfig. Identical to the accessConfig on corresponding Compute Engine resource.',
-    required: [],
+  .openapi({ required: [] })
+  .openapi('HealthCheck')
+
+const LabelSchema = z
+  .object({
+    key: z.string().exactOptional().openapi({ description: 'The key for this label.' }),
+    value: z.string().exactOptional().openapi({ description: 'The value of this label.' }),
   })
-  .openapi('AccessConfig')
+  .openapi({ description: 'A label to apply to this replica pool.', required: [] })
+  .openapi('Label')
 
 const EnvVariableSchema = z
   .object({
@@ -100,132 +143,6 @@ const ExistingDiskSchema = z
   })
   .openapi('ExistingDisk')
 
-const HealthCheckSchema = z
-  .object({
-    checkIntervalSec: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'How often (in seconds) to make HTTP requests for this healthcheck. The default value is 5 seconds.',
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The description for this health check.' }),
-    healthyThreshold: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The number of consecutive health check requests that need to succeed before the replica is considered healthy again. The default value is 2.',
-      }),
-    host: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The value of the host header in the HTTP health check request. If left empty (default value), the localhost IP 127.0.0.1 will be used.',
-      }),
-    name: z.string().exactOptional().openapi({ description: 'The name of this health check.' }),
-    path: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The localhost request path to send this health check, in the format /path/to/use. For example, /healthcheck.',
-      }),
-    port: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The TCP port for the health check requests.' }),
-    timeoutSec: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'How long (in seconds) to wait before a timeout failure for this healthcheck. The default value is 5 seconds.',
-      }),
-    unhealthyThreshold: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The number of consecutive health check requests that need to fail in order to consider the replica unhealthy. The default value is 2.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('HealthCheck')
-
-const LabelSchema = z
-  .object({
-    key: z.string().exactOptional().openapi({ description: 'The key for this label.' }),
-    value: z.string().exactOptional().openapi({ description: 'The value of this label.' }),
-  })
-  .openapi({ description: 'A label to apply to this replica pool.', required: [] })
-  .openapi('Label')
-
-const MetadataItemSchema = z
-  .object({
-    key: z.string().exactOptional().openapi({ description: 'A metadata key.' }),
-    value: z.string().exactOptional().openapi({ description: 'A metadata value.' }),
-  })
-  .openapi({
-    description:
-      'A Compute Engine metadata item, defined as a key:value pair. Identical to the metadata on the corresponding Compute Engine resource.',
-    required: [],
-  })
-  .openapi('MetadataItem')
-
-const MetadataSchema = z
-  .object({
-    fingerPrint: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The fingerprint of the metadata. Required for updating the metadata entries for this instance.',
-      }),
-    items: z
-      .array(MetadataItemSchema)
-      .exactOptional()
-      .openapi({ description: 'A list of metadata items.' }),
-  })
-  .openapi({
-    description:
-      'A Compute Engine metadata entry. Identical to the metadata on the corresponding Compute Engine resource.',
-    required: [],
-  })
-  .openapi('Metadata')
-
-const NetworkInterfaceSchema = z
-  .object({
-    accessConfigs: z
-      .array(AccessConfigSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'An array of configurations for this interface. This specifies how this interface is configured to interact with other network services.',
-      }),
-    network: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Name the Network resource to which this interface applies.' }),
-    networkIp: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'An optional IPV4 internal network address to assign to the instance for this network interface.',
-      }),
-  })
-  .openapi({
-    description:
-      'A Compute Engine NetworkInterface resource. Identical to the NetworkInterface on the corresponding Compute Engine resource.',
-    required: [],
-  })
-  .openapi('NetworkInterface')
-
 const NewDiskInitializeParamsSchema = z
   .object({
     diskSizeGb: z
@@ -277,6 +194,89 @@ const NewDiskSchema = z
     required: [],
   })
   .openapi('NewDisk')
+
+const MetadataItemSchema = z
+  .object({
+    key: z.string().exactOptional().openapi({ description: 'A metadata key.' }),
+    value: z.string().exactOptional().openapi({ description: 'A metadata value.' }),
+  })
+  .openapi({
+    description:
+      'A Compute Engine metadata item, defined as a key:value pair. Identical to the metadata on the corresponding Compute Engine resource.',
+    required: [],
+  })
+  .openapi('MetadataItem')
+
+const MetadataSchema = z
+  .object({
+    fingerPrint: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The fingerprint of the metadata. Required for updating the metadata entries for this instance.',
+      }),
+    items: z
+      .array(MetadataItemSchema)
+      .exactOptional()
+      .openapi({ description: 'A list of metadata items.' }),
+  })
+  .openapi({
+    description:
+      'A Compute Engine metadata entry. Identical to the metadata on the corresponding Compute Engine resource.',
+    required: [],
+  })
+  .openapi('Metadata')
+
+const AccessConfigSchema = z
+  .object({
+    name: z.string().exactOptional().openapi({ description: 'Name of this access configuration.' }),
+    natIp: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'An external IP address associated with this instance.' }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Type of this access configuration file. Currently only ONE_TO_ONE_NAT is supported.',
+      }),
+  })
+  .openapi({
+    description:
+      'A Compute Engine network accessConfig. Identical to the accessConfig on corresponding Compute Engine resource.',
+    required: [],
+  })
+  .openapi('AccessConfig')
+
+const NetworkInterfaceSchema = z
+  .object({
+    accessConfigs: z
+      .array(AccessConfigSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'An array of configurations for this interface. This specifies how this interface is configured to interact with other network services.',
+      }),
+    network: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name the Network resource to which this interface applies.' }),
+    networkIp: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'An optional IPV4 internal network address to assign to the instance for this network interface.',
+      }),
+  })
+  .openapi({
+    description:
+      'A Compute Engine NetworkInterface resource. Identical to the NetworkInterface on the corresponding Compute Engine resource.',
+    required: [],
+  })
+  .openapi('NetworkInterface')
 
 const ServiceAccountSchema = z
   .object({
@@ -497,6 +497,8 @@ const PoolSchema = z
   .openapi({ required: [] })
   .openapi('Pool')
 
+type PoolsListResponseType = { nextPageToken?: string; resources?: z.infer<typeof PoolSchema>[] }
+
 const PoolsDeleteRequestSchema = z
   .object({
     abandonInstances: z
@@ -510,7 +512,7 @@ const PoolsDeleteRequestSchema = z
   .openapi({ required: [] })
   .openapi('PoolsDeleteRequest')
 
-const PoolsListResponseSchema = z
+const PoolsListResponseSchema: z.ZodType<PoolsListResponseType> = z
   .object({
     nextPageToken: z.string().exactOptional(),
     resources: z.array(PoolSchema).exactOptional(),

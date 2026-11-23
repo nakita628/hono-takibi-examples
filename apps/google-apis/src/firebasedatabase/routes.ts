@@ -47,7 +47,7 @@ const DatabaseInstanceSchema = z
   .openapi('DatabaseInstance')
 
 const DisableDatabaseInstanceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The request sent to the DisableDatabaseInstance method.' })
   .openapi('DisableDatabaseInstanceRequest')
 
@@ -71,12 +71,12 @@ const ListDatabaseInstancesResponseSchema = z
   .openapi('ListDatabaseInstancesResponse')
 
 const ReenableDatabaseInstanceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The request sent to the ReenableDatabaseInstance method.' })
   .openapi('ReenableDatabaseInstanceRequest')
 
 const UndeleteDatabaseInstanceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The request sent to UndeleteDatabaseInstance method.' })
   .openapi('UndeleteDatabaseInstanceRequest')
 

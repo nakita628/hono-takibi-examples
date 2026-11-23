@@ -722,7 +722,7 @@ const ShareInfoSchema = z
     ]),
     type: z.string(),
     etag: z.string(),
-    children: z.array(z.record(z.string(), z.object({}))).exactOptional(),
+    children: z.array(z.record(z.string(), z.looseObject({}))).exactOptional(),
   })
   .openapi({
     required: [
@@ -1047,6 +1047,7 @@ export const getIndexPhpAppsFilesSharingPublicpreviewTokenRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 32 },
             required: false,
           },
+          default: 32,
         }),
       y: z
         .preprocess((val) => {
@@ -1066,6 +1067,7 @@ export const getIndexPhpAppsFilesSharingPublicpreviewTokenRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 32 },
             required: false,
           },
+          default: 32,
         }),
       a: z
         .stringbool()
@@ -1116,12 +1118,10 @@ export const getIndexPhpAppsFilesSharingPublicpreviewTokenRoute = createRoute({
     303: {
       description: 'Redirect to the mime icon url if mimeFallback is true',
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -2492,6 +2492,7 @@ export const getOcsV2PhpAppsFilesSharingApiV1ShareesRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 1 },
             required: false,
           },
+          default: 1,
         }),
       perPage: z
         .preprocess((val) => {
@@ -2511,6 +2512,7 @@ export const getOcsV2PhpAppsFilesSharingApiV1ShareesRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 200 },
             required: false,
           },
+          default: 200,
         }),
       shareType: z
         .xor([
@@ -2598,12 +2600,10 @@ export const getOcsV2PhpAppsFilesSharingApiV1ShareesRoute = createRoute({
         },
       },
       headers: z.object({
-        Link: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {

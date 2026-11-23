@@ -6,7 +6,7 @@ const ErrorResponse = {
     'application/problem+json': {
       schema: z
         .object({
-          errors: z.object({}).exactOptional(),
+          errors: z.looseObject({}).exactOptional(),
           status: z.int().exactOptional(),
           title: z.string().exactOptional(),
           type: z.url().exactOptional(),

@@ -94,6 +94,37 @@ const NICategorySchema = z
       .object({ niCategory: z.literal('V').exactOptional() })
       .openapi({ required: ['dateFirstEmployedAsCivilian'] }),
   ])
+  .and(
+    z
+      .object({
+        startDate: z.iso
+          .date()
+          .exactOptional()
+          .openapi({
+            description: 'The start date of the NI category (YYYY-MM-DD)',
+            example: '2024-12-02',
+            'x-is-date': true,
+          }),
+        niCategory: NICategoryLetterSchema,
+        niCategoryID: z
+          .number()
+          .exactOptional()
+          .openapi({ description: 'Xero unique identifier for the NI category', example: 15 }),
+        dateFirstEmployedAsCivilian: z.iso
+          .date()
+          .exactOptional()
+          .openapi({
+            description:
+              'The date in which the employee was first employed as a civilian (YYYY-MM-DD)',
+            example: '2024-12-02',
+            'x-is-date': true,
+          }),
+        workplacePostcode: z
+          .string()
+          .openapi({ description: 'The workplace postcode', example: 'SW1A 1AA' }),
+      })
+      .openapi({ required: ['niCategory', 'workplacePostcode'] }),
+  )
   .openapi({ required: ['niCategory', 'workplacePostcode'] })
   .openapi('NICategory')
 

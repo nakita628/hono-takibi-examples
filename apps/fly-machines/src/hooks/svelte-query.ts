@@ -1,0 +1,2758 @@
+import { createQuery, createMutation, queryOptions, mutationOptions } from '@tanstack/svelte-query'
+import type {
+  CreateQueryOptions,
+  CreateMutationOptions,
+  DefaultError,
+  QueryClient,
+} from '@tanstack/svelte-query'
+import type { ClientRequestOptions, InferRequestType } from 'hono/client'
+import { parseResponse } from 'hono/client'
+import { client } from '../client'
+
+export function getAppsKey() {
+  return ['apps'] as const
+}
+
+export function getAppsQueryKey(args: InferRequestType<typeof client.apps.$get>) {
+  return ['apps', '/apps', args] as const
+}
+
+export function getAppsQueryOptions<
+  TData = Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.apps.$get>>>>>,
+  TError = DefaultError,
+>(args: InferRequestType<typeof client.apps.$get>, options?: ClientRequestOptions) {
+  return queryOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.apps.$get>>>>>,
+    TError,
+    TData,
+    ReturnType<typeof getAppsQueryKey>
+  >({
+    queryKey: getAppsQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.apps.$get(args, { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  })
+}
+
+export function createApps<
+  TData = Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.apps.$get>>>>>,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<typeof client.apps.$get>,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.apps.$get>>>>>,
+        TError,
+        TData,
+        ReturnType<typeof getAppsQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return { ...getAppsQueryOptions<TData, TError>(args(), clientOptions), ...query }
+  }, queryClient)
+}
+
+export function getPostAppsMutationKey() {
+  return ['apps', '/apps', 'POST'] as const
+}
+
+export function getPostAppsMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.apps.$post>>>>>,
+    TError,
+    InferRequestType<typeof client.apps.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostAppsMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.apps.$post>) {
+      return parseResponse(client.apps.$post(args, options))
+    },
+  })
+}
+
+export function createPostApps<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.apps.$post>>>>>,
+        TError,
+        InferRequestType<typeof client.apps.$post>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostAppsMutationOptions<TError, TOnMutateResult>(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getAppsAppNameQueryKey(
+  args: InferRequestType<(typeof client.apps)[':app_name']['$get']>,
+) {
+  return ['apps', '/apps/:app_name', args] as const
+}
+
+export function getAppsAppNameQueryOptions<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<(typeof client.apps)[':app_name']['$get']>>>>
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<(typeof client.apps)[':app_name']['$get']>,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.apps)[':app_name']['$get']>>>
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getAppsAppNameQueryKey>
+  >({
+    queryKey: getAppsAppNameQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.apps[':app_name'].$get(args, { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  })
+}
+
+export function createAppsAppName<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<(typeof client.apps)[':app_name']['$get']>>>>
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<(typeof client.apps)[':app_name']['$get']>,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<Awaited<ReturnType<(typeof client.apps)[':app_name']['$get']>>>
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getAppsAppNameQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return { ...getAppsAppNameQueryOptions<TData, TError>(args(), clientOptions), ...query }
+  }, queryClient)
+}
+
+export function getDeleteAppsAppNameMutationKey() {
+  return ['apps', '/apps/:app_name', 'DELETE'] as const
+}
+
+export function getDeleteAppsAppNameMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.apps)[':app_name']['$delete']>>>
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.apps)[':app_name']['$delete']>,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteAppsAppNameMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.apps)[':app_name']['$delete']>) {
+      return parseResponse(client.apps[':app_name'].$delete(args, options))
+    },
+  })
+}
+
+export function createDeleteAppsAppName<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<Awaited<ReturnType<(typeof client.apps)[':app_name']['$delete']>>>
+          >
+        >,
+        TError,
+        InferRequestType<(typeof client.apps)[':app_name']['$delete']>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeleteAppsAppNameMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getAppsAppNameMachinesQueryKey(
+  args: InferRequestType<(typeof client.apps)[':app_name']['machines']['$get']>,
+) {
+  return ['apps', '/apps/:app_name/machines', args] as const
+}
+
+export function getAppsAppNameMachinesQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.apps)[':app_name']['machines']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<(typeof client.apps)[':app_name']['machines']['$get']>,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.apps)[':app_name']['machines']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getAppsAppNameMachinesQueryKey>
+  >({
+    queryKey: getAppsAppNameMachinesQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.apps[':app_name'].machines.$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createAppsAppNameMachines<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.apps)[':app_name']['machines']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<(typeof client.apps)[':app_name']['machines']['$get']>,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<ReturnType<(typeof client.apps)[':app_name']['machines']['$get']>>
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getAppsAppNameMachinesQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return { ...getAppsAppNameMachinesQueryOptions<TData, TError>(args(), clientOptions), ...query }
+  }, queryClient)
+}
+
+export function getPostAppsAppNameMachinesMutationKey() {
+  return ['apps', '/apps/:app_name/machines', 'POST'] as const
+}
+
+export function getPostAppsAppNameMachinesMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.apps)[':app_name']['machines']['$post']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.apps)[':app_name']['machines']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostAppsAppNameMachinesMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.apps)[':app_name']['machines']['$post']>,
+    ) {
+      return parseResponse(client.apps[':app_name'].machines.$post(args, options))
+    },
+  })
+}
+
+export function createPostAppsAppNameMachines<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<ReturnType<(typeof client.apps)[':app_name']['machines']['$post']>>
+            >
+          >
+        >,
+        TError,
+        InferRequestType<(typeof client.apps)[':app_name']['machines']['$post']>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostAppsAppNameMachinesMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getAppsAppNameMachinesMachineIdQueryKey(
+  args: InferRequestType<(typeof client.apps)[':app_name']['machines'][':machine_id']['$get']>,
+) {
+  return ['apps', '/apps/:app_name/machines/:machine_id', args] as const
+}
+
+export function getAppsAppNameMachinesMachineIdQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.apps)[':app_name']['machines'][':machine_id']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<(typeof client.apps)[':app_name']['machines'][':machine_id']['$get']>,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.apps)[':app_name']['machines'][':machine_id']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getAppsAppNameMachinesMachineIdQueryKey>
+  >({
+    queryKey: getAppsAppNameMachinesMachineIdQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.apps[':app_name'].machines[':machine_id'].$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createAppsAppNameMachinesMachineId<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.apps)[':app_name']['machines'][':machine_id']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<
+    (typeof client.apps)[':app_name']['machines'][':machine_id']['$get']
+  >,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<(typeof client.apps)[':app_name']['machines'][':machine_id']['$get']>
+              >
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getAppsAppNameMachinesMachineIdQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getAppsAppNameMachinesMachineIdQueryOptions<TData, TError>(args(), clientOptions),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getPostAppsAppNameMachinesMachineIdMutationKey() {
+  return ['apps', '/apps/:app_name/machines/:machine_id', 'POST'] as const
+}
+
+export function getPostAppsAppNameMachinesMachineIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.apps)[':app_name']['machines'][':machine_id']['$post']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.apps)[':app_name']['machines'][':machine_id']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostAppsAppNameMachinesMachineIdMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.apps)[':app_name']['machines'][':machine_id']['$post']>,
+    ) {
+      return parseResponse(client.apps[':app_name'].machines[':machine_id'].$post(args, options))
+    },
+  })
+}
+
+export function createPostAppsAppNameMachinesMachineId<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<(typeof client.apps)[':app_name']['machines'][':machine_id']['$post']>
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<(typeof client.apps)[':app_name']['machines'][':machine_id']['$post']>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostAppsAppNameMachinesMachineIdMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getDeleteAppsAppNameMachinesMachineIdMutationKey() {
+  return ['apps', '/apps/:app_name/machines/:machine_id', 'DELETE'] as const
+}
+
+export function getDeleteAppsAppNameMachinesMachineIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.apps)[':app_name']['machines'][':machine_id']['$delete']>
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.apps)[':app_name']['machines'][':machine_id']['$delete']>,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteAppsAppNameMachinesMachineIdMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.apps)[':app_name']['machines'][':machine_id']['$delete']
+      >,
+    ) {
+      return parseResponse(client.apps[':app_name'].machines[':machine_id'].$delete(args, options))
+    },
+  })
+}
+
+export function createDeleteAppsAppNameMachinesMachineId<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<(typeof client.apps)[':app_name']['machines'][':machine_id']['$delete']>
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<(typeof client.apps)[':app_name']['machines'][':machine_id']['$delete']>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeleteAppsAppNameMachinesMachineIdMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPostAppsAppNameMachinesMachineIdCordonMutationKey() {
+  return ['apps', '/apps/:app_name/machines/:machine_id/cordon', 'POST'] as const
+}
+
+export function getPostAppsAppNameMachinesMachineIdCordonMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apps)[':app_name']['machines'][':machine_id']['cordon']['$post']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.apps)[':app_name']['machines'][':machine_id']['cordon']['$post']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getPostAppsAppNameMachinesMachineIdCordonMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.apps)[':app_name']['machines'][':machine_id']['cordon']['$post']
+      >,
+    ) {
+      return parseResponse(
+        client.apps[':app_name'].machines[':machine_id'].cordon.$post(args, options),
+      )
+    },
+  })
+}
+
+export function createPostAppsAppNameMachinesMachineIdCordon<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.apps)[':app_name']['machines'][':machine_id']['cordon']['$post']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<
+          (typeof client.apps)[':app_name']['machines'][':machine_id']['cordon']['$post']
+        >,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostAppsAppNameMachinesMachineIdCordonMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getAppsAppNameMachinesMachineIdEventsQueryKey(
+  args: InferRequestType<
+    (typeof client.apps)[':app_name']['machines'][':machine_id']['events']['$get']
+  >,
+) {
+  return ['apps', '/apps/:app_name/machines/:machine_id/events', args] as const
+}
+
+export function getAppsAppNameMachinesMachineIdEventsQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<(typeof client.apps)[':app_name']['machines'][':machine_id']['events']['$get']>
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<
+    (typeof client.apps)[':app_name']['machines'][':machine_id']['events']['$get']
+  >,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apps)[':app_name']['machines'][':machine_id']['events']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getAppsAppNameMachinesMachineIdEventsQueryKey>
+  >({
+    queryKey: getAppsAppNameMachinesMachineIdEventsQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.apps[':app_name'].machines[':machine_id'].events.$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createAppsAppNameMachinesMachineIdEvents<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<(typeof client.apps)[':app_name']['machines'][':machine_id']['events']['$get']>
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<
+    (typeof client.apps)[':app_name']['machines'][':machine_id']['events']['$get']
+  >,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.apps)[':app_name']['machines'][':machine_id']['events']['$get']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getAppsAppNameMachinesMachineIdEventsQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getAppsAppNameMachinesMachineIdEventsQueryOptions<TData, TError>(args(), clientOptions),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getPostAppsAppNameMachinesMachineIdExecMutationKey() {
+  return ['apps', '/apps/:app_name/machines/:machine_id/exec', 'POST'] as const
+}
+
+export function getPostAppsAppNameMachinesMachineIdExecMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apps)[':app_name']['machines'][':machine_id']['exec']['$post']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.apps)[':app_name']['machines'][':machine_id']['exec']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostAppsAppNameMachinesMachineIdExecMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.apps)[':app_name']['machines'][':machine_id']['exec']['$post']
+      >,
+    ) {
+      return parseResponse(
+        client.apps[':app_name'].machines[':machine_id'].exec.$post(args, options),
+      )
+    },
+  })
+}
+
+export function createPostAppsAppNameMachinesMachineIdExec<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.apps)[':app_name']['machines'][':machine_id']['exec']['$post']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<
+          (typeof client.apps)[':app_name']['machines'][':machine_id']['exec']['$post']
+        >,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostAppsAppNameMachinesMachineIdExecMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getAppsAppNameMachinesMachineIdLeaseQueryKey(
+  args: InferRequestType<
+    (typeof client.apps)[':app_name']['machines'][':machine_id']['lease']['$get']
+  >,
+) {
+  return ['apps', '/apps/:app_name/machines/:machine_id/lease', args] as const
+}
+
+export function getAppsAppNameMachinesMachineIdLeaseQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<(typeof client.apps)[':app_name']['machines'][':machine_id']['lease']['$get']>
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<
+    (typeof client.apps)[':app_name']['machines'][':machine_id']['lease']['$get']
+  >,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apps)[':app_name']['machines'][':machine_id']['lease']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getAppsAppNameMachinesMachineIdLeaseQueryKey>
+  >({
+    queryKey: getAppsAppNameMachinesMachineIdLeaseQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.apps[':app_name'].machines[':machine_id'].lease.$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createAppsAppNameMachinesMachineIdLease<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<(typeof client.apps)[':app_name']['machines'][':machine_id']['lease']['$get']>
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<
+    (typeof client.apps)[':app_name']['machines'][':machine_id']['lease']['$get']
+  >,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.apps)[':app_name']['machines'][':machine_id']['lease']['$get']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getAppsAppNameMachinesMachineIdLeaseQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getAppsAppNameMachinesMachineIdLeaseQueryOptions<TData, TError>(args(), clientOptions),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getPostAppsAppNameMachinesMachineIdLeaseMutationKey() {
+  return ['apps', '/apps/:app_name/machines/:machine_id/lease', 'POST'] as const
+}
+
+export function getPostAppsAppNameMachinesMachineIdLeaseMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apps)[':app_name']['machines'][':machine_id']['lease']['$post']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.apps)[':app_name']['machines'][':machine_id']['lease']['$post']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getPostAppsAppNameMachinesMachineIdLeaseMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.apps)[':app_name']['machines'][':machine_id']['lease']['$post']
+      >,
+    ) {
+      return parseResponse(
+        client.apps[':app_name'].machines[':machine_id'].lease.$post(args, options),
+      )
+    },
+  })
+}
+
+export function createPostAppsAppNameMachinesMachineIdLease<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.apps)[':app_name']['machines'][':machine_id']['lease']['$post']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<
+          (typeof client.apps)[':app_name']['machines'][':machine_id']['lease']['$post']
+        >,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostAppsAppNameMachinesMachineIdLeaseMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getDeleteAppsAppNameMachinesMachineIdLeaseMutationKey() {
+  return ['apps', '/apps/:app_name/machines/:machine_id/lease', 'DELETE'] as const
+}
+
+export function getDeleteAppsAppNameMachinesMachineIdLeaseMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apps)[':app_name']['machines'][':machine_id']['lease']['$delete']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.apps)[':app_name']['machines'][':machine_id']['lease']['$delete']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteAppsAppNameMachinesMachineIdLeaseMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.apps)[':app_name']['machines'][':machine_id']['lease']['$delete']
+      >,
+    ) {
+      return parseResponse(
+        client.apps[':app_name'].machines[':machine_id'].lease.$delete(args, options),
+      )
+    },
+  })
+}
+
+export function createDeleteAppsAppNameMachinesMachineIdLease<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.apps)[':app_name']['machines'][':machine_id']['lease']['$delete']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<
+          (typeof client.apps)[':app_name']['machines'][':machine_id']['lease']['$delete']
+        >,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeleteAppsAppNameMachinesMachineIdLeaseMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getAppsAppNameMachinesMachineIdMetadataQueryKey(
+  args: InferRequestType<
+    (typeof client.apps)[':app_name']['machines'][':machine_id']['metadata']['$get']
+  >,
+) {
+  return ['apps', '/apps/:app_name/machines/:machine_id/metadata', args] as const
+}
+
+export function getAppsAppNameMachinesMachineIdMetadataQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.apps)[':app_name']['machines'][':machine_id']['metadata']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<
+    (typeof client.apps)[':app_name']['machines'][':machine_id']['metadata']['$get']
+  >,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apps)[':app_name']['machines'][':machine_id']['metadata']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getAppsAppNameMachinesMachineIdMetadataQueryKey>
+  >({
+    queryKey: getAppsAppNameMachinesMachineIdMetadataQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.apps[':app_name'].machines[':machine_id'].metadata.$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createAppsAppNameMachinesMachineIdMetadata<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.apps)[':app_name']['machines'][':machine_id']['metadata']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<
+    (typeof client.apps)[':app_name']['machines'][':machine_id']['metadata']['$get']
+  >,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.apps)[':app_name']['machines'][':machine_id']['metadata']['$get']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getAppsAppNameMachinesMachineIdMetadataQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getAppsAppNameMachinesMachineIdMetadataQueryOptions<TData, TError>(args(), clientOptions),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getPostAppsAppNameMachinesMachineIdMetadataKeyMutationKey() {
+  return ['apps', '/apps/:app_name/machines/:machine_id/metadata/:key', 'POST'] as const
+}
+
+export function getPostAppsAppNameMachinesMachineIdMetadataKeyMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    | Awaited<
+        ReturnType<
+          typeof parseResponse<
+            Awaited<
+              ReturnType<
+                (typeof client.apps)[':app_name']['machines'][':machine_id']['metadata'][':key']['$post']
+              >
+            >
+          >
+        >
+      >
+    | undefined,
+    TError,
+    InferRequestType<
+      (typeof client.apps)[':app_name']['machines'][':machine_id']['metadata'][':key']['$post']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getPostAppsAppNameMachinesMachineIdMetadataKeyMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.apps)[':app_name']['machines'][':machine_id']['metadata'][':key']['$post']
+      >,
+    ) {
+      return parseResponse(
+        client.apps[':app_name'].machines[':machine_id'].metadata[':key'].$post(args, options),
+      )
+    },
+  })
+}
+
+export function createPostAppsAppNameMachinesMachineIdMetadataKey<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        | Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apps)[':app_name']['machines'][':machine_id']['metadata'][':key']['$post']
+                  >
+                >
+              >
+            >
+          >
+        | undefined,
+        TError,
+        InferRequestType<
+          (typeof client.apps)[':app_name']['machines'][':machine_id']['metadata'][':key']['$post']
+        >,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostAppsAppNameMachinesMachineIdMetadataKeyMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getDeleteAppsAppNameMachinesMachineIdMetadataKeyMutationKey() {
+  return ['apps', '/apps/:app_name/machines/:machine_id/metadata/:key', 'DELETE'] as const
+}
+
+export function getDeleteAppsAppNameMachinesMachineIdMetadataKeyMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    | Awaited<
+        ReturnType<
+          typeof parseResponse<
+            Awaited<
+              ReturnType<
+                (typeof client.apps)[':app_name']['machines'][':machine_id']['metadata'][':key']['$delete']
+              >
+            >
+          >
+        >
+      >
+    | undefined,
+    TError,
+    InferRequestType<
+      (typeof client.apps)[':app_name']['machines'][':machine_id']['metadata'][':key']['$delete']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteAppsAppNameMachinesMachineIdMetadataKeyMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.apps)[':app_name']['machines'][':machine_id']['metadata'][':key']['$delete']
+      >,
+    ) {
+      return parseResponse(
+        client.apps[':app_name'].machines[':machine_id'].metadata[':key'].$delete(args, options),
+      )
+    },
+  })
+}
+
+export function createDeleteAppsAppNameMachinesMachineIdMetadataKey<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        | Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apps)[':app_name']['machines'][':machine_id']['metadata'][':key']['$delete']
+                  >
+                >
+              >
+            >
+          >
+        | undefined,
+        TError,
+        InferRequestType<
+          (typeof client.apps)[':app_name']['machines'][':machine_id']['metadata'][':key']['$delete']
+        >,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeleteAppsAppNameMachinesMachineIdMetadataKeyMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getAppsAppNameMachinesMachineIdPsQueryKey(
+  args: InferRequestType<
+    (typeof client.apps)[':app_name']['machines'][':machine_id']['ps']['$get']
+  >,
+) {
+  return ['apps', '/apps/:app_name/machines/:machine_id/ps', args] as const
+}
+
+export function getAppsAppNameMachinesMachineIdPsQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<(typeof client.apps)[':app_name']['machines'][':machine_id']['ps']['$get']>
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<
+    (typeof client.apps)[':app_name']['machines'][':machine_id']['ps']['$get']
+  >,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.apps)[':app_name']['machines'][':machine_id']['ps']['$get']>
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getAppsAppNameMachinesMachineIdPsQueryKey>
+  >({
+    queryKey: getAppsAppNameMachinesMachineIdPsQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.apps[':app_name'].machines[':machine_id'].ps.$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createAppsAppNameMachinesMachineIdPs<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<(typeof client.apps)[':app_name']['machines'][':machine_id']['ps']['$get']>
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<
+    (typeof client.apps)[':app_name']['machines'][':machine_id']['ps']['$get']
+  >,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.apps)[':app_name']['machines'][':machine_id']['ps']['$get']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getAppsAppNameMachinesMachineIdPsQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getAppsAppNameMachinesMachineIdPsQueryOptions<TData, TError>(args(), clientOptions),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getPostAppsAppNameMachinesMachineIdRestartMutationKey() {
+  return ['apps', '/apps/:app_name/machines/:machine_id/restart', 'POST'] as const
+}
+
+export function getPostAppsAppNameMachinesMachineIdRestartMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apps)[':app_name']['machines'][':machine_id']['restart']['$post']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.apps)[':app_name']['machines'][':machine_id']['restart']['$post']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getPostAppsAppNameMachinesMachineIdRestartMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.apps)[':app_name']['machines'][':machine_id']['restart']['$post']
+      >,
+    ) {
+      return parseResponse(
+        client.apps[':app_name'].machines[':machine_id'].restart.$post(args, options),
+      )
+    },
+  })
+}
+
+export function createPostAppsAppNameMachinesMachineIdRestart<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.apps)[':app_name']['machines'][':machine_id']['restart']['$post']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<
+          (typeof client.apps)[':app_name']['machines'][':machine_id']['restart']['$post']
+        >,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostAppsAppNameMachinesMachineIdRestartMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPostAppsAppNameMachinesMachineIdSignalMutationKey() {
+  return ['apps', '/apps/:app_name/machines/:machine_id/signal', 'POST'] as const
+}
+
+export function getPostAppsAppNameMachinesMachineIdSignalMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apps)[':app_name']['machines'][':machine_id']['signal']['$post']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.apps)[':app_name']['machines'][':machine_id']['signal']['$post']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getPostAppsAppNameMachinesMachineIdSignalMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.apps)[':app_name']['machines'][':machine_id']['signal']['$post']
+      >,
+    ) {
+      return parseResponse(
+        client.apps[':app_name'].machines[':machine_id'].signal.$post(args, options),
+      )
+    },
+  })
+}
+
+export function createPostAppsAppNameMachinesMachineIdSignal<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.apps)[':app_name']['machines'][':machine_id']['signal']['$post']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<
+          (typeof client.apps)[':app_name']['machines'][':machine_id']['signal']['$post']
+        >,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostAppsAppNameMachinesMachineIdSignalMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPostAppsAppNameMachinesMachineIdStartMutationKey() {
+  return ['apps', '/apps/:app_name/machines/:machine_id/start', 'POST'] as const
+}
+
+export function getPostAppsAppNameMachinesMachineIdStartMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apps)[':app_name']['machines'][':machine_id']['start']['$post']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.apps)[':app_name']['machines'][':machine_id']['start']['$post']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getPostAppsAppNameMachinesMachineIdStartMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.apps)[':app_name']['machines'][':machine_id']['start']['$post']
+      >,
+    ) {
+      return parseResponse(
+        client.apps[':app_name'].machines[':machine_id'].start.$post(args, options),
+      )
+    },
+  })
+}
+
+export function createPostAppsAppNameMachinesMachineIdStart<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.apps)[':app_name']['machines'][':machine_id']['start']['$post']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<
+          (typeof client.apps)[':app_name']['machines'][':machine_id']['start']['$post']
+        >,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostAppsAppNameMachinesMachineIdStartMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPostAppsAppNameMachinesMachineIdStopMutationKey() {
+  return ['apps', '/apps/:app_name/machines/:machine_id/stop', 'POST'] as const
+}
+
+export function getPostAppsAppNameMachinesMachineIdStopMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apps)[':app_name']['machines'][':machine_id']['stop']['$post']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.apps)[':app_name']['machines'][':machine_id']['stop']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostAppsAppNameMachinesMachineIdStopMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.apps)[':app_name']['machines'][':machine_id']['stop']['$post']
+      >,
+    ) {
+      return parseResponse(
+        client.apps[':app_name'].machines[':machine_id'].stop.$post(args, options),
+      )
+    },
+  })
+}
+
+export function createPostAppsAppNameMachinesMachineIdStop<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.apps)[':app_name']['machines'][':machine_id']['stop']['$post']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<
+          (typeof client.apps)[':app_name']['machines'][':machine_id']['stop']['$post']
+        >,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostAppsAppNameMachinesMachineIdStopMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPostAppsAppNameMachinesMachineIdUncordonMutationKey() {
+  return ['apps', '/apps/:app_name/machines/:machine_id/uncordon', 'POST'] as const
+}
+
+export function getPostAppsAppNameMachinesMachineIdUncordonMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apps)[':app_name']['machines'][':machine_id']['uncordon']['$post']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.apps)[':app_name']['machines'][':machine_id']['uncordon']['$post']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getPostAppsAppNameMachinesMachineIdUncordonMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.apps)[':app_name']['machines'][':machine_id']['uncordon']['$post']
+      >,
+    ) {
+      return parseResponse(
+        client.apps[':app_name'].machines[':machine_id'].uncordon.$post(args, options),
+      )
+    },
+  })
+}
+
+export function createPostAppsAppNameMachinesMachineIdUncordon<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.apps)[':app_name']['machines'][':machine_id']['uncordon']['$post']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<
+          (typeof client.apps)[':app_name']['machines'][':machine_id']['uncordon']['$post']
+        >,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostAppsAppNameMachinesMachineIdUncordonMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getAppsAppNameMachinesMachineIdVersionsQueryKey(
+  args: InferRequestType<
+    (typeof client.apps)[':app_name']['machines'][':machine_id']['versions']['$get']
+  >,
+) {
+  return ['apps', '/apps/:app_name/machines/:machine_id/versions', args] as const
+}
+
+export function getAppsAppNameMachinesMachineIdVersionsQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.apps)[':app_name']['machines'][':machine_id']['versions']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<
+    (typeof client.apps)[':app_name']['machines'][':machine_id']['versions']['$get']
+  >,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apps)[':app_name']['machines'][':machine_id']['versions']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getAppsAppNameMachinesMachineIdVersionsQueryKey>
+  >({
+    queryKey: getAppsAppNameMachinesMachineIdVersionsQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.apps[':app_name'].machines[':machine_id'].versions.$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createAppsAppNameMachinesMachineIdVersions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.apps)[':app_name']['machines'][':machine_id']['versions']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<
+    (typeof client.apps)[':app_name']['machines'][':machine_id']['versions']['$get']
+  >,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.apps)[':app_name']['machines'][':machine_id']['versions']['$get']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getAppsAppNameMachinesMachineIdVersionsQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getAppsAppNameMachinesMachineIdVersionsQueryOptions<TData, TError>(args(), clientOptions),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getAppsAppNameMachinesMachineIdWaitQueryKey(
+  args: InferRequestType<
+    (typeof client.apps)[':app_name']['machines'][':machine_id']['wait']['$get']
+  >,
+) {
+  return ['apps', '/apps/:app_name/machines/:machine_id/wait', args] as const
+}
+
+export function getAppsAppNameMachinesMachineIdWaitQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<(typeof client.apps)[':app_name']['machines'][':machine_id']['wait']['$get']>
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<
+    (typeof client.apps)[':app_name']['machines'][':machine_id']['wait']['$get']
+  >,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.apps)[':app_name']['machines'][':machine_id']['wait']['$get']>
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getAppsAppNameMachinesMachineIdWaitQueryKey>
+  >({
+    queryKey: getAppsAppNameMachinesMachineIdWaitQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.apps[':app_name'].machines[':machine_id'].wait.$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createAppsAppNameMachinesMachineIdWait<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<(typeof client.apps)[':app_name']['machines'][':machine_id']['wait']['$get']>
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<
+    (typeof client.apps)[':app_name']['machines'][':machine_id']['wait']['$get']
+  >,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.apps)[':app_name']['machines'][':machine_id']['wait']['$get']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getAppsAppNameMachinesMachineIdWaitQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getAppsAppNameMachinesMachineIdWaitQueryOptions<TData, TError>(args(), clientOptions),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getAppsAppNameVolumesQueryKey(
+  args: InferRequestType<(typeof client.apps)[':app_name']['volumes']['$get']>,
+) {
+  return ['apps', '/apps/:app_name/volumes', args] as const
+}
+
+export function getAppsAppNameVolumesQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.apps)[':app_name']['volumes']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<(typeof client.apps)[':app_name']['volumes']['$get']>,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.apps)[':app_name']['volumes']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getAppsAppNameVolumesQueryKey>
+  >({
+    queryKey: getAppsAppNameVolumesQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.apps[':app_name'].volumes.$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createAppsAppNameVolumes<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.apps)[':app_name']['volumes']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<(typeof client.apps)[':app_name']['volumes']['$get']>,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<ReturnType<(typeof client.apps)[':app_name']['volumes']['$get']>>
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getAppsAppNameVolumesQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return { ...getAppsAppNameVolumesQueryOptions<TData, TError>(args(), clientOptions), ...query }
+  }, queryClient)
+}
+
+export function getPostAppsAppNameVolumesMutationKey() {
+  return ['apps', '/apps/:app_name/volumes', 'POST'] as const
+}
+
+export function getPostAppsAppNameVolumesMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.apps)[':app_name']['volumes']['$post']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.apps)[':app_name']['volumes']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostAppsAppNameVolumesMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.apps)[':app_name']['volumes']['$post']>,
+    ) {
+      return parseResponse(client.apps[':app_name'].volumes.$post(args, options))
+    },
+  })
+}
+
+export function createPostAppsAppNameVolumes<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<ReturnType<(typeof client.apps)[':app_name']['volumes']['$post']>>
+            >
+          >
+        >,
+        TError,
+        InferRequestType<(typeof client.apps)[':app_name']['volumes']['$post']>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostAppsAppNameVolumesMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getAppsAppNameVolumesVolumeIdQueryKey(
+  args: InferRequestType<(typeof client.apps)[':app_name']['volumes'][':volume_id']['$get']>,
+) {
+  return ['apps', '/apps/:app_name/volumes/:volume_id', args] as const
+}
+
+export function getAppsAppNameVolumesVolumeIdQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.apps)[':app_name']['volumes'][':volume_id']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<(typeof client.apps)[':app_name']['volumes'][':volume_id']['$get']>,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.apps)[':app_name']['volumes'][':volume_id']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getAppsAppNameVolumesVolumeIdQueryKey>
+  >({
+    queryKey: getAppsAppNameVolumesVolumeIdQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.apps[':app_name'].volumes[':volume_id'].$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createAppsAppNameVolumesVolumeId<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.apps)[':app_name']['volumes'][':volume_id']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<(typeof client.apps)[':app_name']['volumes'][':volume_id']['$get']>,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<(typeof client.apps)[':app_name']['volumes'][':volume_id']['$get']>
+              >
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getAppsAppNameVolumesVolumeIdQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getAppsAppNameVolumesVolumeIdQueryOptions<TData, TError>(args(), clientOptions),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getPostAppsAppNameVolumesVolumeIdMutationKey() {
+  return ['apps', '/apps/:app_name/volumes/:volume_id', 'POST'] as const
+}
+
+export function getPostAppsAppNameVolumesVolumeIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.apps)[':app_name']['volumes'][':volume_id']['$post']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.apps)[':app_name']['volumes'][':volume_id']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostAppsAppNameVolumesVolumeIdMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.apps)[':app_name']['volumes'][':volume_id']['$post']>,
+    ) {
+      return parseResponse(client.apps[':app_name'].volumes[':volume_id'].$post(args, options))
+    },
+  })
+}
+
+export function createPostAppsAppNameVolumesVolumeId<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<(typeof client.apps)[':app_name']['volumes'][':volume_id']['$post']>
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<(typeof client.apps)[':app_name']['volumes'][':volume_id']['$post']>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostAppsAppNameVolumesVolumeIdMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getDeleteAppsAppNameVolumesVolumeIdMutationKey() {
+  return ['apps', '/apps/:app_name/volumes/:volume_id', 'DELETE'] as const
+}
+
+export function getDeleteAppsAppNameVolumesVolumeIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.apps)[':app_name']['volumes'][':volume_id']['$delete']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.apps)[':app_name']['volumes'][':volume_id']['$delete']>,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteAppsAppNameVolumesVolumeIdMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.apps)[':app_name']['volumes'][':volume_id']['$delete']>,
+    ) {
+      return parseResponse(client.apps[':app_name'].volumes[':volume_id'].$delete(args, options))
+    },
+  })
+}
+
+export function createDeleteAppsAppNameVolumesVolumeId<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<(typeof client.apps)[':app_name']['volumes'][':volume_id']['$delete']>
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<(typeof client.apps)[':app_name']['volumes'][':volume_id']['$delete']>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeleteAppsAppNameVolumesVolumeIdMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPutAppsAppNameVolumesVolumeIdExtendMutationKey() {
+  return ['apps', '/apps/:app_name/volumes/:volume_id/extend', 'PUT'] as const
+}
+
+export function getPutAppsAppNameVolumesVolumeIdExtendMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.apps)[':app_name']['volumes'][':volume_id']['extend']['$put']>
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.apps)[':app_name']['volumes'][':volume_id']['extend']['$put']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPutAppsAppNameVolumesVolumeIdExtendMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.apps)[':app_name']['volumes'][':volume_id']['extend']['$put']
+      >,
+    ) {
+      return parseResponse(
+        client.apps[':app_name'].volumes[':volume_id'].extend.$put(args, options),
+      )
+    },
+  })
+}
+
+export function createPutAppsAppNameVolumesVolumeIdExtend<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.apps)[':app_name']['volumes'][':volume_id']['extend']['$put']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<
+          (typeof client.apps)[':app_name']['volumes'][':volume_id']['extend']['$put']
+        >,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPutAppsAppNameVolumesVolumeIdExtendMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getAppsAppNameVolumesVolumeIdSnapshotsQueryKey(
+  args: InferRequestType<
+    (typeof client.apps)[':app_name']['volumes'][':volume_id']['snapshots']['$get']
+  >,
+) {
+  return ['apps', '/apps/:app_name/volumes/:volume_id/snapshots', args] as const
+}
+
+export function getAppsAppNameVolumesVolumeIdSnapshotsQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.apps)[':app_name']['volumes'][':volume_id']['snapshots']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<
+    (typeof client.apps)[':app_name']['volumes'][':volume_id']['snapshots']['$get']
+  >,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apps)[':app_name']['volumes'][':volume_id']['snapshots']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getAppsAppNameVolumesVolumeIdSnapshotsQueryKey>
+  >({
+    queryKey: getAppsAppNameVolumesVolumeIdSnapshotsQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.apps[':app_name'].volumes[':volume_id'].snapshots.$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createAppsAppNameVolumesVolumeIdSnapshots<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.apps)[':app_name']['volumes'][':volume_id']['snapshots']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<
+    (typeof client.apps)[':app_name']['volumes'][':volume_id']['snapshots']['$get']
+  >,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.apps)[':app_name']['volumes'][':volume_id']['snapshots']['$get']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getAppsAppNameVolumesVolumeIdSnapshotsQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getAppsAppNameVolumesVolumeIdSnapshotsQueryOptions<TData, TError>(args(), clientOptions),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getPostAppsAppNameVolumesVolumeIdSnapshotsMutationKey() {
+  return ['apps', '/apps/:app_name/volumes/:volume_id/snapshots', 'POST'] as const
+}
+
+export function getPostAppsAppNameVolumesVolumeIdSnapshotsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apps)[':app_name']['volumes'][':volume_id']['snapshots']['$post']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.apps)[':app_name']['volumes'][':volume_id']['snapshots']['$post']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getPostAppsAppNameVolumesVolumeIdSnapshotsMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.apps)[':app_name']['volumes'][':volume_id']['snapshots']['$post']
+      >,
+    ) {
+      return parseResponse(
+        client.apps[':app_name'].volumes[':volume_id'].snapshots.$post(args, options),
+      )
+    },
+  })
+}
+
+export function createPostAppsAppNameVolumesVolumeIdSnapshots<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.apps)[':app_name']['volumes'][':volume_id']['snapshots']['$post']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<
+          (typeof client.apps)[':app_name']['volumes'][':volume_id']['snapshots']['$post']
+        >,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostAppsAppNameVolumesVolumeIdSnapshotsMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}

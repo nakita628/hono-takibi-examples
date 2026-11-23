@@ -1,75 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const DriveExportOptionsSchema = z
-  .object({
-    includeAccessInfo: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'To include access level information for users with [indirect access](https://support.google.com/vault/answer/6099459#metadata) to files, set to **true**.',
-      }),
-  })
-  .openapi({ description: 'Options for Drive exports.', required: [] })
-  .openapi('DriveExportOptions')
-
-const GroupsExportOptionsSchema = z
-  .object({
-    exportFormat: z
-      .enum(['EXPORT_FORMAT_UNSPECIFIED', 'MBOX', 'PST'])
-      .exactOptional()
-      .openapi({ description: 'The file format for exported messages.' }),
-  })
-  .openapi({ description: 'Options for Groups exports.', required: [] })
-  .openapi('GroupsExportOptions')
-
-const HangoutsChatExportOptionsSchema = z
-  .object({
-    exportFormat: z
-      .enum(['EXPORT_FORMAT_UNSPECIFIED', 'MBOX', 'PST'])
-      .exactOptional()
-      .openapi({ description: 'The file format for exported messages.' }),
-  })
-  .openapi({ description: 'Options for Chat exports.', required: [] })
-  .openapi('HangoutsChatExportOptions')
-
-const MailExportOptionsSchema = z
-  .object({
-    exportFormat: z
-      .enum(['EXPORT_FORMAT_UNSPECIFIED', 'MBOX', 'PST'])
-      .exactOptional()
-      .openapi({ description: 'The file format for exported messages.' }),
-    showConfidentialModeContent: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'To export confidential mode content, set to **true**.' }),
-    useNewExport: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'To use the new export system, set to **true**.' }),
-  })
-  .openapi({ description: 'Options for Gmail exports.', required: [] })
-  .openapi('MailExportOptions')
-
-const VoiceExportOptionsSchema = z
-  .object({
-    exportFormat: z
-      .enum(['EXPORT_FORMAT_UNSPECIFIED', 'MBOX', 'PST'])
-      .exactOptional()
-      .openapi({ description: 'The file format for exported text messages.' }),
-  })
-  .openapi({ description: 'The options for Voice exports.', required: [] })
-  .openapi('VoiceExportOptions')
-
-type ExportOptionsType = {
-  driveOptions?: z.infer<typeof DriveExportOptionsSchema>
-  groupsOptions?: z.infer<typeof GroupsExportOptionsSchema>
-  hangoutsChatOptions?: z.infer<typeof HangoutsChatExportOptionsSchema>
-  mailOptions?: z.infer<typeof MailExportOptionsSchema>
-  region?: 'EXPORT_REGION_UNSPECIFIED' | 'ANY' | 'US' | 'EUROPE'
-  voiceOptions?: z.infer<typeof VoiceExportOptionsSchema>
-}
-
 const UserInfoSchema = z
   .object({
     displayName: z
@@ -291,12 +221,12 @@ const AddMatterPermissionsRequestSchema = z
   .openapi('AddMatterPermissionsRequest')
 
 const CancelOperationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The request message for Operations.CancelOperation.' })
   .openapi('CancelOperationRequest')
 
 const CloseMatterRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Close a matter by ID.' })
   .openapi('CloseMatterRequest')
 
@@ -848,40 +778,98 @@ const CountArtifactsResponseSchema = z
   .openapi({ description: 'Definition of the response for method CountArtifacts.', required: [] })
   .openapi('CountArtifactsResponse')
 
+const DriveExportOptionsSchema = z
+  .object({
+    includeAccessInfo: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'To include access level information for users with [indirect access](https://support.google.com/vault/answer/6099459#metadata) to files, set to **true**.',
+      }),
+  })
+  .openapi({ description: 'Options for Drive exports.', required: [] })
+  .openapi('DriveExportOptions')
+
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
   })
   .openapi('Empty')
 
-const ExportOptionsSchema: z.ZodType<ExportOptionsType> = z
-  .lazy(() =>
-    z
-      .object({
-        driveOptions: DriveExportOptionsSchema.exactOptional().openapi({
-          description: 'Options for Drive exports.',
-        }),
-        groupsOptions: GroupsExportOptionsSchema.exactOptional().openapi({
-          description: 'Options for Groups exports.',
-        }),
-        hangoutsChatOptions: HangoutsChatExportOptionsSchema.exactOptional().openapi({
-          description: 'Options for Chat exports.',
-        }),
-        mailOptions: MailExportOptionsSchema.exactOptional().openapi({
-          description: 'Options for Gmail exports.',
-        }),
-        region: z
-          .enum(['EXPORT_REGION_UNSPECIFIED', 'ANY', 'US', 'EUROPE'])
-          .exactOptional()
-          .openapi({ description: 'The requested data region for the export.' }),
-        voiceOptions: VoiceExportOptionsSchema.exactOptional().openapi({
-          description: 'Options for Voice exports.',
-        }),
-      })
-      .openapi({ description: 'Additional options for exports', required: [] }),
-  )
+const GroupsExportOptionsSchema = z
+  .object({
+    exportFormat: z
+      .enum(['EXPORT_FORMAT_UNSPECIFIED', 'MBOX', 'PST'])
+      .exactOptional()
+      .openapi({ description: 'The file format for exported messages.' }),
+  })
+  .openapi({ description: 'Options for Groups exports.', required: [] })
+  .openapi('GroupsExportOptions')
+
+const HangoutsChatExportOptionsSchema = z
+  .object({
+    exportFormat: z
+      .enum(['EXPORT_FORMAT_UNSPECIFIED', 'MBOX', 'PST'])
+      .exactOptional()
+      .openapi({ description: 'The file format for exported messages.' }),
+  })
+  .openapi({ description: 'Options for Chat exports.', required: [] })
+  .openapi('HangoutsChatExportOptions')
+
+const MailExportOptionsSchema = z
+  .object({
+    exportFormat: z
+      .enum(['EXPORT_FORMAT_UNSPECIFIED', 'MBOX', 'PST'])
+      .exactOptional()
+      .openapi({ description: 'The file format for exported messages.' }),
+    showConfidentialModeContent: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'To export confidential mode content, set to **true**.' }),
+    useNewExport: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'To use the new export system, set to **true**.' }),
+  })
+  .openapi({ description: 'Options for Gmail exports.', required: [] })
+  .openapi('MailExportOptions')
+
+const VoiceExportOptionsSchema = z
+  .object({
+    exportFormat: z
+      .enum(['EXPORT_FORMAT_UNSPECIFIED', 'MBOX', 'PST'])
+      .exactOptional()
+      .openapi({ description: 'The file format for exported text messages.' }),
+  })
+  .openapi({ description: 'The options for Voice exports.', required: [] })
+  .openapi('VoiceExportOptions')
+
+const ExportOptionsSchema = z
+  .object({
+    driveOptions: DriveExportOptionsSchema.exactOptional().openapi({
+      description: 'Options for Drive exports.',
+    }),
+    groupsOptions: GroupsExportOptionsSchema.exactOptional().openapi({
+      description: 'Options for Groups exports.',
+    }),
+    hangoutsChatOptions: HangoutsChatExportOptionsSchema.exactOptional().openapi({
+      description: 'Options for Chat exports.',
+    }),
+    mailOptions: MailExportOptionsSchema.exactOptional().openapi({
+      description: 'Options for Gmail exports.',
+    }),
+    region: z
+      .enum(['EXPORT_REGION_UNSPECIFIED', 'ANY', 'US', 'EUROPE'])
+      .exactOptional()
+      .openapi({ description: 'The requested data region for the export.' }),
+    voiceOptions: VoiceExportOptionsSchema.exactOptional().openapi({
+      description: 'Options for Voice exports.',
+    }),
+  })
+  .openapi({ description: 'Additional options for exports', required: [] })
   .openapi('ExportOptions')
 
 const ExportStatsSchema = z
@@ -1204,7 +1192,7 @@ const RemoveMatterPermissionsRequestSchema = z
   .openapi('RemoveMatterPermissionsRequest')
 
 const ReopenMatterRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Reopen a matter by ID.' })
   .openapi('ReopenMatterRequest')
 
@@ -1218,7 +1206,7 @@ const ReopenMatterResponseSchema = z
   .openapi('ReopenMatterResponse')
 
 const UndeleteMatterRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Undelete a matter by ID.' })
   .openapi('UndeleteMatterRequest')
 

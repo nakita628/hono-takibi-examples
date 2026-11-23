@@ -1,99 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const SourceDataColumnIndexSchema = z.int().min(1).openapi('SourceDataColumnIndex')
-
-const SourceDataColumnPropertiesSchema = z
-  .object({
-    columnIndex: SourceDataColumnIndexSchema.and(
-      z.any().openapi({ description: 'The index of the column in the input file.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'An object that contains the properties for importing data to a specific column in a table.',
-    required: [],
-  })
-  .openapi('SourceDataColumnProperties')
-
-const ImportColumnMapSchema = z
-  .record(z.string(), SourceDataColumnPropertiesSchema)
-  .refine((val) => Object.keys(val).length <= 100)
-  .openapi('ImportColumnMap')
-
-const DestinationOptionsSchema = z
-  .object({
-    columnMap: ImportColumnMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A map of the column id to the import properties for each column.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'An object that contains the options relating to the destination of the import request.',
-    required: [],
-  })
-  .openapi('DestinationOptions')
-
-const DelimitedTextDelimiterSchema = z
-  .string()
-  .regex(/^[^\n\r\x00\x08\x0B\x0C\x0E\x1F]?$/)
-  .length(1)
-  .openapi('DelimitedTextDelimiter')
-
-const HasHeaderRowSchema = z.boolean().openapi('HasHeaderRow')
-
-const IgnoreEmptyRowsSchema = z.boolean().openapi('IgnoreEmptyRows')
-
-const ImportDataCharacterEncodingSchema = z
-  .enum(['UTF-8', 'US-ASCII', 'ISO-8859-1', 'UTF-16BE', 'UTF-16LE', 'UTF-16'])
-  .openapi('ImportDataCharacterEncoding')
-
-const DelimitedTextImportOptionsSchema = z
-  .object({
-    delimiter: DelimitedTextDelimiterSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The delimiter to use for separating columns in a single row of the input.',
-        }),
-    ),
-    hasHeaderRow: HasHeaderRowSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether the input file has a header row at the top containing the column names.',
-        }),
-    ).exactOptional(),
-    ignoreEmptyRows: IgnoreEmptyRowsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A parameter to indicate whether empty rows should be ignored or be included in the import.',
-        }),
-    ).exactOptional(),
-    dataCharacterEncoding: ImportDataCharacterEncodingSchema.and(
-      z.any().openapi({ description: 'The encoding of the data in the input file.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['delimiter'],
-    description:
-      ' An object that contains the options relating to parsing delimited text as part of an import request. ',
-  })
-  .openapi('DelimitedTextImportOptions')
-
-type ImportOptionsType = {
-  destinationOptions?: z.infer<typeof DestinationOptionsSchema> & { [key: string]: unknown }
-  delimitedTextOptions?: z.infer<typeof DelimitedTextImportOptionsSchema> & {
-    [key: string]: unknown
-  }
-}
-
 const WorkbookCursorSchema = z.int().openapi('WorkbookCursor')
 
 const RowIdSchema = z
@@ -120,19 +26,13 @@ const BatchErrorMessageSchema = z
 
 const FailedBatchItemSchema = z
   .object({
-    id: BatchItemIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The id of the batch item that failed. This is the batch item id for the BatchCreateTableRows and BatchUpsertTableRows operations and the row id for the BatchUpdateTableRows and BatchDeleteTableRows operations. ',
-        }),
-    ),
-    errorMessage: BatchErrorMessageSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The error message that indicates why the batch item failed. ' }),
-    ),
+    id: BatchItemIdSchema.openapi({
+      description:
+        ' The id of the batch item that failed. This is the batch item id for the BatchCreateTableRows and BatchUpsertTableRows operations and the row id for the BatchUpdateTableRows and BatchDeleteTableRows operations. ',
+    }),
+    errorMessage: BatchErrorMessageSchema.openapi({
+      description: ' The error message that indicates why the batch item failed. ',
+    }),
   })
   .openapi({
     required: ['id', 'errorMessage'],
@@ -149,29 +49,16 @@ const FailedBatchItemsSchema = z
 
 const BatchCreateTableRowsResultSchema = z
   .object({
-    workbookCursor: WorkbookCursorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The updated workbook cursor after adding the new rows at the end of the table.',
-        }),
-    ),
-    createdRows: CreatedRowsMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The map of batch item id to the row id that was created for that item.',
-        }),
-    ),
-    failedBatchItems: FailedBatchItemsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The list of batch items in the request that could not be added to the table. Each element in this list contains one item from the request that could not be added to the table along with the reason why that item could not be added. ',
-        }),
-    ).exactOptional(),
+    workbookCursor: WorkbookCursorSchema.openapi({
+      description: 'The updated workbook cursor after adding the new rows at the end of the table.',
+    }),
+    createdRows: CreatedRowsMapSchema.openapi({
+      description: 'The map of batch item id to the row id that was created for that item.',
+    }),
+    failedBatchItems: FailedBatchItemsSchema.exactOptional().openapi({
+      description:
+        ' The list of batch items in the request that could not be added to the table. Each element in this list contains one item from the request that could not be added to the table along with the reason why that item could not be added. ',
+    }),
   })
   .openapi({ required: ['workbookCursor', 'createdRows'] })
   .openapi('BatchCreateTableRowsResult')
@@ -187,22 +74,14 @@ const FactListSchema = z.array(FactSchema).min(0).max(220).openapi('FactList')
 
 const CellInputSchema = z
   .object({
-    fact: FactSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Fact represents the data that is entered into a cell. This data can be free text or a formula. Formulas need to start with the equals (=) sign. ',
-        }),
-    ).exactOptional(),
-    facts: FactListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A list representing the values that are entered into a ROWSET cell. Facts list can have either only values or rowIDs, and rowIDs should from the same table. ',
-        }),
-    ).exactOptional(),
+    fact: FactSchema.exactOptional().openapi({
+      description:
+        ' Fact represents the data that is entered into a cell. This data can be free text or a formula. Formulas need to start with the equals (=) sign. ',
+    }),
+    facts: FactListSchema.exactOptional().openapi({
+      description:
+        ' A list representing the values that are entered into a ROWSET cell. Facts list can have either only values or rowIDs, and rowIDs should from the same table. ',
+    }),
   })
   .openapi({
     description:
@@ -219,22 +98,14 @@ const RowDataInputSchema = z
 
 const CreateRowDataSchema = z
   .object({
-    batchItemId: BatchItemIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An external identifier that represents the single row that is being created as part of the BatchCreateTableRows request. This can be any string that you can use to identify the row in the request. The BatchCreateTableRows API puts the batch item id in the results to allow you to link data in the request to data in the results. ',
-        }),
-    ),
-    cellsToCreate: RowDataInputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A map representing the cells to create in the new row. The key is the column id of the cell and the value is the CellInput object that represents the data to set in that cell. ',
-        }),
-    ),
+    batchItemId: BatchItemIdSchema.openapi({
+      description:
+        ' An external identifier that represents the single row that is being created as part of the BatchCreateTableRows request. This can be any string that you can use to identify the row in the request. The BatchCreateTableRows API puts the batch item id in the results to allow you to link data in the request to data in the results. ',
+    }),
+    cellsToCreate: RowDataInputSchema.openapi({
+      description:
+        ' A map representing the cells to create in the new row. The key is the column id of the cell and the value is the CellInput object that represents the data to set in that cell. ',
+    }),
   })
   .openapi({
     required: ['batchItemId', 'cellsToCreate'],
@@ -261,60 +132,37 @@ const ValidationExceptionSchema = z.any().openapi('ValidationException')
 
 const BatchDeleteTableRowsResultSchema = z
   .object({
-    workbookCursor: WorkbookCursorSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The updated workbook cursor after deleting the rows from the table.',
-        }),
-    ),
-    failedBatchItems: FailedBatchItemsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The list of row ids in the request that could not be deleted from the table. Each element in this list contains one row id from the request that could not be deleted along with the reason why that item could not be deleted. ',
-        }),
-    ).exactOptional(),
+    workbookCursor: WorkbookCursorSchema.openapi({
+      description: 'The updated workbook cursor after deleting the rows from the table.',
+    }),
+    failedBatchItems: FailedBatchItemsSchema.exactOptional().openapi({
+      description:
+        ' The list of row ids in the request that could not be deleted from the table. Each element in this list contains one row id from the request that could not be deleted along with the reason why that item could not be deleted. ',
+    }),
   })
   .openapi({ required: ['workbookCursor'] })
   .openapi('BatchDeleteTableRowsResult')
 
 const BatchUpdateTableRowsResultSchema = z
   .object({
-    workbookCursor: WorkbookCursorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The updated workbook cursor after adding the new rows at the end of the table.',
-        }),
-    ),
-    failedBatchItems: FailedBatchItemsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The list of batch items in the request that could not be updated in the table. Each element in this list contains one item from the request that could not be updated in the table along with the reason why that item could not be updated. ',
-        }),
-    ).exactOptional(),
+    workbookCursor: WorkbookCursorSchema.openapi({
+      description: 'The updated workbook cursor after adding the new rows at the end of the table.',
+    }),
+    failedBatchItems: FailedBatchItemsSchema.exactOptional().openapi({
+      description:
+        ' The list of batch items in the request that could not be updated in the table. Each element in this list contains one item from the request that could not be updated in the table along with the reason why that item could not be updated. ',
+    }),
   })
   .openapi({ required: ['workbookCursor'] })
   .openapi('BatchUpdateTableRowsResult')
 
 const UpdateRowDataSchema = z
   .object({
-    rowId: RowIdSchema.and(
-      z.any().openapi({ description: ' The id of the row that needs to be updated. ' }),
-    ),
-    cellsToUpdate: RowDataInputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A map representing the cells to update in the given row. The key is the column id of the cell and the value is the CellInput object that represents the data to set in that cell. ',
-        }),
-    ),
+    rowId: RowIdSchema.openapi({ description: ' The id of the row that needs to be updated. ' }),
+    cellsToUpdate: RowDataInputSchema.openapi({
+      description:
+        ' A map representing the cells to update in the given row. The key is the column id of the cell and the value is the CellInput object that represents the data to set in that cell. ',
+    }),
   })
   .openapi({
     required: ['rowId', 'cellsToUpdate'],
@@ -329,17 +177,11 @@ const UpsertActionSchema = z.enum(['UPDATED', 'APPENDED']).openapi('UpsertAction
 
 const UpsertRowsResultSchema = z
   .object({
-    rowIds: RowIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The list of row ids that were changed as part of an upsert row operation. If the upsert resulted in an update, this list could potentially contain multiple rows that matched the filter and hence got updated. If the upsert resulted in an append, this list would only have the single row that was appended. ',
-        }),
-    ),
-    upsertAction: UpsertActionSchema.and(
-      z.any().openapi({ description: ' The result of the upsert action. ' }),
-    ),
+    rowIds: RowIdListSchema.openapi({
+      description:
+        ' The list of row ids that were changed as part of an upsert row operation. If the upsert resulted in an update, this list could potentially contain multiple rows that matched the filter and hence got updated. If the upsert resulted in an append, this list would only have the single row that was appended. ',
+    }),
+    upsertAction: UpsertActionSchema.openapi({ description: ' The result of the upsert action. ' }),
   })
   .openapi({
     required: ['rowIds', 'upsertAction'],
@@ -353,29 +195,17 @@ const UpsertRowsResultMapSchema = z
 
 const BatchUpsertTableRowsResultSchema = z
   .object({
-    rows: UpsertRowsResultMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A map with the batch item id as the key and the result of the upsert operation as the value. The result of the upsert operation specifies whether existing rows were updated or a new row was appended, along with the list of row ids that were affected. ',
-        }),
-    ),
-    workbookCursor: WorkbookCursorSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The updated workbook cursor after updating or appending rows in the table.',
-        }),
-    ),
-    failedBatchItems: FailedBatchItemsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The list of batch items in the request that could not be updated or appended in the table. Each element in this list contains one item from the request that could not be updated in the table along with the reason why that item could not be updated or appended. ',
-        }),
-    ).exactOptional(),
+    rows: UpsertRowsResultMapSchema.openapi({
+      description:
+        ' A map with the batch item id as the key and the result of the upsert operation as the value. The result of the upsert operation specifies whether existing rows were updated or a new row was appended, along with the list of row ids that were affected. ',
+    }),
+    workbookCursor: WorkbookCursorSchema.openapi({
+      description: 'The updated workbook cursor after updating or appending rows in the table.',
+    }),
+    failedBatchItems: FailedBatchItemsSchema.exactOptional().openapi({
+      description:
+        ' The list of batch items in the request that could not be updated or appended in the table. Each element in this list contains one item from the request that could not be updated in the table along with the reason why that item could not be updated or appended. ',
+    }),
   })
   .openapi({ required: ['rows', 'workbookCursor'] })
   .openapi('BatchUpsertTableRowsResult')
@@ -384,22 +214,14 @@ const FormulaSchema = z.string().regex(/^=.*/).min(0).max(8192).openapi('Formula
 
 const FilterSchema = z
   .object({
-    formula: FormulaSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A formula representing a filter function that returns zero or more matching rows from a table. Valid formulas in this field return a list of rows from a table. The most common ways of writing a formula to return a list of rows are to use the FindRow() or Filter() functions. Any other formula that returns zero or more rows is also acceptable. For example, you can use a formula that points to a cell that contains a filter function. ',
-        }),
-    ),
-    contextRowId: RowIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The optional contextRowId attribute can be used to specify the row id of the context row if the filter formula contains unqualified references to table columns and needs a context row to evaluate them successfully. ',
-        }),
-    ).exactOptional(),
+    formula: FormulaSchema.openapi({
+      description:
+        ' A formula representing a filter function that returns zero or more matching rows from a table. Valid formulas in this field return a list of rows from a table. The most common ways of writing a formula to return a list of rows are to use the FindRow() or Filter() functions. Any other formula that returns zero or more rows is also acceptable. For example, you can use a formula that points to a cell that contains a filter function. ',
+    }),
+    contextRowId: RowIdSchema.exactOptional().openapi({
+      description:
+        ' The optional contextRowId attribute can be used to specify the row id of the context row if the filter formula contains unqualified references to table columns and needs a context row to evaluate them successfully. ',
+    }),
   })
   .openapi({
     required: ['formula'],
@@ -410,30 +232,18 @@ const FilterSchema = z
 
 const UpsertRowDataSchema = z
   .object({
-    batchItemId: BatchItemIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An external identifier that represents a single item in the request that is being upserted as part of the BatchUpsertTableRows request. This can be any string that you can use to identify the item in the request. The BatchUpsertTableRows API puts the batch item id in the results to allow you to link data in the request to data in the results. ',
-        }),
-    ),
-    filter: FilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p> The filter formula to use to find existing matching rows to update. The formula needs to return zero or more rows. If the formula returns 0 rows, then a new row will be appended in the target table. If the formula returns one or more rows, then the returned rows will be updated. </p> <p> Note that the filter formula needs to return rows from the target table for the upsert operation to succeed. If the filter formula has a syntax error or it doesn't evaluate to zero or more rows in the target table for any one item in the input list, then the entire BatchUpsertTableRows request fails and no updates are made to the table. </p>",
-        }),
-    ),
-    cellsToUpdate: RowDataInputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A map representing the cells to update for the matching rows or an appended row. The key is the column id of the cell and the value is the CellInput object that represents the data to set in that cell. ',
-        }),
-    ),
+    batchItemId: BatchItemIdSchema.openapi({
+      description:
+        ' An external identifier that represents a single item in the request that is being upserted as part of the BatchUpsertTableRows request. This can be any string that you can use to identify the item in the request. The BatchUpsertTableRows API puts the batch item id in the results to allow you to link data in the request to data in the results. ',
+    }),
+    filter: FilterSchema.openapi({
+      description:
+        "<p> The filter formula to use to find existing matching rows to update. The formula needs to return zero or more rows. If the formula returns 0 rows, then a new row will be appended in the target table. If the formula returns one or more rows, then the returned rows will be updated. </p> <p> Note that the filter formula needs to return rows from the target table for the upsert operation to succeed. If the filter formula has a syntax error or it doesn't evaluate to zero or more rows in the target table for any one item in the input list, then the entire BatchUpsertTableRows request fails and no updates are made to the table. </p>",
+    }),
+    cellsToUpdate: RowDataInputSchema.openapi({
+      description:
+        ' A map representing the cells to update for the matching rows or an appended row. The key is the column id of the cell and the value is the CellInput object that represents the data to set in that cell. ',
+    }),
   })
   .openapi({
     required: ['batchItemId', 'filter', 'cellsToUpdate'],
@@ -459,18 +269,12 @@ const AwsUserArnSchema = z.string().min(20).max(2048).openapi('AwsUserArn')
 
 const ImportJobSubmitterSchema = z
   .object({
-    email: EmailSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The email id of the submitter of the import job, if available.' }),
-    ).exactOptional(),
-    userArn: AwsUserArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The AWS user ARN of the submitter of the import job, if available.',
-        }),
-    ).exactOptional(),
+    email: EmailSchema.exactOptional().openapi({
+      description: 'The email id of the submitter of the import job, if available.',
+    }),
+    userArn: AwsUserArnSchema.exactOptional().openapi({
+      description: 'The AWS user ARN of the submitter of the import job, if available.',
+    }),
   })
   .openapi({
     description: 'An object that contains the attributes of the submitter of the import job.',
@@ -480,30 +284,92 @@ const ImportJobSubmitterSchema = z
 
 const TimestampInMillisSchema = z.iso.datetime({ offset: true }).openapi('TimestampInMillis')
 
-const ImportOptionsSchema: z.ZodType<ImportOptionsType> = z
-  .lazy(() =>
-    z
-      .object({
-        destinationOptions: DestinationOptionsSchema.and(
-          z
-            .any()
-            .openapi({ description: 'Options relating to the destination of the import request.' }),
-        ).exactOptional(),
-        delimitedTextOptions: DelimitedTextImportOptionsSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Options relating to parsing delimited text. Required if dataFormat is DELIMITED_TEXT.',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description:
-          'An object that contains the options specified by the sumitter of the import request.',
-        required: [],
-      }),
-  )
+const SourceDataColumnIndexSchema = z.int().min(1).openapi('SourceDataColumnIndex')
+
+const SourceDataColumnPropertiesSchema = z
+  .object({
+    columnIndex: SourceDataColumnIndexSchema.exactOptional().openapi({
+      description: 'The index of the column in the input file.',
+    }),
+  })
+  .openapi({
+    description:
+      'An object that contains the properties for importing data to a specific column in a table.',
+    required: [],
+  })
+  .openapi('SourceDataColumnProperties')
+
+const ImportColumnMapSchema = z
+  .record(z.string(), SourceDataColumnPropertiesSchema)
+  .refine((val) => Object.keys(val).length <= 100)
+  .openapi('ImportColumnMap')
+
+const DestinationOptionsSchema = z
+  .object({
+    columnMap: ImportColumnMapSchema.exactOptional().openapi({
+      description: 'A map of the column id to the import properties for each column.',
+    }),
+  })
+  .openapi({
+    description:
+      'An object that contains the options relating to the destination of the import request.',
+    required: [],
+  })
+  .openapi('DestinationOptions')
+
+const DelimitedTextDelimiterSchema = z
+  .string()
+  .regex(/^[^\n\r\x00\x08\x0B\x0C\x0E\x1F]?$/)
+  .length(1)
+  .openapi('DelimitedTextDelimiter')
+
+const HasHeaderRowSchema = z.boolean().openapi('HasHeaderRow')
+
+const IgnoreEmptyRowsSchema = z.boolean().openapi('IgnoreEmptyRows')
+
+const ImportDataCharacterEncodingSchema = z
+  .enum(['UTF-8', 'US-ASCII', 'ISO-8859-1', 'UTF-16BE', 'UTF-16LE', 'UTF-16'])
+  .openapi('ImportDataCharacterEncoding')
+
+const DelimitedTextImportOptionsSchema = z
+  .object({
+    delimiter: DelimitedTextDelimiterSchema.openapi({
+      description: 'The delimiter to use for separating columns in a single row of the input.',
+    }),
+    hasHeaderRow: HasHeaderRowSchema.exactOptional().openapi({
+      description:
+        'Indicates whether the input file has a header row at the top containing the column names.',
+    }),
+    ignoreEmptyRows: IgnoreEmptyRowsSchema.exactOptional().openapi({
+      description:
+        'A parameter to indicate whether empty rows should be ignored or be included in the import.',
+    }),
+    dataCharacterEncoding: ImportDataCharacterEncodingSchema.exactOptional().openapi({
+      description: 'The encoding of the data in the input file.',
+    }),
+  })
+  .openapi({
+    required: ['delimiter'],
+    description:
+      ' An object that contains the options relating to parsing delimited text as part of an import request. ',
+  })
+  .openapi('DelimitedTextImportOptions')
+
+const ImportOptionsSchema = z
+  .object({
+    destinationOptions: DestinationOptionsSchema.exactOptional().openapi({
+      description: 'Options relating to the destination of the import request.',
+    }),
+    delimitedTextOptions: DelimitedTextImportOptionsSchema.exactOptional().openapi({
+      description:
+        'Options relating to parsing delimited text. Required if dataFormat is DELIMITED_TEXT.',
+    }),
+  })
+  .openapi({
+    description:
+      'An object that contains the options specified by the sumitter of the import request.',
+    required: [],
+  })
   .openapi('ImportOptions')
 
 const SecureURLSchema = z
@@ -515,14 +381,9 @@ const SecureURLSchema = z
 
 const ImportDataSourceConfigSchema = z
   .object({
-    dataSourceUrl: SecureURLSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The URL from which source data will be downloaded for the import request. ',
-        }),
-    ).exactOptional(),
+    dataSourceUrl: SecureURLSchema.exactOptional().openapi({
+      description: ' The URL from which source data will be downloaded for the import request. ',
+    }),
   })
   .openapi({
     description:
@@ -533,11 +394,9 @@ const ImportDataSourceConfigSchema = z
 
 const ImportDataSourceSchema = z
   .object({
-    dataSourceConfig: ImportDataSourceConfigSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The configuration parameters for the data source of the import' }),
-    ),
+    dataSourceConfig: ImportDataSourceConfigSchema.openapi({
+      description: 'The configuration parameters for the data source of the import',
+    }),
   })
   .openapi({
     required: ['dataSourceConfig'],
@@ -548,23 +407,18 @@ const ImportDataSourceSchema = z
 
 const TableDataImportJobMetadataSchema = z
   .object({
-    submitter: ImportJobSubmitterSchema.and(
-      z.any().openapi({ description: 'Details about the submitter of the import request.' }),
-    ),
-    submitTime: TimestampInMillisSchema.and(
-      z.any().openapi({ description: 'The timestamp when the job was submitted for import.' }),
-    ),
-    importOptions: ImportOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The options that was specified at the time of submitting the import request.',
-        }),
-    ),
-    dataSource: ImportDataSourceSchema.and(
-      z.any().openapi({ description: 'The source of the data that was submitted for import.' }),
-    ),
+    submitter: ImportJobSubmitterSchema.openapi({
+      description: 'Details about the submitter of the import request.',
+    }),
+    submitTime: TimestampInMillisSchema.openapi({
+      description: 'The timestamp when the job was submitted for import.',
+    }),
+    importOptions: ImportOptionsSchema.openapi({
+      description: 'The options that was specified at the time of submitting the import request.',
+    }),
+    dataSource: ImportDataSourceSchema.openapi({
+      description: 'The source of the data that was submitted for import.',
+    }),
   })
   .openapi({
     required: ['submitter', 'submitTime', 'importOptions', 'dataSource'],
@@ -593,30 +447,18 @@ const ErrorCodeSchema = z
 
 const DescribeTableDataImportJobResultSchema = z
   .object({
-    jobStatus: TableDataImportJobStatusSchema.and(
-      z.any().openapi({ description: ' The current status of the import job. ' }),
-    ),
-    message: TableDataImportJobMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A message providing more details about the current status of the import job. ',
-        }),
-    ),
-    jobMetadata: TableDataImportJobMetadataSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The metadata about the job that was submitted for import. ' }),
-    ),
-    errorCode: ErrorCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' If job status is failed, error code to understand reason for the failure. ',
-        }),
-    ).exactOptional(),
+    jobStatus: TableDataImportJobStatusSchema.openapi({
+      description: ' The current status of the import job. ',
+    }),
+    message: TableDataImportJobMessageSchema.openapi({
+      description: ' A message providing more details about the current status of the import job. ',
+    }),
+    jobMetadata: TableDataImportJobMetadataSchema.openapi({
+      description: ' The metadata about the job that was submitted for import. ',
+    }),
+    errorCode: ErrorCodeSchema.exactOptional().openapi({
+      description: ' If job status is failed, error code to understand reason for the failure. ',
+    }),
   })
   .openapi({ required: ['jobStatus', 'message', 'jobMetadata'] })
   .openapi('DescribeTableDataImportJobResult')
@@ -642,8 +484,8 @@ const FormatSchema = z
 
 const ColumnMetadataSchema = z
   .object({
-    name: NameSchema.and(z.any().openapi({ description: 'The name of the column.' })),
-    format: FormatSchema.and(z.any().openapi({ description: 'The format of the column.' })),
+    name: NameSchema.openapi({ description: 'The name of the column.' }),
+    format: FormatSchema.openapi({ description: 'The format of the column.' }),
   })
   .openapi({ required: ['name', 'format'], description: 'Metadata for column in the table.' })
   .openapi('ColumnMetadata')
@@ -666,20 +508,16 @@ const FormattedValueSchema = z
 
 const DataItemSchema = z
   .object({
-    overrideFormat: FormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The overrideFormat is optional and is specified only if a particular row of data has a different format for the data than the default format defined on the screen or the table. ',
-        }),
-    ).exactOptional(),
-    rawValue: RawValueSchema.and(
-      z.any().openapi({ description: 'The raw value of the data. e.g. jsmith@example.com' }),
-    ).exactOptional(),
-    formattedValue: FormattedValueSchema.and(
-      z.any().openapi({ description: 'The formatted value of the data. e.g. John Smith.' }),
-    ).exactOptional(),
+    overrideFormat: FormatSchema.exactOptional().openapi({
+      description:
+        ' The overrideFormat is optional and is specified only if a particular row of data has a different format for the data than the default format defined on the screen or the table. ',
+    }),
+    rawValue: RawValueSchema.exactOptional().openapi({
+      description: 'The raw value of the data. e.g. jsmith@example.com',
+    }),
+    formattedValue: FormattedValueSchema.exactOptional().openapi({
+      description: 'The formatted value of the data. e.g. John Smith.',
+    }),
   })
   .openapi({
     description: 'The data in a particular data cell defined on the screen.',
@@ -691,12 +529,8 @@ const DataItemsSchema = z.array(DataItemSchema).openapi('DataItems')
 
 const ResultRowSchema = z
   .object({
-    rowId: RowIdSchema.and(
-      z.any().openapi({ description: 'The ID for a particular row.' }),
-    ).exactOptional(),
-    dataItems: DataItemsSchema.and(
-      z.any().openapi({ description: 'List of all the data cells in a row.' }),
-    ),
+    rowId: RowIdSchema.exactOptional().openapi({ description: 'The ID for a particular row.' }),
+    dataItems: DataItemsSchema.openapi({ description: 'List of all the data cells in a row.' }),
   })
   .openapi({ required: ['dataItems'], description: 'A single row in the ResultSet.' })
   .openapi('ResultRow')
@@ -705,22 +539,14 @@ const ResultRowsSchema = z.array(ResultRowSchema).openapi('ResultRows')
 
 const ResultSetSchema = z
   .object({
-    headers: ResultHeaderSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> List of headers for all the data cells in the block. The header identifies the name and default format of the data cell. Data cells appear in the same order in all rows as defined in the header. The names and formats are not repeated in the rows. If a particular row does not have a value for a data cell, a blank value is used. </p> <p> For example, a task list that displays the task name, due date and assigned person might have headers [ { "name": "Task Name"}, {"name": "Due Date", "format": "DATE"}, {"name": "Assigned", "format": "CONTACT"} ]. Every row in the result will have the task name as the first item, due date as the second item and assigned person as the third item. If a particular task does not have a due date, that row will still have a blank value in the second element and the assigned person will still be in the third element. </p>',
-        }),
-    ),
-    rows: ResultRowsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' List of rows returned by the request. Each row has a row Id and a list of data cells in that row. The data cells will be present in the same order as they are defined in the header. ',
-        }),
-    ),
+    headers: ResultHeaderSchema.openapi({
+      description:
+        '<p> List of headers for all the data cells in the block. The header identifies the name and default format of the data cell. Data cells appear in the same order in all rows as defined in the header. The names and formats are not repeated in the rows. If a particular row does not have a value for a data cell, a blank value is used. </p> <p> For example, a task list that displays the task name, due date and assigned person might have headers [ { "name": "Task Name"}, {"name": "Due Date", "format": "DATE"}, {"name": "Assigned", "format": "CONTACT"} ]. Every row in the result will have the task name as the first item, due date as the second item and assigned person as the third item. If a particular task does not have a due date, that row will still have a blank value in the second element and the assigned person will still be in the third element. </p>',
+    }),
+    rows: ResultRowsSchema.openapi({
+      description:
+        ' List of rows returned by the request. Each row has a row Id and a list of data cells in that row. The data cells will be present in the same order as they are defined in the header. ',
+    }),
   })
   .openapi({
     required: ['headers', 'rows'],
@@ -740,33 +566,23 @@ const PaginationTokenSchema = z
 
 const GetScreenDataResultSchema = z
   .object({
-    results: ResultSetMapSchema.and(
-      z.any().openapi({ description: 'A map of all the rows on the screen keyed by block name.' }),
-    ),
-    workbookCursor: WorkbookCursorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Indicates the cursor of the workbook at which the data returned by this workbook is read. Workbook cursor keeps increasing with every update and the increments are not sequential. ',
-        }),
-    ),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Provides the pagination token to load the next page if there are more results matching the request. If a pagination token is not present in the response, it means that all data matching the query has been loaded. ',
-        }),
-    ).exactOptional(),
+    results: ResultSetMapSchema.openapi({
+      description: 'A map of all the rows on the screen keyed by block name.',
+    }),
+    workbookCursor: WorkbookCursorSchema.openapi({
+      description:
+        ' Indicates the cursor of the workbook at which the data returned by this workbook is read. Workbook cursor keeps increasing with every update and the increments are not sequential. ',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        ' Provides the pagination token to load the next page if there are more results matching the request. If a pagination token is not present in the response, it means that all data matching the query has been loaded. ',
+    }),
   })
   .openapi({ required: ['results', 'workbookCursor'] })
   .openapi('GetScreenDataResult')
 
 const VariableValueSchema = z
-  .object({
-    rawValue: RawValueSchema.and(z.any().openapi({ description: 'Raw value of the variable.' })),
-  })
+  .object({ rawValue: RawValueSchema.openapi({ description: 'Raw value of the variable.' }) })
   .openapi({
     required: ['rawValue'],
     description:
@@ -776,13 +592,9 @@ const VariableValueSchema = z
 
 const InvokeScreenAutomationResultSchema = z
   .object({
-    workbookCursor: WorkbookCursorSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The updated workbook cursor after performing the automation action.',
-        }),
-    ),
+    workbookCursor: WorkbookCursorSchema.openapi({
+      description: 'The updated workbook cursor after performing the automation action.',
+    }),
   })
   .openapi({ required: ['workbookCursor'] })
   .openapi('InvokeScreenAutomationResult')
@@ -803,20 +615,16 @@ const TableColumnNameSchema = z.string().openapi('TableColumnName')
 
 const TableColumnSchema = z
   .object({
-    tableColumnId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The id of the column in the table.' }),
-    ).exactOptional(),
-    tableColumnName: TableColumnNameSchema.and(
-      z.any().openapi({ description: 'The name of the column in the table.' }),
-    ).exactOptional(),
-    format: FormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " The column level format that is applied in the table. An empty value in this field means that the column format is the default value 'AUTO'. ",
-        }),
-    ).exactOptional(),
+    tableColumnId: ResourceIdSchema.exactOptional().openapi({
+      description: 'The id of the column in the table.',
+    }),
+    tableColumnName: TableColumnNameSchema.exactOptional().openapi({
+      description: 'The name of the column in the table.',
+    }),
+    format: FormatSchema.exactOptional().openapi({
+      description:
+        " The column level format that is applied in the table. An empty value in this field means that the column format is the default value 'AUTO'. ",
+    }),
   })
   .openapi({
     description: 'An object that contains attributes about a single column in a table',
@@ -828,25 +636,17 @@ const TableColumnsSchema = z.array(TableColumnSchema).openapi('TableColumns')
 
 const ListTableColumnsResultSchema = z
   .object({
-    tableColumns: TableColumnsSchema.and(
-      z.any().openapi({ description: ' The list of columns in the table. ' }),
-    ),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Provides the pagination token to load the next page if there are more results matching the request. If a pagination token is not present in the response, it means that all data matching the request has been loaded. ',
-        }),
-    ).exactOptional(),
-    workbookCursor: WorkbookCursorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Indicates the cursor of the workbook at which the data returned by this request is read. Workbook cursor keeps increasing with every update and the increments are not sequential. ',
-        }),
-    ).exactOptional(),
+    tableColumns: TableColumnsSchema.openapi({
+      description: ' The list of columns in the table. ',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        ' Provides the pagination token to load the next page if there are more results matching the request. If a pagination token is not present in the response, it means that all data matching the request has been loaded. ',
+    }),
+    workbookCursor: WorkbookCursorSchema.exactOptional().openapi({
+      description:
+        ' Indicates the cursor of the workbook at which the data returned by this request is read. Workbook cursor keeps increasing with every update and the increments are not sequential. ',
+    }),
   })
   .openapi({ required: ['tableColumns'] })
   .openapi('ListTableColumnsResult')
@@ -861,46 +661,26 @@ const FormattedValuesListSchema = z
 
 const CellSchema = z
   .object({
-    formula: FormulaSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The formula contained in the cell. This field is empty if a cell does not have a formula. ',
-        }),
-    ).exactOptional(),
-    format: FormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The format of the cell. If this field is empty, then the format is either not specified in the workbook or the format is set to AUTO.',
-        }),
-    ).exactOptional(),
-    rawValue: RawValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The raw value of the data contained in the cell. The raw value depends on the format of the data in the cell. However the attribute in the API return value is always a string containing the raw value. </p> <p> Cells with format DATE, DATE_TIME or TIME have the raw value as a floating point number where the whole number represents the number of days since 1/1/1900 and the fractional part represents the fraction of the day since midnight. For example, a cell with date 11/3/2020 has the raw value "44138". A cell with the time 9:00 AM has the raw value "0.375" and a cell with date/time value of 11/3/2020 9:00 AM has the raw value "44138.375". Notice that even though the raw value is a number in all three cases, it is still represented as a string. </p> <p> Cells with format NUMBER, CURRENCY, PERCENTAGE and ACCOUNTING have the raw value of the data as the number representing the data being displayed. For example, the number 1.325 with two decimal places in the format will have it\'s raw value as "1.325" and formatted value as "1.33". A currency value for $10 will have the raw value as "10" and formatted value as "$10.00". A value representing 20% with two decimal places in the format will have its raw value as "0.2" and the formatted value as "20.00%". An accounting value of -$25 will have "-25" as the raw value and "$ (25.00)" as the formatted value. </p> <p> Cells with format TEXT will have the raw text as the raw value. For example, a cell with text "John Smith" will have "John Smith" as both the raw value and the formatted value. </p> <p> Cells with format CONTACT will have the name of the contact as a formatted value and the email address of the contact as the raw value. For example, a contact for John Smith will have "John Smith" as the formatted value and "john.smith@example.com" as the raw value. </p> <p> Cells with format ROWLINK (aka picklist) will have the first column of the linked row as the formatted value and the row id of the linked row as the raw value. For example, a cell containing a picklist to a table that displays task status might have "Completed" as the formatted value and "row:dfcefaee-5b37-4355-8f28-40c3e4ff5dd4/ca432b2f-b8eb-431d-9fb5-cbe0342f9f03" as the raw value. </p> <p> Cells with format ROWSET (aka multi-select or multi-record picklist) will by default have the first column of each of the linked rows as the formatted value in the list, and the rowset id of the linked rows as the raw value. For example, a cell containing a multi-select picklist to a table that contains items might have "Item A", "Item B" in the formatted value list and "rows:b742c1f4-6cb0-4650-a845-35eb86fcc2bb/ [fdea123b-8f68-474a-aa8a-5ff87aa333af,6daf41f0-a138-4eee-89da-123086d36ecf]" as the raw value. </p> <p> Cells with format ATTACHMENT will have the name of the attachment as the formatted value and the attachment id as the raw value. For example, a cell containing an attachment named "image.jpeg" will have "image.jpeg" as the formatted value and "attachment:ca432b2f-b8eb-431d-9fb5-cbe0342f9f03" as the raw value. </p> <p> Cells with format AUTO or cells without any format that are auto-detected as one of the formats above will contain the raw and formatted values as mentioned above, based on the auto-detected formats. If there is no auto-detected format, the raw and formatted values will be the same as the data in the cell. </p>',
-        }),
-    ).exactOptional(),
-    formattedValue: FormattedValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The formatted value of the cell. This is the value that you see displayed in the cell in the UI. </p> <p> Note that the formatted value of a cell is always represented as a string irrespective of the data that is stored in the cell. For example, if a cell contains a date, the formatted value of the cell is the string representation of the formatted date being shown in the cell in the UI. See details in the rawValue field below for how cells of different formats will have different raw and formatted values. </p>',
-        }),
-    ).exactOptional(),
-    formattedValues: FormattedValuesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A list of formatted values of the cell. This field is only returned when the cell is ROWSET format (aka multi-select or multi-record picklist). Values in the list are always represented as strings. The formattedValue field will be empty if this field is returned. ',
-        }),
-    ).exactOptional(),
+    formula: FormulaSchema.exactOptional().openapi({
+      description:
+        ' The formula contained in the cell. This field is empty if a cell does not have a formula. ',
+    }),
+    format: FormatSchema.exactOptional().openapi({
+      description:
+        'The format of the cell. If this field is empty, then the format is either not specified in the workbook or the format is set to AUTO.',
+    }),
+    rawValue: RawValueSchema.exactOptional().openapi({
+      description:
+        '<p> The raw value of the data contained in the cell. The raw value depends on the format of the data in the cell. However the attribute in the API return value is always a string containing the raw value. </p> <p> Cells with format DATE, DATE_TIME or TIME have the raw value as a floating point number where the whole number represents the number of days since 1/1/1900 and the fractional part represents the fraction of the day since midnight. For example, a cell with date 11/3/2020 has the raw value "44138". A cell with the time 9:00 AM has the raw value "0.375" and a cell with date/time value of 11/3/2020 9:00 AM has the raw value "44138.375". Notice that even though the raw value is a number in all three cases, it is still represented as a string. </p> <p> Cells with format NUMBER, CURRENCY, PERCENTAGE and ACCOUNTING have the raw value of the data as the number representing the data being displayed. For example, the number 1.325 with two decimal places in the format will have it\'s raw value as "1.325" and formatted value as "1.33". A currency value for $10 will have the raw value as "10" and formatted value as "$10.00". A value representing 20% with two decimal places in the format will have its raw value as "0.2" and the formatted value as "20.00%". An accounting value of -$25 will have "-25" as the raw value and "$ (25.00)" as the formatted value. </p> <p> Cells with format TEXT will have the raw text as the raw value. For example, a cell with text "John Smith" will have "John Smith" as both the raw value and the formatted value. </p> <p> Cells with format CONTACT will have the name of the contact as a formatted value and the email address of the contact as the raw value. For example, a contact for John Smith will have "John Smith" as the formatted value and "john.smith@example.com" as the raw value. </p> <p> Cells with format ROWLINK (aka picklist) will have the first column of the linked row as the formatted value and the row id of the linked row as the raw value. For example, a cell containing a picklist to a table that displays task status might have "Completed" as the formatted value and "row:dfcefaee-5b37-4355-8f28-40c3e4ff5dd4/ca432b2f-b8eb-431d-9fb5-cbe0342f9f03" as the raw value. </p> <p> Cells with format ROWSET (aka multi-select or multi-record picklist) will by default have the first column of each of the linked rows as the formatted value in the list, and the rowset id of the linked rows as the raw value. For example, a cell containing a multi-select picklist to a table that contains items might have "Item A", "Item B" in the formatted value list and "rows:b742c1f4-6cb0-4650-a845-35eb86fcc2bb/ [fdea123b-8f68-474a-aa8a-5ff87aa333af,6daf41f0-a138-4eee-89da-123086d36ecf]" as the raw value. </p> <p> Cells with format ATTACHMENT will have the name of the attachment as the formatted value and the attachment id as the raw value. For example, a cell containing an attachment named "image.jpeg" will have "image.jpeg" as the formatted value and "attachment:ca432b2f-b8eb-431d-9fb5-cbe0342f9f03" as the raw value. </p> <p> Cells with format AUTO or cells without any format that are auto-detected as one of the formats above will contain the raw and formatted values as mentioned above, based on the auto-detected formats. If there is no auto-detected format, the raw and formatted values will be the same as the data in the cell. </p>',
+    }),
+    formattedValue: FormattedValueSchema.exactOptional().openapi({
+      description:
+        '<p> The formatted value of the cell. This is the value that you see displayed in the cell in the UI. </p> <p> Note that the formatted value of a cell is always represented as a string irrespective of the data that is stored in the cell. For example, if a cell contains a date, the formatted value of the cell is the string representation of the formatted date being shown in the cell in the UI. See details in the rawValue field below for how cells of different formats will have different raw and formatted values. </p>',
+    }),
+    formattedValues: FormattedValuesListSchema.exactOptional().openapi({
+      description:
+        ' A list of formatted values of the cell. This field is only returned when the cell is ROWSET format (aka multi-select or multi-record picklist). Values in the list are always represented as strings. The formattedValue field will be empty if this field is returned. ',
+    }),
   })
   .openapi({ description: 'An object that represents a single cell in a table.', required: [] })
   .openapi('Cell')
@@ -909,15 +689,11 @@ const CellsSchema = z.array(CellSchema).openapi('Cells')
 
 const TableRowSchema = z
   .object({
-    rowId: RowIdSchema.and(z.any().openapi({ description: 'The id of the row in the table.' })),
-    cells: CellsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of cells in the table row. The cells appear in the same order as the columns of the table. ',
-        }),
-    ),
+    rowId: RowIdSchema.openapi({ description: 'The id of the row in the table.' }),
+    cells: CellsSchema.openapi({
+      description:
+        'A list of cells in the table row. The cells appear in the same order as the columns of the table. ',
+    }),
   })
   .openapi({
     required: ['rowId', 'cells'],
@@ -929,46 +705,25 @@ const TableRowsSchema = z.array(TableRowSchema).openapi('TableRows')
 
 const ListTableRowsResultSchema = z
   .object({
-    columnIds: ResourceIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The list of columns in the table whose row data is returned in the result. ',
-        }),
-    ),
-    rows: TableRowsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The list of rows in the table. Note that this result is paginated, so this list contains a maximum of 100 rows. ',
-        }),
-    ),
-    rowIdsNotFound: RowIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The list of row ids included in the request that were not found in the table. ',
-        }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Provides the pagination token to load the next page if there are more results matching the request. If a pagination token is not present in the response, it means that all data matching the request has been loaded. ',
-        }),
-    ).exactOptional(),
-    workbookCursor: WorkbookCursorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Indicates the cursor of the workbook at which the data returned by this request is read. Workbook cursor keeps increasing with every update and the increments are not sequential. ',
-        }),
-    ),
+    columnIds: ResourceIdsSchema.openapi({
+      description: ' The list of columns in the table whose row data is returned in the result. ',
+    }),
+    rows: TableRowsSchema.openapi({
+      description:
+        ' The list of rows in the table. Note that this result is paginated, so this list contains a maximum of 100 rows. ',
+    }),
+    rowIdsNotFound: RowIdListSchema.exactOptional().openapi({
+      description:
+        ' The list of row ids included in the request that were not found in the table. ',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        ' Provides the pagination token to load the next page if there are more results matching the request. If a pagination token is not present in the response, it means that all data matching the request has been loaded. ',
+    }),
+    workbookCursor: WorkbookCursorSchema.openapi({
+      description:
+        ' Indicates the cursor of the workbook at which the data returned by this request is read. Workbook cursor keeps increasing with every update and the increments are not sequential. ',
+    }),
   })
   .openapi({ required: ['columnIds', 'rows', 'workbookCursor'] })
   .openapi('ListTableRowsResult')
@@ -977,12 +732,8 @@ const TableNameSchema = z.string().openapi('TableName')
 
 const TableSchema = z
   .object({
-    tableId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The id of the table.' }),
-    ).exactOptional(),
-    tableName: TableNameSchema.and(
-      z.any().openapi({ description: 'The name of the table.' }),
-    ).exactOptional(),
+    tableId: ResourceIdSchema.exactOptional().openapi({ description: 'The id of the table.' }),
+    tableName: TableNameSchema.exactOptional().openapi({ description: 'The name of the table.' }),
   })
   .openapi({
     description: 'An object representing the properties of a table in a workbook.',
@@ -994,25 +745,15 @@ const TablesSchema = z.array(TableSchema).openapi('Tables')
 
 const ListTablesResultSchema = z
   .object({
-    tables: TablesSchema.and(
-      z.any().openapi({ description: ' The list of tables in the workbook. ' }),
-    ),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Provides the pagination token to load the next page if there are more results matching the request. If a pagination token is not present in the response, it means that all data matching the request has been loaded. ',
-        }),
-    ).exactOptional(),
-    workbookCursor: WorkbookCursorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Indicates the cursor of the workbook at which the data returned by this request is read. Workbook cursor keeps increasing with every update and the increments are not sequential. ',
-        }),
-    ).exactOptional(),
+    tables: TablesSchema.openapi({ description: ' The list of tables in the workbook. ' }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        ' Provides the pagination token to load the next page if there are more results matching the request. If a pagination token is not present in the response, it means that all data matching the request has been loaded. ',
+    }),
+    workbookCursor: WorkbookCursorSchema.exactOptional().openapi({
+      description:
+        ' Indicates the cursor of the workbook at which the data returned by this request is read. Workbook cursor keeps increasing with every update and the increments are not sequential. ',
+    }),
   })
   .openapi({ required: ['tables'] })
   .openapi('ListTablesResult')
@@ -1031,45 +772,26 @@ const TagsMapSchema = z
   .openapi('TagsMap')
 
 const ListTagsForResourceResultSchema = z
-  .object({
-    tags: TagsMapSchema.and(
-      z.any().openapi({ description: "The resource's tags." }),
-    ).exactOptional(),
-  })
+  .object({ tags: TagsMapSchema.exactOptional().openapi({ description: "The resource's tags." }) })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResult')
 
 const QueryTableRowsResultSchema = z
   .object({
-    columnIds: ResourceIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The list of columns in the table whose row data is returned in the result. ',
-        }),
-    ),
-    rows: TableRowsSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The list of rows in the table that match the query filter. ' }),
-    ),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Provides the pagination token to load the next page if there are more results matching the request. If a pagination token is not present in the response, it means that all data matching the request has been loaded. ',
-        }),
-    ).exactOptional(),
-    workbookCursor: WorkbookCursorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Indicates the cursor of the workbook at which the data returned by this request is read. Workbook cursor keeps increasing with every update and the increments are not sequential. ',
-        }),
-    ),
+    columnIds: ResourceIdsSchema.openapi({
+      description: ' The list of columns in the table whose row data is returned in the result. ',
+    }),
+    rows: TableRowsSchema.openapi({
+      description: ' The list of rows in the table that match the query filter. ',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        ' Provides the pagination token to load the next page if there are more results matching the request. If a pagination token is not present in the response, it means that all data matching the request has been loaded. ',
+    }),
+    workbookCursor: WorkbookCursorSchema.openapi({
+      description:
+        ' Indicates the cursor of the workbook at which the data returned by this request is read. Workbook cursor keeps increasing with every update and the increments are not sequential. ',
+    }),
   })
   .openapi({ required: ['columnIds', 'rows', 'workbookCursor'] })
   .openapi('QueryTableRowsResult')
@@ -1083,28 +805,20 @@ const JobIdSchema = z
 
 const StartTableDataImportJobResultSchema = z
   .object({
-    jobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The id that is assigned to this import job. Future requests to find out the status of this import job need to send this id in the appropriate parameter in the request. ',
-        }),
-    ),
-    jobStatus: TableDataImportJobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The status of the import job immediately after submitting the request. ',
-        }),
-    ),
+    jobId: JobIdSchema.openapi({
+      description:
+        ' The id that is assigned to this import job. Future requests to find out the status of this import job need to send this id in the appropriate parameter in the request. ',
+    }),
+    jobStatus: TableDataImportJobStatusSchema.openapi({
+      description: ' The status of the import job immediately after submitting the request. ',
+    }),
   })
   .openapi({ required: ['jobId', 'jobStatus'] })
   .openapi('StartTableDataImportJobResult')
 
-const TagResourceResultSchema = z.object({}).openapi('TagResourceResult')
+const TagResourceResultSchema = z.looseObject({}).openapi('TagResourceResult')
 
-const UntagResourceResultSchema = z.object({}).openapi('UntagResourceResult')
+const UntagResourceResultSchema = z.looseObject({}).openapi('UntagResourceResult')
 
 const TagKeySchema = z
   .string()
@@ -1128,44 +842,28 @@ const ClientRequestTokenSchema = z
 
 const BatchCreateTableRowsRequestSchema = z
   .object({
-    rowsToCreate: CreateRowDataListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The list of rows to create at the end of the table. Each item in this list needs to have a batch item id to uniquely identify the element in the request and the cells to create for that row. You need to specify at least one item in this list. </p> <p> Note that if one of the column ids in any of the rows in the request does not exist in the table, then the request fails and no updates are made to the table. </p>',
-        }),
-    ),
-    clientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The request token for performing the batch create operation. Request tokens help to identify duplicate requests. If a call times out or fails due to a transient error like a failed network connection, you can retry the call with the same request token. The service ensures that if the first call using that request token is successfully performed, the second call will not perform the operation again. </p> <p> Note that request tokens are valid only for a few minutes. You cannot use request tokens to dedupe requests spanning hours or days. </p>',
-        }),
-    ).exactOptional(),
+    rowsToCreate: CreateRowDataListSchema.openapi({
+      description:
+        '<p> The list of rows to create at the end of the table. Each item in this list needs to have a batch item id to uniquely identify the element in the request and the cells to create for that row. You need to specify at least one item in this list. </p> <p> Note that if one of the column ids in any of the rows in the request does not exist in the table, then the request fails and no updates are made to the table. </p>',
+    }),
+    clientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        '<p> The request token for performing the batch create operation. Request tokens help to identify duplicate requests. If a call times out or fails due to a transient error like a failed network connection, you can retry the call with the same request token. The service ensures that if the first call using that request token is successfully performed, the second call will not perform the operation again. </p> <p> Note that request tokens are valid only for a few minutes. You cannot use request tokens to dedupe requests spanning hours or days. </p>',
+    }),
   })
   .openapi({ required: ['rowsToCreate'], title: 'BatchCreateTableRowsRequest' })
   .openapi('BatchCreateTableRowsRequest')
 
 const BatchDeleteTableRowsRequestSchema = z
   .object({
-    rowIds: RowIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The list of row ids to delete from the table. You need to specify at least one row id in this list. </p> <p> Note that if one of the row ids provided in the request does not exist in the table, then the request fails and no rows are deleted from the table. </p>',
-        }),
-    ),
-    clientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The request token for performing the delete action. Request tokens help to identify duplicate requests. If a call times out or fails due to a transient error like a failed network connection, you can retry the call with the same request token. The service ensures that if the first call using that request token is successfully performed, the second call will not perform the action again. </p> <p> Note that request tokens are valid only for a few minutes. You cannot use request tokens to dedupe requests spanning hours or days. </p>',
-        }),
-    ).exactOptional(),
+    rowIds: RowIdListSchema.openapi({
+      description:
+        '<p> The list of row ids to delete from the table. You need to specify at least one row id in this list. </p> <p> Note that if one of the row ids provided in the request does not exist in the table, then the request fails and no rows are deleted from the table. </p>',
+    }),
+    clientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        '<p> The request token for performing the delete action. Request tokens help to identify duplicate requests. If a call times out or fails due to a transient error like a failed network connection, you can retry the call with the same request token. The service ensures that if the first call using that request token is successfully performed, the second call will not perform the action again. </p> <p> Note that request tokens are valid only for a few minutes. You cannot use request tokens to dedupe requests spanning hours or days. </p>',
+    }),
   })
   .openapi({ required: ['rowIds'], title: 'BatchDeleteTableRowsRequest' })
   .openapi('BatchDeleteTableRowsRequest')
@@ -1178,22 +876,14 @@ const UpdateRowDataListSchema = z
 
 const BatchUpdateTableRowsRequestSchema = z
   .object({
-    rowsToUpdate: UpdateRowDataListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The list of rows to update in the table. Each item in this list needs to contain the row id to update along with the map of column id to cell values for each column in that row that needs to be updated. You need to specify at least one row in this list, and for each row, you need to specify at least one column to update. </p> <p> Note that if one of the row or column ids in the request does not exist in the table, then the request fails and no updates are made to the table. </p>',
-        }),
-    ),
-    clientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The request token for performing the update action. Request tokens help to identify duplicate requests. If a call times out or fails due to a transient error like a failed network connection, you can retry the call with the same request token. The service ensures that if the first call using that request token is successfully performed, the second call will not perform the action again. </p> <p> Note that request tokens are valid only for a few minutes. You cannot use request tokens to dedupe requests spanning hours or days. </p>',
-        }),
-    ).exactOptional(),
+    rowsToUpdate: UpdateRowDataListSchema.openapi({
+      description:
+        '<p> The list of rows to update in the table. Each item in this list needs to contain the row id to update along with the map of column id to cell values for each column in that row that needs to be updated. You need to specify at least one row in this list, and for each row, you need to specify at least one column to update. </p> <p> Note that if one of the row or column ids in the request does not exist in the table, then the request fails and no updates are made to the table. </p>',
+    }),
+    clientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        '<p> The request token for performing the update action. Request tokens help to identify duplicate requests. If a call times out or fails due to a transient error like a failed network connection, you can retry the call with the same request token. The service ensures that if the first call using that request token is successfully performed, the second call will not perform the action again. </p> <p> Note that request tokens are valid only for a few minutes. You cannot use request tokens to dedupe requests spanning hours or days. </p>',
+    }),
   })
   .openapi({ required: ['rowsToUpdate'], title: 'BatchUpdateTableRowsRequest' })
   .openapi('BatchUpdateTableRowsRequest')
@@ -1202,28 +892,20 @@ const UpsertRowDataListSchema = z.array(UpsertRowDataSchema).openapi('UpsertRowD
 
 const BatchUpsertTableRowsRequestSchema = z
   .object({
-    rowsToUpsert: UpsertRowDataListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The list of rows to upsert in the table. Each item in this list needs to have a batch item id to uniquely identify the element in the request, a filter expression to find the rows to update for that element and the cell values to set for each column in the upserted rows. You need to specify at least one item in this list. </p> <p> Note that if one of the filter formulas in the request fails to evaluate because of an error or one of the column ids in any of the rows does not exist in the table, then the request fails and no updates are made to the table. </p>',
-        }),
-    ),
-    clientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The request token for performing the update action. Request tokens help to identify duplicate requests. If a call times out or fails due to a transient error like a failed network connection, you can retry the call with the same request token. The service ensures that if the first call using that request token is successfully performed, the second call will not perform the action again. </p> <p> Note that request tokens are valid only for a few minutes. You cannot use request tokens to dedupe requests spanning hours or days. </p>',
-        }),
-    ).exactOptional(),
+    rowsToUpsert: UpsertRowDataListSchema.openapi({
+      description:
+        '<p> The list of rows to upsert in the table. Each item in this list needs to have a batch item id to uniquely identify the element in the request, a filter expression to find the rows to update for that element and the cell values to set for each column in the upserted rows. You need to specify at least one item in this list. </p> <p> Note that if one of the filter formulas in the request fails to evaluate because of an error or one of the column ids in any of the rows does not exist in the table, then the request fails and no updates are made to the table. </p>',
+    }),
+    clientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        '<p> The request token for performing the update action. Request tokens help to identify duplicate requests. If a call times out or fails due to a transient error like a failed network connection, you can retry the call with the same request token. The service ensures that if the first call using that request token is successfully performed, the second call will not perform the action again. </p> <p> Note that request tokens are valid only for a few minutes. You cannot use request tokens to dedupe requests spanning hours or days. </p>',
+    }),
   })
   .openapi({ required: ['rowsToUpsert'], title: 'BatchUpsertTableRowsRequest' })
   .openapi('BatchUpsertTableRowsRequest')
 
 const DescribeTableDataImportJobRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeTableDataImportJobRequest' })
   .openapi('DescribeTableDataImportJobRequest')
 
@@ -1233,37 +915,23 @@ const MaxResultsSchema = z.int().min(1).max(100).openapi('MaxResults')
 
 const GetScreenDataRequestSchema = z
   .object({
-    workbookId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the workbook that contains the screen.' }),
-    ),
-    appId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the app that contains the screen.' }),
-    ),
-    screenId: ResourceIdSchema.and(z.any().openapi({ description: 'The ID of the screen.' })),
-    variables: VariableValueMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Variables are optional and are needed only if the screen requires them to render correctly. Variables are specified as a map where the key is the name of the variable as defined on the screen. The value is an object which currently has only one property, rawValue, which holds the value of the variable to be passed to the screen. ',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p> The number of results to be returned on a single page. Specify a number between 1 and 100. The maximum value is 100. </p> <p> This parameter is optional. If you don't specify this parameter, the default page size is 100. </p>",
-        }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> This parameter is optional. If a nextToken is not specified, the API returns the first page of data. </p> <p> Pagination tokens expire after 1 hour. If you use a token that was returned more than an hour back, the API will throw ValidationException. </p>',
-        }),
-    ).exactOptional(),
+    workbookId: ResourceIdSchema.openapi({
+      description: 'The ID of the workbook that contains the screen.',
+    }),
+    appId: ResourceIdSchema.openapi({ description: 'The ID of the app that contains the screen.' }),
+    screenId: ResourceIdSchema.openapi({ description: 'The ID of the screen.' }),
+    variables: VariableValueMapSchema.exactOptional().openapi({
+      description:
+        ' Variables are optional and are needed only if the screen requires them to render correctly. Variables are specified as a map where the key is the name of the variable as defined on the screen. The value is an object which currently has only one property, rawValue, which holds the value of the variable to be passed to the screen. ',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        "<p> The number of results to be returned on a single page. Specify a number between 1 and 100. The maximum value is 100. </p> <p> This parameter is optional. If you don't specify this parameter, the default page size is 100. </p>",
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        '<p> This parameter is optional. If a nextToken is not specified, the API returns the first page of data. </p> <p> Pagination tokens expire after 1 hour. If you use a token that was returned more than an hour back, the API will throw ValidationException. </p>',
+    }),
   })
   .openapi({ required: ['workbookId', 'appId', 'screenId'], title: 'GetScreenDataRequest' })
   .openapi('GetScreenDataRequest')
@@ -1272,70 +940,46 @@ const ImportSourceDataFormatSchema = z.literal('DELIMITED_TEXT').openapi('Import
 
 const InvokeScreenAutomationRequestSchema = z
   .object({
-    variables: VariableValueMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Variables are specified as a map where the key is the name of the variable as defined on the screen. The value is an object which currently has only one property, rawValue, which holds the value of the variable to be passed to the screen. Any variables defined in a screen are required to be passed in the call. ',
-        }),
-    ).exactOptional(),
-    rowId: RowIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The row ID for the automation if the automation is defined inside a block with source or list. ',
-        }),
-    ).exactOptional(),
-    clientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The request token for performing the automation action. Request tokens help to identify duplicate requests. If a call times out or fails due to a transient error like a failed network connection, you can retry the call with the same request token. The service ensures that if the first call using that request token is successfully performed, the second call will return the response of the previous call rather than performing the action again. </p> <p> Note that request tokens are valid only for a few minutes. You cannot use request tokens to dedupe requests spanning hours or days. </p>',
-        }),
-    ).exactOptional(),
+    variables: VariableValueMapSchema.exactOptional().openapi({
+      description:
+        ' Variables are specified as a map where the key is the name of the variable as defined on the screen. The value is an object which currently has only one property, rawValue, which holds the value of the variable to be passed to the screen. Any variables defined in a screen are required to be passed in the call. ',
+    }),
+    rowId: RowIdSchema.exactOptional().openapi({
+      description:
+        ' The row ID for the automation if the automation is defined inside a block with source or list. ',
+    }),
+    clientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        '<p> The request token for performing the automation action. Request tokens help to identify duplicate requests. If a call times out or fails due to a transient error like a failed network connection, you can retry the call with the same request token. The service ensures that if the first call using that request token is successfully performed, the second call will return the response of the previous call rather than performing the action again. </p> <p> Note that request tokens are valid only for a few minutes. You cannot use request tokens to dedupe requests spanning hours or days. </p>',
+    }),
   })
   .openapi({ title: 'InvokeScreenAutomationRequest', required: [] })
   .openapi('InvokeScreenAutomationRequest')
 
 const ListTableColumnsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTableColumnsRequest' })
   .openapi('ListTableColumnsRequest')
 
 const ListTableRowsRequestSchema = z
   .object({
-    rowIds: RowIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' This parameter is optional. If one or more row ids are specified in this list, then only the specified row ids are returned in the result. If no row ids are specified here, then all the rows in the table are returned. ',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of rows to return in each page of the results.',
-        }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> This parameter is optional. If a nextToken is not specified, the API returns the first page of data. </p> <p> Pagination tokens expire after 1 hour. If you use a token that was returned more than an hour back, the API will throw ValidationException. </p>',
-        }),
-    ).exactOptional(),
+    rowIds: RowIdListSchema.exactOptional().openapi({
+      description:
+        ' This parameter is optional. If one or more row ids are specified in this list, then only the specified row ids are returned in the result. If no row ids are specified here, then all the rows in the table are returned. ',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of rows to return in each page of the results.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        '<p> This parameter is optional. If a nextToken is not specified, the API returns the first page of data. </p> <p> Pagination tokens expire after 1 hour. If you use a token that was returned more than an hour back, the API will throw ValidationException. </p>',
+    }),
   })
   .openapi({ title: 'ListTableRowsRequest', required: [] })
   .openapi('ListTableRowsRequest')
 
 const ListTablesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTablesRequest' })
   .openapi('ListTablesRequest')
 
@@ -1347,68 +991,44 @@ const ResourceArnSchema = z
   .openapi('ResourceArn')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const QueryTableRowsRequestSchema = z
   .object({
-    filterFormula: FilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that represents a filter formula along with the id of the context row under which the filter function needs to evaluate.',
-        }),
-    ),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of rows to return in each page of the results.',
-        }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> This parameter is optional. If a nextToken is not specified, the API returns the first page of data. </p> <p> Pagination tokens expire after 1 hour. If you use a token that was returned more than an hour back, the API will throw ValidationException. </p>',
-        }),
-    ).exactOptional(),
+    filterFormula: FilterSchema.openapi({
+      description:
+        'An object that represents a filter formula along with the id of the context row under which the filter function needs to evaluate.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of rows to return in each page of the results.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        '<p> This parameter is optional. If a nextToken is not specified, the API returns the first page of data. </p> <p> Pagination tokens expire after 1 hour. If you use a token that was returned more than an hour back, the API will throw ValidationException. </p>',
+    }),
   })
   .openapi({ required: ['filterFormula'], title: 'QueryTableRowsRequest' })
   .openapi('QueryTableRowsRequest')
 
 const StartTableDataImportJobRequestSchema = z
   .object({
-    dataSource: ImportDataSourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The source of the data that is being imported. The size of source must be no larger than 100 MB. Source must have no more than 100,000 cells and no more than 1,000 rows. ',
-        }),
-    ),
-    dataFormat: ImportSourceDataFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The format of the data that is being imported. Currently the only option supported is "DELIMITED_TEXT". ',
-        }),
-    ),
-    importOptions: ImportOptionsSchema.and(
-      z.any().openapi({ description: ' The options for customizing this import request. ' }),
-    ),
-    clientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The request token for performing the update action. Request tokens help to identify duplicate requests. If a call times out or fails due to a transient error like a failed network connection, you can retry the call with the same request token. The service ensures that if the first call using that request token is successfully performed, the second call will not perform the action again. </p> <p> Note that request tokens are valid only for a few minutes. You cannot use request tokens to dedupe requests spanning hours or days. </p>',
-        }),
-    ),
+    dataSource: ImportDataSourceSchema.openapi({
+      description:
+        ' The source of the data that is being imported. The size of source must be no larger than 100 MB. Source must have no more than 100,000 cells and no more than 1,000 rows. ',
+    }),
+    dataFormat: ImportSourceDataFormatSchema.openapi({
+      description:
+        ' The format of the data that is being imported. Currently the only option supported is "DELIMITED_TEXT". ',
+    }),
+    importOptions: ImportOptionsSchema.openapi({
+      description: ' The options for customizing this import request. ',
+    }),
+    clientRequestToken: ClientRequestTokenSchema.openapi({
+      description:
+        '<p> The request token for performing the update action. Request tokens help to identify duplicate requests. If a call times out or fails due to a transient error like a failed network connection, you can retry the call with the same request token. The service ensures that if the first call using that request token is successfully performed, the second call will not perform the action again. </p> <p> Note that request tokens are valid only for a few minutes. You cannot use request tokens to dedupe requests spanning hours or days. </p>',
+    }),
   })
   .openapi({
     required: ['dataSource', 'dataFormat', 'importOptions', 'clientRequestToken'],
@@ -1424,15 +1044,13 @@ const TagKeysListSchema = z
 
 const TagResourceRequestSchema = z
   .object({
-    tags: TagsMapSchema.and(
-      z.any().openapi({ description: 'A list of tags to apply to the resource.' }),
-    ),
+    tags: TagsMapSchema.openapi({ description: 'A list of tags to apply to the resource.' }),
   })
   .openapi({ required: ['tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
@@ -3064,22 +2682,14 @@ export const postWorkbooksWorkbookIdTablesTableIdRowsQueryRoute = createRoute({
             .object({
               filterFormula: z
                 .object({
-                  formula: FormulaSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          ' A formula representing a filter function that returns zero or more matching rows from a table. Valid formulas in this field return a list of rows from a table. The most common ways of writing a formula to return a list of rows are to use the FindRow() or Filter() functions. Any other formula that returns zero or more rows is also acceptable. For example, you can use a formula that points to a cell that contains a filter function. ',
-                      }),
-                  ).exactOptional(),
-                  contextRowId: RowIdSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          ' The optional contextRowId attribute can be used to specify the row id of the context row if the filter formula contains unqualified references to table columns and needs a context row to evaluate them successfully. ',
-                      }),
-                  ).exactOptional(),
+                  formula: FormulaSchema.exactOptional().openapi({
+                    description:
+                      ' A formula representing a filter function that returns zero or more matching rows from a table. Valid formulas in this field return a list of rows from a table. The most common ways of writing a formula to return a list of rows are to use the FindRow() or Filter() functions. Any other formula that returns zero or more rows is also acceptable. For example, you can use a formula that points to a cell that contains a filter function. ',
+                  }),
+                  contextRowId: RowIdSchema.exactOptional().openapi({
+                    description:
+                      ' The optional contextRowId attribute can be used to specify the row id of the context row if the filter formula contains unqualified references to table columns and needs a context row to evaluate them successfully. ',
+                  }),
                 })
                 .openapi({
                   description:
@@ -3212,14 +2822,9 @@ export const postWorkbooksWorkbookIdTablesTableIdImportRoute = createRoute({
             .object({
               dataSource: z
                 .object({
-                  dataSourceConfig: ImportDataSourceConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The configuration parameters for the data source of the import',
-                      }),
-                  ).exactOptional(),
+                  dataSourceConfig: ImportDataSourceConfigSchema.exactOptional().openapi({
+                    description: 'The configuration parameters for the data source of the import',
+                  }),
                 })
                 .openapi({
                   description:
@@ -3234,21 +2839,13 @@ export const postWorkbooksWorkbookIdTablesTableIdImportRoute = createRoute({
                 }),
               importOptions: z
                 .object({
-                  destinationOptions: DestinationOptionsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'Options relating to the destination of the import request.',
-                      }),
-                  ).exactOptional(),
-                  delimitedTextOptions: DelimitedTextImportOptionsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Options relating to parsing delimited text. Required if dataFormat is DELIMITED_TEXT.',
-                      }),
-                  ).exactOptional(),
+                  destinationOptions: DestinationOptionsSchema.exactOptional().openapi({
+                    description: 'Options relating to the destination of the import request.',
+                  }),
+                  delimitedTextOptions: DelimitedTextImportOptionsSchema.exactOptional().openapi({
+                    description:
+                      'Options relating to parsing delimited text. Required if dataFormat is DELIMITED_TEXT.',
+                  }),
                 })
                 .openapi({
                   description:

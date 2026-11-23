@@ -247,10 +247,6 @@ const Oauth2SecurityScheme = {
   },
 }
 
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
-
 export const getFeatureFlags202609AppIdFlagsAllRoute = createRoute({
   method: 'get',
   path: '/feature-flags/2026-09/{appId}/flags/all',

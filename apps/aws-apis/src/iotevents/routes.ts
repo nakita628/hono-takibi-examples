@@ -1,5 +1,189 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const AmazonResourceNameSchema = z.string().min(1).max(2048).openapi('AmazonResourceName')
+
+const ContentExpressionSchema = z.string().min(1).openapi('ContentExpression')
+
+const PayloadTypeSchema = z.enum(['STRING', 'JSON']).openapi('PayloadType')
+
+const PayloadSchema = z
+  .object({
+    contentExpression: ContentExpressionSchema.openapi({
+      description:
+        "The content of the payload. You can use a string expression that includes quoted strings (<code>'&lt;string&gt;'</code>), variables (<code>$variable.&lt;variable-name&gt;</code>), input values (<code>$input.&lt;input-name&gt;.&lt;path-to-datum&gt;</code>), string concatenations, and quoted strings that contain <code>${}</code> as the content. The recommended maximum size of a content expression is 1 KB.",
+    }),
+    type: PayloadTypeSchema.openapi({
+      description:
+        'The value of the payload type can be either <code>STRING</code> or <code>JSON</code>.',
+    }),
+  })
+  .openapi({
+    required: ['contentExpression', 'type'],
+    description:
+      '<p>Information needed to configure the payload.</p> <p>By default, AWS IoT Events generates a standard payload in JSON for any action. This action payload contains all attribute-value pairs that have the information about the detector model instance and the event triggered the action. To configure the action payload, you can use <code>contentExpression</code>.</p>',
+  })
+  .openapi('Payload')
+
+const LambdaActionSchema = z
+  .object({
+    functionArn: AmazonResourceNameSchema.openapi({
+      description: 'The ARN of the Lambda function that is executed.',
+    }),
+    payload: PayloadSchema.exactOptional().openapi({
+      description:
+        'You can configure the action payload when you send a message to a Lambda function.',
+    }),
+  })
+  .openapi({
+    required: ['functionArn'],
+    description:
+      'Calls a Lambda function, passing in information about the detector model instance and the event that triggered the action.',
+  })
+  .openapi('LambdaAction')
+
+const NotificationTargetActionsSchema = z
+  .object({ lambdaAction: LambdaActionSchema.exactOptional() })
+  .openapi({
+    description:
+      'Specifies an AWS Lambda function to manage alarm notifications. You can create one or use the <a href="https://docs.aws.amazon.com/iotevents/latest/developerguide/lambda-support.html">AWS Lambda function provided by AWS IoT Events</a>.',
+    required: [],
+  })
+  .openapi('NotificationTargetActions')
+
+const SMSSenderIdSchema = z.string().openapi('SMSSenderId')
+
+const NotificationAdditionalMessageSchema = z.string().openapi('NotificationAdditionalMessage')
+
+const IdentityStoreIdSchema = z.string().openapi('IdentityStoreId')
+
+const SSOReferenceIdSchema = z.string().openapi('SSOReferenceId')
+
+const SSOIdentitySchema = z
+  .object({
+    identityStoreId: IdentityStoreIdSchema.openapi({
+      description: 'The ID of the AWS SSO identity store.',
+    }),
+    userId: SSOReferenceIdSchema.exactOptional().openapi({ description: 'The user ID.' }),
+  })
+  .openapi({
+    required: ['identityStoreId'],
+    description:
+      'Contains information about your identity source in AWS Single Sign-On. For more information, see the <a href="https://docs.aws.amazon.com/singlesignon/latest/userguide/what-is.html">AWS Single Sign-On User Guide</a>.',
+  })
+  .openapi('SSOIdentity')
+
+const RecipientDetailSchema = z
+  .object({
+    ssoIdentity: SSOIdentitySchema.exactOptional().openapi({
+      description: 'The AWS Single Sign-On (AWS SSO) authentication information.',
+    }),
+  })
+  .openapi({ description: 'The information that identifies the recipient.', required: [] })
+  .openapi('RecipientDetail')
+
+const RecipientDetailsSchema = z.array(RecipientDetailSchema).min(1).openapi('RecipientDetails')
+
+const SMSConfigurationSchema = z
+  .object({
+    senderId: SMSSenderIdSchema.exactOptional().openapi({ description: 'The sender ID.' }),
+    additionalMessage: NotificationAdditionalMessageSchema.exactOptional().openapi({
+      description: 'The message that you want to send. The message can be up to 200 characters.',
+    }),
+    recipients: RecipientDetailsSchema.openapi({
+      description:
+        '<p>Specifies one or more recipients who receive the message.</p> <important> <p>You must <a href="https://docs.aws.amazon.com/singlesignon/latest/userguide/addusers.html">add the users that receive SMS messages to your AWS SSO store</a>.</p> </important>',
+    }),
+  })
+  .openapi({
+    required: ['recipients'],
+    description: 'Contains the configuration information of SMS notifications.',
+  })
+  .openapi('SMSConfiguration')
+
+const SMSConfigurationsSchema = z.array(SMSConfigurationSchema).min(1).openapi('SMSConfigurations')
+
+const FromEmailSchema = z.string().openapi('FromEmail')
+
+const EmailSubjectSchema = z.string().openapi('EmailSubject')
+
+const EmailContentSchema = z
+  .object({
+    subject: EmailSubjectSchema.exactOptional().openapi({
+      description: 'The subject of the email.',
+    }),
+    additionalMessage: NotificationAdditionalMessageSchema.exactOptional().openapi({
+      description: 'The message that you want to send. The message can be up to 200 characters.',
+    }),
+  })
+  .openapi({ description: 'Contains the subject and message of an email.', required: [] })
+  .openapi('EmailContent')
+
+const EmailRecipientsSchema = z
+  .object({
+    to: RecipientDetailsSchema.exactOptional().openapi({
+      description: 'Specifies one or more recipients who receive the email.',
+    }),
+  })
+  .openapi({
+    description:
+      '<p>Contains the information of one or more recipients who receive the emails.</p> <important> <p>You must <a href="https://docs.aws.amazon.com/singlesignon/latest/userguide/addusers.html">add the users that receive emails to your AWS SSO store</a>.</p> </important>',
+    required: [],
+  })
+  .openapi('EmailRecipients')
+
+const EmailConfigurationSchema = z
+  .object({
+    from: FromEmailSchema.openapi({
+      description:
+        '<p>The email address that sends emails.</p> <important> <p>If you use the AWS IoT Events managed AWS Lambda function to manage your emails, you must <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-email-addresses.html">verify the email address that sends emails in Amazon SES</a>.</p> </important>',
+    }),
+    content: EmailContentSchema.exactOptional().openapi({
+      description: 'Contains the subject and message of an email.',
+    }),
+    recipients: EmailRecipientsSchema.openapi({
+      description:
+        '<p>Contains the information of one or more recipients who receive the emails.</p> <important> <p>You must <a href="https://docs.aws.amazon.com/singlesignon/latest/userguide/addusers.html">add the users that receive emails to your AWS SSO store</a>.</p> </important>',
+    }),
+  })
+  .openapi({
+    required: ['from', 'recipients'],
+    description: 'Contains the configuration information of email notifications.',
+  })
+  .openapi('EmailConfiguration')
+
+const EmailConfigurationsSchema = z
+  .array(EmailConfigurationSchema)
+  .min(1)
+  .openapi('EmailConfigurations')
+
+const NotificationActionSchema = z
+  .object({
+    action: NotificationTargetActionsSchema.openapi({
+      description:
+        'Specifies an AWS Lambda function to manage alarm notifications. You can create one or use the <a href="https://docs.aws.amazon.com/iotevents/latest/developerguide/lambda-support.html">AWS Lambda function provided by AWS IoT Events</a>.',
+    }),
+    smsConfigurations: SMSConfigurationsSchema.exactOptional().openapi({
+      description: 'Contains the configuration information of SMS notifications.',
+    }),
+    emailConfigurations: EmailConfigurationsSchema.exactOptional().openapi({
+      description: 'Contains the configuration information of email notifications.',
+    }),
+  })
+  .openapi({
+    required: ['action'],
+    description:
+      'Contains the notification settings of an alarm model. The settings apply to all alarms that were created based on this alarm model.',
+  })
+  .openapi('NotificationAction')
+
+type NotificationActionsType = z.infer<typeof NotificationActionSchema>[]
+
+const StateNameSchema = z.string().min(1).max(128).openapi('StateName')
+
+const EventNameSchema = z.string().max(128).openapi('EventName')
+
+const ConditionSchema = z.string().max(512).openapi('Condition')
+
 const VariableNameSchema = z
   .string()
   .regex(/^[a-zA-Z][a-zA-Z0-9_]*$/)
@@ -11,12 +195,8 @@ const VariableValueSchema = z.string().min(1).max(1024).openapi('VariableValue')
 
 const SetVariableActionSchema = z
   .object({
-    variableName: VariableNameSchema.and(
-      z.any().openapi({ description: 'The name of the variable.' }),
-    ),
-    value: VariableValueSchema.and(
-      z.any().openapi({ description: 'The new value of the variable.' }),
-    ),
+    variableName: VariableNameSchema.openapi({ description: 'The name of the variable.' }),
+    value: VariableValueSchema.openapi({ description: 'The new value of the variable.' }),
   })
   .openapi({
     required: ['variableName', 'value'],
@@ -24,53 +204,15 @@ const SetVariableActionSchema = z
   })
   .openapi('SetVariableAction')
 
-const AmazonResourceNameSchema = z.string().min(1).max(2048).openapi('AmazonResourceName')
-
-const ContentExpressionSchema = z.string().min(1).openapi('ContentExpression')
-
-const PayloadTypeSchema = z.enum(['STRING', 'JSON']).openapi('PayloadType')
-
-const PayloadSchema = z
-  .object({
-    contentExpression: ContentExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The content of the payload. You can use a string expression that includes quoted strings (<code>'&lt;string&gt;'</code>), variables (<code>$variable.&lt;variable-name&gt;</code>), input values (<code>$input.&lt;input-name&gt;.&lt;path-to-datum&gt;</code>), string concatenations, and quoted strings that contain <code>${}</code> as the content. The recommended maximum size of a content expression is 1 KB.",
-        }),
-    ),
-    type: PayloadTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value of the payload type can be either <code>STRING</code> or <code>JSON</code>.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['contentExpression', 'type'],
-    description:
-      '<p>Information needed to configure the payload.</p> <p>By default, AWS IoT Events generates a standard payload in JSON for any action. This action payload contains all attribute-value pairs that have the information about the detector model instance and the event triggered the action. To configure the action payload, you can use <code>contentExpression</code>.</p>',
-  })
-  .openapi('Payload')
-
 const SNSTopicPublishActionSchema = z
   .object({
-    targetArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the Amazon SNS target where the message is sent.' }),
-    ),
-    payload: PayloadSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'You can configure the action payload when you send a message as an Amazon SNS push notification.',
-        }),
-    ).exactOptional(),
+    targetArn: AmazonResourceNameSchema.openapi({
+      description: 'The ARN of the Amazon SNS target where the message is sent.',
+    }),
+    payload: PayloadSchema.exactOptional().openapi({
+      description:
+        'You can configure the action payload when you send a message as an Amazon SNS push notification.',
+    }),
   })
   .openapi({
     required: ['targetArn'],
@@ -82,22 +224,14 @@ const MQTTTopicSchema = z.string().min(1).max(128).openapi('MQTTTopic')
 
 const IotTopicPublishActionSchema = z
   .object({
-    mqttTopic: MQTTTopicSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The MQTT topic of the message. You can use a string expression that includes variables (<code>$variable.&lt;variable-name&gt;</code>) and input values (<code>$input.&lt;input-name&gt;.&lt;path-to-datum&gt;</code>) as the topic string.',
-        }),
-    ),
-    payload: PayloadSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'You can configure the action payload when you publish a message to an AWS IoT Core topic.',
-        }),
-    ).exactOptional(),
+    mqttTopic: MQTTTopicSchema.openapi({
+      description:
+        'The MQTT topic of the message. You can use a string expression that includes variables (<code>$variable.&lt;variable-name&gt;</code>) and input values (<code>$input.&lt;input-name&gt;.&lt;path-to-datum&gt;</code>) as the topic string.',
+    }),
+    payload: PayloadSchema.exactOptional().openapi({
+      description:
+        'You can configure the action payload when you publish a message to an AWS IoT Core topic.',
+    }),
   })
   .openapi({
     required: ['mqttTopic'],
@@ -112,42 +246,30 @@ const SecondsSchema = z.int().min(1).max(31622400).openapi('Seconds')
 
 const SetTimerActionSchema = z
   .object({
-    timerName: TimerNameSchema.and(z.any().openapi({ description: 'The name of the timer.' })),
-    seconds: SecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            'The number of seconds until the timer expires. The minimum value is 60 seconds to ensure accuracy. The maximum value is 31622400 seconds. seconds is deprecated. You can use durationExpression for SetTimerAction. The value of seconds can be used as a string expression for durationExpression.',
-        }),
-    ).exactOptional(),
-    durationExpression: VariableValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The duration of the timer, in seconds. You can use a string expression that includes numbers, variables (<code>$variable.&lt;variable-name&gt;</code>), and input values (<code>$input.&lt;input-name&gt;.&lt;path-to-datum&gt;</code>) as the duration. The range of the duration is 1-31622400 seconds. To ensure accuracy, the minimum duration is 60 seconds. The evaluated result of the duration is rounded down to the nearest whole number. ',
-        }),
-    ).exactOptional(),
+    timerName: TimerNameSchema.openapi({ description: 'The name of the timer.' }),
+    seconds: SecondsSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'The number of seconds until the timer expires. The minimum value is 60 seconds to ensure accuracy. The maximum value is 31622400 seconds. seconds is deprecated. You can use durationExpression for SetTimerAction. The value of seconds can be used as a string expression for durationExpression.',
+    }),
+    durationExpression: VariableValueSchema.exactOptional().openapi({
+      description:
+        'The duration of the timer, in seconds. You can use a string expression that includes numbers, variables (<code>$variable.&lt;variable-name&gt;</code>), and input values (<code>$input.&lt;input-name&gt;.&lt;path-to-datum&gt;</code>) as the duration. The range of the duration is 1-31622400 seconds. To ensure accuracy, the minimum duration is 60 seconds. The evaluated result of the duration is rounded down to the nearest whole number. ',
+    }),
   })
   .openapi({ required: ['timerName'], description: 'Information needed to set the timer.' })
   .openapi('SetTimerAction')
 
 const ClearTimerActionSchema = z
   .object({
-    timerName: TimerNameSchema.and(
-      z.any().openapi({ description: 'The name of the timer to clear.' }),
-    ),
+    timerName: TimerNameSchema.openapi({ description: 'The name of the timer to clear.' }),
   })
   .openapi({ required: ['timerName'], description: 'Information needed to clear the timer.' })
   .openapi('ClearTimerAction')
 
 const ResetTimerActionSchema = z
   .object({
-    timerName: TimerNameSchema.and(
-      z.any().openapi({ description: 'The name of the timer to reset.' }),
-    ),
+    timerName: TimerNameSchema.openapi({ description: 'The name of the timer to reset.' }),
   })
   .openapi({
     required: ['timerName'],
@@ -155,27 +277,6 @@ const ResetTimerActionSchema = z
       "Information required to reset the timer. The timer is reset to the previously evaluated result of the duration. The duration expression isn't reevaluated when you reset the timer.",
   })
   .openapi('ResetTimerAction')
-
-const LambdaActionSchema = z
-  .object({
-    functionArn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'The ARN of the Lambda function that is executed.' }),
-    ),
-    payload: PayloadSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'You can configure the action payload when you send a message to a Lambda function.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['functionArn'],
-    description:
-      'Calls a Lambda function, passing in information about the detector model instance and the event that triggered the action.',
-  })
-  .openapi('LambdaAction')
 
 const InputNameSchema = z
   .string()
@@ -186,19 +287,13 @@ const InputNameSchema = z
 
 const IotEventsActionSchema = z
   .object({
-    inputName: InputNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the AWS IoT Events input where the data is sent.' }),
-    ),
-    payload: PayloadSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'You can configure the action payload when you send a message to an AWS IoT Events input.',
-        }),
-    ).exactOptional(),
+    inputName: InputNameSchema.openapi({
+      description: 'The name of the AWS IoT Events input where the data is sent.',
+    }),
+    payload: PayloadSchema.exactOptional().openapi({
+      description:
+        'You can configure the action payload when you send a message to an AWS IoT Events input.',
+    }),
   })
   .openapi({
     required: ['inputName'],
@@ -213,25 +308,17 @@ const UseBase64Schema = z.boolean().openapi('UseBase64')
 
 const SqsActionSchema = z
   .object({
-    queueUrl: QueueUrlSchema.and(
-      z.any().openapi({ description: 'The URL of the SQS queue where the data is written.' }),
-    ),
-    useBase64: UseBase64Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Set this to TRUE if you want the data to be base-64 encoded before it is written to the queue. Otherwise, set this to FALSE.',
-        }),
-    ).exactOptional(),
-    payload: PayloadSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'You can configure the action payload when you send a message to an Amazon SQS queue.',
-        }),
-    ).exactOptional(),
+    queueUrl: QueueUrlSchema.openapi({
+      description: 'The URL of the SQS queue where the data is written.',
+    }),
+    useBase64: UseBase64Schema.exactOptional().openapi({
+      description:
+        'Set this to TRUE if you want the data to be base-64 encoded before it is written to the queue. Otherwise, set this to FALSE.',
+    }),
+    payload: PayloadSchema.exactOptional().openapi({
+      description:
+        'You can configure the action payload when you send a message to an Amazon SQS queue.',
+    }),
   })
   .openapi({
     required: ['queueUrl'],
@@ -249,30 +336,18 @@ const FirehoseSeparatorSchema = z
 
 const FirehoseActionSchema = z
   .object({
-    deliveryStreamName: DeliveryStreamNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Kinesis Data Firehose delivery stream where the data is written.',
-        }),
-    ),
-    separator: FirehoseSeparatorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A character separator that is used to separate records written to the Kinesis Data Firehose delivery stream. Valid values are: '\\n' (newline), '\\t' (tab), '\\r\\n' (Windows newline), ',' (comma).",
-        }),
-    ).exactOptional(),
-    payload: PayloadSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'You can configure the action payload when you send a message to an Amazon Kinesis Data Firehose delivery stream.',
-        }),
-    ).exactOptional(),
+    deliveryStreamName: DeliveryStreamNameSchema.openapi({
+      description:
+        'The name of the Kinesis Data Firehose delivery stream where the data is written.',
+    }),
+    separator: FirehoseSeparatorSchema.exactOptional().openapi({
+      description:
+        "A character separator that is used to separate records written to the Kinesis Data Firehose delivery stream. Valid values are: '\\n' (newline), '\\t' (tab), '\\r\\n' (Windows newline), ',' (comma).",
+    }),
+    payload: PayloadSchema.exactOptional().openapi({
+      description:
+        'You can configure the action payload when you send a message to an Amazon Kinesis Data Firehose delivery stream.',
+    }),
   })
   .openapi({
     required: ['deliveryStreamName'],
@@ -293,70 +368,40 @@ const DynamoTableNameSchema = z.string().openapi('DynamoTableName')
 
 const DynamoDBActionSchema = z
   .object({
-    hashKeyType: DynamoKeyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The data type for the hash key (also called the partition key). You can specify the following values:</p> <ul> <li> <p> <code>'STRING'</code> - The hash key is a string.</p> </li> <li> <p> <code>'NUMBER'</code> - The hash key is a number.</p> </li> </ul> <p>If you don't specify <code>hashKeyType</code>, the default value is <code>'STRING'</code>.</p>",
-        }),
-    ).exactOptional(),
-    hashKeyField: DynamoKeyFieldSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the hash key (also called the partition key). The <code>hashKeyField</code> value must match the partition key of the target DynamoDB table.',
-        }),
-    ),
-    hashKeyValue: DynamoKeyValueSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The value of the hash key (also called the partition key).' }),
-    ),
-    rangeKeyType: DynamoKeyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The data type for the range key (also called the sort key), You can specify the following values:</p> <ul> <li> <p> <code>'STRING'</code> - The range key is a string.</p> </li> <li> <p> <code>'NUMBER'</code> - The range key is number.</p> </li> </ul> <p>If you don't specify <code>rangeKeyField</code>, the default value is <code>'STRING'</code>.</p>",
-        }),
-    ).exactOptional(),
-    rangeKeyField: DynamoKeyFieldSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the range key (also called the sort key). The <code>rangeKeyField</code> value must match the sort key of the target DynamoDB table. ',
-        }),
-    ).exactOptional(),
-    rangeKeyValue: DynamoKeyValueSchema.and(
-      z.any().openapi({ description: 'The value of the range key (also called the sort key).' }),
-    ).exactOptional(),
-    operation: DynamoOperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The type of operation to perform. You can specify the following values: </p> <ul> <li> <p> <code>'INSERT'</code> - Insert data as a new item into the DynamoDB table. This item uses the specified hash key as a partition key. If you specified a range key, the item uses the range key as a sort key.</p> </li> <li> <p> <code>'UPDATE'</code> - Update an existing item of the DynamoDB table with new data. This item's partition key must match the specified hash key. If you specified a range key, the range key must match the item's sort key.</p> </li> <li> <p> <code>'DELETE'</code> - Delete an existing item of the DynamoDB table. This item's partition key must match the specified hash key. If you specified a range key, the range key must match the item's sort key.</p> </li> </ul> <p>If you don't specify this parameter, AWS IoT Events triggers the <code>'INSERT'</code> operation.</p>",
-        }),
-    ).exactOptional(),
-    payloadField: DynamoKeyFieldSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name of the DynamoDB column that receives the action payload.</p> <p>If you don't specify this parameter, the name of the DynamoDB column is <code>payload</code>.</p>",
-        }),
-    ).exactOptional(),
-    tableName: DynamoTableNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the DynamoDB table. The <code>tableName</code> value must match the table name of the target DynamoDB table. ',
-        }),
-    ),
+    hashKeyType: DynamoKeyTypeSchema.exactOptional().openapi({
+      description:
+        "<p>The data type for the hash key (also called the partition key). You can specify the following values:</p> <ul> <li> <p> <code>'STRING'</code> - The hash key is a string.</p> </li> <li> <p> <code>'NUMBER'</code> - The hash key is a number.</p> </li> </ul> <p>If you don't specify <code>hashKeyType</code>, the default value is <code>'STRING'</code>.</p>",
+    }),
+    hashKeyField: DynamoKeyFieldSchema.openapi({
+      description:
+        'The name of the hash key (also called the partition key). The <code>hashKeyField</code> value must match the partition key of the target DynamoDB table.',
+    }),
+    hashKeyValue: DynamoKeyValueSchema.openapi({
+      description: 'The value of the hash key (also called the partition key).',
+    }),
+    rangeKeyType: DynamoKeyTypeSchema.exactOptional().openapi({
+      description:
+        "<p>The data type for the range key (also called the sort key), You can specify the following values:</p> <ul> <li> <p> <code>'STRING'</code> - The range key is a string.</p> </li> <li> <p> <code>'NUMBER'</code> - The range key is number.</p> </li> </ul> <p>If you don't specify <code>rangeKeyField</code>, the default value is <code>'STRING'</code>.</p>",
+    }),
+    rangeKeyField: DynamoKeyFieldSchema.exactOptional().openapi({
+      description:
+        'The name of the range key (also called the sort key). The <code>rangeKeyField</code> value must match the sort key of the target DynamoDB table. ',
+    }),
+    rangeKeyValue: DynamoKeyValueSchema.exactOptional().openapi({
+      description: 'The value of the range key (also called the sort key).',
+    }),
+    operation: DynamoOperationSchema.exactOptional().openapi({
+      description:
+        "<p>The type of operation to perform. You can specify the following values: </p> <ul> <li> <p> <code>'INSERT'</code> - Insert data as a new item into the DynamoDB table. This item uses the specified hash key as a partition key. If you specified a range key, the item uses the range key as a sort key.</p> </li> <li> <p> <code>'UPDATE'</code> - Update an existing item of the DynamoDB table with new data. This item's partition key must match the specified hash key. If you specified a range key, the range key must match the item's sort key.</p> </li> <li> <p> <code>'DELETE'</code> - Delete an existing item of the DynamoDB table. This item's partition key must match the specified hash key. If you specified a range key, the range key must match the item's sort key.</p> </li> </ul> <p>If you don't specify this parameter, AWS IoT Events triggers the <code>'INSERT'</code> operation.</p>",
+    }),
+    payloadField: DynamoKeyFieldSchema.exactOptional().openapi({
+      description:
+        "<p>The name of the DynamoDB column that receives the action payload.</p> <p>If you don't specify this parameter, the name of the DynamoDB column is <code>payload</code>.</p>",
+    }),
+    tableName: DynamoTableNameSchema.openapi({
+      description:
+        'The name of the DynamoDB table. The <code>tableName</code> value must match the table name of the target DynamoDB table. ',
+    }),
     payload: PayloadSchema.exactOptional(),
   })
   .openapi({
@@ -368,9 +413,7 @@ const DynamoDBActionSchema = z
 
 const DynamoDBv2ActionSchema = z
   .object({
-    tableName: DynamoTableNameSchema.and(
-      z.any().openapi({ description: 'The name of the DynamoDB table.' }),
-    ),
+    tableName: DynamoTableNameSchema.openapi({ description: 'The name of the DynamoDB table.' }),
     payload: PayloadSchema.exactOptional(),
   })
   .openapi({
@@ -398,38 +441,22 @@ const AssetPropertyBooleanValueSchema = z.string().openapi('AssetPropertyBoolean
 
 const AssetPropertyVariantSchema = z
   .object({
-    stringValue: AssetPropertyStringValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The asset property value is a string. You must use an expression, and the evaluated result should be a string.',
-        }),
-    ).exactOptional(),
-    integerValue: AssetPropertyIntegerValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The asset property value is an integer. You must use an expression, and the evaluated result should be an integer.',
-        }),
-    ).exactOptional(),
-    doubleValue: AssetPropertyDoubleValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The asset property value is a double. You must use an expression, and the evaluated result should be a double.',
-        }),
-    ).exactOptional(),
-    booleanValue: AssetPropertyBooleanValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The asset property value is a Boolean value that must be <code>'TRUE'</code> or <code>'FALSE'</code>. You must use an expression, and the evaluated result should be a Boolean value.",
-        }),
-    ).exactOptional(),
+    stringValue: AssetPropertyStringValueSchema.exactOptional().openapi({
+      description:
+        'The asset property value is a string. You must use an expression, and the evaluated result should be a string.',
+    }),
+    integerValue: AssetPropertyIntegerValueSchema.exactOptional().openapi({
+      description:
+        'The asset property value is an integer. You must use an expression, and the evaluated result should be an integer.',
+    }),
+    doubleValue: AssetPropertyDoubleValueSchema.exactOptional().openapi({
+      description:
+        'The asset property value is a double. You must use an expression, and the evaluated result should be a double.',
+    }),
+    booleanValue: AssetPropertyBooleanValueSchema.exactOptional().openapi({
+      description:
+        "The asset property value is a Boolean value that must be <code>'TRUE'</code> or <code>'FALSE'</code>. You must use an expression, and the evaluated result should be a Boolean value.",
+    }),
   })
   .openapi({
     description:
@@ -444,22 +471,14 @@ const AssetPropertyOffsetInNanosSchema = z.string().openapi('AssetPropertyOffset
 
 const AssetPropertyTimestampSchema = z
   .object({
-    timeInSeconds: AssetPropertyTimeInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp, in seconds, in the Unix epoch format. The valid range is between 1-31556889864403199.',
-        }),
-    ),
-    offsetInNanos: AssetPropertyOffsetInNanosSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The nanosecond offset converted from <code>timeInSeconds</code>. The valid range is between 0-999999999.',
-        }),
-    ).exactOptional(),
+    timeInSeconds: AssetPropertyTimeInSecondsSchema.openapi({
+      description:
+        'The timestamp, in seconds, in the Unix epoch format. The valid range is between 1-31556889864403199.',
+    }),
+    offsetInNanos: AssetPropertyOffsetInNanosSchema.exactOptional().openapi({
+      description:
+        'The nanosecond offset converted from <code>timeInSeconds</code>. The valid range is between 0-999999999.',
+    }),
   })
   .openapi({
     required: ['timeInSeconds'],
@@ -472,25 +491,17 @@ const AssetPropertyQualitySchema = z.string().openapi('AssetPropertyQuality')
 
 const AssetPropertyValueSchema = z
   .object({
-    value: AssetPropertyVariantSchema.and(
-      z.any().openapi({ description: 'The value to send to an asset property.' }),
-    ).exactOptional(),
-    timestamp: AssetPropertyTimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp associated with the asset property value. The default is the current event time.',
-        }),
-    ).exactOptional(),
-    quality: AssetPropertyQualitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The quality of the asset property value. The value must be <code>'GOOD'</code>, <code>'BAD'</code>, or <code>'UNCERTAIN'</code>.",
-        }),
-    ).exactOptional(),
+    value: AssetPropertyVariantSchema.exactOptional().openapi({
+      description: 'The value to send to an asset property.',
+    }),
+    timestamp: AssetPropertyTimestampSchema.exactOptional().openapi({
+      description:
+        'The timestamp associated with the asset property value. The default is the current event time.',
+    }),
+    quality: AssetPropertyQualitySchema.exactOptional().openapi({
+      description:
+        "The quality of the asset property value. The value must be <code>'GOOD'</code>, <code>'BAD'</code>, or <code>'UNCERTAIN'</code>.",
+    }),
   })
   .openapi({
     description:
@@ -501,31 +512,23 @@ const AssetPropertyValueSchema = z
 
 const IotSiteWiseActionSchema = z
   .object({
-    entryId: AssetPropertyEntryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for this entry. You can use the entry ID to track which data entry causes an error in case of failure. The default is a new unique identifier.',
-        }),
-    ).exactOptional(),
-    assetId: AssetIdSchema.and(
-      z.any().openapi({ description: 'The ID of the asset that has the specified property.' }),
-    ).exactOptional(),
-    propertyId: AssetPropertyIdSchema.and(
-      z.any().openapi({ description: 'The ID of the asset property.' }),
-    ).exactOptional(),
-    propertyAlias: AssetPropertyAliasSchema.and(
-      z.any().openapi({ description: 'The alias of the asset property.' }),
-    ).exactOptional(),
-    propertyValue: AssetPropertyValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value to send to the asset property. This value contains timestamp, quality, and value (TQV) information. ',
-        }),
-    ).exactOptional(),
+    entryId: AssetPropertyEntryIdSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for this entry. You can use the entry ID to track which data entry causes an error in case of failure. The default is a new unique identifier.',
+    }),
+    assetId: AssetIdSchema.exactOptional().openapi({
+      description: 'The ID of the asset that has the specified property.',
+    }),
+    propertyId: AssetPropertyIdSchema.exactOptional().openapi({
+      description: 'The ID of the asset property.',
+    }),
+    propertyAlias: AssetPropertyAliasSchema.exactOptional().openapi({
+      description: 'The alias of the asset property.',
+    }),
+    propertyValue: AssetPropertyValueSchema.exactOptional().openapi({
+      description:
+        'The value to send to the asset property. This value contains timestamp, quality, and value (TQV) information. ',
+    }),
   })
   .openapi({
     description:
@@ -534,73 +537,185 @@ const IotSiteWiseActionSchema = z
   })
   .openapi('IotSiteWiseAction')
 
-type ActionType = {
-  setVariable?: z.infer<typeof SetVariableActionSchema> & { [key: string]: unknown }
-  sns?: z.infer<typeof SNSTopicPublishActionSchema> & { [key: string]: unknown }
-  iotTopicPublish?: z.infer<typeof IotTopicPublishActionSchema> & { [key: string]: unknown }
-  setTimer?: z.infer<typeof SetTimerActionSchema> & { [key: string]: unknown }
-  clearTimer?: z.infer<typeof ClearTimerActionSchema> & { [key: string]: unknown }
-  resetTimer?: z.infer<typeof ResetTimerActionSchema> & { [key: string]: unknown }
-  lambda?: z.infer<typeof LambdaActionSchema> & { [key: string]: unknown }
-  iotEvents?: z.infer<typeof IotEventsActionSchema> & { [key: string]: unknown }
-  sqs?: z.infer<typeof SqsActionSchema> & { [key: string]: unknown }
-  firehose?: z.infer<typeof FirehoseActionSchema> & { [key: string]: unknown }
-  dynamoDB?: z.infer<typeof DynamoDBActionSchema> & { [key: string]: unknown }
-  dynamoDBv2?: z.infer<typeof DynamoDBv2ActionSchema> & { [key: string]: unknown }
-  iotSiteWise?: z.infer<typeof IotSiteWiseActionSchema> & { [key: string]: unknown }
-}
-
-const IotEventsInputIdentifierSchema = z
+const ActionSchema = z
   .object({
-    inputName: InputNameSchema.and(
-      z.any().openapi({ description: ' The name of the input routed to AWS IoT Events. ' }),
-    ),
+    setVariable: SetVariableActionSchema.exactOptional().openapi({
+      description: 'Sets a variable to a specified value.',
+    }),
+    sns: SNSTopicPublishActionSchema.exactOptional().openapi({
+      description: 'Sends an Amazon SNS message.',
+    }),
+    iotTopicPublish: IotTopicPublishActionSchema.exactOptional().openapi({
+      description: 'Publishes an MQTT message with the given topic to the AWS IoT message broker.',
+    }),
+    setTimer: SetTimerActionSchema.exactOptional().openapi({
+      description: 'Information needed to set the timer.',
+    }),
+    clearTimer: ClearTimerActionSchema.exactOptional().openapi({
+      description: 'Information needed to clear the timer.',
+    }),
+    resetTimer: ResetTimerActionSchema.exactOptional().openapi({
+      description: 'Information needed to reset the timer.',
+    }),
+    lambda: LambdaActionSchema.exactOptional().openapi({
+      description:
+        'Calls a Lambda function, passing in information about the detector model instance and the event that triggered the action.',
+    }),
+    iotEvents: IotEventsActionSchema.exactOptional().openapi({
+      description:
+        'Sends AWS IoT Events input, which passes information about the detector model instance and the event that triggered the action.',
+    }),
+    sqs: SqsActionSchema.exactOptional().openapi({
+      description:
+        'Sends information about the detector model instance and the event that triggered the action to an Amazon SQS queue.',
+    }),
+    firehose: FirehoseActionSchema.exactOptional().openapi({
+      description:
+        'Sends information about the detector model instance and the event that triggered the action to an Amazon Kinesis Data Firehose delivery stream.',
+    }),
+    dynamoDB: DynamoDBActionSchema.exactOptional().openapi({
+      description:
+        'Writes to the DynamoDB table that you created. The default action payload contains all attribute-value pairs that have the information about the detector model instance and the event that triggered the action. You can customize the <a href="https://docs.aws.amazon.com/iotevents/latest/apireference/API_Payload.html">payload</a>. One column of the DynamoDB table receives all attribute-value pairs in the payload that you specify. For more information, see <a href="https://docs.aws.amazon.com/iotevents/latest/developerguide/iotevents-event-actions.html">Actions</a> in <i>AWS IoT Events Developer Guide</i>.',
+    }),
+    dynamoDBv2: DynamoDBv2ActionSchema.exactOptional().openapi({
+      description:
+        'Writes to the DynamoDB table that you created. The default action payload contains all attribute-value pairs that have the information about the detector model instance and the event that triggered the action. You can customize the <a href="https://docs.aws.amazon.com/iotevents/latest/apireference/API_Payload.html">payload</a>. A separate column of the DynamoDB table receives one attribute-value pair in the payload that you specify. For more information, see <a href="https://docs.aws.amazon.com/iotevents/latest/developerguide/iotevents-event-actions.html">Actions</a> in <i>AWS IoT Events Developer Guide</i>.',
+    }),
+    iotSiteWise: IotSiteWiseActionSchema.exactOptional().openapi({
+      description:
+        'Sends information about the detector model instance and the event that triggered the action to an asset property in AWS IoT SiteWise .',
+    }),
   })
   .openapi({
-    required: ['inputName'],
-    description: ' The identifier of the input routed to AWS IoT Events. ',
-  })
-  .openapi('IotEventsInputIdentifier')
-
-const AssetModelIdSchema = z.string().openapi('AssetModelId')
-
-const IotSiteWiseAssetModelPropertyIdentifierSchema = z
-  .object({
-    assetModelId: AssetModelIdSchema.and(
-      z.any().openapi({ description: ' The ID of the AWS IoT SiteWise asset model. ' }),
-    ),
-    propertyId: AssetPropertyIdSchema.and(
-      z.any().openapi({ description: ' The ID of the AWS IoT SiteWise asset property. ' }),
-    ),
-  })
-  .openapi({
-    required: ['assetModelId', 'propertyId'],
-    description: ' The asset model property identifer of the input routed from AWS IoT SiteWise. ',
-  })
-  .openapi('IotSiteWiseAssetModelPropertyIdentifier')
-
-const IotSiteWiseInputIdentifierSchema = z
-  .object({
-    iotSiteWiseAssetModelPropertyIdentifier: IotSiteWiseAssetModelPropertyIdentifierSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The identifier of the AWS IoT SiteWise asset model property. ' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: ' The identifer of the input routed from AWS IoT SiteWise. ',
+    description: 'An action to be performed when the <code>condition</code> is TRUE.',
     required: [],
   })
-  .openapi('IotSiteWiseInputIdentifier')
+  .openapi('Action')
 
-type InputIdentifierType = {
-  iotEventsInputIdentifier?: z.infer<typeof IotEventsInputIdentifierSchema> & {
-    [key: string]: unknown
-  }
-  iotSiteWiseInputIdentifier?: z.infer<typeof IotSiteWiseInputIdentifierSchema> & {
-    [key: string]: unknown
-  }
+const ActionsSchema = z.array(ActionSchema).openapi('Actions')
+
+const EventSchema = z
+  .object({
+    eventName: EventNameSchema.openapi({ description: 'The name of the event.' }),
+    condition: ConditionSchema.exactOptional().openapi({
+      description:
+        'Optional. The Boolean expression that, when TRUE, causes the <code>actions</code> to be performed. If not present, the actions are performed (=TRUE). If the expression result is not a Boolean value, the actions are not performed (=FALSE).',
+    }),
+    actions: ActionsSchema.exactOptional().openapi({ description: 'The actions to be performed.' }),
+  })
+  .openapi({
+    required: ['eventName'],
+    description:
+      'Specifies the <code>actions</code> to be performed when the <code>condition</code> evaluates to TRUE.',
+  })
+  .openapi('Event')
+
+const EventsSchema = z.array(EventSchema).openapi('Events')
+
+const TransitionEventSchema = z
+  .object({
+    eventName: EventNameSchema.openapi({ description: 'The name of the transition event.' }),
+    condition: ConditionSchema.openapi({
+      description:
+        'Required. A Boolean expression that when TRUE causes the actions to be performed and the <code>nextState</code> to be entered.',
+    }),
+    actions: ActionsSchema.exactOptional().openapi({ description: 'The actions to be performed.' }),
+    nextState: StateNameSchema.openapi({ description: 'The next state to enter.' }),
+  })
+  .openapi({
+    required: ['eventName', 'condition', 'nextState'],
+    description:
+      'Specifies the actions performed and the next state entered when a <code>condition</code> evaluates to TRUE.',
+  })
+  .openapi('TransitionEvent')
+
+const TransitionEventsSchema = z.array(TransitionEventSchema).openapi('TransitionEvents')
+
+type OnInputLifecycleType = {
+  events?: z.infer<typeof EventsSchema> & unknown
+  transitionEvents?: z.infer<typeof TransitionEventsSchema> & unknown
 }
+
+const OnInputLifecycleSchema: z.ZodType<OnInputLifecycleType> = z
+  .object({
+    events: EventsSchema.exactOptional().openapi({
+      description:
+        'Specifies the actions performed when the <code>condition</code> evaluates to TRUE.',
+    }),
+    transitionEvents: TransitionEventsSchema.exactOptional().openapi({
+      description:
+        'Specifies the actions performed, and the next state entered, when a <code>condition</code> evaluates to TRUE.',
+    }),
+  })
+  .openapi({
+    description:
+      'Specifies the actions performed when the <code>condition</code> evaluates to TRUE.',
+    required: [],
+  })
+  .openapi('OnInputLifecycle')
+
+type OnEnterLifecycleType = { events?: z.infer<typeof EventsSchema> & unknown }
+
+const OnEnterLifecycleSchema: z.ZodType<OnEnterLifecycleType> = z
+  .object({
+    events: EventsSchema.exactOptional().openapi({
+      description:
+        'Specifies the actions that are performed when the state is entered and the <code>condition</code> is <code>TRUE</code>.',
+    }),
+  })
+  .openapi({
+    description:
+      'When entering this state, perform these <code>actions</code> if the <code>condition</code> is TRUE.',
+    required: [],
+  })
+  .openapi('OnEnterLifecycle')
+
+type OnExitLifecycleType = { events?: z.infer<typeof EventsSchema> & unknown }
+
+const OnExitLifecycleSchema: z.ZodType<OnExitLifecycleType> = z
+  .object({
+    events: EventsSchema.exactOptional().openapi({
+      description:
+        'Specifies the <code>actions</code> that are performed when the state is exited and the <code>condition</code> is <code>TRUE</code>.',
+    }),
+  })
+  .openapi({
+    description:
+      'When exiting this state, perform these <code>actions</code> if the specified <code>condition</code> is <code>TRUE</code>.',
+    required: [],
+  })
+  .openapi('OnExitLifecycle')
+
+type StateType = {
+  stateName: z.infer<typeof StateNameSchema> & unknown
+  onInput?: z.infer<typeof OnInputLifecycleSchema> & unknown
+  onEnter?: z.infer<typeof OnEnterLifecycleSchema> & unknown
+  onExit?: z.infer<typeof OnExitLifecycleSchema> & unknown
+}
+
+const StateSchema: z.ZodType<StateType> = z
+  .object({
+    stateName: StateNameSchema.openapi({ description: 'The name of the state.' }),
+    onInput: OnInputLifecycleSchema.exactOptional().openapi({
+      description:
+        'When an input is received and the <code>condition</code> is TRUE, perform the specified <code>actions</code>.',
+    }),
+    onEnter: OnEnterLifecycleSchema.exactOptional().openapi({
+      description:
+        'When entering this state, perform these <code>actions</code> if the <code>condition</code> is TRUE.',
+    }),
+    onExit: OnExitLifecycleSchema.exactOptional().openapi({
+      description:
+        'When exiting this state, perform these <code>actions</code> if the specified <code>condition</code> is <code>TRUE</code>.',
+    }),
+  })
+  .openapi({
+    required: ['stateName'],
+    description: 'Information that defines a state of a detector.',
+  })
+  .openapi('State')
+
+type StatesType = z.infer<typeof StateSchema>[]
 
 const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
 
@@ -612,59 +727,25 @@ const AlarmModelVersionStatusSchema = z
   .enum(['ACTIVE', 'ACTIVATING', 'INACTIVE', 'FAILED'])
   .openapi('AlarmModelVersionStatus')
 
-const CreateAlarmModelResponseSchema = z
-  .object({
-    creationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time the alarm model was created, in the Unix epoch format.',
-        }),
-    ).exactOptional(),
-    alarmModelArn: AlarmModelArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the alarm model. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.',
-        }),
-    ).exactOptional(),
-    alarmModelVersion: AlarmModelVersionSchema.and(
-      z.any().openapi({ description: 'The version of the alarm model.' }),
-    ).exactOptional(),
-    lastUpdateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time the alarm model was last updated, in the Unix epoch format.',
-        }),
-    ).exactOptional(),
-    status: AlarmModelVersionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The status of the alarm model. The status can be one of the following values:</p> <ul> <li> <p> <code>ACTIVE</code> - The alarm model is active and it's ready to evaluate data.</p> </li> <li> <p> <code>ACTIVATING</code> - AWS IoT Events is activating your alarm model. Activating an alarm model can take up to a few minutes.</p> </li> <li> <p> <code>INACTIVE</code> - The alarm model is inactive, so it isn't ready to evaluate data. Check your alarm model information and update the alarm model.</p> </li> <li> <p> <code>FAILED</code> - You couldn't create or update the alarm model. Check your alarm model information and try again.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CreateAlarmModelResponse')
+const StatusMessageSchema = z.string().openapi('StatusMessage')
 
-const TagKeySchema = z.string().min(1).max(128).openapi('TagKey')
+const AlarmModelNameSchema = z
+  .string()
+  .regex(/^[a-zA-Z0-9_-]+$/)
+  .min(1)
+  .max(128)
+  .openapi('AlarmModelName')
 
-const TagValueSchema = z.string().min(0).max(256).openapi('TagValue')
+const AlarmModelDescriptionSchema = z.string().max(128).openapi('AlarmModelDescription')
 
-const TagSchema = z
-  .object({
-    key: TagKeySchema.and(z.any().openapi({ description: "The tag's key." })),
-    value: TagValueSchema.and(z.any().openapi({ description: "The tag's value." })),
-  })
-  .openapi({
-    required: ['key', 'value'],
-    description: 'Metadata that can be used to manage the resource.',
-  })
-  .openapi('Tag')
+const AttributeJsonPathSchema = z
+  .string()
+  .regex(/^((`[\w\- ]+`)|([\w\-]+))(\.((`[\w- ]+`)|([\w\-]+)))*$/)
+  .min(1)
+  .max(128)
+  .openapi('AttributeJsonPath')
+
+const SeveritySchema = z.int().min(0).max(2147483647).openapi('Severity')
 
 const InputPropertySchema = z.string().min(1).max(512).openapi('InputProperty')
 
@@ -676,25 +757,17 @@ const ThresholdSchema = z.string().min(1).max(512).openapi('Threshold')
 
 const SimpleRuleSchema = z
   .object({
-    inputProperty: InputPropertySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value on the left side of the comparison operator. You can specify an AWS IoT Events input attribute as an input property.',
-        }),
-    ),
-    comparisonOperator: ComparisonOperatorSchema.and(
-      z.any().openapi({ description: 'The comparison operator.' }),
-    ),
-    threshold: ThresholdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value on the right side of the comparison operator. You can enter a number or specify an AWS IoT Events input attribute.',
-        }),
-    ),
+    inputProperty: InputPropertySchema.openapi({
+      description:
+        'The value on the left side of the comparison operator. You can specify an AWS IoT Events input attribute as an input property.',
+    }),
+    comparisonOperator: ComparisonOperatorSchema.openapi({
+      description: 'The comparison operator.',
+    }),
+    threshold: ThresholdSchema.openapi({
+      description:
+        'The value on the right side of the comparison operator. You can enter a number or specify an AWS IoT Events input attribute.',
+    }),
   })
   .openapi({
     required: ['inputProperty', 'comparisonOperator', 'threshold'],
@@ -703,181 +776,37 @@ const SimpleRuleSchema = z
   })
   .openapi('SimpleRule')
 
-const NotificationTargetActionsSchema = z
-  .object({ lambdaAction: LambdaActionSchema.exactOptional() })
-  .openapi({
-    description:
-      'Specifies an AWS Lambda function to manage alarm notifications. You can create one or use the <a href="https://docs.aws.amazon.com/iotevents/latest/developerguide/lambda-support.html">AWS Lambda function provided by AWS IoT Events</a>.',
-    required: [],
-  })
-  .openapi('NotificationTargetActions')
-
-const SMSSenderIdSchema = z.string().openapi('SMSSenderId')
-
-const NotificationAdditionalMessageSchema = z.string().openapi('NotificationAdditionalMessage')
-
-const IdentityStoreIdSchema = z.string().openapi('IdentityStoreId')
-
-const SSOReferenceIdSchema = z.string().openapi('SSOReferenceId')
-
-const SSOIdentitySchema = z
+const AlarmRuleSchema = z
   .object({
-    identityStoreId: IdentityStoreIdSchema.and(
-      z.any().openapi({ description: 'The ID of the AWS SSO identity store.' }),
-    ),
-    userId: SSOReferenceIdSchema.and(
-      z.any().openapi({ description: 'The user ID.' }),
-    ).exactOptional(),
+    simpleRule: SimpleRuleSchema.exactOptional().openapi({
+      description:
+        'A rule that compares an input property value to a threshold value with a comparison operator.',
+    }),
   })
-  .openapi({
-    required: ['identityStoreId'],
-    description:
-      'Contains information about your identity source in AWS Single Sign-On. For more information, see the <a href="https://docs.aws.amazon.com/singlesignon/latest/userguide/what-is.html">AWS Single Sign-On User Guide</a>.',
-  })
-  .openapi('SSOIdentity')
+  .openapi({ description: 'Defines when your alarm is invoked.', required: [] })
+  .openapi('AlarmRule')
 
-const RecipientDetailSchema = z
-  .object({
-    ssoIdentity: SSOIdentitySchema.and(
-      z
-        .any()
-        .openapi({ description: 'The AWS Single Sign-On (AWS SSO) authentication information.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'The information that identifies the recipient.', required: [] })
-  .openapi('RecipientDetail')
-
-const RecipientDetailsSchema = z.array(RecipientDetailSchema).min(1).openapi('RecipientDetails')
-
-const SMSConfigurationSchema = z
-  .object({
-    senderId: SMSSenderIdSchema.and(
-      z.any().openapi({ description: 'The sender ID.' }),
-    ).exactOptional(),
-    additionalMessage: NotificationAdditionalMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The message that you want to send. The message can be up to 200 characters.',
-        }),
-    ).exactOptional(),
-    recipients: RecipientDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies one or more recipients who receive the message.</p> <important> <p>You must <a href="https://docs.aws.amazon.com/singlesignon/latest/userguide/addusers.html">add the users that receive SMS messages to your AWS SSO store</a>.</p> </important>',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['recipients'],
-    description: 'Contains the configuration information of SMS notifications.',
-  })
-  .openapi('SMSConfiguration')
-
-const SMSConfigurationsSchema = z.array(SMSConfigurationSchema).min(1).openapi('SMSConfigurations')
-
-const FromEmailSchema = z.string().openapi('FromEmail')
-
-const EmailSubjectSchema = z.string().openapi('EmailSubject')
-
-const EmailContentSchema = z
-  .object({
-    subject: EmailSubjectSchema.and(
-      z.any().openapi({ description: 'The subject of the email.' }),
-    ).exactOptional(),
-    additionalMessage: NotificationAdditionalMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The message that you want to send. The message can be up to 200 characters.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Contains the subject and message of an email.', required: [] })
-  .openapi('EmailContent')
-
-const EmailRecipientsSchema = z
-  .object({
-    to: RecipientDetailsSchema.and(
-      z.any().openapi({ description: 'Specifies one or more recipients who receive the email.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>Contains the information of one or more recipients who receive the emails.</p> <important> <p>You must <a href="https://docs.aws.amazon.com/singlesignon/latest/userguide/addusers.html">add the users that receive emails to your AWS SSO store</a>.</p> </important>',
-    required: [],
-  })
-  .openapi('EmailRecipients')
-
-const EmailConfigurationSchema = z
-  .object({
-    from: FromEmailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The email address that sends emails.</p> <important> <p>If you use the AWS IoT Events managed AWS Lambda function to manage your emails, you must <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-email-addresses.html">verify the email address that sends emails in Amazon SES</a>.</p> </important>',
-        }),
-    ),
-    content: EmailContentSchema.and(
-      z.any().openapi({ description: 'Contains the subject and message of an email.' }),
-    ).exactOptional(),
-    recipients: EmailRecipientsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Contains the information of one or more recipients who receive the emails.</p> <important> <p>You must <a href="https://docs.aws.amazon.com/singlesignon/latest/userguide/addusers.html">add the users that receive emails to your AWS SSO store</a>.</p> </important>',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['from', 'recipients'],
-    description: 'Contains the configuration information of email notifications.',
-  })
-  .openapi('EmailConfiguration')
-
-const EmailConfigurationsSchema = z
-  .array(EmailConfigurationSchema)
-  .min(1)
-  .openapi('EmailConfigurations')
-
-const NotificationActionSchema = z
-  .object({
-    action: NotificationTargetActionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies an AWS Lambda function to manage alarm notifications. You can create one or use the <a href="https://docs.aws.amazon.com/iotevents/latest/developerguide/lambda-support.html">AWS Lambda function provided by AWS IoT Events</a>.',
-        }),
-    ),
-    smsConfigurations: SMSConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Contains the configuration information of SMS notifications.' }),
-    ).exactOptional(),
-    emailConfigurations: EmailConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Contains the configuration information of email notifications.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['action'],
-    description:
-      'Contains the notification settings of an alarm model. The settings apply to all alarms that were created based on this alarm model.',
-  })
-  .openapi('NotificationAction')
-
-const NotificationActionsSchema = z
+const NotificationActionsSchema: z.ZodType<NotificationActionsType> = z
   .array(NotificationActionSchema)
   .min(1)
   .openapi('NotificationActions')
+
+type AlarmNotificationType = {
+  notificationActions?: z.infer<typeof NotificationActionsSchema> & unknown
+}
+
+const AlarmNotificationSchema: z.ZodType<AlarmNotificationType> = z
+  .object({
+    notificationActions: NotificationActionsSchema.exactOptional().openapi({
+      description:
+        'Contains the notification settings of an alarm model. The settings apply to all alarms that were created based on this alarm model.',
+    }),
+  })
+  .openapi({
+    description: 'Contains information about one or more notification actions.',
+    required: [],
+  })
+  .openapi('AlarmNotification')
 
 const AlarmActionSchema = z
   .object({
@@ -900,18 +829,24 @@ const AlarmActionSchema = z
 
 const AlarmActionsSchema = z.array(AlarmActionSchema).openapi('AlarmActions')
 
+const AlarmEventActionsSchema = z
+  .object({
+    alarmActions: AlarmActionsSchema.exactOptional().openapi({
+      description:
+        'Specifies one or more supported actions to receive notifications when the alarm state changes.',
+    }),
+  })
+  .openapi({ description: 'Contains information about one or more alarm actions.', required: [] })
+  .openapi('AlarmEventActions')
+
 const DisabledOnInitializationSchema = z.boolean().openapi('DisabledOnInitialization')
 
 const InitializationConfigurationSchema = z
   .object({
-    disabledOnInitialization: DisabledOnInitializationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value must be <code>TRUE</code> or <code>FALSE</code>. If <code>FALSE</code>, all alarm instances created based on the alarm model are activated. The default value is <code>TRUE</code>.',
-        }),
-    ),
+    disabledOnInitialization: DisabledOnInitializationSchema.openapi({
+      description:
+        'The value must be <code>TRUE</code> or <code>FALSE</code>. If <code>FALSE</code>, all alarm instances created based on the alarm model are activated. The default value is <code>TRUE</code>.',
+    }),
   })
   .openapi({
     required: ['disabledOnInitialization'],
@@ -924,14 +859,10 @@ const AcknowledgeFlowEnabledSchema = z.boolean().openapi('AcknowledgeFlowEnabled
 
 const AcknowledgeFlowSchema = z
   .object({
-    enabled: AcknowledgeFlowEnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The value must be <code>TRUE</code> or <code>FALSE</code>. If <code>TRUE</code>, you receive a notification when the alarm state changes. You must choose to acknowledge the notification before the alarm state can return to <code>NORMAL</code>. If <code>FALSE</code>, you won't receive notifications. The alarm automatically changes to the <code>NORMAL</code> state when the input property value returns to the specified range.",
-        }),
-    ),
+    enabled: AcknowledgeFlowEnabledSchema.openapi({
+      description:
+        "The value must be <code>TRUE</code> or <code>FALSE</code>. If <code>TRUE</code>, you receive a notification when the alarm state changes. You must choose to acknowledge the notification before the alarm state can return to <code>NORMAL</code>. If <code>FALSE</code>, you won't receive notifications. The alarm automatically changes to the <code>NORMAL</code> state when the input property value returns to the specified range.",
+    }),
   })
   .openapi({
     required: ['enabled'],
@@ -939,19 +870,59 @@ const AcknowledgeFlowSchema = z
   })
   .openapi('AcknowledgeFlow')
 
-const InvalidRequestExceptionSchema = z.any().openapi('InvalidRequestException')
+const AlarmCapabilitiesSchema = z
+  .object({
+    initializationConfiguration: InitializationConfigurationSchema.exactOptional().openapi({
+      description:
+        'Specifies the default alarm state. The configuration applies to all alarms that were created based on this alarm model.',
+    }),
+    acknowledgeFlow: AcknowledgeFlowSchema.exactOptional().openapi({
+      description: 'Specifies whether to get notified for alarm state changes.',
+    }),
+  })
+  .openapi({
+    description: 'Contains the configuration information of alarm state changes.',
+    required: [],
+  })
+  .openapi('AlarmCapabilities')
 
-const ResourceInUseExceptionSchema = z.any().openapi('ResourceInUseException')
+type DescribeAlarmModelResponseType = {
+  creationTime?: z.infer<typeof TimestampSchema> & unknown
+  alarmModelArn?: z.infer<typeof AlarmModelArnSchema> & unknown
+  alarmModelVersion?: z.infer<typeof AlarmModelVersionSchema> & unknown
+  lastUpdateTime?: z.infer<typeof TimestampSchema> & unknown
+  status?: z.infer<typeof AlarmModelVersionStatusSchema> & unknown
+  statusMessage?: z.infer<typeof StatusMessageSchema> & unknown
+  alarmModelName?: z.infer<typeof AlarmModelNameSchema> & unknown
+  alarmModelDescription?: z.infer<typeof AlarmModelDescriptionSchema> & unknown
+  roleArn?: z.infer<typeof AmazonResourceNameSchema> & unknown
+  key?: z.infer<typeof AttributeJsonPathSchema> & unknown
+  severity?: z.infer<typeof SeveritySchema> & unknown
+  alarmRule?: z.infer<typeof AlarmRuleSchema> & unknown
+  alarmNotification?: z.infer<typeof AlarmNotificationSchema> & unknown
+  alarmEventActions?: z.infer<typeof AlarmEventActionsSchema> & unknown
+  alarmCapabilities?: z.infer<typeof AlarmCapabilitiesSchema> & unknown
+}
 
-const ResourceAlreadyExistsExceptionSchema = z.any().openapi('ResourceAlreadyExistsException')
+const StatesSchema: z.ZodType<StatesType> = z.array(StateSchema).min(1).openapi('States')
 
-const LimitExceededExceptionSchema = z.any().openapi('LimitExceededException')
+type DetectorModelDefinitionType = {
+  states: z.infer<typeof StatesSchema> & unknown
+  initialStateName: z.infer<typeof StateNameSchema> & unknown
+}
 
-const ThrottlingExceptionSchema = z.any().openapi('ThrottlingException')
-
-const InternalFailureExceptionSchema = z.any().openapi('InternalFailureException')
-
-const ServiceUnavailableExceptionSchema = z.any().openapi('ServiceUnavailableException')
+const DetectorModelDefinitionSchema: z.ZodType<DetectorModelDefinitionType> = z
+  .object({
+    states: StatesSchema.openapi({ description: 'Information about the states of the detector.' }),
+    initialStateName: StateNameSchema.openapi({
+      description: 'The state that is entered at the creation of each detector (instance).',
+    }),
+  })
+  .openapi({
+    required: ['states', 'initialStateName'],
+    description: 'Information that defines how a detector operates.',
+  })
+  .openapi('DetectorModelDefinition')
 
 const DetectorModelNameSchema = z
   .string()
@@ -970,322 +941,174 @@ const DetectorModelVersionStatusSchema = z
   .enum(['ACTIVE', 'ACTIVATING', 'INACTIVE', 'DEPRECATED', 'DRAFT', 'PAUSED', 'FAILED'])
   .openapi('DetectorModelVersionStatus')
 
-const AttributeJsonPathSchema = z
-  .string()
-  .regex(/^((`[\w\- ]+`)|([\w\-]+))(\.((`[\w- ]+`)|([\w\-]+)))*$/)
-  .min(1)
-  .max(128)
-  .openapi('AttributeJsonPath')
-
 const EvaluationMethodSchema = z.enum(['BATCH', 'SERIAL']).openapi('EvaluationMethod')
 
 const DetectorModelConfigurationSchema = z
   .object({
-    detectorModelName: DetectorModelNameSchema.and(
-      z.any().openapi({ description: 'The name of the detector model.' }),
-    ).exactOptional(),
-    detectorModelVersion: DetectorModelVersionSchema.and(
-      z.any().openapi({ description: 'The version of the detector model.' }),
-    ).exactOptional(),
-    detectorModelDescription: DetectorModelDescriptionSchema.and(
-      z.any().openapi({ description: 'A brief description of the detector model.' }),
-    ).exactOptional(),
-    detectorModelArn: DetectorModelArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the detector model.' }),
-    ).exactOptional(),
-    roleArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the role that grants permission to AWS IoT Events to perform its operations.',
-        }),
-    ).exactOptional(),
-    creationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time the detector model was created.' }),
-    ).exactOptional(),
-    lastUpdateTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time the detector model was last updated.' }),
-    ).exactOptional(),
-    status: DetectorModelVersionStatusSchema.and(
-      z.any().openapi({ description: 'The status of the detector model.' }),
-    ).exactOptional(),
-    key: AttributeJsonPathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The value used to identify a detector instance. When a device or system sends input, a new detector instance with a unique key value is created. AWS IoT Events can continue to route input to its corresponding detector instance based on this identifying information. </p> <p>This parameter uses a JSON-path expression to select the attribute-value pair in the message payload that is used for identification. To route the message to the correct detector instance, the device must send a message payload that contains the same attribute-value.</p>',
-        }),
-    ).exactOptional(),
-    evaluationMethod: EvaluationMethodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the order in which events are evaluated and how actions are executed. ',
-        }),
-    ).exactOptional(),
+    detectorModelName: DetectorModelNameSchema.exactOptional().openapi({
+      description: 'The name of the detector model.',
+    }),
+    detectorModelVersion: DetectorModelVersionSchema.exactOptional().openapi({
+      description: 'The version of the detector model.',
+    }),
+    detectorModelDescription: DetectorModelDescriptionSchema.exactOptional().openapi({
+      description: 'A brief description of the detector model.',
+    }),
+    detectorModelArn: DetectorModelArnSchema.exactOptional().openapi({
+      description: 'The ARN of the detector model.',
+    }),
+    roleArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description:
+        'The ARN of the role that grants permission to AWS IoT Events to perform its operations.',
+    }),
+    creationTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time the detector model was created.',
+    }),
+    lastUpdateTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time the detector model was last updated.',
+    }),
+    status: DetectorModelVersionStatusSchema.exactOptional().openapi({
+      description: 'The status of the detector model.',
+    }),
+    key: AttributeJsonPathSchema.exactOptional().openapi({
+      description:
+        '<p>The value used to identify a detector instance. When a device or system sends input, a new detector instance with a unique key value is created. AWS IoT Events can continue to route input to its corresponding detector instance based on this identifying information. </p> <p>This parameter uses a JSON-path expression to select the attribute-value pair in the message payload that is used for identification. To route the message to the correct detector instance, the device must send a message payload that contains the same attribute-value.</p>',
+    }),
+    evaluationMethod: EvaluationMethodSchema.exactOptional().openapi({
+      description:
+        'Information about the order in which events are evaluated and how actions are executed. ',
+    }),
   })
   .openapi({ description: 'Information about how the detector model is configured.', required: [] })
   .openapi('DetectorModelConfiguration')
 
+type DetectorModelType = {
+  detectorModelDefinition?: z.infer<typeof DetectorModelDefinitionSchema> & unknown
+  detectorModelConfiguration?: z.infer<typeof DetectorModelConfigurationSchema> & unknown
+}
+
+const DetectorModelSchema: z.ZodType<DetectorModelType> = z
+  .object({
+    detectorModelDefinition: DetectorModelDefinitionSchema.exactOptional().openapi({
+      description: 'Information that defines how a detector operates.',
+    }),
+    detectorModelConfiguration: DetectorModelConfigurationSchema.exactOptional().openapi({
+      description: 'Information about how the detector is configured.',
+    }),
+  })
+  .openapi({ description: 'Information about the detector model.', required: [] })
+  .openapi('DetectorModel')
+
+type DescribeDetectorModelResponseType = {
+  detectorModel?: z.infer<typeof DetectorModelSchema> & unknown
+}
+
+const TagKeySchema = z.string().min(1).max(128).openapi('TagKey')
+
+const TagValueSchema = z.string().min(0).max(256).openapi('TagValue')
+
+const TagSchema = z
+  .object({
+    key: TagKeySchema.openapi({ description: "The tag's key." }),
+    value: TagValueSchema.openapi({ description: "The tag's value." }),
+  })
+  .openapi({
+    required: ['key', 'value'],
+    description: 'Metadata that can be used to manage the resource.',
+  })
+  .openapi('Tag')
+
+const TagsSchema = z.array(TagSchema).openapi('Tags')
+
+type CreateAlarmModelRequestType = {
+  alarmModelName: z.infer<typeof AlarmModelNameSchema> & unknown
+  alarmModelDescription?: z.infer<typeof AlarmModelDescriptionSchema> & unknown
+  roleArn: z.infer<typeof AmazonResourceNameSchema> & unknown
+  tags?: z.infer<typeof TagsSchema> & unknown
+  key?: z.infer<typeof AttributeJsonPathSchema> & unknown
+  severity?: z.infer<typeof SeveritySchema> & unknown
+  alarmRule: z.infer<typeof AlarmRuleSchema> & unknown
+  alarmNotification?: z.infer<typeof AlarmNotificationSchema> & unknown
+  alarmEventActions?: z.infer<typeof AlarmEventActionsSchema> & unknown
+  alarmCapabilities?: z.infer<typeof AlarmCapabilitiesSchema> & unknown
+}
+
+type CreateDetectorModelRequestType = {
+  detectorModelName: z.infer<typeof DetectorModelNameSchema> & unknown
+  detectorModelDefinition: z.infer<typeof DetectorModelDefinitionSchema> & unknown
+  detectorModelDescription?: z.infer<typeof DetectorModelDescriptionSchema> & unknown
+  key?: z.infer<typeof AttributeJsonPathSchema> & unknown
+  roleArn: z.infer<typeof AmazonResourceNameSchema> & unknown
+  tags?: z.infer<typeof TagsSchema> & unknown
+  evaluationMethod?: z.infer<typeof EvaluationMethodSchema> & unknown
+}
+
+type StartDetectorModelAnalysisRequestType = {
+  detectorModelDefinition: z.infer<typeof DetectorModelDefinitionSchema>
+}
+
+type UpdateAlarmModelRequestType = {
+  alarmModelDescription?: z.infer<typeof AlarmModelDescriptionSchema> & unknown
+  roleArn: z.infer<typeof AmazonResourceNameSchema> & unknown
+  severity?: z.infer<typeof SeveritySchema> & unknown
+  alarmRule: z.infer<typeof AlarmRuleSchema> & unknown
+  alarmNotification?: z.infer<typeof AlarmNotificationSchema> & unknown
+  alarmEventActions?: z.infer<typeof AlarmEventActionsSchema> & unknown
+  alarmCapabilities?: z.infer<typeof AlarmCapabilitiesSchema> & unknown
+}
+
+type UpdateDetectorModelRequestType = {
+  detectorModelDefinition: z.infer<typeof DetectorModelDefinitionSchema> & unknown
+  detectorModelDescription?: z.infer<typeof DetectorModelDescriptionSchema> & unknown
+  roleArn: z.infer<typeof AmazonResourceNameSchema> & unknown
+  evaluationMethod?: z.infer<typeof EvaluationMethodSchema> & unknown
+}
+
+const CreateAlarmModelResponseSchema = z
+  .object({
+    creationTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time the alarm model was created, in the Unix epoch format.',
+    }),
+    alarmModelArn: AlarmModelArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the alarm model. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.',
+    }),
+    alarmModelVersion: AlarmModelVersionSchema.exactOptional().openapi({
+      description: 'The version of the alarm model.',
+    }),
+    lastUpdateTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time the alarm model was last updated, in the Unix epoch format.',
+    }),
+    status: AlarmModelVersionStatusSchema.exactOptional().openapi({
+      description:
+        "<p>The status of the alarm model. The status can be one of the following values:</p> <ul> <li> <p> <code>ACTIVE</code> - The alarm model is active and it's ready to evaluate data.</p> </li> <li> <p> <code>ACTIVATING</code> - AWS IoT Events is activating your alarm model. Activating an alarm model can take up to a few minutes.</p> </li> <li> <p> <code>INACTIVE</code> - The alarm model is inactive, so it isn't ready to evaluate data. Check your alarm model information and update the alarm model.</p> </li> <li> <p> <code>FAILED</code> - You couldn't create or update the alarm model. Check your alarm model information and try again.</p> </li> </ul>",
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('CreateAlarmModelResponse')
+
+const InvalidRequestExceptionSchema = z.any().openapi('InvalidRequestException')
+
+const ResourceInUseExceptionSchema = z.any().openapi('ResourceInUseException')
+
+const ResourceAlreadyExistsExceptionSchema = z.any().openapi('ResourceAlreadyExistsException')
+
+const LimitExceededExceptionSchema = z.any().openapi('LimitExceededException')
+
+const ThrottlingExceptionSchema = z.any().openapi('ThrottlingException')
+
+const InternalFailureExceptionSchema = z.any().openapi('InternalFailureException')
+
+const ServiceUnavailableExceptionSchema = z.any().openapi('ServiceUnavailableException')
+
 const CreateDetectorModelResponseSchema = z
   .object({
-    detectorModelConfiguration: DetectorModelConfigurationSchema.and(
-      z.any().openapi({ description: 'Information about how the detector model is configured.' }),
-    ).exactOptional(),
+    detectorModelConfiguration: DetectorModelConfigurationSchema.exactOptional().openapi({
+      description: 'Information about how the detector model is configured.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateDetectorModelResponse')
-
-const StateNameSchema = z.string().min(1).max(128).openapi('StateName')
-
-const EventNameSchema = z.string().max(128).openapi('EventName')
-
-const ConditionSchema = z.string().max(512).openapi('Condition')
-
-const ActionSchema: z.ZodType<ActionType> = z
-  .lazy(() =>
-    z
-      .object({
-        setVariable: SetVariableActionSchema.and(
-          z.any().openapi({ description: 'Sets a variable to a specified value.' }),
-        ).exactOptional(),
-        sns: SNSTopicPublishActionSchema.and(
-          z.any().openapi({ description: 'Sends an Amazon SNS message.' }),
-        ).exactOptional(),
-        iotTopicPublish: IotTopicPublishActionSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Publishes an MQTT message with the given topic to the AWS IoT message broker.',
-            }),
-        ).exactOptional(),
-        setTimer: SetTimerActionSchema.and(
-          z.any().openapi({ description: 'Information needed to set the timer.' }),
-        ).exactOptional(),
-        clearTimer: ClearTimerActionSchema.and(
-          z.any().openapi({ description: 'Information needed to clear the timer.' }),
-        ).exactOptional(),
-        resetTimer: ResetTimerActionSchema.and(
-          z.any().openapi({ description: 'Information needed to reset the timer.' }),
-        ).exactOptional(),
-        lambda: LambdaActionSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Calls a Lambda function, passing in information about the detector model instance and the event that triggered the action.',
-            }),
-        ).exactOptional(),
-        iotEvents: IotEventsActionSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Sends AWS IoT Events input, which passes information about the detector model instance and the event that triggered the action.',
-            }),
-        ).exactOptional(),
-        sqs: SqsActionSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Sends information about the detector model instance and the event that triggered the action to an Amazon SQS queue.',
-            }),
-        ).exactOptional(),
-        firehose: FirehoseActionSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Sends information about the detector model instance and the event that triggered the action to an Amazon Kinesis Data Firehose delivery stream.',
-            }),
-        ).exactOptional(),
-        dynamoDB: DynamoDBActionSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Writes to the DynamoDB table that you created. The default action payload contains all attribute-value pairs that have the information about the detector model instance and the event that triggered the action. You can customize the <a href="https://docs.aws.amazon.com/iotevents/latest/apireference/API_Payload.html">payload</a>. One column of the DynamoDB table receives all attribute-value pairs in the payload that you specify. For more information, see <a href="https://docs.aws.amazon.com/iotevents/latest/developerguide/iotevents-event-actions.html">Actions</a> in <i>AWS IoT Events Developer Guide</i>.',
-            }),
-        ).exactOptional(),
-        dynamoDBv2: DynamoDBv2ActionSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Writes to the DynamoDB table that you created. The default action payload contains all attribute-value pairs that have the information about the detector model instance and the event that triggered the action. You can customize the <a href="https://docs.aws.amazon.com/iotevents/latest/apireference/API_Payload.html">payload</a>. A separate column of the DynamoDB table receives one attribute-value pair in the payload that you specify. For more information, see <a href="https://docs.aws.amazon.com/iotevents/latest/developerguide/iotevents-event-actions.html">Actions</a> in <i>AWS IoT Events Developer Guide</i>.',
-            }),
-        ).exactOptional(),
-        iotSiteWise: IotSiteWiseActionSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Sends information about the detector model instance and the event that triggered the action to an asset property in AWS IoT SiteWise .',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description: 'An action to be performed when the <code>condition</code> is TRUE.',
-        required: [],
-      }),
-  )
-  .openapi('Action')
-
-const ActionsSchema = z.array(ActionSchema).openapi('Actions')
-
-const EventSchema = z
-  .object({
-    eventName: EventNameSchema.and(z.any().openapi({ description: 'The name of the event.' })),
-    condition: ConditionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional. The Boolean expression that, when TRUE, causes the <code>actions</code> to be performed. If not present, the actions are performed (=TRUE). If the expression result is not a Boolean value, the actions are not performed (=FALSE).',
-        }),
-    ).exactOptional(),
-    actions: ActionsSchema.and(
-      z.any().openapi({ description: 'The actions to be performed.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['eventName'],
-    description:
-      'Specifies the <code>actions</code> to be performed when the <code>condition</code> evaluates to TRUE.',
-  })
-  .openapi('Event')
-
-const EventsSchema = z.array(EventSchema).openapi('Events')
-
-const TransitionEventSchema = z
-  .object({
-    eventName: EventNameSchema.and(
-      z.any().openapi({ description: 'The name of the transition event.' }),
-    ),
-    condition: ConditionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Required. A Boolean expression that when TRUE causes the actions to be performed and the <code>nextState</code> to be entered.',
-        }),
-    ),
-    actions: ActionsSchema.and(
-      z.any().openapi({ description: 'The actions to be performed.' }),
-    ).exactOptional(),
-    nextState: StateNameSchema.and(z.any().openapi({ description: 'The next state to enter.' })),
-  })
-  .openapi({
-    required: ['eventName', 'condition', 'nextState'],
-    description:
-      'Specifies the actions performed and the next state entered when a <code>condition</code> evaluates to TRUE.',
-  })
-  .openapi('TransitionEvent')
-
-const TransitionEventsSchema = z.array(TransitionEventSchema).openapi('TransitionEvents')
-
-const OnInputLifecycleSchema = z
-  .object({
-    events: EventsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the actions performed when the <code>condition</code> evaluates to TRUE.',
-        }),
-    ).exactOptional(),
-    transitionEvents: TransitionEventsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the actions performed, and the next state entered, when a <code>condition</code> evaluates to TRUE.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Specifies the actions performed when the <code>condition</code> evaluates to TRUE.',
-    required: [],
-  })
-  .openapi('OnInputLifecycle')
-
-const OnEnterLifecycleSchema = z
-  .object({
-    events: EventsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the actions that are performed when the state is entered and the <code>condition</code> is <code>TRUE</code>.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'When entering this state, perform these <code>actions</code> if the <code>condition</code> is TRUE.',
-    required: [],
-  })
-  .openapi('OnEnterLifecycle')
-
-const OnExitLifecycleSchema = z
-  .object({
-    events: EventsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the <code>actions</code> that are performed when the state is exited and the <code>condition</code> is <code>TRUE</code>.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'When exiting this state, perform these <code>actions</code> if the specified <code>condition</code> is <code>TRUE</code>.',
-    required: [],
-  })
-  .openapi('OnExitLifecycle')
-
-const StateSchema = z
-  .object({
-    stateName: StateNameSchema.and(z.any().openapi({ description: 'The name of the state.' })),
-    onInput: OnInputLifecycleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When an input is received and the <code>condition</code> is TRUE, perform the specified <code>actions</code>.',
-        }),
-    ).exactOptional(),
-    onEnter: OnEnterLifecycleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When entering this state, perform these <code>actions</code> if the <code>condition</code> is TRUE.',
-        }),
-    ).exactOptional(),
-    onExit: OnExitLifecycleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When exiting this state, perform these <code>actions</code> if the specified <code>condition</code> is <code>TRUE</code>.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['stateName'],
-    description: 'Information that defines a state of a detector.',
-  })
-  .openapi('State')
-
-const StatesSchema = z.array(StateSchema).min(1).openapi('States')
 
 const InputDescriptionSchema = z.string().max(128).openapi('InputDescription')
 
@@ -1297,18 +1120,16 @@ const InputStatusSchema = z
 
 const InputConfigurationSchema = z
   .object({
-    inputName: InputNameSchema.and(z.any().openapi({ description: 'The name of the input.' })),
-    inputDescription: InputDescriptionSchema.and(
-      z.any().openapi({ description: 'A brief description of the input.' }),
-    ).exactOptional(),
-    inputArn: InputArnSchema.and(z.any().openapi({ description: 'The ARN of the input.' })),
-    creationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time the input was created.' }),
-    ),
-    lastUpdateTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The last time the input was updated.' }),
-    ),
-    status: InputStatusSchema.and(z.any().openapi({ description: 'The status of the input.' })),
+    inputName: InputNameSchema.openapi({ description: 'The name of the input.' }),
+    inputDescription: InputDescriptionSchema.exactOptional().openapi({
+      description: 'A brief description of the input.',
+    }),
+    inputArn: InputArnSchema.openapi({ description: 'The ARN of the input.' }),
+    creationTime: TimestampSchema.openapi({ description: 'The time the input was created.' }),
+    lastUpdateTime: TimestampSchema.openapi({
+      description: 'The last time the input was updated.',
+    }),
+    status: InputStatusSchema.openapi({ description: 'The status of the input.' }),
   })
   .openapi({
     required: ['inputName', 'inputArn', 'creationTime', 'lastUpdateTime', 'status'],
@@ -1318,23 +1139,19 @@ const InputConfigurationSchema = z
 
 const CreateInputResponseSchema = z
   .object({
-    inputConfiguration: InputConfigurationSchema.and(
-      z.any().openapi({ description: 'Information about the configuration of the input.' }),
-    ).exactOptional(),
+    inputConfiguration: InputConfigurationSchema.exactOptional().openapi({
+      description: 'Information about the configuration of the input.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateInputResponse')
 
 const AttributeSchema = z
   .object({
-    jsonPath: AttributeJsonPathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An expression that specifies an attribute-value pair in a JSON structure. Use this to specify an attribute from the JSON payload that is made available by the input. Inputs are derived from messages sent to AWS IoT Events (<code>BatchPutMessage</code>). Each such message contains a JSON payload. The attribute (and its paired value) specified here are available for use in the <code>condition</code> expressions used by detectors. </p> <p>Syntax: <code>&lt;field-name&gt;.&lt;field-name&gt;...</code> </p>',
-        }),
-    ),
+    jsonPath: AttributeJsonPathSchema.openapi({
+      description:
+        '<p>An expression that specifies an attribute-value pair in a JSON structure. Use this to specify an attribute from the JSON payload that is made available by the input. Inputs are derived from messages sent to AWS IoT Events (<code>BatchPutMessage</code>). Each such message contains a JSON payload. The attribute (and its paired value) specified here are available for use in the <code>condition</code> expressions used by detectors. </p> <p>Syntax: <code>&lt;field-name&gt;.&lt;field-name&gt;...</code> </p>',
+    }),
   })
   .openapi({
     required: ['jsonPath'],
@@ -1345,219 +1162,74 @@ const AttributeSchema = z
 
 const AttributesSchema = z.array(AttributeSchema).min(1).max(200).openapi('Attributes')
 
-const DeleteAlarmModelResponseSchema = z.object({}).openapi('DeleteAlarmModelResponse')
+const DeleteAlarmModelResponseSchema = z.looseObject({}).openapi('DeleteAlarmModelResponse')
 
 const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundException')
 
-const DeleteDetectorModelResponseSchema = z.object({}).openapi('DeleteDetectorModelResponse')
+const DeleteDetectorModelResponseSchema = z.looseObject({}).openapi('DeleteDetectorModelResponse')
 
-const DeleteInputResponseSchema = z.object({}).openapi('DeleteInputResponse')
+const DeleteInputResponseSchema = z.looseObject({}).openapi('DeleteInputResponse')
 
-const StatusMessageSchema = z.string().openapi('StatusMessage')
-
-const AlarmModelNameSchema = z
-  .string()
-  .regex(/^[a-zA-Z0-9_-]+$/)
-  .min(1)
-  .max(128)
-  .openapi('AlarmModelName')
-
-const AlarmModelDescriptionSchema = z.string().max(128).openapi('AlarmModelDescription')
-
-const SeveritySchema = z.int().min(0).max(2147483647).openapi('Severity')
-
-const AlarmRuleSchema = z
+const DescribeAlarmModelResponseSchema: z.ZodType<DescribeAlarmModelResponseType> = z
   .object({
-    simpleRule: SimpleRuleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A rule that compares an input property value to a threshold value with a comparison operator.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Defines when your alarm is invoked.', required: [] })
-  .openapi('AlarmRule')
-
-const AlarmNotificationSchema = z
-  .object({
-    notificationActions: NotificationActionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains the notification settings of an alarm model. The settings apply to all alarms that were created based on this alarm model.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Contains information about one or more notification actions.',
-    required: [],
-  })
-  .openapi('AlarmNotification')
-
-const AlarmEventActionsSchema = z
-  .object({
-    alarmActions: AlarmActionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies one or more supported actions to receive notifications when the alarm state changes.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Contains information about one or more alarm actions.', required: [] })
-  .openapi('AlarmEventActions')
-
-const AlarmCapabilitiesSchema = z
-  .object({
-    initializationConfiguration: InitializationConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the default alarm state. The configuration applies to all alarms that were created based on this alarm model.',
-        }),
-    ).exactOptional(),
-    acknowledgeFlow: AcknowledgeFlowSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Specifies whether to get notified for alarm state changes.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Contains the configuration information of alarm state changes.',
-    required: [],
-  })
-  .openapi('AlarmCapabilities')
-
-const DescribeAlarmModelResponseSchema = z
-  .object({
-    creationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time the alarm model was created, in the Unix epoch format.',
-        }),
-    ).exactOptional(),
-    alarmModelArn: AlarmModelArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the alarm model. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.',
-        }),
-    ).exactOptional(),
-    alarmModelVersion: AlarmModelVersionSchema.and(
-      z.any().openapi({ description: 'The version of the alarm model.' }),
-    ).exactOptional(),
-    lastUpdateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time the alarm model was last updated, in the Unix epoch format.',
-        }),
-    ).exactOptional(),
-    status: AlarmModelVersionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The status of the alarm model. The status can be one of the following values:</p> <ul> <li> <p> <code>ACTIVE</code> - The alarm model is active and it's ready to evaluate data.</p> </li> <li> <p> <code>ACTIVATING</code> - AWS IoT Events is activating your alarm model. Activating an alarm model can take up to a few minutes.</p> </li> <li> <p> <code>INACTIVE</code> - The alarm model is inactive, so it isn't ready to evaluate data. Check your alarm model information and update the alarm model.</p> </li> <li> <p> <code>FAILED</code> - You couldn't create or update the alarm model. Check your alarm model information and try again.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    statusMessage: StatusMessageSchema.and(
-      z
-        .any()
-        .openapi({ description: ' Contains information about the status of the alarm model. ' }),
-    ).exactOptional(),
-    alarmModelName: AlarmModelNameSchema.and(
-      z.any().openapi({ description: 'The name of the alarm model.' }),
-    ).exactOptional(),
-    alarmModelDescription: AlarmModelDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the alarm model.' }),
-    ).exactOptional(),
-    roleArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM role that allows the alarm to perform actions and access AWS resources. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.',
-        }),
-    ).exactOptional(),
-    key: AttributeJsonPathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An input attribute used as a key to create an alarm. AWS IoT Events routes <a href="https://docs.aws.amazon.com/iotevents/latest/apireference/API_Input.html">inputs</a> associated with this key to the alarm.',
-        }),
-    ).exactOptional(),
-    severity: SeveritySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A non-negative integer that reflects the severity level of the alarm.',
-        }),
-    ).exactOptional(),
-    alarmRule: AlarmRuleSchema.and(
-      z.any().openapi({ description: 'Defines when your alarm is invoked.' }),
-    ).exactOptional(),
-    alarmNotification: AlarmNotificationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Contains information about one or more notification actions.' }),
-    ).exactOptional(),
-    alarmEventActions: AlarmEventActionsSchema.and(
-      z.any().openapi({ description: 'Contains information about one or more alarm actions.' }),
-    ).exactOptional(),
-    alarmCapabilities: AlarmCapabilitiesSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Contains the configuration information of alarm state changes.' }),
-    ).exactOptional(),
+    creationTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time the alarm model was created, in the Unix epoch format.',
+    }),
+    alarmModelArn: AlarmModelArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the alarm model. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.',
+    }),
+    alarmModelVersion: AlarmModelVersionSchema.exactOptional().openapi({
+      description: 'The version of the alarm model.',
+    }),
+    lastUpdateTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time the alarm model was last updated, in the Unix epoch format.',
+    }),
+    status: AlarmModelVersionStatusSchema.exactOptional().openapi({
+      description:
+        "<p>The status of the alarm model. The status can be one of the following values:</p> <ul> <li> <p> <code>ACTIVE</code> - The alarm model is active and it's ready to evaluate data.</p> </li> <li> <p> <code>ACTIVATING</code> - AWS IoT Events is activating your alarm model. Activating an alarm model can take up to a few minutes.</p> </li> <li> <p> <code>INACTIVE</code> - The alarm model is inactive, so it isn't ready to evaluate data. Check your alarm model information and update the alarm model.</p> </li> <li> <p> <code>FAILED</code> - You couldn't create or update the alarm model. Check your alarm model information and try again.</p> </li> </ul>",
+    }),
+    statusMessage: StatusMessageSchema.exactOptional().openapi({
+      description: ' Contains information about the status of the alarm model. ',
+    }),
+    alarmModelName: AlarmModelNameSchema.exactOptional().openapi({
+      description: 'The name of the alarm model.',
+    }),
+    alarmModelDescription: AlarmModelDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the alarm model.',
+    }),
+    roleArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description:
+        'The ARN of the IAM role that allows the alarm to perform actions and access AWS resources. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.',
+    }),
+    key: AttributeJsonPathSchema.exactOptional().openapi({
+      description:
+        'An input attribute used as a key to create an alarm. AWS IoT Events routes <a href="https://docs.aws.amazon.com/iotevents/latest/apireference/API_Input.html">inputs</a> associated with this key to the alarm.',
+    }),
+    severity: SeveritySchema.exactOptional().openapi({
+      description: 'A non-negative integer that reflects the severity level of the alarm.',
+    }),
+    alarmRule: AlarmRuleSchema.exactOptional().openapi({
+      description: 'Defines when your alarm is invoked.',
+    }),
+    alarmNotification: AlarmNotificationSchema.exactOptional().openapi({
+      description: 'Contains information about one or more notification actions.',
+    }),
+    alarmEventActions: AlarmEventActionsSchema.exactOptional().openapi({
+      description: 'Contains information about one or more alarm actions.',
+    }),
+    alarmCapabilities: AlarmCapabilitiesSchema.exactOptional().openapi({
+      description: 'Contains the configuration information of alarm state changes.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeAlarmModelResponse')
 
-const DetectorModelDefinitionSchema = z
+const DescribeDetectorModelResponseSchema: z.ZodType<DescribeDetectorModelResponseType> = z
   .object({
-    states: StatesSchema.and(
-      z.any().openapi({ description: 'Information about the states of the detector.' }),
-    ),
-    initialStateName: StateNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The state that is entered at the creation of each detector (instance).',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['states', 'initialStateName'],
-    description: 'Information that defines how a detector operates.',
-  })
-  .openapi('DetectorModelDefinition')
-
-const DetectorModelSchema = z
-  .object({
-    detectorModelDefinition: DetectorModelDefinitionSchema.and(
-      z.any().openapi({ description: 'Information that defines how a detector operates.' }),
-    ).exactOptional(),
-    detectorModelConfiguration: DetectorModelConfigurationSchema.and(
-      z.any().openapi({ description: 'Information about how the detector is configured.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Information about the detector model.', required: [] })
-  .openapi('DetectorModel')
-
-const DescribeDetectorModelResponseSchema = z
-  .object({
-    detectorModel: DetectorModelSchema.and(
-      z.any().openapi({ description: 'Information about the detector model.' }),
-    ).exactOptional(),
+    detectorModel: DetectorModelSchema.exactOptional().openapi({
+      description: 'Information about the detector model.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeDetectorModelResponse')
@@ -1566,49 +1238,39 @@ const AnalysisStatusSchema = z.enum(['RUNNING', 'COMPLETE', 'FAILED']).openapi('
 
 const DescribeDetectorModelAnalysisResponseSchema = z
   .object({
-    status: AnalysisStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The status of the analysis activity. The status can be one of the following values:</p> <ul> <li> <p> <code>RUNNING</code> - AWS IoT Events is analyzing your detector model. This process can take several minutes to complete.</p> </li> <li> <p> <code>COMPLETE</code> - AWS IoT Events finished analyzing your detector model.</p> </li> <li> <p> <code>FAILED</code> - AWS IoT Events couldn't analyze your detector model. Try again later.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
+    status: AnalysisStatusSchema.exactOptional().openapi({
+      description:
+        "<p>The status of the analysis activity. The status can be one of the following values:</p> <ul> <li> <p> <code>RUNNING</code> - AWS IoT Events is analyzing your detector model. This process can take several minutes to complete.</p> </li> <li> <p> <code>COMPLETE</code> - AWS IoT Events finished analyzing your detector model.</p> </li> <li> <p> <code>FAILED</code> - AWS IoT Events couldn't analyze your detector model. Try again later.</p> </li> </ul>",
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeDetectorModelAnalysisResponse')
 
 const InputDefinitionSchema = z
   .object({
-    attributes: AttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The attributes from the JSON payload that are made available by the input. Inputs are derived from messages sent to the AWS IoT Events system using <code>BatchPutMessage</code>. Each such message contains a JSON payload, and those attributes (and their paired values) specified here are available for use in the <code>condition</code> expressions used by detectors that monitor this input. ',
-        }),
-    ),
+    attributes: AttributesSchema.openapi({
+      description:
+        'The attributes from the JSON payload that are made available by the input. Inputs are derived from messages sent to the AWS IoT Events system using <code>BatchPutMessage</code>. Each such message contains a JSON payload, and those attributes (and their paired values) specified here are available for use in the <code>condition</code> expressions used by detectors that monitor this input. ',
+    }),
   })
   .openapi({ required: ['attributes'], description: 'The definition of the input.' })
   .openapi('InputDefinition')
 
 const InputSchema = z
   .object({
-    inputConfiguration: InputConfigurationSchema.and(
-      z.any().openapi({ description: 'Information about the configuration of an input.' }),
-    ).exactOptional(),
-    inputDefinition: InputDefinitionSchema.and(
-      z.any().openapi({ description: 'The definition of the input.' }),
-    ).exactOptional(),
+    inputConfiguration: InputConfigurationSchema.exactOptional().openapi({
+      description: 'Information about the configuration of an input.',
+    }),
+    inputDefinition: InputDefinitionSchema.exactOptional().openapi({
+      description: 'The definition of the input.',
+    }),
   })
   .openapi({ description: 'Information about the input.', required: [] })
   .openapi('Input')
 
 const DescribeInputResponseSchema = z
   .object({
-    input: InputSchema.and(
-      z.any().openapi({ description: 'Information about the input.' }),
-    ).exactOptional(),
+    input: InputSchema.exactOptional().openapi({ description: 'Information about the input.' }),
   })
   .openapi({ required: [] })
   .openapi('DescribeInputResponse')
@@ -1626,17 +1288,13 @@ const KeyValueSchema = z
 
 const DetectorDebugOptionSchema = z
   .object({
-    detectorModelName: DetectorModelNameSchema.and(
-      z.any().openapi({ description: 'The name of the detector model.' }),
-    ),
-    keyValue: KeyValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value of the input attribute key used to create the detector (the instance of the detector model).',
-        }),
-    ).exactOptional(),
+    detectorModelName: DetectorModelNameSchema.openapi({
+      description: 'The name of the detector model.',
+    }),
+    keyValue: KeyValueSchema.exactOptional().openapi({
+      description:
+        'The value of the input attribute key used to create the detector (the instance of the detector model).',
+    }),
   })
   .openapi({
     required: ['detectorModelName'],
@@ -1652,26 +1310,18 @@ const DetectorDebugOptionsSchema = z
 
 const LoggingOptionsSchema = z
   .object({
-    roleArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the role that grants permission to AWS IoT Events to perform logging.',
-        }),
-    ),
-    level: LoggingLevelSchema.and(z.any().openapi({ description: 'The logging level.' })),
-    enabled: LoggingEnabledSchema.and(
-      z.any().openapi({ description: 'If TRUE, logging is enabled for AWS IoT Events.' }),
-    ),
-    detectorDebugOptions: DetectorDebugOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information that identifies those detector models and their detectors (instances) for which the logging level is given.',
-        }),
-    ).exactOptional(),
+    roleArn: AmazonResourceNameSchema.openapi({
+      description:
+        'The ARN of the role that grants permission to AWS IoT Events to perform logging.',
+    }),
+    level: LoggingLevelSchema.openapi({ description: 'The logging level.' }),
+    enabled: LoggingEnabledSchema.openapi({
+      description: 'If TRUE, logging is enabled for AWS IoT Events.',
+    }),
+    detectorDebugOptions: DetectorDebugOptionsSchema.exactOptional().openapi({
+      description:
+        'Information that identifies those detector models and their detectors (instances) for which the logging level is given.',
+    }),
   })
   .openapi({
     required: ['roleArn', 'level', 'enabled'],
@@ -1681,11 +1331,9 @@ const LoggingOptionsSchema = z
 
 const DescribeLoggingOptionsResponseSchema = z
   .object({
-    loggingOptions: LoggingOptionsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The current settings of the AWS IoT Events logging options.' }),
-    ).exactOptional(),
+    loggingOptions: LoggingOptionsSchema.exactOptional().openapi({
+      description: 'The current settings of the AWS IoT Events logging options.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeLoggingOptionsResponse')
@@ -1704,14 +1352,10 @@ const AnalysisResultLocationPathSchema = z.string().openapi('AnalysisResultLocat
 
 const AnalysisResultLocationSchema = z
   .object({
-    path: AnalysisResultLocationPathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <a href="https://github.com/json-path/JsonPath">JsonPath</a> expression that identifies the error field in your detector model.',
-        }),
-    ).exactOptional(),
+    path: AnalysisResultLocationPathSchema.exactOptional().openapi({
+      description:
+        'A <a href="https://github.com/json-path/JsonPath">JsonPath</a> expression that identifies the error field in your detector model.',
+    }),
   })
   .openapi({
     description:
@@ -1726,35 +1370,21 @@ const AnalysisResultLocationsSchema = z
 
 const AnalysisResultSchema = z
   .object({
-    type: AnalysisTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of the analysis result. Analyses fall into the following types based on the validators used to generate the analysis result:</p> <ul> <li> <p> <code>supported-actions</code> - You must specify AWS IoT Events supported actions that work with other AWS services in a supported AWS Region.</p> </li> <li> <p> <code>service-limits</code> - Resources or API operations can\'t exceed service quotas (also known as limits). Update your detector model or request a quota increase.</p> </li> <li> <p> <code>structure</code> - The detector model must follow a structure that AWS IoT Events supports. </p> </li> <li> <p> <code>expression-syntax</code> - Your expression must follow the required syntax.</p> </li> <li> <p> <code>data-type</code> - Data types referenced in the detector model must be compatible.</p> </li> <li> <p> <code>referenced-data</code> - You must define the data referenced in your detector model before you can use the data.</p> </li> <li> <p> <code>referenced-resource</code> - Resources that the detector model uses must be available.</p> </li> </ul> <p>For more information, see <a href="https://docs.aws.amazon.com/iotevents/latest/developerguide/iotevents-analyze-api.html">Running detector model analyses</a> in the <i>AWS IoT Events Developer Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    level: AnalysisResultLevelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The severity level of the analysis result. Based on the severity level, analysis results fall into three general categories:</p> <ul> <li> <p> <code>INFO</code> - An information result tells you about a significant field in your detector model. This type of result usually doesn't require immediate action.</p> </li> <li> <p> <code>WARNING</code> - A warning result draws special attention to fields that might cause issues for your detector model. We recommend that you review warnings and take necessary actions before you use your detector model in production environments. Otherwise, the detector model might not work as expected.</p> </li> <li> <p> <code>ERROR</code> - An error result notifies you about a problem found in your detector model. You must fix all errors before you can publish your detector model.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    message: AnalysisMessageSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Contains additional information about the analysis result.' }),
-    ).exactOptional(),
-    locations: AnalysisResultLocationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains one or more locations that you can use to locate the fields in your detector model that the analysis result references.',
-        }),
-    ).exactOptional(),
+    type: AnalysisTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The type of the analysis result. Analyses fall into the following types based on the validators used to generate the analysis result:</p> <ul> <li> <p> <code>supported-actions</code> - You must specify AWS IoT Events supported actions that work with other AWS services in a supported AWS Region.</p> </li> <li> <p> <code>service-limits</code> - Resources or API operations can\'t exceed service quotas (also known as limits). Update your detector model or request a quota increase.</p> </li> <li> <p> <code>structure</code> - The detector model must follow a structure that AWS IoT Events supports. </p> </li> <li> <p> <code>expression-syntax</code> - Your expression must follow the required syntax.</p> </li> <li> <p> <code>data-type</code> - Data types referenced in the detector model must be compatible.</p> </li> <li> <p> <code>referenced-data</code> - You must define the data referenced in your detector model before you can use the data.</p> </li> <li> <p> <code>referenced-resource</code> - Resources that the detector model uses must be available.</p> </li> </ul> <p>For more information, see <a href="https://docs.aws.amazon.com/iotevents/latest/developerguide/iotevents-analyze-api.html">Running detector model analyses</a> in the <i>AWS IoT Events Developer Guide</i>.</p>',
+    }),
+    level: AnalysisResultLevelSchema.exactOptional().openapi({
+      description:
+        "<p>The severity level of the analysis result. Based on the severity level, analysis results fall into three general categories:</p> <ul> <li> <p> <code>INFO</code> - An information result tells you about a significant field in your detector model. This type of result usually doesn't require immediate action.</p> </li> <li> <p> <code>WARNING</code> - A warning result draws special attention to fields that might cause issues for your detector model. We recommend that you review warnings and take necessary actions before you use your detector model in production environments. Otherwise, the detector model might not work as expected.</p> </li> <li> <p> <code>ERROR</code> - An error result notifies you about a problem found in your detector model. You must fix all errors before you can publish your detector model.</p> </li> </ul>",
+    }),
+    message: AnalysisMessageSchema.exactOptional().openapi({
+      description: 'Contains additional information about the analysis result.',
+    }),
+    locations: AnalysisResultLocationsSchema.exactOptional().openapi({
+      description:
+        'Contains one or more locations that you can use to locate the fields in your detector model that the analysis result references.',
+    }),
   })
   .openapi({ description: 'Contains the result of the analysis.', required: [] })
   .openapi('AnalysisResult')
@@ -1765,74 +1395,46 @@ const NextTokenSchema = z.string().openapi('NextToken')
 
 const GetDetectorModelAnalysisResultsResponseSchema = z
   .object({
-    analysisResults: AnalysisResultsSchema.and(
-      z.any().openapi({ description: 'Contains information about one or more analysis results.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token that you can use to return the next set of results, or <code>null</code> if there are no more results.',
-        }),
-    ).exactOptional(),
+    analysisResults: AnalysisResultsSchema.exactOptional().openapi({
+      description: 'Contains information about one or more analysis results.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token that you can use to return the next set of results, or <code>null</code> if there are no more results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDetectorModelAnalysisResultsResponse')
 
 const AlarmModelVersionSummarySchema = z
   .object({
-    alarmModelName: AlarmModelNameSchema.and(
-      z.any().openapi({ description: 'The name of the alarm model.' }),
-    ).exactOptional(),
-    alarmModelArn: AlarmModelArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the alarm model. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.',
-        }),
-    ).exactOptional(),
-    alarmModelVersion: AlarmModelVersionSchema.and(
-      z.any().openapi({ description: 'The version of the alarm model.' }),
-    ).exactOptional(),
-    roleArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM role that allows the alarm to perform actions and access AWS resources. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.',
-        }),
-    ).exactOptional(),
-    creationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time the alarm model was created, in the Unix epoch format.',
-        }),
-    ).exactOptional(),
-    lastUpdateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time the alarm model was last updated, in the Unix epoch format.',
-        }),
-    ).exactOptional(),
-    status: AlarmModelVersionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The status of the alarm model. The status can be one of the following values:</p> <ul> <li> <p> <code>ACTIVE</code> - The alarm model is active and it's ready to evaluate data.</p> </li> <li> <p> <code>ACTIVATING</code> - AWS IoT Events is activating your alarm model. Activating an alarm model can take up to a few minutes.</p> </li> <li> <p> <code>INACTIVE</code> - The alarm model is inactive, so it isn't ready to evaluate data. Check your alarm model information and update the alarm model.</p> </li> <li> <p> <code>FAILED</code> - You couldn't create or update the alarm model. Check your alarm model information and try again.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    statusMessage: StatusMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Contains information about the status of the alarm model version. ',
-        }),
-    ).exactOptional(),
+    alarmModelName: AlarmModelNameSchema.exactOptional().openapi({
+      description: 'The name of the alarm model.',
+    }),
+    alarmModelArn: AlarmModelArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the alarm model. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.',
+    }),
+    alarmModelVersion: AlarmModelVersionSchema.exactOptional().openapi({
+      description: 'The version of the alarm model.',
+    }),
+    roleArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description:
+        'The ARN of the IAM role that allows the alarm to perform actions and access AWS resources. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.',
+    }),
+    creationTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time the alarm model was created, in the Unix epoch format.',
+    }),
+    lastUpdateTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time the alarm model was last updated, in the Unix epoch format.',
+    }),
+    status: AlarmModelVersionStatusSchema.exactOptional().openapi({
+      description:
+        "<p>The status of the alarm model. The status can be one of the following values:</p> <ul> <li> <p> <code>ACTIVE</code> - The alarm model is active and it's ready to evaluate data.</p> </li> <li> <p> <code>ACTIVATING</code> - AWS IoT Events is activating your alarm model. Activating an alarm model can take up to a few minutes.</p> </li> <li> <p> <code>INACTIVE</code> - The alarm model is inactive, so it isn't ready to evaluate data. Check your alarm model information and update the alarm model.</p> </li> <li> <p> <code>FAILED</code> - You couldn't create or update the alarm model. Check your alarm model information and try again.</p> </li> </ul>",
+    }),
+    statusMessage: StatusMessageSchema.exactOptional().openapi({
+      description: ' Contains information about the status of the alarm model version. ',
+    }),
   })
   .openapi({ description: 'Contains a summary of an alarm model version.', required: [] })
   .openapi('AlarmModelVersionSummary')
@@ -1843,36 +1445,28 @@ const AlarmModelVersionSummariesSchema = z
 
 const ListAlarmModelVersionsResponseSchema = z
   .object({
-    alarmModelVersionSummaries: AlarmModelVersionSummariesSchema.and(
-      z.any().openapi({ description: 'A list that summarizes each alarm model version.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token that you can use to return the next set of results, or <code>null</code> if there are no more results.',
-        }),
-    ).exactOptional(),
+    alarmModelVersionSummaries: AlarmModelVersionSummariesSchema.exactOptional().openapi({
+      description: 'A list that summarizes each alarm model version.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token that you can use to return the next set of results, or <code>null</code> if there are no more results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAlarmModelVersionsResponse')
 
 const AlarmModelSummarySchema = z
   .object({
-    creationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time the alarm model was created, in the Unix epoch format.',
-        }),
-    ).exactOptional(),
-    alarmModelDescription: AlarmModelDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the alarm model.' }),
-    ).exactOptional(),
-    alarmModelName: AlarmModelNameSchema.and(
-      z.any().openapi({ description: 'The name of the alarm model.' }),
-    ).exactOptional(),
+    creationTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time the alarm model was created, in the Unix epoch format.',
+    }),
+    alarmModelDescription: AlarmModelDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the alarm model.',
+    }),
+    alarmModelName: AlarmModelNameSchema.exactOptional().openapi({
+      description: 'The name of the alarm model.',
+    }),
   })
   .openapi({ description: 'Contains a summary of an alarm model.', required: [] })
   .openapi('AlarmModelSummary')
@@ -1881,57 +1475,45 @@ const AlarmModelSummariesSchema = z.array(AlarmModelSummarySchema).openapi('Alar
 
 const ListAlarmModelsResponseSchema = z
   .object({
-    alarmModelSummaries: AlarmModelSummariesSchema.and(
-      z.any().openapi({ description: 'A list that summarizes each alarm model.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token that you can use to return the next set of results, or <code>null</code> if there are no more results.',
-        }),
-    ).exactOptional(),
+    alarmModelSummaries: AlarmModelSummariesSchema.exactOptional().openapi({
+      description: 'A list that summarizes each alarm model.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token that you can use to return the next set of results, or <code>null</code> if there are no more results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAlarmModelsResponse')
 
 const DetectorModelVersionSummarySchema = z
   .object({
-    detectorModelName: DetectorModelNameSchema.and(
-      z.any().openapi({ description: 'The name of the detector model.' }),
-    ).exactOptional(),
-    detectorModelVersion: DetectorModelVersionSchema.and(
-      z.any().openapi({ description: 'The ID of the detector model version.' }),
-    ).exactOptional(),
-    detectorModelArn: DetectorModelArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the detector model version.' }),
-    ).exactOptional(),
-    roleArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the role that grants the detector model permission to perform its tasks.',
-        }),
-    ).exactOptional(),
-    creationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time the detector model version was created.' }),
-    ).exactOptional(),
-    lastUpdateTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The last time the detector model version was updated.' }),
-    ).exactOptional(),
-    status: DetectorModelVersionStatusSchema.and(
-      z.any().openapi({ description: 'The status of the detector model version.' }),
-    ).exactOptional(),
-    evaluationMethod: EvaluationMethodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the order in which events are evaluated and how actions are executed. ',
-        }),
-    ).exactOptional(),
+    detectorModelName: DetectorModelNameSchema.exactOptional().openapi({
+      description: 'The name of the detector model.',
+    }),
+    detectorModelVersion: DetectorModelVersionSchema.exactOptional().openapi({
+      description: 'The ID of the detector model version.',
+    }),
+    detectorModelArn: DetectorModelArnSchema.exactOptional().openapi({
+      description: 'The ARN of the detector model version.',
+    }),
+    roleArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description:
+        'The ARN of the role that grants the detector model permission to perform its tasks.',
+    }),
+    creationTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time the detector model version was created.',
+    }),
+    lastUpdateTime: TimestampSchema.exactOptional().openapi({
+      description: 'The last time the detector model version was updated.',
+    }),
+    status: DetectorModelVersionStatusSchema.exactOptional().openapi({
+      description: 'The status of the detector model version.',
+    }),
+    evaluationMethod: EvaluationMethodSchema.exactOptional().openapi({
+      description:
+        'Information about the order in which events are evaluated and how actions are executed. ',
+    }),
   })
   .openapi({ description: 'Information about the detector model version.', required: [] })
   .openapi('DetectorModelVersionSummary')
@@ -1942,32 +1524,28 @@ const DetectorModelVersionSummariesSchema = z
 
 const ListDetectorModelVersionsResponseSchema = z
   .object({
-    detectorModelVersionSummaries: DetectorModelVersionSummariesSchema.and(
-      z.any().openapi({ description: 'Summary information about the detector model versions.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token that you can use to return the next set of results, or <code>null</code> if there are no more results.',
-        }),
-    ).exactOptional(),
+    detectorModelVersionSummaries: DetectorModelVersionSummariesSchema.exactOptional().openapi({
+      description: 'Summary information about the detector model versions.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token that you can use to return the next set of results, or <code>null</code> if there are no more results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDetectorModelVersionsResponse')
 
 const DetectorModelSummarySchema = z
   .object({
-    detectorModelName: DetectorModelNameSchema.and(
-      z.any().openapi({ description: 'The name of the detector model.' }),
-    ).exactOptional(),
-    detectorModelDescription: DetectorModelDescriptionSchema.and(
-      z.any().openapi({ description: 'A brief description of the detector model.' }),
-    ).exactOptional(),
-    creationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time the detector model was created.' }),
-    ).exactOptional(),
+    detectorModelName: DetectorModelNameSchema.exactOptional().openapi({
+      description: 'The name of the detector model.',
+    }),
+    detectorModelDescription: DetectorModelDescriptionSchema.exactOptional().openapi({
+      description: 'A brief description of the detector model.',
+    }),
+    creationTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time the detector model was created.',
+    }),
   })
   .openapi({ description: 'Information about the detector model.', required: [] })
   .openapi('DetectorModelSummary')
@@ -1978,17 +1556,13 @@ const DetectorModelSummariesSchema = z
 
 const ListDetectorModelsResponseSchema = z
   .object({
-    detectorModelSummaries: DetectorModelSummariesSchema.and(
-      z.any().openapi({ description: 'Summary information about the detector models.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token that you can use to return the next set of results, or <code>null</code> if there are no more results.',
-        }),
-    ).exactOptional(),
+    detectorModelSummaries: DetectorModelSummariesSchema.exactOptional().openapi({
+      description: 'Summary information about the detector models.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token that you can use to return the next set of results, or <code>null</code> if there are no more results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDetectorModelsResponse')
@@ -1997,17 +1571,13 @@ const ResourceNameSchema = z.string().openapi('ResourceName')
 
 const RoutedResourceSchema = z
   .object({
-    name: ResourceNameSchema.and(
-      z.any().openapi({ description: ' The name of the routed resource. ' }),
-    ).exactOptional(),
-    arn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The ARN of the routed resource. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>. ',
-        }),
-    ).exactOptional(),
+    name: ResourceNameSchema.exactOptional().openapi({
+      description: ' The name of the routed resource. ',
+    }),
+    arn: AmazonResourceNameSchema.exactOptional().openapi({
+      description:
+        ' The ARN of the routed resource. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>. ',
+    }),
   })
   .openapi({ description: ' Contains information about the routed resource. ', required: [] })
   .openapi('RoutedResource')
@@ -2016,41 +1586,73 @@ const RoutedResourcesSchema = z.array(RoutedResourceSchema).openapi('RoutedResou
 
 const ListInputRoutingsResponseSchema = z
   .object({
-    routedResources: RoutedResourcesSchema.and(
-      z.any().openapi({ description: ' Summary information about the routed resources. ' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The token that you can use to return the next set of results, or <code>null</code> if there are no more results. ',
-        }),
-    ).exactOptional(),
+    routedResources: RoutedResourcesSchema.exactOptional().openapi({
+      description: ' Summary information about the routed resources. ',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        ' The token that you can use to return the next set of results, or <code>null</code> if there are no more results. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListInputRoutingsResponse')
 
+const IotEventsInputIdentifierSchema = z
+  .object({
+    inputName: InputNameSchema.openapi({
+      description: ' The name of the input routed to AWS IoT Events. ',
+    }),
+  })
+  .openapi({
+    required: ['inputName'],
+    description: ' The identifier of the input routed to AWS IoT Events. ',
+  })
+  .openapi('IotEventsInputIdentifier')
+
+const AssetModelIdSchema = z.string().openapi('AssetModelId')
+
+const IotSiteWiseAssetModelPropertyIdentifierSchema = z
+  .object({
+    assetModelId: AssetModelIdSchema.openapi({
+      description: ' The ID of the AWS IoT SiteWise asset model. ',
+    }),
+    propertyId: AssetPropertyIdSchema.openapi({
+      description: ' The ID of the AWS IoT SiteWise asset property. ',
+    }),
+  })
+  .openapi({
+    required: ['assetModelId', 'propertyId'],
+    description: ' The asset model property identifer of the input routed from AWS IoT SiteWise. ',
+  })
+  .openapi('IotSiteWiseAssetModelPropertyIdentifier')
+
+const IotSiteWiseInputIdentifierSchema = z
+  .object({
+    iotSiteWiseAssetModelPropertyIdentifier:
+      IotSiteWiseAssetModelPropertyIdentifierSchema.exactOptional().openapi({
+        description: ' The identifier of the AWS IoT SiteWise asset model property. ',
+      }),
+  })
+  .openapi({
+    description: ' The identifer of the input routed from AWS IoT SiteWise. ',
+    required: [],
+  })
+  .openapi('IotSiteWiseInputIdentifier')
+
 const InputSummarySchema = z
   .object({
-    inputName: InputNameSchema.and(
-      z.any().openapi({ description: 'The name of the input.' }),
-    ).exactOptional(),
-    inputDescription: InputDescriptionSchema.and(
-      z.any().openapi({ description: 'A brief description of the input.' }),
-    ).exactOptional(),
-    inputArn: InputArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the input.' }),
-    ).exactOptional(),
-    creationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time the input was created.' }),
-    ).exactOptional(),
-    lastUpdateTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The last time the input was updated.' }),
-    ).exactOptional(),
-    status: InputStatusSchema.and(
-      z.any().openapi({ description: 'The status of the input.' }),
-    ).exactOptional(),
+    inputName: InputNameSchema.exactOptional().openapi({ description: 'The name of the input.' }),
+    inputDescription: InputDescriptionSchema.exactOptional().openapi({
+      description: 'A brief description of the input.',
+    }),
+    inputArn: InputArnSchema.exactOptional().openapi({ description: 'The ARN of the input.' }),
+    creationTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time the input was created.',
+    }),
+    lastUpdateTime: TimestampSchema.exactOptional().openapi({
+      description: 'The last time the input was updated.',
+    }),
+    status: InputStatusSchema.exactOptional().openapi({ description: 'The status of the input.' }),
   })
   .openapi({ description: 'Information about the input.', required: [] })
   .openapi('InputSummary')
@@ -2059,28 +1661,22 @@ const InputSummariesSchema = z.array(InputSummarySchema).openapi('InputSummaries
 
 const ListInputsResponseSchema = z
   .object({
-    inputSummaries: InputSummariesSchema.and(
-      z.any().openapi({ description: 'Summary information about the inputs.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token that you can use to return the next set of results, or <code>null</code> if there are no more results.',
-        }),
-    ).exactOptional(),
+    inputSummaries: InputSummariesSchema.exactOptional().openapi({
+      description: 'Summary information about the inputs.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token that you can use to return the next set of results, or <code>null</code> if there are no more results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListInputsResponse')
 
-const TagsSchema = z.array(TagSchema).openapi('Tags')
-
 const ListTagsForResourceResponseSchema = z
   .object({
-    tags: TagsSchema.and(
-      z.any().openapi({ description: 'The list of tags assigned to the resource.' }),
-    ).exactOptional(),
+    tags: TagsSchema.exactOptional().openapi({
+      description: 'The list of tags assigned to the resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
@@ -2089,136 +1685,92 @@ const AnalysisIdSchema = z.string().openapi('AnalysisId')
 
 const StartDetectorModelAnalysisResponseSchema = z
   .object({
-    analysisId: AnalysisIdSchema.and(
-      z.any().openapi({ description: 'The ID that you can use to retrieve the analysis result.' }),
-    ).exactOptional(),
+    analysisId: AnalysisIdSchema.exactOptional().openapi({
+      description: 'The ID that you can use to retrieve the analysis result.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartDetectorModelAnalysisResponse')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const UpdateAlarmModelResponseSchema = z
   .object({
-    creationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time the alarm model was created, in the Unix epoch format.',
-        }),
-    ).exactOptional(),
-    alarmModelArn: AlarmModelArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the alarm model. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.',
-        }),
-    ).exactOptional(),
-    alarmModelVersion: AlarmModelVersionSchema.and(
-      z.any().openapi({ description: 'The version of the alarm model.' }),
-    ).exactOptional(),
-    lastUpdateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time the alarm model was last updated, in the Unix epoch format.',
-        }),
-    ).exactOptional(),
-    status: AlarmModelVersionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The status of the alarm model. The status can be one of the following values:</p> <ul> <li> <p> <code>ACTIVE</code> - The alarm model is active and it's ready to evaluate data.</p> </li> <li> <p> <code>ACTIVATING</code> - AWS IoT Events is activating your alarm model. Activating an alarm model can take up to a few minutes.</p> </li> <li> <p> <code>INACTIVE</code> - The alarm model is inactive, so it isn't ready to evaluate data. Check your alarm model information and update the alarm model.</p> </li> <li> <p> <code>FAILED</code> - You couldn't create or update the alarm model. Check your alarm model information and try again.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
+    creationTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time the alarm model was created, in the Unix epoch format.',
+    }),
+    alarmModelArn: AlarmModelArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the alarm model. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.',
+    }),
+    alarmModelVersion: AlarmModelVersionSchema.exactOptional().openapi({
+      description: 'The version of the alarm model.',
+    }),
+    lastUpdateTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time the alarm model was last updated, in the Unix epoch format.',
+    }),
+    status: AlarmModelVersionStatusSchema.exactOptional().openapi({
+      description:
+        "<p>The status of the alarm model. The status can be one of the following values:</p> <ul> <li> <p> <code>ACTIVE</code> - The alarm model is active and it's ready to evaluate data.</p> </li> <li> <p> <code>ACTIVATING</code> - AWS IoT Events is activating your alarm model. Activating an alarm model can take up to a few minutes.</p> </li> <li> <p> <code>INACTIVE</code> - The alarm model is inactive, so it isn't ready to evaluate data. Check your alarm model information and update the alarm model.</p> </li> <li> <p> <code>FAILED</code> - You couldn't create or update the alarm model. Check your alarm model information and try again.</p> </li> </ul>",
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateAlarmModelResponse')
 
 const UpdateDetectorModelResponseSchema = z
   .object({
-    detectorModelConfiguration: DetectorModelConfigurationSchema.and(
-      z.any().openapi({ description: 'Information about how the detector model is configured.' }),
-    ).exactOptional(),
+    detectorModelConfiguration: DetectorModelConfigurationSchema.exactOptional().openapi({
+      description: 'Information about how the detector model is configured.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateDetectorModelResponse')
 
 const UpdateInputResponseSchema = z
   .object({
-    inputConfiguration: InputConfigurationSchema.and(
-      z.any().openapi({ description: 'Information about the configuration of the input.' }),
-    ).exactOptional(),
+    inputConfiguration: InputConfigurationSchema.exactOptional().openapi({
+      description: 'Information about the configuration of the input.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateInputResponse')
 
-const CreateAlarmModelRequestSchema = z
+const CreateAlarmModelRequestSchema: z.ZodType<CreateAlarmModelRequestType> = z
   .object({
-    alarmModelName: AlarmModelNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A unique name that helps you identify the alarm model. You can't change this name after you create the alarm model.",
-        }),
-    ),
-    alarmModelDescription: AlarmModelDescriptionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A description that tells you what the alarm model detects.' }),
-    ).exactOptional(),
-    roleArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM role that allows the alarm to perform actions and access AWS resources. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.',
-        }),
-    ),
-    tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of key-value pairs that contain metadata for the alarm model. The tags help you manage the alarm model. For more information, see <a href="https://docs.aws.amazon.com/iotevents/latest/developerguide/tagging-iotevents.html">Tagging your AWS IoT Events resources</a> in the <i>AWS IoT Events Developer Guide</i>.</p> <p>You can create up to 50 tags for one alarm model.</p>',
-        }),
-    ).exactOptional(),
-    key: AttributeJsonPathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An input attribute used as a key to create an alarm. AWS IoT Events routes <a href="https://docs.aws.amazon.com/iotevents/latest/apireference/API_Input.html">inputs</a> associated with this key to the alarm.',
-        }),
-    ).exactOptional(),
-    severity: SeveritySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A non-negative integer that reflects the severity level of the alarm.',
-        }),
-    ).exactOptional(),
-    alarmRule: AlarmRuleSchema.and(
-      z.any().openapi({ description: 'Defines when your alarm is invoked.' }),
-    ),
-    alarmNotification: AlarmNotificationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Contains information about one or more notification actions.' }),
-    ).exactOptional(),
-    alarmEventActions: AlarmEventActionsSchema.and(
-      z.any().openapi({ description: 'Contains information about one or more alarm actions.' }),
-    ).exactOptional(),
-    alarmCapabilities: AlarmCapabilitiesSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Contains the configuration information of alarm state changes.' }),
-    ).exactOptional(),
+    alarmModelName: AlarmModelNameSchema.openapi({
+      description:
+        "A unique name that helps you identify the alarm model. You can't change this name after you create the alarm model.",
+    }),
+    alarmModelDescription: AlarmModelDescriptionSchema.exactOptional().openapi({
+      description: 'A description that tells you what the alarm model detects.',
+    }),
+    roleArn: AmazonResourceNameSchema.openapi({
+      description:
+        'The ARN of the IAM role that allows the alarm to perform actions and access AWS resources. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.',
+    }),
+    tags: TagsSchema.exactOptional().openapi({
+      description:
+        '<p>A list of key-value pairs that contain metadata for the alarm model. The tags help you manage the alarm model. For more information, see <a href="https://docs.aws.amazon.com/iotevents/latest/developerguide/tagging-iotevents.html">Tagging your AWS IoT Events resources</a> in the <i>AWS IoT Events Developer Guide</i>.</p> <p>You can create up to 50 tags for one alarm model.</p>',
+    }),
+    key: AttributeJsonPathSchema.exactOptional().openapi({
+      description:
+        'An input attribute used as a key to create an alarm. AWS IoT Events routes <a href="https://docs.aws.amazon.com/iotevents/latest/apireference/API_Input.html">inputs</a> associated with this key to the alarm.',
+    }),
+    severity: SeveritySchema.exactOptional().openapi({
+      description: 'A non-negative integer that reflects the severity level of the alarm.',
+    }),
+    alarmRule: AlarmRuleSchema.openapi({ description: 'Defines when your alarm is invoked.' }),
+    alarmNotification: AlarmNotificationSchema.exactOptional().openapi({
+      description: 'Contains information about one or more notification actions.',
+    }),
+    alarmEventActions: AlarmEventActionsSchema.exactOptional().openapi({
+      description: 'Contains information about one or more alarm actions.',
+    }),
+    alarmCapabilities: AlarmCapabilitiesSchema.exactOptional().openapi({
+      description: 'Contains the configuration information of alarm state changes.',
+    }),
   })
   .openapi({
     required: ['alarmModelName', 'roleArn', 'alarmRule'],
@@ -2226,44 +1778,32 @@ const CreateAlarmModelRequestSchema = z
   })
   .openapi('CreateAlarmModelRequest')
 
-const CreateDetectorModelRequestSchema = z
+const CreateDetectorModelRequestSchema: z.ZodType<CreateDetectorModelRequestType> = z
   .object({
-    detectorModelName: DetectorModelNameSchema.and(
-      z.any().openapi({ description: 'The name of the detector model.' }),
-    ),
-    detectorModelDefinition: DetectorModelDefinitionSchema.and(
-      z.any().openapi({ description: 'Information that defines how the detectors operate.' }),
-    ),
-    detectorModelDescription: DetectorModelDescriptionSchema.and(
-      z.any().openapi({ description: 'A brief description of the detector model.' }),
-    ).exactOptional(),
-    key: AttributeJsonPathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The input attribute key used to identify a device or system to create a detector (an instance of the detector model) and then to route each input received to the appropriate detector (instance). This parameter uses a JSON-path expression in the message payload of each input to specify the attribute-value pair that is used to identify the device associated with the input.',
-        }),
-    ).exactOptional(),
-    roleArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the role that grants permission to AWS IoT Events to perform its operations.',
-        }),
-    ),
-    tags: TagsSchema.and(
-      z.any().openapi({ description: 'Metadata that can be used to manage the detector model.' }),
-    ).exactOptional(),
-    evaluationMethod: EvaluationMethodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the order in which events are evaluated and how actions are executed. ',
-        }),
-    ).exactOptional(),
+    detectorModelName: DetectorModelNameSchema.openapi({
+      description: 'The name of the detector model.',
+    }),
+    detectorModelDefinition: DetectorModelDefinitionSchema.openapi({
+      description: 'Information that defines how the detectors operate.',
+    }),
+    detectorModelDescription: DetectorModelDescriptionSchema.exactOptional().openapi({
+      description: 'A brief description of the detector model.',
+    }),
+    key: AttributeJsonPathSchema.exactOptional().openapi({
+      description:
+        'The input attribute key used to identify a device or system to create a detector (an instance of the detector model) and then to route each input received to the appropriate detector (instance). This parameter uses a JSON-path expression in the message payload of each input to specify the attribute-value pair that is used to identify the device associated with the input.',
+    }),
+    roleArn: AmazonResourceNameSchema.openapi({
+      description:
+        'The ARN of the role that grants permission to AWS IoT Events to perform its operations.',
+    }),
+    tags: TagsSchema.exactOptional().openapi({
+      description: 'Metadata that can be used to manage the detector model.',
+    }),
+    evaluationMethod: EvaluationMethodSchema.exactOptional().openapi({
+      description:
+        'Information about the order in which events are evaluated and how actions are executed. ',
+    }),
   })
   .openapi({
     required: ['detectorModelName', 'detectorModelDefinition', 'roleArn'],
@@ -2273,151 +1813,134 @@ const CreateDetectorModelRequestSchema = z
 
 const CreateInputRequestSchema = z
   .object({
-    inputName: InputNameSchema.and(
-      z.any().openapi({ description: 'The name you want to give to the input.' }),
-    ),
-    inputDescription: InputDescriptionSchema.and(
-      z.any().openapi({ description: 'A brief description of the input.' }),
-    ).exactOptional(),
-    inputDefinition: InputDefinitionSchema.and(
-      z.any().openapi({ description: 'The definition of the input.' }),
-    ),
-    tags: TagsSchema.and(
-      z.any().openapi({ description: 'Metadata that can be used to manage the input.' }),
-    ).exactOptional(),
+    inputName: InputNameSchema.openapi({ description: 'The name you want to give to the input.' }),
+    inputDescription: InputDescriptionSchema.exactOptional().openapi({
+      description: 'A brief description of the input.',
+    }),
+    inputDefinition: InputDefinitionSchema.openapi({ description: 'The definition of the input.' }),
+    tags: TagsSchema.exactOptional().openapi({
+      description: 'Metadata that can be used to manage the input.',
+    }),
   })
   .openapi({ required: ['inputName', 'inputDefinition'], title: 'CreateInputRequest' })
   .openapi('CreateInputRequest')
 
 const DeleteAlarmModelRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteAlarmModelRequest' })
   .openapi('DeleteAlarmModelRequest')
 
 const DeleteDetectorModelRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteDetectorModelRequest' })
   .openapi('DeleteDetectorModelRequest')
 
 const DeleteInputRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteInputRequest' })
   .openapi('DeleteInputRequest')
 
 const DescribeAlarmModelRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeAlarmModelRequest' })
   .openapi('DescribeAlarmModelRequest')
 
 const DescribeDetectorModelAnalysisRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeDetectorModelAnalysisRequest' })
   .openapi('DescribeDetectorModelAnalysisRequest')
 
 const DescribeDetectorModelRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeDetectorModelRequest' })
   .openapi('DescribeDetectorModelRequest')
 
 const DescribeInputRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeInputRequest' })
   .openapi('DescribeInputRequest')
 
 const DescribeLoggingOptionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeLoggingOptionsRequest' })
   .openapi('DescribeLoggingOptionsRequest')
 
 const MaxAnalysisResultsSchema = z.int().openapi('MaxAnalysisResults')
 
 const GetDetectorModelAnalysisResultsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetDetectorModelAnalysisResultsRequest' })
   .openapi('GetDetectorModelAnalysisResultsRequest')
 
-const InputIdentifierSchema: z.ZodType<InputIdentifierType> = z
-  .lazy(() =>
-    z
-      .object({
-        iotEventsInputIdentifier: IotEventsInputIdentifierSchema.and(
-          z
-            .any()
-            .openapi({ description: ' The identifier of the input routed to AWS IoT Events. ' }),
-        ).exactOptional(),
-        iotSiteWiseInputIdentifier: IotSiteWiseInputIdentifierSchema.and(
-          z
-            .any()
-            .openapi({ description: ' The identifer of the input routed from AWS IoT SiteWise. ' }),
-        ).exactOptional(),
-      })
-      .openapi({ description: ' The identifer of the input. ', required: [] }),
-  )
+const InputIdentifierSchema = z
+  .object({
+    iotEventsInputIdentifier: IotEventsInputIdentifierSchema.exactOptional().openapi({
+      description: ' The identifier of the input routed to AWS IoT Events. ',
+    }),
+    iotSiteWiseInputIdentifier: IotSiteWiseInputIdentifierSchema.exactOptional().openapi({
+      description: ' The identifer of the input routed from AWS IoT SiteWise. ',
+    }),
+  })
+  .openapi({ description: ' The identifer of the input. ', required: [] })
   .openapi('InputIdentifier')
 
 const MaxResultsSchema = z.int().min(1).max(250).openapi('MaxResults')
 
 const ListAlarmModelVersionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListAlarmModelVersionsRequest' })
   .openapi('ListAlarmModelVersionsRequest')
 
 const ListAlarmModelsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListAlarmModelsRequest' })
   .openapi('ListAlarmModelsRequest')
 
 const ListDetectorModelVersionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListDetectorModelVersionsRequest' })
   .openapi('ListDetectorModelVersionsRequest')
 
 const ListDetectorModelsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListDetectorModelsRequest' })
   .openapi('ListDetectorModelsRequest')
 
 const ListInputRoutingsRequestSchema = z
   .object({
-    inputIdentifier: InputIdentifierSchema.and(
-      z.any().openapi({ description: ' The identifer of the routed input. ' }),
-    ),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The maximum number of results to be returned per request. ' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The token that you can use to return the next set of results. ',
-        }),
-    ).exactOptional(),
+    inputIdentifier: InputIdentifierSchema.openapi({
+      description: ' The identifer of the routed input. ',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: ' The maximum number of results to be returned per request. ',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: ' The token that you can use to return the next set of results. ',
+    }),
   })
   .openapi({ required: ['inputIdentifier'], title: 'ListInputRoutingsRequest' })
   .openapi('ListInputRoutingsRequest')
 
 const ListInputsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListInputsRequest' })
   .openapi('ListInputsRequest')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const PutLoggingOptionsRequestSchema = z
   .object({
-    loggingOptions: LoggingOptionsSchema.and(
-      z.any().openapi({ description: 'The new values of the AWS IoT Events logging options.' }),
-    ),
+    loggingOptions: LoggingOptionsSchema.openapi({
+      description: 'The new values of the AWS IoT Events logging options.',
+    }),
   })
   .openapi({ required: ['loggingOptions'], title: 'PutLoggingOptionsRequest' })
   .openapi('PutLoggingOptionsRequest')
 
-const StartDetectorModelAnalysisRequestSchema = z
+const StartDetectorModelAnalysisRequestSchema: z.ZodType<StartDetectorModelAnalysisRequestType> = z
   .object({ detectorModelDefinition: DetectorModelDefinitionSchema })
   .openapi({ required: ['detectorModelDefinition'], title: 'StartDetectorModelAnalysisRequest' })
   .openapi('StartDetectorModelAnalysisRequest')
@@ -2426,82 +1949,58 @@ const TagKeysSchema = z.array(TagKeySchema).openapi('TagKeys')
 
 const TagResourceRequestSchema = z
   .object({
-    tags: TagsSchema.and(
-      z.any().openapi({ description: 'The new or modified tags for the resource.' }),
-    ),
+    tags: TagsSchema.openapi({ description: 'The new or modified tags for the resource.' }),
   })
   .openapi({ required: ['tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
-const UpdateAlarmModelRequestSchema = z
+const UpdateAlarmModelRequestSchema: z.ZodType<UpdateAlarmModelRequestType> = z
   .object({
-    alarmModelDescription: AlarmModelDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the alarm model.' }),
-    ).exactOptional(),
-    roleArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM role that allows the alarm to perform actions and access AWS resources. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.',
-        }),
-    ),
-    severity: SeveritySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A non-negative integer that reflects the severity level of the alarm.',
-        }),
-    ).exactOptional(),
-    alarmRule: AlarmRuleSchema.and(
-      z.any().openapi({ description: 'Defines when your alarm is invoked.' }),
-    ),
-    alarmNotification: AlarmNotificationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Contains information about one or more notification actions.' }),
-    ).exactOptional(),
-    alarmEventActions: AlarmEventActionsSchema.and(
-      z.any().openapi({ description: 'Contains information about one or more alarm actions.' }),
-    ).exactOptional(),
-    alarmCapabilities: AlarmCapabilitiesSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Contains the configuration information of alarm state changes.' }),
-    ).exactOptional(),
+    alarmModelDescription: AlarmModelDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the alarm model.',
+    }),
+    roleArn: AmazonResourceNameSchema.openapi({
+      description:
+        'The ARN of the IAM role that allows the alarm to perform actions and access AWS resources. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.',
+    }),
+    severity: SeveritySchema.exactOptional().openapi({
+      description: 'A non-negative integer that reflects the severity level of the alarm.',
+    }),
+    alarmRule: AlarmRuleSchema.openapi({ description: 'Defines when your alarm is invoked.' }),
+    alarmNotification: AlarmNotificationSchema.exactOptional().openapi({
+      description: 'Contains information about one or more notification actions.',
+    }),
+    alarmEventActions: AlarmEventActionsSchema.exactOptional().openapi({
+      description: 'Contains information about one or more alarm actions.',
+    }),
+    alarmCapabilities: AlarmCapabilitiesSchema.exactOptional().openapi({
+      description: 'Contains the configuration information of alarm state changes.',
+    }),
   })
   .openapi({ required: ['roleArn', 'alarmRule'], title: 'UpdateAlarmModelRequest' })
   .openapi('UpdateAlarmModelRequest')
 
-const UpdateDetectorModelRequestSchema = z
+const UpdateDetectorModelRequestSchema: z.ZodType<UpdateDetectorModelRequestType> = z
   .object({
-    detectorModelDefinition: DetectorModelDefinitionSchema.and(
-      z.any().openapi({ description: 'Information that defines how a detector operates.' }),
-    ),
-    detectorModelDescription: DetectorModelDescriptionSchema.and(
-      z.any().openapi({ description: 'A brief description of the detector model.' }),
-    ).exactOptional(),
-    roleArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the role that grants permission to AWS IoT Events to perform its operations.',
-        }),
-    ),
-    evaluationMethod: EvaluationMethodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the order in which events are evaluated and how actions are executed. ',
-        }),
-    ).exactOptional(),
+    detectorModelDefinition: DetectorModelDefinitionSchema.openapi({
+      description: 'Information that defines how a detector operates.',
+    }),
+    detectorModelDescription: DetectorModelDescriptionSchema.exactOptional().openapi({
+      description: 'A brief description of the detector model.',
+    }),
+    roleArn: AmazonResourceNameSchema.openapi({
+      description:
+        'The ARN of the role that grants permission to AWS IoT Events to perform its operations.',
+    }),
+    evaluationMethod: EvaluationMethodSchema.exactOptional().openapi({
+      description:
+        'Information about the order in which events are evaluated and how actions are executed. ',
+    }),
   })
   .openapi({
     required: ['detectorModelDefinition', 'roleArn'],
@@ -2511,12 +2010,10 @@ const UpdateDetectorModelRequestSchema = z
 
 const UpdateInputRequestSchema = z
   .object({
-    inputDescription: InputDescriptionSchema.and(
-      z.any().openapi({ description: 'A brief description of the input.' }),
-    ).exactOptional(),
-    inputDefinition: InputDefinitionSchema.and(
-      z.any().openapi({ description: 'The definition of the input.' }),
-    ),
+    inputDescription: InputDescriptionSchema.exactOptional().openapi({
+      description: 'A brief description of the input.',
+    }),
+    inputDefinition: InputDefinitionSchema.openapi({ description: 'The definition of the input.' }),
   })
   .openapi({ required: ['inputDefinition'], title: 'UpdateInputRequest' })
   .openapi('UpdateInputRequest')
@@ -2741,26 +2238,18 @@ export const postAlarmModelsRoute = createRoute({
                 }),
               alarmRule: z
                 .object({
-                  simpleRule: SimpleRuleSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A rule that compares an input property value to a threshold value with a comparison operator.',
-                      }),
-                  ).exactOptional(),
+                  simpleRule: SimpleRuleSchema.exactOptional().openapi({
+                    description:
+                      'A rule that compares an input property value to a threshold value with a comparison operator.',
+                  }),
                 })
                 .openapi({ description: 'Defines when your alarm is invoked.', required: [] }),
               alarmNotification: z
                 .object({
-                  notificationActions: NotificationActionsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Contains the notification settings of an alarm model. The settings apply to all alarms that were created based on this alarm model.',
-                      }),
-                  ).exactOptional(),
+                  notificationActions: NotificationActionsSchema.exactOptional().openapi({
+                    description:
+                      'Contains the notification settings of an alarm model. The settings apply to all alarms that were created based on this alarm model.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -2769,14 +2258,10 @@ export const postAlarmModelsRoute = createRoute({
                 }),
               alarmEventActions: z
                 .object({
-                  alarmActions: AlarmActionsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specifies one or more supported actions to receive notifications when the alarm state changes.',
-                      }),
-                  ).exactOptional(),
+                  alarmActions: AlarmActionsSchema.exactOptional().openapi({
+                    description:
+                      'Specifies one or more supported actions to receive notifications when the alarm state changes.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -2785,21 +2270,14 @@ export const postAlarmModelsRoute = createRoute({
                 }),
               alarmCapabilities: z
                 .object({
-                  initializationConfiguration: InitializationConfigurationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specifies the default alarm state. The configuration applies to all alarms that were created based on this alarm model.',
-                      }),
-                  ).exactOptional(),
-                  acknowledgeFlow: AcknowledgeFlowSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'Specifies whether to get notified for alarm state changes.',
-                      }),
-                  ).exactOptional(),
+                  initializationConfiguration:
+                    InitializationConfigurationSchema.exactOptional().openapi({
+                      description:
+                        'Specifies the default alarm state. The configuration applies to all alarms that were created based on this alarm model.',
+                    }),
+                  acknowledgeFlow: AcknowledgeFlowSchema.exactOptional().openapi({
+                    description: 'Specifies whether to get notified for alarm state changes.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -2952,19 +2430,13 @@ export const postDetectorModelsRoute = createRoute({
                 .openapi({ description: 'The name of the detector model.' }),
               detectorModelDefinition: z
                 .object({
-                  states: StatesSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'Information about the states of the detector.' }),
-                  ).exactOptional(),
-                  initialStateName: StateNameSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The state that is entered at the creation of each detector (instance).',
-                      }),
-                  ).exactOptional(),
+                  states: StatesSchema.exactOptional().openapi({
+                    description: 'Information about the states of the detector.',
+                  }),
+                  initialStateName: StateNameSchema.exactOptional().openapi({
+                    description:
+                      'The state that is entered at the creation of each detector (instance).',
+                  }),
                 })
                 .openapi({
                   description: 'Information that defines how a detector operates.',
@@ -3156,14 +2628,10 @@ export const postInputsRoute = createRoute({
                 .openapi({ description: 'A brief description of the input.' }),
               inputDefinition: z
                 .object({
-                  attributes: AttributesSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The attributes from the JSON payload that are made available by the input. Inputs are derived from messages sent to the AWS IoT Events system using <code>BatchPutMessage</code>. Each such message contains a JSON payload, and those attributes (and their paired values) specified here are available for use in the <code>condition</code> expressions used by detectors that monitor this input. ',
-                      }),
-                  ).exactOptional(),
+                  attributes: AttributesSchema.exactOptional().openapi({
+                    description:
+                      'The attributes from the JSON payload that are made available by the input. Inputs are derived from messages sent to the AWS IoT Events system using <code>BatchPutMessage</code>. Each such message contains a JSON payload, and those attributes (and their paired values) specified here are available for use in the <code>condition</code> expressions used by detectors that monitor this input. ',
+                  }),
                 })
                 .openapi({ description: 'The definition of the input.', required: [] }),
               tags: z
@@ -3343,26 +2811,18 @@ export const postAlarmModelsAlarmModelNameRoute = createRoute({
                 }),
               alarmRule: z
                 .object({
-                  simpleRule: SimpleRuleSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A rule that compares an input property value to a threshold value with a comparison operator.',
-                      }),
-                  ).exactOptional(),
+                  simpleRule: SimpleRuleSchema.exactOptional().openapi({
+                    description:
+                      'A rule that compares an input property value to a threshold value with a comparison operator.',
+                  }),
                 })
                 .openapi({ description: 'Defines when your alarm is invoked.', required: [] }),
               alarmNotification: z
                 .object({
-                  notificationActions: NotificationActionsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Contains the notification settings of an alarm model. The settings apply to all alarms that were created based on this alarm model.',
-                      }),
-                  ).exactOptional(),
+                  notificationActions: NotificationActionsSchema.exactOptional().openapi({
+                    description:
+                      'Contains the notification settings of an alarm model. The settings apply to all alarms that were created based on this alarm model.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -3371,14 +2831,10 @@ export const postAlarmModelsAlarmModelNameRoute = createRoute({
                 }),
               alarmEventActions: z
                 .object({
-                  alarmActions: AlarmActionsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specifies one or more supported actions to receive notifications when the alarm state changes.',
-                      }),
-                  ).exactOptional(),
+                  alarmActions: AlarmActionsSchema.exactOptional().openapi({
+                    description:
+                      'Specifies one or more supported actions to receive notifications when the alarm state changes.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -3387,21 +2843,14 @@ export const postAlarmModelsAlarmModelNameRoute = createRoute({
                 }),
               alarmCapabilities: z
                 .object({
-                  initializationConfiguration: InitializationConfigurationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specifies the default alarm state. The configuration applies to all alarms that were created based on this alarm model.',
-                      }),
-                  ).exactOptional(),
-                  acknowledgeFlow: AcknowledgeFlowSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'Specifies whether to get notified for alarm state changes.',
-                      }),
-                  ).exactOptional(),
+                  initializationConfiguration:
+                    InitializationConfigurationSchema.exactOptional().openapi({
+                      description:
+                        'Specifies the default alarm state. The configuration applies to all alarms that were created based on this alarm model.',
+                    }),
+                  acknowledgeFlow: AcknowledgeFlowSchema.exactOptional().openapi({
+                    description: 'Specifies whether to get notified for alarm state changes.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -3628,19 +3077,13 @@ export const postDetectorModelsDetectorModelNameRoute = createRoute({
             .object({
               detectorModelDefinition: z
                 .object({
-                  states: StatesSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'Information about the states of the detector.' }),
-                  ).exactOptional(),
-                  initialStateName: StateNameSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The state that is entered at the creation of each detector (instance).',
-                      }),
-                  ).exactOptional(),
+                  states: StatesSchema.exactOptional().openapi({
+                    description: 'Information about the states of the detector.',
+                  }),
+                  initialStateName: StateNameSchema.exactOptional().openapi({
+                    description:
+                      'The state that is entered at the creation of each detector (instance).',
+                  }),
                 })
                 .openapi({
                   description: 'Information that defines how a detector operates.',
@@ -3883,14 +3326,10 @@ export const putInputsInputNameRoute = createRoute({
                 .openapi({ description: 'A brief description of the input.' }),
               inputDefinition: z
                 .object({
-                  attributes: AttributesSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The attributes from the JSON payload that are made available by the input. Inputs are derived from messages sent to the AWS IoT Events system using <code>BatchPutMessage</code>. Each such message contains a JSON payload, and those attributes (and their paired values) specified here are available for use in the <code>condition</code> expressions used by detectors that monitor this input. ',
-                      }),
-                  ).exactOptional(),
+                  attributes: AttributesSchema.exactOptional().openapi({
+                    description:
+                      'The attributes from the JSON payload that are made available by the input. Inputs are derived from messages sent to the AWS IoT Events system using <code>BatchPutMessage</code>. Each such message contains a JSON payload, and those attributes (and their paired values) specified here are available for use in the <code>condition</code> expressions used by detectors that monitor this input. ',
+                  }),
                 })
                 .openapi({ description: 'The definition of the input.', required: [] }),
             })
@@ -4130,30 +3569,20 @@ export const putLoggingRoute = createRoute({
             .object({
               loggingOptions: z
                 .object({
-                  roleArn: AmazonResourceNameSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The ARN of the role that grants permission to AWS IoT Events to perform logging.',
-                      }),
-                  ).exactOptional(),
-                  level: LoggingLevelSchema.and(
-                    z.any().openapi({ description: 'The logging level.' }),
-                  ).exactOptional(),
-                  enabled: LoggingEnabledSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'If TRUE, logging is enabled for AWS IoT Events.' }),
-                  ).exactOptional(),
-                  detectorDebugOptions: DetectorDebugOptionsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Information that identifies those detector models and their detectors (instances) for which the logging level is given.',
-                      }),
-                  ).exactOptional(),
+                  roleArn: AmazonResourceNameSchema.exactOptional().openapi({
+                    description:
+                      'The ARN of the role that grants permission to AWS IoT Events to perform logging.',
+                  }),
+                  level: LoggingLevelSchema.exactOptional().openapi({
+                    description: 'The logging level.',
+                  }),
+                  enabled: LoggingEnabledSchema.exactOptional().openapi({
+                    description: 'If TRUE, logging is enabled for AWS IoT Events.',
+                  }),
+                  detectorDebugOptions: DetectorDebugOptionsSchema.exactOptional().openapi({
+                    description:
+                      'Information that identifies those detector models and their detectors (instances) for which the logging level is given.',
+                  }),
                 })
                 .openapi({
                   description: 'The values of the AWS IoT Events logging options.',
@@ -4499,20 +3928,13 @@ export const postInputRoutingsRoute = createRoute({
             .object({
               inputIdentifier: z
                 .object({
-                  iotEventsInputIdentifier: IotEventsInputIdentifierSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: ' The identifier of the input routed to AWS IoT Events. ',
-                      }),
-                  ).exactOptional(),
-                  iotSiteWiseInputIdentifier: IotSiteWiseInputIdentifierSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: ' The identifer of the input routed from AWS IoT SiteWise. ',
-                      }),
-                  ).exactOptional(),
+                  iotEventsInputIdentifier: IotEventsInputIdentifierSchema.exactOptional().openapi({
+                    description: ' The identifier of the input routed to AWS IoT Events. ',
+                  }),
+                  iotSiteWiseInputIdentifier:
+                    IotSiteWiseInputIdentifierSchema.exactOptional().openapi({
+                      description: ' The identifer of the input routed from AWS IoT SiteWise. ',
+                    }),
                 })
                 .openapi({ description: ' The identifer of the input. ', required: [] }),
               maxResults: z
@@ -4724,19 +4146,13 @@ export const postAnalysisDetectorModelsIndexRoute = createRoute({
             .object({
               detectorModelDefinition: z
                 .object({
-                  states: StatesSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'Information about the states of the detector.' }),
-                  ).exactOptional(),
-                  initialStateName: StateNameSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The state that is entered at the creation of each detector (instance).',
-                      }),
-                  ).exactOptional(),
+                  states: StatesSchema.exactOptional().openapi({
+                    description: 'Information about the states of the detector.',
+                  }),
+                  initialStateName: StateNameSchema.exactOptional().openapi({
+                    description:
+                      'The state that is entered at the creation of each detector (instance).',
+                  }),
                 })
                 .openapi({
                   description: 'Information that defines how a detector operates.',

@@ -9,9 +9,176 @@ const AmazonResourceNameSchema = z
 
 const NameSchema = z.string().min(0).max(256).openapi('Name')
 
+const StringSchema = z.string().openapi('String')
+
+const DeviceFormFactorSchema = z.enum(['PHONE', 'TABLET']).openapi('DeviceFormFactor')
+
+const DevicePlatformSchema = z.enum(['ANDROID', 'IOS']).openapi('DevicePlatform')
+
+const DoubleSchema = z.float64().openapi('Double')
+
+const CPUSchema = z
+  .object({
+    frequency: StringSchema.exactOptional().openapi({ description: "The CPU's frequency." }),
+    architecture: StringSchema.exactOptional().openapi({
+      description: "The CPU's architecture (for example, x86 or ARM).",
+    }),
+    clock: DoubleSchema.exactOptional().openapi({
+      description:
+        "The clock speed of the device's CPU, expressed in hertz (Hz). For example, a 1.2 GHz CPU is expressed as 1200000000.",
+    }),
+  })
+  .openapi({
+    description:
+      'Represents the amount of CPU that an app is using on a physical device. Does not represent system-wide CPU usage.',
+    required: [],
+  })
+  .openapi('CPU')
+
+const IntegerSchema = z.int().openapi('Integer')
+
+const ResolutionSchema = z
+  .object({
+    width: IntegerSchema.exactOptional().openapi({
+      description: "The screen resolution's width, expressed in pixels.",
+    }),
+    height: IntegerSchema.exactOptional().openapi({
+      description: "The screen resolution's height, expressed in pixels.",
+    }),
+  })
+  .openapi({
+    description:
+      'Represents the screen resolution of a device in height and width, expressed in pixels.',
+    required: [],
+  })
+  .openapi('Resolution')
+
+const LongSchema = z.int().openapi('Long')
+
+const BooleanSchema = z.boolean().openapi('Boolean')
+
+const InstanceLabelsSchema = z.array(StringSchema).openapi('InstanceLabels')
+
+const InstanceStatusSchema = z
+  .enum(['IN_USE', 'PREPARING', 'AVAILABLE', 'NOT_AVAILABLE'])
+  .openapi('InstanceStatus')
+
+const PackageIdsSchema = z.array(StringSchema).openapi('PackageIds')
+
 const MessageSchema = z.string().min(0).max(16384).openapi('Message')
 
-const DevicePoolTypeSchema = z.enum(['CURATED', 'PRIVATE']).openapi('DevicePoolType')
+const InstanceProfileSchema = z
+  .object({
+    arn: AmazonResourceNameSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the instance profile.',
+    }),
+    packageCleanup: BooleanSchema.exactOptional().openapi({
+      description:
+        'When set to <code>true</code>, Device Farm removes app packages after a test run. The default value is <code>false</code> for private devices.',
+    }),
+    excludeAppPackagesFromCleanup: PackageIdsSchema.exactOptional().openapi({
+      description:
+        '<p>An array of strings containing the list of app packages that should not be cleaned up from the device after a test run completes.</p> <p>The list of packages is considered only if you set <code>packageCleanup</code> to <code>true</code>.</p>',
+    }),
+    rebootAfterUse: BooleanSchema.exactOptional().openapi({
+      description:
+        'When set to <code>true</code>, Device Farm reboots the instance after a test run. The default value is <code>true</code>.',
+    }),
+    name: NameSchema.exactOptional().openapi({ description: 'The name of the instance profile.' }),
+    description: MessageSchema.exactOptional().openapi({
+      description: 'The description of the instance profile.',
+    }),
+  })
+  .openapi({ description: 'Represents the instance profile.', required: [] })
+  .openapi('InstanceProfile')
+
+const DeviceInstanceSchema = z
+  .object({
+    arn: AmazonResourceNameSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the device instance.',
+    }),
+    deviceArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description: 'The ARN of the device.',
+    }),
+    labels: InstanceLabelsSchema.exactOptional().openapi({
+      description: 'An array of strings that describe the device instance.',
+    }),
+    status: InstanceStatusSchema.exactOptional().openapi({
+      description: 'The status of the device instance. Valid values are listed here.',
+    }),
+    udid: StringSchema.exactOptional().openapi({
+      description: 'Unique device identifier for the device instance.',
+    }),
+    instanceProfile: InstanceProfileSchema.exactOptional().openapi({
+      description: 'A object that contains information about the instance profile.',
+    }),
+  })
+  .openapi({ description: 'Represents the device instance.', required: [] })
+  .openapi('DeviceInstance')
+
+const DeviceInstancesSchema = z.array(DeviceInstanceSchema).openapi('DeviceInstances')
+
+const DeviceAvailabilitySchema = z
+  .enum(['TEMPORARY_NOT_AVAILABLE', 'BUSY', 'AVAILABLE', 'HIGHLY_AVAILABLE'])
+  .openapi('DeviceAvailability')
+
+const DeviceSchema = z
+  .object({
+    arn: AmazonResourceNameSchema.exactOptional().openapi({ description: "The device's ARN." }),
+    name: NameSchema.exactOptional().openapi({ description: "The device's display name." }),
+    manufacturer: StringSchema.exactOptional().openapi({
+      description: "The device's manufacturer name.",
+    }),
+    model: StringSchema.exactOptional().openapi({ description: "The device's model name." }),
+    modelId: StringSchema.exactOptional().openapi({ description: "The device's model ID." }),
+    formFactor: DeviceFormFactorSchema.exactOptional().openapi({
+      description:
+        "<p>The device's form factor.</p> <p>Allowed values include:</p> <ul> <li> <p>PHONE</p> </li> <li> <p>TABLET</p> </li> </ul>",
+    }),
+    platform: DevicePlatformSchema.exactOptional().openapi({
+      description:
+        "<p>The device's platform.</p> <p>Allowed values include:</p> <ul> <li> <p>ANDROID</p> </li> <li> <p>IOS</p> </li> </ul>",
+    }),
+    os: StringSchema.exactOptional().openapi({
+      description: "The device's operating system type.",
+    }),
+    cpu: CPUSchema.exactOptional().openapi({ description: "Information about the device's CPU." }),
+    resolution: ResolutionSchema.exactOptional().openapi({
+      description: 'The resolution of the device.',
+    }),
+    heapSize: LongSchema.exactOptional().openapi({
+      description: "The device's heap size, expressed in bytes.",
+    }),
+    memory: LongSchema.exactOptional().openapi({
+      description: "The device's total memory size, expressed in bytes.",
+    }),
+    image: StringSchema.exactOptional().openapi({ description: "The device's image name." }),
+    carrier: StringSchema.exactOptional().openapi({ description: "The device's carrier." }),
+    radio: StringSchema.exactOptional().openapi({ description: "The device's radio." }),
+    remoteAccessEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Specifies whether remote access has been enabled for the specified device.',
+    }),
+    remoteDebugEnabled: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>This flag is set to <code>true</code> if remote debugging is enabled for the device.</p> <p>Remote debugging is <a href="https://docs.aws.amazon.com/devicefarm/latest/developerguide/history.html">no longer supported</a>.</p>',
+    }),
+    fleetType: StringSchema.exactOptional().openapi({
+      description:
+        'The type of fleet to which this device belongs. Possible values are PRIVATE and PUBLIC.',
+    }),
+    fleetName: StringSchema.exactOptional().openapi({
+      description: 'The name of the fleet to which this device belongs.',
+    }),
+    instances: DeviceInstancesSchema.exactOptional().openapi({
+      description: 'The instances that belong to this device.',
+    }),
+    availability: DeviceAvailabilitySchema.exactOptional().openapi({
+      description:
+        'Indicates how likely a device is available for a test run. Currently available in the <a>ListDevices</a> and GetDevice API methods.',
+    }),
+  })
+  .openapi({ description: 'Represents a device type that an app is tested against.', required: [] })
+  .openapi('Device')
 
 const DeviceAttributeSchema = z
   .enum([
@@ -31,416 +198,319 @@ const DeviceAttributeSchema = z
   ])
   .openapi('DeviceAttribute')
 
-const RuleOperatorSchema = z
+const IncompatibilityMessageSchema = z
+  .object({
+    message: MessageSchema.exactOptional().openapi({
+      description: 'A message about the incompatibility.',
+    }),
+    type: DeviceAttributeSchema.exactOptional().openapi({
+      description:
+        '<p>The type of incompatibility.</p> <p>Allowed values include:</p> <ul> <li> <p>ARN</p> </li> <li> <p>FORM_FACTOR (for example, phone or tablet)</p> </li> <li> <p>MANUFACTURER</p> </li> <li> <p>PLATFORM (for example, Android or iOS)</p> </li> <li> <p>REMOTE_ACCESS_ENABLED</p> </li> <li> <p>APPIUM_VERSION</p> </li> </ul>',
+    }),
+  })
+  .openapi({ description: 'Represents information about incompatibility.', required: [] })
+  .openapi('IncompatibilityMessage')
+
+const IncompatibilityMessagesSchema = z
+  .array(IncompatibilityMessageSchema)
+  .openapi('IncompatibilityMessages')
+
+const DevicePoolCompatibilityResultSchema = z
+  .object({
+    device: DeviceSchema.exactOptional().openapi({
+      description: 'The device (phone or tablet) to return information about.',
+    }),
+    compatible: BooleanSchema.exactOptional().openapi({
+      description: 'Whether the result was compatible with the device pool.',
+    }),
+    incompatibilityMessages: IncompatibilityMessagesSchema.exactOptional().openapi({
+      description: 'Information about the compatibility.',
+    }),
+  })
+  .openapi({ description: 'Represents a device pool compatibility result.', required: [] })
+  .openapi('DevicePoolCompatibilityResult')
+
+const DevicePoolCompatibilityResultsSchema = z
+  .array(DevicePoolCompatibilityResultSchema)
+  .openapi('DevicePoolCompatibilityResults')
+
+type GetDevicePoolCompatibilityResultType = {
+  compatibleDevices?: z.infer<typeof DevicePoolCompatibilityResultsSchema> & unknown
+  incompatibleDevices?: z.infer<typeof DevicePoolCompatibilityResultsSchema> & unknown
+}
+
+const TestTypeSchema = z
   .enum([
-    'EQUALS',
-    'LESS_THAN',
-    'LESS_THAN_OR_EQUALS',
-    'GREATER_THAN',
-    'GREATER_THAN_OR_EQUALS',
-    'IN',
-    'NOT_IN',
-    'CONTAINS',
+    'BUILTIN_FUZZ',
+    'BUILTIN_EXPLORER',
+    'WEB_PERFORMANCE_PROFILE',
+    'APPIUM_JAVA_JUNIT',
+    'APPIUM_JAVA_TESTNG',
+    'APPIUM_PYTHON',
+    'APPIUM_NODE',
+    'APPIUM_RUBY',
+    'APPIUM_WEB_JAVA_JUNIT',
+    'APPIUM_WEB_JAVA_TESTNG',
+    'APPIUM_WEB_PYTHON',
+    'APPIUM_WEB_NODE',
+    'APPIUM_WEB_RUBY',
+    'CALABASH',
+    'INSTRUMENTATION',
+    'UIAUTOMATION',
+    'UIAUTOMATOR',
+    'XCTEST',
+    'XCTEST_UI',
+    'REMOTE_ACCESS_RECORD',
+    'REMOTE_ACCESS_REPLAY',
   ])
-  .openapi('RuleOperator')
-
-const StringSchema = z.string().openapi('String')
-
-const RuleSchema = z
-  .object({
-    attribute: DeviceAttributeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The rule\'s stringified attribute. For example, specify the value as <code>"\\"abc\\""</code>.</p> <p>The supported operators for each attribute are provided in the following list.</p> <dl> <dt>APPIUM_VERSION</dt> <dd> <p>The Appium version for the test.</p> <p>Supported operators: <code>CONTAINS</code> </p> </dd> <dt>ARN</dt> <dd> <p>The Amazon Resource Name (ARN) of the device (for example, <code>arn:aws:devicefarm:us-west-2::device:12345Example</code>.</p> <p>Supported operators: <code>EQUALS</code>, <code>IN</code>, <code>NOT_IN</code> </p> </dd> <dt>AVAILABILITY</dt> <dd> <p>The current availability of the device. Valid values are AVAILABLE, HIGHLY_AVAILABLE, BUSY, or TEMPORARY_NOT_AVAILABLE.</p> <p>Supported operators: <code>EQUALS</code> </p> </dd> <dt>FLEET_TYPE</dt> <dd> <p>The fleet type. Valid values are PUBLIC or PRIVATE.</p> <p>Supported operators: <code>EQUALS</code> </p> </dd> <dt>FORM_FACTOR</dt> <dd> <p>The device form factor. Valid values are PHONE or TABLET.</p> <p>Supported operators: <code>EQUALS</code>, <code>IN</code>, <code>NOT_IN</code> </p> </dd> <dt>INSTANCE_ARN</dt> <dd> <p>The Amazon Resource Name (ARN) of the device instance.</p> <p>Supported operators: <code>IN</code>, <code>NOT_IN</code> </p> </dd> <dt>INSTANCE_LABELS</dt> <dd> <p>The label of the device instance.</p> <p>Supported operators: <code>CONTAINS</code> </p> </dd> <dt>MANUFACTURER</dt> <dd> <p>The device manufacturer (for example, Apple).</p> <p>Supported operators: <code>EQUALS</code>, <code>IN</code>, <code>NOT_IN</code> </p> </dd> <dt>MODEL</dt> <dd> <p>The device model, such as Apple iPad Air 2 or Google Pixel.</p> <p>Supported operators: <code>CONTAINS</code>, <code>EQUALS</code>, <code>IN</code>, <code>NOT_IN</code> </p> </dd> <dt>OS_VERSION</dt> <dd> <p>The operating system version (for example, 10.3.2).</p> <p>Supported operators: <code>EQUALS</code>, <code>GREATER_THAN</code>, <code>GREATER_THAN_OR_EQUALS</code>, <code>IN</code>, <code>LESS_THAN</code>, <code>LESS_THAN_OR_EQUALS</code>, <code>NOT_IN</code> </p> </dd> <dt>PLATFORM</dt> <dd> <p>The device platform. Valid values are ANDROID or IOS.</p> <p>Supported operators: <code>EQUALS</code>, <code>IN</code>, <code>NOT_IN</code> </p> </dd> <dt>REMOTE_ACCESS_ENABLED</dt> <dd> <p>Whether the device is enabled for remote access. Valid values are TRUE or FALSE.</p> <p>Supported operators: <code>EQUALS</code> </p> </dd> <dt>REMOTE_DEBUG_ENABLED</dt> <dd> <p>Whether the device is enabled for remote debugging. Valid values are TRUE or FALSE.</p> <p>Supported operators: <code>EQUALS</code> </p> <p>Because remote debugging is <a href="https://docs.aws.amazon.com/devicefarm/latest/developerguide/history.html">no longer supported</a>, this filter is ignored.</p> </dd> </dl>',
-        }),
-    ).exactOptional(),
-    operator: RuleOperatorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies how Device Farm compares the rule's attribute to the value. For the operators that are supported by each attribute, see the attribute descriptions.",
-        }),
-    ).exactOptional(),
-    value: StringSchema.and(z.any().openapi({ description: "The rule's value." })).exactOptional(),
-  })
-  .openapi({ description: 'Represents a condition for a device pool.', required: [] })
-  .openapi('Rule')
-
-const RulesSchema = z.array(RuleSchema).openapi('Rules')
-
-const IntegerSchema = z.int().openapi('Integer')
-
-const DevicePoolSchema = z
-  .object({
-    arn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: "The device pool's ARN." }),
-    ).exactOptional(),
-    name: NameSchema.and(
-      z.any().openapi({ description: "The device pool's name." }),
-    ).exactOptional(),
-    description: MessageSchema.and(
-      z.any().openapi({ description: "The device pool's description." }),
-    ).exactOptional(),
-    type: DevicePoolTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The device pool's type.</p> <p>Allowed values include:</p> <ul> <li> <p>CURATED: A device pool that is created and managed by AWS Device Farm.</p> </li> <li> <p>PRIVATE: A device pool that is created and managed by the device pool developer.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    rules: RulesSchema.and(
-      z.any().openapi({ description: "Information about the device pool's rules." }),
-    ).exactOptional(),
-    maxDevices: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of devices that Device Farm can add to your device pool. Device Farm adds devices that are available and meet the criteria that you assign for the <code>rules</code> parameter. Depending on how many devices meet these constraints, your device pool might contain fewer devices than the value for this parameter.</p> <p>By specifying the maximum number of devices, you can control the costs that you incur by running tests.</p>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Represents a collection of device types.', required: [] })
-  .openapi('DevicePool')
-
-const CreateDevicePoolResultSchema = z
-  .object({
-    devicePool: DevicePoolSchema.and(
-      z.any().openapi({ description: 'The newly created device pool.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    example: { devicePool: {} },
-    description: 'Represents the result of a create device pool request.',
-    required: [],
-  })
-  .openapi('CreateDevicePoolResult')
-
-const CreateDevicePoolRequestSchema = z
-  .object({
-    projectArn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'The ARN of the project for the device pool.' }),
-    ),
-    name: NameSchema.and(z.any().openapi({ description: "The device pool's name." })),
-    description: MessageSchema.and(
-      z.any().openapi({ description: "The device pool's description." }),
-    ).exactOptional(),
-    rules: RulesSchema.and(z.any().openapi({ description: "The device pool's rules." })),
-    maxDevices: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of devices that Device Farm can add to your device pool. Device Farm adds devices that are available and meet the criteria that you assign for the <code>rules</code> parameter. Depending on how many devices meet these constraints, your device pool might contain fewer devices than the value for this parameter.</p> <p>By specifying the maximum number of devices, you can control the costs that you incur by running tests.</p>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['projectArn', 'name', 'rules'],
-    title: 'CreateDevicePoolRequest',
-    description: 'Represents a request to the create device pool operation.',
-  })
-  .openapi('CreateDevicePoolRequest')
-
-const ArgumentExceptionSchema = z.any().openapi('ArgumentException')
-
-const NotFoundExceptionSchema = z.any().openapi('NotFoundException')
-
-const LimitExceededExceptionSchema = z.any().openapi('LimitExceededException')
-
-const ServiceAccountExceptionSchema = z.any().openapi('ServiceAccountException')
-
-const BooleanSchema = z.boolean().openapi('Boolean')
-
-const PackageIdsSchema = z.array(StringSchema).openapi('PackageIds')
-
-const InstanceProfileSchema = z
-  .object({
-    arn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the instance profile.' }),
-    ).exactOptional(),
-    packageCleanup: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When set to <code>true</code>, Device Farm removes app packages after a test run. The default value is <code>false</code> for private devices.',
-        }),
-    ).exactOptional(),
-    excludeAppPackagesFromCleanup: PackageIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of strings containing the list of app packages that should not be cleaned up from the device after a test run completes.</p> <p>The list of packages is considered only if you set <code>packageCleanup</code> to <code>true</code>.</p>',
-        }),
-    ).exactOptional(),
-    rebootAfterUse: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When set to <code>true</code>, Device Farm reboots the instance after a test run. The default value is <code>true</code>.',
-        }),
-    ).exactOptional(),
-    name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the instance profile.' }),
-    ).exactOptional(),
-    description: MessageSchema.and(
-      z.any().openapi({ description: 'The description of the instance profile.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Represents the instance profile.', required: [] })
-  .openapi('InstanceProfile')
-
-const CreateInstanceProfileResultSchema = z
-  .object({
-    instanceProfile: InstanceProfileSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that contains information about your instance profile.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CreateInstanceProfileResult')
-
-const CreateInstanceProfileRequestSchema = z
-  .object({
-    name: NameSchema.and(z.any().openapi({ description: 'The name of your instance profile.' })),
-    description: MessageSchema.and(
-      z.any().openapi({ description: 'The description of your instance profile.' }),
-    ).exactOptional(),
-    packageCleanup: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When set to <code>true</code>, Device Farm removes app packages after a test run. The default value is <code>false</code> for private devices.',
-        }),
-    ).exactOptional(),
-    excludeAppPackagesFromCleanup: PackageIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of strings that specifies the list of app packages that should not be cleaned up from the device after a test run.</p> <p>The list of packages is considered only if you set <code>packageCleanup</code> to <code>true</code>.</p>',
-        }),
-    ).exactOptional(),
-    rebootAfterUse: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When set to <code>true</code>, Device Farm reboots the instance after a test run. The default value is <code>true</code>.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ required: ['name'], title: 'CreateInstanceProfileRequest' })
-  .openapi('CreateInstanceProfileRequest')
-
-const NetworkProfileTypeSchema = z.enum(['CURATED', 'PRIVATE']).openapi('NetworkProfileType')
-
-const LongSchema = z.int().openapi('Long')
-
-const PercentIntegerSchema = z.int().min(0).max(100).openapi('PercentInteger')
-
-const NetworkProfileSchema = z
-  .object({
-    arn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the network profile.' }),
-    ).exactOptional(),
-    name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the network profile.' }),
-    ).exactOptional(),
-    description: MessageSchema.and(
-      z.any().openapi({ description: 'The description of the network profile.' }),
-    ).exactOptional(),
-    type: NetworkProfileTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The type of network profile. Valid values are listed here.' }),
-    ).exactOptional(),
-    uplinkBandwidthBits: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The data throughput rate in bits per second, as an integer from 0 to 104857600.',
-        }),
-    ).exactOptional(),
-    downlinkBandwidthBits: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The data throughput rate in bits per second, as an integer from 0 to 104857600.',
-        }),
-    ).exactOptional(),
-    uplinkDelayMs: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Delay time for all packets to destination in milliseconds as an integer from 0 to 2000.',
-        }),
-    ).exactOptional(),
-    downlinkDelayMs: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Delay time for all packets to destination in milliseconds as an integer from 0 to 2000.',
-        }),
-    ).exactOptional(),
-    uplinkJitterMs: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Time variation in the delay of received packets in milliseconds as an integer from 0 to 2000.',
-        }),
-    ).exactOptional(),
-    downlinkJitterMs: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Time variation in the delay of received packets in milliseconds as an integer from 0 to 2000.',
-        }),
-    ).exactOptional(),
-    uplinkLossPercent: PercentIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Proportion of transmitted packets that fail to arrive from 0 to 100 percent.',
-        }),
-    ).exactOptional(),
-    downlinkLossPercent: PercentIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Proportion of received packets that fail to arrive from 0 to 100 percent.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'An array of settings that describes characteristics of a network profile.',
-    required: [],
-  })
-  .openapi('NetworkProfile')
-
-const CreateNetworkProfileResultSchema = z
-  .object({
-    networkProfile: NetworkProfileSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The network profile that is returned by the create network profile request.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CreateNetworkProfileResult')
-
-const CreateNetworkProfileRequestSchema = z
-  .object({
-    projectArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the project for which you want to create a network profile.',
-        }),
-    ),
-    name: NameSchema.and(z.any().openapi({ description: 'The name for the new network profile.' })),
-    description: MessageSchema.and(
-      z.any().openapi({ description: 'The description of the network profile.' }),
-    ).exactOptional(),
-    type: NetworkProfileTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of network profile to create. Valid values are listed here.',
-        }),
-    ).exactOptional(),
-    uplinkBandwidthBits: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The data throughput rate in bits per second, as an integer from 0 to 104857600.',
-        }),
-    ).exactOptional(),
-    downlinkBandwidthBits: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The data throughput rate in bits per second, as an integer from 0 to 104857600.',
-        }),
-    ).exactOptional(),
-    uplinkDelayMs: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Delay time for all packets to destination in milliseconds as an integer from 0 to 2000.',
-        }),
-    ).exactOptional(),
-    downlinkDelayMs: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Delay time for all packets to destination in milliseconds as an integer from 0 to 2000.',
-        }),
-    ).exactOptional(),
-    uplinkJitterMs: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Time variation in the delay of received packets in milliseconds as an integer from 0 to 2000.',
-        }),
-    ).exactOptional(),
-    downlinkJitterMs: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Time variation in the delay of received packets in milliseconds as an integer from 0 to 2000.',
-        }),
-    ).exactOptional(),
-    uplinkLossPercent: PercentIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Proportion of transmitted packets that fail to arrive from 0 to 100 percent.',
-        }),
-    ).exactOptional(),
-    downlinkLossPercent: PercentIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Proportion of received packets that fail to arrive from 0 to 100 percent.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ required: ['projectArn', 'name'], title: 'CreateNetworkProfileRequest' })
-  .openapi('CreateNetworkProfileRequest')
-
-const JobTimeoutMinutesSchema = z.int().openapi('JobTimeoutMinutes')
+  .openapi('TestType')
 
 const DateTimeSchema = z.iso.datetime({ offset: true }).openapi('DateTime')
+
+const ExecutionStatusSchema = z
+  .enum([
+    'PENDING',
+    'PENDING_CONCURRENCY',
+    'PENDING_DEVICE',
+    'PROCESSING',
+    'SCHEDULING',
+    'PREPARING',
+    'RUNNING',
+    'COMPLETED',
+    'STOPPING',
+  ])
+  .openapi('ExecutionStatus')
+
+const ExecutionResultSchema = z
+  .enum(['PENDING', 'PASSED', 'WARNED', 'FAILED', 'SKIPPED', 'ERRORED', 'STOPPED'])
+  .openapi('ExecutionResult')
+
+const CountersSchema = z
+  .object({
+    total: IntegerSchema.exactOptional().openapi({ description: 'The total number of entities.' }),
+    passed: IntegerSchema.exactOptional().openapi({
+      description: 'The number of passed entities.',
+    }),
+    failed: IntegerSchema.exactOptional().openapi({
+      description: 'The number of failed entities.',
+    }),
+    warned: IntegerSchema.exactOptional().openapi({
+      description: 'The number of warned entities.',
+    }),
+    errored: IntegerSchema.exactOptional().openapi({
+      description: 'The number of errored entities.',
+    }),
+    stopped: IntegerSchema.exactOptional().openapi({
+      description: 'The number of stopped entities.',
+    }),
+    skipped: IntegerSchema.exactOptional().openapi({
+      description: 'The number of skipped entities.',
+    }),
+  })
+  .openapi({ description: 'Represents entity counters.', required: [] })
+  .openapi('Counters')
+
+const DeviceMinutesSchema = z
+  .object({
+    total: DoubleSchema.exactOptional().openapi({
+      description:
+        'When specified, represents the total minutes used by the resource to run tests.',
+    }),
+    metered: DoubleSchema.exactOptional().openapi({
+      description:
+        'When specified, represents only the sum of metered minutes used by the resource to run tests.',
+    }),
+    unmetered: DoubleSchema.exactOptional().openapi({
+      description:
+        'When specified, represents only the sum of unmetered minutes used by the resource to run tests.',
+    }),
+  })
+  .openapi({
+    description:
+      'Represents the total (metered or unmetered) minutes used by the resource to run tests. Contains the sum of minutes consumed by all children.',
+    required: [],
+  })
+  .openapi('DeviceMinutes')
+
+const VideoCaptureSchema = z.boolean().openapi('VideoCapture')
+
+const JobSchema = z
+  .object({
+    arn: AmazonResourceNameSchema.exactOptional().openapi({ description: "The job's ARN." }),
+    name: NameSchema.exactOptional().openapi({ description: "The job's name." }),
+    type: TestTypeSchema.exactOptional().openapi({
+      description:
+        "<p>The job's type.</p> <p>Allowed values include the following:</p> <ul> <li> <p>BUILTIN_FUZZ</p> </li> <li> <p>BUILTIN_EXPLORER. For Android, an app explorer that traverses an Android app, interacting with it and capturing screenshots at the same time.</p> </li> <li> <p>APPIUM_JAVA_JUNIT</p> </li> <li> <p>APPIUM_JAVA_TESTNG</p> </li> <li> <p>APPIUM_PYTHON</p> </li> <li> <p>APPIUM_NODE</p> </li> <li> <p>APPIUM_RUBY</p> </li> <li> <p>APPIUM_WEB_JAVA_JUNIT</p> </li> <li> <p>APPIUM_WEB_JAVA_TESTNG</p> </li> <li> <p>APPIUM_WEB_PYTHON</p> </li> <li> <p>APPIUM_WEB_NODE</p> </li> <li> <p>APPIUM_WEB_RUBY</p> </li> <li> <p>CALABASH</p> </li> <li> <p>INSTRUMENTATION</p> </li> <li> <p>UIAUTOMATION</p> </li> <li> <p>UIAUTOMATOR</p> </li> <li> <p>XCTEST</p> </li> <li> <p>XCTEST_UI</p> </li> </ul>",
+    }),
+    created: DateTimeSchema.exactOptional().openapi({ description: 'When the job was created.' }),
+    status: ExecutionStatusSchema.exactOptional().openapi({
+      description:
+        "<p>The job's status.</p> <p>Allowed values include:</p> <ul> <li> <p>PENDING</p> </li> <li> <p>PENDING_CONCURRENCY</p> </li> <li> <p>PENDING_DEVICE</p> </li> <li> <p>PROCESSING</p> </li> <li> <p>SCHEDULING</p> </li> <li> <p>PREPARING</p> </li> <li> <p>RUNNING</p> </li> <li> <p>COMPLETED</p> </li> <li> <p>STOPPING</p> </li> </ul>",
+    }),
+    result: ExecutionResultSchema.exactOptional().openapi({
+      description:
+        "<p>The job's result.</p> <p>Allowed values include:</p> <ul> <li> <p>PENDING</p> </li> <li> <p>PASSED</p> </li> <li> <p>WARNED</p> </li> <li> <p>FAILED</p> </li> <li> <p>SKIPPED</p> </li> <li> <p>ERRORED</p> </li> <li> <p>STOPPED</p> </li> </ul>",
+    }),
+    started: DateTimeSchema.exactOptional().openapi({ description: "The job's start time." }),
+    stopped: DateTimeSchema.exactOptional().openapi({ description: "The job's stop time." }),
+    counters: CountersSchema.exactOptional().openapi({ description: "The job's result counters." }),
+    message: MessageSchema.exactOptional().openapi({
+      description: "A message about the job's result.",
+    }),
+    device: DeviceSchema.exactOptional().openapi({ description: 'The device (phone or tablet).' }),
+    instanceArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description: 'The ARN of the instance.',
+    }),
+    deviceMinutes: DeviceMinutesSchema.exactOptional().openapi({
+      description: 'Represents the total (metered or unmetered) minutes used by the job.',
+    }),
+    videoEndpoint: StringSchema.exactOptional().openapi({
+      description: 'The endpoint for streaming device video.',
+    }),
+    videoCapture: VideoCaptureSchema.exactOptional().openapi({
+      description:
+        'This value is set to true if video capture is enabled. Otherwise, it is set to false.',
+    }),
+  })
+  .openapi({ description: 'Represents a device.', required: [] })
+  .openapi('Job')
+
+const JobsSchema = z.array(JobSchema).openapi('Jobs')
+
+const PaginationTokenSchema = z.string().min(4).max(1024).openapi('PaginationToken')
+
+type ListJobsResultType = {
+  jobs?: z.infer<typeof JobsSchema> & unknown
+  nextToken?: z.infer<typeof PaginationTokenSchema> & unknown
+}
+
+const OfferingTransactionTypeSchema = z
+  .enum(['PURCHASE', 'RENEW', 'SYSTEM'])
+  .openapi('OfferingTransactionType')
+
+const OfferingIdentifierSchema = z.string().min(32).openapi('OfferingIdentifier')
+
+const OfferingTypeSchema = z.literal('RECURRING').openapi('OfferingType')
+
+const CurrencyCodeSchema = z.literal('USD').openapi('CurrencyCode')
+
+const MonetaryAmountSchema = z
+  .object({
+    amount: DoubleSchema.exactOptional().openapi({
+      description: 'The numerical amount of an offering or transaction.',
+    }),
+    currencyCode: CurrencyCodeSchema.exactOptional().openapi({
+      description:
+        'The currency code of a monetary amount. For example, <code>USD</code> means U.S. dollars.',
+    }),
+  })
+  .openapi({
+    description: 'A number that represents the monetary amount for an offering or transaction.',
+    required: [],
+  })
+  .openapi('MonetaryAmount')
+
+const RecurringChargeFrequencySchema = z.literal('MONTHLY').openapi('RecurringChargeFrequency')
+
+const RecurringChargeSchema = z
+  .object({
+    cost: MonetaryAmountSchema.exactOptional().openapi({
+      description: 'The cost of the recurring charge.',
+    }),
+    frequency: RecurringChargeFrequencySchema.exactOptional().openapi({
+      description: 'The frequency in which charges recur.',
+    }),
+  })
+  .openapi({ description: 'Specifies whether charges for devices are recurring.', required: [] })
+  .openapi('RecurringCharge')
+
+const RecurringChargesSchema = z.array(RecurringChargeSchema).openapi('RecurringCharges')
+
+const OfferingSchema = z
+  .object({
+    id: OfferingIdentifierSchema.exactOptional().openapi({
+      description: 'The ID that corresponds to a device offering.',
+    }),
+    description: MessageSchema.exactOptional().openapi({
+      description: 'A string that describes the offering.',
+    }),
+    type: OfferingTypeSchema.exactOptional().openapi({
+      description: 'The type of offering (for example, <code>RECURRING</code>) for a device.',
+    }),
+    platform: DevicePlatformSchema.exactOptional().openapi({
+      description:
+        'The platform of the device (for example, <code>ANDROID</code> or <code>IOS</code>).',
+    }),
+    recurringCharges: RecurringChargesSchema.exactOptional().openapi({
+      description: 'Specifies whether there are recurring charges for the offering.',
+    }),
+  })
+  .openapi({ description: 'Represents the metadata of a device offering.', required: [] })
+  .openapi('Offering')
+
+const OfferingStatusSchema = z
+  .object({
+    type: OfferingTransactionTypeSchema.exactOptional().openapi({
+      description: 'The type specified for the offering status.',
+    }),
+    offering: OfferingSchema.exactOptional().openapi({
+      description: 'Represents the metadata of an offering status.',
+    }),
+    quantity: IntegerSchema.exactOptional().openapi({
+      description: 'The number of available devices in the offering.',
+    }),
+    effectiveOn: DateTimeSchema.exactOptional().openapi({
+      description: 'The date on which the offering is effective.',
+    }),
+  })
+  .openapi({ description: 'The status of the offering.', required: [] })
+  .openapi('OfferingStatus')
+
+const TransactionIdentifierSchema = z.string().min(32).openapi('TransactionIdentifier')
+
+const OfferingPromotionIdentifierSchema = z.string().min(4).openapi('OfferingPromotionIdentifier')
+
+const OfferingTransactionSchema = z
+  .object({
+    offeringStatus: OfferingStatusSchema.exactOptional().openapi({
+      description: 'The status of an offering transaction.',
+    }),
+    transactionId: TransactionIdentifierSchema.exactOptional().openapi({
+      description: 'The transaction ID of the offering transaction.',
+    }),
+    offeringPromotionId: OfferingPromotionIdentifierSchema.exactOptional().openapi({
+      description: 'The ID that corresponds to a device offering promotion.',
+    }),
+    createdOn: DateTimeSchema.exactOptional().openapi({
+      description: 'The date on which an offering transaction was created.',
+    }),
+    cost: MonetaryAmountSchema.exactOptional().openapi({
+      description: 'The cost of an offering transaction.',
+    }),
+  })
+  .openapi({ description: 'Represents the metadata of an offering transaction.', required: [] })
+  .openapi('OfferingTransaction')
+
+const OfferingTransactionsSchema = z
+  .array(OfferingTransactionSchema)
+  .openapi('OfferingTransactions')
+
+type ListOfferingTransactionsResultType = {
+  offeringTransactions?: z.infer<typeof OfferingTransactionsSchema> & unknown
+  nextToken?: z.infer<typeof PaginationTokenSchema> & unknown
+}
+
+const HostAddressSchema = z.string().max(1024).openapi('HostAddress')
+
+const ClientIdSchema = z.string().min(0).max(64).openapi('ClientId')
+
+const BillingMethodSchema = z.enum(['METERED', 'UNMETERED']).openapi('BillingMethod')
+
+const InteractionModeSchema = z
+  .enum(['INTERACTIVE', 'NO_VIDEO', 'VIDEO_ONLY'])
+  .openapi('InteractionMode')
+
+const SkipAppResignSchema = z.boolean().openapi('SkipAppResign')
 
 const SecurityGroupIdSchema = z
   .string()
@@ -473,17 +543,13 @@ const NonEmptyStringSchema = z
 
 const VpcConfigSchema = z
   .object({
-    securityGroupIds: VpcSecurityGroupIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array of one or more security groups IDs in your Amazon VPC.',
-        }),
-    ),
-    subnetIds: VpcSubnetIdsSchema.and(
-      z.any().openapi({ description: 'An array of one or more subnet IDs in your Amazon VPC.' }),
-    ),
-    vpcId: NonEmptyStringSchema.and(z.any().openapi({ description: 'The ID of the Amazon VPC.' })),
+    securityGroupIds: VpcSecurityGroupIdsSchema.openapi({
+      description: 'An array of one or more security groups IDs in your Amazon VPC.',
+    }),
+    subnetIds: VpcSubnetIdsSchema.openapi({
+      description: 'An array of one or more subnet IDs in your Amazon VPC.',
+    }),
+    vpcId: NonEmptyStringSchema.openapi({ description: 'The ID of the Amazon VPC.' }),
   })
   .openapi({
     required: ['securityGroupIds', 'subnetIds', 'vpcId'],
@@ -492,30 +558,431 @@ const VpcConfigSchema = z
   })
   .openapi('VpcConfig')
 
+const RemoteAccessSessionSchema = z
+  .object({
+    arn: AmazonResourceNameSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the remote access session.',
+    }),
+    name: NameSchema.exactOptional().openapi({
+      description: 'The name of the remote access session.',
+    }),
+    created: DateTimeSchema.exactOptional().openapi({
+      description: 'The date and time the remote access session was created.',
+    }),
+    status: ExecutionStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the remote access session. Can be any of the following:</p> <ul> <li> <p>PENDING.</p> </li> <li> <p>PENDING_CONCURRENCY.</p> </li> <li> <p>PENDING_DEVICE.</p> </li> <li> <p>PROCESSING.</p> </li> <li> <p>SCHEDULING.</p> </li> <li> <p>PREPARING.</p> </li> <li> <p>RUNNING.</p> </li> <li> <p>COMPLETED.</p> </li> <li> <p>STOPPING.</p> </li> </ul>',
+    }),
+    result: ExecutionResultSchema.exactOptional().openapi({
+      description:
+        '<p>The result of the remote access session. Can be any of the following:</p> <ul> <li> <p>PENDING.</p> </li> <li> <p>PASSED.</p> </li> <li> <p>WARNED.</p> </li> <li> <p>FAILED.</p> </li> <li> <p>SKIPPED.</p> </li> <li> <p>ERRORED.</p> </li> <li> <p>STOPPED.</p> </li> </ul>',
+    }),
+    message: MessageSchema.exactOptional().openapi({
+      description: 'A message about the remote access session.',
+    }),
+    started: DateTimeSchema.exactOptional().openapi({
+      description: 'The date and time the remote access session was started.',
+    }),
+    stopped: DateTimeSchema.exactOptional().openapi({
+      description: 'The date and time the remote access session was stopped.',
+    }),
+    device: DeviceSchema.exactOptional().openapi({
+      description: 'The device (phone or tablet) used in the remote access session.',
+    }),
+    instanceArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description: 'The ARN of the instance.',
+    }),
+    remoteDebugEnabled: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>This flag is set to <code>true</code> if remote debugging is enabled for the remote access session.</p> <p>Remote debugging is <a href="https://docs.aws.amazon.com/devicefarm/latest/developerguide/history.html">no longer supported</a>.</p>',
+    }),
+    remoteRecordEnabled: BooleanSchema.exactOptional().openapi({
+      description:
+        'This flag is set to <code>true</code> if remote recording is enabled for the remote access session.',
+    }),
+    remoteRecordAppArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description: 'The ARN for the app to be recorded in the remote access session.',
+    }),
+    hostAddress: HostAddressSchema.exactOptional().openapi({
+      description:
+        '<p>IP address of the EC2 host where you need to connect to remotely debug devices. Only returned if remote debugging is enabled for the remote access session.</p> <p>Remote debugging is <a href="https://docs.aws.amazon.com/devicefarm/latest/developerguide/history.html">no longer supported</a>.</p>',
+    }),
+    clientId: ClientIdSchema.exactOptional().openapi({
+      description:
+        '<p>Unique identifier of your client for the remote access session. Only returned if remote debugging is enabled for the remote access session.</p> <p>Remote debugging is <a href="https://docs.aws.amazon.com/devicefarm/latest/developerguide/history.html">no longer supported</a>.</p>',
+    }),
+    billingMethod: BillingMethodSchema.exactOptional().openapi({
+      description:
+        'The billing method of the remote access session. Possible values include <code>METERED</code> or <code>UNMETERED</code>. For more information about metered devices, see <a href="https://docs.aws.amazon.com/devicefarm/latest/developerguide/welcome.html#welcome-terminology">AWS Device Farm terminology</a>.',
+    }),
+    deviceMinutes: DeviceMinutesSchema.exactOptional().openapi({
+      description:
+        'The number of minutes a device is used in a remote access session (including setup and teardown minutes).',
+    }),
+    endpoint: StringSchema.exactOptional().openapi({
+      description: 'The endpoint for the remote access sesssion.',
+    }),
+    deviceUdid: StringSchema.exactOptional().openapi({
+      description:
+        '<p>Unique device identifier for the remote device. Only returned if remote debugging is enabled for the remote access session.</p> <p>Remote debugging is <a href="https://docs.aws.amazon.com/devicefarm/latest/developerguide/history.html">no longer supported</a>.</p>',
+    }),
+    interactionMode: InteractionModeSchema.exactOptional().openapi({
+      description:
+        '<p>The interaction mode of the remote access session. Valid values are:</p> <ul> <li> <p>INTERACTIVE: You can interact with the iOS device by viewing, touching, and rotating the screen. You cannot run XCUITest framework-based tests in this mode.</p> </li> <li> <p>NO_VIDEO: You are connected to the device, but cannot interact with it or view the screen. This mode has the fastest test execution speed. You can run XCUITest framework-based tests in this mode.</p> </li> <li> <p>VIDEO_ONLY: You can view the screen, but cannot touch or rotate it. You can run XCUITest framework-based tests and watch the screen in this mode.</p> </li> </ul>',
+    }),
+    skipAppResign: SkipAppResignSchema.exactOptional().openapi({
+      description:
+        '<p>When set to <code>true</code>, for private devices, Device Farm does not sign your app again. For public devices, Device Farm always signs your apps again.</p> <p>For more information about how Device Farm re-signs your apps, see <a href="http://aws.amazon.com/device-farm/faqs/">Do you modify my app?</a> in the <i>AWS Device Farm FAQs</i>.</p>',
+    }),
+    vpcConfig: VpcConfigSchema.exactOptional().openapi({
+      description: 'The VPC security groups and subnets that are attached to a project.',
+    }),
+  })
+  .openapi({ description: 'Represents information about the remote access session.', required: [] })
+  .openapi('RemoteAccessSession')
+
+const RemoteAccessSessionsSchema = z
+  .array(RemoteAccessSessionSchema)
+  .openapi('RemoteAccessSessions')
+
+type ListRemoteAccessSessionsResultType = {
+  remoteAccessSessions?: z.infer<typeof RemoteAccessSessionsSchema> & unknown
+  nextToken?: z.infer<typeof PaginationTokenSchema> & unknown
+}
+
+const ProblemDetailSchema = z
+  .object({
+    arn: AmazonResourceNameSchema.exactOptional().openapi({
+      description: "The problem detail's ARN.",
+    }),
+    name: NameSchema.exactOptional().openapi({ description: "The problem detail's name." }),
+  })
+  .openapi({ description: 'Information about a problem detail.', required: [] })
+  .openapi('ProblemDetail')
+
+const ProblemSchema = z
+  .object({
+    run: ProblemDetailSchema.exactOptional().openapi({
+      description: 'Information about the associated run.',
+    }),
+    job: ProblemDetailSchema.exactOptional().openapi({
+      description: 'Information about the associated job.',
+    }),
+    suite: ProblemDetailSchema.exactOptional().openapi({
+      description: 'Information about the associated suite.',
+    }),
+    test: ProblemDetailSchema.exactOptional().openapi({
+      description: 'Information about the associated test.',
+    }),
+    device: DeviceSchema.exactOptional().openapi({
+      description: 'Information about the associated device.',
+    }),
+    result: ExecutionResultSchema.exactOptional().openapi({
+      description:
+        "<p>The problem's result.</p> <p>Allowed values include:</p> <ul> <li> <p>PENDING</p> </li> <li> <p>PASSED</p> </li> <li> <p>WARNED</p> </li> <li> <p>FAILED</p> </li> <li> <p>SKIPPED</p> </li> <li> <p>ERRORED</p> </li> <li> <p>STOPPED</p> </li> </ul>",
+    }),
+    message: MessageSchema.exactOptional().openapi({
+      description: "A message about the problem's result.",
+    }),
+  })
+  .openapi({ description: 'Represents a specific warning or failure.', required: [] })
+  .openapi('Problem')
+
+const ProblemsSchema = z.array(ProblemSchema).openapi('Problems')
+
+type UniqueProblemType = {
+  message?: z.infer<typeof MessageSchema> & unknown
+  problems?: z.infer<typeof ProblemsSchema> & unknown
+}
+
+const UniqueProblemSchema: z.ZodType<UniqueProblemType> = z
+  .object({
+    message: MessageSchema.exactOptional().openapi({
+      description: "A message about the unique problems' result.",
+    }),
+    problems: ProblemsSchema.exactOptional().openapi({
+      description: 'Information about the problems.',
+    }),
+  })
+  .openapi({
+    description: 'A collection of one or more problems, grouped by their result.',
+    required: [],
+  })
+  .openapi('UniqueProblem')
+
+type UniqueProblemsType = z.infer<typeof UniqueProblemSchema>[]
+
+const UniqueProblemsSchema: z.ZodType<UniqueProblemsType> = z
+  .array(UniqueProblemSchema)
+  .openapi('UniqueProblems')
+
+type UniqueProblemsByExecutionResultMapType = {
+  [key: string]: z.infer<typeof UniqueProblemsSchema>
+}
+
+const UniqueProblemsByExecutionResultMapSchema: z.ZodType<UniqueProblemsByExecutionResultMapType> =
+  z.record(z.string(), UniqueProblemsSchema).openapi('UniqueProblemsByExecutionResultMap')
+
+type ListUniqueProblemsResultType = {
+  uniqueProblems?: z.infer<typeof UniqueProblemsByExecutionResultMapSchema> & unknown
+  nextToken?: z.infer<typeof PaginationTokenSchema> & unknown
+}
+
+const DevicePoolTypeSchema = z.enum(['CURATED', 'PRIVATE']).openapi('DevicePoolType')
+
+const RuleOperatorSchema = z
+  .enum([
+    'EQUALS',
+    'LESS_THAN',
+    'LESS_THAN_OR_EQUALS',
+    'GREATER_THAN',
+    'GREATER_THAN_OR_EQUALS',
+    'IN',
+    'NOT_IN',
+    'CONTAINS',
+  ])
+  .openapi('RuleOperator')
+
+const RuleSchema = z
+  .object({
+    attribute: DeviceAttributeSchema.exactOptional().openapi({
+      description:
+        '<p>The rule\'s stringified attribute. For example, specify the value as <code>"\\"abc\\""</code>.</p> <p>The supported operators for each attribute are provided in the following list.</p> <dl> <dt>APPIUM_VERSION</dt> <dd> <p>The Appium version for the test.</p> <p>Supported operators: <code>CONTAINS</code> </p> </dd> <dt>ARN</dt> <dd> <p>The Amazon Resource Name (ARN) of the device (for example, <code>arn:aws:devicefarm:us-west-2::device:12345Example</code>.</p> <p>Supported operators: <code>EQUALS</code>, <code>IN</code>, <code>NOT_IN</code> </p> </dd> <dt>AVAILABILITY</dt> <dd> <p>The current availability of the device. Valid values are AVAILABLE, HIGHLY_AVAILABLE, BUSY, or TEMPORARY_NOT_AVAILABLE.</p> <p>Supported operators: <code>EQUALS</code> </p> </dd> <dt>FLEET_TYPE</dt> <dd> <p>The fleet type. Valid values are PUBLIC or PRIVATE.</p> <p>Supported operators: <code>EQUALS</code> </p> </dd> <dt>FORM_FACTOR</dt> <dd> <p>The device form factor. Valid values are PHONE or TABLET.</p> <p>Supported operators: <code>EQUALS</code>, <code>IN</code>, <code>NOT_IN</code> </p> </dd> <dt>INSTANCE_ARN</dt> <dd> <p>The Amazon Resource Name (ARN) of the device instance.</p> <p>Supported operators: <code>IN</code>, <code>NOT_IN</code> </p> </dd> <dt>INSTANCE_LABELS</dt> <dd> <p>The label of the device instance.</p> <p>Supported operators: <code>CONTAINS</code> </p> </dd> <dt>MANUFACTURER</dt> <dd> <p>The device manufacturer (for example, Apple).</p> <p>Supported operators: <code>EQUALS</code>, <code>IN</code>, <code>NOT_IN</code> </p> </dd> <dt>MODEL</dt> <dd> <p>The device model, such as Apple iPad Air 2 or Google Pixel.</p> <p>Supported operators: <code>CONTAINS</code>, <code>EQUALS</code>, <code>IN</code>, <code>NOT_IN</code> </p> </dd> <dt>OS_VERSION</dt> <dd> <p>The operating system version (for example, 10.3.2).</p> <p>Supported operators: <code>EQUALS</code>, <code>GREATER_THAN</code>, <code>GREATER_THAN_OR_EQUALS</code>, <code>IN</code>, <code>LESS_THAN</code>, <code>LESS_THAN_OR_EQUALS</code>, <code>NOT_IN</code> </p> </dd> <dt>PLATFORM</dt> <dd> <p>The device platform. Valid values are ANDROID or IOS.</p> <p>Supported operators: <code>EQUALS</code>, <code>IN</code>, <code>NOT_IN</code> </p> </dd> <dt>REMOTE_ACCESS_ENABLED</dt> <dd> <p>Whether the device is enabled for remote access. Valid values are TRUE or FALSE.</p> <p>Supported operators: <code>EQUALS</code> </p> </dd> <dt>REMOTE_DEBUG_ENABLED</dt> <dd> <p>Whether the device is enabled for remote debugging. Valid values are TRUE or FALSE.</p> <p>Supported operators: <code>EQUALS</code> </p> <p>Because remote debugging is <a href="https://docs.aws.amazon.com/devicefarm/latest/developerguide/history.html">no longer supported</a>, this filter is ignored.</p> </dd> </dl>',
+    }),
+    operator: RuleOperatorSchema.exactOptional().openapi({
+      description:
+        "Specifies how Device Farm compares the rule's attribute to the value. For the operators that are supported by each attribute, see the attribute descriptions.",
+    }),
+    value: StringSchema.exactOptional().openapi({ description: "The rule's value." }),
+  })
+  .openapi({ description: 'Represents a condition for a device pool.', required: [] })
+  .openapi('Rule')
+
+const RulesSchema = z.array(RuleSchema).openapi('Rules')
+
+const DevicePoolSchema = z
+  .object({
+    arn: AmazonResourceNameSchema.exactOptional().openapi({
+      description: "The device pool's ARN.",
+    }),
+    name: NameSchema.exactOptional().openapi({ description: "The device pool's name." }),
+    description: MessageSchema.exactOptional().openapi({
+      description: "The device pool's description.",
+    }),
+    type: DevicePoolTypeSchema.exactOptional().openapi({
+      description:
+        "<p>The device pool's type.</p> <p>Allowed values include:</p> <ul> <li> <p>CURATED: A device pool that is created and managed by AWS Device Farm.</p> </li> <li> <p>PRIVATE: A device pool that is created and managed by the device pool developer.</p> </li> </ul>",
+    }),
+    rules: RulesSchema.exactOptional().openapi({
+      description: "Information about the device pool's rules.",
+    }),
+    maxDevices: IntegerSchema.exactOptional().openapi({
+      description:
+        '<p>The number of devices that Device Farm can add to your device pool. Device Farm adds devices that are available and meet the criteria that you assign for the <code>rules</code> parameter. Depending on how many devices meet these constraints, your device pool might contain fewer devices than the value for this parameter.</p> <p>By specifying the maximum number of devices, you can control the costs that you incur by running tests.</p>',
+    }),
+  })
+  .openapi({ description: 'Represents a collection of device types.', required: [] })
+  .openapi('DevicePool')
+
+const CreateDevicePoolResultSchema = z
+  .object({
+    devicePool: DevicePoolSchema.exactOptional().openapi({
+      description: 'The newly created device pool.',
+    }),
+  })
+  .openapi({
+    example: { devicePool: {} },
+    description: 'Represents the result of a create device pool request.',
+    required: [],
+  })
+  .openapi('CreateDevicePoolResult')
+
+const CreateDevicePoolRequestSchema = z
+  .object({
+    projectArn: AmazonResourceNameSchema.openapi({
+      description: 'The ARN of the project for the device pool.',
+    }),
+    name: NameSchema.openapi({ description: "The device pool's name." }),
+    description: MessageSchema.exactOptional().openapi({
+      description: "The device pool's description.",
+    }),
+    rules: RulesSchema.openapi({ description: "The device pool's rules." }),
+    maxDevices: IntegerSchema.exactOptional().openapi({
+      description:
+        '<p>The number of devices that Device Farm can add to your device pool. Device Farm adds devices that are available and meet the criteria that you assign for the <code>rules</code> parameter. Depending on how many devices meet these constraints, your device pool might contain fewer devices than the value for this parameter.</p> <p>By specifying the maximum number of devices, you can control the costs that you incur by running tests.</p>',
+    }),
+  })
+  .openapi({
+    required: ['projectArn', 'name', 'rules'],
+    title: 'CreateDevicePoolRequest',
+    description: 'Represents a request to the create device pool operation.',
+  })
+  .openapi('CreateDevicePoolRequest')
+
+const ArgumentExceptionSchema = z.any().openapi('ArgumentException')
+
+const NotFoundExceptionSchema = z.any().openapi('NotFoundException')
+
+const LimitExceededExceptionSchema = z.any().openapi('LimitExceededException')
+
+const ServiceAccountExceptionSchema = z.any().openapi('ServiceAccountException')
+
+const CreateInstanceProfileResultSchema = z
+  .object({
+    instanceProfile: InstanceProfileSchema.exactOptional().openapi({
+      description: 'An object that contains information about your instance profile.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('CreateInstanceProfileResult')
+
+const CreateInstanceProfileRequestSchema = z
+  .object({
+    name: NameSchema.openapi({ description: 'The name of your instance profile.' }),
+    description: MessageSchema.exactOptional().openapi({
+      description: 'The description of your instance profile.',
+    }),
+    packageCleanup: BooleanSchema.exactOptional().openapi({
+      description:
+        'When set to <code>true</code>, Device Farm removes app packages after a test run. The default value is <code>false</code> for private devices.',
+    }),
+    excludeAppPackagesFromCleanup: PackageIdsSchema.exactOptional().openapi({
+      description:
+        '<p>An array of strings that specifies the list of app packages that should not be cleaned up from the device after a test run.</p> <p>The list of packages is considered only if you set <code>packageCleanup</code> to <code>true</code>.</p>',
+    }),
+    rebootAfterUse: BooleanSchema.exactOptional().openapi({
+      description:
+        'When set to <code>true</code>, Device Farm reboots the instance after a test run. The default value is <code>true</code>.',
+    }),
+  })
+  .openapi({ required: ['name'], title: 'CreateInstanceProfileRequest' })
+  .openapi('CreateInstanceProfileRequest')
+
+const NetworkProfileTypeSchema = z.enum(['CURATED', 'PRIVATE']).openapi('NetworkProfileType')
+
+const PercentIntegerSchema = z.int().min(0).max(100).openapi('PercentInteger')
+
+const NetworkProfileSchema = z
+  .object({
+    arn: AmazonResourceNameSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the network profile.',
+    }),
+    name: NameSchema.exactOptional().openapi({ description: 'The name of the network profile.' }),
+    description: MessageSchema.exactOptional().openapi({
+      description: 'The description of the network profile.',
+    }),
+    type: NetworkProfileTypeSchema.exactOptional().openapi({
+      description: 'The type of network profile. Valid values are listed here.',
+    }),
+    uplinkBandwidthBits: LongSchema.exactOptional().openapi({
+      description:
+        'The data throughput rate in bits per second, as an integer from 0 to 104857600.',
+    }),
+    downlinkBandwidthBits: LongSchema.exactOptional().openapi({
+      description:
+        'The data throughput rate in bits per second, as an integer from 0 to 104857600.',
+    }),
+    uplinkDelayMs: LongSchema.exactOptional().openapi({
+      description:
+        'Delay time for all packets to destination in milliseconds as an integer from 0 to 2000.',
+    }),
+    downlinkDelayMs: LongSchema.exactOptional().openapi({
+      description:
+        'Delay time for all packets to destination in milliseconds as an integer from 0 to 2000.',
+    }),
+    uplinkJitterMs: LongSchema.exactOptional().openapi({
+      description:
+        'Time variation in the delay of received packets in milliseconds as an integer from 0 to 2000.',
+    }),
+    downlinkJitterMs: LongSchema.exactOptional().openapi({
+      description:
+        'Time variation in the delay of received packets in milliseconds as an integer from 0 to 2000.',
+    }),
+    uplinkLossPercent: PercentIntegerSchema.exactOptional().openapi({
+      description: 'Proportion of transmitted packets that fail to arrive from 0 to 100 percent.',
+    }),
+    downlinkLossPercent: PercentIntegerSchema.exactOptional().openapi({
+      description: 'Proportion of received packets that fail to arrive from 0 to 100 percent.',
+    }),
+  })
+  .openapi({
+    description: 'An array of settings that describes characteristics of a network profile.',
+    required: [],
+  })
+  .openapi('NetworkProfile')
+
+const CreateNetworkProfileResultSchema = z
+  .object({
+    networkProfile: NetworkProfileSchema.exactOptional().openapi({
+      description: 'The network profile that is returned by the create network profile request.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('CreateNetworkProfileResult')
+
+const CreateNetworkProfileRequestSchema = z
+  .object({
+    projectArn: AmazonResourceNameSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the project for which you want to create a network profile.',
+    }),
+    name: NameSchema.openapi({ description: 'The name for the new network profile.' }),
+    description: MessageSchema.exactOptional().openapi({
+      description: 'The description of the network profile.',
+    }),
+    type: NetworkProfileTypeSchema.exactOptional().openapi({
+      description: 'The type of network profile to create. Valid values are listed here.',
+    }),
+    uplinkBandwidthBits: LongSchema.exactOptional().openapi({
+      description:
+        'The data throughput rate in bits per second, as an integer from 0 to 104857600.',
+    }),
+    downlinkBandwidthBits: LongSchema.exactOptional().openapi({
+      description:
+        'The data throughput rate in bits per second, as an integer from 0 to 104857600.',
+    }),
+    uplinkDelayMs: LongSchema.exactOptional().openapi({
+      description:
+        'Delay time for all packets to destination in milliseconds as an integer from 0 to 2000.',
+    }),
+    downlinkDelayMs: LongSchema.exactOptional().openapi({
+      description:
+        'Delay time for all packets to destination in milliseconds as an integer from 0 to 2000.',
+    }),
+    uplinkJitterMs: LongSchema.exactOptional().openapi({
+      description:
+        'Time variation in the delay of received packets in milliseconds as an integer from 0 to 2000.',
+    }),
+    downlinkJitterMs: LongSchema.exactOptional().openapi({
+      description:
+        'Time variation in the delay of received packets in milliseconds as an integer from 0 to 2000.',
+    }),
+    uplinkLossPercent: PercentIntegerSchema.exactOptional().openapi({
+      description: 'Proportion of transmitted packets that fail to arrive from 0 to 100 percent.',
+    }),
+    downlinkLossPercent: PercentIntegerSchema.exactOptional().openapi({
+      description: 'Proportion of received packets that fail to arrive from 0 to 100 percent.',
+    }),
+  })
+  .openapi({ required: ['projectArn', 'name'], title: 'CreateNetworkProfileRequest' })
+  .openapi('CreateNetworkProfileRequest')
+
+const JobTimeoutMinutesSchema = z.int().openapi('JobTimeoutMinutes')
+
 const ProjectSchema = z
   .object({
-    arn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: "The project's ARN." }),
-    ).exactOptional(),
-    name: NameSchema.and(z.any().openapi({ description: "The project's name." })).exactOptional(),
-    defaultJobTimeoutMinutes: JobTimeoutMinutesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The default number of minutes (at the project level) a test run executes before it times out. The default value is 150 minutes.',
-        }),
-    ).exactOptional(),
-    created: DateTimeSchema.and(
-      z.any().openapi({ description: 'When the project was created.' }),
-    ).exactOptional(),
-    vpcConfig: VpcConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The VPC security groups and subnets that are attached to a project.',
-        }),
-    ).exactOptional(),
+    arn: AmazonResourceNameSchema.exactOptional().openapi({ description: "The project's ARN." }),
+    name: NameSchema.exactOptional().openapi({ description: "The project's name." }),
+    defaultJobTimeoutMinutes: JobTimeoutMinutesSchema.exactOptional().openapi({
+      description:
+        'The default number of minutes (at the project level) a test run executes before it times out. The default value is 150 minutes.',
+    }),
+    created: DateTimeSchema.exactOptional().openapi({
+      description: 'When the project was created.',
+    }),
+    vpcConfig: VpcConfigSchema.exactOptional().openapi({
+      description: 'The VPC security groups and subnets that are attached to a project.',
+    }),
   })
   .openapi({
     description: 'Represents an operating-system neutral workspace for running and managing tests.',
@@ -525,9 +992,7 @@ const ProjectSchema = z
 
 const CreateProjectResultSchema = z
   .object({
-    project: ProjectSchema.and(
-      z.any().openapi({ description: 'The newly created project.' }),
-    ).exactOptional(),
+    project: ProjectSchema.exactOptional().openapi({ description: 'The newly created project.' }),
   })
   .openapi({
     example: {
@@ -544,22 +1009,14 @@ const CreateProjectResultSchema = z
 
 const CreateProjectRequestSchema = z
   .object({
-    name: NameSchema.and(z.any().openapi({ description: "The project's name." })),
-    defaultJobTimeoutMinutes: JobTimeoutMinutesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Sets the execution timeout value (in minutes) for a project. All test runs in this project use the specified execution timeout value unless overridden when scheduling a run.',
-        }),
-    ).exactOptional(),
-    vpcConfig: VpcConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The VPC security groups and subnets that are attached to a project.',
-        }),
-    ).exactOptional(),
+    name: NameSchema.openapi({ description: "The project's name." }),
+    defaultJobTimeoutMinutes: JobTimeoutMinutesSchema.exactOptional().openapi({
+      description:
+        'Sets the execution timeout value (in minutes) for a project. All test runs in this project use the specified execution timeout value unless overridden when scheduling a run.',
+    }),
+    vpcConfig: VpcConfigSchema.exactOptional().openapi({
+      description: 'The VPC security groups and subnets that are attached to a project.',
+    }),
   })
   .openapi({
     required: ['name'],
@@ -570,407 +1027,12 @@ const CreateProjectRequestSchema = z
 
 const TagOperationExceptionSchema = z.any().openapi('TagOperationException')
 
-const ExecutionStatusSchema = z
-  .enum([
-    'PENDING',
-    'PENDING_CONCURRENCY',
-    'PENDING_DEVICE',
-    'PROCESSING',
-    'SCHEDULING',
-    'PREPARING',
-    'RUNNING',
-    'COMPLETED',
-    'STOPPING',
-  ])
-  .openapi('ExecutionStatus')
-
-const ExecutionResultSchema = z
-  .enum(['PENDING', 'PASSED', 'WARNED', 'FAILED', 'SKIPPED', 'ERRORED', 'STOPPED'])
-  .openapi('ExecutionResult')
-
-const DeviceFormFactorSchema = z.enum(['PHONE', 'TABLET']).openapi('DeviceFormFactor')
-
-const DevicePlatformSchema = z.enum(['ANDROID', 'IOS']).openapi('DevicePlatform')
-
-const DoubleSchema = z.float64().openapi('Double')
-
-const CPUSchema = z
-  .object({
-    frequency: StringSchema.and(
-      z.any().openapi({ description: "The CPU's frequency." }),
-    ).exactOptional(),
-    architecture: StringSchema.and(
-      z.any().openapi({ description: "The CPU's architecture (for example, x86 or ARM)." }),
-    ).exactOptional(),
-    clock: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The clock speed of the device's CPU, expressed in hertz (Hz). For example, a 1.2 GHz CPU is expressed as 1200000000.",
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Represents the amount of CPU that an app is using on a physical device. Does not represent system-wide CPU usage.',
-    required: [],
-  })
-  .openapi('CPU')
-
-const ResolutionSchema = z
-  .object({
-    width: IntegerSchema.and(
-      z.any().openapi({ description: "The screen resolution's width, expressed in pixels." }),
-    ).exactOptional(),
-    height: IntegerSchema.and(
-      z.any().openapi({ description: "The screen resolution's height, expressed in pixels." }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Represents the screen resolution of a device in height and width, expressed in pixels.',
-    required: [],
-  })
-  .openapi('Resolution')
-
-const InstanceLabelsSchema = z.array(StringSchema).openapi('InstanceLabels')
-
-const InstanceStatusSchema = z
-  .enum(['IN_USE', 'PREPARING', 'AVAILABLE', 'NOT_AVAILABLE'])
-  .openapi('InstanceStatus')
-
-const DeviceInstanceSchema = z
-  .object({
-    arn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the device instance.' }),
-    ).exactOptional(),
-    deviceArn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'The ARN of the device.' }),
-    ).exactOptional(),
-    labels: InstanceLabelsSchema.and(
-      z.any().openapi({ description: 'An array of strings that describe the device instance.' }),
-    ).exactOptional(),
-    status: InstanceStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The status of the device instance. Valid values are listed here.',
-        }),
-    ).exactOptional(),
-    udid: StringSchema.and(
-      z.any().openapi({ description: 'Unique device identifier for the device instance.' }),
-    ).exactOptional(),
-    instanceProfile: InstanceProfileSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A object that contains information about the instance profile.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Represents the device instance.', required: [] })
-  .openapi('DeviceInstance')
-
-const DeviceInstancesSchema = z.array(DeviceInstanceSchema).openapi('DeviceInstances')
-
-const DeviceAvailabilitySchema = z
-  .enum(['TEMPORARY_NOT_AVAILABLE', 'BUSY', 'AVAILABLE', 'HIGHLY_AVAILABLE'])
-  .openapi('DeviceAvailability')
-
-const DeviceSchema = z
-  .object({
-    arn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: "The device's ARN." }),
-    ).exactOptional(),
-    name: NameSchema.and(
-      z.any().openapi({ description: "The device's display name." }),
-    ).exactOptional(),
-    manufacturer: StringSchema.and(
-      z.any().openapi({ description: "The device's manufacturer name." }),
-    ).exactOptional(),
-    model: StringSchema.and(
-      z.any().openapi({ description: "The device's model name." }),
-    ).exactOptional(),
-    modelId: StringSchema.and(
-      z.any().openapi({ description: "The device's model ID." }),
-    ).exactOptional(),
-    formFactor: DeviceFormFactorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The device's form factor.</p> <p>Allowed values include:</p> <ul> <li> <p>PHONE</p> </li> <li> <p>TABLET</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    platform: DevicePlatformSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The device's platform.</p> <p>Allowed values include:</p> <ul> <li> <p>ANDROID</p> </li> <li> <p>IOS</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    os: StringSchema.and(
-      z.any().openapi({ description: "The device's operating system type." }),
-    ).exactOptional(),
-    cpu: CPUSchema.and(
-      z.any().openapi({ description: "Information about the device's CPU." }),
-    ).exactOptional(),
-    resolution: ResolutionSchema.and(
-      z.any().openapi({ description: 'The resolution of the device.' }),
-    ).exactOptional(),
-    heapSize: LongSchema.and(
-      z.any().openapi({ description: "The device's heap size, expressed in bytes." }),
-    ).exactOptional(),
-    memory: LongSchema.and(
-      z.any().openapi({ description: "The device's total memory size, expressed in bytes." }),
-    ).exactOptional(),
-    image: StringSchema.and(
-      z.any().openapi({ description: "The device's image name." }),
-    ).exactOptional(),
-    carrier: StringSchema.and(
-      z.any().openapi({ description: "The device's carrier." }),
-    ).exactOptional(),
-    radio: StringSchema.and(
-      z.any().openapi({ description: "The device's radio." }),
-    ).exactOptional(),
-    remoteAccessEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies whether remote access has been enabled for the specified device.',
-        }),
-    ).exactOptional(),
-    remoteDebugEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>This flag is set to <code>true</code> if remote debugging is enabled for the device.</p> <p>Remote debugging is <a href="https://docs.aws.amazon.com/devicefarm/latest/developerguide/history.html">no longer supported</a>.</p>',
-        }),
-    ).exactOptional(),
-    fleetType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of fleet to which this device belongs. Possible values are PRIVATE and PUBLIC.',
-        }),
-    ).exactOptional(),
-    fleetName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the fleet to which this device belongs.' }),
-    ).exactOptional(),
-    instances: DeviceInstancesSchema.and(
-      z.any().openapi({ description: 'The instances that belong to this device.' }),
-    ).exactOptional(),
-    availability: DeviceAvailabilitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates how likely a device is available for a test run. Currently available in the <a>ListDevices</a> and GetDevice API methods.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Represents a device type that an app is tested against.', required: [] })
-  .openapi('Device')
-
-const HostAddressSchema = z.string().max(1024).openapi('HostAddress')
-
-const ClientIdSchema = z.string().min(0).max(64).openapi('ClientId')
-
-const BillingMethodSchema = z.enum(['METERED', 'UNMETERED']).openapi('BillingMethod')
-
-const DeviceMinutesSchema = z
-  .object({
-    total: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When specified, represents the total minutes used by the resource to run tests.',
-        }),
-    ).exactOptional(),
-    metered: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When specified, represents only the sum of metered minutes used by the resource to run tests.',
-        }),
-    ).exactOptional(),
-    unmetered: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When specified, represents only the sum of unmetered minutes used by the resource to run tests.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Represents the total (metered or unmetered) minutes used by the resource to run tests. Contains the sum of minutes consumed by all children.',
-    required: [],
-  })
-  .openapi('DeviceMinutes')
-
-const InteractionModeSchema = z
-  .enum(['INTERACTIVE', 'NO_VIDEO', 'VIDEO_ONLY'])
-  .openapi('InteractionMode')
-
-const SkipAppResignSchema = z.boolean().openapi('SkipAppResign')
-
-const RemoteAccessSessionSchema = z
-  .object({
-    arn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the remote access session.' }),
-    ).exactOptional(),
-    name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the remote access session.' }),
-    ).exactOptional(),
-    created: DateTimeSchema.and(
-      z.any().openapi({ description: 'The date and time the remote access session was created.' }),
-    ).exactOptional(),
-    status: ExecutionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the remote access session. Can be any of the following:</p> <ul> <li> <p>PENDING.</p> </li> <li> <p>PENDING_CONCURRENCY.</p> </li> <li> <p>PENDING_DEVICE.</p> </li> <li> <p>PROCESSING.</p> </li> <li> <p>SCHEDULING.</p> </li> <li> <p>PREPARING.</p> </li> <li> <p>RUNNING.</p> </li> <li> <p>COMPLETED.</p> </li> <li> <p>STOPPING.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    result: ExecutionResultSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The result of the remote access session. Can be any of the following:</p> <ul> <li> <p>PENDING.</p> </li> <li> <p>PASSED.</p> </li> <li> <p>WARNED.</p> </li> <li> <p>FAILED.</p> </li> <li> <p>SKIPPED.</p> </li> <li> <p>ERRORED.</p> </li> <li> <p>STOPPED.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    message: MessageSchema.and(
-      z.any().openapi({ description: 'A message about the remote access session.' }),
-    ).exactOptional(),
-    started: DateTimeSchema.and(
-      z.any().openapi({ description: 'The date and time the remote access session was started.' }),
-    ).exactOptional(),
-    stopped: DateTimeSchema.and(
-      z.any().openapi({ description: 'The date and time the remote access session was stopped.' }),
-    ).exactOptional(),
-    device: DeviceSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The device (phone or tablet) used in the remote access session.',
-        }),
-    ).exactOptional(),
-    instanceArn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'The ARN of the instance.' }),
-    ).exactOptional(),
-    remoteDebugEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>This flag is set to <code>true</code> if remote debugging is enabled for the remote access session.</p> <p>Remote debugging is <a href="https://docs.aws.amazon.com/devicefarm/latest/developerguide/history.html">no longer supported</a>.</p>',
-        }),
-    ).exactOptional(),
-    remoteRecordEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This flag is set to <code>true</code> if remote recording is enabled for the remote access session.',
-        }),
-    ).exactOptional(),
-    remoteRecordAppArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN for the app to be recorded in the remote access session.',
-        }),
-    ).exactOptional(),
-    hostAddress: HostAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>IP address of the EC2 host where you need to connect to remotely debug devices. Only returned if remote debugging is enabled for the remote access session.</p> <p>Remote debugging is <a href="https://docs.aws.amazon.com/devicefarm/latest/developerguide/history.html">no longer supported</a>.</p>',
-        }),
-    ).exactOptional(),
-    clientId: ClientIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Unique identifier of your client for the remote access session. Only returned if remote debugging is enabled for the remote access session.</p> <p>Remote debugging is <a href="https://docs.aws.amazon.com/devicefarm/latest/developerguide/history.html">no longer supported</a>.</p>',
-        }),
-    ).exactOptional(),
-    billingMethod: BillingMethodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The billing method of the remote access session. Possible values include <code>METERED</code> or <code>UNMETERED</code>. For more information about metered devices, see <a href="https://docs.aws.amazon.com/devicefarm/latest/developerguide/welcome.html#welcome-terminology">AWS Device Farm terminology</a>.',
-        }),
-    ).exactOptional(),
-    deviceMinutes: DeviceMinutesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of minutes a device is used in a remote access session (including setup and teardown minutes).',
-        }),
-    ).exactOptional(),
-    endpoint: StringSchema.and(
-      z.any().openapi({ description: 'The endpoint for the remote access sesssion.' }),
-    ).exactOptional(),
-    deviceUdid: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Unique device identifier for the remote device. Only returned if remote debugging is enabled for the remote access session.</p> <p>Remote debugging is <a href="https://docs.aws.amazon.com/devicefarm/latest/developerguide/history.html">no longer supported</a>.</p>',
-        }),
-    ).exactOptional(),
-    interactionMode: InteractionModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The interaction mode of the remote access session. Valid values are:</p> <ul> <li> <p>INTERACTIVE: You can interact with the iOS device by viewing, touching, and rotating the screen. You cannot run XCUITest framework-based tests in this mode.</p> </li> <li> <p>NO_VIDEO: You are connected to the device, but cannot interact with it or view the screen. This mode has the fastest test execution speed. You can run XCUITest framework-based tests in this mode.</p> </li> <li> <p>VIDEO_ONLY: You can view the screen, but cannot touch or rotate it. You can run XCUITest framework-based tests and watch the screen in this mode.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    skipAppResign: SkipAppResignSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>When set to <code>true</code>, for private devices, Device Farm does not sign your app again. For public devices, Device Farm always signs your apps again.</p> <p>For more information about how Device Farm re-signs your apps, see <a href="http://aws.amazon.com/device-farm/faqs/">Do you modify my app?</a> in the <i>AWS Device Farm FAQs</i>.</p>',
-        }),
-    ).exactOptional(),
-    vpcConfig: VpcConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The VPC security groups and subnets that are attached to a project.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Represents information about the remote access session.', required: [] })
-  .openapi('RemoteAccessSession')
-
 const CreateRemoteAccessSessionResultSchema = z
   .object({
-    remoteAccessSession: RemoteAccessSessionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A container that describes the remote access session when the request to create a remote access session is sent.',
-        }),
-    ).exactOptional(),
+    remoteAccessSession: RemoteAccessSessionSchema.exactOptional().openapi({
+      description:
+        'A container that describes the remote access session when the request to create a remote access session is sent.',
+    }),
   })
   .openapi({
     example: { remoteAccessSession: {} },
@@ -985,14 +1047,12 @@ const AmazonResourceNamesSchema = z.array(AmazonResourceNameSchema).openapi('Ama
 
 const CreateRemoteAccessSessionConfigurationSchema = z
   .object({
-    billingMethod: BillingMethodSchema.and(
-      z.any().openapi({ description: 'The billing method for the remote access session.' }),
-    ).exactOptional(),
-    vpceConfigurationArns: AmazonResourceNamesSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An array of ARNs included in the VPC endpoint configuration.' }),
-    ).exactOptional(),
+    billingMethod: BillingMethodSchema.exactOptional().openapi({
+      description: 'The billing method for the remote access session.',
+    }),
+    vpceConfigurationArns: AmazonResourceNamesSchema.exactOptional().openapi({
+      description: 'An array of ARNs included in the VPC endpoint configuration.',
+    }),
   })
   .openapi({
     description: 'Configuration settings for a remote access session, including billing method.',
@@ -1002,96 +1062,51 @@ const CreateRemoteAccessSessionConfigurationSchema = z
 
 const CreateRemoteAccessSessionRequestSchema = z
   .object({
-    projectArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the project for which you want to create a remote access session.',
-        }),
-    ),
-    deviceArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the device for which you want to create a remote access session.',
-        }),
-    ),
-    instanceArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the device instance for which you want to create a remote access session.',
-        }),
-    ).exactOptional(),
-    sshPublicKey: SshPublicKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Ignored. The public key of the <code>ssh</code> key pair you want to use for connecting to remote devices in your remote debugging session. This key is required only if <code>remoteDebugEnabled</code> is set to <code>true</code>.</p> <p>Remote debugging is <a href="https://docs.aws.amazon.com/devicefarm/latest/developerguide/history.html">no longer supported</a>.</p>',
-        }),
-    ).exactOptional(),
-    remoteDebugEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Set to <code>true</code> if you want to access devices remotely for debugging in your remote access session.</p> <p>Remote debugging is <a href="https://docs.aws.amazon.com/devicefarm/latest/developerguide/history.html">no longer supported</a>.</p>',
-        }),
-    ).exactOptional(),
-    remoteRecordEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Set to <code>true</code> to enable remote recording for the remote access session.',
-        }),
-    ).exactOptional(),
-    remoteRecordAppArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) for the app to be recorded in the remote access session.',
-        }),
-    ).exactOptional(),
-    name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the remote access session to create.' }),
-    ).exactOptional(),
-    clientId: ClientIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Unique identifier for the client. If you want access to multiple devices on the same client, you should pass the same <code>clientId</code> value in each call to <code>CreateRemoteAccessSession</code>. This identifier is required only if <code>remoteDebugEnabled</code> is set to <code>true</code>.</p> <p>Remote debugging is <a href="https://docs.aws.amazon.com/devicefarm/latest/developerguide/history.html">no longer supported</a>.</p>',
-        }),
-    ).exactOptional(),
-    configuration: CreateRemoteAccessSessionConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The configuration information for the remote access session request.',
-        }),
-    ).exactOptional(),
-    interactionMode: InteractionModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The interaction mode of the remote access session. Valid values are:</p> <ul> <li> <p>INTERACTIVE: You can interact with the iOS device by viewing, touching, and rotating the screen. You cannot run XCUITest framework-based tests in this mode.</p> </li> <li> <p>NO_VIDEO: You are connected to the device, but cannot interact with it or view the screen. This mode has the fastest test execution speed. You can run XCUITest framework-based tests in this mode.</p> </li> <li> <p>VIDEO_ONLY: You can view the screen, but cannot touch or rotate it. You can run XCUITest framework-based tests and watch the screen in this mode.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    skipAppResign: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>When set to <code>true</code>, for private devices, Device Farm does not sign your app again. For public devices, Device Farm always signs your apps again.</p> <p>For more information on how Device Farm modifies your uploads during tests, see <a href="http://aws.amazon.com/device-farm/faqs/">Do you modify my app?</a> </p>',
-        }),
-    ).exactOptional(),
+    projectArn: AmazonResourceNameSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the project for which you want to create a remote access session.',
+    }),
+    deviceArn: AmazonResourceNameSchema.openapi({
+      description: 'The ARN of the device for which you want to create a remote access session.',
+    }),
+    instanceArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the device instance for which you want to create a remote access session.',
+    }),
+    sshPublicKey: SshPublicKeySchema.exactOptional().openapi({
+      description:
+        '<p>Ignored. The public key of the <code>ssh</code> key pair you want to use for connecting to remote devices in your remote debugging session. This key is required only if <code>remoteDebugEnabled</code> is set to <code>true</code>.</p> <p>Remote debugging is <a href="https://docs.aws.amazon.com/devicefarm/latest/developerguide/history.html">no longer supported</a>.</p>',
+    }),
+    remoteDebugEnabled: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Set to <code>true</code> if you want to access devices remotely for debugging in your remote access session.</p> <p>Remote debugging is <a href="https://docs.aws.amazon.com/devicefarm/latest/developerguide/history.html">no longer supported</a>.</p>',
+    }),
+    remoteRecordEnabled: BooleanSchema.exactOptional().openapi({
+      description:
+        'Set to <code>true</code> to enable remote recording for the remote access session.',
+    }),
+    remoteRecordAppArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) for the app to be recorded in the remote access session.',
+    }),
+    name: NameSchema.exactOptional().openapi({
+      description: 'The name of the remote access session to create.',
+    }),
+    clientId: ClientIdSchema.exactOptional().openapi({
+      description:
+        '<p>Unique identifier for the client. If you want access to multiple devices on the same client, you should pass the same <code>clientId</code> value in each call to <code>CreateRemoteAccessSession</code>. This identifier is required only if <code>remoteDebugEnabled</code> is set to <code>true</code>.</p> <p>Remote debugging is <a href="https://docs.aws.amazon.com/devicefarm/latest/developerguide/history.html">no longer supported</a>.</p>',
+    }),
+    configuration: CreateRemoteAccessSessionConfigurationSchema.exactOptional().openapi({
+      description: 'The configuration information for the remote access session request.',
+    }),
+    interactionMode: InteractionModeSchema.exactOptional().openapi({
+      description:
+        '<p>The interaction mode of the remote access session. Valid values are:</p> <ul> <li> <p>INTERACTIVE: You can interact with the iOS device by viewing, touching, and rotating the screen. You cannot run XCUITest framework-based tests in this mode.</p> </li> <li> <p>NO_VIDEO: You are connected to the device, but cannot interact with it or view the screen. This mode has the fastest test execution speed. You can run XCUITest framework-based tests in this mode.</p> </li> <li> <p>VIDEO_ONLY: You can view the screen, but cannot touch or rotate it. You can run XCUITest framework-based tests and watch the screen in this mode.</p> </li> </ul>',
+    }),
+    skipAppResign: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>When set to <code>true</code>, for private devices, Device Farm does not sign your app again. For public devices, Device Farm always signs your apps again.</p> <p>For more information on how Device Farm modifies your uploads during tests, see <a href="http://aws.amazon.com/device-farm/faqs/">Do you modify my app?</a> </p>',
+    }),
   })
   .openapi({
     required: ['projectArn', 'deviceArn'],
@@ -1117,13 +1132,13 @@ const SubnetIdsSchema = z.array(NonEmptyStringSchema).min(1).max(8).openapi('Sub
 
 const TestGridVpcConfigSchema = z
   .object({
-    securityGroupIds: SecurityGroupIdsSchema.and(
-      z.any().openapi({ description: 'A list of VPC security group IDs in your Amazon VPC.' }),
-    ),
-    subnetIds: SubnetIdsSchema.and(
-      z.any().openapi({ description: 'A list of VPC subnet IDs in your Amazon VPC.' }),
-    ),
-    vpcId: NonEmptyStringSchema.and(z.any().openapi({ description: 'The ID of the Amazon VPC.' })),
+    securityGroupIds: SecurityGroupIdsSchema.openapi({
+      description: 'A list of VPC security group IDs in your Amazon VPC.',
+    }),
+    subnetIds: SubnetIdsSchema.openapi({
+      description: 'A list of VPC subnet IDs in your Amazon VPC.',
+    }),
+    vpcId: NonEmptyStringSchema.openapi({ description: 'The ID of the Amazon VPC.' }),
   })
   .openapi({
     required: ['securityGroupIds', 'subnetIds', 'vpcId'],
@@ -1133,25 +1148,19 @@ const TestGridVpcConfigSchema = z
 
 const TestGridProjectSchema = z
   .object({
-    arn: DeviceFarmArnSchema.and(
-      z.any().openapi({ description: 'The ARN for the project.' }),
-    ).exactOptional(),
-    name: StringSchema.and(
-      z.any().openapi({ description: 'A human-readable name for the project.' }),
-    ).exactOptional(),
-    description: StringSchema.and(
-      z.any().openapi({ description: 'A human-readable description for the project.' }),
-    ).exactOptional(),
-    vpcConfig: TestGridVpcConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The VPC security groups and subnets that are attached to a project.',
-        }),
-    ).exactOptional(),
-    created: DateTimeSchema.and(
-      z.any().openapi({ description: 'When the project was created.' }),
-    ).exactOptional(),
+    arn: DeviceFarmArnSchema.exactOptional().openapi({ description: 'The ARN for the project.' }),
+    name: StringSchema.exactOptional().openapi({
+      description: 'A human-readable name for the project.',
+    }),
+    description: StringSchema.exactOptional().openapi({
+      description: 'A human-readable description for the project.',
+    }),
+    vpcConfig: TestGridVpcConfigSchema.exactOptional().openapi({
+      description: 'The VPC security groups and subnets that are attached to a project.',
+    }),
+    created: DateTimeSchema.exactOptional().openapi({
+      description: 'When the project was created.',
+    }),
   })
   .openapi({
     description: 'A Selenium testing project. Projects are used to collect and collate sessions.',
@@ -1161,9 +1170,9 @@ const TestGridProjectSchema = z
 
 const CreateTestGridProjectResultSchema = z
   .object({
-    testGridProject: TestGridProjectSchema.and(
-      z.any().openapi({ description: 'ARN of the Selenium testing project that was created.' }),
-    ).exactOptional(),
+    testGridProject: TestGridProjectSchema.exactOptional().openapi({
+      description: 'ARN of the Selenium testing project that was created.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateTestGridProjectResult')
@@ -1184,19 +1193,15 @@ const ResourceDescriptionSchema = z
 
 const CreateTestGridProjectRequestSchema = z
   .object({
-    name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'Human-readable name of the Selenium testing project.' }),
-    ),
-    description: ResourceDescriptionSchema.and(
-      z.any().openapi({ description: 'Human-readable description of the project.' }),
-    ).exactOptional(),
-    vpcConfig: TestGridVpcConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The VPC security groups and subnets that are attached to a project.',
-        }),
-    ).exactOptional(),
+    name: ResourceNameSchema.openapi({
+      description: 'Human-readable name of the Selenium testing project.',
+    }),
+    description: ResourceDescriptionSchema.exactOptional().openapi({
+      description: 'Human-readable description of the project.',
+    }),
+    vpcConfig: TestGridVpcConfigSchema.exactOptional().openapi({
+      description: 'The VPC security groups and subnets that are attached to a project.',
+    }),
   })
   .openapi({ required: ['name'], title: 'CreateTestGridProjectRequest' })
   .openapi('CreateTestGridProjectRequest')
@@ -1207,22 +1212,14 @@ const SensitiveStringSchema = z.string().openapi('SensitiveString')
 
 const CreateTestGridUrlResultSchema = z
   .object({
-    url: SensitiveStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A signed URL, expiring in <a>CreateTestGridUrlRequest$expiresInSeconds</a> seconds, to be passed to a <code>RemoteWebDriver</code>. ',
-        }),
-    ).exactOptional(),
-    expires: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of seconds the URL from <a>CreateTestGridUrlResult$url</a> stays active.',
-        }),
-    ).exactOptional(),
+    url: SensitiveStringSchema.exactOptional().openapi({
+      description:
+        'A signed URL, expiring in <a>CreateTestGridUrlRequest$expiresInSeconds</a> seconds, to be passed to a <code>RemoteWebDriver</code>. ',
+    }),
+    expires: DateTimeSchema.exactOptional().openapi({
+      description:
+        'The number of seconds the URL from <a>CreateTestGridUrlResult$url</a> stays active.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateTestGridUrlResult')
@@ -1235,17 +1232,13 @@ const TestGridUrlExpiresInSecondsInputSchema = z
 
 const CreateTestGridUrlRequestSchema = z
   .object({
-    projectArn: DeviceFarmArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'ARN (from <a>CreateTestGridProject</a> or <a>ListTestGridProjects</a>) to associate with the short-term URL. ',
-        }),
-    ),
-    expiresInSeconds: TestGridUrlExpiresInSecondsInputSchema.and(
-      z.any().openapi({ description: 'Lifetime, in seconds, of the URL.' }),
-    ),
+    projectArn: DeviceFarmArnSchema.openapi({
+      description:
+        'ARN (from <a>CreateTestGridProject</a> or <a>ListTestGridProjects</a>) to associate with the short-term URL. ',
+    }),
+    expiresInSeconds: TestGridUrlExpiresInSecondsInputSchema.openapi({
+      description: 'Lifetime, in seconds, of the URL.',
+    }),
   })
   .openapi({ required: ['projectArn', 'expiresInSeconds'], title: 'CreateTestGridUrlRequest' })
   .openapi('CreateTestGridUrlRequest')
@@ -1301,66 +1294,37 @@ const UploadCategorySchema = z.enum(['CURATED', 'PRIVATE']).openapi('UploadCateg
 
 const UploadSchema = z
   .object({
-    arn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: "The upload's ARN." }),
-    ).exactOptional(),
-    name: NameSchema.and(
-      z.any().openapi({ description: "The upload's file name." }),
-    ).exactOptional(),
-    created: DateTimeSchema.and(
-      z.any().openapi({ description: 'When the upload was created.' }),
-    ).exactOptional(),
-    type: UploadTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The upload's type.</p> <p>Must be one of the following values:</p> <ul> <li> <p>ANDROID_APP</p> </li> <li> <p>IOS_APP</p> </li> <li> <p>WEB_APP</p> </li> <li> <p>EXTERNAL_DATA</p> </li> <li> <p>APPIUM_JAVA_JUNIT_TEST_PACKAGE</p> </li> <li> <p>APPIUM_JAVA_TESTNG_TEST_PACKAGE</p> </li> <li> <p>APPIUM_PYTHON_TEST_PACKAGE</p> </li> <li> <p>APPIUM_NODE_TEST_PACKAGE</p> </li> <li> <p>APPIUM_RUBY_TEST_PACKAGE</p> </li> <li> <p>APPIUM_WEB_JAVA_JUNIT_TEST_PACKAGE</p> </li> <li> <p>APPIUM_WEB_JAVA_TESTNG_TEST_PACKAGE</p> </li> <li> <p>APPIUM_WEB_PYTHON_TEST_PACKAGE</p> </li> <li> <p>APPIUM_WEB_NODE_TEST_PACKAGE</p> </li> <li> <p>APPIUM_WEB_RUBY_TEST_PACKAGE</p> </li> <li> <p>CALABASH_TEST_PACKAGE</p> </li> <li> <p>INSTRUMENTATION_TEST_PACKAGE</p> </li> <li> <p>UIAUTOMATION_TEST_PACKAGE</p> </li> <li> <p>UIAUTOMATOR_TEST_PACKAGE</p> </li> <li> <p>XCTEST_TEST_PACKAGE</p> </li> <li> <p>XCTEST_UI_TEST_PACKAGE</p> </li> <li> <p>APPIUM_JAVA_JUNIT_TEST_SPEC</p> </li> <li> <p>APPIUM_JAVA_TESTNG_TEST_SPEC</p> </li> <li> <p>APPIUM_PYTHON_TEST_SPEC</p> </li> <li> <p>APPIUM_NODE_TEST_SPEC</p> </li> <li> <p>APPIUM_RUBY_TEST_SPEC</p> </li> <li> <p>APPIUM_WEB_JAVA_JUNIT_TEST_SPEC</p> </li> <li> <p>APPIUM_WEB_JAVA_TESTNG_TEST_SPEC</p> </li> <li> <p>APPIUM_WEB_PYTHON_TEST_SPEC</p> </li> <li> <p>APPIUM_WEB_NODE_TEST_SPEC</p> </li> <li> <p>APPIUM_WEB_RUBY_TEST_SPEC</p> </li> <li> <p>INSTRUMENTATION_TEST_SPEC</p> </li> <li> <p>XCTEST_UI_TEST_SPEC</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    status: UploadStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The upload's status.</p> <p>Must be one of the following values:</p> <ul> <li> <p>FAILED</p> </li> <li> <p>INITIALIZED</p> </li> <li> <p>PROCESSING</p> </li> <li> <p>SUCCEEDED</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    url: SensitiveURLSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The presigned Amazon S3 URL that was used to store a file using a PUT request.',
-        }),
-    ).exactOptional(),
-    metadata: MetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The upload's metadata. For example, for Android, this contains information that is parsed from the manifest and is displayed in the AWS Device Farm console after the associated app is uploaded.",
-        }),
-    ).exactOptional(),
-    contentType: ContentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The upload's content type (for example, <code>application/octet-stream</code>).",
-        }),
-    ).exactOptional(),
-    message: MessageSchema.and(
-      z.any().openapi({ description: "A message about the upload's result." }),
-    ).exactOptional(),
-    category: UploadCategorySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The upload's category. Allowed values include:</p> <ul> <li> <p>CURATED: An upload managed by AWS Device Farm.</p> </li> <li> <p>PRIVATE: An upload managed by the AWS Device Farm customer.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
+    arn: AmazonResourceNameSchema.exactOptional().openapi({ description: "The upload's ARN." }),
+    name: NameSchema.exactOptional().openapi({ description: "The upload's file name." }),
+    created: DateTimeSchema.exactOptional().openapi({
+      description: 'When the upload was created.',
+    }),
+    type: UploadTypeSchema.exactOptional().openapi({
+      description:
+        "<p>The upload's type.</p> <p>Must be one of the following values:</p> <ul> <li> <p>ANDROID_APP</p> </li> <li> <p>IOS_APP</p> </li> <li> <p>WEB_APP</p> </li> <li> <p>EXTERNAL_DATA</p> </li> <li> <p>APPIUM_JAVA_JUNIT_TEST_PACKAGE</p> </li> <li> <p>APPIUM_JAVA_TESTNG_TEST_PACKAGE</p> </li> <li> <p>APPIUM_PYTHON_TEST_PACKAGE</p> </li> <li> <p>APPIUM_NODE_TEST_PACKAGE</p> </li> <li> <p>APPIUM_RUBY_TEST_PACKAGE</p> </li> <li> <p>APPIUM_WEB_JAVA_JUNIT_TEST_PACKAGE</p> </li> <li> <p>APPIUM_WEB_JAVA_TESTNG_TEST_PACKAGE</p> </li> <li> <p>APPIUM_WEB_PYTHON_TEST_PACKAGE</p> </li> <li> <p>APPIUM_WEB_NODE_TEST_PACKAGE</p> </li> <li> <p>APPIUM_WEB_RUBY_TEST_PACKAGE</p> </li> <li> <p>CALABASH_TEST_PACKAGE</p> </li> <li> <p>INSTRUMENTATION_TEST_PACKAGE</p> </li> <li> <p>UIAUTOMATION_TEST_PACKAGE</p> </li> <li> <p>UIAUTOMATOR_TEST_PACKAGE</p> </li> <li> <p>XCTEST_TEST_PACKAGE</p> </li> <li> <p>XCTEST_UI_TEST_PACKAGE</p> </li> <li> <p>APPIUM_JAVA_JUNIT_TEST_SPEC</p> </li> <li> <p>APPIUM_JAVA_TESTNG_TEST_SPEC</p> </li> <li> <p>APPIUM_PYTHON_TEST_SPEC</p> </li> <li> <p>APPIUM_NODE_TEST_SPEC</p> </li> <li> <p>APPIUM_RUBY_TEST_SPEC</p> </li> <li> <p>APPIUM_WEB_JAVA_JUNIT_TEST_SPEC</p> </li> <li> <p>APPIUM_WEB_JAVA_TESTNG_TEST_SPEC</p> </li> <li> <p>APPIUM_WEB_PYTHON_TEST_SPEC</p> </li> <li> <p>APPIUM_WEB_NODE_TEST_SPEC</p> </li> <li> <p>APPIUM_WEB_RUBY_TEST_SPEC</p> </li> <li> <p>INSTRUMENTATION_TEST_SPEC</p> </li> <li> <p>XCTEST_UI_TEST_SPEC</p> </li> </ul>",
+    }),
+    status: UploadStatusSchema.exactOptional().openapi({
+      description:
+        "<p>The upload's status.</p> <p>Must be one of the following values:</p> <ul> <li> <p>FAILED</p> </li> <li> <p>INITIALIZED</p> </li> <li> <p>PROCESSING</p> </li> <li> <p>SUCCEEDED</p> </li> </ul>",
+    }),
+    url: SensitiveURLSchema.exactOptional().openapi({
+      description: 'The presigned Amazon S3 URL that was used to store a file using a PUT request.',
+    }),
+    metadata: MetadataSchema.exactOptional().openapi({
+      description:
+        "The upload's metadata. For example, for Android, this contains information that is parsed from the manifest and is displayed in the AWS Device Farm console after the associated app is uploaded.",
+    }),
+    contentType: ContentTypeSchema.exactOptional().openapi({
+      description:
+        "The upload's content type (for example, <code>application/octet-stream</code>).",
+    }),
+    message: MessageSchema.exactOptional().openapi({
+      description: "A message about the upload's result.",
+    }),
+    category: UploadCategorySchema.exactOptional().openapi({
+      description:
+        "<p>The upload's category. Allowed values include:</p> <ul> <li> <p>CURATED: An upload managed by AWS Device Farm.</p> </li> <li> <p>PRIVATE: An upload managed by the AWS Device Farm customer.</p> </li> </ul>",
+    }),
   })
   .openapi({
     description: 'An app or a set of one or more tests to upload or that have been uploaded.',
@@ -1370,9 +1334,7 @@ const UploadSchema = z
 
 const CreateUploadResultSchema = z
   .object({
-    upload: UploadSchema.and(
-      z.any().openapi({ description: 'The newly created upload.' }),
-    ).exactOptional(),
+    upload: UploadSchema.exactOptional().openapi({ description: 'The newly created upload.' }),
   })
   .openapi({
     example: {
@@ -1392,33 +1354,21 @@ const CreateUploadResultSchema = z
 
 const CreateUploadRequestSchema = z
   .object({
-    projectArn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'The ARN of the project for the upload.' }),
-    ),
-    name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The upload's file name. The name should not contain any forward slashes (<code>/</code>). If you are uploading an iOS app, the file name must end with the <code>.ipa</code> extension. If you are uploading an Android app, the file name must end with the <code>.apk</code> extension. For all others, the file name must end with the <code>.zip</code> file extension.",
-        }),
-    ),
-    type: UploadTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The upload's upload type.</p> <p>Must be one of the following values:</p> <ul> <li> <p>ANDROID_APP</p> </li> <li> <p>IOS_APP</p> </li> <li> <p>WEB_APP</p> </li> <li> <p>EXTERNAL_DATA</p> </li> <li> <p>APPIUM_JAVA_JUNIT_TEST_PACKAGE</p> </li> <li> <p>APPIUM_JAVA_TESTNG_TEST_PACKAGE</p> </li> <li> <p>APPIUM_PYTHON_TEST_PACKAGE</p> </li> <li> <p>APPIUM_NODE_TEST_PACKAGE</p> </li> <li> <p>APPIUM_RUBY_TEST_PACKAGE</p> </li> <li> <p>APPIUM_WEB_JAVA_JUNIT_TEST_PACKAGE</p> </li> <li> <p>APPIUM_WEB_JAVA_TESTNG_TEST_PACKAGE</p> </li> <li> <p>APPIUM_WEB_PYTHON_TEST_PACKAGE</p> </li> <li> <p>APPIUM_WEB_NODE_TEST_PACKAGE</p> </li> <li> <p>APPIUM_WEB_RUBY_TEST_PACKAGE</p> </li> <li> <p>CALABASH_TEST_PACKAGE</p> </li> <li> <p>INSTRUMENTATION_TEST_PACKAGE</p> </li> <li> <p>UIAUTOMATION_TEST_PACKAGE</p> </li> <li> <p>UIAUTOMATOR_TEST_PACKAGE</p> </li> <li> <p>XCTEST_TEST_PACKAGE</p> </li> <li> <p>XCTEST_UI_TEST_PACKAGE</p> </li> <li> <p>APPIUM_JAVA_JUNIT_TEST_SPEC</p> </li> <li> <p>APPIUM_JAVA_TESTNG_TEST_SPEC</p> </li> <li> <p>APPIUM_PYTHON_TEST_SPEC</p> </li> <li> <p>APPIUM_NODE_TEST_SPEC</p> </li> <li> <p>APPIUM_RUBY_TEST_SPEC</p> </li> <li> <p>APPIUM_WEB_JAVA_JUNIT_TEST_SPEC</p> </li> <li> <p>APPIUM_WEB_JAVA_TESTNG_TEST_SPEC</p> </li> <li> <p>APPIUM_WEB_PYTHON_TEST_SPEC</p> </li> <li> <p>APPIUM_WEB_NODE_TEST_SPEC</p> </li> <li> <p>APPIUM_WEB_RUBY_TEST_SPEC</p> </li> <li> <p>INSTRUMENTATION_TEST_SPEC</p> </li> <li> <p>XCTEST_UI_TEST_SPEC</p> </li> </ul> <p> If you call <code>CreateUpload</code> with <code>WEB_APP</code> specified, AWS Device Farm throws an <code>ArgumentException</code> error.</p>",
-        }),
-    ),
-    contentType: ContentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The upload's content type (for example, <code>application/octet-stream</code>).",
-        }),
-    ).exactOptional(),
+    projectArn: AmazonResourceNameSchema.openapi({
+      description: 'The ARN of the project for the upload.',
+    }),
+    name: NameSchema.openapi({
+      description:
+        "The upload's file name. The name should not contain any forward slashes (<code>/</code>). If you are uploading an iOS app, the file name must end with the <code>.ipa</code> extension. If you are uploading an Android app, the file name must end with the <code>.apk</code> extension. For all others, the file name must end with the <code>.zip</code> file extension.",
+    }),
+    type: UploadTypeSchema.openapi({
+      description:
+        "<p>The upload's upload type.</p> <p>Must be one of the following values:</p> <ul> <li> <p>ANDROID_APP</p> </li> <li> <p>IOS_APP</p> </li> <li> <p>WEB_APP</p> </li> <li> <p>EXTERNAL_DATA</p> </li> <li> <p>APPIUM_JAVA_JUNIT_TEST_PACKAGE</p> </li> <li> <p>APPIUM_JAVA_TESTNG_TEST_PACKAGE</p> </li> <li> <p>APPIUM_PYTHON_TEST_PACKAGE</p> </li> <li> <p>APPIUM_NODE_TEST_PACKAGE</p> </li> <li> <p>APPIUM_RUBY_TEST_PACKAGE</p> </li> <li> <p>APPIUM_WEB_JAVA_JUNIT_TEST_PACKAGE</p> </li> <li> <p>APPIUM_WEB_JAVA_TESTNG_TEST_PACKAGE</p> </li> <li> <p>APPIUM_WEB_PYTHON_TEST_PACKAGE</p> </li> <li> <p>APPIUM_WEB_NODE_TEST_PACKAGE</p> </li> <li> <p>APPIUM_WEB_RUBY_TEST_PACKAGE</p> </li> <li> <p>CALABASH_TEST_PACKAGE</p> </li> <li> <p>INSTRUMENTATION_TEST_PACKAGE</p> </li> <li> <p>UIAUTOMATION_TEST_PACKAGE</p> </li> <li> <p>UIAUTOMATOR_TEST_PACKAGE</p> </li> <li> <p>XCTEST_TEST_PACKAGE</p> </li> <li> <p>XCTEST_UI_TEST_PACKAGE</p> </li> <li> <p>APPIUM_JAVA_JUNIT_TEST_SPEC</p> </li> <li> <p>APPIUM_JAVA_TESTNG_TEST_SPEC</p> </li> <li> <p>APPIUM_PYTHON_TEST_SPEC</p> </li> <li> <p>APPIUM_NODE_TEST_SPEC</p> </li> <li> <p>APPIUM_RUBY_TEST_SPEC</p> </li> <li> <p>APPIUM_WEB_JAVA_JUNIT_TEST_SPEC</p> </li> <li> <p>APPIUM_WEB_JAVA_TESTNG_TEST_SPEC</p> </li> <li> <p>APPIUM_WEB_PYTHON_TEST_SPEC</p> </li> <li> <p>APPIUM_WEB_NODE_TEST_SPEC</p> </li> <li> <p>APPIUM_WEB_RUBY_TEST_SPEC</p> </li> <li> <p>INSTRUMENTATION_TEST_SPEC</p> </li> <li> <p>XCTEST_UI_TEST_SPEC</p> </li> </ul> <p> If you call <code>CreateUpload</code> with <code>WEB_APP</code> specified, AWS Device Farm throws an <code>ArgumentException</code> error.</p>",
+    }),
+    contentType: ContentTypeSchema.exactOptional().openapi({
+      description:
+        "The upload's content type (for example, <code>application/octet-stream</code>).",
+    }),
   })
   .openapi({
     required: ['projectArn', 'name', 'type'],
@@ -1441,45 +1391,25 @@ const VPCEConfigurationDescriptionSchema = z
 
 const VPCEConfigurationSchema = z
   .object({
-    arn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the VPC endpoint configuration.',
-        }),
-    ).exactOptional(),
-    vpceConfigurationName: VPCEConfigurationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The friendly name you give to your VPC endpoint configuration to manage your configurations more easily.',
-        }),
-    ).exactOptional(),
-    vpceServiceName: VPCEServiceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the VPC endpoint service running in your AWS account that you want Device Farm to test.',
-        }),
-    ).exactOptional(),
-    serviceDnsName: ServiceDnsNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The DNS name that maps to the private IP address of the service you want to access.',
-        }),
-    ).exactOptional(),
-    vpceConfigurationDescription: VPCEConfigurationDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional description that provides details about your VPC endpoint configuration.',
-        }),
-    ).exactOptional(),
+    arn: AmazonResourceNameSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the VPC endpoint configuration.',
+    }),
+    vpceConfigurationName: VPCEConfigurationNameSchema.exactOptional().openapi({
+      description:
+        'The friendly name you give to your VPC endpoint configuration to manage your configurations more easily.',
+    }),
+    vpceServiceName: VPCEServiceNameSchema.exactOptional().openapi({
+      description:
+        'The name of the VPC endpoint service running in your AWS account that you want Device Farm to test.',
+    }),
+    serviceDnsName: ServiceDnsNameSchema.exactOptional().openapi({
+      description:
+        'The DNS name that maps to the private IP address of the service you want to access.',
+    }),
+    vpceConfigurationDescription: VPCEConfigurationDescriptionSchema.exactOptional().openapi({
+      description:
+        'An optional description that provides details about your VPC endpoint configuration.',
+    }),
   })
   .openapi({
     description: 'Represents an Amazon Virtual Private Cloud (VPC) endpoint configuration.',
@@ -1489,51 +1419,31 @@ const VPCEConfigurationSchema = z
 
 const CreateVPCEConfigurationResultSchema = z
   .object({
-    vpceConfiguration: VPCEConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that contains information about your VPC endpoint configuration.',
-        }),
-    ).exactOptional(),
+    vpceConfiguration: VPCEConfigurationSchema.exactOptional().openapi({
+      description: 'An object that contains information about your VPC endpoint configuration.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateVPCEConfigurationResult')
 
 const CreateVPCEConfigurationRequestSchema = z
   .object({
-    vpceConfigurationName: VPCEConfigurationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The friendly name you give to your VPC endpoint configuration, to manage your configurations more easily.',
-        }),
-    ),
-    vpceServiceName: VPCEServiceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the VPC endpoint service running in your AWS account that you want Device Farm to test.',
-        }),
-    ),
-    serviceDnsName: ServiceDnsNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The DNS name of the service running in your VPC that you want Device Farm to test.',
-        }),
-    ),
-    vpceConfigurationDescription: VPCEConfigurationDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional description that provides details about your VPC endpoint configuration.',
-        }),
-    ).exactOptional(),
+    vpceConfigurationName: VPCEConfigurationNameSchema.openapi({
+      description:
+        'The friendly name you give to your VPC endpoint configuration, to manage your configurations more easily.',
+    }),
+    vpceServiceName: VPCEServiceNameSchema.openapi({
+      description:
+        'The name of the VPC endpoint service running in your AWS account that you want Device Farm to test.',
+    }),
+    serviceDnsName: ServiceDnsNameSchema.openapi({
+      description:
+        'The DNS name of the service running in your VPC that you want Device Farm to test.',
+    }),
+    vpceConfigurationDescription: VPCEConfigurationDescriptionSchema.exactOptional().openapi({
+      description:
+        'An optional description that provides details about your VPC endpoint configuration.',
+    }),
   })
   .openapi({
     required: ['vpceConfigurationName', 'vpceServiceName', 'serviceDnsName'],
@@ -1542,20 +1452,16 @@ const CreateVPCEConfigurationRequestSchema = z
   .openapi('CreateVPCEConfigurationRequest')
 
 const DeleteDevicePoolResultSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ example: {}, description: 'Represents the result of a delete device pool request.' })
   .openapi('DeleteDevicePoolResult')
 
 const DeleteDevicePoolRequestSchema = z
   .object({
-    arn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Represents the Amazon Resource Name (ARN) of the Device Farm device pool to delete.',
-        }),
-    ),
+    arn: AmazonResourceNameSchema.openapi({
+      description:
+        'Represents the Amazon Resource Name (ARN) of the Device Farm device pool to delete.',
+    }),
   })
   .openapi({
     required: ['arn'],
@@ -1564,48 +1470,40 @@ const DeleteDevicePoolRequestSchema = z
   })
   .openapi('DeleteDevicePoolRequest')
 
-const DeleteInstanceProfileResultSchema = z.object({}).openapi('DeleteInstanceProfileResult')
+const DeleteInstanceProfileResultSchema = z.looseObject({}).openapi('DeleteInstanceProfileResult')
 
 const DeleteInstanceProfileRequestSchema = z
   .object({
-    arn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the instance profile you are requesting to delete.',
-        }),
-    ),
+    arn: AmazonResourceNameSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the instance profile you are requesting to delete.',
+    }),
   })
   .openapi({ required: ['arn'], title: 'DeleteInstanceProfileRequest' })
   .openapi('DeleteInstanceProfileRequest')
 
-const DeleteNetworkProfileResultSchema = z.object({}).openapi('DeleteNetworkProfileResult')
+const DeleteNetworkProfileResultSchema = z.looseObject({}).openapi('DeleteNetworkProfileResult')
 
 const DeleteNetworkProfileRequestSchema = z
   .object({
-    arn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'The ARN of the network profile to delete.' }),
-    ),
+    arn: AmazonResourceNameSchema.openapi({
+      description: 'The ARN of the network profile to delete.',
+    }),
   })
   .openapi({ required: ['arn'], title: 'DeleteNetworkProfileRequest' })
   .openapi('DeleteNetworkProfileRequest')
 
 const DeleteProjectResultSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ example: {}, description: 'Represents the result of a delete project request.' })
   .openapi('DeleteProjectResult')
 
 const DeleteProjectRequestSchema = z
   .object({
-    arn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Represents the Amazon Resource Name (ARN) of the Device Farm project to delete.',
-        }),
-    ),
+    arn: AmazonResourceNameSchema.openapi({
+      description:
+        'Represents the Amazon Resource Name (ARN) of the Device Farm project to delete.',
+    }),
   })
   .openapi({
     required: ['arn'],
@@ -1615,7 +1513,7 @@ const DeleteProjectRequestSchema = z
   .openapi('DeleteProjectRequest')
 
 const DeleteRemoteAccessSessionResultSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     example: {},
     description:
@@ -1625,14 +1523,10 @@ const DeleteRemoteAccessSessionResultSchema = z
 
 const DeleteRemoteAccessSessionRequestSchema = z
   .object({
-    arn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the session for which you want to delete remote access.',
-        }),
-    ),
+    arn: AmazonResourceNameSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the session for which you want to delete remote access.',
+    }),
   })
   .openapi({
     required: ['arn'],
@@ -1642,15 +1536,15 @@ const DeleteRemoteAccessSessionRequestSchema = z
   .openapi('DeleteRemoteAccessSessionRequest')
 
 const DeleteRunResultSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ example: {}, description: 'Represents the result of a delete run request.' })
   .openapi('DeleteRunResult')
 
 const DeleteRunRequestSchema = z
   .object({
-    arn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) for the run to delete.' }),
-    ),
+    arn: AmazonResourceNameSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) for the run to delete.',
+    }),
   })
   .openapi({
     required: ['arn'],
@@ -1659,18 +1553,14 @@ const DeleteRunRequestSchema = z
   })
   .openapi('DeleteRunRequest')
 
-const DeleteTestGridProjectResultSchema = z.object({}).openapi('DeleteTestGridProjectResult')
+const DeleteTestGridProjectResultSchema = z.looseObject({}).openapi('DeleteTestGridProjectResult')
 
 const DeleteTestGridProjectRequestSchema = z
   .object({
-    projectArn: DeviceFarmArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the project to delete, from <a>CreateTestGridProject</a> or <a>ListTestGridProjects</a>.',
-        }),
-    ),
+    projectArn: DeviceFarmArnSchema.openapi({
+      description:
+        'The ARN of the project to delete, from <a>CreateTestGridProject</a> or <a>ListTestGridProjects</a>.',
+    }),
   })
   .openapi({ required: ['projectArn'], title: 'DeleteTestGridProjectRequest' })
   .openapi('DeleteTestGridProjectRequest')
@@ -1678,20 +1568,15 @@ const DeleteTestGridProjectRequestSchema = z
 const CannotDeleteExceptionSchema = z.any().openapi('CannotDeleteException')
 
 const DeleteUploadResultSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ example: {}, description: 'Represents the result of a delete upload request.' })
   .openapi('DeleteUploadResult')
 
 const DeleteUploadRequestSchema = z
   .object({
-    arn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Represents the Amazon Resource Name (ARN) of the Device Farm upload to delete.',
-        }),
-    ),
+    arn: AmazonResourceNameSchema.openapi({
+      description: 'Represents the Amazon Resource Name (ARN) of the Device Farm upload to delete.',
+    }),
   })
   .openapi({
     required: ['arn'],
@@ -1700,18 +1585,16 @@ const DeleteUploadRequestSchema = z
   })
   .openapi('DeleteUploadRequest')
 
-const DeleteVPCEConfigurationResultSchema = z.object({}).openapi('DeleteVPCEConfigurationResult')
+const DeleteVPCEConfigurationResultSchema = z
+  .looseObject({})
+  .openapi('DeleteVPCEConfigurationResult')
 
 const DeleteVPCEConfigurationRequestSchema = z
   .object({
-    arn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the VPC endpoint configuration you want to delete.',
-        }),
-    ),
+    arn: AmazonResourceNameSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the VPC endpoint configuration you want to delete.',
+    }),
   })
   .openapi({ required: ['arn'], title: 'DeleteVPCEConfigurationRequest' })
   .openapi('DeleteVPCEConfigurationRequest')
@@ -1724,18 +1607,12 @@ const PurchasedDevicesMapSchema = z.record(z.string(), IntegerSchema).openapi('P
 
 const TrialMinutesSchema = z
   .object({
-    total: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The total number of free trial minutes that the account started with.',
-        }),
-    ).exactOptional(),
-    remaining: DoubleSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The number of free trial minutes remaining in the account.' }),
-    ).exactOptional(),
+    total: DoubleSchema.exactOptional().openapi({
+      description: 'The total number of free trial minutes that the account started with.',
+    }),
+    remaining: DoubleSchema.exactOptional().openapi({
+      description: 'The number of free trial minutes remaining in the account.',
+    }),
   })
   .openapi({
     description: 'Represents information about free trial device minutes for an AWS account.',
@@ -1747,67 +1624,35 @@ const MaxSlotMapSchema = z.record(z.string(), IntegerSchema).openapi('MaxSlotMap
 
 const AccountSettingsSchema = z
   .object({
-    awsAccountNumber: AWSAccountNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The AWS account number specified in the <code>AccountSettings</code> container.',
-        }),
-    ).exactOptional(),
-    unmeteredDevices: PurchasedDevicesMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Returns the unmetered devices you have purchased or want to purchase.',
-        }),
-    ).exactOptional(),
-    unmeteredRemoteAccessDevices: PurchasedDevicesMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Returns the unmetered remote access devices you have purchased or want to purchase.',
-        }),
-    ).exactOptional(),
-    maxJobTimeoutMinutes: JobTimeoutMinutesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of minutes a test run executes before it times out.',
-        }),
-    ).exactOptional(),
-    trialMinutes: TrialMinutesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "Information about an AWS account's usage of free trial device minutes.",
-        }),
-    ).exactOptional(),
-    maxSlots: MaxSlotMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of device slots that the AWS account can purchase. Each maximum is expressed as an <code>offering-id:number</code> pair, where the <code>offering-id</code> represents one of the IDs returned by the <code>ListOfferings</code> command.',
-        }),
-    ).exactOptional(),
-    defaultJobTimeoutMinutes: JobTimeoutMinutesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The default number of minutes (at the account level) a test run executes before it times out. The default value is 150 minutes.',
-        }),
-    ).exactOptional(),
-    skipAppResign: SkipAppResignSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>When set to <code>true</code>, for private devices, Device Farm does not sign your app again. For public devices, Device Farm always signs your apps again.</p> <p>For more information about how Device Farm re-signs your apps, see <a href="http://aws.amazon.com/device-farm/faqs/">Do you modify my app?</a> in the <i>AWS Device Farm FAQs</i>.</p>',
-        }),
-    ).exactOptional(),
+    awsAccountNumber: AWSAccountNumberSchema.exactOptional().openapi({
+      description:
+        'The AWS account number specified in the <code>AccountSettings</code> container.',
+    }),
+    unmeteredDevices: PurchasedDevicesMapSchema.exactOptional().openapi({
+      description: 'Returns the unmetered devices you have purchased or want to purchase.',
+    }),
+    unmeteredRemoteAccessDevices: PurchasedDevicesMapSchema.exactOptional().openapi({
+      description:
+        'Returns the unmetered remote access devices you have purchased or want to purchase.',
+    }),
+    maxJobTimeoutMinutes: JobTimeoutMinutesSchema.exactOptional().openapi({
+      description: 'The maximum number of minutes a test run executes before it times out.',
+    }),
+    trialMinutes: TrialMinutesSchema.exactOptional().openapi({
+      description: "Information about an AWS account's usage of free trial device minutes.",
+    }),
+    maxSlots: MaxSlotMapSchema.exactOptional().openapi({
+      description:
+        'The maximum number of device slots that the AWS account can purchase. Each maximum is expressed as an <code>offering-id:number</code> pair, where the <code>offering-id</code> represents one of the IDs returned by the <code>ListOfferings</code> command.',
+    }),
+    defaultJobTimeoutMinutes: JobTimeoutMinutesSchema.exactOptional().openapi({
+      description:
+        'The default number of minutes (at the account level) a test run executes before it times out. The default value is 150 minutes.',
+    }),
+    skipAppResign: SkipAppResignSchema.exactOptional().openapi({
+      description:
+        '<p>When set to <code>true</code>, for private devices, Device Farm does not sign your app again. For public devices, Device Farm always signs your apps again.</p> <p>For more information about how Device Farm re-signs your apps, see <a href="http://aws.amazon.com/device-farm/faqs/">Do you modify my app?</a> in the <i>AWS Device Farm FAQs</i>.</p>',
+    }),
   })
   .openapi({
     description: 'A container for account-level settings in AWS Device Farm.',
@@ -1817,9 +1662,9 @@ const AccountSettingsSchema = z
 
 const GetAccountSettingsResultSchema = z
   .object({
-    accountSettings: AccountSettingsSchema.and(
-      z.any().openapi({ description: 'The account settings.' }),
-    ).exactOptional(),
+    accountSettings: AccountSettingsSchema.exactOptional().openapi({
+      description: 'The account settings.',
+    }),
   })
   .openapi({
     example: {
@@ -1835,7 +1680,7 @@ const GetAccountSettingsResultSchema = z
   .openapi('GetAccountSettingsResult')
 
 const GetAccountSettingsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetAccountSettingsRequest',
     description: 'Represents the request sent to retrieve the account settings.',
@@ -1844,13 +1689,9 @@ const GetAccountSettingsRequestSchema = z
 
 const GetDeviceResultSchema = z
   .object({
-    device: DeviceSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that contains information about the requested device.',
-        }),
-    ).exactOptional(),
+    device: DeviceSchema.exactOptional().openapi({
+      description: 'An object that contains information about the requested device.',
+    }),
   })
   .openapi({
     example: {
@@ -1875,9 +1716,7 @@ const GetDeviceResultSchema = z
   .openapi('GetDeviceResult')
 
 const GetDeviceRequestSchema = z
-  .object({
-    arn: AmazonResourceNameSchema.and(z.any().openapi({ description: "The device type's ARN." })),
-  })
+  .object({ arn: AmazonResourceNameSchema.openapi({ description: "The device type's ARN." }) })
   .openapi({
     required: ['arn'],
     title: 'GetDeviceRequest',
@@ -1887,40 +1726,28 @@ const GetDeviceRequestSchema = z
 
 const GetDeviceInstanceResultSchema = z
   .object({
-    deviceInstance: DeviceInstanceSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that contains information about your device instance.',
-        }),
-    ).exactOptional(),
+    deviceInstance: DeviceInstanceSchema.exactOptional().openapi({
+      description: 'An object that contains information about your device instance.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDeviceInstanceResult')
 
 const GetDeviceInstanceRequestSchema = z
   .object({
-    arn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The Amazon Resource Name (ARN) of the instance you're requesting information about.",
-        }),
-    ),
+    arn: AmazonResourceNameSchema.openapi({
+      description:
+        "The Amazon Resource Name (ARN) of the instance you're requesting information about.",
+    }),
   })
   .openapi({ required: ['arn'], title: 'GetDeviceInstanceRequest' })
   .openapi('GetDeviceInstanceRequest')
 
 const GetDevicePoolResultSchema = z
   .object({
-    devicePool: DevicePoolSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that contains information about the requested device pool.',
-        }),
-    ).exactOptional(),
+    devicePool: DevicePoolSchema.exactOptional().openapi({
+      description: 'An object that contains information about the requested device pool.',
+    }),
   })
   .openapi({
     example: { devicePool: {} },
@@ -1930,9 +1757,7 @@ const GetDevicePoolResultSchema = z
   .openapi('GetDevicePoolResult')
 
 const GetDevicePoolRequestSchema = z
-  .object({
-    arn: AmazonResourceNameSchema.and(z.any().openapi({ description: "The device pool's ARN." })),
-  })
+  .object({ arn: AmazonResourceNameSchema.openapi({ description: "The device pool's ARN." }) })
   .openapi({
     required: ['arn'],
     title: 'GetDevicePoolRequest',
@@ -1940,54 +1765,14 @@ const GetDevicePoolRequestSchema = z
   })
   .openapi('GetDevicePoolRequest')
 
-const IncompatibilityMessageSchema = z
+const GetDevicePoolCompatibilityResultSchema: z.ZodType<GetDevicePoolCompatibilityResultType> = z
   .object({
-    message: MessageSchema.and(
-      z.any().openapi({ description: 'A message about the incompatibility.' }),
-    ).exactOptional(),
-    type: DeviceAttributeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of incompatibility.</p> <p>Allowed values include:</p> <ul> <li> <p>ARN</p> </li> <li> <p>FORM_FACTOR (for example, phone or tablet)</p> </li> <li> <p>MANUFACTURER</p> </li> <li> <p>PLATFORM (for example, Android or iOS)</p> </li> <li> <p>REMOTE_ACCESS_ENABLED</p> </li> <li> <p>APPIUM_VERSION</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Represents information about incompatibility.', required: [] })
-  .openapi('IncompatibilityMessage')
-
-const IncompatibilityMessagesSchema = z
-  .array(IncompatibilityMessageSchema)
-  .openapi('IncompatibilityMessages')
-
-const DevicePoolCompatibilityResultSchema = z
-  .object({
-    device: DeviceSchema.and(
-      z.any().openapi({ description: 'The device (phone or tablet) to return information about.' }),
-    ).exactOptional(),
-    compatible: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether the result was compatible with the device pool.' }),
-    ).exactOptional(),
-    incompatibilityMessages: IncompatibilityMessagesSchema.and(
-      z.any().openapi({ description: 'Information about the compatibility.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Represents a device pool compatibility result.', required: [] })
-  .openapi('DevicePoolCompatibilityResult')
-
-const DevicePoolCompatibilityResultsSchema = z
-  .array(DevicePoolCompatibilityResultSchema)
-  .openapi('DevicePoolCompatibilityResults')
-
-const GetDevicePoolCompatibilityResultSchema = z
-  .object({
-    compatibleDevices: DevicePoolCompatibilityResultsSchema.and(
-      z.any().openapi({ description: 'Information about compatible devices.' }),
-    ).exactOptional(),
-    incompatibleDevices: DevicePoolCompatibilityResultsSchema.and(
-      z.any().openapi({ description: 'Information about incompatible devices.' }),
-    ).exactOptional(),
+    compatibleDevices: DevicePoolCompatibilityResultsSchema.exactOptional().openapi({
+      description: 'Information about compatible devices.',
+    }),
+    incompatibleDevices: DevicePoolCompatibilityResultsSchema.exactOptional().openapi({
+      description: 'Information about incompatible devices.',
+    }),
   })
   .openapi({
     example: { compatibleDevices: [], incompatibleDevices: [] },
@@ -1996,63 +1781,27 @@ const GetDevicePoolCompatibilityResultSchema = z
   })
   .openapi('GetDevicePoolCompatibilityResult')
 
-const TestTypeSchema = z
-  .enum([
-    'BUILTIN_FUZZ',
-    'BUILTIN_EXPLORER',
-    'WEB_PERFORMANCE_PROFILE',
-    'APPIUM_JAVA_JUNIT',
-    'APPIUM_JAVA_TESTNG',
-    'APPIUM_PYTHON',
-    'APPIUM_NODE',
-    'APPIUM_RUBY',
-    'APPIUM_WEB_JAVA_JUNIT',
-    'APPIUM_WEB_JAVA_TESTNG',
-    'APPIUM_WEB_PYTHON',
-    'APPIUM_WEB_NODE',
-    'APPIUM_WEB_RUBY',
-    'CALABASH',
-    'INSTRUMENTATION',
-    'UIAUTOMATION',
-    'UIAUTOMATOR',
-    'XCTEST',
-    'XCTEST_UI',
-    'REMOTE_ACCESS_RECORD',
-    'REMOTE_ACCESS_REPLAY',
-  ])
-  .openapi('TestType')
-
 const FilterSchema = z.string().min(0).max(8192).openapi('Filter')
 
 const TestParametersSchema = z.record(z.string(), StringSchema).openapi('TestParameters')
 
 const ScheduleRunTestSchema = z
   .object({
-    type: TestTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The test's type.</p> <p>Must be one of the following values:</p> <ul> <li> <p>BUILTIN_FUZZ</p> </li> <li> <p>BUILTIN_EXPLORER. For Android, an app explorer that traverses an Android app, interacting with it and capturing screenshots at the same time.</p> </li> <li> <p>APPIUM_JAVA_JUNIT</p> </li> <li> <p>APPIUM_JAVA_TESTNG</p> </li> <li> <p>APPIUM_PYTHON</p> </li> <li> <p>APPIUM_NODE</p> </li> <li> <p>APPIUM_RUBY</p> </li> <li> <p>APPIUM_WEB_JAVA_JUNIT</p> </li> <li> <p>APPIUM_WEB_JAVA_TESTNG</p> </li> <li> <p>APPIUM_WEB_PYTHON</p> </li> <li> <p>APPIUM_WEB_NODE</p> </li> <li> <p>APPIUM_WEB_RUBY</p> </li> <li> <p>CALABASH</p> </li> <li> <p>INSTRUMENTATION</p> </li> <li> <p>UIAUTOMATION</p> </li> <li> <p>UIAUTOMATOR</p> </li> <li> <p>XCTEST</p> </li> <li> <p>XCTEST_UI</p> </li> </ul>",
-        }),
-    ),
-    testPackageArn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'The ARN of the uploaded test to be run.' }),
-    ).exactOptional(),
-    testSpecArn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'The ARN of the YAML-formatted test specification.' }),
-    ).exactOptional(),
-    filter: FilterSchema.and(
-      z.any().openapi({ description: "The test's filter." }),
-    ).exactOptional(),
-    parameters: TestParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The test's parameters, such as test framework parameters and fixture settings. Parameters are represented by name-value pairs of strings.</p> <p>For all tests:</p> <ul> <li> <p> <code>app_performance_monitoring</code>: Performance monitoring is enabled by default. Set this parameter to false to disable it.</p> </li> </ul> <p>For Calabash tests:</p> <ul> <li> <p>profile: A cucumber profile (for example, <code>my_profile_name</code>).</p> </li> <li> <p>tags: You can limit execution to features or scenarios that have (or don't have) certain tags (for example, @smoke or @smoke,~@wip).</p> </li> </ul> <p>For Appium tests (all types):</p> <ul> <li> <p>appium_version: The Appium version. Currently supported values are 1.6.5 (and later), latest, and default.</p> <ul> <li> <p>latest runs the latest Appium version supported by Device Farm (1.9.1).</p> </li> <li> <p>For default, Device Farm selects a compatible version of Appium for the device. The current behavior is to run 1.7.2 on Android devices and iOS 9 and earlier and 1.7.2 for iOS 10 and later.</p> </li> <li> <p>This behavior is subject to change.</p> </li> </ul> </li> </ul> <p>For fuzz tests (Android only):</p> <ul> <li> <p>event_count: The number of events, between 1 and 10000, that the UI fuzz test should perform.</p> </li> <li> <p>throttle: The time, in ms, between 0 and 1000, that the UI fuzz test should wait between events.</p> </li> <li> <p>seed: A seed to use for randomizing the UI fuzz test. Using the same seed value between tests ensures identical event sequences.</p> </li> </ul> <p>For Explorer tests:</p> <ul> <li> <p>username: A user name to use if the Explorer encounters a login form. If not supplied, no user name is inserted.</p> </li> <li> <p>password: A password to use if the Explorer encounters a login form. If not supplied, no password is inserted.</p> </li> </ul> <p>For Instrumentation:</p> <ul> <li> <p>filter: A test filter string. Examples:</p> <ul> <li> <p>Running a single test case: <code>com.android.abc.Test1</code> </p> </li> <li> <p>Running a single test: <code>com.android.abc.Test1#smoke</code> </p> </li> <li> <p>Running multiple tests: <code>com.android.abc.Test1,com.android.abc.Test2</code> </p> </li> </ul> </li> </ul> <p>For XCTest and XCTestUI:</p> <ul> <li> <p>filter: A test filter string. Examples:</p> <ul> <li> <p>Running a single test class: <code>LoginTests</code> </p> </li> <li> <p>Running a multiple test classes: <code>LoginTests,SmokeTests</code> </p> </li> <li> <p>Running a single test: <code>LoginTests/testValid</code> </p> </li> <li> <p>Running multiple tests: <code>LoginTests/testValid,LoginTests/testInvalid</code> </p> </li> </ul> </li> </ul> <p>For UIAutomator:</p> <ul> <li> <p>filter: A test filter string. Examples:</p> <ul> <li> <p>Running a single test case: <code>com.android.abc.Test1</code> </p> </li> <li> <p>Running a single test: <code>com.android.abc.Test1#smoke</code> </p> </li> <li> <p>Running multiple tests: <code>com.android.abc.Test1,com.android.abc.Test2</code> </p> </li> </ul> </li> </ul>",
-        }),
-    ).exactOptional(),
+    type: TestTypeSchema.openapi({
+      description:
+        "<p>The test's type.</p> <p>Must be one of the following values:</p> <ul> <li> <p>BUILTIN_FUZZ</p> </li> <li> <p>BUILTIN_EXPLORER. For Android, an app explorer that traverses an Android app, interacting with it and capturing screenshots at the same time.</p> </li> <li> <p>APPIUM_JAVA_JUNIT</p> </li> <li> <p>APPIUM_JAVA_TESTNG</p> </li> <li> <p>APPIUM_PYTHON</p> </li> <li> <p>APPIUM_NODE</p> </li> <li> <p>APPIUM_RUBY</p> </li> <li> <p>APPIUM_WEB_JAVA_JUNIT</p> </li> <li> <p>APPIUM_WEB_JAVA_TESTNG</p> </li> <li> <p>APPIUM_WEB_PYTHON</p> </li> <li> <p>APPIUM_WEB_NODE</p> </li> <li> <p>APPIUM_WEB_RUBY</p> </li> <li> <p>CALABASH</p> </li> <li> <p>INSTRUMENTATION</p> </li> <li> <p>UIAUTOMATION</p> </li> <li> <p>UIAUTOMATOR</p> </li> <li> <p>XCTEST</p> </li> <li> <p>XCTEST_UI</p> </li> </ul>",
+    }),
+    testPackageArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description: 'The ARN of the uploaded test to be run.',
+    }),
+    testSpecArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description: 'The ARN of the YAML-formatted test specification.',
+    }),
+    filter: FilterSchema.exactOptional().openapi({ description: "The test's filter." }),
+    parameters: TestParametersSchema.exactOptional().openapi({
+      description:
+        "<p>The test's parameters, such as test framework parameters and fixture settings. Parameters are represented by name-value pairs of strings.</p> <p>For all tests:</p> <ul> <li> <p> <code>app_performance_monitoring</code>: Performance monitoring is enabled by default. Set this parameter to false to disable it.</p> </li> </ul> <p>For Calabash tests:</p> <ul> <li> <p>profile: A cucumber profile (for example, <code>my_profile_name</code>).</p> </li> <li> <p>tags: You can limit execution to features or scenarios that have (or don't have) certain tags (for example, @smoke or @smoke,~@wip).</p> </li> </ul> <p>For Appium tests (all types):</p> <ul> <li> <p>appium_version: The Appium version. Currently supported values are 1.6.5 (and later), latest, and default.</p> <ul> <li> <p>latest runs the latest Appium version supported by Device Farm (1.9.1).</p> </li> <li> <p>For default, Device Farm selects a compatible version of Appium for the device. The current behavior is to run 1.7.2 on Android devices and iOS 9 and earlier and 1.7.2 for iOS 10 and later.</p> </li> <li> <p>This behavior is subject to change.</p> </li> </ul> </li> </ul> <p>For fuzz tests (Android only):</p> <ul> <li> <p>event_count: The number of events, between 1 and 10000, that the UI fuzz test should perform.</p> </li> <li> <p>throttle: The time, in ms, between 0 and 1000, that the UI fuzz test should wait between events.</p> </li> <li> <p>seed: A seed to use for randomizing the UI fuzz test. Using the same seed value between tests ensures identical event sequences.</p> </li> </ul> <p>For Explorer tests:</p> <ul> <li> <p>username: A user name to use if the Explorer encounters a login form. If not supplied, no user name is inserted.</p> </li> <li> <p>password: A password to use if the Explorer encounters a login form. If not supplied, no password is inserted.</p> </li> </ul> <p>For Instrumentation:</p> <ul> <li> <p>filter: A test filter string. Examples:</p> <ul> <li> <p>Running a single test case: <code>com.android.abc.Test1</code> </p> </li> <li> <p>Running a single test: <code>com.android.abc.Test1#smoke</code> </p> </li> <li> <p>Running multiple tests: <code>com.android.abc.Test1,com.android.abc.Test2</code> </p> </li> </ul> </li> </ul> <p>For XCTest and XCTestUI:</p> <ul> <li> <p>filter: A test filter string. Examples:</p> <ul> <li> <p>Running a single test class: <code>LoginTests</code> </p> </li> <li> <p>Running a multiple test classes: <code>LoginTests,SmokeTests</code> </p> </li> <li> <p>Running a single test: <code>LoginTests/testValid</code> </p> </li> <li> <p>Running multiple tests: <code>LoginTests/testValid,LoginTests/testInvalid</code> </p> </li> </ul> </li> </ul> <p>For UIAutomator:</p> <ul> <li> <p>filter: A test filter string. Examples:</p> <ul> <li> <p>Running a single test case: <code>com.android.abc.Test1</code> </p> </li> <li> <p>Running a single test: <code>com.android.abc.Test1#smoke</code> </p> </li> <li> <p>Running multiple tests: <code>com.android.abc.Test1,com.android.abc.Test2</code> </p> </li> </ul> </li> </ul>",
+    }),
   })
   .openapi({
     required: ['type'],
@@ -2063,8 +1812,8 @@ const ScheduleRunTestSchema = z
 
 const LocationSchema = z
   .object({
-    latitude: DoubleSchema.and(z.any().openapi({ description: 'The latitude.' })),
-    longitude: DoubleSchema.and(z.any().openapi({ description: 'The longitude.' })),
+    latitude: DoubleSchema.openapi({ description: 'The latitude.' }),
+    longitude: DoubleSchema.openapi({ description: 'The longitude.' }),
   })
   .openapi({
     required: ['latitude', 'longitude'],
@@ -2081,30 +1830,18 @@ const DeviceHostPathsSchema = z.array(StringSchema).openapi('DeviceHostPaths')
 
 const CustomerArtifactPathsSchema = z
   .object({
-    iosPaths: IosPathsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Comma-separated list of paths on the iOS device where the artifacts generated by the customer's tests are pulled from.",
-        }),
-    ).exactOptional(),
-    androidPaths: AndroidPathsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Comma-separated list of paths on the Android device where the artifacts generated by the customer's tests are pulled from.",
-        }),
-    ).exactOptional(),
-    deviceHostPaths: DeviceHostPathsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Comma-separated list of paths in the test execution environment where the artifacts generated by the customer's tests are pulled from.",
-        }),
-    ).exactOptional(),
+    iosPaths: IosPathsSchema.exactOptional().openapi({
+      description:
+        "Comma-separated list of paths on the iOS device where the artifacts generated by the customer's tests are pulled from.",
+    }),
+    androidPaths: AndroidPathsSchema.exactOptional().openapi({
+      description:
+        "Comma-separated list of paths on the Android device where the artifacts generated by the customer's tests are pulled from.",
+    }),
+    deviceHostPaths: DeviceHostPathsSchema.exactOptional().openapi({
+      description:
+        "Comma-separated list of paths in the test execution environment where the artifacts generated by the customer's tests are pulled from.",
+    }),
   })
   .openapi({
     description:
@@ -2115,35 +1852,18 @@ const CustomerArtifactPathsSchema = z
 
 const RadiosSchema = z
   .object({
-    wifi: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'True if Wi-Fi is enabled at the beginning of the test. Otherwise, false.',
-        }),
-    ).exactOptional(),
-    bluetooth: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'True if Bluetooth is enabled at the beginning of the test. Otherwise, false.',
-        }),
-    ).exactOptional(),
-    nfc: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'True if NFC is enabled at the beginning of the test. Otherwise, false.',
-        }),
-    ).exactOptional(),
-    gps: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'True if GPS is enabled at the beginning of the test. Otherwise, false.',
-        }),
-    ).exactOptional(),
+    wifi: BooleanSchema.exactOptional().openapi({
+      description: 'True if Wi-Fi is enabled at the beginning of the test. Otherwise, false.',
+    }),
+    bluetooth: BooleanSchema.exactOptional().openapi({
+      description: 'True if Bluetooth is enabled at the beginning of the test. Otherwise, false.',
+    }),
+    nfc: BooleanSchema.exactOptional().openapi({
+      description: 'True if NFC is enabled at the beginning of the test. Otherwise, false.',
+    }),
+    gps: BooleanSchema.exactOptional().openapi({
+      description: 'True if GPS is enabled at the beginning of the test. Otherwise, false.',
+    }),
   })
   .openapi({
     description:
@@ -2154,52 +1874,36 @@ const RadiosSchema = z
 
 const ScheduleRunConfigurationSchema = z
   .object({
-    extraDataPackageArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The ARN of the extra data for the run. The extra data is a .zip file that AWS Device Farm extracts to external data for Android or the app's sandbox for iOS.",
-        }),
-    ).exactOptional(),
-    networkProfileArn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'Reserved for internal use.' }),
-    ).exactOptional(),
-    locale: StringSchema.and(
-      z.any().openapi({ description: 'Information about the locale that is used for the run.' }),
-    ).exactOptional(),
-    location: LocationSchema.and(
-      z.any().openapi({ description: 'Information about the location that is used for the run.' }),
-    ).exactOptional(),
-    vpceConfigurationArns: AmazonResourceNamesSchema.and(
-      z.any().openapi({ description: 'An array of ARNs for your VPC endpoint configurations.' }),
-    ).exactOptional(),
-    customerArtifactPaths: CustomerArtifactPathsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Input <code>CustomerArtifactPaths</code> object for the scheduled run configuration.',
-        }),
-    ).exactOptional(),
-    radios: RadiosSchema.and(
-      z.any().openapi({ description: 'Information about the radio states for the run.' }),
-    ).exactOptional(),
-    auxiliaryApps: AmazonResourceNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of upload ARNs for app packages to be installed with your app.',
-        }),
-    ).exactOptional(),
-    billingMethod: BillingMethodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the billing method for a test run: <code>metered</code> or <code>unmetered</code>. If the parameter is not specified, the default value is <code>metered</code>.</p> <note> <p>If you have purchased unmetered device slots, you must set this parameter to <code>unmetered</code> to make use of them. Otherwise, your run counts against your metered time.</p> </note>',
-        }),
-    ).exactOptional(),
+    extraDataPackageArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description:
+        "The ARN of the extra data for the run. The extra data is a .zip file that AWS Device Farm extracts to external data for Android or the app's sandbox for iOS.",
+    }),
+    networkProfileArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description: 'Reserved for internal use.',
+    }),
+    locale: StringSchema.exactOptional().openapi({
+      description: 'Information about the locale that is used for the run.',
+    }),
+    location: LocationSchema.exactOptional().openapi({
+      description: 'Information about the location that is used for the run.',
+    }),
+    vpceConfigurationArns: AmazonResourceNamesSchema.exactOptional().openapi({
+      description: 'An array of ARNs for your VPC endpoint configurations.',
+    }),
+    customerArtifactPaths: CustomerArtifactPathsSchema.exactOptional().openapi({
+      description:
+        'Input <code>CustomerArtifactPaths</code> object for the scheduled run configuration.',
+    }),
+    radios: RadiosSchema.exactOptional().openapi({
+      description: 'Information about the radio states for the run.',
+    }),
+    auxiliaryApps: AmazonResourceNamesSchema.exactOptional().openapi({
+      description: 'A list of upload ARNs for app packages to be installed with your app.',
+    }),
+    billingMethod: BillingMethodSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the billing method for a test run: <code>metered</code> or <code>unmetered</code>. If the parameter is not specified, the default value is <code>metered</code>.</p> <note> <p>If you have purchased unmetered device slots, you must set this parameter to <code>unmetered</code> to make use of them. Otherwise, your run counts against your metered time.</p> </note>',
+    }),
   })
   .openapi({
     description:
@@ -2210,38 +1914,20 @@ const ScheduleRunConfigurationSchema = z
 
 const GetDevicePoolCompatibilityRequestSchema = z
   .object({
-    devicePoolArn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: "The device pool's ARN." }),
-    ),
-    appArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the app that is associated with the specified device pool.',
-        }),
-    ).exactOptional(),
-    testType: TestTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The test type for the specified device pool.</p> <p>Allowed values include the following:</p> <ul> <li> <p>BUILTIN_FUZZ.</p> </li> <li> <p>BUILTIN_EXPLORER. For Android, an app explorer that traverses an Android app, interacting with it and capturing screenshots at the same time.</p> </li> <li> <p>APPIUM_JAVA_JUNIT.</p> </li> <li> <p>APPIUM_JAVA_TESTNG.</p> </li> <li> <p>APPIUM_PYTHON.</p> </li> <li> <p>APPIUM_NODE.</p> </li> <li> <p>APPIUM_RUBY.</p> </li> <li> <p>APPIUM_WEB_JAVA_JUNIT.</p> </li> <li> <p>APPIUM_WEB_JAVA_TESTNG.</p> </li> <li> <p>APPIUM_WEB_PYTHON.</p> </li> <li> <p>APPIUM_WEB_NODE.</p> </li> <li> <p>APPIUM_WEB_RUBY.</p> </li> <li> <p>CALABASH.</p> </li> <li> <p>INSTRUMENTATION.</p> </li> <li> <p>UIAUTOMATION.</p> </li> <li> <p>UIAUTOMATOR.</p> </li> <li> <p>XCTEST.</p> </li> <li> <p>XCTEST_UI.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    test: ScheduleRunTestSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the uploaded test to be run against the device pool.',
-        }),
-    ).exactOptional(),
-    configuration: ScheduleRunConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that contains information about the settings for a run.',
-        }),
-    ).exactOptional(),
+    devicePoolArn: AmazonResourceNameSchema.openapi({ description: "The device pool's ARN." }),
+    appArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description: 'The ARN of the app that is associated with the specified device pool.',
+    }),
+    testType: TestTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The test type for the specified device pool.</p> <p>Allowed values include the following:</p> <ul> <li> <p>BUILTIN_FUZZ.</p> </li> <li> <p>BUILTIN_EXPLORER. For Android, an app explorer that traverses an Android app, interacting with it and capturing screenshots at the same time.</p> </li> <li> <p>APPIUM_JAVA_JUNIT.</p> </li> <li> <p>APPIUM_JAVA_TESTNG.</p> </li> <li> <p>APPIUM_PYTHON.</p> </li> <li> <p>APPIUM_NODE.</p> </li> <li> <p>APPIUM_RUBY.</p> </li> <li> <p>APPIUM_WEB_JAVA_JUNIT.</p> </li> <li> <p>APPIUM_WEB_JAVA_TESTNG.</p> </li> <li> <p>APPIUM_WEB_PYTHON.</p> </li> <li> <p>APPIUM_WEB_NODE.</p> </li> <li> <p>APPIUM_WEB_RUBY.</p> </li> <li> <p>CALABASH.</p> </li> <li> <p>INSTRUMENTATION.</p> </li> <li> <p>UIAUTOMATION.</p> </li> <li> <p>UIAUTOMATOR.</p> </li> <li> <p>XCTEST.</p> </li> <li> <p>XCTEST_UI.</p> </li> </ul>',
+    }),
+    test: ScheduleRunTestSchema.exactOptional().openapi({
+      description: 'Information about the uploaded test to be run against the device pool.',
+    }),
+    configuration: ScheduleRunConfigurationSchema.exactOptional().openapi({
+      description: 'An object that contains information about the settings for a run.',
+    }),
   })
   .openapi({
     required: ['devicePoolArn'],
@@ -2252,133 +1938,27 @@ const GetDevicePoolCompatibilityRequestSchema = z
 
 const GetInstanceProfileResultSchema = z
   .object({
-    instanceProfile: InstanceProfileSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An object that contains information about an instance profile.' }),
-    ).exactOptional(),
+    instanceProfile: InstanceProfileSchema.exactOptional().openapi({
+      description: 'An object that contains information about an instance profile.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetInstanceProfileResult')
 
 const GetInstanceProfileRequestSchema = z
   .object({
-    arn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of an instance profile.' }),
-    ),
+    arn: AmazonResourceNameSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of an instance profile.',
+    }),
   })
   .openapi({ required: ['arn'], title: 'GetInstanceProfileRequest' })
   .openapi('GetInstanceProfileRequest')
 
-const CountersSchema = z
-  .object({
-    total: IntegerSchema.and(
-      z.any().openapi({ description: 'The total number of entities.' }),
-    ).exactOptional(),
-    passed: IntegerSchema.and(
-      z.any().openapi({ description: 'The number of passed entities.' }),
-    ).exactOptional(),
-    failed: IntegerSchema.and(
-      z.any().openapi({ description: 'The number of failed entities.' }),
-    ).exactOptional(),
-    warned: IntegerSchema.and(
-      z.any().openapi({ description: 'The number of warned entities.' }),
-    ).exactOptional(),
-    errored: IntegerSchema.and(
-      z.any().openapi({ description: 'The number of errored entities.' }),
-    ).exactOptional(),
-    stopped: IntegerSchema.and(
-      z.any().openapi({ description: 'The number of stopped entities.' }),
-    ).exactOptional(),
-    skipped: IntegerSchema.and(
-      z.any().openapi({ description: 'The number of skipped entities.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Represents entity counters.', required: [] })
-  .openapi('Counters')
-
-const VideoCaptureSchema = z.boolean().openapi('VideoCapture')
-
-const JobSchema = z
-  .object({
-    arn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: "The job's ARN." }),
-    ).exactOptional(),
-    name: NameSchema.and(z.any().openapi({ description: "The job's name." })).exactOptional(),
-    type: TestTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The job's type.</p> <p>Allowed values include the following:</p> <ul> <li> <p>BUILTIN_FUZZ</p> </li> <li> <p>BUILTIN_EXPLORER. For Android, an app explorer that traverses an Android app, interacting with it and capturing screenshots at the same time.</p> </li> <li> <p>APPIUM_JAVA_JUNIT</p> </li> <li> <p>APPIUM_JAVA_TESTNG</p> </li> <li> <p>APPIUM_PYTHON</p> </li> <li> <p>APPIUM_NODE</p> </li> <li> <p>APPIUM_RUBY</p> </li> <li> <p>APPIUM_WEB_JAVA_JUNIT</p> </li> <li> <p>APPIUM_WEB_JAVA_TESTNG</p> </li> <li> <p>APPIUM_WEB_PYTHON</p> </li> <li> <p>APPIUM_WEB_NODE</p> </li> <li> <p>APPIUM_WEB_RUBY</p> </li> <li> <p>CALABASH</p> </li> <li> <p>INSTRUMENTATION</p> </li> <li> <p>UIAUTOMATION</p> </li> <li> <p>UIAUTOMATOR</p> </li> <li> <p>XCTEST</p> </li> <li> <p>XCTEST_UI</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    created: DateTimeSchema.and(
-      z.any().openapi({ description: 'When the job was created.' }),
-    ).exactOptional(),
-    status: ExecutionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The job's status.</p> <p>Allowed values include:</p> <ul> <li> <p>PENDING</p> </li> <li> <p>PENDING_CONCURRENCY</p> </li> <li> <p>PENDING_DEVICE</p> </li> <li> <p>PROCESSING</p> </li> <li> <p>SCHEDULING</p> </li> <li> <p>PREPARING</p> </li> <li> <p>RUNNING</p> </li> <li> <p>COMPLETED</p> </li> <li> <p>STOPPING</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    result: ExecutionResultSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The job's result.</p> <p>Allowed values include:</p> <ul> <li> <p>PENDING</p> </li> <li> <p>PASSED</p> </li> <li> <p>WARNED</p> </li> <li> <p>FAILED</p> </li> <li> <p>SKIPPED</p> </li> <li> <p>ERRORED</p> </li> <li> <p>STOPPED</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    started: DateTimeSchema.and(
-      z.any().openapi({ description: "The job's start time." }),
-    ).exactOptional(),
-    stopped: DateTimeSchema.and(
-      z.any().openapi({ description: "The job's stop time." }),
-    ).exactOptional(),
-    counters: CountersSchema.and(
-      z.any().openapi({ description: "The job's result counters." }),
-    ).exactOptional(),
-    message: MessageSchema.and(
-      z.any().openapi({ description: "A message about the job's result." }),
-    ).exactOptional(),
-    device: DeviceSchema.and(
-      z.any().openapi({ description: 'The device (phone or tablet).' }),
-    ).exactOptional(),
-    instanceArn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'The ARN of the instance.' }),
-    ).exactOptional(),
-    deviceMinutes: DeviceMinutesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Represents the total (metered or unmetered) minutes used by the job.',
-        }),
-    ).exactOptional(),
-    videoEndpoint: StringSchema.and(
-      z.any().openapi({ description: 'The endpoint for streaming device video.' }),
-    ).exactOptional(),
-    videoCapture: VideoCaptureSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This value is set to true if video capture is enabled. Otherwise, it is set to false.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Represents a device.', required: [] })
-  .openapi('Job')
-
 const GetJobResultSchema = z
   .object({
-    job: JobSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An object that contains information about the requested job.' }),
-    ).exactOptional(),
+    job: JobSchema.exactOptional().openapi({
+      description: 'An object that contains information about the requested job.',
+    }),
   })
   .openapi({
     example: { job: {} },
@@ -2388,7 +1968,7 @@ const GetJobResultSchema = z
   .openapi('GetJobResult')
 
 const GetJobRequestSchema = z
-  .object({ arn: AmazonResourceNameSchema.and(z.any().openapi({ description: "The job's ARN." })) })
+  .object({ arn: AmazonResourceNameSchema.openapi({ description: "The job's ARN." }) })
   .openapi({
     required: ['arn'],
     title: 'GetJobRequest',
@@ -2398,150 +1978,38 @@ const GetJobRequestSchema = z
 
 const GetNetworkProfileResultSchema = z
   .object({
-    networkProfile: NetworkProfileSchema.and(
-      z.any().openapi({ description: 'The network profile.' }),
-    ).exactOptional(),
+    networkProfile: NetworkProfileSchema.exactOptional().openapi({
+      description: 'The network profile.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetNetworkProfileResult')
 
 const GetNetworkProfileRequestSchema = z
   .object({
-    arn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the network profile to return information about.' }),
-    ),
+    arn: AmazonResourceNameSchema.openapi({
+      description: 'The ARN of the network profile to return information about.',
+    }),
   })
   .openapi({ required: ['arn'], title: 'GetNetworkProfileRequest' })
   .openapi('GetNetworkProfileRequest')
-
-const OfferingTransactionTypeSchema = z
-  .enum(['PURCHASE', 'RENEW', 'SYSTEM'])
-  .openapi('OfferingTransactionType')
-
-const OfferingIdentifierSchema = z.string().min(32).openapi('OfferingIdentifier')
-
-const OfferingTypeSchema = z.literal('RECURRING').openapi('OfferingType')
-
-const CurrencyCodeSchema = z.literal('USD').openapi('CurrencyCode')
-
-const MonetaryAmountSchema = z
-  .object({
-    amount: DoubleSchema.and(
-      z.any().openapi({ description: 'The numerical amount of an offering or transaction.' }),
-    ).exactOptional(),
-    currencyCode: CurrencyCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The currency code of a monetary amount. For example, <code>USD</code> means U.S. dollars.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'A number that represents the monetary amount for an offering or transaction.',
-    required: [],
-  })
-  .openapi('MonetaryAmount')
-
-const RecurringChargeFrequencySchema = z.literal('MONTHLY').openapi('RecurringChargeFrequency')
-
-const RecurringChargeSchema = z
-  .object({
-    cost: MonetaryAmountSchema.and(
-      z.any().openapi({ description: 'The cost of the recurring charge.' }),
-    ).exactOptional(),
-    frequency: RecurringChargeFrequencySchema.and(
-      z.any().openapi({ description: 'The frequency in which charges recur.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Specifies whether charges for devices are recurring.', required: [] })
-  .openapi('RecurringCharge')
-
-const RecurringChargesSchema = z.array(RecurringChargeSchema).openapi('RecurringCharges')
-
-const OfferingSchema = z
-  .object({
-    id: OfferingIdentifierSchema.and(
-      z.any().openapi({ description: 'The ID that corresponds to a device offering.' }),
-    ).exactOptional(),
-    description: MessageSchema.and(
-      z.any().openapi({ description: 'A string that describes the offering.' }),
-    ).exactOptional(),
-    type: OfferingTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of offering (for example, <code>RECURRING</code>) for a device.',
-        }),
-    ).exactOptional(),
-    platform: DevicePlatformSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The platform of the device (for example, <code>ANDROID</code> or <code>IOS</code>).',
-        }),
-    ).exactOptional(),
-    recurringCharges: RecurringChargesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies whether there are recurring charges for the offering.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Represents the metadata of a device offering.', required: [] })
-  .openapi('Offering')
-
-const OfferingStatusSchema = z
-  .object({
-    type: OfferingTransactionTypeSchema.and(
-      z.any().openapi({ description: 'The type specified for the offering status.' }),
-    ).exactOptional(),
-    offering: OfferingSchema.and(
-      z.any().openapi({ description: 'Represents the metadata of an offering status.' }),
-    ).exactOptional(),
-    quantity: IntegerSchema.and(
-      z.any().openapi({ description: 'The number of available devices in the offering.' }),
-    ).exactOptional(),
-    effectiveOn: DateTimeSchema.and(
-      z.any().openapi({ description: 'The date on which the offering is effective.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'The status of the offering.', required: [] })
-  .openapi('OfferingStatus')
 
 const OfferingStatusMapSchema = z
   .record(z.string(), OfferingStatusSchema)
   .openapi('OfferingStatusMap')
 
-const PaginationTokenSchema = z.string().min(4).max(1024).openapi('PaginationToken')
-
 const GetOfferingStatusResultSchema = z
   .object({
-    current: OfferingStatusMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'When specified, gets the offering status for the current period.',
-        }),
-    ).exactOptional(),
-    nextPeriod: OfferingStatusMapSchema.and(
-      z
-        .any()
-        .openapi({ description: 'When specified, gets the offering status for the next period.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    current: OfferingStatusMapSchema.exactOptional().openapi({
+      description: 'When specified, gets the offering status for the current period.',
+    }),
+    nextPeriod: OfferingStatusMapSchema.exactOptional().openapi({
+      description: 'When specified, gets the offering status for the next period.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
+    }),
   })
   .openapi({
     example: {
@@ -2576,14 +2044,10 @@ const GetOfferingStatusResultSchema = z
 
 const GetOfferingStatusRequestSchema = z
   .object({
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
+    }),
   })
   .openapi({
     title: 'GetOfferingStatusRequest',
@@ -2597,9 +2061,9 @@ const NotEligibleExceptionSchema = z.any().openapi('NotEligibleException')
 
 const GetProjectResultSchema = z
   .object({
-    project: ProjectSchema.and(
-      z.any().openapi({ description: 'The project to get information about.' }),
-    ).exactOptional(),
+    project: ProjectSchema.exactOptional().openapi({
+      description: 'The project to get information about.',
+    }),
   })
   .openapi({
     example: {
@@ -2615,9 +2079,7 @@ const GetProjectResultSchema = z
   .openapi('GetProjectResult')
 
 const GetProjectRequestSchema = z
-  .object({
-    arn: AmazonResourceNameSchema.and(z.any().openapi({ description: "The project's ARN." })),
-  })
+  .object({ arn: AmazonResourceNameSchema.openapi({ description: "The project's ARN." }) })
   .openapi({
     required: ['arn'],
     title: 'GetProjectRequest',
@@ -2627,14 +2089,9 @@ const GetProjectRequestSchema = z
 
 const GetRemoteAccessSessionResultSchema = z
   .object({
-    remoteAccessSession: RemoteAccessSessionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A container that lists detailed information about the remote access session.',
-        }),
-    ).exactOptional(),
+    remoteAccessSession: RemoteAccessSessionSchema.exactOptional().openapi({
+      description: 'A container that lists detailed information about the remote access session.',
+    }),
   })
   .openapi({
     example: { remoteAccessSession: {} },
@@ -2646,14 +2103,10 @@ const GetRemoteAccessSessionResultSchema = z
 
 const GetRemoteAccessSessionRequestSchema = z
   .object({
-    arn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the remote access session about which you want to get session information.',
-        }),
-    ),
+    arn: AmazonResourceNameSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the remote access session about which you want to get session information.',
+    }),
   })
   .openapi({
     required: ['arn'],
@@ -2688,30 +2141,18 @@ const DeviceFilterValuesSchema = z.array(StringSchema).openapi('DeviceFilterValu
 
 const DeviceFilterSchema = z
   .object({
-    attribute: DeviceFilterAttributeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The aspect of a device such as platform or model used as the selection criteria in a device filter.</p> <p>The supported operators for each attribute are provided in the following list.</p> <dl> <dt>ARN</dt> <dd> <p>The Amazon Resource Name (ARN) of the device (for example, <code>arn:aws:devicefarm:us-west-2::device:12345Example</code>).</p> <p>Supported operators: <code>EQUALS</code>, <code>IN</code>, <code>NOT_IN</code> </p> </dd> <dt>PLATFORM</dt> <dd> <p>The device platform. Valid values are ANDROID or IOS.</p> <p>Supported operators: <code>EQUALS</code> </p> </dd> <dt>OS_VERSION</dt> <dd> <p>The operating system version (for example, 10.3.2).</p> <p>Supported operators: <code>EQUALS</code>, <code>GREATER_THAN</code>, <code>GREATER_THAN_OR_EQUALS</code>, <code>IN</code>, <code>LESS_THAN</code>, <code>LESS_THAN_OR_EQUALS</code>, <code>NOT_IN</code> </p> </dd> <dt>MODEL</dt> <dd> <p>The device model (for example, iPad 5th Gen).</p> <p>Supported operators: <code>CONTAINS</code>, <code>EQUALS</code>, <code>IN</code>, <code>NOT_IN</code> </p> </dd> <dt>AVAILABILITY</dt> <dd> <p>The current availability of the device. Valid values are AVAILABLE, HIGHLY_AVAILABLE, BUSY, or TEMPORARY_NOT_AVAILABLE.</p> <p>Supported operators: <code>EQUALS</code> </p> </dd> <dt>FORM_FACTOR</dt> <dd> <p>The device form factor. Valid values are PHONE or TABLET.</p> <p>Supported operators: <code>EQUALS</code> </p> </dd> <dt>MANUFACTURER</dt> <dd> <p>The device manufacturer (for example, Apple).</p> <p>Supported operators: <code>EQUALS</code>, <code>IN</code>, <code>NOT_IN</code> </p> </dd> <dt>REMOTE_ACCESS_ENABLED</dt> <dd> <p>Whether the device is enabled for remote access. Valid values are TRUE or FALSE.</p> <p>Supported operators: <code>EQUALS</code> </p> </dd> <dt>REMOTE_DEBUG_ENABLED</dt> <dd> <p>Whether the device is enabled for remote debugging. Valid values are TRUE or FALSE.</p> <p>Supported operators: <code>EQUALS</code> </p> <p>Because remote debugging is <a href="https://docs.aws.amazon.com/devicefarm/latest/developerguide/history.html">no longer supported</a>, this filter is ignored.</p> </dd> <dt>INSTANCE_ARN</dt> <dd> <p>The Amazon Resource Name (ARN) of the device instance.</p> <p>Supported operators: <code>EQUALS</code>, <code>IN</code>, <code>NOT_IN</code> </p> </dd> <dt>INSTANCE_LABELS</dt> <dd> <p>The label of the device instance.</p> <p>Supported operators: <code>CONTAINS</code> </p> </dd> <dt>FLEET_TYPE</dt> <dd> <p>The fleet type. Valid values are PUBLIC or PRIVATE.</p> <p>Supported operators: <code>EQUALS</code> </p> </dd> </dl>',
-        }),
-    ),
-    operator: RuleOperatorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies how Device Farm compares the filter's attribute to the value. See the attribute descriptions.",
-        }),
-    ),
-    values: DeviceFilterValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of one or more filter values used in a device filter.</p> <p class="title"> <b>Operator Values</b> </p> <ul> <li> <p>The IN and NOT_IN operators can take a values array that has more than one element.</p> </li> <li> <p>The other operators require an array with a single element.</p> </li> </ul> <p class="title"> <b>Attribute Values</b> </p> <ul> <li> <p>The PLATFORM attribute can be set to ANDROID or IOS.</p> </li> <li> <p>The AVAILABILITY attribute can be set to AVAILABLE, HIGHLY_AVAILABLE, BUSY, or TEMPORARY_NOT_AVAILABLE.</p> </li> <li> <p>The FORM_FACTOR attribute can be set to PHONE or TABLET.</p> </li> <li> <p>The FLEET_TYPE attribute can be set to PUBLIC or PRIVATE.</p> </li> </ul>',
-        }),
-    ),
+    attribute: DeviceFilterAttributeSchema.openapi({
+      description:
+        '<p>The aspect of a device such as platform or model used as the selection criteria in a device filter.</p> <p>The supported operators for each attribute are provided in the following list.</p> <dl> <dt>ARN</dt> <dd> <p>The Amazon Resource Name (ARN) of the device (for example, <code>arn:aws:devicefarm:us-west-2::device:12345Example</code>).</p> <p>Supported operators: <code>EQUALS</code>, <code>IN</code>, <code>NOT_IN</code> </p> </dd> <dt>PLATFORM</dt> <dd> <p>The device platform. Valid values are ANDROID or IOS.</p> <p>Supported operators: <code>EQUALS</code> </p> </dd> <dt>OS_VERSION</dt> <dd> <p>The operating system version (for example, 10.3.2).</p> <p>Supported operators: <code>EQUALS</code>, <code>GREATER_THAN</code>, <code>GREATER_THAN_OR_EQUALS</code>, <code>IN</code>, <code>LESS_THAN</code>, <code>LESS_THAN_OR_EQUALS</code>, <code>NOT_IN</code> </p> </dd> <dt>MODEL</dt> <dd> <p>The device model (for example, iPad 5th Gen).</p> <p>Supported operators: <code>CONTAINS</code>, <code>EQUALS</code>, <code>IN</code>, <code>NOT_IN</code> </p> </dd> <dt>AVAILABILITY</dt> <dd> <p>The current availability of the device. Valid values are AVAILABLE, HIGHLY_AVAILABLE, BUSY, or TEMPORARY_NOT_AVAILABLE.</p> <p>Supported operators: <code>EQUALS</code> </p> </dd> <dt>FORM_FACTOR</dt> <dd> <p>The device form factor. Valid values are PHONE or TABLET.</p> <p>Supported operators: <code>EQUALS</code> </p> </dd> <dt>MANUFACTURER</dt> <dd> <p>The device manufacturer (for example, Apple).</p> <p>Supported operators: <code>EQUALS</code>, <code>IN</code>, <code>NOT_IN</code> </p> </dd> <dt>REMOTE_ACCESS_ENABLED</dt> <dd> <p>Whether the device is enabled for remote access. Valid values are TRUE or FALSE.</p> <p>Supported operators: <code>EQUALS</code> </p> </dd> <dt>REMOTE_DEBUG_ENABLED</dt> <dd> <p>Whether the device is enabled for remote debugging. Valid values are TRUE or FALSE.</p> <p>Supported operators: <code>EQUALS</code> </p> <p>Because remote debugging is <a href="https://docs.aws.amazon.com/devicefarm/latest/developerguide/history.html">no longer supported</a>, this filter is ignored.</p> </dd> <dt>INSTANCE_ARN</dt> <dd> <p>The Amazon Resource Name (ARN) of the device instance.</p> <p>Supported operators: <code>EQUALS</code>, <code>IN</code>, <code>NOT_IN</code> </p> </dd> <dt>INSTANCE_LABELS</dt> <dd> <p>The label of the device instance.</p> <p>Supported operators: <code>CONTAINS</code> </p> </dd> <dt>FLEET_TYPE</dt> <dd> <p>The fleet type. Valid values are PUBLIC or PRIVATE.</p> <p>Supported operators: <code>EQUALS</code> </p> </dd> </dl>',
+    }),
+    operator: RuleOperatorSchema.openapi({
+      description:
+        "Specifies how Device Farm compares the filter's attribute to the value. See the attribute descriptions.",
+    }),
+    values: DeviceFilterValuesSchema.openapi({
+      description:
+        '<p>An array of one or more filter values used in a device filter.</p> <p class="title"> <b>Operator Values</b> </p> <ul> <li> <p>The IN and NOT_IN operators can take a values array that has more than one element.</p> </li> <li> <p>The other operators require an array with a single element.</p> </li> </ul> <p class="title"> <b>Attribute Values</b> </p> <ul> <li> <p>The PLATFORM attribute can be set to ANDROID or IOS.</p> </li> <li> <p>The AVAILABILITY attribute can be set to AVAILABLE, HIGHLY_AVAILABLE, BUSY, or TEMPORARY_NOT_AVAILABLE.</p> </li> <li> <p>The FORM_FACTOR attribute can be set to PHONE or TABLET.</p> </li> <li> <p>The FLEET_TYPE attribute can be set to PUBLIC or PRIVATE.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['attribute', 'operator', 'values'],
@@ -2724,24 +2165,16 @@ const DeviceFiltersSchema = z.array(DeviceFilterSchema).openapi('DeviceFilters')
 
 const DeviceSelectionResultSchema = z
   .object({
-    filters: DeviceFiltersSchema.and(
-      z.any().openapi({ description: 'The filters in a device selection result.' }),
-    ).exactOptional(),
-    matchedDevicesCount: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of devices that matched the device filter selection criteria.',
-        }),
-    ).exactOptional(),
-    maxDevices: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of devices to be selected by a device filter and included in a test run.',
-        }),
-    ).exactOptional(),
+    filters: DeviceFiltersSchema.exactOptional().openapi({
+      description: 'The filters in a device selection result.',
+    }),
+    matchedDevicesCount: IntegerSchema.exactOptional().openapi({
+      description: 'The number of devices that matched the device filter selection criteria.',
+    }),
+    maxDevices: IntegerSchema.exactOptional().openapi({
+      description:
+        'The maximum number of devices to be selected by a device filter and included in a test run.',
+    }),
   })
   .openapi({
     description:
@@ -2752,170 +2185,100 @@ const DeviceSelectionResultSchema = z
 
 const RunSchema = z
   .object({
-    arn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: "The run's ARN." }),
-    ).exactOptional(),
-    name: NameSchema.and(z.any().openapi({ description: "The run's name." })).exactOptional(),
-    type: TestTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The run's type.</p> <p>Must be one of the following values:</p> <ul> <li> <p>BUILTIN_FUZZ</p> </li> <li> <p>BUILTIN_EXPLORER</p> <note> <p>For Android, an app explorer that traverses an Android app, interacting with it and capturing screenshots at the same time.</p> </note> </li> <li> <p>APPIUM_JAVA_JUNIT</p> </li> <li> <p>APPIUM_JAVA_TESTNG</p> </li> <li> <p>APPIUM_PYTHON</p> </li> <li> <p>APPIUM_NODE</p> </li> <li> <p>APPIUM_RUBY</p> </li> <li> <p>APPIUM_WEB_JAVA_JUNIT</p> </li> <li> <p>APPIUM_WEB_JAVA_TESTNG</p> </li> <li> <p>APPIUM_WEB_PYTHON</p> </li> <li> <p>APPIUM_WEB_NODE</p> </li> <li> <p>APPIUM_WEB_RUBY</p> </li> <li> <p>CALABASH</p> </li> <li> <p>INSTRUMENTATION</p> </li> <li> <p>UIAUTOMATION</p> </li> <li> <p>UIAUTOMATOR</p> </li> <li> <p>XCTEST</p> </li> <li> <p>XCTEST_UI</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    platform: DevicePlatformSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The run's platform.</p> <p>Allowed values include:</p> <ul> <li> <p>ANDROID</p> </li> <li> <p>IOS</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    created: DateTimeSchema.and(
-      z.any().openapi({ description: 'When the run was created.' }),
-    ).exactOptional(),
-    status: ExecutionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The run's status.</p> <p>Allowed values include:</p> <ul> <li> <p>PENDING</p> </li> <li> <p>PENDING_CONCURRENCY</p> </li> <li> <p>PENDING_DEVICE</p> </li> <li> <p>PROCESSING</p> </li> <li> <p>SCHEDULING</p> </li> <li> <p>PREPARING</p> </li> <li> <p>RUNNING</p> </li> <li> <p>COMPLETED</p> </li> <li> <p>STOPPING</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    result: ExecutionResultSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The run's result.</p> <p>Allowed values include:</p> <ul> <li> <p>PENDING</p> </li> <li> <p>PASSED</p> </li> <li> <p>WARNED</p> </li> <li> <p>FAILED</p> </li> <li> <p>SKIPPED</p> </li> <li> <p>ERRORED</p> </li> <li> <p>STOPPED</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    started: DateTimeSchema.and(
-      z.any().openapi({ description: "The run's start time." }),
-    ).exactOptional(),
-    stopped: DateTimeSchema.and(
-      z.any().openapi({ description: "The run's stop time." }),
-    ).exactOptional(),
-    counters: CountersSchema.and(
-      z.any().openapi({ description: "The run's result counters." }),
-    ).exactOptional(),
-    message: MessageSchema.and(
-      z.any().openapi({ description: "A message about the run's result." }),
-    ).exactOptional(),
-    totalJobs: IntegerSchema.and(
-      z.any().openapi({ description: 'The total number of jobs for the run.' }),
-    ).exactOptional(),
-    completedJobs: IntegerSchema.and(
-      z.any().openapi({ description: 'The total number of completed jobs.' }),
-    ).exactOptional(),
-    billingMethod: BillingMethodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the billing method for a test run: <code>metered</code> or <code>unmetered</code>. If the parameter is not specified, the default value is <code>metered</code>.</p> <note> <p>If you have unmetered device slots, you must set this to <code>unmetered</code> to use them. Otherwise, the run is counted toward metered device minutes.</p> </note>',
-        }),
-    ).exactOptional(),
-    deviceMinutes: DeviceMinutesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Represents the total (metered or unmetered) minutes used by the test run.',
-        }),
-    ).exactOptional(),
-    networkProfile: NetworkProfileSchema.and(
-      z.any().openapi({ description: 'The network profile being used for a test run.' }),
-    ).exactOptional(),
-    parsingResultUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Read-only URL for an object in an S3 bucket where you can get the parsing results of the test package. If the test package doesn't parse, the reason why it doesn't parse appears in the file that this URL points to.",
-        }),
-    ).exactOptional(),
-    resultCode: ExecutionResultCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Supporting field for the result field. Set only if <code>result</code> is <code>SKIPPED</code>. <code>PARSING_FAILED</code> if the result is skipped because of test package parsing failure.',
-        }),
-    ).exactOptional(),
-    seed: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For fuzz tests, this is a seed to use for randomizing the UI fuzz test. Using the same seed value between tests ensures identical event sequences.',
-        }),
-    ).exactOptional(),
-    appUpload: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'An app to upload or that has been uploaded.' }),
-    ).exactOptional(),
-    eventCount: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For fuzz tests, this is the number of events, between 1 and 10000, that the UI fuzz test should perform.',
-        }),
-    ).exactOptional(),
-    jobTimeoutMinutes: JobTimeoutMinutesSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The number of minutes the job executes before it times out.' }),
-    ).exactOptional(),
-    devicePoolArn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'The ARN of the device pool for the run.' }),
-    ).exactOptional(),
-    locale: StringSchema.and(
-      z.any().openapi({ description: 'Information about the locale that is used for the run.' }),
-    ).exactOptional(),
-    radios: RadiosSchema.and(
-      z.any().openapi({ description: 'Information about the radio states for the run.' }),
-    ).exactOptional(),
-    location: LocationSchema.and(
-      z.any().openapi({ description: 'Information about the location that is used for the run.' }),
-    ).exactOptional(),
-    customerArtifactPaths: CustomerArtifactPathsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Output <code>CustomerArtifactPaths</code> object for the test run.',
-        }),
-    ).exactOptional(),
-    webUrl: StringSchema.and(
-      z.any().openapi({ description: 'The Device Farm console URL for the recording of the run.' }),
-    ).exactOptional(),
-    skipAppResign: SkipAppResignSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>When set to <code>true</code>, for private devices, Device Farm does not sign your app again. For public devices, Device Farm always signs your apps again.</p> <p>For more information about how Device Farm re-signs your apps, see <a href="http://aws.amazon.com/device-farm/faqs/">Do you modify my app?</a> in the <i>AWS Device Farm FAQs</i>.</p>',
-        }),
-    ).exactOptional(),
-    testSpecArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the YAML-formatted test specification for the run.' }),
-    ).exactOptional(),
-    deviceSelectionResult: DeviceSelectionResultSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The results of a device filter used to select the devices for a test run.',
-        }),
-    ).exactOptional(),
-    vpcConfig: VpcConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The VPC security groups and subnets that are attached to a project.',
-        }),
-    ).exactOptional(),
+    arn: AmazonResourceNameSchema.exactOptional().openapi({ description: "The run's ARN." }),
+    name: NameSchema.exactOptional().openapi({ description: "The run's name." }),
+    type: TestTypeSchema.exactOptional().openapi({
+      description:
+        "<p>The run's type.</p> <p>Must be one of the following values:</p> <ul> <li> <p>BUILTIN_FUZZ</p> </li> <li> <p>BUILTIN_EXPLORER</p> <note> <p>For Android, an app explorer that traverses an Android app, interacting with it and capturing screenshots at the same time.</p> </note> </li> <li> <p>APPIUM_JAVA_JUNIT</p> </li> <li> <p>APPIUM_JAVA_TESTNG</p> </li> <li> <p>APPIUM_PYTHON</p> </li> <li> <p>APPIUM_NODE</p> </li> <li> <p>APPIUM_RUBY</p> </li> <li> <p>APPIUM_WEB_JAVA_JUNIT</p> </li> <li> <p>APPIUM_WEB_JAVA_TESTNG</p> </li> <li> <p>APPIUM_WEB_PYTHON</p> </li> <li> <p>APPIUM_WEB_NODE</p> </li> <li> <p>APPIUM_WEB_RUBY</p> </li> <li> <p>CALABASH</p> </li> <li> <p>INSTRUMENTATION</p> </li> <li> <p>UIAUTOMATION</p> </li> <li> <p>UIAUTOMATOR</p> </li> <li> <p>XCTEST</p> </li> <li> <p>XCTEST_UI</p> </li> </ul>",
+    }),
+    platform: DevicePlatformSchema.exactOptional().openapi({
+      description:
+        "<p>The run's platform.</p> <p>Allowed values include:</p> <ul> <li> <p>ANDROID</p> </li> <li> <p>IOS</p> </li> </ul>",
+    }),
+    created: DateTimeSchema.exactOptional().openapi({ description: 'When the run was created.' }),
+    status: ExecutionStatusSchema.exactOptional().openapi({
+      description:
+        "<p>The run's status.</p> <p>Allowed values include:</p> <ul> <li> <p>PENDING</p> </li> <li> <p>PENDING_CONCURRENCY</p> </li> <li> <p>PENDING_DEVICE</p> </li> <li> <p>PROCESSING</p> </li> <li> <p>SCHEDULING</p> </li> <li> <p>PREPARING</p> </li> <li> <p>RUNNING</p> </li> <li> <p>COMPLETED</p> </li> <li> <p>STOPPING</p> </li> </ul>",
+    }),
+    result: ExecutionResultSchema.exactOptional().openapi({
+      description:
+        "<p>The run's result.</p> <p>Allowed values include:</p> <ul> <li> <p>PENDING</p> </li> <li> <p>PASSED</p> </li> <li> <p>WARNED</p> </li> <li> <p>FAILED</p> </li> <li> <p>SKIPPED</p> </li> <li> <p>ERRORED</p> </li> <li> <p>STOPPED</p> </li> </ul>",
+    }),
+    started: DateTimeSchema.exactOptional().openapi({ description: "The run's start time." }),
+    stopped: DateTimeSchema.exactOptional().openapi({ description: "The run's stop time." }),
+    counters: CountersSchema.exactOptional().openapi({ description: "The run's result counters." }),
+    message: MessageSchema.exactOptional().openapi({
+      description: "A message about the run's result.",
+    }),
+    totalJobs: IntegerSchema.exactOptional().openapi({
+      description: 'The total number of jobs for the run.',
+    }),
+    completedJobs: IntegerSchema.exactOptional().openapi({
+      description: 'The total number of completed jobs.',
+    }),
+    billingMethod: BillingMethodSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the billing method for a test run: <code>metered</code> or <code>unmetered</code>. If the parameter is not specified, the default value is <code>metered</code>.</p> <note> <p>If you have unmetered device slots, you must set this to <code>unmetered</code> to use them. Otherwise, the run is counted toward metered device minutes.</p> </note>',
+    }),
+    deviceMinutes: DeviceMinutesSchema.exactOptional().openapi({
+      description: 'Represents the total (metered or unmetered) minutes used by the test run.',
+    }),
+    networkProfile: NetworkProfileSchema.exactOptional().openapi({
+      description: 'The network profile being used for a test run.',
+    }),
+    parsingResultUrl: StringSchema.exactOptional().openapi({
+      description:
+        "Read-only URL for an object in an S3 bucket where you can get the parsing results of the test package. If the test package doesn't parse, the reason why it doesn't parse appears in the file that this URL points to.",
+    }),
+    resultCode: ExecutionResultCodeSchema.exactOptional().openapi({
+      description:
+        'Supporting field for the result field. Set only if <code>result</code> is <code>SKIPPED</code>. <code>PARSING_FAILED</code> if the result is skipped because of test package parsing failure.',
+    }),
+    seed: IntegerSchema.exactOptional().openapi({
+      description:
+        'For fuzz tests, this is a seed to use for randomizing the UI fuzz test. Using the same seed value between tests ensures identical event sequences.',
+    }),
+    appUpload: AmazonResourceNameSchema.exactOptional().openapi({
+      description: 'An app to upload or that has been uploaded.',
+    }),
+    eventCount: IntegerSchema.exactOptional().openapi({
+      description:
+        'For fuzz tests, this is the number of events, between 1 and 10000, that the UI fuzz test should perform.',
+    }),
+    jobTimeoutMinutes: JobTimeoutMinutesSchema.exactOptional().openapi({
+      description: 'The number of minutes the job executes before it times out.',
+    }),
+    devicePoolArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description: 'The ARN of the device pool for the run.',
+    }),
+    locale: StringSchema.exactOptional().openapi({
+      description: 'Information about the locale that is used for the run.',
+    }),
+    radios: RadiosSchema.exactOptional().openapi({
+      description: 'Information about the radio states for the run.',
+    }),
+    location: LocationSchema.exactOptional().openapi({
+      description: 'Information about the location that is used for the run.',
+    }),
+    customerArtifactPaths: CustomerArtifactPathsSchema.exactOptional().openapi({
+      description: 'Output <code>CustomerArtifactPaths</code> object for the test run.',
+    }),
+    webUrl: StringSchema.exactOptional().openapi({
+      description: 'The Device Farm console URL for the recording of the run.',
+    }),
+    skipAppResign: SkipAppResignSchema.exactOptional().openapi({
+      description:
+        '<p>When set to <code>true</code>, for private devices, Device Farm does not sign your app again. For public devices, Device Farm always signs your apps again.</p> <p>For more information about how Device Farm re-signs your apps, see <a href="http://aws.amazon.com/device-farm/faqs/">Do you modify my app?</a> in the <i>AWS Device Farm FAQs</i>.</p>',
+    }),
+    testSpecArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description: 'The ARN of the YAML-formatted test specification for the run.',
+    }),
+    deviceSelectionResult: DeviceSelectionResultSchema.exactOptional().openapi({
+      description: 'The results of a device filter used to select the devices for a test run.',
+    }),
+    vpcConfig: VpcConfigSchema.exactOptional().openapi({
+      description: 'The VPC security groups and subnets that are attached to a project.',
+    }),
   })
   .openapi({
     description:
@@ -2926,9 +2289,7 @@ const RunSchema = z
 
 const GetRunResultSchema = z
   .object({
-    run: RunSchema.and(
-      z.any().openapi({ description: 'The run to get results from.' }),
-    ).exactOptional(),
+    run: RunSchema.exactOptional().openapi({ description: 'The run to get results from.' }),
   })
   .openapi({
     example: {
@@ -2953,7 +2314,7 @@ const GetRunResultSchema = z
   .openapi('GetRunResult')
 
 const GetRunRequestSchema = z
-  .object({ arn: AmazonResourceNameSchema.and(z.any().openapi({ description: "The run's ARN." })) })
+  .object({ arn: AmazonResourceNameSchema.openapi({ description: "The run's ARN." }) })
   .openapi({
     required: ['arn'],
     title: 'GetRunRequest',
@@ -2963,66 +2324,41 @@ const GetRunRequestSchema = z
 
 const SuiteSchema = z
   .object({
-    arn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: "The suite's ARN." }),
-    ).exactOptional(),
-    name: NameSchema.and(z.any().openapi({ description: "The suite's name." })).exactOptional(),
-    type: TestTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The suite's type.</p> <p>Must be one of the following values:</p> <ul> <li> <p>BUILTIN_FUZZ</p> </li> <li> <p>BUILTIN_EXPLORER </p> <note> <p>Only available for Android; an app explorer that traverses an Android app, interacting with it and capturing screenshots at the same time.</p> </note> </li> <li> <p>APPIUM_JAVA_JUNIT</p> </li> <li> <p>APPIUM_JAVA_TESTNG</p> </li> <li> <p>APPIUM_PYTHON</p> </li> <li> <p>APPIUM_NODE</p> </li> <li> <p>APPIUM_RUBY</p> </li> <li> <p>APPIUM_WEB_JAVA_JUNIT</p> </li> <li> <p>APPIUM_WEB_JAVA_TESTNG</p> </li> <li> <p>APPIUM_WEB_PYTHON</p> </li> <li> <p>APPIUM_WEB_NODE</p> </li> <li> <p>APPIUM_WEB_RUBY</p> </li> <li> <p>CALABASH</p> </li> <li> <p>INSTRUMENTATION</p> </li> <li> <p>UIAUTOMATION</p> </li> <li> <p>UIAUTOMATOR</p> </li> <li> <p>XCTEST</p> </li> <li> <p>XCTEST_UI</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    created: DateTimeSchema.and(
-      z.any().openapi({ description: 'When the suite was created.' }),
-    ).exactOptional(),
-    status: ExecutionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The suite's status.</p> <p>Allowed values include:</p> <ul> <li> <p>PENDING</p> </li> <li> <p>PENDING_CONCURRENCY</p> </li> <li> <p>PENDING_DEVICE</p> </li> <li> <p>PROCESSING</p> </li> <li> <p>SCHEDULING</p> </li> <li> <p>PREPARING</p> </li> <li> <p>RUNNING</p> </li> <li> <p>COMPLETED</p> </li> <li> <p>STOPPING</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    result: ExecutionResultSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The suite's result.</p> <p>Allowed values include:</p> <ul> <li> <p>PENDING</p> </li> <li> <p>PASSED</p> </li> <li> <p>WARNED</p> </li> <li> <p>FAILED</p> </li> <li> <p>SKIPPED</p> </li> <li> <p>ERRORED</p> </li> <li> <p>STOPPED</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    started: DateTimeSchema.and(
-      z.any().openapi({ description: "The suite's start time." }),
-    ).exactOptional(),
-    stopped: DateTimeSchema.and(
-      z.any().openapi({ description: "The suite's stop time." }),
-    ).exactOptional(),
-    counters: CountersSchema.and(
-      z.any().openapi({ description: "The suite's result counters." }),
-    ).exactOptional(),
-    message: MessageSchema.and(
-      z.any().openapi({ description: "A message about the suite's result." }),
-    ).exactOptional(),
-    deviceMinutes: DeviceMinutesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Represents the total (metered or unmetered) minutes used by the test suite.',
-        }),
-    ).exactOptional(),
+    arn: AmazonResourceNameSchema.exactOptional().openapi({ description: "The suite's ARN." }),
+    name: NameSchema.exactOptional().openapi({ description: "The suite's name." }),
+    type: TestTypeSchema.exactOptional().openapi({
+      description:
+        "<p>The suite's type.</p> <p>Must be one of the following values:</p> <ul> <li> <p>BUILTIN_FUZZ</p> </li> <li> <p>BUILTIN_EXPLORER </p> <note> <p>Only available for Android; an app explorer that traverses an Android app, interacting with it and capturing screenshots at the same time.</p> </note> </li> <li> <p>APPIUM_JAVA_JUNIT</p> </li> <li> <p>APPIUM_JAVA_TESTNG</p> </li> <li> <p>APPIUM_PYTHON</p> </li> <li> <p>APPIUM_NODE</p> </li> <li> <p>APPIUM_RUBY</p> </li> <li> <p>APPIUM_WEB_JAVA_JUNIT</p> </li> <li> <p>APPIUM_WEB_JAVA_TESTNG</p> </li> <li> <p>APPIUM_WEB_PYTHON</p> </li> <li> <p>APPIUM_WEB_NODE</p> </li> <li> <p>APPIUM_WEB_RUBY</p> </li> <li> <p>CALABASH</p> </li> <li> <p>INSTRUMENTATION</p> </li> <li> <p>UIAUTOMATION</p> </li> <li> <p>UIAUTOMATOR</p> </li> <li> <p>XCTEST</p> </li> <li> <p>XCTEST_UI</p> </li> </ul>",
+    }),
+    created: DateTimeSchema.exactOptional().openapi({ description: 'When the suite was created.' }),
+    status: ExecutionStatusSchema.exactOptional().openapi({
+      description:
+        "<p>The suite's status.</p> <p>Allowed values include:</p> <ul> <li> <p>PENDING</p> </li> <li> <p>PENDING_CONCURRENCY</p> </li> <li> <p>PENDING_DEVICE</p> </li> <li> <p>PROCESSING</p> </li> <li> <p>SCHEDULING</p> </li> <li> <p>PREPARING</p> </li> <li> <p>RUNNING</p> </li> <li> <p>COMPLETED</p> </li> <li> <p>STOPPING</p> </li> </ul>",
+    }),
+    result: ExecutionResultSchema.exactOptional().openapi({
+      description:
+        "<p>The suite's result.</p> <p>Allowed values include:</p> <ul> <li> <p>PENDING</p> </li> <li> <p>PASSED</p> </li> <li> <p>WARNED</p> </li> <li> <p>FAILED</p> </li> <li> <p>SKIPPED</p> </li> <li> <p>ERRORED</p> </li> <li> <p>STOPPED</p> </li> </ul>",
+    }),
+    started: DateTimeSchema.exactOptional().openapi({ description: "The suite's start time." }),
+    stopped: DateTimeSchema.exactOptional().openapi({ description: "The suite's stop time." }),
+    counters: CountersSchema.exactOptional().openapi({
+      description: "The suite's result counters.",
+    }),
+    message: MessageSchema.exactOptional().openapi({
+      description: "A message about the suite's result.",
+    }),
+    deviceMinutes: DeviceMinutesSchema.exactOptional().openapi({
+      description: 'Represents the total (metered or unmetered) minutes used by the test suite.',
+    }),
   })
   .openapi({ description: 'Represents a collection of one or more tests.', required: [] })
   .openapi('Suite')
 
 const GetSuiteResultSchema = z
   .object({
-    suite: SuiteSchema.and(
-      z.any().openapi({ description: 'A collection of one or more tests.' }),
-    ).exactOptional(),
+    suite: SuiteSchema.exactOptional().openapi({
+      description: 'A collection of one or more tests.',
+    }),
   })
   .openapi({
     example: { suite: {} },
@@ -3032,9 +2368,7 @@ const GetSuiteResultSchema = z
   .openapi('GetSuiteResult')
 
 const GetSuiteRequestSchema = z
-  .object({
-    arn: AmazonResourceNameSchema.and(z.any().openapi({ description: "The suite's ARN." })),
-  })
+  .object({ arn: AmazonResourceNameSchema.openapi({ description: "The suite's ARN." }) })
   .openapi({
     required: ['arn'],
     title: 'GetSuiteRequest',
@@ -3044,65 +2378,41 @@ const GetSuiteRequestSchema = z
 
 const TestSchema = z
   .object({
-    arn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: "The test's ARN." }),
-    ).exactOptional(),
-    name: NameSchema.and(z.any().openapi({ description: "The test's name." })).exactOptional(),
-    type: TestTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The test's type.</p> <p>Must be one of the following values:</p> <ul> <li> <p>BUILTIN_FUZZ</p> </li> <li> <p>BUILTIN_EXPLORER</p> <note> <p>For Android, an app explorer that traverses an Android app, interacting with it and capturing screenshots at the same time.</p> </note> </li> <li> <p>APPIUM_JAVA_JUNIT</p> </li> <li> <p>APPIUM_JAVA_TESTNG</p> </li> <li> <p>APPIUM_PYTHON</p> </li> <li> <p>APPIUM_NODE</p> </li> <li> <p>APPIUM_RUBY</p> </li> <li> <p>APPIUM_WEB_JAVA_JUNIT</p> </li> <li> <p>APPIUM_WEB_JAVA_TESTNG</p> </li> <li> <p>APPIUM_WEB_PYTHON</p> </li> <li> <p>APPIUM_WEB_NODE</p> </li> <li> <p>APPIUM_WEB_RUBY</p> </li> <li> <p>CALABASH</p> </li> <li> <p>INSTRUMENTATION</p> </li> <li> <p>UIAUTOMATION</p> </li> <li> <p>UIAUTOMATOR</p> </li> <li> <p>XCTEST</p> </li> <li> <p>XCTEST_UI</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    created: DateTimeSchema.and(
-      z.any().openapi({ description: 'When the test was created.' }),
-    ).exactOptional(),
-    status: ExecutionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The test's status.</p> <p>Allowed values include:</p> <ul> <li> <p>PENDING</p> </li> <li> <p>PENDING_CONCURRENCY</p> </li> <li> <p>PENDING_DEVICE</p> </li> <li> <p>PROCESSING</p> </li> <li> <p>SCHEDULING</p> </li> <li> <p>PREPARING</p> </li> <li> <p>RUNNING</p> </li> <li> <p>COMPLETED</p> </li> <li> <p>STOPPING</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    result: ExecutionResultSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The test's result.</p> <p>Allowed values include:</p> <ul> <li> <p>PENDING</p> </li> <li> <p>PASSED</p> </li> <li> <p>WARNED</p> </li> <li> <p>FAILED</p> </li> <li> <p>SKIPPED</p> </li> <li> <p>ERRORED</p> </li> <li> <p>STOPPED</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    started: DateTimeSchema.and(
-      z.any().openapi({ description: "The test's start time." }),
-    ).exactOptional(),
-    stopped: DateTimeSchema.and(
-      z.any().openapi({ description: "The test's stop time." }),
-    ).exactOptional(),
-    counters: CountersSchema.and(
-      z.any().openapi({ description: "The test's result counters." }),
-    ).exactOptional(),
-    message: MessageSchema.and(
-      z.any().openapi({ description: "A message about the test's result." }),
-    ).exactOptional(),
-    deviceMinutes: DeviceMinutesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Represents the total (metered or unmetered) minutes used by the test.',
-        }),
-    ).exactOptional(),
+    arn: AmazonResourceNameSchema.exactOptional().openapi({ description: "The test's ARN." }),
+    name: NameSchema.exactOptional().openapi({ description: "The test's name." }),
+    type: TestTypeSchema.exactOptional().openapi({
+      description:
+        "<p>The test's type.</p> <p>Must be one of the following values:</p> <ul> <li> <p>BUILTIN_FUZZ</p> </li> <li> <p>BUILTIN_EXPLORER</p> <note> <p>For Android, an app explorer that traverses an Android app, interacting with it and capturing screenshots at the same time.</p> </note> </li> <li> <p>APPIUM_JAVA_JUNIT</p> </li> <li> <p>APPIUM_JAVA_TESTNG</p> </li> <li> <p>APPIUM_PYTHON</p> </li> <li> <p>APPIUM_NODE</p> </li> <li> <p>APPIUM_RUBY</p> </li> <li> <p>APPIUM_WEB_JAVA_JUNIT</p> </li> <li> <p>APPIUM_WEB_JAVA_TESTNG</p> </li> <li> <p>APPIUM_WEB_PYTHON</p> </li> <li> <p>APPIUM_WEB_NODE</p> </li> <li> <p>APPIUM_WEB_RUBY</p> </li> <li> <p>CALABASH</p> </li> <li> <p>INSTRUMENTATION</p> </li> <li> <p>UIAUTOMATION</p> </li> <li> <p>UIAUTOMATOR</p> </li> <li> <p>XCTEST</p> </li> <li> <p>XCTEST_UI</p> </li> </ul>",
+    }),
+    created: DateTimeSchema.exactOptional().openapi({ description: 'When the test was created.' }),
+    status: ExecutionStatusSchema.exactOptional().openapi({
+      description:
+        "<p>The test's status.</p> <p>Allowed values include:</p> <ul> <li> <p>PENDING</p> </li> <li> <p>PENDING_CONCURRENCY</p> </li> <li> <p>PENDING_DEVICE</p> </li> <li> <p>PROCESSING</p> </li> <li> <p>SCHEDULING</p> </li> <li> <p>PREPARING</p> </li> <li> <p>RUNNING</p> </li> <li> <p>COMPLETED</p> </li> <li> <p>STOPPING</p> </li> </ul>",
+    }),
+    result: ExecutionResultSchema.exactOptional().openapi({
+      description:
+        "<p>The test's result.</p> <p>Allowed values include:</p> <ul> <li> <p>PENDING</p> </li> <li> <p>PASSED</p> </li> <li> <p>WARNED</p> </li> <li> <p>FAILED</p> </li> <li> <p>SKIPPED</p> </li> <li> <p>ERRORED</p> </li> <li> <p>STOPPED</p> </li> </ul>",
+    }),
+    started: DateTimeSchema.exactOptional().openapi({ description: "The test's start time." }),
+    stopped: DateTimeSchema.exactOptional().openapi({ description: "The test's stop time." }),
+    counters: CountersSchema.exactOptional().openapi({
+      description: "The test's result counters.",
+    }),
+    message: MessageSchema.exactOptional().openapi({
+      description: "A message about the test's result.",
+    }),
+    deviceMinutes: DeviceMinutesSchema.exactOptional().openapi({
+      description: 'Represents the total (metered or unmetered) minutes used by the test.',
+    }),
   })
   .openapi({ description: 'Represents a condition that is evaluated.', required: [] })
   .openapi('Test')
 
 const GetTestResultSchema = z
   .object({
-    test: TestSchema.and(
-      z.any().openapi({ description: 'A test condition that is evaluated.' }),
-    ).exactOptional(),
+    test: TestSchema.exactOptional().openapi({
+      description: 'A test condition that is evaluated.',
+    }),
   })
   .openapi({
     example: { test: {} },
@@ -3112,9 +2422,7 @@ const GetTestResultSchema = z
   .openapi('GetTestResult')
 
 const GetTestRequestSchema = z
-  .object({
-    arn: AmazonResourceNameSchema.and(z.any().openapi({ description: "The test's ARN." })),
-  })
+  .object({ arn: AmazonResourceNameSchema.openapi({ description: "The test's ARN." }) })
   .openapi({
     required: ['arn'],
     title: 'GetTestRequest',
@@ -3124,23 +2432,19 @@ const GetTestRequestSchema = z
 
 const GetTestGridProjectResultSchema = z
   .object({
-    testGridProject: TestGridProjectSchema.and(
-      z.any().openapi({ description: 'A <a>TestGridProject</a>.' }),
-    ).exactOptional(),
+    testGridProject: TestGridProjectSchema.exactOptional().openapi({
+      description: 'A <a>TestGridProject</a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetTestGridProjectResult')
 
 const GetTestGridProjectRequestSchema = z
   .object({
-    projectArn: DeviceFarmArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the Selenium testing project, from either <a>CreateTestGridProject</a> or <a>ListTestGridProjects</a>.',
-        }),
-    ),
+    projectArn: DeviceFarmArnSchema.openapi({
+      description:
+        'The ARN of the Selenium testing project, from either <a>CreateTestGridProject</a> or <a>ListTestGridProjects</a>.',
+    }),
   })
   .openapi({ required: ['projectArn'], title: 'GetTestGridProjectRequest' })
   .openapi('GetTestGridProjectRequest')
@@ -3151,30 +2455,20 @@ const TestGridSessionStatusSchema = z
 
 const TestGridSessionSchema = z
   .object({
-    arn: DeviceFarmArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the session.' }),
-    ).exactOptional(),
-    status: TestGridSessionStatusSchema.and(
-      z.any().openapi({ description: 'The state of the session.' }),
-    ).exactOptional(),
-    created: DateTimeSchema.and(
-      z.any().openapi({ description: 'The time that the session was started.' }),
-    ).exactOptional(),
-    ended: DateTimeSchema.and(
-      z.any().openapi({ description: 'The time the session ended.' }),
-    ).exactOptional(),
-    billingMinutes: DoubleSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The number of billed minutes that were used for this session. ' }),
-    ).exactOptional(),
-    seleniumProperties: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A JSON object of options and parameters passed to the Selenium WebDriver.',
-        }),
-    ).exactOptional(),
+    arn: DeviceFarmArnSchema.exactOptional().openapi({ description: 'The ARN of the session.' }),
+    status: TestGridSessionStatusSchema.exactOptional().openapi({
+      description: 'The state of the session.',
+    }),
+    created: DateTimeSchema.exactOptional().openapi({
+      description: 'The time that the session was started.',
+    }),
+    ended: DateTimeSchema.exactOptional().openapi({ description: 'The time the session ended.' }),
+    billingMinutes: DoubleSchema.exactOptional().openapi({
+      description: 'The number of billed minutes that were used for this session. ',
+    }),
+    seleniumProperties: StringSchema.exactOptional().openapi({
+      description: 'A JSON object of options and parameters passed to the Selenium WebDriver.',
+    }),
   })
   .openapi({
     description:
@@ -3185,9 +2479,9 @@ const TestGridSessionSchema = z
 
 const GetTestGridSessionResultSchema = z
   .object({
-    testGridSession: TestGridSessionSchema.and(
-      z.any().openapi({ description: 'The <a>TestGridSession</a> that was requested.' }),
-    ).exactOptional(),
+    testGridSession: TestGridSessionSchema.exactOptional().openapi({
+      description: 'The <a>TestGridSession</a> that was requested.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetTestGridSessionResult')
@@ -3201,33 +2495,25 @@ const ResourceIdSchema = z
 
 const GetTestGridSessionRequestSchema = z
   .object({
-    projectArn: DeviceFarmArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN for the project that this session belongs to. See <a>CreateTestGridProject</a> and <a>ListTestGridProjects</a>.',
-        }),
-    ).exactOptional(),
-    sessionId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'An ID associated with this session.' }),
-    ).exactOptional(),
-    sessionArn: DeviceFarmArnSchema.and(
-      z.any().openapi({ description: 'An ARN that uniquely identifies a <a>TestGridSession</a>.' }),
-    ).exactOptional(),
+    projectArn: DeviceFarmArnSchema.exactOptional().openapi({
+      description:
+        'The ARN for the project that this session belongs to. See <a>CreateTestGridProject</a> and <a>ListTestGridProjects</a>.',
+    }),
+    sessionId: ResourceIdSchema.exactOptional().openapi({
+      description: 'An ID associated with this session.',
+    }),
+    sessionArn: DeviceFarmArnSchema.exactOptional().openapi({
+      description: 'An ARN that uniquely identifies a <a>TestGridSession</a>.',
+    }),
   })
   .openapi({ title: 'GetTestGridSessionRequest', required: [] })
   .openapi('GetTestGridSessionRequest')
 
 const GetUploadResultSchema = z
   .object({
-    upload: UploadSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An app or a set of one or more tests to upload or that have been uploaded.',
-        }),
-    ).exactOptional(),
+    upload: UploadSchema.exactOptional().openapi({
+      description: 'An app or a set of one or more tests to upload or that have been uploaded.',
+    }),
   })
   .openapi({
     example: { upload: {} },
@@ -3237,9 +2523,7 @@ const GetUploadResultSchema = z
   .openapi('GetUploadResult')
 
 const GetUploadRequestSchema = z
-  .object({
-    arn: AmazonResourceNameSchema.and(z.any().openapi({ description: "The upload's ARN." })),
-  })
+  .object({ arn: AmazonResourceNameSchema.openapi({ description: "The upload's ARN." }) })
   .openapi({
     required: ['arn'],
     title: 'GetUploadRequest',
@@ -3249,36 +2533,28 @@ const GetUploadRequestSchema = z
 
 const GetVPCEConfigurationResultSchema = z
   .object({
-    vpceConfiguration: VPCEConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that contains information about your VPC endpoint configuration.',
-        }),
-    ).exactOptional(),
+    vpceConfiguration: VPCEConfigurationSchema.exactOptional().openapi({
+      description: 'An object that contains information about your VPC endpoint configuration.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetVPCEConfigurationResult')
 
 const GetVPCEConfigurationRequestSchema = z
   .object({
-    arn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the VPC endpoint configuration you want to describe.',
-        }),
-    ),
+    arn: AmazonResourceNameSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the VPC endpoint configuration you want to describe.',
+    }),
   })
   .openapi({ required: ['arn'], title: 'GetVPCEConfigurationRequest' })
   .openapi('GetVPCEConfigurationRequest')
 
 const InstallToRemoteAccessSessionResultSchema = z
   .object({
-    appUpload: UploadSchema.and(
-      z.any().openapi({ description: 'An app to upload or that has been uploaded.' }),
-    ).exactOptional(),
+    appUpload: UploadSchema.exactOptional().openapi({
+      description: 'An app to upload or that has been uploaded.',
+    }),
   })
   .openapi({
     example: { appUpload: {} },
@@ -3290,19 +2566,13 @@ const InstallToRemoteAccessSessionResultSchema = z
 
 const InstallToRemoteAccessSessionRequestSchema = z
   .object({
-    remoteAccessSessionArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the remote access session about which you are requesting information.',
-        }),
-    ),
-    appArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the app about which you are requesting information.' }),
-    ),
+    remoteAccessSessionArn: AmazonResourceNameSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the remote access session about which you are requesting information.',
+    }),
+    appArn: AmazonResourceNameSchema.openapi({
+      description: 'The ARN of the app about which you are requesting information.',
+    }),
   })
   .openapi({
     required: ['remoteAccessSessionArn', 'appArn'],
@@ -3349,29 +2619,19 @@ const URLSchema = z.string().min(0).max(2048).openapi('URL')
 
 const ArtifactSchema = z
   .object({
-    arn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: "The artifact's ARN." }),
-    ).exactOptional(),
-    name: NameSchema.and(z.any().openapi({ description: "The artifact's name." })).exactOptional(),
-    type: ArtifactTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The artifact's type.</p> <p>Allowed values include the following:</p> <ul> <li> <p>UNKNOWN</p> </li> <li> <p>SCREENSHOT</p> </li> <li> <p>DEVICE_LOG</p> </li> <li> <p>MESSAGE_LOG</p> </li> <li> <p>VIDEO_LOG</p> </li> <li> <p>RESULT_LOG</p> </li> <li> <p>SERVICE_LOG</p> </li> <li> <p>WEBKIT_LOG</p> </li> <li> <p>INSTRUMENTATION_OUTPUT</p> </li> <li> <p>EXERCISER_MONKEY_OUTPUT: the artifact (log) generated by an Android fuzz test.</p> </li> <li> <p>CALABASH_JSON_OUTPUT</p> </li> <li> <p>CALABASH_PRETTY_OUTPUT</p> </li> <li> <p>CALABASH_STANDARD_OUTPUT</p> </li> <li> <p>CALABASH_JAVA_XML_OUTPUT</p> </li> <li> <p>AUTOMATION_OUTPUT</p> </li> <li> <p>APPIUM_SERVER_OUTPUT</p> </li> <li> <p>APPIUM_JAVA_OUTPUT</p> </li> <li> <p>APPIUM_JAVA_XML_OUTPUT</p> </li> <li> <p>APPIUM_PYTHON_OUTPUT</p> </li> <li> <p>APPIUM_PYTHON_XML_OUTPUT</p> </li> <li> <p>EXPLORER_EVENT_LOG</p> </li> <li> <p>EXPLORER_SUMMARY_LOG</p> </li> <li> <p>APPLICATION_CRASH_REPORT</p> </li> <li> <p>XCTEST_LOG</p> </li> <li> <p>VIDEO</p> </li> <li> <p>CUSTOMER_ARTIFACT</p> </li> <li> <p>CUSTOMER_ARTIFACT_LOG</p> </li> <li> <p>TESTSPEC_OUTPUT</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    extension: StringSchema.and(
-      z.any().openapi({ description: "The artifact's file extension." }),
-    ).exactOptional(),
-    url: URLSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The presigned Amazon S3 URL that can be used with a GET request to download the artifact's file.",
-        }),
-    ).exactOptional(),
+    arn: AmazonResourceNameSchema.exactOptional().openapi({ description: "The artifact's ARN." }),
+    name: NameSchema.exactOptional().openapi({ description: "The artifact's name." }),
+    type: ArtifactTypeSchema.exactOptional().openapi({
+      description:
+        "<p>The artifact's type.</p> <p>Allowed values include the following:</p> <ul> <li> <p>UNKNOWN</p> </li> <li> <p>SCREENSHOT</p> </li> <li> <p>DEVICE_LOG</p> </li> <li> <p>MESSAGE_LOG</p> </li> <li> <p>VIDEO_LOG</p> </li> <li> <p>RESULT_LOG</p> </li> <li> <p>SERVICE_LOG</p> </li> <li> <p>WEBKIT_LOG</p> </li> <li> <p>INSTRUMENTATION_OUTPUT</p> </li> <li> <p>EXERCISER_MONKEY_OUTPUT: the artifact (log) generated by an Android fuzz test.</p> </li> <li> <p>CALABASH_JSON_OUTPUT</p> </li> <li> <p>CALABASH_PRETTY_OUTPUT</p> </li> <li> <p>CALABASH_STANDARD_OUTPUT</p> </li> <li> <p>CALABASH_JAVA_XML_OUTPUT</p> </li> <li> <p>AUTOMATION_OUTPUT</p> </li> <li> <p>APPIUM_SERVER_OUTPUT</p> </li> <li> <p>APPIUM_JAVA_OUTPUT</p> </li> <li> <p>APPIUM_JAVA_XML_OUTPUT</p> </li> <li> <p>APPIUM_PYTHON_OUTPUT</p> </li> <li> <p>APPIUM_PYTHON_XML_OUTPUT</p> </li> <li> <p>EXPLORER_EVENT_LOG</p> </li> <li> <p>EXPLORER_SUMMARY_LOG</p> </li> <li> <p>APPLICATION_CRASH_REPORT</p> </li> <li> <p>XCTEST_LOG</p> </li> <li> <p>VIDEO</p> </li> <li> <p>CUSTOMER_ARTIFACT</p> </li> <li> <p>CUSTOMER_ARTIFACT_LOG</p> </li> <li> <p>TESTSPEC_OUTPUT</p> </li> </ul>",
+    }),
+    extension: StringSchema.exactOptional().openapi({
+      description: "The artifact's file extension.",
+    }),
+    url: URLSchema.exactOptional().openapi({
+      description:
+        "The presigned Amazon S3 URL that can be used with a GET request to download the artifact's file.",
+    }),
   })
   .openapi({
     description:
@@ -3384,17 +2644,13 @@ const ArtifactsSchema = z.array(ArtifactSchema).openapi('Artifacts')
 
 const ListArtifactsResultSchema = z
   .object({
-    artifacts: ArtifactsSchema.and(
-      z.any().openapi({ description: 'Information about the artifacts.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the number of items that are returned is significantly large, this is an identifier that is also returned. It can be used in a subsequent call to this operation to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    artifacts: ArtifactsSchema.exactOptional().openapi({
+      description: 'Information about the artifacts.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the number of items that are returned is significantly large, this is an identifier that is also returned. It can be used in a subsequent call to this operation to return the next set of items in the list.',
+    }),
   })
   .openapi({ description: 'Represents the result of a list artifacts operation.', required: [] })
   .openapi('ListArtifactsResult')
@@ -3403,25 +2659,15 @@ const ArtifactCategorySchema = z.enum(['SCREENSHOT', 'FILE', 'LOG']).openapi('Ar
 
 const ListArtifactsRequestSchema = z
   .object({
-    arn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'The run, job, suite, or test ARN.' }),
-    ),
-    type: ArtifactCategorySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The artifacts' type.</p> <p>Allowed values include:</p> <ul> <li> <p>FILE</p> </li> <li> <p>LOG</p> </li> <li> <p>SCREENSHOT</p> </li> </ul>",
-        }),
-    ),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    arn: AmazonResourceNameSchema.openapi({ description: 'The run, job, suite, or test ARN.' }),
+    type: ArtifactCategorySchema.openapi({
+      description:
+        "<p>The artifacts' type.</p> <p>Allowed values include:</p> <ul> <li> <p>FILE</p> </li> <li> <p>LOG</p> </li> <li> <p>SCREENSHOT</p> </li> </ul>",
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
+    }),
   })
   .openapi({
     required: ['arn', 'type'],
@@ -3432,43 +2678,27 @@ const ListArtifactsRequestSchema = z
 
 const ListDeviceInstancesResultSchema = z
   .object({
-    deviceInstances: DeviceInstancesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that contains information about your device instances.',
-        }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that can be used in the next call to this operation to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    deviceInstances: DeviceInstancesSchema.exactOptional().openapi({
+      description: 'An object that contains information about your device instances.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'An identifier that can be used in the next call to this operation to return the next set of items in the list.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDeviceInstancesResult')
 
 const ListDeviceInstancesRequestSchema = z
   .object({
-    maxResults: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An integer that specifies the maximum number of items you want to return in the API response.',
-        }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    maxResults: IntegerSchema.exactOptional().openapi({
+      description:
+        'An integer that specifies the maximum number of items you want to return in the API response.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
+    }),
   })
   .openapi({ title: 'ListDeviceInstancesRequest', required: [] })
   .openapi('ListDeviceInstancesRequest')
@@ -3477,17 +2707,13 @@ const DevicePoolsSchema = z.array(DevicePoolSchema).openapi('DevicePools')
 
 const ListDevicePoolsResultSchema = z
   .object({
-    devicePools: DevicePoolsSchema.and(
-      z.any().openapi({ description: 'Information about the device pools.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the number of items that are returned is significantly large, this is an identifier that is also returned. It can be used in a subsequent call to this operation to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    devicePools: DevicePoolsSchema.exactOptional().openapi({
+      description: 'Information about the device pools.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the number of items that are returned is significantly large, this is an identifier that is also returned. It can be used in a subsequent call to this operation to return the next set of items in the list.',
+    }),
   })
   .openapi({
     example: {
@@ -3527,23 +2753,15 @@ const ListDevicePoolsResultSchema = z
 
 const ListDevicePoolsRequestSchema = z
   .object({
-    arn: AmazonResourceNameSchema.and(z.any().openapi({ description: 'The project ARN.' })),
-    type: DevicePoolTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The device pools' type.</p> <p>Allowed values include:</p> <ul> <li> <p>CURATED: A device pool that is created and managed by AWS Device Farm.</p> </li> <li> <p>PRIVATE: A device pool that is created and managed by the device pool developer.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    arn: AmazonResourceNameSchema.openapi({ description: 'The project ARN.' }),
+    type: DevicePoolTypeSchema.exactOptional().openapi({
+      description:
+        "<p>The device pools' type.</p> <p>Allowed values include:</p> <ul> <li> <p>CURATED: A device pool that is created and managed by AWS Device Farm.</p> </li> <li> <p>PRIVATE: A device pool that is created and managed by the device pool developer.</p> </li> </ul>",
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
+    }),
   })
   .openapi({
     required: ['arn'],
@@ -3556,17 +2774,13 @@ const DevicesSchema = z.array(DeviceSchema).openapi('Devices')
 
 const ListDevicesResultSchema = z
   .object({
-    devices: DevicesSchema.and(
-      z.any().openapi({ description: 'Information about the devices.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the number of items that are returned is significantly large, this is an identifier that is also returned. It can be used in a subsequent call to this operation to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    devices: DevicesSchema.exactOptional().openapi({
+      description: 'Information about the devices.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the number of items that are returned is significantly large, this is an identifier that is also returned. It can be used in a subsequent call to this operation to return the next set of items in the list.',
+    }),
   })
   .openapi({
     example: {},
@@ -3577,25 +2791,17 @@ const ListDevicesResultSchema = z
 
 const ListDevicesRequestSchema = z
   .object({
-    arn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the project.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
-    filters: DeviceFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Used to select a set of devices. A filter is made up of an attribute, an operator, and one or more values.</p> <ul> <li> <p>Attribute: The aspect of a device such as platform or model used as the selection criteria in a device filter.</p> <p>Allowed values include:</p> <ul> <li> <p>ARN: The Amazon Resource Name (ARN) of the device (for example, <code>arn:aws:devicefarm:us-west-2::device:12345Example</code>).</p> </li> <li> <p>PLATFORM: The device platform. Valid values are ANDROID or IOS.</p> </li> <li> <p>OS_VERSION: The operating system version (for example, 10.3.2).</p> </li> <li> <p>MODEL: The device model (for example, iPad 5th Gen).</p> </li> <li> <p>AVAILABILITY: The current availability of the device. Valid values are AVAILABLE, HIGHLY_AVAILABLE, BUSY, or TEMPORARY_NOT_AVAILABLE.</p> </li> <li> <p>FORM_FACTOR: The device form factor. Valid values are PHONE or TABLET.</p> </li> <li> <p>MANUFACTURER: The device manufacturer (for example, Apple).</p> </li> <li> <p>REMOTE_ACCESS_ENABLED: Whether the device is enabled for remote access. Valid values are TRUE or FALSE.</p> </li> <li> <p>REMOTE_DEBUG_ENABLED: Whether the device is enabled for remote debugging. Valid values are TRUE or FALSE. Because remote debugging is <a href="https://docs.aws.amazon.com/devicefarm/latest/developerguide/history.html">no longer supported</a>, this attribute is ignored.</p> </li> <li> <p>INSTANCE_ARN: The Amazon Resource Name (ARN) of the device instance.</p> </li> <li> <p>INSTANCE_LABELS: The label of the device instance.</p> </li> <li> <p>FLEET_TYPE: The fleet type. Valid values are PUBLIC or PRIVATE.</p> </li> </ul> </li> <li> <p>Operator: The filter operator.</p> <ul> <li> <p>The EQUALS operator is available for every attribute except INSTANCE_LABELS.</p> </li> <li> <p>The CONTAINS operator is available for the INSTANCE_LABELS and MODEL attributes.</p> </li> <li> <p>The IN and NOT_IN operators are available for the ARN, OS_VERSION, MODEL, MANUFACTURER, and INSTANCE_ARN attributes.</p> </li> <li> <p>The LESS_THAN, GREATER_THAN, LESS_THAN_OR_EQUALS, and GREATER_THAN_OR_EQUALS operators are also available for the OS_VERSION attribute.</p> </li> </ul> </li> <li> <p>Values: An array of one or more filter values.</p> <ul> <li> <p>The IN and NOT_IN operators take a values array that has one or more elements.</p> </li> <li> <p>The other operators require an array with a single element.</p> </li> <li> <p>In a request, the AVAILABILITY attribute takes the following values: AVAILABLE, HIGHLY_AVAILABLE, BUSY, or TEMPORARY_NOT_AVAILABLE.</p> </li> </ul> </li> </ul>',
-        }),
-    ).exactOptional(),
+    arn: AmazonResourceNameSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the project.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
+    }),
+    filters: DeviceFiltersSchema.exactOptional().openapi({
+      description:
+        '<p>Used to select a set of devices. A filter is made up of an attribute, an operator, and one or more values.</p> <ul> <li> <p>Attribute: The aspect of a device such as platform or model used as the selection criteria in a device filter.</p> <p>Allowed values include:</p> <ul> <li> <p>ARN: The Amazon Resource Name (ARN) of the device (for example, <code>arn:aws:devicefarm:us-west-2::device:12345Example</code>).</p> </li> <li> <p>PLATFORM: The device platform. Valid values are ANDROID or IOS.</p> </li> <li> <p>OS_VERSION: The operating system version (for example, 10.3.2).</p> </li> <li> <p>MODEL: The device model (for example, iPad 5th Gen).</p> </li> <li> <p>AVAILABILITY: The current availability of the device. Valid values are AVAILABLE, HIGHLY_AVAILABLE, BUSY, or TEMPORARY_NOT_AVAILABLE.</p> </li> <li> <p>FORM_FACTOR: The device form factor. Valid values are PHONE or TABLET.</p> </li> <li> <p>MANUFACTURER: The device manufacturer (for example, Apple).</p> </li> <li> <p>REMOTE_ACCESS_ENABLED: Whether the device is enabled for remote access. Valid values are TRUE or FALSE.</p> </li> <li> <p>REMOTE_DEBUG_ENABLED: Whether the device is enabled for remote debugging. Valid values are TRUE or FALSE. Because remote debugging is <a href="https://docs.aws.amazon.com/devicefarm/latest/developerguide/history.html">no longer supported</a>, this attribute is ignored.</p> </li> <li> <p>INSTANCE_ARN: The Amazon Resource Name (ARN) of the device instance.</p> </li> <li> <p>INSTANCE_LABELS: The label of the device instance.</p> </li> <li> <p>FLEET_TYPE: The fleet type. Valid values are PUBLIC or PRIVATE.</p> </li> </ul> </li> <li> <p>Operator: The filter operator.</p> <ul> <li> <p>The EQUALS operator is available for every attribute except INSTANCE_LABELS.</p> </li> <li> <p>The CONTAINS operator is available for the INSTANCE_LABELS and MODEL attributes.</p> </li> <li> <p>The IN and NOT_IN operators are available for the ARN, OS_VERSION, MODEL, MANUFACTURER, and INSTANCE_ARN attributes.</p> </li> <li> <p>The LESS_THAN, GREATER_THAN, LESS_THAN_OR_EQUALS, and GREATER_THAN_OR_EQUALS operators are also available for the OS_VERSION attribute.</p> </li> </ul> </li> <li> <p>Values: An array of one or more filter values.</p> <ul> <li> <p>The IN and NOT_IN operators take a values array that has one or more elements.</p> </li> <li> <p>The other operators require an array with a single element.</p> </li> <li> <p>In a request, the AVAILABILITY attribute takes the following values: AVAILABLE, HIGHLY_AVAILABLE, BUSY, or TEMPORARY_NOT_AVAILABLE.</p> </li> </ul> </li> </ul>',
+    }),
   })
   .openapi({
     title: 'ListDevicesRequest',
@@ -3608,79 +2814,49 @@ const InstanceProfilesSchema = z.array(InstanceProfileSchema).openapi('InstanceP
 
 const ListInstanceProfilesResultSchema = z
   .object({
-    instanceProfiles: InstanceProfilesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that contains information about your instance profiles.',
-        }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that can be used in the next call to this operation to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    instanceProfiles: InstanceProfilesSchema.exactOptional().openapi({
+      description: 'An object that contains information about your instance profiles.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'An identifier that can be used in the next call to this operation to return the next set of items in the list.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListInstanceProfilesResult')
 
 const ListInstanceProfilesRequestSchema = z
   .object({
-    maxResults: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An integer that specifies the maximum number of items you want to return in the API response.',
-        }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    maxResults: IntegerSchema.exactOptional().openapi({
+      description:
+        'An integer that specifies the maximum number of items you want to return in the API response.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
+    }),
   })
   .openapi({ title: 'ListInstanceProfilesRequest', required: [] })
   .openapi('ListInstanceProfilesRequest')
 
-const JobsSchema = z.array(JobSchema).openapi('Jobs')
-
-const ListJobsResultSchema = z
+const ListJobsResultSchema: z.ZodType<ListJobsResultType> = z
   .object({
-    jobs: JobsSchema.and(
-      z.any().openapi({ description: 'Information about the jobs.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the number of items that are returned is significantly large, this is an identifier that is also returned. It can be used in a subsequent call to this operation to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    jobs: JobsSchema.exactOptional().openapi({ description: 'Information about the jobs.' }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the number of items that are returned is significantly large, this is an identifier that is also returned. It can be used in a subsequent call to this operation to return the next set of items in the list.',
+    }),
   })
   .openapi({ description: 'Represents the result of a list jobs request.', required: [] })
   .openapi('ListJobsResult')
 
 const ListJobsRequestSchema = z
   .object({
-    arn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: "The run's Amazon Resource Name (ARN)." }),
-    ),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    arn: AmazonResourceNameSchema.openapi({ description: "The run's Amazon Resource Name (ARN)." }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
+    }),
   })
   .openapi({
     required: ['arn'],
@@ -3693,61 +2869,43 @@ const NetworkProfilesSchema = z.array(NetworkProfileSchema).openapi('NetworkProf
 
 const ListNetworkProfilesResultSchema = z
   .object({
-    networkProfiles: NetworkProfilesSchema.and(
-      z.any().openapi({ description: 'A list of the available network profiles.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    networkProfiles: NetworkProfilesSchema.exactOptional().openapi({
+      description: 'A list of the available network profiles.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListNetworkProfilesResult')
 
 const ListNetworkProfilesRequestSchema = z
   .object({
-    arn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the project for which you want to list network profiles.',
-        }),
-    ),
-    type: NetworkProfileTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of network profile to return information about. Valid values are listed here.',
-        }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    arn: AmazonResourceNameSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the project for which you want to list network profiles.',
+    }),
+    type: NetworkProfileTypeSchema.exactOptional().openapi({
+      description:
+        'The type of network profile to return information about. Valid values are listed here.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
+    }),
   })
   .openapi({ required: ['arn'], title: 'ListNetworkProfilesRequest' })
   .openapi('ListNetworkProfilesRequest')
 
-const OfferingPromotionIdentifierSchema = z.string().min(4).openapi('OfferingPromotionIdentifier')
-
 const OfferingPromotionSchema = z
   .object({
-    id: OfferingPromotionIdentifierSchema.and(
-      z.any().openapi({ description: 'The ID of the offering promotion.' }),
-    ).exactOptional(),
-    description: MessageSchema.and(
-      z.any().openapi({ description: 'A string that describes the offering promotion.' }),
-    ).exactOptional(),
+    id: OfferingPromotionIdentifierSchema.exactOptional().openapi({
+      description: 'The ID of the offering promotion.',
+    }),
+    description: MessageSchema.exactOptional().openapi({
+      description: 'A string that describes the offering promotion.',
+    }),
   })
   .openapi({ description: 'Represents information about an offering promotion.', required: [] })
   .openapi('OfferingPromotion')
@@ -3756,80 +2914,37 @@ const OfferingPromotionsSchema = z.array(OfferingPromotionSchema).openapi('Offer
 
 const ListOfferingPromotionsResultSchema = z
   .object({
-    offeringPromotions: OfferingPromotionsSchema.and(
-      z.any().openapi({ description: 'Information about the offering promotions.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier to be used in the next call to this operation, to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    offeringPromotions: OfferingPromotionsSchema.exactOptional().openapi({
+      description: 'Information about the offering promotions.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'An identifier to be used in the next call to this operation, to return the next set of items in the list.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListOfferingPromotionsResult')
 
 const ListOfferingPromotionsRequestSchema = z
   .object({
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
+    }),
   })
   .openapi({ title: 'ListOfferingPromotionsRequest', required: [] })
   .openapi('ListOfferingPromotionsRequest')
 
-const TransactionIdentifierSchema = z.string().min(32).openapi('TransactionIdentifier')
-
-const OfferingTransactionSchema = z
+const ListOfferingTransactionsResultSchema: z.ZodType<ListOfferingTransactionsResultType> = z
   .object({
-    offeringStatus: OfferingStatusSchema.and(
-      z.any().openapi({ description: 'The status of an offering transaction.' }),
-    ).exactOptional(),
-    transactionId: TransactionIdentifierSchema.and(
-      z.any().openapi({ description: 'The transaction ID of the offering transaction.' }),
-    ).exactOptional(),
-    offeringPromotionId: OfferingPromotionIdentifierSchema.and(
-      z.any().openapi({ description: 'The ID that corresponds to a device offering promotion.' }),
-    ).exactOptional(),
-    createdOn: DateTimeSchema.and(
-      z.any().openapi({ description: 'The date on which an offering transaction was created.' }),
-    ).exactOptional(),
-    cost: MonetaryAmountSchema.and(
-      z.any().openapi({ description: 'The cost of an offering transaction.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Represents the metadata of an offering transaction.', required: [] })
-  .openapi('OfferingTransaction')
-
-const OfferingTransactionsSchema = z
-  .array(OfferingTransactionSchema)
-  .openapi('OfferingTransactions')
-
-const ListOfferingTransactionsResultSchema = z
-  .object({
-    offeringTransactions: OfferingTransactionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The audit log of subscriptions you have purchased and modified through AWS Device Farm.',
-        }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    offeringTransactions: OfferingTransactionsSchema.exactOptional().openapi({
+      description:
+        'The audit log of subscriptions you have purchased and modified through AWS Device Farm.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
+    }),
   })
   .openapi({
     example: {
@@ -3907,14 +3022,10 @@ const ListOfferingTransactionsResultSchema = z
 
 const ListOfferingTransactionsRequestSchema = z
   .object({
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
+    }),
   })
   .openapi({
     title: 'ListOfferingTransactionsRequest',
@@ -3927,17 +3038,13 @@ const OfferingsSchema = z.array(OfferingSchema).openapi('Offerings')
 
 const ListOfferingsResultSchema = z
   .object({
-    offerings: OfferingsSchema.and(
-      z.any().openapi({ description: 'A value that represents the list offering results.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    offerings: OfferingsSchema.exactOptional().openapi({
+      description: 'A value that represents the list offering results.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
+    }),
   })
   .openapi({
     example: {
@@ -3979,14 +3086,10 @@ const ListOfferingsResultSchema = z
 
 const ListOfferingsRequestSchema = z
   .object({
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
+    }),
   })
   .openapi({
     title: 'ListOfferingsRequest',
@@ -3999,17 +3102,13 @@ const ProjectsSchema = z.array(ProjectSchema).openapi('Projects')
 
 const ListProjectsResultSchema = z
   .object({
-    projects: ProjectsSchema.and(
-      z.any().openapi({ description: 'Information about the projects.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the number of items that are returned is significantly large, this is an identifier that is also returned. It can be used in a subsequent call to this operation to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    projects: ProjectsSchema.exactOptional().openapi({
+      description: 'Information about the projects.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the number of items that are returned is significantly large, this is an identifier that is also returned. It can be used in a subsequent call to this operation to return the next set of items in the list.',
+    }),
   })
   .openapi({
     example: {
@@ -4033,22 +3132,14 @@ const ListProjectsResultSchema = z
 
 const ListProjectsRequestSchema = z
   .object({
-    arn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional. If no Amazon Resource Name (ARN) is specified, then AWS Device Farm returns a list of all projects for the AWS account. You can also specify a project ARN.',
-        }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    arn: AmazonResourceNameSchema.exactOptional().openapi({
+      description:
+        'Optional. If no Amazon Resource Name (ARN) is specified, then AWS Device Farm returns a list of all projects for the AWS account. You can also specify a project ARN.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
+    }),
   })
   .openapi({
     title: 'ListProjectsRequest',
@@ -4057,28 +3148,16 @@ const ListProjectsRequestSchema = z
   })
   .openapi('ListProjectsRequest')
 
-const RemoteAccessSessionsSchema = z
-  .array(RemoteAccessSessionSchema)
-  .openapi('RemoteAccessSessions')
-
-const ListRemoteAccessSessionsResultSchema = z
+const ListRemoteAccessSessionsResultSchema: z.ZodType<ListRemoteAccessSessionsResultType> = z
   .object({
-    remoteAccessSessions: RemoteAccessSessionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A container that represents the metadata from the service about each remote access session you are requesting.',
-        }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    remoteAccessSessions: RemoteAccessSessionsSchema.exactOptional().openapi({
+      description:
+        'A container that represents the metadata from the service about each remote access session you are requesting.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
+    }),
   })
   .openapi({
     example: { remoteAccessSessions: [] },
@@ -4090,22 +3169,14 @@ const ListRemoteAccessSessionsResultSchema = z
 
 const ListRemoteAccessSessionsRequestSchema = z
   .object({
-    arn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the project about which you are requesting information.',
-        }),
-    ),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    arn: AmazonResourceNameSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the project about which you are requesting information.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
+    }),
   })
   .openapi({
     required: ['arn'],
@@ -4118,17 +3189,11 @@ const RunsSchema = z.array(RunSchema).openapi('Runs')
 
 const ListRunsResultSchema = z
   .object({
-    runs: RunsSchema.and(
-      z.any().openapi({ description: 'Information about the runs.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the number of items that are returned is significantly large, this is an identifier that is also returned. It can be used in a subsequent call to this operation to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    runs: RunsSchema.exactOptional().openapi({ description: 'Information about the runs.' }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the number of items that are returned is significantly large, this is an identifier that is also returned. It can be used in a subsequent call to this operation to return the next set of items in the list.',
+    }),
   })
   .openapi({
     example: {
@@ -4164,22 +3229,13 @@ const ListRunsResultSchema = z
 
 const ListRunsRequestSchema = z
   .object({
-    arn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the project for which you want to list runs.',
-        }),
-    ),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    arn: AmazonResourceNameSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the project for which you want to list runs.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
+    }),
   })
   .openapi({
     required: ['arn'],
@@ -4212,25 +3268,15 @@ const SampleTypeSchema = z
 
 const SampleSchema = z
   .object({
-    arn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: "The sample's ARN." }),
-    ).exactOptional(),
-    type: SampleTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The sample's type.</p> <p>Must be one of the following values:</p> <ul> <li> <p>CPU: A CPU sample type. This is expressed as the app processing CPU time (including child processes) as reported by process, as a percentage.</p> </li> <li> <p>MEMORY: A memory usage sample type. This is expressed as the total proportional set size of an app process, in kilobytes.</p> </li> <li> <p>NATIVE_AVG_DRAWTIME</p> </li> <li> <p>NATIVE_FPS</p> </li> <li> <p>NATIVE_FRAMES</p> </li> <li> <p>NATIVE_MAX_DRAWTIME</p> </li> <li> <p>NATIVE_MIN_DRAWTIME</p> </li> <li> <p>OPENGL_AVG_DRAWTIME</p> </li> <li> <p>OPENGL_FPS</p> </li> <li> <p>OPENGL_FRAMES</p> </li> <li> <p>OPENGL_MAX_DRAWTIME</p> </li> <li> <p>OPENGL_MIN_DRAWTIME</p> </li> <li> <p>RX</p> </li> <li> <p>RX_RATE: The total number of bytes per second (TCP and UDP) that are sent, by app process.</p> </li> <li> <p>THREADS: A threads sample type. This is expressed as the total number of threads per app process.</p> </li> <li> <p>TX</p> </li> <li> <p>TX_RATE: The total number of bytes per second (TCP and UDP) that are received, by app process.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    url: URLSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The presigned Amazon S3 URL that can be used with a GET request to download the sample's file.",
-        }),
-    ).exactOptional(),
+    arn: AmazonResourceNameSchema.exactOptional().openapi({ description: "The sample's ARN." }),
+    type: SampleTypeSchema.exactOptional().openapi({
+      description:
+        "<p>The sample's type.</p> <p>Must be one of the following values:</p> <ul> <li> <p>CPU: A CPU sample type. This is expressed as the app processing CPU time (including child processes) as reported by process, as a percentage.</p> </li> <li> <p>MEMORY: A memory usage sample type. This is expressed as the total proportional set size of an app process, in kilobytes.</p> </li> <li> <p>NATIVE_AVG_DRAWTIME</p> </li> <li> <p>NATIVE_FPS</p> </li> <li> <p>NATIVE_FRAMES</p> </li> <li> <p>NATIVE_MAX_DRAWTIME</p> </li> <li> <p>NATIVE_MIN_DRAWTIME</p> </li> <li> <p>OPENGL_AVG_DRAWTIME</p> </li> <li> <p>OPENGL_FPS</p> </li> <li> <p>OPENGL_FRAMES</p> </li> <li> <p>OPENGL_MAX_DRAWTIME</p> </li> <li> <p>OPENGL_MIN_DRAWTIME</p> </li> <li> <p>RX</p> </li> <li> <p>RX_RATE: The total number of bytes per second (TCP and UDP) that are sent, by app process.</p> </li> <li> <p>THREADS: A threads sample type. This is expressed as the total number of threads per app process.</p> </li> <li> <p>TX</p> </li> <li> <p>TX_RATE: The total number of bytes per second (TCP and UDP) that are received, by app process.</p> </li> </ul>",
+    }),
+    url: URLSchema.exactOptional().openapi({
+      description:
+        "The presigned Amazon S3 URL that can be used with a GET request to download the sample's file.",
+    }),
   })
   .openapi({ description: 'Represents a sample of performance data.', required: [] })
   .openapi('Sample')
@@ -4239,17 +3285,13 @@ const SamplesSchema = z.array(SampleSchema).openapi('Samples')
 
 const ListSamplesResultSchema = z
   .object({
-    samples: SamplesSchema.and(
-      z.any().openapi({ description: 'Information about the samples.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the number of items that are returned is significantly large, this is an identifier that is also returned. It can be used in a subsequent call to this operation to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    samples: SamplesSchema.exactOptional().openapi({
+      description: 'Information about the samples.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the number of items that are returned is significantly large, this is an identifier that is also returned. It can be used in a subsequent call to this operation to return the next set of items in the list.',
+    }),
   })
   .openapi({
     example: { samples: [] },
@@ -4260,21 +3302,13 @@ const ListSamplesResultSchema = z
 
 const ListSamplesRequestSchema = z
   .object({
-    arn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the job used to list samples.',
-        }),
-    ),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    arn: AmazonResourceNameSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the job used to list samples.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
+    }),
   })
   .openapi({
     required: ['arn'],
@@ -4287,17 +3321,11 @@ const SuitesSchema = z.array(SuiteSchema).openapi('Suites')
 
 const ListSuitesResultSchema = z
   .object({
-    suites: SuitesSchema.and(
-      z.any().openapi({ description: 'Information about the suites.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the number of items that are returned is significantly large, this is an identifier that is also returned. It can be used in a subsequent call to this operation to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    suites: SuitesSchema.exactOptional().openapi({ description: 'Information about the suites.' }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the number of items that are returned is significantly large, this is an identifier that is also returned. It can be used in a subsequent call to this operation to return the next set of items in the list.',
+    }),
   })
   .openapi({
     example: { suites: [] },
@@ -4308,17 +3336,11 @@ const ListSuitesResultSchema = z
 
 const ListSuitesRequestSchema = z
   .object({
-    arn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: "The job's Amazon Resource Name (ARN)." }),
-    ),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    arn: AmazonResourceNameSchema.openapi({ description: "The job's Amazon Resource Name (ARN)." }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
+    }),
   })
   .openapi({
     required: ['arn'],
@@ -4333,22 +3355,14 @@ const TagValueSchema = z.string().min(0).max(256).openapi('TagValue')
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One part of a key-value pair that makes up a tag. A <code>key</code> is a general label that acts like a category for more specific tag values.',
-        }),
-    ),
-    Value: TagValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The optional part of a key-value pair that makes up a tag. A <code>value</code> acts as a descriptor in a tag category (key).',
-        }),
-    ),
+    Key: TagKeySchema.openapi({
+      description:
+        'One part of a key-value pair that makes up a tag. A <code>key</code> is a general label that acts like a category for more specific tag values.',
+    }),
+    Value: TagValueSchema.openapi({
+      description:
+        'The optional part of a key-value pair that makes up a tag. A <code>value</code> acts as a descriptor in a tag category (key).',
+    }),
   })
   .openapi({
     required: ['Key', 'Value'],
@@ -4361,28 +3375,20 @@ const TagListSchema = z.array(TagSchema).max(150).openapi('TagList')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags to add to the resource. A tag is an array of key-value pairs. Tag keys can have a maximum character length of 128 characters. Tag values can have a maximum length of 256 characters.',
-        }),
-    ).exactOptional(),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'The tags to add to the resource. A tag is an array of key-value pairs. Tag keys can have a maximum character length of 128 characters. Tag values can have a maximum length of 256 characters.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
 
 const ListTagsForResourceRequestSchema = z
   .object({
-    ResourceARN: DeviceFarmArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the resource or resources for which to list tags. You can associate tags with the following Device Farm resources: <code>PROJECT</code>, <code>RUN</code>, <code>NETWORK_PROFILE</code>, <code>INSTANCE_PROFILE</code>, <code>DEVICE_INSTANCE</code>, <code>SESSION</code>, <code>DEVICE_POOL</code>, <code>DEVICE</code>, and <code>VPCE_CONFIGURATION</code>.',
-        }),
-    ),
+    ResourceARN: DeviceFarmArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the resource or resources for which to list tags. You can associate tags with the following Device Farm resources: <code>PROJECT</code>, <code>RUN</code>, <code>NETWORK_PROFILE</code>, <code>INSTANCE_PROFILE</code>, <code>DEVICE_INSTANCE</code>, <code>SESSION</code>, <code>DEVICE_POOL</code>, <code>DEVICE</code>, and <code>VPCE_CONFIGURATION</code>.',
+    }),
   })
   .openapi({ required: ['ResourceARN'], title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
@@ -4391,22 +3397,13 @@ const TestGridProjectsSchema = z.array(TestGridProjectSchema).openapi('TestGridP
 
 const ListTestGridProjectsResultSchema = z
   .object({
-    testGridProjects: TestGridProjectsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of TestGridProjects, based on a <a>ListTestGridProjectsRequest</a>.',
-        }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Used for pagination. Pass into <a>ListTestGridProjects</a> to get more results in a paginated request.',
-        }),
-    ).exactOptional(),
+    testGridProjects: TestGridProjectsSchema.exactOptional().openapi({
+      description: 'The list of TestGridProjects, based on a <a>ListTestGridProjectsRequest</a>.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'Used for pagination. Pass into <a>ListTestGridProjects</a> to get more results in a paginated request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTestGridProjectsResult')
@@ -4415,42 +3412,33 @@ const MaxPageSizeSchema = z.int().min(1).max(1000).openapi('MaxPageSize')
 
 const ListTestGridProjectsRequestSchema = z
   .object({
-    maxResult: MaxPageSizeSchema.and(
-      z.any().openapi({ description: 'Return no more than this number of results.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z.any().openapi({ description: 'From a response, used to continue a paginated listing. ' }),
-    ).exactOptional(),
+    maxResult: MaxPageSizeSchema.exactOptional().openapi({
+      description: 'Return no more than this number of results.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'From a response, used to continue a paginated listing. ',
+    }),
   })
   .openapi({ title: 'ListTestGridProjectsRequest', required: [] })
   .openapi('ListTestGridProjectsRequest')
 
 const TestGridSessionActionSchema = z
   .object({
-    action: StringSchema.and(
-      z.any().openapi({ description: 'The action taken by the session.' }),
-    ).exactOptional(),
-    started: DateTimeSchema.and(
-      z.any().openapi({ description: 'The time that the session invoked the action.' }),
-    ).exactOptional(),
-    duration: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds, that the action took to complete in the browser.',
-        }),
-    ).exactOptional(),
-    statusCode: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'HTTP status code returned to the browser when the action was taken.',
-        }),
-    ).exactOptional(),
-    requestMethod: StringSchema.and(
-      z.any().openapi({ description: 'HTTP method that the browser used to make the request.' }),
-    ).exactOptional(),
+    action: StringSchema.exactOptional().openapi({
+      description: 'The action taken by the session.',
+    }),
+    started: DateTimeSchema.exactOptional().openapi({
+      description: 'The time that the session invoked the action.',
+    }),
+    duration: LongSchema.exactOptional().openapi({
+      description: 'The time, in milliseconds, that the action took to complete in the browser.',
+    }),
+    statusCode: StringSchema.exactOptional().openapi({
+      description: 'HTTP status code returned to the browser when the action was taken.',
+    }),
+    requestMethod: StringSchema.exactOptional().openapi({
+      description: 'HTTP method that the browser used to make the request.',
+    }),
   })
   .openapi({
     description: 'An action taken by a <a>TestGridSession</a> browser instance.',
@@ -4464,27 +3452,21 @@ const TestGridSessionActionsSchema = z
 
 const ListTestGridSessionActionsResultSchema = z
   .object({
-    actions: TestGridSessionActionsSchema.and(
-      z.any().openapi({ description: 'The action taken by the session.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z.any().openapi({ description: 'Pagination token.' }),
-    ).exactOptional(),
+    actions: TestGridSessionActionsSchema.exactOptional().openapi({
+      description: 'The action taken by the session.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({ description: 'Pagination token.' }),
   })
   .openapi({ required: [] })
   .openapi('ListTestGridSessionActionsResult')
 
 const ListTestGridSessionActionsRequestSchema = z
   .object({
-    sessionArn: DeviceFarmArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the session to retrieve.' }),
-    ),
-    maxResult: MaxPageSizeSchema.and(
-      z.any().openapi({ description: 'The maximum number of sessions to return per response.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z.any().openapi({ description: 'Pagination token.' }),
-    ).exactOptional(),
+    sessionArn: DeviceFarmArnSchema.openapi({ description: 'The ARN of the session to retrieve.' }),
+    maxResult: MaxPageSizeSchema.exactOptional().openapi({
+      description: 'The maximum number of sessions to return per response.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({ description: 'Pagination token.' }),
   })
   .openapi({ required: ['sessionArn'], title: 'ListTestGridSessionActionsRequest' })
   .openapi('ListTestGridSessionActionsRequest')
@@ -4495,15 +3477,15 @@ const TestGridSessionArtifactTypeSchema = z
 
 const TestGridSessionArtifactSchema = z
   .object({
-    filename: StringSchema.and(
-      z.any().openapi({ description: 'The file name of the artifact.' }),
-    ).exactOptional(),
-    type: TestGridSessionArtifactTypeSchema.and(
-      z.any().openapi({ description: 'The kind of artifact.' }),
-    ).exactOptional(),
-    url: SensitiveStringSchema.and(
-      z.any().openapi({ description: 'A semi-stable URL to the content of the object.' }),
-    ).exactOptional(),
+    filename: StringSchema.exactOptional().openapi({
+      description: 'The file name of the artifact.',
+    }),
+    type: TestGridSessionArtifactTypeSchema.exactOptional().openapi({
+      description: 'The kind of artifact.',
+    }),
+    url: SensitiveStringSchema.exactOptional().openapi({
+      description: 'A semi-stable URL to the content of the object.',
+    }),
   })
   .openapi({
     description:
@@ -4518,16 +3500,10 @@ const TestGridSessionArtifactsSchema = z
 
 const ListTestGridSessionArtifactsResultSchema = z
   .object({
-    artifacts: TestGridSessionArtifactsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of test grid session artifacts for a <a>TestGridSession</a>.',
-        }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z.any().openapi({ description: 'Pagination token.' }),
-    ).exactOptional(),
+    artifacts: TestGridSessionArtifactsSchema.exactOptional().openapi({
+      description: 'A list of test grid session artifacts for a <a>TestGridSession</a>.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({ description: 'Pagination token.' }),
   })
   .openapi({ required: [] })
   .openapi('ListTestGridSessionArtifactsResult')
@@ -4538,20 +3514,16 @@ const TestGridSessionArtifactCategorySchema = z
 
 const ListTestGridSessionArtifactsRequestSchema = z
   .object({
-    sessionArn: DeviceFarmArnSchema.and(
-      z.any().openapi({ description: 'The ARN of a <a>TestGridSession</a>. ' }),
-    ),
-    type: TestGridSessionArtifactCategorySchema.and(
-      z.any().openapi({ description: 'Limit results to a specified type of artifact.' }),
-    ).exactOptional(),
-    maxResult: MaxPageSizeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The maximum number of results to be returned by a request.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z.any().openapi({ description: 'Pagination token.' }),
-    ).exactOptional(),
+    sessionArn: DeviceFarmArnSchema.openapi({
+      description: 'The ARN of a <a>TestGridSession</a>. ',
+    }),
+    type: TestGridSessionArtifactCategorySchema.exactOptional().openapi({
+      description: 'Limit results to a specified type of artifact.',
+    }),
+    maxResult: MaxPageSizeSchema.exactOptional().openapi({
+      description: 'The maximum number of results to be returned by a request.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({ description: 'Pagination token.' }),
   })
   .openapi({ required: ['sessionArn'], title: 'ListTestGridSessionArtifactsRequest' })
   .openapi('ListTestGridSessionArtifactsRequest')
@@ -4560,47 +3532,36 @@ const TestGridSessionsSchema = z.array(TestGridSessionSchema).openapi('TestGridS
 
 const ListTestGridSessionsResultSchema = z
   .object({
-    testGridSessions: TestGridSessionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The sessions that match the criteria in a <a>ListTestGridSessionsRequest</a>. ',
-        }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z.any().openapi({ description: 'Pagination token.' }),
-    ).exactOptional(),
+    testGridSessions: TestGridSessionsSchema.exactOptional().openapi({
+      description: 'The sessions that match the criteria in a <a>ListTestGridSessionsRequest</a>. ',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({ description: 'Pagination token.' }),
   })
   .openapi({ required: [] })
   .openapi('ListTestGridSessionsResult')
 
 const ListTestGridSessionsRequestSchema = z
   .object({
-    projectArn: DeviceFarmArnSchema.and(
-      z.any().openapi({ description: 'ARN of a <a>TestGridProject</a>.' }),
-    ),
-    status: TestGridSessionStatusSchema.and(
-      z.any().openapi({ description: 'Return only sessions in this state.' }),
-    ).exactOptional(),
-    creationTimeAfter: DateTimeSchema.and(
-      z.any().openapi({ description: 'Return only sessions created after this time.' }),
-    ).exactOptional(),
-    creationTimeBefore: DateTimeSchema.and(
-      z.any().openapi({ description: 'Return only sessions created before this time.' }),
-    ).exactOptional(),
-    endTimeAfter: DateTimeSchema.and(
-      z.any().openapi({ description: 'Return only sessions that ended after this time.' }),
-    ).exactOptional(),
-    endTimeBefore: DateTimeSchema.and(
-      z.any().openapi({ description: 'Return only sessions that ended before this time.' }),
-    ).exactOptional(),
-    maxResult: MaxPageSizeSchema.and(
-      z.any().openapi({ description: 'Return only this many results at a time.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z.any().openapi({ description: 'Pagination token.' }),
-    ).exactOptional(),
+    projectArn: DeviceFarmArnSchema.openapi({ description: 'ARN of a <a>TestGridProject</a>.' }),
+    status: TestGridSessionStatusSchema.exactOptional().openapi({
+      description: 'Return only sessions in this state.',
+    }),
+    creationTimeAfter: DateTimeSchema.exactOptional().openapi({
+      description: 'Return only sessions created after this time.',
+    }),
+    creationTimeBefore: DateTimeSchema.exactOptional().openapi({
+      description: 'Return only sessions created before this time.',
+    }),
+    endTimeAfter: DateTimeSchema.exactOptional().openapi({
+      description: 'Return only sessions that ended after this time.',
+    }),
+    endTimeBefore: DateTimeSchema.exactOptional().openapi({
+      description: 'Return only sessions that ended before this time.',
+    }),
+    maxResult: MaxPageSizeSchema.exactOptional().openapi({
+      description: 'Return only this many results at a time.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({ description: 'Pagination token.' }),
   })
   .openapi({ required: ['projectArn'], title: 'ListTestGridSessionsRequest' })
   .openapi('ListTestGridSessionsRequest')
@@ -4609,17 +3570,11 @@ const TestsSchema = z.array(TestSchema).openapi('Tests')
 
 const ListTestsResultSchema = z
   .object({
-    tests: TestsSchema.and(
-      z.any().openapi({ description: 'Information about the tests.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the number of items that are returned is significantly large, this is an identifier that is also returned. It can be used in a subsequent call to this operation to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    tests: TestsSchema.exactOptional().openapi({ description: 'Information about the tests.' }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the number of items that are returned is significantly large, this is an identifier that is also returned. It can be used in a subsequent call to this operation to return the next set of items in the list.',
+    }),
   })
   .openapi({
     example: { tests: [] },
@@ -4630,17 +3585,13 @@ const ListTestsResultSchema = z
 
 const ListTestsRequestSchema = z
   .object({
-    arn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: "The test suite's Amazon Resource Name (ARN)." }),
-    ),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    arn: AmazonResourceNameSchema.openapi({
+      description: "The test suite's Amazon Resource Name (ARN).",
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
+    }),
   })
   .openapi({
     required: ['arn'],
@@ -4649,91 +3600,16 @@ const ListTestsRequestSchema = z
   })
   .openapi('ListTestsRequest')
 
-const ProblemDetailSchema = z
+const ListUniqueProblemsResultSchema: z.ZodType<ListUniqueProblemsResultType> = z
   .object({
-    arn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: "The problem detail's ARN." }),
-    ).exactOptional(),
-    name: NameSchema.and(
-      z.any().openapi({ description: "The problem detail's name." }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Information about a problem detail.', required: [] })
-  .openapi('ProblemDetail')
-
-const ProblemSchema = z
-  .object({
-    run: ProblemDetailSchema.and(
-      z.any().openapi({ description: 'Information about the associated run.' }),
-    ).exactOptional(),
-    job: ProblemDetailSchema.and(
-      z.any().openapi({ description: 'Information about the associated job.' }),
-    ).exactOptional(),
-    suite: ProblemDetailSchema.and(
-      z.any().openapi({ description: 'Information about the associated suite.' }),
-    ).exactOptional(),
-    test: ProblemDetailSchema.and(
-      z.any().openapi({ description: 'Information about the associated test.' }),
-    ).exactOptional(),
-    device: DeviceSchema.and(
-      z.any().openapi({ description: 'Information about the associated device.' }),
-    ).exactOptional(),
-    result: ExecutionResultSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The problem's result.</p> <p>Allowed values include:</p> <ul> <li> <p>PENDING</p> </li> <li> <p>PASSED</p> </li> <li> <p>WARNED</p> </li> <li> <p>FAILED</p> </li> <li> <p>SKIPPED</p> </li> <li> <p>ERRORED</p> </li> <li> <p>STOPPED</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    message: MessageSchema.and(
-      z.any().openapi({ description: "A message about the problem's result." }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Represents a specific warning or failure.', required: [] })
-  .openapi('Problem')
-
-const ProblemsSchema = z.array(ProblemSchema).openapi('Problems')
-
-const UniqueProblemSchema = z
-  .object({
-    message: MessageSchema.and(
-      z.any().openapi({ description: "A message about the unique problems' result." }),
-    ).exactOptional(),
-    problems: ProblemsSchema.and(
-      z.any().openapi({ description: 'Information about the problems.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'A collection of one or more problems, grouped by their result.',
-    required: [],
-  })
-  .openapi('UniqueProblem')
-
-const UniqueProblemsSchema = z.array(UniqueProblemSchema).openapi('UniqueProblems')
-
-const UniqueProblemsByExecutionResultMapSchema = z
-  .record(z.string(), UniqueProblemsSchema)
-  .openapi('UniqueProblemsByExecutionResultMap')
-
-const ListUniqueProblemsResultSchema = z
-  .object({
-    uniqueProblems: UniqueProblemsByExecutionResultMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Information about the unique problems.</p> <p>Allowed values include:</p> <ul> <li> <p>PENDING</p> </li> <li> <p>PASSED</p> </li> <li> <p>WARNED</p> </li> <li> <p>FAILED</p> </li> <li> <p>SKIPPED</p> </li> <li> <p>ERRORED</p> </li> <li> <p>STOPPED</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the number of items that are returned is significantly large, this is an identifier that is also returned. It can be used in a subsequent call to this operation to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    uniqueProblems: UniqueProblemsByExecutionResultMapSchema.exactOptional().openapi({
+      description:
+        '<p>Information about the unique problems.</p> <p>Allowed values include:</p> <ul> <li> <p>PENDING</p> </li> <li> <p>PASSED</p> </li> <li> <p>WARNED</p> </li> <li> <p>FAILED</p> </li> <li> <p>SKIPPED</p> </li> <li> <p>ERRORED</p> </li> <li> <p>STOPPED</p> </li> </ul>',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the number of items that are returned is significantly large, this is an identifier that is also returned. It can be used in a subsequent call to this operation to return the next set of items in the list.',
+    }),
   })
   .openapi({
     example: { uniqueProblems: {} },
@@ -4744,17 +3620,11 @@ const ListUniqueProblemsResultSchema = z
 
 const ListUniqueProblemsRequestSchema = z
   .object({
-    arn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: "The unique problems' ARNs." }),
-    ),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    arn: AmazonResourceNameSchema.openapi({ description: "The unique problems' ARNs." }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
+    }),
   })
   .openapi({
     required: ['arn'],
@@ -4767,17 +3637,13 @@ const UploadsSchema = z.array(UploadSchema).openapi('Uploads')
 
 const ListUploadsResultSchema = z
   .object({
-    uploads: UploadsSchema.and(
-      z.any().openapi({ description: 'Information about the uploads.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the number of items that are returned is significantly large, this is an identifier that is also returned. It can be used in a subsequent call to this operation to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    uploads: UploadsSchema.exactOptional().openapi({
+      description: 'Information about the uploads.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the number of items that are returned is significantly large, this is an identifier that is also returned. It can be used in a subsequent call to this operation to return the next set of items in the list.',
+    }),
   })
   .openapi({
     example: { uploads: [] },
@@ -4788,30 +3654,18 @@ const ListUploadsResultSchema = z
 
 const ListUploadsRequestSchema = z
   .object({
-    arn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the project for which you want to list uploads.',
-        }),
-    ),
-    type: UploadTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of upload.</p> <p>Must be one of the following values:</p> <ul> <li> <p>ANDROID_APP</p> </li> <li> <p>IOS_APP</p> </li> <li> <p>WEB_APP</p> </li> <li> <p>EXTERNAL_DATA</p> </li> <li> <p>APPIUM_JAVA_JUNIT_TEST_PACKAGE</p> </li> <li> <p>APPIUM_JAVA_TESTNG_TEST_PACKAGE</p> </li> <li> <p>APPIUM_PYTHON_TEST_PACKAGE</p> </li> <li> <p>APPIUM_NODE_TEST_PACKAGE</p> </li> <li> <p>APPIUM_RUBY_TEST_PACKAGE</p> </li> <li> <p>APPIUM_WEB_JAVA_JUNIT_TEST_PACKAGE</p> </li> <li> <p>APPIUM_WEB_JAVA_TESTNG_TEST_PACKAGE</p> </li> <li> <p>APPIUM_WEB_PYTHON_TEST_PACKAGE</p> </li> <li> <p>APPIUM_WEB_NODE_TEST_PACKAGE</p> </li> <li> <p>APPIUM_WEB_RUBY_TEST_PACKAGE</p> </li> <li> <p>CALABASH_TEST_PACKAGE</p> </li> <li> <p>INSTRUMENTATION_TEST_PACKAGE</p> </li> <li> <p>UIAUTOMATION_TEST_PACKAGE</p> </li> <li> <p>UIAUTOMATOR_TEST_PACKAGE</p> </li> <li> <p>XCTEST_TEST_PACKAGE</p> </li> <li> <p>XCTEST_UI_TEST_PACKAGE</p> </li> <li> <p>APPIUM_JAVA_JUNIT_TEST_SPEC</p> </li> <li> <p>APPIUM_JAVA_TESTNG_TEST_SPEC</p> </li> <li> <p>APPIUM_PYTHON_TEST_SPEC</p> </li> <li> <p>APPIUM_NODE_TEST_SPEC</p> </li> <li> <p> APPIUM_RUBY_TEST_SPEC</p> </li> <li> <p>APPIUM_WEB_JAVA_JUNIT_TEST_SPEC</p> </li> <li> <p>APPIUM_WEB_JAVA_TESTNG_TEST_SPEC</p> </li> <li> <p>APPIUM_WEB_PYTHON_TEST_SPEC</p> </li> <li> <p>APPIUM_WEB_NODE_TEST_SPEC</p> </li> <li> <p>APPIUM_WEB_RUBY_TEST_SPEC</p> </li> <li> <p>INSTRUMENTATION_TEST_SPEC</p> </li> <li> <p>XCTEST_UI_TEST_SPEC</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    arn: AmazonResourceNameSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the project for which you want to list uploads.',
+    }),
+    type: UploadTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The type of upload.</p> <p>Must be one of the following values:</p> <ul> <li> <p>ANDROID_APP</p> </li> <li> <p>IOS_APP</p> </li> <li> <p>WEB_APP</p> </li> <li> <p>EXTERNAL_DATA</p> </li> <li> <p>APPIUM_JAVA_JUNIT_TEST_PACKAGE</p> </li> <li> <p>APPIUM_JAVA_TESTNG_TEST_PACKAGE</p> </li> <li> <p>APPIUM_PYTHON_TEST_PACKAGE</p> </li> <li> <p>APPIUM_NODE_TEST_PACKAGE</p> </li> <li> <p>APPIUM_RUBY_TEST_PACKAGE</p> </li> <li> <p>APPIUM_WEB_JAVA_JUNIT_TEST_PACKAGE</p> </li> <li> <p>APPIUM_WEB_JAVA_TESTNG_TEST_PACKAGE</p> </li> <li> <p>APPIUM_WEB_PYTHON_TEST_PACKAGE</p> </li> <li> <p>APPIUM_WEB_NODE_TEST_PACKAGE</p> </li> <li> <p>APPIUM_WEB_RUBY_TEST_PACKAGE</p> </li> <li> <p>CALABASH_TEST_PACKAGE</p> </li> <li> <p>INSTRUMENTATION_TEST_PACKAGE</p> </li> <li> <p>UIAUTOMATION_TEST_PACKAGE</p> </li> <li> <p>UIAUTOMATOR_TEST_PACKAGE</p> </li> <li> <p>XCTEST_TEST_PACKAGE</p> </li> <li> <p>XCTEST_UI_TEST_PACKAGE</p> </li> <li> <p>APPIUM_JAVA_JUNIT_TEST_SPEC</p> </li> <li> <p>APPIUM_JAVA_TESTNG_TEST_SPEC</p> </li> <li> <p>APPIUM_PYTHON_TEST_SPEC</p> </li> <li> <p>APPIUM_NODE_TEST_SPEC</p> </li> <li> <p> APPIUM_RUBY_TEST_SPEC</p> </li> <li> <p>APPIUM_WEB_JAVA_JUNIT_TEST_SPEC</p> </li> <li> <p>APPIUM_WEB_JAVA_TESTNG_TEST_SPEC</p> </li> <li> <p>APPIUM_WEB_PYTHON_TEST_SPEC</p> </li> <li> <p>APPIUM_WEB_NODE_TEST_SPEC</p> </li> <li> <p>APPIUM_WEB_RUBY_TEST_SPEC</p> </li> <li> <p>INSTRUMENTATION_TEST_SPEC</p> </li> <li> <p>XCTEST_UI_TEST_SPEC</p> </li> </ul>',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
+    }),
   })
   .openapi({
     required: ['arn'],
@@ -4824,55 +3678,37 @@ const VPCEConfigurationsSchema = z.array(VPCEConfigurationSchema).openapi('VPCEC
 
 const ListVPCEConfigurationsResultSchema = z
   .object({
-    vpceConfigurations: VPCEConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of <code>VPCEConfiguration</code> objects that contain information about your VPC endpoint configuration.',
-        }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    vpceConfigurations: VPCEConfigurationsSchema.exactOptional().openapi({
+      description:
+        'An array of <code>VPCEConfiguration</code> objects that contain information about your VPC endpoint configuration.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListVPCEConfigurationsResult')
 
 const ListVPCEConfigurationsRequestSchema = z
   .object({
-    maxResults: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An integer that specifies the maximum number of items you want to return in the API response.',
-        }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    maxResults: IntegerSchema.exactOptional().openapi({
+      description:
+        'An integer that specifies the maximum number of items you want to return in the API response.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
+    }),
   })
   .openapi({ title: 'ListVPCEConfigurationsRequest', required: [] })
   .openapi('ListVPCEConfigurationsRequest')
 
 const PurchaseOfferingResultSchema = z
   .object({
-    offeringTransaction: OfferingTransactionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Represents the offering transaction for the purchase result.' }),
-    ).exactOptional(),
+    offeringTransaction: OfferingTransactionSchema.exactOptional().openapi({
+      description: 'Represents the offering transaction for the purchase result.',
+    }),
   })
   .openapi({
     example: {
@@ -4900,21 +3736,13 @@ const PurchaseOfferingResultSchema = z
 
 const PurchaseOfferingRequestSchema = z
   .object({
-    offeringId: OfferingIdentifierSchema.and(
-      z.any().openapi({ description: 'The ID of the offering.' }),
-    ),
-    quantity: IntegerSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The number of device slots to purchase in an offering request.' }),
-    ),
-    offeringPromotionId: OfferingPromotionIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the offering promotion to be applied to the purchase.',
-        }),
-    ).exactOptional(),
+    offeringId: OfferingIdentifierSchema.openapi({ description: 'The ID of the offering.' }),
+    quantity: IntegerSchema.openapi({
+      description: 'The number of device slots to purchase in an offering request.',
+    }),
+    offeringPromotionId: OfferingPromotionIdentifierSchema.exactOptional().openapi({
+      description: 'The ID of the offering promotion to be applied to the purchase.',
+    }),
   })
   .openapi({
     required: ['offeringId', 'quantity'],
@@ -4925,13 +3753,9 @@ const PurchaseOfferingRequestSchema = z
 
 const RenewOfferingResultSchema = z
   .object({
-    offeringTransaction: OfferingTransactionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Represents the status of the offering transaction for the renewal.',
-        }),
-    ).exactOptional(),
+    offeringTransaction: OfferingTransactionSchema.exactOptional().openapi({
+      description: 'Represents the status of the offering transaction for the renewal.',
+    }),
   })
   .openapi({
     example: {
@@ -4959,12 +3783,12 @@ const RenewOfferingResultSchema = z
 
 const RenewOfferingRequestSchema = z
   .object({
-    offeringId: OfferingIdentifierSchema.and(
-      z.any().openapi({ description: 'The ID of a request to renew an offering.' }),
-    ),
-    quantity: IntegerSchema.and(
-      z.any().openapi({ description: 'The quantity requested in an offering renewal.' }),
-    ),
+    offeringId: OfferingIdentifierSchema.openapi({
+      description: 'The ID of a request to renew an offering.',
+    }),
+    quantity: IntegerSchema.openapi({
+      description: 'The quantity requested in an offering renewal.',
+    }),
   })
   .openapi({
     required: ['offeringId', 'quantity'],
@@ -4975,9 +3799,7 @@ const RenewOfferingRequestSchema = z
 
 const ScheduleRunResultSchema = z
   .object({
-    run: RunSchema.and(
-      z.any().openapi({ description: 'Information about the scheduled run.' }),
-    ).exactOptional(),
+    run: RunSchema.exactOptional().openapi({ description: 'Information about the scheduled run.' }),
   })
   .openapi({
     example: { run: {} },
@@ -4988,19 +3810,13 @@ const ScheduleRunResultSchema = z
 
 const DeviceSelectionConfigurationSchema = z
   .object({
-    filters: DeviceFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Used to dynamically select a set of devices for a test run. A filter is made up of an attribute, an operator, and one or more values.</p> <ul> <li> <p> <b>Attribute</b> </p> <p>The aspect of a device such as platform or model used as the selection criteria in a device filter.</p> <p>Allowed values include:</p> <ul> <li> <p>ARN: The Amazon Resource Name (ARN) of the device (for example, <code>arn:aws:devicefarm:us-west-2::device:12345Example</code>).</p> </li> <li> <p>PLATFORM: The device platform. Valid values are ANDROID or IOS.</p> </li> <li> <p>OS_VERSION: The operating system version (for example, 10.3.2).</p> </li> <li> <p>MODEL: The device model (for example, iPad 5th Gen).</p> </li> <li> <p>AVAILABILITY: The current availability of the device. Valid values are AVAILABLE, HIGHLY_AVAILABLE, BUSY, or TEMPORARY_NOT_AVAILABLE.</p> </li> <li> <p>FORM_FACTOR: The device form factor. Valid values are PHONE or TABLET.</p> </li> <li> <p>MANUFACTURER: The device manufacturer (for example, Apple).</p> </li> <li> <p>REMOTE_ACCESS_ENABLED: Whether the device is enabled for remote access. Valid values are TRUE or FALSE.</p> </li> <li> <p>REMOTE_DEBUG_ENABLED: Whether the device is enabled for remote debugging. Valid values are TRUE or FALSE. Because remote debugging is <a href="https://docs.aws.amazon.com/devicefarm/latest/developerguide/history.html">no longer supported</a>, this filter is ignored.</p> </li> <li> <p>INSTANCE_ARN: The Amazon Resource Name (ARN) of the device instance.</p> </li> <li> <p>INSTANCE_LABELS: The label of the device instance.</p> </li> <li> <p>FLEET_TYPE: The fleet type. Valid values are PUBLIC or PRIVATE.</p> </li> </ul> </li> <li> <p> <b>Operator</b> </p> <p>The filter operator.</p> <ul> <li> <p>The EQUALS operator is available for every attribute except INSTANCE_LABELS.</p> </li> <li> <p>The CONTAINS operator is available for the INSTANCE_LABELS and MODEL attributes.</p> </li> <li> <p>The IN and NOT_IN operators are available for the ARN, OS_VERSION, MODEL, MANUFACTURER, and INSTANCE_ARN attributes.</p> </li> <li> <p>The LESS_THAN, GREATER_THAN, LESS_THAN_OR_EQUALS, and GREATER_THAN_OR_EQUALS operators are also available for the OS_VERSION attribute.</p> </li> </ul> </li> <li> <p> <b>Values</b> </p> <p>An array of one or more filter values.</p> <p class="title"> <b>Operator Values</b> </p> <ul> <li> <p>The IN and NOT_IN operators can take a values array that has more than one element.</p> </li> <li> <p>The other operators require an array with a single element.</p> </li> </ul> <p class="title"> <b>Attribute Values</b> </p> <ul> <li> <p>The PLATFORM attribute can be set to ANDROID or IOS.</p> </li> <li> <p>The AVAILABILITY attribute can be set to AVAILABLE, HIGHLY_AVAILABLE, BUSY, or TEMPORARY_NOT_AVAILABLE.</p> </li> <li> <p>The FORM_FACTOR attribute can be set to PHONE or TABLET.</p> </li> <li> <p>The FLEET_TYPE attribute can be set to PUBLIC or PRIVATE.</p> </li> </ul> </li> </ul>',
-        }),
-    ),
-    maxDevices: IntegerSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The maximum number of devices to be included in a test run.' }),
-    ),
+    filters: DeviceFiltersSchema.openapi({
+      description:
+        '<p>Used to dynamically select a set of devices for a test run. A filter is made up of an attribute, an operator, and one or more values.</p> <ul> <li> <p> <b>Attribute</b> </p> <p>The aspect of a device such as platform or model used as the selection criteria in a device filter.</p> <p>Allowed values include:</p> <ul> <li> <p>ARN: The Amazon Resource Name (ARN) of the device (for example, <code>arn:aws:devicefarm:us-west-2::device:12345Example</code>).</p> </li> <li> <p>PLATFORM: The device platform. Valid values are ANDROID or IOS.</p> </li> <li> <p>OS_VERSION: The operating system version (for example, 10.3.2).</p> </li> <li> <p>MODEL: The device model (for example, iPad 5th Gen).</p> </li> <li> <p>AVAILABILITY: The current availability of the device. Valid values are AVAILABLE, HIGHLY_AVAILABLE, BUSY, or TEMPORARY_NOT_AVAILABLE.</p> </li> <li> <p>FORM_FACTOR: The device form factor. Valid values are PHONE or TABLET.</p> </li> <li> <p>MANUFACTURER: The device manufacturer (for example, Apple).</p> </li> <li> <p>REMOTE_ACCESS_ENABLED: Whether the device is enabled for remote access. Valid values are TRUE or FALSE.</p> </li> <li> <p>REMOTE_DEBUG_ENABLED: Whether the device is enabled for remote debugging. Valid values are TRUE or FALSE. Because remote debugging is <a href="https://docs.aws.amazon.com/devicefarm/latest/developerguide/history.html">no longer supported</a>, this filter is ignored.</p> </li> <li> <p>INSTANCE_ARN: The Amazon Resource Name (ARN) of the device instance.</p> </li> <li> <p>INSTANCE_LABELS: The label of the device instance.</p> </li> <li> <p>FLEET_TYPE: The fleet type. Valid values are PUBLIC or PRIVATE.</p> </li> </ul> </li> <li> <p> <b>Operator</b> </p> <p>The filter operator.</p> <ul> <li> <p>The EQUALS operator is available for every attribute except INSTANCE_LABELS.</p> </li> <li> <p>The CONTAINS operator is available for the INSTANCE_LABELS and MODEL attributes.</p> </li> <li> <p>The IN and NOT_IN operators are available for the ARN, OS_VERSION, MODEL, MANUFACTURER, and INSTANCE_ARN attributes.</p> </li> <li> <p>The LESS_THAN, GREATER_THAN, LESS_THAN_OR_EQUALS, and GREATER_THAN_OR_EQUALS operators are also available for the OS_VERSION attribute.</p> </li> </ul> </li> <li> <p> <b>Values</b> </p> <p>An array of one or more filter values.</p> <p class="title"> <b>Operator Values</b> </p> <ul> <li> <p>The IN and NOT_IN operators can take a values array that has more than one element.</p> </li> <li> <p>The other operators require an array with a single element.</p> </li> </ul> <p class="title"> <b>Attribute Values</b> </p> <ul> <li> <p>The PLATFORM attribute can be set to ANDROID or IOS.</p> </li> <li> <p>The AVAILABILITY attribute can be set to AVAILABLE, HIGHLY_AVAILABLE, BUSY, or TEMPORARY_NOT_AVAILABLE.</p> </li> <li> <p>The FORM_FACTOR attribute can be set to PHONE or TABLET.</p> </li> <li> <p>The FLEET_TYPE attribute can be set to PUBLIC or PRIVATE.</p> </li> </ul> </li> </ul>',
+    }),
+    maxDevices: IntegerSchema.openapi({
+      description: 'The maximum number of devices to be included in a test run.',
+    }),
   })
   .openapi({
     required: ['filters', 'maxDevices'],
@@ -5015,43 +3831,25 @@ const AppPackagesCleanupSchema = z.boolean().openapi('AppPackagesCleanup')
 
 const ExecutionConfigurationSchema = z
   .object({
-    jobTimeoutMinutes: JobTimeoutMinutesSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The number of minutes a test run executes before it times out.' }),
-    ).exactOptional(),
-    accountsCleanup: AccountsCleanupSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'True if account cleanup is enabled at the beginning of the test. Otherwise, false.',
-        }),
-    ).exactOptional(),
-    appPackagesCleanup: AppPackagesCleanupSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'True if app package cleanup is enabled at the beginning of the test. Otherwise, false.',
-        }),
-    ).exactOptional(),
-    videoCapture: VideoCaptureSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Set to true to enable video capture. Otherwise, set to false. The default is true.',
-        }),
-    ).exactOptional(),
-    skipAppResign: SkipAppResignSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>When set to <code>true</code>, for private devices, Device Farm does not sign your app again. For public devices, Device Farm always signs your apps again.</p> <p>For more information about how Device Farm re-signs your apps, see <a href="http://aws.amazon.com/device-farm/faqs/">Do you modify my app?</a> in the <i>AWS Device Farm FAQs</i>.</p>',
-        }),
-    ).exactOptional(),
+    jobTimeoutMinutes: JobTimeoutMinutesSchema.exactOptional().openapi({
+      description: 'The number of minutes a test run executes before it times out.',
+    }),
+    accountsCleanup: AccountsCleanupSchema.exactOptional().openapi({
+      description:
+        'True if account cleanup is enabled at the beginning of the test. Otherwise, false.',
+    }),
+    appPackagesCleanup: AppPackagesCleanupSchema.exactOptional().openapi({
+      description:
+        'True if app package cleanup is enabled at the beginning of the test. Otherwise, false.',
+    }),
+    videoCapture: VideoCaptureSchema.exactOptional().openapi({
+      description:
+        'Set to true to enable video capture. Otherwise, set to false. The default is true.',
+    }),
+    skipAppResign: SkipAppResignSchema.exactOptional().openapi({
+      description:
+        '<p>When set to <code>true</code>, for private devices, Device Farm does not sign your app again. For public devices, Device Farm always signs your apps again.</p> <p>For more information about how Device Farm re-signs your apps, see <a href="http://aws.amazon.com/device-farm/faqs/">Do you modify my app?</a> in the <i>AWS Device Farm FAQs</i>.</p>',
+    }),
   })
   .openapi({
     description:
@@ -5062,47 +3860,33 @@ const ExecutionConfigurationSchema = z
 
 const ScheduleRunRequestSchema = z
   .object({
-    projectArn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'The ARN of the project for the run to be scheduled.' }),
-    ),
-    appArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of an application package to run tests against, created with <a>CreateUpload</a>. See <a>ListUploads</a>.',
-        }),
-    ).exactOptional(),
-    devicePoolArn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'The ARN of the device pool for the run to be scheduled.' }),
-    ).exactOptional(),
-    deviceSelectionConfiguration: DeviceSelectionConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The filter criteria used to dynamically select a set of devices for a test run and the maximum number of devices to be included in the run.</p> <p>Either <b> <code>devicePoolArn</code> </b> or <b> <code>deviceSelectionConfiguration</code> </b> is required in a request.</p>',
-        }),
-    ).exactOptional(),
-    name: NameSchema.and(
-      z.any().openapi({ description: 'The name for the run to be scheduled.' }),
-    ).exactOptional(),
-    test: ScheduleRunTestSchema.and(
-      z.any().openapi({ description: 'Information about the test for the run to be scheduled.' }),
-    ),
-    configuration: ScheduleRunConfigurationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Information about the settings for the run to be scheduled.' }),
-    ).exactOptional(),
-    executionConfiguration: ExecutionConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies configuration information about a test run, such as the execution timeout (in minutes).',
-        }),
-    ).exactOptional(),
+    projectArn: AmazonResourceNameSchema.openapi({
+      description: 'The ARN of the project for the run to be scheduled.',
+    }),
+    appArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description:
+        'The ARN of an application package to run tests against, created with <a>CreateUpload</a>. See <a>ListUploads</a>.',
+    }),
+    devicePoolArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description: 'The ARN of the device pool for the run to be scheduled.',
+    }),
+    deviceSelectionConfiguration: DeviceSelectionConfigurationSchema.exactOptional().openapi({
+      description:
+        '<p>The filter criteria used to dynamically select a set of devices for a test run and the maximum number of devices to be included in the run.</p> <p>Either <b> <code>devicePoolArn</code> </b> or <b> <code>deviceSelectionConfiguration</code> </b> is required in a request.</p>',
+    }),
+    name: NameSchema.exactOptional().openapi({
+      description: 'The name for the run to be scheduled.',
+    }),
+    test: ScheduleRunTestSchema.openapi({
+      description: 'Information about the test for the run to be scheduled.',
+    }),
+    configuration: ScheduleRunConfigurationSchema.exactOptional().openapi({
+      description: 'Information about the settings for the run to be scheduled.',
+    }),
+    executionConfiguration: ExecutionConfigurationSchema.exactOptional().openapi({
+      description:
+        'Specifies configuration information about a test run, such as the execution timeout (in minutes).',
+    }),
   })
   .openapi({
     required: ['projectArn', 'test'],
@@ -5114,37 +3898,25 @@ const ScheduleRunRequestSchema = z
 const IdempotencyExceptionSchema = z.any().openapi('IdempotencyException')
 
 const StopJobResultSchema = z
-  .object({
-    job: JobSchema.and(
-      z.any().openapi({ description: 'The job that was stopped.' }),
-    ).exactOptional(),
-  })
+  .object({ job: JobSchema.exactOptional().openapi({ description: 'The job that was stopped.' }) })
   .openapi({ required: [] })
   .openapi('StopJobResult')
 
 const StopJobRequestSchema = z
   .object({
-    arn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Represents the Amazon Resource Name (ARN) of the Device Farm job to stop.',
-        }),
-    ),
+    arn: AmazonResourceNameSchema.openapi({
+      description: 'Represents the Amazon Resource Name (ARN) of the Device Farm job to stop.',
+    }),
   })
   .openapi({ required: ['arn'], title: 'StopJobRequest' })
   .openapi('StopJobRequest')
 
 const StopRemoteAccessSessionResultSchema = z
   .object({
-    remoteAccessSession: RemoteAccessSessionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A container that represents the metadata from the service about the remote access session you are stopping.',
-        }),
-    ).exactOptional(),
+    remoteAccessSession: RemoteAccessSessionSchema.exactOptional().openapi({
+      description:
+        'A container that represents the metadata from the service about the remote access session you are stopping.',
+    }),
   })
   .openapi({
     description:
@@ -5155,13 +3927,9 @@ const StopRemoteAccessSessionResultSchema = z
 
 const StopRemoteAccessSessionRequestSchema = z
   .object({
-    arn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the remote access session to stop.',
-        }),
-    ),
+    arn: AmazonResourceNameSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the remote access session to stop.',
+    }),
   })
   .openapi({
     required: ['arn'],
@@ -5171,11 +3939,7 @@ const StopRemoteAccessSessionRequestSchema = z
   .openapi('StopRemoteAccessSessionRequest')
 
 const StopRunResultSchema = z
-  .object({
-    run: RunSchema.and(
-      z.any().openapi({ description: 'The run that was stopped.' }),
-    ).exactOptional(),
-  })
+  .object({ run: RunSchema.exactOptional().openapi({ description: 'The run that was stopped.' }) })
   .openapi({
     example: { run: {} },
     description: 'Represents the results of your stop run attempt.',
@@ -5185,13 +3949,9 @@ const StopRunResultSchema = z
 
 const StopRunRequestSchema = z
   .object({
-    arn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Represents the Amazon Resource Name (ARN) of the Device Farm run to stop.',
-        }),
-    ),
+    arn: AmazonResourceNameSchema.openapi({
+      description: 'Represents the Amazon Resource Name (ARN) of the Device Farm run to stop.',
+    }),
   })
   .openapi({
     required: ['arn'],
@@ -5200,26 +3960,18 @@ const StopRunRequestSchema = z
   })
   .openapi('StopRunRequest')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
 const TagResourceRequestSchema = z
   .object({
-    ResourceARN: DeviceFarmArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the resource or resources to which to add tags. You can associate tags with the following Device Farm resources: <code>PROJECT</code>, <code>RUN</code>, <code>NETWORK_PROFILE</code>, <code>INSTANCE_PROFILE</code>, <code>DEVICE_INSTANCE</code>, <code>SESSION</code>, <code>DEVICE_POOL</code>, <code>DEVICE</code>, and <code>VPCE_CONFIGURATION</code>.',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags to add to the resource. A tag is an array of key-value pairs. Tag keys can have a maximum character length of 128 characters. Tag values can have a maximum length of 256 characters.',
-        }),
-    ),
+    ResourceARN: DeviceFarmArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the resource or resources to which to add tags. You can associate tags with the following Device Farm resources: <code>PROJECT</code>, <code>RUN</code>, <code>NETWORK_PROFILE</code>, <code>INSTANCE_PROFILE</code>, <code>DEVICE_INSTANCE</code>, <code>SESSION</code>, <code>DEVICE_POOL</code>, <code>DEVICE</code>, and <code>VPCE_CONFIGURATION</code>.',
+    }),
+    Tags: TagListSchema.openapi({
+      description:
+        'The tags to add to the resource. A tag is an array of key-value pairs. Tag keys can have a maximum character length of 128 characters. Tag values can have a maximum length of 256 characters.',
+    }),
   })
   .openapi({ required: ['ResourceARN', 'Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
@@ -5228,69 +3980,50 @@ const TooManyTagsExceptionSchema = z.any().openapi('TooManyTagsException')
 
 const TagPolicyExceptionSchema = z.any().openapi('TagPolicyException')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeyListSchema = z.array(TagKeySchema).max(150).openapi('TagKeyList')
 
 const UntagResourceRequestSchema = z
   .object({
-    ResourceARN: DeviceFarmArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the resource or resources from which to delete tags. You can associate tags with the following Device Farm resources: <code>PROJECT</code>, <code>RUN</code>, <code>NETWORK_PROFILE</code>, <code>INSTANCE_PROFILE</code>, <code>DEVICE_INSTANCE</code>, <code>SESSION</code>, <code>DEVICE_POOL</code>, <code>DEVICE</code>, and <code>VPCE_CONFIGURATION</code>.',
-        }),
-    ),
-    TagKeys: TagKeyListSchema.and(
-      z.any().openapi({ description: 'The keys of the tags to be removed.' }),
-    ),
+    ResourceARN: DeviceFarmArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the resource or resources from which to delete tags. You can associate tags with the following Device Farm resources: <code>PROJECT</code>, <code>RUN</code>, <code>NETWORK_PROFILE</code>, <code>INSTANCE_PROFILE</code>, <code>DEVICE_INSTANCE</code>, <code>SESSION</code>, <code>DEVICE_POOL</code>, <code>DEVICE</code>, and <code>VPCE_CONFIGURATION</code>.',
+    }),
+    TagKeys: TagKeyListSchema.openapi({ description: 'The keys of the tags to be removed.' }),
   })
   .openapi({ required: ['ResourceARN', 'TagKeys'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateDeviceInstanceResultSchema = z
   .object({
-    deviceInstance: DeviceInstanceSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that contains information about your device instance.',
-        }),
-    ).exactOptional(),
+    deviceInstance: DeviceInstanceSchema.exactOptional().openapi({
+      description: 'An object that contains information about your device instance.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateDeviceInstanceResult')
 
 const UpdateDeviceInstanceRequestSchema = z
   .object({
-    arn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the device instance.' }),
-    ),
-    profileArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the profile that you want to associate with the device instance.',
-        }),
-    ).exactOptional(),
-    labels: InstanceLabelsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array of strings that you want to associate with the device instance.',
-        }),
-    ).exactOptional(),
+    arn: AmazonResourceNameSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the device instance.',
+    }),
+    profileArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description: 'The ARN of the profile that you want to associate with the device instance.',
+    }),
+    labels: InstanceLabelsSchema.exactOptional().openapi({
+      description: 'An array of strings that you want to associate with the device instance.',
+    }),
   })
   .openapi({ required: ['arn'], title: 'UpdateDeviceInstanceRequest' })
   .openapi('UpdateDeviceInstanceRequest')
 
 const UpdateDevicePoolResultSchema = z
   .object({
-    devicePool: DevicePoolSchema.and(
-      z.any().openapi({ description: 'The device pool you just updated.' }),
-    ).exactOptional(),
+    devicePool: DevicePoolSchema.exactOptional().openapi({
+      description: 'The device pool you just updated.',
+    }),
   })
   .openapi({
     example: { devicePool: {} },
@@ -5301,47 +4034,27 @@ const UpdateDevicePoolResultSchema = z
 
 const UpdateDevicePoolRequestSchema = z
   .object({
-    arn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the Device Farm device pool to update.',
-        }),
-    ),
-    name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A string that represents the name of the device pool to update.',
-        }),
-    ).exactOptional(),
-    description: MessageSchema.and(
-      z.any().openapi({ description: 'A description of the device pool to update.' }),
-    ).exactOptional(),
-    rules: RulesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Represents the rules to modify for the device pool. Updating rules is optional. If you update rules for your request, the update replaces the existing rules.',
-        }),
-    ).exactOptional(),
-    maxDevices: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of devices that Device Farm can add to your device pool. Device Farm adds devices that are available and that meet the criteria that you assign for the <code>rules</code> parameter. Depending on how many devices meet these constraints, your device pool might contain fewer devices than the value for this parameter.</p> <p>By specifying the maximum number of devices, you can control the costs that you incur by running tests.</p> <p>If you use this parameter in your request, you cannot use the <code>clearMaxDevices</code> parameter in the same request.</p>',
-        }),
-    ).exactOptional(),
-    clearMaxDevices: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Sets whether the <code>maxDevices</code> parameter applies to your device pool. If you set this parameter to <code>true</code>, the <code>maxDevices</code> parameter does not apply, and Device Farm does not limit the number of devices that it adds to your device pool. In this case, Device Farm adds all available devices that meet the criteria specified in the <code>rules</code> parameter.</p> <p>If you use this parameter in your request, you cannot use the <code>maxDevices</code> parameter in the same request.</p>',
-        }),
-    ).exactOptional(),
+    arn: AmazonResourceNameSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the Device Farm device pool to update.',
+    }),
+    name: NameSchema.exactOptional().openapi({
+      description: 'A string that represents the name of the device pool to update.',
+    }),
+    description: MessageSchema.exactOptional().openapi({
+      description: 'A description of the device pool to update.',
+    }),
+    rules: RulesSchema.exactOptional().openapi({
+      description:
+        'Represents the rules to modify for the device pool. Updating rules is optional. If you update rules for your request, the update replaces the existing rules.',
+    }),
+    maxDevices: IntegerSchema.exactOptional().openapi({
+      description:
+        '<p>The number of devices that Device Farm can add to your device pool. Device Farm adds devices that are available and that meet the criteria that you assign for the <code>rules</code> parameter. Depending on how many devices meet these constraints, your device pool might contain fewer devices than the value for this parameter.</p> <p>By specifying the maximum number of devices, you can control the costs that you incur by running tests.</p> <p>If you use this parameter in your request, you cannot use the <code>clearMaxDevices</code> parameter in the same request.</p>',
+    }),
+    clearMaxDevices: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Sets whether the <code>maxDevices</code> parameter applies to your device pool. If you set this parameter to <code>true</code>, the <code>maxDevices</code> parameter does not apply, and Device Farm does not limit the number of devices that it adds to your device pool. In this case, Device Farm adds all available devices that meet the criteria specified in the <code>rules</code> parameter.</p> <p>If you use this parameter in your request, you cannot use the <code>maxDevices</code> parameter in the same request.</p>',
+    }),
   })
   .openapi({
     required: ['arn'],
@@ -5352,170 +4065,103 @@ const UpdateDevicePoolRequestSchema = z
 
 const UpdateInstanceProfileResultSchema = z
   .object({
-    instanceProfile: InstanceProfileSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that contains information about your instance profile.',
-        }),
-    ).exactOptional(),
+    instanceProfile: InstanceProfileSchema.exactOptional().openapi({
+      description: 'An object that contains information about your instance profile.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateInstanceProfileResult')
 
 const UpdateInstanceProfileRequestSchema = z
   .object({
-    arn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the instance profile.' }),
-    ),
-    name: NameSchema.and(
-      z.any().openapi({ description: 'The updated name for your instance profile.' }),
-    ).exactOptional(),
-    description: MessageSchema.and(
-      z.any().openapi({ description: 'The updated description for your instance profile.' }),
-    ).exactOptional(),
-    packageCleanup: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The updated choice for whether you want to specify package cleanup. The default value is <code>false</code> for private devices.',
-        }),
-    ).exactOptional(),
-    excludeAppPackagesFromCleanup: PackageIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of strings that specifies the list of app packages that should not be cleaned up from the device after a test run is over.</p> <p>The list of packages is only considered if you set <code>packageCleanup</code> to <code>true</code>.</p>',
-        }),
-    ).exactOptional(),
-    rebootAfterUse: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The updated choice for whether you want to reboot the device after use. The default value is <code>true</code>.',
-        }),
-    ).exactOptional(),
+    arn: AmazonResourceNameSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the instance profile.',
+    }),
+    name: NameSchema.exactOptional().openapi({
+      description: 'The updated name for your instance profile.',
+    }),
+    description: MessageSchema.exactOptional().openapi({
+      description: 'The updated description for your instance profile.',
+    }),
+    packageCleanup: BooleanSchema.exactOptional().openapi({
+      description:
+        'The updated choice for whether you want to specify package cleanup. The default value is <code>false</code> for private devices.',
+    }),
+    excludeAppPackagesFromCleanup: PackageIdsSchema.exactOptional().openapi({
+      description:
+        '<p>An array of strings that specifies the list of app packages that should not be cleaned up from the device after a test run is over.</p> <p>The list of packages is only considered if you set <code>packageCleanup</code> to <code>true</code>.</p>',
+    }),
+    rebootAfterUse: BooleanSchema.exactOptional().openapi({
+      description:
+        'The updated choice for whether you want to reboot the device after use. The default value is <code>true</code>.',
+    }),
   })
   .openapi({ required: ['arn'], title: 'UpdateInstanceProfileRequest' })
   .openapi('UpdateInstanceProfileRequest')
 
 const UpdateNetworkProfileResultSchema = z
   .object({
-    networkProfile: NetworkProfileSchema.and(
-      z.any().openapi({ description: 'A list of the available network profiles.' }),
-    ).exactOptional(),
+    networkProfile: NetworkProfileSchema.exactOptional().openapi({
+      description: 'A list of the available network profiles.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateNetworkProfileResult')
 
 const UpdateNetworkProfileRequestSchema = z
   .object({
-    arn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the project for which you want to update network profile settings.',
-        }),
-    ),
-    name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the network profile about which you are returning information.',
-        }),
-    ).exactOptional(),
-    description: MessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The description of the network profile about which you are returning information.',
-        }),
-    ).exactOptional(),
-    type: NetworkProfileTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of network profile to return information about. Valid values are listed here.',
-        }),
-    ).exactOptional(),
-    uplinkBandwidthBits: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The data throughput rate in bits per second, as an integer from 0 to 104857600.',
-        }),
-    ).exactOptional(),
-    downlinkBandwidthBits: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The data throughput rate in bits per second, as an integer from 0 to 104857600.',
-        }),
-    ).exactOptional(),
-    uplinkDelayMs: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Delay time for all packets to destination in milliseconds as an integer from 0 to 2000.',
-        }),
-    ).exactOptional(),
-    downlinkDelayMs: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Delay time for all packets to destination in milliseconds as an integer from 0 to 2000.',
-        }),
-    ).exactOptional(),
-    uplinkJitterMs: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Time variation in the delay of received packets in milliseconds as an integer from 0 to 2000.',
-        }),
-    ).exactOptional(),
-    downlinkJitterMs: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Time variation in the delay of received packets in milliseconds as an integer from 0 to 2000.',
-        }),
-    ).exactOptional(),
-    uplinkLossPercent: PercentIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Proportion of transmitted packets that fail to arrive from 0 to 100 percent.',
-        }),
-    ).exactOptional(),
-    downlinkLossPercent: PercentIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Proportion of received packets that fail to arrive from 0 to 100 percent.',
-        }),
-    ).exactOptional(),
+    arn: AmazonResourceNameSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the project for which you want to update network profile settings.',
+    }),
+    name: NameSchema.exactOptional().openapi({
+      description: 'The name of the network profile about which you are returning information.',
+    }),
+    description: MessageSchema.exactOptional().openapi({
+      description:
+        'The description of the network profile about which you are returning information.',
+    }),
+    type: NetworkProfileTypeSchema.exactOptional().openapi({
+      description:
+        'The type of network profile to return information about. Valid values are listed here.',
+    }),
+    uplinkBandwidthBits: LongSchema.exactOptional().openapi({
+      description:
+        'The data throughput rate in bits per second, as an integer from 0 to 104857600.',
+    }),
+    downlinkBandwidthBits: LongSchema.exactOptional().openapi({
+      description:
+        'The data throughput rate in bits per second, as an integer from 0 to 104857600.',
+    }),
+    uplinkDelayMs: LongSchema.exactOptional().openapi({
+      description:
+        'Delay time for all packets to destination in milliseconds as an integer from 0 to 2000.',
+    }),
+    downlinkDelayMs: LongSchema.exactOptional().openapi({
+      description:
+        'Delay time for all packets to destination in milliseconds as an integer from 0 to 2000.',
+    }),
+    uplinkJitterMs: LongSchema.exactOptional().openapi({
+      description:
+        'Time variation in the delay of received packets in milliseconds as an integer from 0 to 2000.',
+    }),
+    downlinkJitterMs: LongSchema.exactOptional().openapi({
+      description:
+        'Time variation in the delay of received packets in milliseconds as an integer from 0 to 2000.',
+    }),
+    uplinkLossPercent: PercentIntegerSchema.exactOptional().openapi({
+      description: 'Proportion of transmitted packets that fail to arrive from 0 to 100 percent.',
+    }),
+    downlinkLossPercent: PercentIntegerSchema.exactOptional().openapi({
+      description: 'Proportion of received packets that fail to arrive from 0 to 100 percent.',
+    }),
   })
   .openapi({ required: ['arn'], title: 'UpdateNetworkProfileRequest' })
   .openapi('UpdateNetworkProfileRequest')
 
 const UpdateProjectResultSchema = z
   .object({
-    project: ProjectSchema.and(
-      z.any().openapi({ description: 'The project to update.' }),
-    ).exactOptional(),
+    project: ProjectSchema.exactOptional().openapi({ description: 'The project to update.' }),
   })
   .openapi({
     example: {
@@ -5532,36 +4178,18 @@ const UpdateProjectResultSchema = z
 
 const UpdateProjectRequestSchema = z
   .object({
-    arn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the project whose name to update.',
-        }),
-    ),
-    name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string that represents the new name of the project that you are updating.',
-        }),
-    ).exactOptional(),
-    defaultJobTimeoutMinutes: JobTimeoutMinutesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of minutes a test run in the project executes before it times out.',
-        }),
-    ).exactOptional(),
-    vpcConfig: VpcConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The VPC security groups and subnets that are attached to a project.',
-        }),
-    ).exactOptional(),
+    arn: AmazonResourceNameSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the project whose name to update.',
+    }),
+    name: NameSchema.exactOptional().openapi({
+      description: 'A string that represents the new name of the project that you are updating.',
+    }),
+    defaultJobTimeoutMinutes: JobTimeoutMinutesSchema.exactOptional().openapi({
+      description: 'The number of minutes a test run in the project executes before it times out.',
+    }),
+    vpcConfig: VpcConfigSchema.exactOptional().openapi({
+      description: 'The VPC security groups and subnets that are attached to a project.',
+    }),
   })
   .openapi({
     required: ['arn'],
@@ -5572,131 +4200,89 @@ const UpdateProjectRequestSchema = z
 
 const UpdateTestGridProjectResultSchema = z
   .object({
-    testGridProject: TestGridProjectSchema.and(
-      z.any().openapi({ description: 'The project, including updated information.' }),
-    ).exactOptional(),
+    testGridProject: TestGridProjectSchema.exactOptional().openapi({
+      description: 'The project, including updated information.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateTestGridProjectResult')
 
 const UpdateTestGridProjectRequestSchema = z
   .object({
-    projectArn: DeviceFarmArnSchema.and(
-      z.any().openapi({ description: 'ARN of the project to update.' }),
-    ),
-    name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'Human-readable name for the project.' }),
-    ).exactOptional(),
-    description: ResourceDescriptionSchema.and(
-      z.any().openapi({ description: 'Human-readable description for the project.' }),
-    ).exactOptional(),
-    vpcConfig: TestGridVpcConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The VPC security groups and subnets that are attached to a project.',
-        }),
-    ).exactOptional(),
+    projectArn: DeviceFarmArnSchema.openapi({ description: 'ARN of the project to update.' }),
+    name: ResourceNameSchema.exactOptional().openapi({
+      description: 'Human-readable name for the project.',
+    }),
+    description: ResourceDescriptionSchema.exactOptional().openapi({
+      description: 'Human-readable description for the project.',
+    }),
+    vpcConfig: TestGridVpcConfigSchema.exactOptional().openapi({
+      description: 'The VPC security groups and subnets that are attached to a project.',
+    }),
   })
   .openapi({ required: ['projectArn'], title: 'UpdateTestGridProjectRequest' })
   .openapi('UpdateTestGridProjectRequest')
 
 const UpdateUploadResultSchema = z
   .object({
-    upload: UploadSchema.and(
-      z.any().openapi({ description: 'A test spec uploaded to Device Farm.' }),
-    ).exactOptional(),
+    upload: UploadSchema.exactOptional().openapi({
+      description: 'A test spec uploaded to Device Farm.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateUploadResult')
 
 const UpdateUploadRequestSchema = z
   .object({
-    arn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the uploaded test spec.' }),
-    ),
-    name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The upload's test spec file name. The name must not contain any forward slashes (/). The test spec file name must end with the <code>.yaml</code> or <code>.yml</code> file extension.",
-        }),
-    ).exactOptional(),
-    contentType: ContentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The upload's content type (for example, <code>application/x-yaml</code>).",
-        }),
-    ).exactOptional(),
-    editContent: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Set to true if the YAML file has changed and must be updated. Otherwise, set to false.',
-        }),
-    ).exactOptional(),
+    arn: AmazonResourceNameSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the uploaded test spec.',
+    }),
+    name: NameSchema.exactOptional().openapi({
+      description:
+        "The upload's test spec file name. The name must not contain any forward slashes (/). The test spec file name must end with the <code>.yaml</code> or <code>.yml</code> file extension.",
+    }),
+    contentType: ContentTypeSchema.exactOptional().openapi({
+      description: "The upload's content type (for example, <code>application/x-yaml</code>).",
+    }),
+    editContent: BooleanSchema.exactOptional().openapi({
+      description:
+        'Set to true if the YAML file has changed and must be updated. Otherwise, set to false.',
+    }),
   })
   .openapi({ required: ['arn'], title: 'UpdateUploadRequest' })
   .openapi('UpdateUploadRequest')
 
 const UpdateVPCEConfigurationResultSchema = z
   .object({
-    vpceConfiguration: VPCEConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that contains information about your VPC endpoint configuration.',
-        }),
-    ).exactOptional(),
+    vpceConfiguration: VPCEConfigurationSchema.exactOptional().openapi({
+      description: 'An object that contains information about your VPC endpoint configuration.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateVPCEConfigurationResult')
 
 const UpdateVPCEConfigurationRequestSchema = z
   .object({
-    arn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the VPC endpoint configuration you want to update.',
-        }),
-    ),
-    vpceConfigurationName: VPCEConfigurationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The friendly name you give to your VPC endpoint configuration to manage your configurations more easily.',
-        }),
-    ).exactOptional(),
-    vpceServiceName: VPCEServiceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the VPC endpoint service running in your AWS account that you want Device Farm to test.',
-        }),
-    ).exactOptional(),
-    serviceDnsName: ServiceDnsNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The DNS (domain) name used to connect to your private service in your VPC. The DNS name must not already be in use on the internet.',
-        }),
-    ).exactOptional(),
-    vpceConfigurationDescription: VPCEConfigurationDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional description that provides details about your VPC endpoint configuration.',
-        }),
-    ).exactOptional(),
+    arn: AmazonResourceNameSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the VPC endpoint configuration you want to update.',
+    }),
+    vpceConfigurationName: VPCEConfigurationNameSchema.exactOptional().openapi({
+      description:
+        'The friendly name you give to your VPC endpoint configuration to manage your configurations more easily.',
+    }),
+    vpceServiceName: VPCEServiceNameSchema.exactOptional().openapi({
+      description:
+        'The name of the VPC endpoint service running in your AWS account that you want Device Farm to test.',
+    }),
+    serviceDnsName: ServiceDnsNameSchema.exactOptional().openapi({
+      description:
+        'The DNS (domain) name used to connect to your private service in your VPC. The DNS name must not already be in use on the internet.',
+    }),
+    vpceConfigurationDescription: VPCEConfigurationDescriptionSchema.exactOptional().openapi({
+      description:
+        'An optional description that provides details about your VPC endpoint configuration.',
+    }),
   })
   .openapi({ required: ['arn'], title: 'UpdateVPCEConfigurationRequest' })
   .openapi('UpdateVPCEConfigurationRequest')

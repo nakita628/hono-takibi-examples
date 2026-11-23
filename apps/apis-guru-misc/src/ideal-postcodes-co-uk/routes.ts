@@ -1,239 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const PlaceCountryIsoSchema = z
-  .string()
-  .openapi({
-    description: '  3 letter country code (ISO 3166-1)\n',
-    example: 'GBR',
-    title: 'Country',
-  })
-  .openapi('PlaceCountryIso')
-
-const PlaceDescriptiveNameSchema = z
-  .string()
-  .openapi({
-    description: 'Longer form description of the place.\n',
-    example: 'London, United Kingdom',
-    title: 'Descriptive Place Name',
-  })
-  .openapi('PlaceDescriptiveName')
-
-const LanguageSchema = z
-  .enum(['en', 'cy', 'ga'])
-  .openapi({
-    description: 'Language represented by 2 letter ISO Code (639-1)\n',
-    title: 'Language',
-  })
-  .openapi('Language')
-
-const LatitudeSchema = z
-  .xor([
-    z.string().openapi({ description: 'Empty string `""` if not available' }),
-    z.number().min(-90).max(90).openapi({ description: 'Represents latitude', example: 52.938278 }),
-  ])
-  .openapi({
-    description:
-      'The latitude of the postcode (WGS84/ETRS89).\n\nCan be a positive or negative decimal. E.g. `51.5083983`.\n\nReturns an empty string if no location data is available. ',
-    title: 'Longitude',
-  })
-  .openapi('Latitude')
-
-const LongitudeSchema = z
-  .xor([
-    z.string().openapi({ description: 'Empty string `""` if not available' }),
-    z
-      .number()
-      .min(-180)
-      .max(180)
-      .openapi({ description: 'Represents longitude', example: 0.002823 }),
-  ])
-  .openapi({
-    description:
-      'The longitude of the postcode (WGS84/ETRS89).\n\nCan be a positive or negative decimal. E.g. -0.1283983\n\nReturns an empty string if no location data is available. ',
-    title: 'Longitude',
-  })
-  .openapi('Longitude')
-
-const PlaceNameSchema = z
-  .string()
-  .openapi({ description: 'Place name\n', example: 'London', title: 'Place Name' })
-  .openapi('PlaceName')
-
-const GeonamesPlaceSchema = z
-  .object({
-    admin1_code: z
-      .string()
-      .min(0)
-      .max(20)
-      .exactOptional()
-      .openapi({ description: 'Fipscode (subject to change to iso code)', example: 'ENG' }),
-    admin1_geonameid: z
-      .int32()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'GeoName ID for first administrative area', example: 5353 }),
-    admin1_name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Name of first administrative area', example: 'England' }),
-    admin2_code: z
-      .string()
-      .min(0)
-      .max(20)
-      .exactOptional()
-      .openapi({ description: 'Code for the second administrative division', example: '06' }),
-    admin2_geonameid: z
-      .int32()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'GeoName ID for second administrative area', example: 5353 }),
-    admin2_name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Name of second administrative area', example: 'England' }),
-    admin3_code: z
-      .string()
-      .min(0)
-      .max(20)
-      .exactOptional()
-      .openapi({ description: 'Code for third level administrative division', example: '08' }),
-    admin4_code: z
-      .string()
-      .min(0)
-      .max(20)
-      .exactOptional()
-      .openapi({ description: 'Code for fourth level administrative division', example: '07' }),
-    alternatenames: z
-      .array(
-        z.xor([
-          z
-            .string()
-            .min(0)
-            .max(40)
-            .openapi({ description: 'Alternate name for place', example: 'London' }),
-        ]),
-      )
-      .exactOptional()
-      .openapi({ description: 'List of alternate ASCII names' }),
-    asciiname: z
-      .string()
-      .min(0)
-      .max(200)
-      .exactOptional()
-      .openapi({ description: 'Place Name (ASCII)', example: 'London' }),
-    cc2: z
-      .array(
-        z.xor([
-          z.string().length(2).openapi({ description: 'Alternate name for place', example: 'IE' }),
-        ]),
-      )
-      .exactOptional()
-      .openapi({ description: 'List of other countries codes mapping to this place' }),
-    country_code: z
-      .string()
-      .length(2)
-      .exactOptional()
-      .openapi({ description: '2 Letter ISO country code', example: 'GB' }),
-    dataset: z.literal('geonames').exactOptional(),
-    dem: z
-      .int32()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Digital elevation model', example: 32 }),
-    elevation: z.int32().nullable().exactOptional().openapi({ description: 'Elevation in meters' }),
-    feature_class: z
-      .enum(['A', 'H', 'L', 'P', 'R', 'S', 'T', 'U', 'V'])
-      .exactOptional()
-      .openapi({ description: 'GeoNames single letter feature code' }),
-    feature_code: z
-      .string()
-      .min(0)
-      .max(7)
-      .exactOptional()
-      .openapi({
-        description: 'Full GeoNames feature code (http://www.geonames.org/export/codes.html)',
-        example: 'ADM1',
-      }),
-    geonameid: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Unique identifier for GeoNames place', example: 5353 }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Unique place ID', example: 'geonames_5353' }),
-    latitude: LatitudeSchema.exactOptional(),
-    longitude: LongitudeSchema.exactOptional(),
-    modification_date: z
-      .string()
-      .length(10)
-      .exactOptional()
-      .openapi({ description: 'Datetime format', example: '2015-03-09' }),
-    name: z
-      .string()
-      .min(0)
-      .max(200)
-      .exactOptional()
-      .openapi({ description: 'Place name (UTF8)', example: 'London' }),
-    population: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Population at place. Represented as string as it could be a larger than a 32bit integer',
-        example: '7392832',
-      }),
-    timezone: z
-      .string()
-      .min(0)
-      .max(40)
-      .exactOptional()
-      .openapi({ description: 'The IANA timezone ID', example: 'Europe/London' }),
-  })
-  .openapi({ required: [] })
-  .openapi({
-    description: 'Full GeoNames place specification',
-    required: [
-      'geonameid',
-      'name',
-      'asciiname',
-      'alternatenames',
-      'latitude',
-      'longitude',
-      'feature_class',
-      'feature_code',
-      'country_code',
-      'cc2',
-      'admin1_geonameid',
-      'admin2_geonameid',
-      'admin1_name',
-      'admin2_name',
-      'admin1_code',
-      'admin2_code',
-      'admin3_code',
-      'admin4_code',
-      'population',
-      'elevation',
-      'dem',
-      'timezone',
-      'modification_date',
-    ],
-    title: 'GeoNames Place',
-  })
-  .openapi('GeonamesPlace')
-
-type PlaceType = {
-  country_iso: z.infer<typeof PlaceCountryIsoSchema>
-  dataset: 'geonames'
-  descriptive_name: z.infer<typeof PlaceDescriptiveNameSchema>
-  id: string
-  language: z.infer<typeof LanguageSchema>
-  latitude: z.infer<typeof LatitudeSchema>
-  longitude: z.infer<typeof LongitudeSchema>
-  name: z.infer<typeof PlaceNameSchema>
-  native?: z.infer<typeof GeonamesPlaceSchema>
-}
-
 const AddressLatitudeParamSchema = z
   .float32()
   .min(-90)
@@ -419,6 +185,18 @@ const PafLanguageSchema = z
   })
   .openapi('PafLanguage')
 
+const LatitudeSchema = z
+  .xor([
+    z.string().openapi({ description: 'Empty string `""` if not available' }),
+    z.number().min(-90).max(90).openapi({ description: 'Represents latitude', example: 52.938278 }),
+  ])
+  .openapi({
+    description:
+      'The latitude of the postcode (WGS84/ETRS89).\n\nCan be a positive or negative decimal. E.g. `51.5083983`.\n\nReturns an empty string if no location data is available. ',
+    title: 'Longitude',
+  })
+  .openapi('Latitude')
+
 const PafLine1Schema = z
   .string()
   .openapi({
@@ -443,6 +221,22 @@ const PafLine3Schema = z
   .string()
   .openapi({ description: 'Third address line. May be empty.', example: '', title: 'Line 3' })
   .openapi('PafLine3')
+
+const LongitudeSchema = z
+  .xor([
+    z.string().openapi({ description: 'Empty string `""` if not available' }),
+    z
+      .number()
+      .min(-180)
+      .max(180)
+      .openapi({ description: 'Represents longitude', example: 0.002823 }),
+  ])
+  .openapi({
+    description:
+      'The longitude of the postcode (WGS84/ETRS89).\n\nCan be a positive or negative decimal. E.g. -0.1283983\n\nReturns an empty string if no location data is available. ',
+    title: 'Longitude',
+  })
+  .openapi('Longitude')
 
 const NorthingsSchema = z
   .xor([
@@ -912,7 +706,7 @@ const AddressSuggestionSchema = z
         description: 'Address Suggestion to be displayed to the user',
         example: 'Flat 6, 12 Roskear, Camborne, TR14',
       }),
-    urls: z.object({}),
+    urls: z.looseObject({}),
   })
   .openapi({
     description: 'Represents an address suggestion for any address in the world',
@@ -1898,230 +1692,381 @@ const EircBaseSchema = z
 
 const EcadAddressSchema = EircBaseSchema.and(
   z
-    .object({
-      address_point_id: z
-        .string()
-        .min(1)
-        .max(10)
-        .exactOptional()
-        .openapi({ description: 'Address Point ID', example: '10098783' }),
-      address_type: z
-        .string()
-        .min(0)
-        .exactOptional()
-        .openapi({
-          description:
-            'Addresses points can assume one of the following values:\n\n- Residential Address Point. This type of address point has one residential addresses associated with it.\n- Non-Residential Address Point. This type of address point has one or more non-residential address (business, club or other organisation) associated with it.\n- Mixed Address Point. This is a special case where the residential and non residential addresses in the building are essentially the same address. The typical example is a farm house on an active farm. It is important to note that this is a special case. In general a building with both residential and non-residential addresses (e.g. an apartment over a shop) will receive two address points, one commercial and one residential, and hence two Eircodes.\n\nBuildings can contain multiple address points of type Residential and/or Non-Residential.',
-        }),
-      building_address_type: z
-        .string()
-        .min(0)
-        .exactOptional()
-        .openapi({
-          description:
-            'The building type can assume one of the following values:\n\n- Single Occupancy Residential Building. This type of building contains one residential address.\n- Multi Occupancy Residential Building. This type of building contains multiple residential addresses.\n- Single Occupancy Non-Residential Building. This type of building contains one non-residential address (business, club or other organisation).\n- Multi Occupancy Non-Residential Building. This type of building contains multiple non-residential addresses (business, club or other organisation).\n- Multi Occupancy Mixed Use Building. This type of building contains multiple residential and non- residential addresses.\n\nBuildings can also have a more specific address types such as a Hospital, School, Shopping Centre, etc.',
-        }),
-      building_group_address_type: z
-        .string()
-        .min(0)
-        .exactOptional()
-        .openapi({
-          description:
-            'The building group type can be:\n\n- Residential Building Group. This type of building group contains buildings with residential addresses only.\n- Non-Residential Building Group This type of building group contains buildings with non-residential addresses (business, club or other organisation) only.\n- Mixed Building Group. This type of building group contains buildings with residential and non-residential addresses. Can also have a more specific address type such as a Hospital, School, Shopping Centre, etc.\n\nBuilding groups can also have a more specific address type such as a Hospital, School, Shopping Centre, etc.',
-        }),
-      building_group_id: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'Building Group ID', example: '10098783' }),
-      building_id: z
-        .string()
-        .min(1)
-        .max(10)
-        .exactOptional()
-        .openapi({ description: 'Building ID', example: '10098783' }),
-      building_type: z
-        .string()
-        .min(0)
-        .exactOptional()
-        .openapi({
-          description: 'Describes the type of building, e.g. detached, semi-detached, bungalow.',
-        }),
-      building_use: z
-        .enum(['R', 'C', 'B', 'U'])
-        .exactOptional()
-        .openapi({
-          description:
-            'Can be one of:\n\n- `R` Residential \n- `C` Commercial\n- `B` Both \n- `U` Unknown',
-        }),
-      dataset: z.literal('ecad').exactOptional(),
-      ded_id: z
-        .string()
-        .min(0)
-        .exactOptional()
-        .openapi({
-          description:
-            'Unique Identifier for Electoral Divisions 2017 data.\n\nNote that this field is subject to breaking changes if a new generation of government data IDs is released. Currently this uses 2017 IDs. Contact us to be notified ahead of his change.',
-        }),
-      ecad_id: z
-        .string()
-        .min(1)
-        .max(10)
-        .exactOptional()
-        .openapi({ description: 'Unique 10 digit ECAD ID', example: '17000000' }),
-      gaeltacht: z
-        .boolean()
-        .exactOptional()
-        .openapi({
-          description:
-            'Gaeltact refers to a district where the Irish government recognises that the Irish language is the predominant language.\n\nReturns `true` if address is in a Gaeltacht area and `false` if not.',
-        }),
-      gaeltacht_id: z
-        .string()
-        .min(0)
-        .exactOptional()
-        .openapi({
-          description:
-            'Unique Identifier for the 7 Gaeltacht areas 2017 data.\n\nNote that this field is subject to breaking changes if a new generation of government data IDs is released. Currently this uses 2017 IDs. Contact us to be notified ahead of his change.',
-        }),
-      holiday_home: z
-        .enum(['N', 'Y', ''])
-        .exactOptional()
-        .openapi({
-          description: 'A Yes/No field, indicating whether or not the building is a holiday home.',
-        }),
-      local_authority: z
-        .string()
-        .min(0)
-        .exactOptional()
-        .openapi({ description: 'Name of local authority' }),
-      nace_category: z
-        .string()
-        .min(0)
-        .exactOptional()
-        .openapi({ description: 'Name of the NACE Category' }),
-      nace_code: z
-        .string()
-        .min(0)
-        .exactOptional()
-        .openapi({ description: 'The NACE Code for the Category.' }),
-      nua: z
-        .boolean()
-        .exactOptional()
-        .openapi({
-          description:
-            'NUA means "non-unique address".\n\nThe NUA field contains `true` when the address is a non-unique address, and `false` when it is a unique address.\n\nIreland has a very high level of non-unique addresses (NUA), i.e. the address does not contain a unique building number or name. Approximately 35% of all Irish addresses are non-unique which equates to 600,000 addresses.\n\nThe typical example of NUA addressing is where every address in a townland is the same. The way that post is delivered is by local knowledge of postal delivery personnel of which addressee lives in which house.\n\nN.B. For a NUA address, it is impossible to match to a unique record in the ECAD and assign an Eircode.',
-        }),
-      org_vacant: z
-        .enum(['Y', 'N', ''])
-        .exactOptional()
-        .openapi({ description: 'A Yes/No field, indicating whether the organisation is vacant.' }),
-      organisation_id: z
-        .string()
-        .min(1)
-        .max(10)
-        .exactOptional()
-        .openapi({ description: 'Organisation ID', example: '10098783' }),
-      post_county_id: z
-        .string()
-        .min(1)
-        .max(10)
-        .exactOptional()
-        .openapi({ description: 'Post County ID', example: '10098783' }),
-      post_town: z
-        .string()
-        .min(0)
-        .exactOptional()
-        .openapi({
-          description:
-            'The post town is a significant element of the Postal Address, however it is not always populated in an address. The official post office guide, Eolaí an Phoist1, describes post towns in the following manner:\n\n"A provincial postal address may include the name of a town or village several miles distant, with which the addressee has little or no connection, and, in some places, especially if this residence happens to be near a county boundary, the name of the neighbouring county instead of the county in which he actually resides. The explanation is that the main mail despatches have to be sent for more detailed sub division to certain centres known as post towns, chosen because of their accessibility and convenience."',
-        }),
-      post_town_id: z
-        .string()
-        .min(1)
-        .max(10)
-        .exactOptional()
-        .openapi({ description: 'Post Town ID', example: '10098783' }),
-      postaim_presort_152: z
-        .string()
-        .min(0)
-        .exactOptional()
-        .openapi({ description: 'An Post sorting information.' }),
-      postaim_presort_61: z
-        .string()
-        .min(0)
-        .exactOptional()
-        .openapi({ description: 'An Post sorting information.' }),
-      primary_locality_address_type: z
-        .string()
-        .min(0)
-        .exactOptional()
-        .openapi({
-          description:
-            'The locality type can be:\n  - Rural Locality. This is generally a townland.\n  - Industrial Estate. Industrial Estate, Industrial Park, Business Campus, etc.\n  - Shopping District. Shopping Centre.\n  - Housing Estate. Residential Housing Estate.\n  - Village. Based on Census 2011 population < 1,500.\n  - Town. Based on Census 2011 population > 1,500.\n  - Urban Area. Wholly within a village/town/city e.g. Rathmines.\n  - Suburban Locality. This is an area that is both rural and urban, as it is both a townland, and also an area name applied to houses in a town, as the town has extended partially into the townland.\n\nWhere the locality is also the post town, the type can be:\n  - Village. Based on Census 2011 population < 1,500\n  - Town. Based on Census 2011 population > 1,500\n  - Postal District. Dublin 1 to 24\n  - City. Dublin, Cork, Limerick, Galway or Waterford',
-        }),
-      primary_locality_id: z
-        .string()
-        .min(1)
-        .max(10)
-        .exactOptional()
-        .openapi({ description: 'Primary Locality ID', example: '10098783' }),
-      primary_thoroughfare_id: z
-        .string()
-        .min(1)
-        .max(10)
-        .exactOptional()
-        .openapi({ description: 'Primary Thoroughfare ID', example: '10098783' }),
-      publicity_post_zone: z
-        .string()
-        .min(0)
-        .exactOptional()
-        .openapi({ description: 'An Post publicity post zone information.' }),
-      secondary_locality_address_type: z
-        .string()
-        .min(0)
-        .exactOptional()
-        .openapi({
-          description:
-            'The locality type can be:\n  - Rural Locality. This is generally a townland.\n  - Industrial Estate. Industrial Estate, Industrial Park, Business Campus, etc.\n  - Shopping District. Shopping Centre.\n  - Housing Estate. Residential Housing Estate.\n  - Village. Based on Census 2011 population < 1,500.\n  - Town. Based on Census 2011 population > 1,500.\n  - Urban Area. Wholly within a village/town/city e.g. Rathmines.\n  - Suburban Locality. This is an area that is both rural and urban, as it is both a townland, and also an area name applied to houses in a town, as the town has extended partially into the townland.\n\nWhere the locality is also the post town, the type can be:\n  - Village. Based on Census 2011 population < 1,500\n  - Town. Based on Census 2011 population > 1,500\n  - Postal District. Dublin 1 to 24\n  - City. Dublin, Cork, Limerick, Galway or Waterford',
-        }),
-      secondary_locality_id: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'Secondary Locality ID', example: '10098783' }),
-      secondary_thoroughfare_id: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'Secondary Thoroughfare ID', example: '10098783' }),
-      small_area_id: z
-        .string()
-        .min(0)
-        .exactOptional()
-        .openapi({
-          description:
-            'Unique Identifier for the Small Area 2017 data.\n\nNote that this field is subject to breaking changes if a new generation of government data IDs is released. Currently this uses 2017 IDs. Contact us to be notified ahead of his change.',
-        }),
-      townland_id: z
-        .string()
-        .min(0)
-        .exactOptional()
-        .openapi({
-          description:
-            'Unique Identifier for townland 2017 data.\n\nNote that this field is subject to breaking changes if a new generation of government data IDs is released. Currently this uses 2017 IDs. Contact us to be notified ahead of his change.',
-        }),
-      under_construction: z
-        .enum(['N', 'Y', ''])
-        .exactOptional()
-        .openapi({
-          description:
-            'A Yes/No field, indicating whether or not the building is under construction.',
-        }),
-      vacant: z
-        .enum(['Y', 'N', ''])
-        .exactOptional()
-        .openapi({ description: 'A Yes/No field, indicating whether the building is vacant.' }),
-    })
-    .openapi({ required: [] }),
+    .looseObject({})
+    .openapi({
+      required: [
+        'organisation_id',
+        'address_point_id',
+        'building_id',
+        'building_group_id',
+        'primary_thoroughfare_id',
+        'secondary_thoroughfare_id',
+        'primary_locality_id',
+        'secondary_locality_id',
+        'post_town',
+        'post_town_id',
+        'post_county_id',
+        'nua',
+        'gaeltacht',
+        'address_type',
+        'building_address_type',
+        'building_group_address_type',
+        'primary_locality_address_type',
+        'secondary_locality_address_type',
+        'building_type',
+        'holiday_home',
+        'under_construction',
+        'building_use',
+        'vacant',
+        'org_vacant',
+        'nace_code',
+        'nace_category',
+        'local_authority',
+        'ded_id',
+        'small_area_id',
+        'townland_id',
+        'gaeltacht_id',
+        'postaim_presort_61',
+        'postaim_presort_152',
+        'publicity_post_zone',
+      ],
+    }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'organisation_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'address_point_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'building_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'building_group_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'primary_thoroughfare_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'secondary_thoroughfare_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'primary_locality_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'secondary_locality_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'post_town')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'post_town_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'post_county_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'nua')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'gaeltacht')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'address_type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'building_address_type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'building_group_address_type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'primary_locality_address_type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'secondary_locality_address_type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'building_type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'holiday_home')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'under_construction')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'building_use')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'vacant')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'org_vacant')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'nace_code')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'nace_category')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'local_authority')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'ded_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'small_area_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'townland_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'gaeltacht_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'postaim_presort_61')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'postaim_presort_152')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'publicity_post_zone')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        address_point_id: z
+          .string()
+          .min(1)
+          .max(10)
+          .exactOptional()
+          .openapi({ description: 'Address Point ID', example: '10098783' }),
+        address_type: z
+          .string()
+          .min(0)
+          .exactOptional()
+          .openapi({
+            description:
+              'Addresses points can assume one of the following values:\n\n- Residential Address Point. This type of address point has one residential addresses associated with it.\n- Non-Residential Address Point. This type of address point has one or more non-residential address (business, club or other organisation) associated with it.\n- Mixed Address Point. This is a special case where the residential and non residential addresses in the building are essentially the same address. The typical example is a farm house on an active farm. It is important to note that this is a special case. In general a building with both residential and non-residential addresses (e.g. an apartment over a shop) will receive two address points, one commercial and one residential, and hence two Eircodes.\n\nBuildings can contain multiple address points of type Residential and/or Non-Residential.',
+          }),
+        building_address_type: z
+          .string()
+          .min(0)
+          .exactOptional()
+          .openapi({
+            description:
+              'The building type can assume one of the following values:\n\n- Single Occupancy Residential Building. This type of building contains one residential address.\n- Multi Occupancy Residential Building. This type of building contains multiple residential addresses.\n- Single Occupancy Non-Residential Building. This type of building contains one non-residential address (business, club or other organisation).\n- Multi Occupancy Non-Residential Building. This type of building contains multiple non-residential addresses (business, club or other organisation).\n- Multi Occupancy Mixed Use Building. This type of building contains multiple residential and non- residential addresses.\n\nBuildings can also have a more specific address types such as a Hospital, School, Shopping Centre, etc.',
+          }),
+        building_group_address_type: z
+          .string()
+          .min(0)
+          .exactOptional()
+          .openapi({
+            description:
+              'The building group type can be:\n\n- Residential Building Group. This type of building group contains buildings with residential addresses only.\n- Non-Residential Building Group This type of building group contains buildings with non-residential addresses (business, club or other organisation) only.\n- Mixed Building Group. This type of building group contains buildings with residential and non-residential addresses. Can also have a more specific address type such as a Hospital, School, Shopping Centre, etc.\n\nBuilding groups can also have a more specific address type such as a Hospital, School, Shopping Centre, etc.',
+          }),
+        building_group_id: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Building Group ID', example: '10098783' }),
+        building_id: z
+          .string()
+          .min(1)
+          .max(10)
+          .exactOptional()
+          .openapi({ description: 'Building ID', example: '10098783' }),
+        building_type: z
+          .string()
+          .min(0)
+          .exactOptional()
+          .openapi({
+            description: 'Describes the type of building, e.g. detached, semi-detached, bungalow.',
+          }),
+        building_use: z
+          .enum(['R', 'C', 'B', 'U'])
+          .exactOptional()
+          .openapi({
+            description:
+              'Can be one of:\n\n- `R` Residential \n- `C` Commercial\n- `B` Both \n- `U` Unknown',
+          }),
+        dataset: z.literal('ecad').exactOptional(),
+        ded_id: z
+          .string()
+          .min(0)
+          .exactOptional()
+          .openapi({
+            description:
+              'Unique Identifier for Electoral Divisions 2017 data.\n\nNote that this field is subject to breaking changes if a new generation of government data IDs is released. Currently this uses 2017 IDs. Contact us to be notified ahead of his change.',
+          }),
+        ecad_id: z
+          .string()
+          .min(1)
+          .max(10)
+          .exactOptional()
+          .openapi({ description: 'Unique 10 digit ECAD ID', example: '17000000' }),
+        gaeltacht: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Gaeltact refers to a district where the Irish government recognises that the Irish language is the predominant language.\n\nReturns `true` if address is in a Gaeltacht area and `false` if not.',
+          }),
+        gaeltacht_id: z
+          .string()
+          .min(0)
+          .exactOptional()
+          .openapi({
+            description:
+              'Unique Identifier for the 7 Gaeltacht areas 2017 data.\n\nNote that this field is subject to breaking changes if a new generation of government data IDs is released. Currently this uses 2017 IDs. Contact us to be notified ahead of his change.',
+          }),
+        holiday_home: z
+          .enum(['N', 'Y', ''])
+          .exactOptional()
+          .openapi({
+            description:
+              'A Yes/No field, indicating whether or not the building is a holiday home.',
+          }),
+        local_authority: z
+          .string()
+          .min(0)
+          .exactOptional()
+          .openapi({ description: 'Name of local authority' }),
+        nace_category: z
+          .string()
+          .min(0)
+          .exactOptional()
+          .openapi({ description: 'Name of the NACE Category' }),
+        nace_code: z
+          .string()
+          .min(0)
+          .exactOptional()
+          .openapi({ description: 'The NACE Code for the Category.' }),
+        nua: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'NUA means "non-unique address".\n\nThe NUA field contains `true` when the address is a non-unique address, and `false` when it is a unique address.\n\nIreland has a very high level of non-unique addresses (NUA), i.e. the address does not contain a unique building number or name. Approximately 35% of all Irish addresses are non-unique which equates to 600,000 addresses.\n\nThe typical example of NUA addressing is where every address in a townland is the same. The way that post is delivered is by local knowledge of postal delivery personnel of which addressee lives in which house.\n\nN.B. For a NUA address, it is impossible to match to a unique record in the ECAD and assign an Eircode.',
+          }),
+        org_vacant: z
+          .enum(['Y', 'N', ''])
+          .exactOptional()
+          .openapi({
+            description: 'A Yes/No field, indicating whether the organisation is vacant.',
+          }),
+        organisation_id: z
+          .string()
+          .min(1)
+          .max(10)
+          .exactOptional()
+          .openapi({ description: 'Organisation ID', example: '10098783' }),
+        post_county_id: z
+          .string()
+          .min(1)
+          .max(10)
+          .exactOptional()
+          .openapi({ description: 'Post County ID', example: '10098783' }),
+        post_town: z
+          .string()
+          .min(0)
+          .exactOptional()
+          .openapi({
+            description:
+              'The post town is a significant element of the Postal Address, however it is not always populated in an address. The official post office guide, Eolaí an Phoist1, describes post towns in the following manner:\n\n"A provincial postal address may include the name of a town or village several miles distant, with which the addressee has little or no connection, and, in some places, especially if this residence happens to be near a county boundary, the name of the neighbouring county instead of the county in which he actually resides. The explanation is that the main mail despatches have to be sent for more detailed sub division to certain centres known as post towns, chosen because of their accessibility and convenience."',
+          }),
+        post_town_id: z
+          .string()
+          .min(1)
+          .max(10)
+          .exactOptional()
+          .openapi({ description: 'Post Town ID', example: '10098783' }),
+        postaim_presort_152: z
+          .string()
+          .min(0)
+          .exactOptional()
+          .openapi({ description: 'An Post sorting information.' }),
+        postaim_presort_61: z
+          .string()
+          .min(0)
+          .exactOptional()
+          .openapi({ description: 'An Post sorting information.' }),
+        primary_locality_address_type: z
+          .string()
+          .min(0)
+          .exactOptional()
+          .openapi({
+            description:
+              'The locality type can be:\n  - Rural Locality. This is generally a townland.\n  - Industrial Estate. Industrial Estate, Industrial Park, Business Campus, etc.\n  - Shopping District. Shopping Centre.\n  - Housing Estate. Residential Housing Estate.\n  - Village. Based on Census 2011 population < 1,500.\n  - Town. Based on Census 2011 population > 1,500.\n  - Urban Area. Wholly within a village/town/city e.g. Rathmines.\n  - Suburban Locality. This is an area that is both rural and urban, as it is both a townland, and also an area name applied to houses in a town, as the town has extended partially into the townland.\n\nWhere the locality is also the post town, the type can be:\n  - Village. Based on Census 2011 population < 1,500\n  - Town. Based on Census 2011 population > 1,500\n  - Postal District. Dublin 1 to 24\n  - City. Dublin, Cork, Limerick, Galway or Waterford',
+          }),
+        primary_locality_id: z
+          .string()
+          .min(1)
+          .max(10)
+          .exactOptional()
+          .openapi({ description: 'Primary Locality ID', example: '10098783' }),
+        primary_thoroughfare_id: z
+          .string()
+          .min(1)
+          .max(10)
+          .exactOptional()
+          .openapi({ description: 'Primary Thoroughfare ID', example: '10098783' }),
+        publicity_post_zone: z
+          .string()
+          .min(0)
+          .exactOptional()
+          .openapi({ description: 'An Post publicity post zone information.' }),
+        secondary_locality_address_type: z
+          .string()
+          .min(0)
+          .exactOptional()
+          .openapi({
+            description:
+              'The locality type can be:\n  - Rural Locality. This is generally a townland.\n  - Industrial Estate. Industrial Estate, Industrial Park, Business Campus, etc.\n  - Shopping District. Shopping Centre.\n  - Housing Estate. Residential Housing Estate.\n  - Village. Based on Census 2011 population < 1,500.\n  - Town. Based on Census 2011 population > 1,500.\n  - Urban Area. Wholly within a village/town/city e.g. Rathmines.\n  - Suburban Locality. This is an area that is both rural and urban, as it is both a townland, and also an area name applied to houses in a town, as the town has extended partially into the townland.\n\nWhere the locality is also the post town, the type can be:\n  - Village. Based on Census 2011 population < 1,500\n  - Town. Based on Census 2011 population > 1,500\n  - Postal District. Dublin 1 to 24\n  - City. Dublin, Cork, Limerick, Galway or Waterford',
+          }),
+        secondary_locality_id: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Secondary Locality ID', example: '10098783' }),
+        secondary_thoroughfare_id: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Secondary Thoroughfare ID', example: '10098783' }),
+        small_area_id: z
+          .string()
+          .min(0)
+          .exactOptional()
+          .openapi({
+            description:
+              'Unique Identifier for the Small Area 2017 data.\n\nNote that this field is subject to breaking changes if a new generation of government data IDs is released. Currently this uses 2017 IDs. Contact us to be notified ahead of his change.',
+          }),
+        townland_id: z
+          .string()
+          .min(0)
+          .exactOptional()
+          .openapi({
+            description:
+              'Unique Identifier for townland 2017 data.\n\nNote that this field is subject to breaking changes if a new generation of government data IDs is released. Currently this uses 2017 IDs. Contact us to be notified ahead of his change.',
+          }),
+        under_construction: z
+          .enum(['N', 'Y', ''])
+          .exactOptional()
+          .openapi({
+            description:
+              'A Yes/No field, indicating whether or not the building is under construction.',
+          }),
+        vacant: z
+          .enum(['Y', 'N', ''])
+          .exactOptional()
+          .openapi({ description: 'A Yes/No field, indicating whether the building is vacant.' }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'The ECAD contains additional data for each ECAF address.',
     required: [
@@ -2164,22 +2109,30 @@ const EcadAddressSchema = EircBaseSchema.and(
   })
   .openapi('EcadAddress')
 
-const EcafAddressSchema = EircBaseSchema.and(
-  z
-    .object({
-      dataset: z.literal('ecaf').exactOptional(),
-      ecaf_id: z
-        .string()
-        .min(0)
-        .max(10)
-        .exactOptional()
-        .openapi({
-          description:
-            'The unique identifier in the ECAF is the `ecaf_id`. This unique identifier allows each address in the ECAF to be uniquely identified. It can also be used as index once the data has been imported into a relational database. This is a numeric field that can store values from 0 to 2,147,483,647. It is represented as a number up to 10 digits long. All other fields in ECAF are alphanumeric.',
-        }),
-    })
-    .openapi({ required: [] }),
-)
+const EcafAddressSchema = EircBaseSchema.and(z.looseObject({}).openapi({ required: ['ecaf_id'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'ecaf_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        dataset: z.literal('ecaf').exactOptional(),
+        ecaf_id: z
+          .string()
+          .min(0)
+          .max(10)
+          .exactOptional()
+          .openapi({
+            description:
+              'The unique identifier in the ECAF is the `ecaf_id`. This unique identifier allows each address in the ECAF to be uniquely identified. It can also be used as index once the data has been imported into a relational database. This is a numeric field that can store values from 0 to 2,147,483,647. It is represented as a number up to 10 digits long. All other fields in ECAF are alphanumeric.',
+          }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description:
       'ECAF is the Eircode Address File which contains one record for each Postal Address. English language and Irish language versions are available. It is distributed as a flat file, details of data provision and updates are provided in section 2.',
@@ -2281,6 +2234,14 @@ const FilterParamSchema = z
     title: 'Filter',
   })
   .openapi('FilterParam')
+
+const LanguageSchema = z
+  .enum(['en', 'cy', 'ga'])
+  .openapi({
+    description: 'Language represented by 2 letter ISO Code (639-1)\n',
+    title: 'Language',
+  })
+  .openapi('Language')
 
 const AddressSecondaryAbbreviationSchema = z
   .string()
@@ -2917,6 +2878,273 @@ const GbrResolveAddressResponseSchema = z
   .openapi({ required: ['message', 'code', 'result'], title: 'Address Resolution Response (GBR)' })
   .openapi('GbrResolveAddressResponse')
 
+const GeonamesPlaceSchema = z
+  .object({
+    admin1_code: z
+      .string()
+      .min(0)
+      .max(20)
+      .exactOptional()
+      .openapi({ description: 'Fipscode (subject to change to iso code)', example: 'ENG' }),
+    admin1_geonameid: z
+      .int32()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'GeoName ID for first administrative area', example: 5353 }),
+    admin1_name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name of first administrative area', example: 'England' }),
+    admin2_code: z
+      .string()
+      .min(0)
+      .max(20)
+      .exactOptional()
+      .openapi({ description: 'Code for the second administrative division', example: '06' }),
+    admin2_geonameid: z
+      .int32()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'GeoName ID for second administrative area', example: 5353 }),
+    admin2_name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name of second administrative area', example: 'England' }),
+    admin3_code: z
+      .string()
+      .min(0)
+      .max(20)
+      .exactOptional()
+      .openapi({ description: 'Code for third level administrative division', example: '08' }),
+    admin4_code: z
+      .string()
+      .min(0)
+      .max(20)
+      .exactOptional()
+      .openapi({ description: 'Code for fourth level administrative division', example: '07' }),
+    alternatenames: z
+      .array(
+        z.xor([
+          z
+            .string()
+            .min(0)
+            .max(40)
+            .openapi({ description: 'Alternate name for place', example: 'London' }),
+        ]),
+      )
+      .exactOptional()
+      .openapi({ description: 'List of alternate ASCII names' }),
+    asciiname: z
+      .string()
+      .min(0)
+      .max(200)
+      .exactOptional()
+      .openapi({ description: 'Place Name (ASCII)', example: 'London' }),
+    cc2: z
+      .array(
+        z.xor([
+          z.string().length(2).openapi({ description: 'Alternate name for place', example: 'IE' }),
+        ]),
+      )
+      .exactOptional()
+      .openapi({ description: 'List of other countries codes mapping to this place' }),
+    country_code: z
+      .string()
+      .length(2)
+      .exactOptional()
+      .openapi({ description: '2 Letter ISO country code', example: 'GB' }),
+    dataset: z.literal('geonames').exactOptional(),
+    dem: z
+      .int32()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Digital elevation model', example: 32 }),
+    elevation: z.int32().nullable().exactOptional().openapi({ description: 'Elevation in meters' }),
+    feature_class: z
+      .enum(['A', 'H', 'L', 'P', 'R', 'S', 'T', 'U', 'V'])
+      .exactOptional()
+      .openapi({ description: 'GeoNames single letter feature code' }),
+    feature_code: z
+      .string()
+      .min(0)
+      .max(7)
+      .exactOptional()
+      .openapi({
+        description: 'Full GeoNames feature code (http://www.geonames.org/export/codes.html)',
+        example: 'ADM1',
+      }),
+    geonameid: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Unique identifier for GeoNames place', example: 5353 }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Unique place ID', example: 'geonames_5353' }),
+    latitude: LatitudeSchema.exactOptional(),
+    longitude: LongitudeSchema.exactOptional(),
+    modification_date: z
+      .string()
+      .length(10)
+      .exactOptional()
+      .openapi({ description: 'Datetime format', example: '2015-03-09' }),
+    name: z
+      .string()
+      .min(0)
+      .max(200)
+      .exactOptional()
+      .openapi({ description: 'Place name (UTF8)', example: 'London' }),
+    population: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Population at place. Represented as string as it could be a larger than a 32bit integer',
+        example: '7392832',
+      }),
+    timezone: z
+      .string()
+      .min(0)
+      .max(40)
+      .exactOptional()
+      .openapi({ description: 'The IANA timezone ID', example: 'Europe/London' }),
+  })
+  .openapi({ required: [] })
+  .and(
+    z
+      .looseObject({})
+      .openapi({
+        required: [
+          'geonameid',
+          'name',
+          'asciiname',
+          'alternatenames',
+          'latitude',
+          'longitude',
+          'feature_class',
+          'feature_code',
+          'country_code',
+          'cc2',
+          'admin1_geonameid',
+          'admin2_geonameid',
+          'admin1_name',
+          'admin2_name',
+          'admin1_code',
+          'admin2_code',
+          'admin3_code',
+          'admin4_code',
+          'population',
+          'elevation',
+          'dem',
+          'timezone',
+          'modification_date',
+        ],
+      }),
+  )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'geonameid')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'asciiname')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'alternatenames')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'latitude')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'longitude')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'feature_class')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'feature_code')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'country_code')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'cc2')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'admin1_geonameid')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'admin2_geonameid')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'admin1_name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'admin2_name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'admin1_code')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'admin2_code')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'admin3_code')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'admin4_code')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'population')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'elevation')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'dem')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'timezone')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'modification_date')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .openapi({
+    description: 'Full GeoNames place specification',
+    required: [
+      'geonameid',
+      'name',
+      'asciiname',
+      'alternatenames',
+      'latitude',
+      'longitude',
+      'feature_class',
+      'feature_code',
+      'country_code',
+      'cc2',
+      'admin1_geonameid',
+      'admin2_geonameid',
+      'admin1_name',
+      'admin2_name',
+      'admin1_code',
+      'admin2_code',
+      'admin3_code',
+      'admin4_code',
+      'population',
+      'elevation',
+      'dem',
+      'timezone',
+      'modification_date',
+    ],
+    title: 'GeoNames Place',
+  })
+  .openapi('GeonamesPlace')
+
 const InvalidPhoneNumberSchema = z
   .object({
     country: z
@@ -3199,49 +3427,69 @@ const PhoneNumberResponseSchema = z
   .openapi({ required: ['message', 'code', 'result'], title: 'Phone Number Verification Response' })
   .openapi('PhoneNumberResponse')
 
-const PlaceSchema: z.ZodType<PlaceType> = z
-  .lazy(() =>
-    z
-      .object({
-        country_iso: PlaceCountryIsoSchema,
-        dataset: z
-          .literal('geonames')
-          .openapi({
-            description: 'Indicates the provenance of a place.\n\n  - `geonames` GeoNames place',
-            title: 'Dataset',
-          }),
-        descriptive_name: PlaceDescriptiveNameSchema,
-        id: z
-          .string()
-          .openapi({
-            description: 'Global unique internally generated identifier for a place',
-            example: 'geonames_5353',
-            title: 'ID',
-          }),
-        language: LanguageSchema,
-        latitude: LatitudeSchema,
-        longitude: LongitudeSchema,
-        name: PlaceNameSchema,
-        native: z
-          .xor([GeonamesPlaceSchema])
-          .exactOptional()
-          .openapi({ description: 'Native representation of a place' }),
-      })
+const PlaceCountryIsoSchema = z
+  .string()
+  .openapi({
+    description: '  3 letter country code (ISO 3166-1)\n',
+    example: 'GBR',
+    title: 'Country',
+  })
+  .openapi('PlaceCountryIso')
+
+const PlaceDescriptiveNameSchema = z
+  .string()
+  .openapi({
+    description: 'Longer form description of the place.\n',
+    example: 'London, United Kingdom',
+    title: 'Descriptive Place Name',
+  })
+  .openapi('PlaceDescriptiveName')
+
+const PlaceNameSchema = z
+  .string()
+  .openapi({ description: 'Place name\n', example: 'London', title: 'Place Name' })
+  .openapi('PlaceName')
+
+const PlaceSchema = z
+  .object({
+    country_iso: PlaceCountryIsoSchema,
+    dataset: z
+      .literal('geonames')
       .openapi({
-        description: 'Represents a geographical place',
-        required: [
-          'id',
-          'dataset',
-          'name',
-          'descriptive_name',
-          'country_iso',
-          'language',
-          'longitude',
-          'latitude',
-        ],
-        title: 'Place',
+        description: 'Indicates the provenance of a place.\n\n  - `geonames` GeoNames place',
+        title: 'Dataset',
       }),
-  )
+    descriptive_name: PlaceDescriptiveNameSchema,
+    id: z
+      .string()
+      .openapi({
+        description: 'Global unique internally generated identifier for a place',
+        example: 'geonames_5353',
+        title: 'ID',
+      }),
+    language: LanguageSchema,
+    latitude: LatitudeSchema,
+    longitude: LongitudeSchema,
+    name: PlaceNameSchema,
+    native: z
+      .xor([GeonamesPlaceSchema])
+      .exactOptional()
+      .openapi({ description: 'Native representation of a place' }),
+  })
+  .openapi({
+    description: 'Represents a geographical place',
+    required: [
+      'id',
+      'dataset',
+      'name',
+      'descriptive_name',
+      'country_iso',
+      'language',
+      'longitude',
+      'latitude',
+    ],
+    title: 'Place',
+  })
   .openapi('Place')
 
 const PlaceIdSchema = z
@@ -4218,38 +4466,28 @@ export const getAutocompleteAddressesRoute = createRoute({
       description: 'Success',
       content: { 'application/json': { schema: AutocompleteResponseSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The maximum number of requests that can be made in 5 minutes',
-          schema: z
-            .number()
-            .exactOptional()
-            .openapi({
-              description: 'The maximum number of requests that can be made in 5 minutes',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The remaining requests within the current rate limit window',
-          schema: z
-            .number()
-            .exactOptional()
-            .openapi({
-              description: 'The remaining requests within the current rate limit window',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description:
-            'The time when the rate limit window resets in Unix Time (seconds) or UTC Epoch seconds.\n',
-          schema: z
-            .number()
-            .exactOptional()
-            .openapi({
-              description:
-                'The time when the rate limit window resets in Unix Time (seconds) or UTC Epoch seconds.\n',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .number()
+          .exactOptional()
+          .openapi({
+            description: 'The maximum number of requests that can be made in 5 minutes',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .number()
+          .exactOptional()
+          .openapi({
+            description: 'The remaining requests within the current rate limit window',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .number()
+          .exactOptional()
+          .openapi({
+            description:
+              'The time when the rate limit window resets in Unix Time (seconds) or UTC Epoch seconds.\n',
+            param: { required: false },
+          }),
       }),
     },
     400: {

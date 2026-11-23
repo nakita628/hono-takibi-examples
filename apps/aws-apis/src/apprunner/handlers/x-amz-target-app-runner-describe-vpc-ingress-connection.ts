@@ -1,0 +1,11 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import { postXAmzTargetAppRunnerDescribeVpcIngressConnectionRoute } from '../routes'
+
+const app = new OpenAPIHono()
+
+export const xAmzTargetAppRunnerDescribeVpcIngressConnectionHandler = app.openapi(
+  postXAmzTargetAppRunnerDescribeVpcIngressConnectionRoute,
+  (c) => {
+    throw new Error('Not implemented')
+  },
+)

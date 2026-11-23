@@ -1084,11 +1084,21 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/v1/users/:user_id/preferences/:id/channel_types': {
-      $put: { input: {}; output: PreferenceSet; outputFormat: 'json'; status: 200 }
+      $put: {
+        input: { param: { user_id: string; id: string } }
+        output: PreferenceSet
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/v1/objects/:collection/:object_id/preferences/:id/categories': {
-      $put: { input: {}; output: PreferenceSet; outputFormat: 'json'; status: 200 }
+      $put: {
+        input: { param: { collection: string; object_id: string; id: string } }
+        output: PreferenceSet
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/v1/messages': {
@@ -1142,7 +1152,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/v1/users/:user_id/preferences/:id/channel_types/:type': {
-      $put: { input: {}; output: PreferenceSet; outputFormat: 'json'; status: 200 }
+      $put: {
+        input: { param: { user_id: string; id: string; type: string } }
+        output: PreferenceSet
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/v1/providers/ms-teams/:channel_id/channels': {
@@ -1330,7 +1345,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/v1/users/:user_id/preferences/:id/workflows': {
-      $put: { input: {}; output: PreferenceSet; outputFormat: 'json'; status: 200 }
+      $put: {
+        input: { param: { user_id: string; id: string } }
+        output: PreferenceSet
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/v1/users/:user_id/guides/:channel_id': {
@@ -1366,11 +1386,21 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/v1/objects/:collection/:object_id/preferences/:id/categories/:key': {
-      $put: { input: {}; output: PreferenceSet; outputFormat: 'json'; status: 200 }
+      $put: {
+        input: { param: { collection: string; object_id: string; id: string; key: string } }
+        output: PreferenceSet
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/v1/users/:user_id/preferences/:id/categories/:key': {
-      $put: { input: {}; output: PreferenceSet; outputFormat: 'json'; status: 200 }
+      $put: {
+        input: { param: { user_id: string; id: string; key: string } }
+        output: PreferenceSet
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/v1/messages/:message_id/content': {
@@ -1468,7 +1498,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/v1/objects/:collection/:object_id/preferences/:id/workflows': {
-      $put: { input: {}; output: PreferenceSet; outputFormat: 'json'; status: 200 }
+      $put: {
+        input: { param: { collection: string; object_id: string; id: string } }
+        output: PreferenceSet
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/v1/objects/:collection/:id/messages': {
@@ -1751,7 +1786,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/v1/users/:user_id/preferences/:id/categories': {
-      $put: { input: {}; output: PreferenceSet; outputFormat: 'json'; status: 200 }
+      $put: {
+        input: { param: { user_id: string; id: string } }
+        output: PreferenceSet
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/v1/objects/:collection': {
@@ -1972,11 +2012,21 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/v1/objects/:collection/:object_id/preferences/:id/channel_types/:type': {
-      $put: { input: {}; output: PreferenceSet; outputFormat: 'json'; status: 200 }
+      $put: {
+        input: { param: { collection: string; object_id: string; id: string; type: string } }
+        output: PreferenceSet
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/v1/objects/:collection/:object_id/preferences/:id/channel_types': {
-      $put: { input: {}; output: PreferenceSet; outputFormat: 'json'; status: 200 }
+      $put: {
+        input: { param: { collection: string; object_id: string; id: string } }
+        output: PreferenceSet
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/v1/users/bulk/identify': {
@@ -2184,7 +2234,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/v1/users/:user_id/guides/messages/:message_id/archived': {
       $put: {
-        input: { param: { user_id: string } } & { json: GuideArchivedRequest }
+        input: { param: { user_id: string; message_id: string } } & { json: GuideArchivedRequest }
         output: GuideActionResponse
         outputFormat: 'json'
         status: 200
@@ -2520,7 +2570,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/v1/objects/:collection/:object_id/preferences/:id/workflows/:key': {
-      $put: { input: {}; output: PreferenceSet; outputFormat: 'json'; status: 200 }
+      $put: {
+        input: { param: { collection: string; object_id: string; id: string; key: string } }
+        output: PreferenceSet
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/v1/messages/:message_id/read': {
@@ -2707,7 +2762,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/v1/users/:user_id/preferences/:id/workflows/:key': {
-      $put: { input: {}; output: PreferenceSet; outputFormat: 'json'; status: 200 }
+      $put: {
+        input: { param: { user_id: string; id: string; key: string } }
+        output: PreferenceSet
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/v1/schedules': {
@@ -2771,7 +2831,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/v1/users/:user_id/guides/messages/:message_id/seen': {
       $put: {
-        input: { param: { user_id: string } } & { json: GuideSeenRequest }
+        input: { param: { user_id: string; message_id: string } } & { json: GuideSeenRequest }
         output: GuideActionResponse
         outputFormat: 'json'
         status: 200
@@ -3257,7 +3317,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/v1/users/:user_id/guides/messages/:message_id/interacted': {
       $put: {
-        input: { param: { user_id: string } } & { json: GuideInteractedRequest }
+        input: { param: { user_id: string; message_id: string } } & { json: GuideInteractedRequest }
         output: GuideActionResponse
         outputFormat: 'json'
         status: 200

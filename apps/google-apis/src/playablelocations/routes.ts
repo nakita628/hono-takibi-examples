@@ -114,7 +114,7 @@ const GoogleMapsPlayablelocationsV3LogImpressionsRequestSchema = z
   .openapi('GoogleMapsPlayablelocationsV3LogImpressionsRequest')
 
 const GoogleMapsPlayablelocationsV3LogImpressionsResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A response for the LogImpressions method. This method returns no data upon success.',
@@ -192,7 +192,7 @@ const GoogleMapsPlayablelocationsV3LogPlayerReportsRequestSchema = z
   .openapi('GoogleMapsPlayablelocationsV3LogPlayerReportsRequest')
 
 const GoogleMapsPlayablelocationsV3LogPlayerReportsResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A response for the LogPlayerReports method. This method returns no data upon success.',

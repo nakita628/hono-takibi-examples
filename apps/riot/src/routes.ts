@@ -1,1118 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const ErrorSchema = z
-  .object({
-    status: z
-      .object({ status_code: z.int().exactOptional(), message: z.string().exactOptional() })
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({ required: [] })
-  .openapi('Error')
-
-const AccountV1AccountDtoSchema = z
-  .object({
-    puuid: z
-      .string()
-      .openapi({
-        'x-type': 'string',
-        description: 'Encrypted PUUID. Exact length of 78 characters.',
-      }),
-    gameName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        'x-type': 'string',
-        description:
-          "This field may be excluded from the response if the account doesn't have a gameName.",
-      }),
-    tagLine: z
-      .string()
-      .exactOptional()
-      .openapi({
-        'x-type': 'string',
-        description:
-          "This field may be excluded from the response if the account doesn't have a tagLine.",
-      }),
-  })
-  .openapi({ title: 'AccountDto', required: ['puuid'] })
-  .openapi('AccountV1AccountDto')
-
-const AccountV1AccountRegionDTOSchema = z
-  .object({
-    puuid: z
-      .string()
-      .openapi({
-        'x-type': 'string',
-        description:
-          'Player Universal Unique Identifier. Exact length of 78 characters. (Encrypted)',
-      }),
-    game: z.string().openapi({ 'x-type': 'string', description: 'Game to lookup active region' }),
-    region: z.string().openapi({ 'x-type': 'string', description: 'Player active region' }),
-  })
-  .openapi({
-    title: 'AccountRegionDTO',
-    description: 'Account region',
-    required: ['puuid', 'game', 'region'],
-  })
-  .openapi('AccountV1AccountRegionDTO')
-
-const AccountV1ActiveShardDtoSchema = z
-  .object({
-    puuid: z.string().openapi({ 'x-type': 'string' }),
-    game: z.string().openapi({ 'x-type': 'string' }),
-    activeShard: z.string().openapi({ 'x-type': 'string' }),
-  })
-  .openapi({ title: 'ActiveShardDto', required: ['puuid', 'game', 'activeShard'] })
-  .openapi('AccountV1ActiveShardDto')
-
-const ChampionMasteryV4RewardConfigDtoSchema = z
-  .object({
-    rewardValue: z.string().openapi({ 'x-type': 'string', description: 'Reward value' }),
-    rewardType: z.string().openapi({ 'x-type': 'string', description: 'Reward type' }),
-    maximumReward: z.int32().openapi({ 'x-type': 'int', description: 'Maximun reward' }),
-  })
-  .openapi({
-    title: 'RewardConfigDto',
-    description: 'This object contains required reward config information.',
-    required: ['rewardValue', 'rewardType', 'maximumReward'],
-  })
-  .openapi('ChampionMasteryV4RewardConfigDto')
-
-const ChampionMasteryV4NextSeasonMilestonesDtoSchema = z
-  .object({
-    requireGradeCounts: z
-      .record(z.string(), z.int32().openapi({ 'x-type': 'int' }))
-      .openapi({ 'x-key': { type: 'string', 'x-type': 'string' }, 'x-type': 'Map[string, int]' }),
-    rewardMarks: z.int32().openapi({ 'x-type': 'int', description: 'Reward marks.' }),
-    bonus: z.boolean().openapi({ 'x-type': 'boolean', description: 'Bonus.' }),
-    rewardConfig: ChampionMasteryV4RewardConfigDtoSchema.exactOptional().openapi({
-      'x-type': 'RewardConfigDto',
-      description: 'Reward configuration.',
-    }),
-    totalGamesRequires: z.int32().openapi({ 'x-type': 'int' }),
-  })
-  .openapi({
-    title: 'NextSeasonMilestonesDto',
-    description: 'This object contains required next season milestone information.',
-    required: ['requireGradeCounts', 'rewardMarks', 'bonus', 'totalGamesRequires'],
-  })
-  .openapi('ChampionMasteryV4NextSeasonMilestonesDto')
-
-const ChampionMasteryV4ChampionMasteryDtoSchema = z
-  .object({
-    puuid: z
-      .string()
-      .openapi({
-        'x-type': 'string',
-        description:
-          'Player Universal Unique Identifier. Exact length of 78 characters. (Encrypted)',
-      }),
-    championPointsUntilNextLevel: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        'x-type': 'long',
-        description:
-          'Number of points needed to achieve next level. Zero if player reached maximum champion level for this champion.',
-      }),
-    chestGranted: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        'x-type': 'boolean',
-        description: 'Is chest granted for this champion or not in current season.',
-      }),
-    championId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        'x-type': 'long',
-        description: 'Champion ID for this entry.',
-        'x-enum': 'champion',
-      }),
-    lastPlayTime: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        'x-type': 'long',
-        description:
-          'Last time this champion was played by this player - in Unix milliseconds time format.',
-      }),
-    championLevel: z
-      .int32()
-      .openapi({
-        'x-type': 'int',
-        description: 'Champion level for specified player and champion combination.',
-      }),
-    championPoints: z
-      .int32()
-      .openapi({
-        'x-type': 'int',
-        description:
-          'Total number of champion points for this player and champion combination - they are used to determine championLevel.',
-      }),
-    championPointsSinceLastLevel: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        'x-type': 'long',
-        description: 'Number of points earned since current level has been achieved.',
-      }),
-    markRequiredForNextLevel: z.int32().openapi({ 'x-type': 'int' }),
-    championSeasonMilestone: z.int32().openapi({ 'x-type': 'int' }),
-    nextSeasonMilestone: ChampionMasteryV4NextSeasonMilestonesDtoSchema.openapi({
-      'x-type': 'NextSeasonMilestonesDto',
-    }),
-    tokensEarned: z
-      .int32()
-      .openapi({
-        'x-type': 'int',
-        description:
-          'The token earned for this champion at the current championLevel. When the championLevel is advanced the tokensEarned resets to 0.',
-      }),
-    milestoneGrades: z
-      .array(z.string().openapi({ 'x-type': 'string' }))
-      .exactOptional()
-      .openapi({ 'x-type': 'List[string]' }),
-  })
-  .openapi({
-    title: 'ChampionMasteryDto',
-    description:
-      'This object contains single Champion Mastery information for player and champion combination.',
-    required: [
-      'puuid',
-      'championPointsUntilNextLevel',
-      'championId',
-      'lastPlayTime',
-      'championLevel',
-      'championPoints',
-      'championPointsSinceLastLevel',
-      'markRequiredForNextLevel',
-      'championSeasonMilestone',
-      'nextSeasonMilestone',
-      'tokensEarned',
-    ],
-  })
-  .openapi('ChampionMasteryV4ChampionMasteryDto')
-
-const ChampionV3ChampionInfoSchema = z
-  .object({
-    newplayer: z
-      .array(z.int32().openapi({ 'x-type': 'int', 'x-enum': 'champion' }))
-      .openapi({ 'x-type': 'List[int]' }),
-    sr: z
-      .array(z.int32().openapi({ 'x-type': 'int', 'x-enum': 'champion' }))
-      .openapi({ 'x-type': 'List[int]' }),
-  })
-  .openapi({ title: 'ChampionInfo', required: ['newplayer', 'sr'] })
-  .openapi('ChampionV3ChampionInfo')
-
-const ChampionV3ArraySchema = z
-  .object({})
-  .openapi({ title: 'array', description: 'UNKNOWN TYPE.' })
-  .openapi('ChampionV3Array')
-
-const ClashV1PlayerDtoSchema = z
-  .object({
-    puuid: z.string().openapi({ 'x-type': 'string' }),
-    teamId: z.string().exactOptional().openapi({ 'x-type': 'string' }),
-    position: z
-      .enum(['UNSELECTED', 'FILL', 'TOP', 'JUNGLE', 'MIDDLE', 'BOTTOM', 'UTILITY'])
-      .openapi({
-        'x-type': 'string',
-        description:
-          '(Legal values:  UNSELECTED,  FILL,  TOP,  JUNGLE,  MIDDLE,  BOTTOM,  UTILITY)',
-      }),
-    role: z
-      .enum(['CAPTAIN', 'MEMBER'])
-      .openapi({ 'x-type': 'string', description: '(Legal values:  CAPTAIN,  MEMBER)' }),
-  })
-  .openapi({ title: 'PlayerDto', required: ['puuid', 'position', 'role'] })
-  .openapi('ClashV1PlayerDto')
-
-const ClashV1TeamDtoSchema = z
-  .object({
-    id: z.string().openapi({ 'x-type': 'string' }),
-    tournamentId: z.int32().openapi({ 'x-type': 'int' }),
-    name: z.string().openapi({ 'x-type': 'string' }),
-    iconId: z.int32().openapi({ 'x-type': 'int' }),
-    tier: z.int32().openapi({ 'x-type': 'int' }),
-    captain: z
-      .string()
-      .openapi({ 'x-type': 'string', description: 'Summoner ID of the team captain.' }),
-    abbreviation: z.string().openapi({ 'x-type': 'string' }),
-    players: z
-      .array(ClashV1PlayerDtoSchema)
-      .openapi({ 'x-type': 'List[PlayerDto]', description: 'Team members.' }),
-  })
-  .openapi({
-    title: 'TeamDto',
-    required: [
-      'id',
-      'tournamentId',
-      'name',
-      'iconId',
-      'tier',
-      'captain',
-      'abbreviation',
-      'players',
-    ],
-  })
-  .openapi('ClashV1TeamDto')
-
-const ClashV1TournamentPhaseDtoSchema = z
-  .object({
-    id: z.int32().openapi({ 'x-type': 'int' }),
-    registrationTime: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64', 'x-type': 'long' }),
-    startTime: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64', 'x-type': 'long' }),
-    cancelled: z.boolean().openapi({ 'x-type': 'boolean' }),
-  })
-  .openapi({
-    title: 'TournamentPhaseDto',
-    required: ['id', 'registrationTime', 'startTime', 'cancelled'],
-  })
-  .openapi('ClashV1TournamentPhaseDto')
-
-const ClashV1TournamentDtoSchema = z
-  .object({
-    id: z.int32().openapi({ 'x-type': 'int' }),
-    themeId: z.int32().openapi({ 'x-type': 'int' }),
-    nameKey: z.string().openapi({ 'x-type': 'string' }),
-    nameKeySecondary: z.string().openapi({ 'x-type': 'string' }),
-    schedule: z
-      .array(ClashV1TournamentPhaseDtoSchema)
-      .openapi({ 'x-type': 'List[TournamentPhaseDto]', description: 'Tournament phase.' }),
-  })
-  .openapi({
-    title: 'TournamentDto',
-    required: ['id', 'themeId', 'nameKey', 'nameKeySecondary', 'schedule'],
-  })
-  .openapi('ClashV1TournamentDto')
-
-const LeagueExpV4MiniSeriesDTOSchema = z
-  .object({
-    losses: z.int32().openapi({ 'x-type': 'int' }),
-    progress: z.string().openapi({ 'x-type': 'string' }),
-    target: z.int32().openapi({ 'x-type': 'int' }),
-    wins: z.int32().openapi({ 'x-type': 'int' }),
-  })
-  .openapi({ title: 'MiniSeriesDTO', required: ['losses', 'progress', 'target', 'wins'] })
-  .openapi('LeagueExpV4MiniSeriesDTO')
-
-const LeagueExpV4LeagueEntryDTOSchema = z
-  .object({
-    leagueId: z.string().exactOptional().openapi({ 'x-type': 'string' }),
-    summonerId: z
-      .string()
-      .exactOptional()
-      .openapi({ 'x-type': 'string', description: "Player's summonerId (Encrypted)" }),
-    puuid: z.string().openapi({ 'x-type': 'string', description: "Player's encrypted puuid." }),
-    queueType: z.string().openapi({ 'x-type': 'string', 'x-enum': 'queueType' }),
-    tier: z.string().openapi({ 'x-type': 'string', 'x-enum': 'tier' }),
-    rank: z
-      .string()
-      .openapi({
-        'x-type': 'string',
-        description: "The player's division within a tier.",
-        'x-enum': 'division',
-      }),
-    leaguePoints: z.int32().openapi({ 'x-type': 'int' }),
-    wins: z
-      .int32()
-      .openapi({
-        'x-type': 'int',
-        description: 'Winning team on Summoners Rift. First placement in Teamfight Tactics.',
-      }),
-    losses: z
-      .int32()
-      .openapi({
-        'x-type': 'int',
-        description:
-          'Losing team on Summoners Rift. Second through eighth placement in Teamfight Tactics.',
-      }),
-    hotStreak: z.boolean().openapi({ 'x-type': 'boolean' }),
-    veteran: z.boolean().openapi({ 'x-type': 'boolean' }),
-    freshBlood: z.boolean().openapi({ 'x-type': 'boolean' }),
-    inactive: z.boolean().openapi({ 'x-type': 'boolean' }),
-    miniSeries: LeagueExpV4MiniSeriesDTOSchema.exactOptional().openapi({
-      'x-type': 'MiniSeriesDTO',
-    }),
-  })
-  .openapi({
-    title: 'LeagueEntryDTO',
-    required: [
-      'puuid',
-      'queueType',
-      'tier',
-      'rank',
-      'leaguePoints',
-      'wins',
-      'losses',
-      'hotStreak',
-      'veteran',
-      'freshBlood',
-      'inactive',
-    ],
-  })
-  .openapi('LeagueExpV4LeagueEntryDTO')
-
-const LeagueV4MiniSeriesDTOSchema = z
-  .object({
-    losses: z.int32().openapi({ 'x-type': 'int' }),
-    progress: z.string().openapi({ 'x-type': 'string' }),
-    target: z.int32().openapi({ 'x-type': 'int' }),
-    wins: z.int32().openapi({ 'x-type': 'int' }),
-  })
-  .openapi({ title: 'MiniSeriesDTO', required: ['losses', 'progress', 'target', 'wins'] })
-  .openapi('LeagueV4MiniSeriesDTO')
-
-const LeagueV4LeagueItemDTOSchema = z
-  .object({
-    freshBlood: z.boolean().openapi({ 'x-type': 'boolean' }),
-    wins: z.int32().openapi({ 'x-type': 'int', description: 'Winning team on Summoners Rift.' }),
-    miniSeries: LeagueV4MiniSeriesDTOSchema.exactOptional().openapi({ 'x-type': 'MiniSeriesDTO' }),
-    inactive: z.boolean().openapi({ 'x-type': 'boolean' }),
-    veteran: z.boolean().openapi({ 'x-type': 'boolean' }),
-    hotStreak: z.boolean().openapi({ 'x-type': 'boolean' }),
-    rank: z.string().openapi({ 'x-type': 'string', 'x-enum': 'division' }),
-    leaguePoints: z.int32().openapi({ 'x-type': 'int' }),
-    losses: z.int32().openapi({ 'x-type': 'int', description: 'Losing team on Summoners Rift.' }),
-    puuid: z.string().openapi({ 'x-type': 'string', description: "Player's encrypted puuid." }),
-    summonerId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        'x-type': 'string',
-        description:
-          'Encrypted summoner ID. This field is deprecated and will be removed. Use `puuid` instead.',
-      }),
-  })
-  .openapi({
-    title: 'LeagueItemDTO',
-    required: [
-      'freshBlood',
-      'wins',
-      'inactive',
-      'veteran',
-      'hotStreak',
-      'rank',
-      'leaguePoints',
-      'losses',
-      'puuid',
-    ],
-  })
-  .openapi('LeagueV4LeagueItemDTO')
-
-const LeagueV4LeagueListDTOSchema = z
-  .object({
-    leagueId: z.string().exactOptional().openapi({ 'x-type': 'string' }),
-    entries: z.array(LeagueV4LeagueItemDTOSchema).openapi({ 'x-type': 'List[LeagueItemDTO]' }),
-    tier: z.string().openapi({ 'x-type': 'string', 'x-enum': 'tier' }),
-    name: z.string().exactOptional().openapi({ 'x-type': 'string' }),
-    queue: z.string().exactOptional().openapi({ 'x-type': 'string', 'x-enum': 'queueType' }),
-  })
-  .openapi({ title: 'LeagueListDTO', required: ['entries', 'tier'] })
-  .openapi('LeagueV4LeagueListDTO')
-
-const LeagueV4LeagueEntryDTOSchema = z
-  .object({
-    leagueId: z.string().exactOptional().openapi({ 'x-type': 'string' }),
-    puuid: z.string().openapi({ 'x-type': 'string', description: "Player's encrypted puuid." }),
-    queueType: z.string().openapi({ 'x-type': 'string', 'x-enum': 'queueType' }),
-    tier: z.string().exactOptional().openapi({ 'x-type': 'string', 'x-enum': 'tier' }),
-    rank: z
-      .string()
-      .exactOptional()
-      .openapi({
-        'x-type': 'string',
-        description: "The player's division within a tier.",
-        'x-enum': 'division',
-      }),
-    leaguePoints: z.int32().openapi({ 'x-type': 'int' }),
-    wins: z.int32().openapi({ 'x-type': 'int', description: 'Winning team on Summoners Rift.' }),
-    losses: z.int32().openapi({ 'x-type': 'int', description: 'Losing team on Summoners Rift.' }),
-    hotStreak: z.boolean().openapi({ 'x-type': 'boolean' }),
-    veteran: z.boolean().openapi({ 'x-type': 'boolean' }),
-    freshBlood: z.boolean().openapi({ 'x-type': 'boolean' }),
-    inactive: z.boolean().openapi({ 'x-type': 'boolean' }),
-    miniSeries: LeagueV4MiniSeriesDTOSchema.exactOptional().openapi({ 'x-type': 'MiniSeriesDTO' }),
-    summonerId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        'x-type': 'string',
-        description:
-          'Encrypted summoner ID. This field is deprecated and will be removed. Use `puuid` instead.',
-      }),
-  })
-  .openapi({
-    title: 'LeagueEntryDTO',
-    required: [
-      'puuid',
-      'queueType',
-      'leaguePoints',
-      'wins',
-      'losses',
-      'hotStreak',
-      'veteran',
-      'freshBlood',
-      'inactive',
-    ],
-  })
-  .openapi('LeagueV4LeagueEntryDTO')
-
-const LolChallengesV1ChallengeConfigInfoDtoSchema = z
-  .object({
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64', 'x-type': 'long' }),
-    localizedNames: z
-      .record(
-        z.string(),
-        z
-          .record(z.string(), z.string().openapi({ 'x-type': 'string' }))
-          .openapi({
-            'x-key': { type: 'string', 'x-type': 'String' },
-            'x-type': 'Map[String, string]',
-          }),
-      )
-      .openapi({
-        'x-key': { type: 'string', 'x-type': 'String' },
-        'x-type': 'Map[String, Map[String, string]]',
-      }),
-    state: z
-      .enum(['DISABLED', 'HIDDEN', 'ENABLED', 'ARCHIVED'])
-      .openapi({
-        'x-type': 'string',
-        description:
-          'DISABLED - not visible and not calculated, HIDDEN - not visible, but calculated, ENABLED - visible and calculated, ARCHIVED - visible, but not calculated',
-      }),
-    tracking: z
-      .enum(['LIFETIME', 'SEASON'])
-      .exactOptional()
-      .openapi({
-        'x-type': 'string',
-        description:
-          'LIFETIME - stats are incremented without reset, SEASON - stats are accumulated by season and reset at the beginning of new season',
-      }),
-    startTimestamp: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', 'x-type': 'long' }),
-    endTimestamp: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', 'x-type': 'long' }),
-    leaderboard: z.boolean().openapi({ 'x-type': 'boolean' }),
-    thresholds: z
-      .record(z.string(), z.float64().openapi({ 'x-type': 'double' }))
-      .openapi({
-        'x-key': { type: 'string', 'x-type': 'String' },
-        'x-type': 'Map[String, double]',
-      }),
-  })
-  .openapi({
-    title: 'ChallengeConfigInfoDto',
-    required: ['id', 'localizedNames', 'state', 'leaderboard', 'thresholds'],
-  })
-  .openapi('LolChallengesV1ChallengeConfigInfoDto')
-
-const LolChallengesV1StateSchema = z
-  .object({})
-  .openapi({
-    title: 'State',
-    description:
-      'DISABLED - not visible and not calculated,\nHIDDEN - not visible, but calculated,\nENABLED - visible and calculated,\nARCHIVED - visible, but not calculated',
-  })
-  .openapi('LolChallengesV1State')
-
-const LolChallengesV1TrackingSchema = z
-  .object({})
-  .openapi({
-    title: 'Tracking',
-    description:
-      'LIFETIME - stats are incremented without reset,\nSEASON - stats are accumulated by season and reset at the beginning of new season',
-  })
-  .openapi('LolChallengesV1Tracking')
-
-const LolChallengesV1ApexPlayerInfoDtoSchema = z
-  .object({
-    puuid: z.string().openapi({ 'x-type': 'string' }),
-    value: z.float64().openapi({ 'x-type': 'double' }),
-    position: z.int32().openapi({ 'x-type': 'int' }),
-  })
-  .openapi({ title: 'ApexPlayerInfoDto', required: ['puuid', 'value', 'position'] })
-  .openapi('LolChallengesV1ApexPlayerInfoDto')
-
-const LolChallengesV1LevelSchema = z
-  .object({})
-  .openapi({
-    title: 'Level',
-    description:
-      '0 NONE,\n1 IRON,\n2 BRONZE,\n3 SILVER,\n4 GOLD,\n5 PLATINUM,\n6 DIAMOND,\n7 MASTER,\n8 GRANDMASTER,\n9 CHALLENGER',
-  })
-  .openapi('LolChallengesV1Level')
-
-const LolChallengesV1ChallengeInfoDtoSchema = z
-  .object({
-    percentile: z.float64().openapi({ 'x-type': 'double' }),
-    playersInLevel: z.int32().exactOptional().openapi({ 'x-type': 'int' }),
-    achievedTime: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', 'x-type': 'long' }),
-    value: z.float64().openapi({ 'x-type': 'double' }),
-    challengeId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64', 'x-type': 'long' }),
-    level: z
-      .enum([
-        'NONE',
-        'IRON',
-        'BRONZE',
-        'SILVER',
-        'GOLD',
-        'PLATINUM',
-        'DIAMOND',
-        'MASTER',
-        'GRANDMASTER',
-        'CHALLENGER',
-        'HIGHEST_NOT_LEADERBOARD_ONLY',
-        'HIGHEST',
-        'LOWEST',
-      ])
-      .openapi({
-        'x-type': 'string',
-        description:
-          '(Legal values:  NONE,  IRON,  BRONZE,  SILVER,  GOLD,  PLATINUM,  DIAMOND,  MASTER,  GRANDMASTER,  CHALLENGER,  HIGHEST_NOT_LEADERBOARD_ONLY,  HIGHEST,  LOWEST)',
-      }),
-    position: z.int32().exactOptional().openapi({ 'x-type': 'int' }),
-  })
-  .openapi({ title: 'ChallengeInfoDto', required: ['percentile', 'value', 'challengeId', 'level'] })
-  .openapi('LolChallengesV1ChallengeInfoDto')
-
-const LolChallengesV1PlayerClientPreferencesDtoSchema = z
-  .object({
-    bannerAccent: z.string().exactOptional().openapi({ 'x-type': 'string' }),
-    title: z.string().exactOptional().openapi({ 'x-type': 'string' }),
-    challengeIds: z
-      .array(
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64', 'x-type': 'long' }),
-      )
-      .exactOptional()
-      .openapi({ 'x-type': 'List[long]' }),
-    crestBorder: z.string().exactOptional().openapi({ 'x-type': 'string' }),
-    prestigeCrestBorderLevel: z.int32().exactOptional().openapi({ 'x-type': 'int' }),
-  })
-  .openapi({ title: 'PlayerClientPreferencesDto', required: [] })
-  .openapi('LolChallengesV1PlayerClientPreferencesDto')
-
-const LolChallengesV1ChallengePointDtoSchema = z
-  .object({
-    level: z.string().openapi({ 'x-type': 'string', 'x-enum': 'tier' }),
-    current: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64', 'x-type': 'long' }),
-    max: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64', 'x-type': 'long' }),
-    percentile: z.float64().exactOptional().openapi({ 'x-type': 'double' }),
-    position: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', 'x-type': 'long' }),
-  })
-  .openapi({ title: 'ChallengePointDto', required: ['level', 'current', 'max'] })
-  .openapi('LolChallengesV1ChallengePointDto')
-
-const LolChallengesV1PlayerInfoDtoSchema = z
-  .object({
-    challenges: z
-      .array(LolChallengesV1ChallengeInfoDtoSchema)
-      .openapi({ 'x-type': 'List[ChallengeInfoDto]' }),
-    preferences: LolChallengesV1PlayerClientPreferencesDtoSchema.openapi({
-      'x-type': 'PlayerClientPreferencesDto',
-    }),
-    totalPoints: LolChallengesV1ChallengePointDtoSchema.openapi({ 'x-type': 'ChallengePointDto' }),
-    categoryPoints: z
-      .record(
-        z.string(),
-        LolChallengesV1ChallengePointDtoSchema.openapi({ 'x-type': 'ChallengePointDto' }),
-      )
-      .openapi({
-        'x-key': { type: 'string', 'x-type': 'String' },
-        'x-type': 'Map[String, ChallengePointDto]',
-      }),
-  })
-  .openapi({
-    title: 'PlayerInfoDto',
-    required: ['challenges', 'preferences', 'totalPoints', 'categoryPoints'],
-  })
-  .openapi('LolChallengesV1PlayerInfoDto')
-
-const LolRsoMatchV1MatchDtoSchema = z
-  .object({})
-  .openapi({ title: 'MatchDto', description: 'UNKNOWN TYPE.' })
-  .openapi('LolRsoMatchV1MatchDto')
-
-const LolRsoMatchV1TimelineDtoSchema = z
-  .object({})
-  .openapi({ title: 'TimelineDto', description: 'UNKNOWN TYPE.' })
-  .openapi('LolRsoMatchV1TimelineDto')
-
-const LolStatusV4ContentDtoSchema = z
-  .object({
-    locale: z.string().openapi({ 'x-type': 'string', 'x-enum': 'locale' }),
-    content: z.string().openapi({ 'x-type': 'string' }),
-  })
-  .openapi({ title: 'ContentDto', required: ['locale', 'content'] })
-  .openapi('LolStatusV4ContentDto')
-
-const LolStatusV4UpdateDtoSchema = z
-  .object({
-    id: z.int32().openapi({ 'x-type': 'int' }),
-    author: z.string().openapi({ 'x-type': 'string' }),
-    publish: z.boolean().openapi({ 'x-type': 'boolean' }),
-    publish_locations: z
-      .array(z.enum(['riotclient', 'riotstatus', 'game']).openapi({ 'x-type': 'string' }))
-      .openapi({
-        'x-type': 'List[string]',
-        description: '(Legal values: riotclient, riotstatus, game)',
-      }),
-    translations: z.array(LolStatusV4ContentDtoSchema).openapi({ 'x-type': 'List[ContentDto]' }),
-    created_at: z.string().openapi({ 'x-type': 'string' }),
-    updated_at: z.string().openapi({ 'x-type': 'string' }),
-  })
-  .openapi({
-    title: 'UpdateDto',
-    required: [
-      'id',
-      'author',
-      'publish',
-      'publish_locations',
-      'translations',
-      'created_at',
-      'updated_at',
-    ],
-  })
-  .openapi('LolStatusV4UpdateDto')
-
-const LolStatusV4StatusDtoSchema = z
-  .object({
-    id: z.int32().openapi({ 'x-type': 'int' }),
-    maintenance_status: z
-      .enum(['scheduled', 'in_progress', 'complete'])
-      .exactOptional()
-      .openapi({
-        'x-type': 'string',
-        description: '(Legal values:  scheduled,  in_progress,  complete)',
-      }),
-    incident_severity: z
-      .enum(['info', 'warning', 'critical'])
-      .exactOptional()
-      .openapi({ 'x-type': 'string', description: '(Legal values:  info,  warning,  critical)' }),
-    titles: z.array(LolStatusV4ContentDtoSchema).openapi({ 'x-type': 'List[ContentDto]' }),
-    updates: z.array(LolStatusV4UpdateDtoSchema).openapi({ 'x-type': 'List[UpdateDto]' }),
-    created_at: z.string().openapi({ 'x-type': 'string' }),
-    archive_at: z.string().exactOptional().openapi({ 'x-type': 'string' }),
-    updated_at: z.string().exactOptional().openapi({ 'x-type': 'string' }),
-    platforms: z
-      .array(
-        z
-          .enum(['windows', 'macos', 'android', 'ios', 'ps4', 'xbone', 'switch'])
-          .openapi({ 'x-type': 'string' }),
-      )
-      .openapi({
-        'x-type': 'List[string]',
-        description: '(Legal values: windows, macos, android, ios, ps4, xbone, switch)',
-      }),
-  })
-  .openapi({ title: 'StatusDto', required: ['id', 'titles', 'updates', 'created_at', 'platforms'] })
-  .openapi('LolStatusV4StatusDto')
-
-const LolStatusV4PlatformDataDtoSchema = z
-  .object({
-    id: z.string().openapi({ 'x-type': 'string' }),
-    name: z.string().openapi({ 'x-type': 'string' }),
-    locales: z
-      .array(z.string().openapi({ 'x-type': 'string', 'x-enum': 'locale' }))
-      .openapi({ 'x-type': 'List[string]' }),
-    maintenances: z.array(LolStatusV4StatusDtoSchema).openapi({ 'x-type': 'List[StatusDto]' }),
-    incidents: z.array(LolStatusV4StatusDtoSchema).openapi({ 'x-type': 'List[StatusDto]' }),
-  })
-  .openapi({
-    title: 'PlatformDataDto',
-    required: ['id', 'name', 'locales', 'maintenances', 'incidents'],
-  })
-  .openapi('LolStatusV4PlatformDataDto')
-
-const LorDeckV1DeckDtoSchema = z
-  .object({
-    id: z.string().openapi({ 'x-type': 'string' }),
-    name: z.string().openapi({ 'x-type': 'string' }),
-    code: z.string().openapi({ 'x-type': 'string' }),
-  })
-  .openapi({ title: 'DeckDto', required: ['id', 'name', 'code'] })
-  .openapi('LorDeckV1DeckDto')
-
-const LorDeckV1NewDeckDtoSchema = z
-  .object({
-    name: z.string().openapi({ 'x-type': 'string' }),
-    code: z.string().openapi({ 'x-type': 'string' }),
-  })
-  .openapi({ title: 'NewDeckDto', required: ['name', 'code'] })
-  .openapi('LorDeckV1NewDeckDto')
-
-const LorInventoryV1CardDtoSchema = z
-  .object({
-    code: z.string().openapi({ 'x-type': 'string' }),
-    count: z.string().openapi({ 'x-type': 'string' }),
-  })
-  .openapi({ title: 'CardDto', required: ['code', 'count'] })
-  .openapi('LorInventoryV1CardDto')
-
-const LorMatchV1MetadataDtoSchema = z
-  .object({
-    data_version: z.string().openapi({ 'x-type': 'string', description: 'Match data version.' }),
-    match_id: z.string().openapi({ 'x-type': 'string', description: 'Match id.' }),
-    participants: z
-      .array(z.string().openapi({ 'x-type': 'string' }))
-      .openapi({ 'x-type': 'List[string]', description: 'A list of participant PUUIDs.' }),
-  })
-  .openapi({ title: 'MetadataDto', required: ['data_version', 'match_id', 'participants'] })
-  .openapi('LorMatchV1MetadataDto')
-
-const LorMatchV1PlayerDtoSchema = z
-  .object({
-    puuid: z.string().openapi({ 'x-type': 'string' }),
-    deck_id: z.string().openapi({ 'x-type': 'string' }),
-    deck_code: z
-      .string()
-      .openapi({
-        'x-type': 'string',
-        description:
-          'Code for the deck played. Refer to LOR documentation for details on deck codes.',
-      }),
-    factions: z
-      .array(z.string().openapi({ 'x-type': 'string' }))
-      .openapi({ 'x-type': 'List[string]' }),
-    game_outcome: z.string().openapi({ 'x-type': 'string' }),
-    order_of_play: z
-      .int32()
-      .openapi({ 'x-type': 'int', description: 'The order in which the players took turns.' }),
-  })
-  .openapi({
-    title: 'PlayerDto',
-    required: ['puuid', 'deck_id', 'deck_code', 'factions', 'game_outcome', 'order_of_play'],
-  })
-  .openapi('LorMatchV1PlayerDto')
-
-const LorMatchV1InfoDtoSchema = z
-  .object({
-    game_mode: z
-      .enum(['Constructed', 'Expeditions', 'Tutorial'])
-      .openapi({
-        'x-type': 'string',
-        description: '(Legal values:  Constructed,  Expeditions,  Tutorial)',
-      }),
-    game_type: z
-      .enum(['Ranked', 'Normal', 'AI', 'Tutorial', 'VanillaTrial', 'Singleton', 'StandardGauntlet'])
-      .openapi({
-        'x-type': 'string',
-        description:
-          '(Legal values:  Ranked,  Normal,  AI,  Tutorial,  VanillaTrial,  Singleton,  StandardGauntlet)',
-      }),
-    game_start_time_utc: z.string().openapi({ 'x-type': 'string' }),
-    game_version: z.string().openapi({ 'x-type': 'string' }),
-    game_format: z
-      .enum(['standard', 'eternal'])
-      .openapi({ 'x-type': 'string', description: '(Legal values:  standard,  eternal)' }),
-    players: z.array(LorMatchV1PlayerDtoSchema).openapi({ 'x-type': 'List[PlayerDto]' }),
-    total_turn_count: z
-      .int32()
-      .openapi({ 'x-type': 'int', description: 'Total turns taken by both players.' }),
-  })
-  .openapi({
-    title: 'InfoDto',
-    required: [
-      'game_mode',
-      'game_type',
-      'game_start_time_utc',
-      'game_version',
-      'game_format',
-      'players',
-      'total_turn_count',
-    ],
-  })
-  .openapi('LorMatchV1InfoDto')
-
-const LorMatchV1MatchDtoSchema = z
-  .object({
-    metadata: LorMatchV1MetadataDtoSchema.openapi({
-      'x-type': 'MetadataDto',
-      description: 'Match metadata.',
-    }),
-    info: LorMatchV1InfoDtoSchema.openapi({ 'x-type': 'InfoDto', description: 'Match info.' }),
-  })
-  .openapi({ title: 'MatchDto', required: ['metadata', 'info'] })
-  .openapi('LorMatchV1MatchDto')
-
-const LorRankedV1PlayerDtoSchema = z
-  .object({
-    name: z.string().openapi({ 'x-type': 'string' }),
-    rank: z.int32().openapi({ 'x-type': 'int' }),
-    lp: z.int32().openapi({ 'x-type': 'int', description: 'League points.' }),
-  })
-  .openapi({ title: 'PlayerDto', required: ['name', 'rank', 'lp'] })
-  .openapi('LorRankedV1PlayerDto')
-
-const LorRankedV1LeaderboardDtoSchema = z
-  .object({
-    players: z
-      .array(LorRankedV1PlayerDtoSchema)
-      .openapi({ 'x-type': 'List[PlayerDto]', description: 'A list of players in Master tier.' }),
-  })
-  .openapi({ title: 'LeaderboardDto', required: ['players'] })
-  .openapi('LorRankedV1LeaderboardDto')
-
-const LorStatusV1ContentDtoSchema = z
-  .object({
-    locale: z.string().openapi({ 'x-type': 'string', 'x-enum': 'locale' }),
-    content: z.string().openapi({ 'x-type': 'string' }),
-  })
-  .openapi({ title: 'ContentDto', required: ['locale', 'content'] })
-  .openapi('LorStatusV1ContentDto')
-
-const LorStatusV1UpdateDtoSchema = z
-  .object({
-    id: z.int32().openapi({ 'x-type': 'int' }),
-    author: z.string().openapi({ 'x-type': 'string' }),
-    publish: z.boolean().openapi({ 'x-type': 'boolean' }),
-    publish_locations: z
-      .array(z.enum(['riotclient', 'riotstatus', 'game']).openapi({ 'x-type': 'string' }))
-      .openapi({
-        'x-type': 'List[string]',
-        description: '(Legal values: riotclient, riotstatus, game)',
-      }),
-    translations: z.array(LorStatusV1ContentDtoSchema).openapi({ 'x-type': 'List[ContentDto]' }),
-    created_at: z.string().openapi({ 'x-type': 'string' }),
-    updated_at: z.string().openapi({ 'x-type': 'string' }),
-  })
-  .openapi({
-    title: 'UpdateDto',
-    required: [
-      'id',
-      'author',
-      'publish',
-      'publish_locations',
-      'translations',
-      'created_at',
-      'updated_at',
-    ],
-  })
-  .openapi('LorStatusV1UpdateDto')
-
-const LorStatusV1StatusDtoSchema = z
-  .object({
-    id: z.int32().openapi({ 'x-type': 'int' }),
-    maintenance_status: z
-      .enum(['scheduled', 'in_progress', 'complete'])
-      .openapi({
-        'x-type': 'string',
-        description: '(Legal values:  scheduled,  in_progress,  complete)',
-      }),
-    incident_severity: z
-      .enum(['info', 'warning', 'critical'])
-      .openapi({ 'x-type': 'string', description: '(Legal values:  info,  warning,  critical)' }),
-    titles: z.array(LorStatusV1ContentDtoSchema).openapi({ 'x-type': 'List[ContentDto]' }),
-    updates: z.array(LorStatusV1UpdateDtoSchema).openapi({ 'x-type': 'List[UpdateDto]' }),
-    created_at: z.string().openapi({ 'x-type': 'string' }),
-    archive_at: z.string().openapi({ 'x-type': 'string' }),
-    updated_at: z.string().openapi({ 'x-type': 'string' }),
-    platforms: z
-      .array(
-        z
-          .enum(['windows', 'macos', 'android', 'ios', 'ps4', 'xbone', 'switch'])
-          .openapi({ 'x-type': 'string' }),
-      )
-      .openapi({
-        'x-type': 'List[string]',
-        description: '(Legal values: windows, macos, android, ios, ps4, xbone, switch)',
-      }),
-  })
-  .openapi({
-    title: 'StatusDto',
-    required: [
-      'id',
-      'maintenance_status',
-      'incident_severity',
-      'titles',
-      'updates',
-      'created_at',
-      'archive_at',
-      'updated_at',
-      'platforms',
-    ],
-  })
-  .openapi('LorStatusV1StatusDto')
-
-const LorStatusV1PlatformDataDtoSchema = z
-  .object({
-    id: z.string().openapi({ 'x-type': 'string' }),
-    name: z.string().openapi({ 'x-type': 'string' }),
-    locales: z
-      .array(z.string().openapi({ 'x-type': 'string', 'x-enum': 'locale' }))
-      .openapi({ 'x-type': 'List[string]' }),
-    maintenances: z.array(LorStatusV1StatusDtoSchema).openapi({ 'x-type': 'List[StatusDto]' }),
-    incidents: z.array(LorStatusV1StatusDtoSchema).openapi({ 'x-type': 'List[StatusDto]' }),
-  })
-  .openapi({
-    title: 'PlatformDataDto',
-    required: ['id', 'name', 'locales', 'maintenances', 'incidents'],
-  })
-  .openapi('LorStatusV1PlatformDataDto')
-
-const MatchV5ReplayDTOSchema = z
-  .object({
-    total: z.int32().openapi({ 'x-type': 'int', description: 'Total of replay files' }),
-    matchFileURLs: z
-      .array(z.string().openapi({ 'x-type': 'string' }))
-      .openapi({ 'x-type': 'List[string]' }),
-  })
-  .openapi({ title: 'ReplayDTO', required: ['total', 'matchFileURLs'] })
-  .openapi('MatchV5ReplayDTO')
-
 const MatchV5MetadataDtoSchema = z
   .object({
     dataVersion: z.string().openapi({ 'x-type': 'string', description: 'Match data version.' }),
@@ -1818,7 +705,27 @@ const MatchV5TeamDtoSchema = z
   .openapi({ title: 'TeamDto', required: ['bans', 'objectives', 'teamId', 'win'] })
   .openapi('MatchV5TeamDto')
 
-const MatchV5InfoDtoSchema = z
+type MatchV5InfoDtoType = {
+  endOfGameResult?: string
+  gameCreation: bigint
+  gameDuration: bigint
+  gameEndTimestamp?: bigint
+  gameId: bigint
+  gameMode: string
+  gameName: string
+  gameStartTimestamp: bigint
+  gameType: string
+  gameVersion: string
+  mapId: number
+  participants: z.infer<typeof MatchV5ParticipantDtoSchema>[]
+  platformId: string
+  queueId: number
+  teams: z.infer<typeof MatchV5TeamDtoSchema>[]
+  tournamentCode?: string
+  gameModeMutators?: string[]
+}
+
+const MatchV5InfoDtoSchema: z.ZodType<MatchV5InfoDtoType> = z
   .object({
     endOfGameResult: z
       .string()
@@ -1972,16 +879,10 @@ const MatchV5InfoDtoSchema = z
   })
   .openapi('MatchV5InfoDto')
 
-const MatchV5MatchDtoSchema = z
-  .object({
-    metadata: MatchV5MetadataDtoSchema.openapi({
-      'x-type': 'MetadataDto',
-      description: 'Match metadata.',
-    }),
-    info: MatchV5InfoDtoSchema.openapi({ 'x-type': 'InfoDto', description: 'Match info.' }),
-  })
-  .openapi({ title: 'MatchDto', required: ['metadata', 'info'] })
-  .openapi('MatchV5MatchDto')
+type MatchV5MatchDtoType = {
+  metadata: z.infer<typeof MatchV5MetadataDtoSchema>
+  info: z.infer<typeof MatchV5InfoDtoSchema>
+}
 
 const MatchV5MetadataTimeLineDtoSchema = z
   .object({
@@ -2306,7 +1207,1789 @@ const MatchV5InfoTimeLineDtoSchema = z
   .openapi({ title: 'InfoTimeLineDto', required: ['frameInterval', 'frames'] })
   .openapi('MatchV5InfoTimeLineDto')
 
-const MatchV5TimelineDtoSchema = z
+type MatchV5TimelineDtoType = {
+  metadata: z.infer<typeof MatchV5MetadataTimeLineDtoSchema>
+  info: z.infer<typeof MatchV5InfoTimeLineDtoSchema>
+}
+
+const ValConsoleMatchV1MatchInfoDtoSchema = z
+  .object({
+    matchId: z.string().openapi({ 'x-type': 'string' }),
+    mapId: z.string().openapi({ 'x-type': 'string' }),
+    gameLengthMillis: z.int32().exactOptional().openapi({ 'x-type': 'int' }),
+    gameStartMillis: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', 'x-type': 'long' }),
+    provisioningFlowId: z.string().openapi({ 'x-type': 'string' }),
+    isCompleted: z.boolean().openapi({ 'x-type': 'boolean' }),
+    customGameName: z.string().openapi({ 'x-type': 'string' }),
+    queueId: z.string().openapi({ 'x-type': 'string' }),
+    gameMode: z.string().openapi({ 'x-type': 'string' }),
+    isRanked: z.boolean().openapi({ 'x-type': 'boolean' }),
+    seasonId: z.string().openapi({ 'x-type': 'string' }),
+  })
+  .openapi({
+    title: 'MatchInfoDto',
+    required: [
+      'matchId',
+      'mapId',
+      'gameStartMillis',
+      'provisioningFlowId',
+      'isCompleted',
+      'customGameName',
+      'queueId',
+      'gameMode',
+      'isRanked',
+      'seasonId',
+    ],
+  })
+  .openapi('ValConsoleMatchV1MatchInfoDto')
+
+const ValConsoleMatchV1AbilityCastsDtoSchema = z
+  .object({
+    grenadeCasts: z.int32().openapi({ 'x-type': 'int' }),
+    ability1Casts: z.int32().openapi({ 'x-type': 'int' }),
+    ability2Casts: z.int32().openapi({ 'x-type': 'int' }),
+    ultimateCasts: z.int32().openapi({ 'x-type': 'int' }),
+  })
+  .openapi({
+    title: 'AbilityCastsDto',
+    required: ['grenadeCasts', 'ability1Casts', 'ability2Casts', 'ultimateCasts'],
+  })
+  .openapi('ValConsoleMatchV1AbilityCastsDto')
+
+const ValConsoleMatchV1PlayerStatsDtoSchema = z
+  .object({
+    score: z.int32().openapi({ 'x-type': 'int' }),
+    roundsPlayed: z.int32().openapi({ 'x-type': 'int' }),
+    kills: z.int32().openapi({ 'x-type': 'int' }),
+    deaths: z.int32().openapi({ 'x-type': 'int' }),
+    assists: z.int32().openapi({ 'x-type': 'int' }),
+    playtimeMillis: z.int32().openapi({ 'x-type': 'int' }),
+    abilityCasts: ValConsoleMatchV1AbilityCastsDtoSchema.exactOptional().openapi({
+      'x-type': 'AbilityCastsDto',
+    }),
+  })
+  .openapi({
+    title: 'PlayerStatsDto',
+    required: ['score', 'roundsPlayed', 'kills', 'deaths', 'assists', 'playtimeMillis'],
+  })
+  .openapi('ValConsoleMatchV1PlayerStatsDto')
+
+const ValConsoleMatchV1PlayerDtoSchema = z
+  .object({
+    puuid: z.string().openapi({ 'x-type': 'string' }),
+    gameName: z.string().openapi({ 'x-type': 'string' }),
+    tagLine: z.string().openapi({ 'x-type': 'string' }),
+    teamId: z.string().openapi({ 'x-type': 'string' }),
+    partyId: z.string().openapi({ 'x-type': 'string' }),
+    characterId: z.string().exactOptional().openapi({ 'x-type': 'string' }),
+    stats: ValConsoleMatchV1PlayerStatsDtoSchema.exactOptional().openapi({
+      'x-type': 'PlayerStatsDto',
+    }),
+    competitiveTier: z.int32().openapi({ 'x-type': 'int' }),
+    playerCard: z.string().openapi({ 'x-type': 'string' }),
+    playerTitle: z.string().openapi({ 'x-type': 'string' }),
+  })
+  .openapi({
+    title: 'PlayerDto',
+    required: [
+      'puuid',
+      'gameName',
+      'tagLine',
+      'teamId',
+      'partyId',
+      'competitiveTier',
+      'playerCard',
+      'playerTitle',
+    ],
+  })
+  .openapi('ValConsoleMatchV1PlayerDto')
+
+const ValConsoleMatchV1CoachDtoSchema = z
+  .object({
+    puuid: z.string().openapi({ 'x-type': 'string' }),
+    teamId: z.string().openapi({ 'x-type': 'string' }),
+  })
+  .openapi({ title: 'CoachDto', required: ['puuid', 'teamId'] })
+  .openapi('ValConsoleMatchV1CoachDto')
+
+const ValConsoleMatchV1TeamDtoSchema = z
+  .object({
+    teamId: z
+      .string()
+      .openapi({
+        'x-type': 'string',
+        description:
+          'This is an arbitrary string. Red and Blue in bomb modes. The puuid of the player in deathmatch.',
+      }),
+    won: z.boolean().openapi({ 'x-type': 'boolean' }),
+    roundsPlayed: z.int32().openapi({ 'x-type': 'int' }),
+    roundsWon: z.int32().openapi({ 'x-type': 'int' }),
+    numPoints: z
+      .int32()
+      .openapi({
+        'x-type': 'int',
+        description: 'Team points scored. Number of kills in deathmatch.',
+      }),
+  })
+  .openapi({
+    title: 'TeamDto',
+    required: ['teamId', 'won', 'roundsPlayed', 'roundsWon', 'numPoints'],
+  })
+  .openapi('ValConsoleMatchV1TeamDto')
+
+const ValConsoleMatchV1LocationDtoSchema = z
+  .object({ x: z.int32().openapi({ 'x-type': 'int' }), y: z.int32().openapi({ 'x-type': 'int' }) })
+  .openapi({ title: 'LocationDto', required: ['x', 'y'] })
+  .openapi('ValConsoleMatchV1LocationDto')
+
+const ValConsoleMatchV1PlayerLocationsDtoSchema = z
+  .object({
+    puuid: z.string().openapi({ 'x-type': 'string' }),
+    viewRadians: z.float32().openapi({ 'x-type': 'float' }),
+    location: ValConsoleMatchV1LocationDtoSchema.openapi({ 'x-type': 'LocationDto' }),
+  })
+  .openapi({ title: 'PlayerLocationsDto', required: ['puuid', 'viewRadians', 'location'] })
+  .openapi('ValConsoleMatchV1PlayerLocationsDto')
+
+const ValConsoleMatchV1FinishingDamageDtoSchema = z
+  .object({
+    damageType: z.string().openapi({ 'x-type': 'string' }),
+    damageItem: z.string().openapi({ 'x-type': 'string' }),
+    isSecondaryFireMode: z.boolean().openapi({ 'x-type': 'boolean' }),
+  })
+  .openapi({
+    title: 'FinishingDamageDto',
+    required: ['damageType', 'damageItem', 'isSecondaryFireMode'],
+  })
+  .openapi('ValConsoleMatchV1FinishingDamageDto')
+
+const ValConsoleMatchV1KillDtoSchema = z
+  .object({
+    timeSinceGameStartMillis: z.int32().openapi({ 'x-type': 'int' }),
+    timeSinceRoundStartMillis: z.int32().openapi({ 'x-type': 'int' }),
+    killer: z.string().openapi({ 'x-type': 'string', description: 'PUUID' }),
+    victim: z.string().openapi({ 'x-type': 'string', description: 'PUUID' }),
+    victimLocation: ValConsoleMatchV1LocationDtoSchema.openapi({ 'x-type': 'LocationDto' }),
+    assistants: z
+      .array(z.string().openapi({ 'x-type': 'string' }))
+      .openapi({ 'x-type': 'List[string]', description: 'List of PUUIDs' }),
+    playerLocations: z
+      .array(ValConsoleMatchV1PlayerLocationsDtoSchema)
+      .openapi({ 'x-type': 'List[PlayerLocationsDto]' }),
+    finishingDamage: ValConsoleMatchV1FinishingDamageDtoSchema.openapi({
+      'x-type': 'FinishingDamageDto',
+    }),
+  })
+  .openapi({
+    title: 'KillDto',
+    required: [
+      'timeSinceGameStartMillis',
+      'timeSinceRoundStartMillis',
+      'killer',
+      'victim',
+      'victimLocation',
+      'assistants',
+      'playerLocations',
+      'finishingDamage',
+    ],
+  })
+  .openapi('ValConsoleMatchV1KillDto')
+
+const ValConsoleMatchV1DamageDtoSchema = z
+  .object({
+    receiver: z.string().openapi({ 'x-type': 'string', description: 'PUUID' }),
+    damage: z.int32().openapi({ 'x-type': 'int' }),
+    legshots: z.int32().openapi({ 'x-type': 'int' }),
+    bodyshots: z.int32().openapi({ 'x-type': 'int' }),
+    headshots: z.int32().openapi({ 'x-type': 'int' }),
+  })
+  .openapi({
+    title: 'DamageDto',
+    required: ['receiver', 'damage', 'legshots', 'bodyshots', 'headshots'],
+  })
+  .openapi('ValConsoleMatchV1DamageDto')
+
+const ValConsoleMatchV1EconomyDtoSchema = z
+  .object({
+    loadoutValue: z.int32().openapi({ 'x-type': 'int' }),
+    weapon: z.string().openapi({ 'x-type': 'string' }),
+    armor: z.string().openapi({ 'x-type': 'string' }),
+    remaining: z.int32().openapi({ 'x-type': 'int' }),
+    spent: z.int32().openapi({ 'x-type': 'int' }),
+  })
+  .openapi({
+    title: 'EconomyDto',
+    required: ['loadoutValue', 'weapon', 'armor', 'remaining', 'spent'],
+  })
+  .openapi('ValConsoleMatchV1EconomyDto')
+
+const ValConsoleMatchV1AbilityDtoSchema = z
+  .object({
+    grenadeEffects: z.string().exactOptional().openapi({ 'x-type': 'string' }),
+    ability1Effects: z.string().exactOptional().openapi({ 'x-type': 'string' }),
+    ability2Effects: z.string().exactOptional().openapi({ 'x-type': 'string' }),
+    ultimateEffects: z.string().exactOptional().openapi({ 'x-type': 'string' }),
+  })
+  .openapi({ title: 'AbilityDto', required: [] })
+  .openapi('ValConsoleMatchV1AbilityDto')
+
+const ValConsoleMatchV1PlayerRoundStatsDtoSchema = z
+  .object({
+    puuid: z.string().openapi({ 'x-type': 'string' }),
+    kills: z.array(ValConsoleMatchV1KillDtoSchema).openapi({ 'x-type': 'List[KillDto]' }),
+    damage: z.array(ValConsoleMatchV1DamageDtoSchema).openapi({ 'x-type': 'List[DamageDto]' }),
+    score: z.int32().openapi({ 'x-type': 'int' }),
+    economy: ValConsoleMatchV1EconomyDtoSchema.openapi({ 'x-type': 'EconomyDto' }),
+    ability: ValConsoleMatchV1AbilityDtoSchema.openapi({ 'x-type': 'AbilityDto' }),
+  })
+  .openapi({
+    title: 'PlayerRoundStatsDto',
+    required: ['puuid', 'kills', 'damage', 'score', 'economy', 'ability'],
+  })
+  .openapi('ValConsoleMatchV1PlayerRoundStatsDto')
+
+type ValConsoleMatchV1RoundResultDtoType = {
+  roundNum: number
+  roundResult: string
+  roundCeremony: string
+  winningTeam: string
+  bombPlanter?: string
+  bombDefuser?: string
+  plantRoundTime: number
+  plantPlayerLocations?: z.infer<typeof ValConsoleMatchV1PlayerLocationsDtoSchema>[]
+  plantLocation: z.infer<typeof ValConsoleMatchV1LocationDtoSchema>
+  plantSite: string
+  defuseRoundTime: number
+  defusePlayerLocations?: z.infer<typeof ValConsoleMatchV1PlayerLocationsDtoSchema>[]
+  defuseLocation: z.infer<typeof ValConsoleMatchV1LocationDtoSchema>
+  playerStats: z.infer<typeof ValConsoleMatchV1PlayerRoundStatsDtoSchema>[]
+  roundResultCode: string
+}
+
+const ValConsoleMatchV1RoundResultDtoSchema: z.ZodType<ValConsoleMatchV1RoundResultDtoType> = z
+  .object({
+    roundNum: z.int32().openapi({ 'x-type': 'int' }),
+    roundResult: z.string().openapi({ 'x-type': 'string' }),
+    roundCeremony: z.string().openapi({ 'x-type': 'string' }),
+    winningTeam: z.string().openapi({ 'x-type': 'string' }),
+    bombPlanter: z
+      .string()
+      .exactOptional()
+      .openapi({ 'x-type': 'string', description: 'PUUID of player' }),
+    bombDefuser: z
+      .string()
+      .exactOptional()
+      .openapi({ 'x-type': 'string', description: 'PUUID of player' }),
+    plantRoundTime: z.int32().openapi({ 'x-type': 'int' }),
+    plantPlayerLocations: z
+      .array(ValConsoleMatchV1PlayerLocationsDtoSchema)
+      .exactOptional()
+      .openapi({ 'x-type': 'List[PlayerLocationsDto]' }),
+    plantLocation: ValConsoleMatchV1LocationDtoSchema.openapi({ 'x-type': 'LocationDto' }),
+    plantSite: z.string().openapi({ 'x-type': 'string' }),
+    defuseRoundTime: z.int32().openapi({ 'x-type': 'int' }),
+    defusePlayerLocations: z
+      .array(ValConsoleMatchV1PlayerLocationsDtoSchema)
+      .exactOptional()
+      .openapi({ 'x-type': 'List[PlayerLocationsDto]' }),
+    defuseLocation: ValConsoleMatchV1LocationDtoSchema.openapi({ 'x-type': 'LocationDto' }),
+    playerStats: z
+      .array(ValConsoleMatchV1PlayerRoundStatsDtoSchema)
+      .openapi({ 'x-type': 'List[PlayerRoundStatsDto]' }),
+    roundResultCode: z.string().openapi({ 'x-type': 'string' }),
+  })
+  .openapi({
+    title: 'RoundResultDto',
+    required: [
+      'roundNum',
+      'roundResult',
+      'roundCeremony',
+      'winningTeam',
+      'plantRoundTime',
+      'plantLocation',
+      'plantSite',
+      'defuseRoundTime',
+      'defuseLocation',
+      'playerStats',
+      'roundResultCode',
+    ],
+  })
+  .openapi('ValConsoleMatchV1RoundResultDto')
+
+type ValConsoleMatchV1MatchDtoType = {
+  matchInfo: z.infer<typeof ValConsoleMatchV1MatchInfoDtoSchema>
+  players: z.infer<typeof ValConsoleMatchV1PlayerDtoSchema>[]
+  coaches: z.infer<typeof ValConsoleMatchV1CoachDtoSchema>[]
+  teams?: z.infer<typeof ValConsoleMatchV1TeamDtoSchema>[]
+  roundResults?: z.infer<typeof ValConsoleMatchV1RoundResultDtoSchema>[]
+}
+
+const ValMatchV1MatchInfoDtoSchema = z
+  .object({
+    matchId: z.string().openapi({ 'x-type': 'string' }),
+    mapId: z.string().openapi({ 'x-type': 'string' }),
+    gameVersion: z.string().openapi({ 'x-type': 'string' }),
+    gameLengthMillis: z.int32().exactOptional().openapi({ 'x-type': 'int' }),
+    region: z.string().openapi({ 'x-type': 'string' }),
+    gameStartMillis: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', 'x-type': 'long' }),
+    provisioningFlowId: z.string().openapi({ 'x-type': 'string' }),
+    isCompleted: z.boolean().openapi({ 'x-type': 'boolean' }),
+    customGameName: z.string().openapi({ 'x-type': 'string' }),
+    queueId: z.string().openapi({ 'x-type': 'string' }),
+    gameMode: z.string().openapi({ 'x-type': 'string' }),
+    isRanked: z.boolean().openapi({ 'x-type': 'boolean' }),
+    seasonId: z.string().openapi({ 'x-type': 'string' }),
+    premierMatchInfo: z.looseObject({}),
+  })
+  .openapi({
+    title: 'MatchInfoDto',
+    required: [
+      'matchId',
+      'mapId',
+      'gameVersion',
+      'region',
+      'gameStartMillis',
+      'provisioningFlowId',
+      'isCompleted',
+      'customGameName',
+      'queueId',
+      'gameMode',
+      'isRanked',
+      'seasonId',
+      'premierMatchInfo',
+    ],
+  })
+  .openapi('ValMatchV1MatchInfoDto')
+
+const ValMatchV1AbilityCastsDtoSchema = z
+  .object({
+    grenadeCasts: z.int32().openapi({ 'x-type': 'int' }),
+    ability1Casts: z.int32().openapi({ 'x-type': 'int' }),
+    ability2Casts: z.int32().openapi({ 'x-type': 'int' }),
+    ultimateCasts: z.int32().openapi({ 'x-type': 'int' }),
+  })
+  .openapi({
+    title: 'AbilityCastsDto',
+    required: ['grenadeCasts', 'ability1Casts', 'ability2Casts', 'ultimateCasts'],
+  })
+  .openapi('ValMatchV1AbilityCastsDto')
+
+const ValMatchV1PlayerStatsDtoSchema = z
+  .object({
+    score: z.int32().openapi({ 'x-type': 'int' }),
+    roundsPlayed: z.int32().openapi({ 'x-type': 'int' }),
+    kills: z.int32().openapi({ 'x-type': 'int' }),
+    deaths: z.int32().openapi({ 'x-type': 'int' }),
+    assists: z.int32().openapi({ 'x-type': 'int' }),
+    playtimeMillis: z.int32().openapi({ 'x-type': 'int' }),
+    abilityCasts: ValMatchV1AbilityCastsDtoSchema.exactOptional().openapi({
+      'x-type': 'AbilityCastsDto',
+    }),
+  })
+  .openapi({
+    title: 'PlayerStatsDto',
+    required: ['score', 'roundsPlayed', 'kills', 'deaths', 'assists', 'playtimeMillis'],
+  })
+  .openapi('ValMatchV1PlayerStatsDto')
+
+const ValMatchV1PlayerDtoSchema = z
+  .object({
+    puuid: z.string().openapi({ 'x-type': 'string' }),
+    gameName: z.string().openapi({ 'x-type': 'string' }),
+    tagLine: z.string().openapi({ 'x-type': 'string' }),
+    teamId: z.string().openapi({ 'x-type': 'string' }),
+    partyId: z.string().openapi({ 'x-type': 'string' }),
+    characterId: z.string().exactOptional().openapi({ 'x-type': 'string' }),
+    stats: ValMatchV1PlayerStatsDtoSchema.exactOptional().openapi({ 'x-type': 'PlayerStatsDto' }),
+    competitiveTier: z.int32().openapi({ 'x-type': 'int' }),
+    isObserver: z.boolean().openapi({ 'x-type': 'boolean' }),
+    playerCard: z.string().openapi({ 'x-type': 'string' }),
+    playerTitle: z.string().openapi({ 'x-type': 'string' }),
+    accountLevel: z.int32().openapi({ 'x-type': 'int' }),
+  })
+  .openapi({
+    title: 'PlayerDto',
+    required: [
+      'puuid',
+      'gameName',
+      'tagLine',
+      'teamId',
+      'partyId',
+      'competitiveTier',
+      'isObserver',
+      'playerCard',
+      'playerTitle',
+      'accountLevel',
+    ],
+  })
+  .openapi('ValMatchV1PlayerDto')
+
+const ValMatchV1CoachDtoSchema = z
+  .object({
+    puuid: z.string().openapi({ 'x-type': 'string' }),
+    teamId: z.string().openapi({ 'x-type': 'string' }),
+  })
+  .openapi({ title: 'CoachDto', required: ['puuid', 'teamId'] })
+  .openapi('ValMatchV1CoachDto')
+
+const ValMatchV1TeamDtoSchema = z
+  .object({
+    teamId: z
+      .string()
+      .openapi({
+        'x-type': 'string',
+        description:
+          'This is an arbitrary string. Red and Blue in bomb modes. The puuid of the player in deathmatch.',
+      }),
+    won: z.boolean().openapi({ 'x-type': 'boolean' }),
+    roundsPlayed: z.int32().openapi({ 'x-type': 'int' }),
+    roundsWon: z.int32().openapi({ 'x-type': 'int' }),
+    numPoints: z
+      .int32()
+      .openapi({
+        'x-type': 'int',
+        description: 'Team points scored. Number of kills in deathmatch.',
+      }),
+  })
+  .openapi({
+    title: 'TeamDto',
+    required: ['teamId', 'won', 'roundsPlayed', 'roundsWon', 'numPoints'],
+  })
+  .openapi('ValMatchV1TeamDto')
+
+const ValMatchV1LocationDtoSchema = z
+  .object({ x: z.int32().openapi({ 'x-type': 'int' }), y: z.int32().openapi({ 'x-type': 'int' }) })
+  .openapi({ title: 'LocationDto', required: ['x', 'y'] })
+  .openapi('ValMatchV1LocationDto')
+
+const ValMatchV1PlayerLocationsDtoSchema = z
+  .object({
+    puuid: z.string().openapi({ 'x-type': 'string' }),
+    viewRadians: z.float32().openapi({ 'x-type': 'float' }),
+    location: ValMatchV1LocationDtoSchema.openapi({ 'x-type': 'LocationDto' }),
+  })
+  .openapi({ title: 'PlayerLocationsDto', required: ['puuid', 'viewRadians', 'location'] })
+  .openapi('ValMatchV1PlayerLocationsDto')
+
+const ValMatchV1FinishingDamageDtoSchema = z
+  .object({
+    damageType: z.string().openapi({ 'x-type': 'string' }),
+    damageItem: z.string().openapi({ 'x-type': 'string' }),
+    isSecondaryFireMode: z.boolean().openapi({ 'x-type': 'boolean' }),
+  })
+  .openapi({
+    title: 'FinishingDamageDto',
+    required: ['damageType', 'damageItem', 'isSecondaryFireMode'],
+  })
+  .openapi('ValMatchV1FinishingDamageDto')
+
+const ValMatchV1KillDtoSchema = z
+  .object({
+    timeSinceGameStartMillis: z.int32().openapi({ 'x-type': 'int' }),
+    timeSinceRoundStartMillis: z.int32().openapi({ 'x-type': 'int' }),
+    killer: z.string().openapi({ 'x-type': 'string', description: 'PUUID' }),
+    victim: z.string().openapi({ 'x-type': 'string', description: 'PUUID' }),
+    victimLocation: ValMatchV1LocationDtoSchema.openapi({ 'x-type': 'LocationDto' }),
+    assistants: z
+      .array(z.string().openapi({ 'x-type': 'string' }))
+      .openapi({ 'x-type': 'List[string]', description: 'List of PUUIDs' }),
+    playerLocations: z
+      .array(ValMatchV1PlayerLocationsDtoSchema)
+      .openapi({ 'x-type': 'List[PlayerLocationsDto]' }),
+    finishingDamage: ValMatchV1FinishingDamageDtoSchema.openapi({ 'x-type': 'FinishingDamageDto' }),
+  })
+  .openapi({
+    title: 'KillDto',
+    required: [
+      'timeSinceGameStartMillis',
+      'timeSinceRoundStartMillis',
+      'killer',
+      'victim',
+      'victimLocation',
+      'assistants',
+      'playerLocations',
+      'finishingDamage',
+    ],
+  })
+  .openapi('ValMatchV1KillDto')
+
+const ValMatchV1DamageDtoSchema = z
+  .object({
+    receiver: z.string().openapi({ 'x-type': 'string', description: 'PUUID' }),
+    damage: z.int32().openapi({ 'x-type': 'int' }),
+    legshots: z.int32().openapi({ 'x-type': 'int' }),
+    bodyshots: z.int32().openapi({ 'x-type': 'int' }),
+    headshots: z.int32().openapi({ 'x-type': 'int' }),
+  })
+  .openapi({
+    title: 'DamageDto',
+    required: ['receiver', 'damage', 'legshots', 'bodyshots', 'headshots'],
+  })
+  .openapi('ValMatchV1DamageDto')
+
+const ValMatchV1EconomyDtoSchema = z
+  .object({
+    loadoutValue: z.int32().openapi({ 'x-type': 'int' }),
+    weapon: z.string().openapi({ 'x-type': 'string' }),
+    armor: z.string().openapi({ 'x-type': 'string' }),
+    remaining: z.int32().openapi({ 'x-type': 'int' }),
+    spent: z.int32().openapi({ 'x-type': 'int' }),
+  })
+  .openapi({
+    title: 'EconomyDto',
+    required: ['loadoutValue', 'weapon', 'armor', 'remaining', 'spent'],
+  })
+  .openapi('ValMatchV1EconomyDto')
+
+const ValMatchV1AbilityDtoSchema = z
+  .object({
+    grenadeEffects: z.string().exactOptional().openapi({ 'x-type': 'string' }),
+    ability1Effects: z.string().exactOptional().openapi({ 'x-type': 'string' }),
+    ability2Effects: z.string().exactOptional().openapi({ 'x-type': 'string' }),
+    ultimateEffects: z.string().exactOptional().openapi({ 'x-type': 'string' }),
+  })
+  .openapi({ title: 'AbilityDto', required: [] })
+  .openapi('ValMatchV1AbilityDto')
+
+const ValMatchV1PlayerRoundStatsDtoSchema = z
+  .object({
+    puuid: z.string().openapi({ 'x-type': 'string' }),
+    kills: z.array(ValMatchV1KillDtoSchema).openapi({ 'x-type': 'List[KillDto]' }),
+    damage: z.array(ValMatchV1DamageDtoSchema).openapi({ 'x-type': 'List[DamageDto]' }),
+    score: z.int32().openapi({ 'x-type': 'int' }),
+    economy: ValMatchV1EconomyDtoSchema.openapi({ 'x-type': 'EconomyDto' }),
+    ability: ValMatchV1AbilityDtoSchema.openapi({ 'x-type': 'AbilityDto' }),
+  })
+  .openapi({
+    title: 'PlayerRoundStatsDto',
+    required: ['puuid', 'kills', 'damage', 'score', 'economy', 'ability'],
+  })
+  .openapi('ValMatchV1PlayerRoundStatsDto')
+
+type ValMatchV1RoundResultDtoType = {
+  roundNum: number
+  roundResult: string
+  roundCeremony: string
+  winningTeam: string
+  winningTeamRole: string
+  bombPlanter?: string
+  bombDefuser?: string
+  plantRoundTime: number
+  plantPlayerLocations?: z.infer<typeof ValMatchV1PlayerLocationsDtoSchema>[]
+  plantLocation: z.infer<typeof ValMatchV1LocationDtoSchema>
+  plantSite: string
+  defuseRoundTime: number
+  defusePlayerLocations?: z.infer<typeof ValMatchV1PlayerLocationsDtoSchema>[]
+  defuseLocation: z.infer<typeof ValMatchV1LocationDtoSchema>
+  playerStats: z.infer<typeof ValMatchV1PlayerRoundStatsDtoSchema>[]
+  roundResultCode: string
+}
+
+const ValMatchV1RoundResultDtoSchema: z.ZodType<ValMatchV1RoundResultDtoType> = z
+  .object({
+    roundNum: z.int32().openapi({ 'x-type': 'int' }),
+    roundResult: z.string().openapi({ 'x-type': 'string' }),
+    roundCeremony: z.string().openapi({ 'x-type': 'string' }),
+    winningTeam: z.string().openapi({ 'x-type': 'string' }),
+    winningTeamRole: z.string().openapi({ 'x-type': 'string' }),
+    bombPlanter: z
+      .string()
+      .exactOptional()
+      .openapi({ 'x-type': 'string', description: 'PUUID of player' }),
+    bombDefuser: z
+      .string()
+      .exactOptional()
+      .openapi({ 'x-type': 'string', description: 'PUUID of player' }),
+    plantRoundTime: z.int32().openapi({ 'x-type': 'int' }),
+    plantPlayerLocations: z
+      .array(ValMatchV1PlayerLocationsDtoSchema)
+      .exactOptional()
+      .openapi({ 'x-type': 'List[PlayerLocationsDto]' }),
+    plantLocation: ValMatchV1LocationDtoSchema.openapi({ 'x-type': 'LocationDto' }),
+    plantSite: z.string().openapi({ 'x-type': 'string' }),
+    defuseRoundTime: z.int32().openapi({ 'x-type': 'int' }),
+    defusePlayerLocations: z
+      .array(ValMatchV1PlayerLocationsDtoSchema)
+      .exactOptional()
+      .openapi({ 'x-type': 'List[PlayerLocationsDto]' }),
+    defuseLocation: ValMatchV1LocationDtoSchema.openapi({ 'x-type': 'LocationDto' }),
+    playerStats: z
+      .array(ValMatchV1PlayerRoundStatsDtoSchema)
+      .openapi({ 'x-type': 'List[PlayerRoundStatsDto]' }),
+    roundResultCode: z.string().openapi({ 'x-type': 'string' }),
+  })
+  .openapi({
+    title: 'RoundResultDto',
+    required: [
+      'roundNum',
+      'roundResult',
+      'roundCeremony',
+      'winningTeam',
+      'winningTeamRole',
+      'plantRoundTime',
+      'plantLocation',
+      'plantSite',
+      'defuseRoundTime',
+      'defuseLocation',
+      'playerStats',
+      'roundResultCode',
+    ],
+  })
+  .openapi('ValMatchV1RoundResultDto')
+
+type ValMatchV1MatchDtoType = {
+  matchInfo: z.infer<typeof ValMatchV1MatchInfoDtoSchema>
+  players: z.infer<typeof ValMatchV1PlayerDtoSchema>[]
+  coaches: z.infer<typeof ValMatchV1CoachDtoSchema>[]
+  teams?: z.infer<typeof ValMatchV1TeamDtoSchema>[]
+  roundResults?: z.infer<typeof ValMatchV1RoundResultDtoSchema>[]
+}
+
+const ErrorSchema = z
+  .object({
+    status: z
+      .object({ status_code: z.int().exactOptional(), message: z.string().exactOptional() })
+      .exactOptional()
+      .openapi({ required: [] }),
+  })
+  .openapi({ required: [] })
+  .openapi('Error')
+
+const AccountV1AccountDtoSchema = z
+  .object({
+    puuid: z
+      .string()
+      .openapi({
+        'x-type': 'string',
+        description: 'Encrypted PUUID. Exact length of 78 characters.',
+      }),
+    gameName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        'x-type': 'string',
+        description:
+          "This field may be excluded from the response if the account doesn't have a gameName.",
+      }),
+    tagLine: z
+      .string()
+      .exactOptional()
+      .openapi({
+        'x-type': 'string',
+        description:
+          "This field may be excluded from the response if the account doesn't have a tagLine.",
+      }),
+  })
+  .openapi({ title: 'AccountDto', required: ['puuid'] })
+  .openapi('AccountV1AccountDto')
+
+const AccountV1AccountRegionDTOSchema = z
+  .object({
+    puuid: z
+      .string()
+      .openapi({
+        'x-type': 'string',
+        description:
+          'Player Universal Unique Identifier. Exact length of 78 characters. (Encrypted)',
+      }),
+    game: z.string().openapi({ 'x-type': 'string', description: 'Game to lookup active region' }),
+    region: z.string().openapi({ 'x-type': 'string', description: 'Player active region' }),
+  })
+  .openapi({
+    title: 'AccountRegionDTO',
+    description: 'Account region',
+    required: ['puuid', 'game', 'region'],
+  })
+  .openapi('AccountV1AccountRegionDTO')
+
+const AccountV1ActiveShardDtoSchema = z
+  .object({
+    puuid: z.string().openapi({ 'x-type': 'string' }),
+    game: z.string().openapi({ 'x-type': 'string' }),
+    activeShard: z.string().openapi({ 'x-type': 'string' }),
+  })
+  .openapi({ title: 'ActiveShardDto', required: ['puuid', 'game', 'activeShard'] })
+  .openapi('AccountV1ActiveShardDto')
+
+const ChampionMasteryV4RewardConfigDtoSchema = z
+  .object({
+    rewardValue: z.string().openapi({ 'x-type': 'string', description: 'Reward value' }),
+    rewardType: z.string().openapi({ 'x-type': 'string', description: 'Reward type' }),
+    maximumReward: z.int32().openapi({ 'x-type': 'int', description: 'Maximun reward' }),
+  })
+  .openapi({
+    title: 'RewardConfigDto',
+    description: 'This object contains required reward config information.',
+    required: ['rewardValue', 'rewardType', 'maximumReward'],
+  })
+  .openapi('ChampionMasteryV4RewardConfigDto')
+
+const ChampionMasteryV4NextSeasonMilestonesDtoSchema = z
+  .object({
+    requireGradeCounts: z
+      .record(z.string(), z.int32().openapi({ 'x-type': 'int' }))
+      .openapi({ 'x-key': { type: 'string', 'x-type': 'string' }, 'x-type': 'Map[string, int]' }),
+    rewardMarks: z.int32().openapi({ 'x-type': 'int', description: 'Reward marks.' }),
+    bonus: z.boolean().openapi({ 'x-type': 'boolean', description: 'Bonus.' }),
+    rewardConfig: ChampionMasteryV4RewardConfigDtoSchema.exactOptional().openapi({
+      'x-type': 'RewardConfigDto',
+      description: 'Reward configuration.',
+    }),
+    totalGamesRequires: z.int32().openapi({ 'x-type': 'int' }),
+  })
+  .openapi({
+    title: 'NextSeasonMilestonesDto',
+    description: 'This object contains required next season milestone information.',
+    required: ['requireGradeCounts', 'rewardMarks', 'bonus', 'totalGamesRequires'],
+  })
+  .openapi('ChampionMasteryV4NextSeasonMilestonesDto')
+
+const ChampionMasteryV4ChampionMasteryDtoSchema = z
+  .object({
+    puuid: z
+      .string()
+      .openapi({
+        'x-type': 'string',
+        description:
+          'Player Universal Unique Identifier. Exact length of 78 characters. (Encrypted)',
+      }),
+    championPointsUntilNextLevel: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        'x-type': 'long',
+        description:
+          'Number of points needed to achieve next level. Zero if player reached maximum champion level for this champion.',
+      }),
+    chestGranted: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        'x-type': 'boolean',
+        description: 'Is chest granted for this champion or not in current season.',
+      }),
+    championId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        'x-type': 'long',
+        description: 'Champion ID for this entry.',
+        'x-enum': 'champion',
+      }),
+    lastPlayTime: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        'x-type': 'long',
+        description:
+          'Last time this champion was played by this player - in Unix milliseconds time format.',
+      }),
+    championLevel: z
+      .int32()
+      .openapi({
+        'x-type': 'int',
+        description: 'Champion level for specified player and champion combination.',
+      }),
+    championPoints: z
+      .int32()
+      .openapi({
+        'x-type': 'int',
+        description:
+          'Total number of champion points for this player and champion combination - they are used to determine championLevel.',
+      }),
+    championPointsSinceLastLevel: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        'x-type': 'long',
+        description: 'Number of points earned since current level has been achieved.',
+      }),
+    markRequiredForNextLevel: z.int32().openapi({ 'x-type': 'int' }),
+    championSeasonMilestone: z.int32().openapi({ 'x-type': 'int' }),
+    nextSeasonMilestone: ChampionMasteryV4NextSeasonMilestonesDtoSchema.openapi({
+      'x-type': 'NextSeasonMilestonesDto',
+    }),
+    tokensEarned: z
+      .int32()
+      .openapi({
+        'x-type': 'int',
+        description:
+          'The token earned for this champion at the current championLevel. When the championLevel is advanced the tokensEarned resets to 0.',
+      }),
+    milestoneGrades: z
+      .array(z.string().openapi({ 'x-type': 'string' }))
+      .exactOptional()
+      .openapi({ 'x-type': 'List[string]' }),
+  })
+  .openapi({
+    title: 'ChampionMasteryDto',
+    description:
+      'This object contains single Champion Mastery information for player and champion combination.',
+    required: [
+      'puuid',
+      'championPointsUntilNextLevel',
+      'championId',
+      'lastPlayTime',
+      'championLevel',
+      'championPoints',
+      'championPointsSinceLastLevel',
+      'markRequiredForNextLevel',
+      'championSeasonMilestone',
+      'nextSeasonMilestone',
+      'tokensEarned',
+    ],
+  })
+  .openapi('ChampionMasteryV4ChampionMasteryDto')
+
+const ChampionV3ChampionInfoSchema = z
+  .object({
+    newplayer: z
+      .array(z.int32().openapi({ 'x-type': 'int', 'x-enum': 'champion' }))
+      .openapi({ 'x-type': 'List[int]' }),
+    sr: z
+      .array(z.int32().openapi({ 'x-type': 'int', 'x-enum': 'champion' }))
+      .openapi({ 'x-type': 'List[int]' }),
+  })
+  .openapi({ title: 'ChampionInfo', required: ['newplayer', 'sr'] })
+  .openapi('ChampionV3ChampionInfo')
+
+const ChampionV3ArraySchema = z
+  .looseObject({})
+  .openapi({ title: 'array', description: 'UNKNOWN TYPE.' })
+  .openapi('ChampionV3Array')
+
+const ClashV1PlayerDtoSchema = z
+  .object({
+    puuid: z.string().openapi({ 'x-type': 'string' }),
+    teamId: z.string().exactOptional().openapi({ 'x-type': 'string' }),
+    position: z
+      .enum(['UNSELECTED', 'FILL', 'TOP', 'JUNGLE', 'MIDDLE', 'BOTTOM', 'UTILITY'])
+      .openapi({
+        'x-type': 'string',
+        description:
+          '(Legal values:  UNSELECTED,  FILL,  TOP,  JUNGLE,  MIDDLE,  BOTTOM,  UTILITY)',
+      }),
+    role: z
+      .enum(['CAPTAIN', 'MEMBER'])
+      .openapi({ 'x-type': 'string', description: '(Legal values:  CAPTAIN,  MEMBER)' }),
+  })
+  .openapi({ title: 'PlayerDto', required: ['puuid', 'position', 'role'] })
+  .openapi('ClashV1PlayerDto')
+
+const ClashV1TeamDtoSchema = z
+  .object({
+    id: z.string().openapi({ 'x-type': 'string' }),
+    tournamentId: z.int32().openapi({ 'x-type': 'int' }),
+    name: z.string().openapi({ 'x-type': 'string' }),
+    iconId: z.int32().openapi({ 'x-type': 'int' }),
+    tier: z.int32().openapi({ 'x-type': 'int' }),
+    captain: z
+      .string()
+      .openapi({ 'x-type': 'string', description: 'Summoner ID of the team captain.' }),
+    abbreviation: z.string().openapi({ 'x-type': 'string' }),
+    players: z
+      .array(ClashV1PlayerDtoSchema)
+      .openapi({ 'x-type': 'List[PlayerDto]', description: 'Team members.' }),
+  })
+  .openapi({
+    title: 'TeamDto',
+    required: [
+      'id',
+      'tournamentId',
+      'name',
+      'iconId',
+      'tier',
+      'captain',
+      'abbreviation',
+      'players',
+    ],
+  })
+  .openapi('ClashV1TeamDto')
+
+const ClashV1TournamentPhaseDtoSchema = z
+  .object({
+    id: z.int32().openapi({ 'x-type': 'int' }),
+    registrationTime: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', 'x-type': 'long' }),
+    startTime: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', 'x-type': 'long' }),
+    cancelled: z.boolean().openapi({ 'x-type': 'boolean' }),
+  })
+  .openapi({
+    title: 'TournamentPhaseDto',
+    required: ['id', 'registrationTime', 'startTime', 'cancelled'],
+  })
+  .openapi('ClashV1TournamentPhaseDto')
+
+const ClashV1TournamentDtoSchema = z
+  .object({
+    id: z.int32().openapi({ 'x-type': 'int' }),
+    themeId: z.int32().openapi({ 'x-type': 'int' }),
+    nameKey: z.string().openapi({ 'x-type': 'string' }),
+    nameKeySecondary: z.string().openapi({ 'x-type': 'string' }),
+    schedule: z
+      .array(ClashV1TournamentPhaseDtoSchema)
+      .openapi({ 'x-type': 'List[TournamentPhaseDto]', description: 'Tournament phase.' }),
+  })
+  .openapi({
+    title: 'TournamentDto',
+    required: ['id', 'themeId', 'nameKey', 'nameKeySecondary', 'schedule'],
+  })
+  .openapi('ClashV1TournamentDto')
+
+const LeagueExpV4MiniSeriesDTOSchema = z
+  .object({
+    losses: z.int32().openapi({ 'x-type': 'int' }),
+    progress: z.string().openapi({ 'x-type': 'string' }),
+    target: z.int32().openapi({ 'x-type': 'int' }),
+    wins: z.int32().openapi({ 'x-type': 'int' }),
+  })
+  .openapi({ title: 'MiniSeriesDTO', required: ['losses', 'progress', 'target', 'wins'] })
+  .openapi('LeagueExpV4MiniSeriesDTO')
+
+const LeagueExpV4LeagueEntryDTOSchema = z
+  .object({
+    leagueId: z.string().exactOptional().openapi({ 'x-type': 'string' }),
+    summonerId: z
+      .string()
+      .exactOptional()
+      .openapi({ 'x-type': 'string', description: "Player's summonerId (Encrypted)" }),
+    puuid: z.string().openapi({ 'x-type': 'string', description: "Player's encrypted puuid." }),
+    queueType: z.string().openapi({ 'x-type': 'string', 'x-enum': 'queueType' }),
+    tier: z.string().openapi({ 'x-type': 'string', 'x-enum': 'tier' }),
+    rank: z
+      .string()
+      .openapi({
+        'x-type': 'string',
+        description: "The player's division within a tier.",
+        'x-enum': 'division',
+      }),
+    leaguePoints: z.int32().openapi({ 'x-type': 'int' }),
+    wins: z
+      .int32()
+      .openapi({
+        'x-type': 'int',
+        description: 'Winning team on Summoners Rift. First placement in Teamfight Tactics.',
+      }),
+    losses: z
+      .int32()
+      .openapi({
+        'x-type': 'int',
+        description:
+          'Losing team on Summoners Rift. Second through eighth placement in Teamfight Tactics.',
+      }),
+    hotStreak: z.boolean().openapi({ 'x-type': 'boolean' }),
+    veteran: z.boolean().openapi({ 'x-type': 'boolean' }),
+    freshBlood: z.boolean().openapi({ 'x-type': 'boolean' }),
+    inactive: z.boolean().openapi({ 'x-type': 'boolean' }),
+    miniSeries: LeagueExpV4MiniSeriesDTOSchema.exactOptional().openapi({
+      'x-type': 'MiniSeriesDTO',
+    }),
+  })
+  .openapi({
+    title: 'LeagueEntryDTO',
+    required: [
+      'puuid',
+      'queueType',
+      'tier',
+      'rank',
+      'leaguePoints',
+      'wins',
+      'losses',
+      'hotStreak',
+      'veteran',
+      'freshBlood',
+      'inactive',
+    ],
+  })
+  .openapi('LeagueExpV4LeagueEntryDTO')
+
+const LeagueV4MiniSeriesDTOSchema = z
+  .object({
+    losses: z.int32().openapi({ 'x-type': 'int' }),
+    progress: z.string().openapi({ 'x-type': 'string' }),
+    target: z.int32().openapi({ 'x-type': 'int' }),
+    wins: z.int32().openapi({ 'x-type': 'int' }),
+  })
+  .openapi({ title: 'MiniSeriesDTO', required: ['losses', 'progress', 'target', 'wins'] })
+  .openapi('LeagueV4MiniSeriesDTO')
+
+const LeagueV4LeagueItemDTOSchema = z
+  .object({
+    freshBlood: z.boolean().openapi({ 'x-type': 'boolean' }),
+    wins: z.int32().openapi({ 'x-type': 'int', description: 'Winning team on Summoners Rift.' }),
+    miniSeries: LeagueV4MiniSeriesDTOSchema.exactOptional().openapi({ 'x-type': 'MiniSeriesDTO' }),
+    inactive: z.boolean().openapi({ 'x-type': 'boolean' }),
+    veteran: z.boolean().openapi({ 'x-type': 'boolean' }),
+    hotStreak: z.boolean().openapi({ 'x-type': 'boolean' }),
+    rank: z.string().openapi({ 'x-type': 'string', 'x-enum': 'division' }),
+    leaguePoints: z.int32().openapi({ 'x-type': 'int' }),
+    losses: z.int32().openapi({ 'x-type': 'int', description: 'Losing team on Summoners Rift.' }),
+    puuid: z.string().openapi({ 'x-type': 'string', description: "Player's encrypted puuid." }),
+    summonerId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        'x-type': 'string',
+        description:
+          'Encrypted summoner ID. This field is deprecated and will be removed. Use `puuid` instead.',
+      }),
+  })
+  .openapi({
+    title: 'LeagueItemDTO',
+    required: [
+      'freshBlood',
+      'wins',
+      'inactive',
+      'veteran',
+      'hotStreak',
+      'rank',
+      'leaguePoints',
+      'losses',
+      'puuid',
+    ],
+  })
+  .openapi('LeagueV4LeagueItemDTO')
+
+const LeagueV4LeagueListDTOSchema = z
+  .object({
+    leagueId: z.string().exactOptional().openapi({ 'x-type': 'string' }),
+    entries: z.array(LeagueV4LeagueItemDTOSchema).openapi({ 'x-type': 'List[LeagueItemDTO]' }),
+    tier: z.string().openapi({ 'x-type': 'string', 'x-enum': 'tier' }),
+    name: z.string().exactOptional().openapi({ 'x-type': 'string' }),
+    queue: z.string().exactOptional().openapi({ 'x-type': 'string', 'x-enum': 'queueType' }),
+  })
+  .openapi({ title: 'LeagueListDTO', required: ['entries', 'tier'] })
+  .openapi('LeagueV4LeagueListDTO')
+
+const LeagueV4LeagueEntryDTOSchema = z
+  .object({
+    leagueId: z.string().exactOptional().openapi({ 'x-type': 'string' }),
+    puuid: z.string().openapi({ 'x-type': 'string', description: "Player's encrypted puuid." }),
+    queueType: z.string().openapi({ 'x-type': 'string', 'x-enum': 'queueType' }),
+    tier: z.string().exactOptional().openapi({ 'x-type': 'string', 'x-enum': 'tier' }),
+    rank: z
+      .string()
+      .exactOptional()
+      .openapi({
+        'x-type': 'string',
+        description: "The player's division within a tier.",
+        'x-enum': 'division',
+      }),
+    leaguePoints: z.int32().openapi({ 'x-type': 'int' }),
+    wins: z.int32().openapi({ 'x-type': 'int', description: 'Winning team on Summoners Rift.' }),
+    losses: z.int32().openapi({ 'x-type': 'int', description: 'Losing team on Summoners Rift.' }),
+    hotStreak: z.boolean().openapi({ 'x-type': 'boolean' }),
+    veteran: z.boolean().openapi({ 'x-type': 'boolean' }),
+    freshBlood: z.boolean().openapi({ 'x-type': 'boolean' }),
+    inactive: z.boolean().openapi({ 'x-type': 'boolean' }),
+    miniSeries: LeagueV4MiniSeriesDTOSchema.exactOptional().openapi({ 'x-type': 'MiniSeriesDTO' }),
+    summonerId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        'x-type': 'string',
+        description:
+          'Encrypted summoner ID. This field is deprecated and will be removed. Use `puuid` instead.',
+      }),
+  })
+  .openapi({
+    title: 'LeagueEntryDTO',
+    required: [
+      'puuid',
+      'queueType',
+      'leaguePoints',
+      'wins',
+      'losses',
+      'hotStreak',
+      'veteran',
+      'freshBlood',
+      'inactive',
+    ],
+  })
+  .openapi('LeagueV4LeagueEntryDTO')
+
+const LolChallengesV1ChallengeConfigInfoDtoSchema = z
+  .object({
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', 'x-type': 'long' }),
+    localizedNames: z
+      .record(
+        z.string(),
+        z
+          .record(z.string(), z.string().openapi({ 'x-type': 'string' }))
+          .openapi({
+            'x-key': { type: 'string', 'x-type': 'String' },
+            'x-type': 'Map[String, string]',
+          }),
+      )
+      .openapi({
+        'x-key': { type: 'string', 'x-type': 'String' },
+        'x-type': 'Map[String, Map[String, string]]',
+      }),
+    state: z
+      .enum(['DISABLED', 'HIDDEN', 'ENABLED', 'ARCHIVED'])
+      .openapi({
+        'x-type': 'string',
+        description:
+          'DISABLED - not visible and not calculated, HIDDEN - not visible, but calculated, ENABLED - visible and calculated, ARCHIVED - visible, but not calculated',
+      }),
+    tracking: z
+      .enum(['LIFETIME', 'SEASON'])
+      .exactOptional()
+      .openapi({
+        'x-type': 'string',
+        description:
+          'LIFETIME - stats are incremented without reset, SEASON - stats are accumulated by season and reset at the beginning of new season',
+      }),
+    startTimestamp: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', 'x-type': 'long' }),
+    endTimestamp: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', 'x-type': 'long' }),
+    leaderboard: z.boolean().openapi({ 'x-type': 'boolean' }),
+    thresholds: z
+      .record(z.string(), z.float64().openapi({ 'x-type': 'double' }))
+      .openapi({
+        'x-key': { type: 'string', 'x-type': 'String' },
+        'x-type': 'Map[String, double]',
+      }),
+  })
+  .openapi({
+    title: 'ChallengeConfigInfoDto',
+    required: ['id', 'localizedNames', 'state', 'leaderboard', 'thresholds'],
+  })
+  .openapi('LolChallengesV1ChallengeConfigInfoDto')
+
+const LolChallengesV1StateSchema = z
+  .looseObject({})
+  .openapi({
+    title: 'State',
+    description:
+      'DISABLED - not visible and not calculated,\nHIDDEN - not visible, but calculated,\nENABLED - visible and calculated,\nARCHIVED - visible, but not calculated',
+  })
+  .openapi('LolChallengesV1State')
+
+const LolChallengesV1TrackingSchema = z
+  .looseObject({})
+  .openapi({
+    title: 'Tracking',
+    description:
+      'LIFETIME - stats are incremented without reset,\nSEASON - stats are accumulated by season and reset at the beginning of new season',
+  })
+  .openapi('LolChallengesV1Tracking')
+
+const LolChallengesV1ApexPlayerInfoDtoSchema = z
+  .object({
+    puuid: z.string().openapi({ 'x-type': 'string' }),
+    value: z.float64().openapi({ 'x-type': 'double' }),
+    position: z.int32().openapi({ 'x-type': 'int' }),
+  })
+  .openapi({ title: 'ApexPlayerInfoDto', required: ['puuid', 'value', 'position'] })
+  .openapi('LolChallengesV1ApexPlayerInfoDto')
+
+const LolChallengesV1LevelSchema = z
+  .looseObject({})
+  .openapi({
+    title: 'Level',
+    description:
+      '0 NONE,\n1 IRON,\n2 BRONZE,\n3 SILVER,\n4 GOLD,\n5 PLATINUM,\n6 DIAMOND,\n7 MASTER,\n8 GRANDMASTER,\n9 CHALLENGER',
+  })
+  .openapi('LolChallengesV1Level')
+
+const LolChallengesV1ChallengeInfoDtoSchema = z
+  .object({
+    percentile: z.float64().openapi({ 'x-type': 'double' }),
+    playersInLevel: z.int32().exactOptional().openapi({ 'x-type': 'int' }),
+    achievedTime: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', 'x-type': 'long' }),
+    value: z.float64().openapi({ 'x-type': 'double' }),
+    challengeId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', 'x-type': 'long' }),
+    level: z
+      .enum([
+        'NONE',
+        'IRON',
+        'BRONZE',
+        'SILVER',
+        'GOLD',
+        'PLATINUM',
+        'DIAMOND',
+        'MASTER',
+        'GRANDMASTER',
+        'CHALLENGER',
+        'HIGHEST_NOT_LEADERBOARD_ONLY',
+        'HIGHEST',
+        'LOWEST',
+      ])
+      .openapi({
+        'x-type': 'string',
+        description:
+          '(Legal values:  NONE,  IRON,  BRONZE,  SILVER,  GOLD,  PLATINUM,  DIAMOND,  MASTER,  GRANDMASTER,  CHALLENGER,  HIGHEST_NOT_LEADERBOARD_ONLY,  HIGHEST,  LOWEST)',
+      }),
+    position: z.int32().exactOptional().openapi({ 'x-type': 'int' }),
+  })
+  .openapi({ title: 'ChallengeInfoDto', required: ['percentile', 'value', 'challengeId', 'level'] })
+  .openapi('LolChallengesV1ChallengeInfoDto')
+
+const LolChallengesV1PlayerClientPreferencesDtoSchema = z
+  .object({
+    bannerAccent: z.string().exactOptional().openapi({ 'x-type': 'string' }),
+    title: z.string().exactOptional().openapi({ 'x-type': 'string' }),
+    challengeIds: z
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64', 'x-type': 'long' }),
+      )
+      .exactOptional()
+      .openapi({ 'x-type': 'List[long]' }),
+    crestBorder: z.string().exactOptional().openapi({ 'x-type': 'string' }),
+    prestigeCrestBorderLevel: z.int32().exactOptional().openapi({ 'x-type': 'int' }),
+  })
+  .openapi({ title: 'PlayerClientPreferencesDto', required: [] })
+  .openapi('LolChallengesV1PlayerClientPreferencesDto')
+
+const LolChallengesV1ChallengePointDtoSchema = z
+  .object({
+    level: z.string().openapi({ 'x-type': 'string', 'x-enum': 'tier' }),
+    current: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', 'x-type': 'long' }),
+    max: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', 'x-type': 'long' }),
+    percentile: z.float64().exactOptional().openapi({ 'x-type': 'double' }),
+    position: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', 'x-type': 'long' }),
+  })
+  .openapi({ title: 'ChallengePointDto', required: ['level', 'current', 'max'] })
+  .openapi('LolChallengesV1ChallengePointDto')
+
+const LolChallengesV1PlayerInfoDtoSchema = z
+  .object({
+    challenges: z
+      .array(LolChallengesV1ChallengeInfoDtoSchema)
+      .openapi({ 'x-type': 'List[ChallengeInfoDto]' }),
+    preferences: LolChallengesV1PlayerClientPreferencesDtoSchema.openapi({
+      'x-type': 'PlayerClientPreferencesDto',
+    }),
+    totalPoints: LolChallengesV1ChallengePointDtoSchema.openapi({ 'x-type': 'ChallengePointDto' }),
+    categoryPoints: z
+      .record(
+        z.string(),
+        LolChallengesV1ChallengePointDtoSchema.openapi({ 'x-type': 'ChallengePointDto' }),
+      )
+      .openapi({
+        'x-key': { type: 'string', 'x-type': 'String' },
+        'x-type': 'Map[String, ChallengePointDto]',
+      }),
+  })
+  .openapi({
+    title: 'PlayerInfoDto',
+    required: ['challenges', 'preferences', 'totalPoints', 'categoryPoints'],
+  })
+  .openapi('LolChallengesV1PlayerInfoDto')
+
+const LolRsoMatchV1MatchDtoSchema = z
+  .looseObject({})
+  .openapi({ title: 'MatchDto', description: 'UNKNOWN TYPE.' })
+  .openapi('LolRsoMatchV1MatchDto')
+
+const LolRsoMatchV1TimelineDtoSchema = z
+  .looseObject({})
+  .openapi({ title: 'TimelineDto', description: 'UNKNOWN TYPE.' })
+  .openapi('LolRsoMatchV1TimelineDto')
+
+const LolStatusV4ContentDtoSchema = z
+  .object({
+    locale: z.string().openapi({ 'x-type': 'string', 'x-enum': 'locale' }),
+    content: z.string().openapi({ 'x-type': 'string' }),
+  })
+  .openapi({ title: 'ContentDto', required: ['locale', 'content'] })
+  .openapi('LolStatusV4ContentDto')
+
+const LolStatusV4UpdateDtoSchema = z
+  .object({
+    id: z.int32().openapi({ 'x-type': 'int' }),
+    author: z.string().openapi({ 'x-type': 'string' }),
+    publish: z.boolean().openapi({ 'x-type': 'boolean' }),
+    publish_locations: z
+      .array(z.enum(['riotclient', 'riotstatus', 'game']).openapi({ 'x-type': 'string' }))
+      .openapi({
+        'x-type': 'List[string]',
+        description: '(Legal values: riotclient, riotstatus, game)',
+      }),
+    translations: z.array(LolStatusV4ContentDtoSchema).openapi({ 'x-type': 'List[ContentDto]' }),
+    created_at: z.string().openapi({ 'x-type': 'string' }),
+    updated_at: z.string().openapi({ 'x-type': 'string' }),
+  })
+  .openapi({
+    title: 'UpdateDto',
+    required: [
+      'id',
+      'author',
+      'publish',
+      'publish_locations',
+      'translations',
+      'created_at',
+      'updated_at',
+    ],
+  })
+  .openapi('LolStatusV4UpdateDto')
+
+const LolStatusV4StatusDtoSchema = z
+  .object({
+    id: z.int32().openapi({ 'x-type': 'int' }),
+    maintenance_status: z
+      .enum(['scheduled', 'in_progress', 'complete'])
+      .exactOptional()
+      .openapi({
+        'x-type': 'string',
+        description: '(Legal values:  scheduled,  in_progress,  complete)',
+      }),
+    incident_severity: z
+      .enum(['info', 'warning', 'critical'])
+      .exactOptional()
+      .openapi({ 'x-type': 'string', description: '(Legal values:  info,  warning,  critical)' }),
+    titles: z.array(LolStatusV4ContentDtoSchema).openapi({ 'x-type': 'List[ContentDto]' }),
+    updates: z.array(LolStatusV4UpdateDtoSchema).openapi({ 'x-type': 'List[UpdateDto]' }),
+    created_at: z.string().openapi({ 'x-type': 'string' }),
+    archive_at: z.string().exactOptional().openapi({ 'x-type': 'string' }),
+    updated_at: z.string().exactOptional().openapi({ 'x-type': 'string' }),
+    platforms: z
+      .array(
+        z
+          .enum(['windows', 'macos', 'android', 'ios', 'ps4', 'xbone', 'switch'])
+          .openapi({ 'x-type': 'string' }),
+      )
+      .openapi({
+        'x-type': 'List[string]',
+        description: '(Legal values: windows, macos, android, ios, ps4, xbone, switch)',
+      }),
+  })
+  .openapi({ title: 'StatusDto', required: ['id', 'titles', 'updates', 'created_at', 'platforms'] })
+  .openapi('LolStatusV4StatusDto')
+
+const LolStatusV4PlatformDataDtoSchema = z
+  .object({
+    id: z.string().openapi({ 'x-type': 'string' }),
+    name: z.string().openapi({ 'x-type': 'string' }),
+    locales: z
+      .array(z.string().openapi({ 'x-type': 'string', 'x-enum': 'locale' }))
+      .openapi({ 'x-type': 'List[string]' }),
+    maintenances: z.array(LolStatusV4StatusDtoSchema).openapi({ 'x-type': 'List[StatusDto]' }),
+    incidents: z.array(LolStatusV4StatusDtoSchema).openapi({ 'x-type': 'List[StatusDto]' }),
+  })
+  .openapi({
+    title: 'PlatformDataDto',
+    required: ['id', 'name', 'locales', 'maintenances', 'incidents'],
+  })
+  .openapi('LolStatusV4PlatformDataDto')
+
+const LorDeckV1DeckDtoSchema = z
+  .object({
+    id: z.string().openapi({ 'x-type': 'string' }),
+    name: z.string().openapi({ 'x-type': 'string' }),
+    code: z.string().openapi({ 'x-type': 'string' }),
+  })
+  .openapi({ title: 'DeckDto', required: ['id', 'name', 'code'] })
+  .openapi('LorDeckV1DeckDto')
+
+const LorDeckV1NewDeckDtoSchema = z
+  .object({
+    name: z.string().openapi({ 'x-type': 'string' }),
+    code: z.string().openapi({ 'x-type': 'string' }),
+  })
+  .openapi({ title: 'NewDeckDto', required: ['name', 'code'] })
+  .openapi('LorDeckV1NewDeckDto')
+
+const LorInventoryV1CardDtoSchema = z
+  .object({
+    code: z.string().openapi({ 'x-type': 'string' }),
+    count: z.string().openapi({ 'x-type': 'string' }),
+  })
+  .openapi({ title: 'CardDto', required: ['code', 'count'] })
+  .openapi('LorInventoryV1CardDto')
+
+const LorMatchV1MetadataDtoSchema = z
+  .object({
+    data_version: z.string().openapi({ 'x-type': 'string', description: 'Match data version.' }),
+    match_id: z.string().openapi({ 'x-type': 'string', description: 'Match id.' }),
+    participants: z
+      .array(z.string().openapi({ 'x-type': 'string' }))
+      .openapi({ 'x-type': 'List[string]', description: 'A list of participant PUUIDs.' }),
+  })
+  .openapi({ title: 'MetadataDto', required: ['data_version', 'match_id', 'participants'] })
+  .openapi('LorMatchV1MetadataDto')
+
+const LorMatchV1PlayerDtoSchema = z
+  .object({
+    puuid: z.string().openapi({ 'x-type': 'string' }),
+    deck_id: z.string().openapi({ 'x-type': 'string' }),
+    deck_code: z
+      .string()
+      .openapi({
+        'x-type': 'string',
+        description:
+          'Code for the deck played. Refer to LOR documentation for details on deck codes.',
+      }),
+    factions: z
+      .array(z.string().openapi({ 'x-type': 'string' }))
+      .openapi({ 'x-type': 'List[string]' }),
+    game_outcome: z.string().openapi({ 'x-type': 'string' }),
+    order_of_play: z
+      .int32()
+      .openapi({ 'x-type': 'int', description: 'The order in which the players took turns.' }),
+  })
+  .openapi({
+    title: 'PlayerDto',
+    required: ['puuid', 'deck_id', 'deck_code', 'factions', 'game_outcome', 'order_of_play'],
+  })
+  .openapi('LorMatchV1PlayerDto')
+
+const LorMatchV1InfoDtoSchema = z
+  .object({
+    game_mode: z
+      .enum(['Constructed', 'Expeditions', 'Tutorial'])
+      .openapi({
+        'x-type': 'string',
+        description: '(Legal values:  Constructed,  Expeditions,  Tutorial)',
+      }),
+    game_type: z
+      .enum(['Ranked', 'Normal', 'AI', 'Tutorial', 'VanillaTrial', 'Singleton', 'StandardGauntlet'])
+      .openapi({
+        'x-type': 'string',
+        description:
+          '(Legal values:  Ranked,  Normal,  AI,  Tutorial,  VanillaTrial,  Singleton,  StandardGauntlet)',
+      }),
+    game_start_time_utc: z.string().openapi({ 'x-type': 'string' }),
+    game_version: z.string().openapi({ 'x-type': 'string' }),
+    game_format: z
+      .enum(['standard', 'eternal'])
+      .openapi({ 'x-type': 'string', description: '(Legal values:  standard,  eternal)' }),
+    players: z.array(LorMatchV1PlayerDtoSchema).openapi({ 'x-type': 'List[PlayerDto]' }),
+    total_turn_count: z
+      .int32()
+      .openapi({ 'x-type': 'int', description: 'Total turns taken by both players.' }),
+  })
+  .openapi({
+    title: 'InfoDto',
+    required: [
+      'game_mode',
+      'game_type',
+      'game_start_time_utc',
+      'game_version',
+      'game_format',
+      'players',
+      'total_turn_count',
+    ],
+  })
+  .openapi('LorMatchV1InfoDto')
+
+const LorMatchV1MatchDtoSchema = z
+  .object({
+    metadata: LorMatchV1MetadataDtoSchema.openapi({
+      'x-type': 'MetadataDto',
+      description: 'Match metadata.',
+    }),
+    info: LorMatchV1InfoDtoSchema.openapi({ 'x-type': 'InfoDto', description: 'Match info.' }),
+  })
+  .openapi({ title: 'MatchDto', required: ['metadata', 'info'] })
+  .openapi('LorMatchV1MatchDto')
+
+const LorRankedV1PlayerDtoSchema = z
+  .object({
+    name: z.string().openapi({ 'x-type': 'string' }),
+    rank: z.int32().openapi({ 'x-type': 'int' }),
+    lp: z.int32().openapi({ 'x-type': 'int', description: 'League points.' }),
+  })
+  .openapi({ title: 'PlayerDto', required: ['name', 'rank', 'lp'] })
+  .openapi('LorRankedV1PlayerDto')
+
+const LorRankedV1LeaderboardDtoSchema = z
+  .object({
+    players: z
+      .array(LorRankedV1PlayerDtoSchema)
+      .openapi({ 'x-type': 'List[PlayerDto]', description: 'A list of players in Master tier.' }),
+  })
+  .openapi({ title: 'LeaderboardDto', required: ['players'] })
+  .openapi('LorRankedV1LeaderboardDto')
+
+const LorStatusV1ContentDtoSchema = z
+  .object({
+    locale: z.string().openapi({ 'x-type': 'string', 'x-enum': 'locale' }),
+    content: z.string().openapi({ 'x-type': 'string' }),
+  })
+  .openapi({ title: 'ContentDto', required: ['locale', 'content'] })
+  .openapi('LorStatusV1ContentDto')
+
+const LorStatusV1UpdateDtoSchema = z
+  .object({
+    id: z.int32().openapi({ 'x-type': 'int' }),
+    author: z.string().openapi({ 'x-type': 'string' }),
+    publish: z.boolean().openapi({ 'x-type': 'boolean' }),
+    publish_locations: z
+      .array(z.enum(['riotclient', 'riotstatus', 'game']).openapi({ 'x-type': 'string' }))
+      .openapi({
+        'x-type': 'List[string]',
+        description: '(Legal values: riotclient, riotstatus, game)',
+      }),
+    translations: z.array(LorStatusV1ContentDtoSchema).openapi({ 'x-type': 'List[ContentDto]' }),
+    created_at: z.string().openapi({ 'x-type': 'string' }),
+    updated_at: z.string().openapi({ 'x-type': 'string' }),
+  })
+  .openapi({
+    title: 'UpdateDto',
+    required: [
+      'id',
+      'author',
+      'publish',
+      'publish_locations',
+      'translations',
+      'created_at',
+      'updated_at',
+    ],
+  })
+  .openapi('LorStatusV1UpdateDto')
+
+const LorStatusV1StatusDtoSchema = z
+  .object({
+    id: z.int32().openapi({ 'x-type': 'int' }),
+    maintenance_status: z
+      .enum(['scheduled', 'in_progress', 'complete'])
+      .openapi({
+        'x-type': 'string',
+        description: '(Legal values:  scheduled,  in_progress,  complete)',
+      }),
+    incident_severity: z
+      .enum(['info', 'warning', 'critical'])
+      .openapi({ 'x-type': 'string', description: '(Legal values:  info,  warning,  critical)' }),
+    titles: z.array(LorStatusV1ContentDtoSchema).openapi({ 'x-type': 'List[ContentDto]' }),
+    updates: z.array(LorStatusV1UpdateDtoSchema).openapi({ 'x-type': 'List[UpdateDto]' }),
+    created_at: z.string().openapi({ 'x-type': 'string' }),
+    archive_at: z.string().openapi({ 'x-type': 'string' }),
+    updated_at: z.string().openapi({ 'x-type': 'string' }),
+    platforms: z
+      .array(
+        z
+          .enum(['windows', 'macos', 'android', 'ios', 'ps4', 'xbone', 'switch'])
+          .openapi({ 'x-type': 'string' }),
+      )
+      .openapi({
+        'x-type': 'List[string]',
+        description: '(Legal values: windows, macos, android, ios, ps4, xbone, switch)',
+      }),
+  })
+  .openapi({
+    title: 'StatusDto',
+    required: [
+      'id',
+      'maintenance_status',
+      'incident_severity',
+      'titles',
+      'updates',
+      'created_at',
+      'archive_at',
+      'updated_at',
+      'platforms',
+    ],
+  })
+  .openapi('LorStatusV1StatusDto')
+
+const LorStatusV1PlatformDataDtoSchema = z
+  .object({
+    id: z.string().openapi({ 'x-type': 'string' }),
+    name: z.string().openapi({ 'x-type': 'string' }),
+    locales: z
+      .array(z.string().openapi({ 'x-type': 'string', 'x-enum': 'locale' }))
+      .openapi({ 'x-type': 'List[string]' }),
+    maintenances: z.array(LorStatusV1StatusDtoSchema).openapi({ 'x-type': 'List[StatusDto]' }),
+    incidents: z.array(LorStatusV1StatusDtoSchema).openapi({ 'x-type': 'List[StatusDto]' }),
+  })
+  .openapi({
+    title: 'PlatformDataDto',
+    required: ['id', 'name', 'locales', 'maintenances', 'incidents'],
+  })
+  .openapi('LorStatusV1PlatformDataDto')
+
+const MatchV5ReplayDTOSchema = z
+  .object({
+    total: z.int32().openapi({ 'x-type': 'int', description: 'Total of replay files' }),
+    matchFileURLs: z
+      .array(z.string().openapi({ 'x-type': 'string' }))
+      .openapi({ 'x-type': 'List[string]' }),
+  })
+  .openapi({ title: 'ReplayDTO', required: ['total', 'matchFileURLs'] })
+  .openapi('MatchV5ReplayDTO')
+
+const MatchV5MatchDtoSchema: z.ZodType<MatchV5MatchDtoType> = z
+  .object({
+    metadata: MatchV5MetadataDtoSchema.openapi({
+      'x-type': 'MetadataDto',
+      description: 'Match metadata.',
+    }),
+    info: MatchV5InfoDtoSchema.openapi({ 'x-type': 'InfoDto', description: 'Match info.' }),
+  })
+  .openapi({ title: 'MatchDto', required: ['metadata', 'info'] })
+  .openapi('MatchV5MatchDto')
+
+const MatchV5TimelineDtoSchema: z.ZodType<MatchV5TimelineDtoType> = z
   .object({
     metadata: MatchV5MetadataTimeLineDtoSchema.openapi({
       'x-type': 'MetadataTimeLineDto',
@@ -4434,303 +5117,7 @@ const TournamentV5TournamentRegistrationParametersV5Schema = z
   .openapi({ title: 'TournamentRegistrationParametersV5', required: ['providerId'] })
   .openapi('TournamentV5TournamentRegistrationParametersV5')
 
-const ValConsoleMatchV1MatchInfoDtoSchema = z
-  .object({
-    matchId: z.string().openapi({ 'x-type': 'string' }),
-    mapId: z.string().openapi({ 'x-type': 'string' }),
-    gameLengthMillis: z.int32().exactOptional().openapi({ 'x-type': 'int' }),
-    gameStartMillis: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64', 'x-type': 'long' }),
-    provisioningFlowId: z.string().openapi({ 'x-type': 'string' }),
-    isCompleted: z.boolean().openapi({ 'x-type': 'boolean' }),
-    customGameName: z.string().openapi({ 'x-type': 'string' }),
-    queueId: z.string().openapi({ 'x-type': 'string' }),
-    gameMode: z.string().openapi({ 'x-type': 'string' }),
-    isRanked: z.boolean().openapi({ 'x-type': 'boolean' }),
-    seasonId: z.string().openapi({ 'x-type': 'string' }),
-  })
-  .openapi({
-    title: 'MatchInfoDto',
-    required: [
-      'matchId',
-      'mapId',
-      'gameStartMillis',
-      'provisioningFlowId',
-      'isCompleted',
-      'customGameName',
-      'queueId',
-      'gameMode',
-      'isRanked',
-      'seasonId',
-    ],
-  })
-  .openapi('ValConsoleMatchV1MatchInfoDto')
-
-const ValConsoleMatchV1AbilityCastsDtoSchema = z
-  .object({
-    grenadeCasts: z.int32().openapi({ 'x-type': 'int' }),
-    ability1Casts: z.int32().openapi({ 'x-type': 'int' }),
-    ability2Casts: z.int32().openapi({ 'x-type': 'int' }),
-    ultimateCasts: z.int32().openapi({ 'x-type': 'int' }),
-  })
-  .openapi({
-    title: 'AbilityCastsDto',
-    required: ['grenadeCasts', 'ability1Casts', 'ability2Casts', 'ultimateCasts'],
-  })
-  .openapi('ValConsoleMatchV1AbilityCastsDto')
-
-const ValConsoleMatchV1PlayerStatsDtoSchema = z
-  .object({
-    score: z.int32().openapi({ 'x-type': 'int' }),
-    roundsPlayed: z.int32().openapi({ 'x-type': 'int' }),
-    kills: z.int32().openapi({ 'x-type': 'int' }),
-    deaths: z.int32().openapi({ 'x-type': 'int' }),
-    assists: z.int32().openapi({ 'x-type': 'int' }),
-    playtimeMillis: z.int32().openapi({ 'x-type': 'int' }),
-    abilityCasts: ValConsoleMatchV1AbilityCastsDtoSchema.exactOptional().openapi({
-      'x-type': 'AbilityCastsDto',
-    }),
-  })
-  .openapi({
-    title: 'PlayerStatsDto',
-    required: ['score', 'roundsPlayed', 'kills', 'deaths', 'assists', 'playtimeMillis'],
-  })
-  .openapi('ValConsoleMatchV1PlayerStatsDto')
-
-const ValConsoleMatchV1PlayerDtoSchema = z
-  .object({
-    puuid: z.string().openapi({ 'x-type': 'string' }),
-    gameName: z.string().openapi({ 'x-type': 'string' }),
-    tagLine: z.string().openapi({ 'x-type': 'string' }),
-    teamId: z.string().openapi({ 'x-type': 'string' }),
-    partyId: z.string().openapi({ 'x-type': 'string' }),
-    characterId: z.string().exactOptional().openapi({ 'x-type': 'string' }),
-    stats: ValConsoleMatchV1PlayerStatsDtoSchema.exactOptional().openapi({
-      'x-type': 'PlayerStatsDto',
-    }),
-    competitiveTier: z.int32().openapi({ 'x-type': 'int' }),
-    playerCard: z.string().openapi({ 'x-type': 'string' }),
-    playerTitle: z.string().openapi({ 'x-type': 'string' }),
-  })
-  .openapi({
-    title: 'PlayerDto',
-    required: [
-      'puuid',
-      'gameName',
-      'tagLine',
-      'teamId',
-      'partyId',
-      'competitiveTier',
-      'playerCard',
-      'playerTitle',
-    ],
-  })
-  .openapi('ValConsoleMatchV1PlayerDto')
-
-const ValConsoleMatchV1CoachDtoSchema = z
-  .object({
-    puuid: z.string().openapi({ 'x-type': 'string' }),
-    teamId: z.string().openapi({ 'x-type': 'string' }),
-  })
-  .openapi({ title: 'CoachDto', required: ['puuid', 'teamId'] })
-  .openapi('ValConsoleMatchV1CoachDto')
-
-const ValConsoleMatchV1TeamDtoSchema = z
-  .object({
-    teamId: z
-      .string()
-      .openapi({
-        'x-type': 'string',
-        description:
-          'This is an arbitrary string. Red and Blue in bomb modes. The puuid of the player in deathmatch.',
-      }),
-    won: z.boolean().openapi({ 'x-type': 'boolean' }),
-    roundsPlayed: z.int32().openapi({ 'x-type': 'int' }),
-    roundsWon: z.int32().openapi({ 'x-type': 'int' }),
-    numPoints: z
-      .int32()
-      .openapi({
-        'x-type': 'int',
-        description: 'Team points scored. Number of kills in deathmatch.',
-      }),
-  })
-  .openapi({
-    title: 'TeamDto',
-    required: ['teamId', 'won', 'roundsPlayed', 'roundsWon', 'numPoints'],
-  })
-  .openapi('ValConsoleMatchV1TeamDto')
-
-const ValConsoleMatchV1LocationDtoSchema = z
-  .object({ x: z.int32().openapi({ 'x-type': 'int' }), y: z.int32().openapi({ 'x-type': 'int' }) })
-  .openapi({ title: 'LocationDto', required: ['x', 'y'] })
-  .openapi('ValConsoleMatchV1LocationDto')
-
-const ValConsoleMatchV1PlayerLocationsDtoSchema = z
-  .object({
-    puuid: z.string().openapi({ 'x-type': 'string' }),
-    viewRadians: z.float32().openapi({ 'x-type': 'float' }),
-    location: ValConsoleMatchV1LocationDtoSchema.openapi({ 'x-type': 'LocationDto' }),
-  })
-  .openapi({ title: 'PlayerLocationsDto', required: ['puuid', 'viewRadians', 'location'] })
-  .openapi('ValConsoleMatchV1PlayerLocationsDto')
-
-const ValConsoleMatchV1FinishingDamageDtoSchema = z
-  .object({
-    damageType: z.string().openapi({ 'x-type': 'string' }),
-    damageItem: z.string().openapi({ 'x-type': 'string' }),
-    isSecondaryFireMode: z.boolean().openapi({ 'x-type': 'boolean' }),
-  })
-  .openapi({
-    title: 'FinishingDamageDto',
-    required: ['damageType', 'damageItem', 'isSecondaryFireMode'],
-  })
-  .openapi('ValConsoleMatchV1FinishingDamageDto')
-
-const ValConsoleMatchV1KillDtoSchema = z
-  .object({
-    timeSinceGameStartMillis: z.int32().openapi({ 'x-type': 'int' }),
-    timeSinceRoundStartMillis: z.int32().openapi({ 'x-type': 'int' }),
-    killer: z.string().openapi({ 'x-type': 'string', description: 'PUUID' }),
-    victim: z.string().openapi({ 'x-type': 'string', description: 'PUUID' }),
-    victimLocation: ValConsoleMatchV1LocationDtoSchema.openapi({ 'x-type': 'LocationDto' }),
-    assistants: z
-      .array(z.string().openapi({ 'x-type': 'string' }))
-      .openapi({ 'x-type': 'List[string]', description: 'List of PUUIDs' }),
-    playerLocations: z
-      .array(ValConsoleMatchV1PlayerLocationsDtoSchema)
-      .openapi({ 'x-type': 'List[PlayerLocationsDto]' }),
-    finishingDamage: ValConsoleMatchV1FinishingDamageDtoSchema.openapi({
-      'x-type': 'FinishingDamageDto',
-    }),
-  })
-  .openapi({
-    title: 'KillDto',
-    required: [
-      'timeSinceGameStartMillis',
-      'timeSinceRoundStartMillis',
-      'killer',
-      'victim',
-      'victimLocation',
-      'assistants',
-      'playerLocations',
-      'finishingDamage',
-    ],
-  })
-  .openapi('ValConsoleMatchV1KillDto')
-
-const ValConsoleMatchV1DamageDtoSchema = z
-  .object({
-    receiver: z.string().openapi({ 'x-type': 'string', description: 'PUUID' }),
-    damage: z.int32().openapi({ 'x-type': 'int' }),
-    legshots: z.int32().openapi({ 'x-type': 'int' }),
-    bodyshots: z.int32().openapi({ 'x-type': 'int' }),
-    headshots: z.int32().openapi({ 'x-type': 'int' }),
-  })
-  .openapi({
-    title: 'DamageDto',
-    required: ['receiver', 'damage', 'legshots', 'bodyshots', 'headshots'],
-  })
-  .openapi('ValConsoleMatchV1DamageDto')
-
-const ValConsoleMatchV1EconomyDtoSchema = z
-  .object({
-    loadoutValue: z.int32().openapi({ 'x-type': 'int' }),
-    weapon: z.string().openapi({ 'x-type': 'string' }),
-    armor: z.string().openapi({ 'x-type': 'string' }),
-    remaining: z.int32().openapi({ 'x-type': 'int' }),
-    spent: z.int32().openapi({ 'x-type': 'int' }),
-  })
-  .openapi({
-    title: 'EconomyDto',
-    required: ['loadoutValue', 'weapon', 'armor', 'remaining', 'spent'],
-  })
-  .openapi('ValConsoleMatchV1EconomyDto')
-
-const ValConsoleMatchV1AbilityDtoSchema = z
-  .object({
-    grenadeEffects: z.string().exactOptional().openapi({ 'x-type': 'string' }),
-    ability1Effects: z.string().exactOptional().openapi({ 'x-type': 'string' }),
-    ability2Effects: z.string().exactOptional().openapi({ 'x-type': 'string' }),
-    ultimateEffects: z.string().exactOptional().openapi({ 'x-type': 'string' }),
-  })
-  .openapi({ title: 'AbilityDto', required: [] })
-  .openapi('ValConsoleMatchV1AbilityDto')
-
-const ValConsoleMatchV1PlayerRoundStatsDtoSchema = z
-  .object({
-    puuid: z.string().openapi({ 'x-type': 'string' }),
-    kills: z.array(ValConsoleMatchV1KillDtoSchema).openapi({ 'x-type': 'List[KillDto]' }),
-    damage: z.array(ValConsoleMatchV1DamageDtoSchema).openapi({ 'x-type': 'List[DamageDto]' }),
-    score: z.int32().openapi({ 'x-type': 'int' }),
-    economy: ValConsoleMatchV1EconomyDtoSchema.openapi({ 'x-type': 'EconomyDto' }),
-    ability: ValConsoleMatchV1AbilityDtoSchema.openapi({ 'x-type': 'AbilityDto' }),
-  })
-  .openapi({
-    title: 'PlayerRoundStatsDto',
-    required: ['puuid', 'kills', 'damage', 'score', 'economy', 'ability'],
-  })
-  .openapi('ValConsoleMatchV1PlayerRoundStatsDto')
-
-const ValConsoleMatchV1RoundResultDtoSchema = z
-  .object({
-    roundNum: z.int32().openapi({ 'x-type': 'int' }),
-    roundResult: z.string().openapi({ 'x-type': 'string' }),
-    roundCeremony: z.string().openapi({ 'x-type': 'string' }),
-    winningTeam: z.string().openapi({ 'x-type': 'string' }),
-    bombPlanter: z
-      .string()
-      .exactOptional()
-      .openapi({ 'x-type': 'string', description: 'PUUID of player' }),
-    bombDefuser: z
-      .string()
-      .exactOptional()
-      .openapi({ 'x-type': 'string', description: 'PUUID of player' }),
-    plantRoundTime: z.int32().openapi({ 'x-type': 'int' }),
-    plantPlayerLocations: z
-      .array(ValConsoleMatchV1PlayerLocationsDtoSchema)
-      .exactOptional()
-      .openapi({ 'x-type': 'List[PlayerLocationsDto]' }),
-    plantLocation: ValConsoleMatchV1LocationDtoSchema.openapi({ 'x-type': 'LocationDto' }),
-    plantSite: z.string().openapi({ 'x-type': 'string' }),
-    defuseRoundTime: z.int32().openapi({ 'x-type': 'int' }),
-    defusePlayerLocations: z
-      .array(ValConsoleMatchV1PlayerLocationsDtoSchema)
-      .exactOptional()
-      .openapi({ 'x-type': 'List[PlayerLocationsDto]' }),
-    defuseLocation: ValConsoleMatchV1LocationDtoSchema.openapi({ 'x-type': 'LocationDto' }),
-    playerStats: z
-      .array(ValConsoleMatchV1PlayerRoundStatsDtoSchema)
-      .openapi({ 'x-type': 'List[PlayerRoundStatsDto]' }),
-    roundResultCode: z.string().openapi({ 'x-type': 'string' }),
-  })
-  .openapi({
-    title: 'RoundResultDto',
-    required: [
-      'roundNum',
-      'roundResult',
-      'roundCeremony',
-      'winningTeam',
-      'plantRoundTime',
-      'plantLocation',
-      'plantSite',
-      'defuseRoundTime',
-      'defuseLocation',
-      'playerStats',
-      'roundResultCode',
-    ],
-  })
-  .openapi('ValConsoleMatchV1RoundResultDto')
-
-const ValConsoleMatchV1MatchDtoSchema = z
+const ValConsoleMatchV1MatchDtoSchema: z.ZodType<ValConsoleMatchV1MatchDtoType> = z
   .object({
     matchInfo: ValConsoleMatchV1MatchInfoDtoSchema.openapi({ 'x-type': 'MatchInfoDto' }),
     players: z.array(ValConsoleMatchV1PlayerDtoSchema).openapi({ 'x-type': 'List[PlayerDto]' }),
@@ -4857,7 +5244,7 @@ const ValConsoleRankedV1PlayerDtoSchema = z
   .openapi('ValConsoleRankedV1PlayerDto')
 
 const ValConsoleRankedV1TierDtoSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'TierDto', description: 'UNKNOWN TYPE.' })
   .openapi('ValConsoleRankedV1TierDto')
 
@@ -5046,311 +5433,7 @@ const ValContentV1ContentDtoSchema = z
   })
   .openapi('ValContentV1ContentDto')
 
-const ValMatchV1MatchInfoDtoSchema = z
-  .object({
-    matchId: z.string().openapi({ 'x-type': 'string' }),
-    mapId: z.string().openapi({ 'x-type': 'string' }),
-    gameVersion: z.string().openapi({ 'x-type': 'string' }),
-    gameLengthMillis: z.int32().exactOptional().openapi({ 'x-type': 'int' }),
-    region: z.string().openapi({ 'x-type': 'string' }),
-    gameStartMillis: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64', 'x-type': 'long' }),
-    provisioningFlowId: z.string().openapi({ 'x-type': 'string' }),
-    isCompleted: z.boolean().openapi({ 'x-type': 'boolean' }),
-    customGameName: z.string().openapi({ 'x-type': 'string' }),
-    queueId: z.string().openapi({ 'x-type': 'string' }),
-    gameMode: z.string().openapi({ 'x-type': 'string' }),
-    isRanked: z.boolean().openapi({ 'x-type': 'boolean' }),
-    seasonId: z.string().openapi({ 'x-type': 'string' }),
-    premierMatchInfo: z.object({}),
-  })
-  .openapi({
-    title: 'MatchInfoDto',
-    required: [
-      'matchId',
-      'mapId',
-      'gameVersion',
-      'region',
-      'gameStartMillis',
-      'provisioningFlowId',
-      'isCompleted',
-      'customGameName',
-      'queueId',
-      'gameMode',
-      'isRanked',
-      'seasonId',
-      'premierMatchInfo',
-    ],
-  })
-  .openapi('ValMatchV1MatchInfoDto')
-
-const ValMatchV1AbilityCastsDtoSchema = z
-  .object({
-    grenadeCasts: z.int32().openapi({ 'x-type': 'int' }),
-    ability1Casts: z.int32().openapi({ 'x-type': 'int' }),
-    ability2Casts: z.int32().openapi({ 'x-type': 'int' }),
-    ultimateCasts: z.int32().openapi({ 'x-type': 'int' }),
-  })
-  .openapi({
-    title: 'AbilityCastsDto',
-    required: ['grenadeCasts', 'ability1Casts', 'ability2Casts', 'ultimateCasts'],
-  })
-  .openapi('ValMatchV1AbilityCastsDto')
-
-const ValMatchV1PlayerStatsDtoSchema = z
-  .object({
-    score: z.int32().openapi({ 'x-type': 'int' }),
-    roundsPlayed: z.int32().openapi({ 'x-type': 'int' }),
-    kills: z.int32().openapi({ 'x-type': 'int' }),
-    deaths: z.int32().openapi({ 'x-type': 'int' }),
-    assists: z.int32().openapi({ 'x-type': 'int' }),
-    playtimeMillis: z.int32().openapi({ 'x-type': 'int' }),
-    abilityCasts: ValMatchV1AbilityCastsDtoSchema.exactOptional().openapi({
-      'x-type': 'AbilityCastsDto',
-    }),
-  })
-  .openapi({
-    title: 'PlayerStatsDto',
-    required: ['score', 'roundsPlayed', 'kills', 'deaths', 'assists', 'playtimeMillis'],
-  })
-  .openapi('ValMatchV1PlayerStatsDto')
-
-const ValMatchV1PlayerDtoSchema = z
-  .object({
-    puuid: z.string().openapi({ 'x-type': 'string' }),
-    gameName: z.string().openapi({ 'x-type': 'string' }),
-    tagLine: z.string().openapi({ 'x-type': 'string' }),
-    teamId: z.string().openapi({ 'x-type': 'string' }),
-    partyId: z.string().openapi({ 'x-type': 'string' }),
-    characterId: z.string().exactOptional().openapi({ 'x-type': 'string' }),
-    stats: ValMatchV1PlayerStatsDtoSchema.exactOptional().openapi({ 'x-type': 'PlayerStatsDto' }),
-    competitiveTier: z.int32().openapi({ 'x-type': 'int' }),
-    isObserver: z.boolean().openapi({ 'x-type': 'boolean' }),
-    playerCard: z.string().openapi({ 'x-type': 'string' }),
-    playerTitle: z.string().openapi({ 'x-type': 'string' }),
-    accountLevel: z.int32().openapi({ 'x-type': 'int' }),
-  })
-  .openapi({
-    title: 'PlayerDto',
-    required: [
-      'puuid',
-      'gameName',
-      'tagLine',
-      'teamId',
-      'partyId',
-      'competitiveTier',
-      'isObserver',
-      'playerCard',
-      'playerTitle',
-      'accountLevel',
-    ],
-  })
-  .openapi('ValMatchV1PlayerDto')
-
-const ValMatchV1CoachDtoSchema = z
-  .object({
-    puuid: z.string().openapi({ 'x-type': 'string' }),
-    teamId: z.string().openapi({ 'x-type': 'string' }),
-  })
-  .openapi({ title: 'CoachDto', required: ['puuid', 'teamId'] })
-  .openapi('ValMatchV1CoachDto')
-
-const ValMatchV1TeamDtoSchema = z
-  .object({
-    teamId: z
-      .string()
-      .openapi({
-        'x-type': 'string',
-        description:
-          'This is an arbitrary string. Red and Blue in bomb modes. The puuid of the player in deathmatch.',
-      }),
-    won: z.boolean().openapi({ 'x-type': 'boolean' }),
-    roundsPlayed: z.int32().openapi({ 'x-type': 'int' }),
-    roundsWon: z.int32().openapi({ 'x-type': 'int' }),
-    numPoints: z
-      .int32()
-      .openapi({
-        'x-type': 'int',
-        description: 'Team points scored. Number of kills in deathmatch.',
-      }),
-  })
-  .openapi({
-    title: 'TeamDto',
-    required: ['teamId', 'won', 'roundsPlayed', 'roundsWon', 'numPoints'],
-  })
-  .openapi('ValMatchV1TeamDto')
-
-const ValMatchV1LocationDtoSchema = z
-  .object({ x: z.int32().openapi({ 'x-type': 'int' }), y: z.int32().openapi({ 'x-type': 'int' }) })
-  .openapi({ title: 'LocationDto', required: ['x', 'y'] })
-  .openapi('ValMatchV1LocationDto')
-
-const ValMatchV1PlayerLocationsDtoSchema = z
-  .object({
-    puuid: z.string().openapi({ 'x-type': 'string' }),
-    viewRadians: z.float32().openapi({ 'x-type': 'float' }),
-    location: ValMatchV1LocationDtoSchema.openapi({ 'x-type': 'LocationDto' }),
-  })
-  .openapi({ title: 'PlayerLocationsDto', required: ['puuid', 'viewRadians', 'location'] })
-  .openapi('ValMatchV1PlayerLocationsDto')
-
-const ValMatchV1FinishingDamageDtoSchema = z
-  .object({
-    damageType: z.string().openapi({ 'x-type': 'string' }),
-    damageItem: z.string().openapi({ 'x-type': 'string' }),
-    isSecondaryFireMode: z.boolean().openapi({ 'x-type': 'boolean' }),
-  })
-  .openapi({
-    title: 'FinishingDamageDto',
-    required: ['damageType', 'damageItem', 'isSecondaryFireMode'],
-  })
-  .openapi('ValMatchV1FinishingDamageDto')
-
-const ValMatchV1KillDtoSchema = z
-  .object({
-    timeSinceGameStartMillis: z.int32().openapi({ 'x-type': 'int' }),
-    timeSinceRoundStartMillis: z.int32().openapi({ 'x-type': 'int' }),
-    killer: z.string().openapi({ 'x-type': 'string', description: 'PUUID' }),
-    victim: z.string().openapi({ 'x-type': 'string', description: 'PUUID' }),
-    victimLocation: ValMatchV1LocationDtoSchema.openapi({ 'x-type': 'LocationDto' }),
-    assistants: z
-      .array(z.string().openapi({ 'x-type': 'string' }))
-      .openapi({ 'x-type': 'List[string]', description: 'List of PUUIDs' }),
-    playerLocations: z
-      .array(ValMatchV1PlayerLocationsDtoSchema)
-      .openapi({ 'x-type': 'List[PlayerLocationsDto]' }),
-    finishingDamage: ValMatchV1FinishingDamageDtoSchema.openapi({ 'x-type': 'FinishingDamageDto' }),
-  })
-  .openapi({
-    title: 'KillDto',
-    required: [
-      'timeSinceGameStartMillis',
-      'timeSinceRoundStartMillis',
-      'killer',
-      'victim',
-      'victimLocation',
-      'assistants',
-      'playerLocations',
-      'finishingDamage',
-    ],
-  })
-  .openapi('ValMatchV1KillDto')
-
-const ValMatchV1DamageDtoSchema = z
-  .object({
-    receiver: z.string().openapi({ 'x-type': 'string', description: 'PUUID' }),
-    damage: z.int32().openapi({ 'x-type': 'int' }),
-    legshots: z.int32().openapi({ 'x-type': 'int' }),
-    bodyshots: z.int32().openapi({ 'x-type': 'int' }),
-    headshots: z.int32().openapi({ 'x-type': 'int' }),
-  })
-  .openapi({
-    title: 'DamageDto',
-    required: ['receiver', 'damage', 'legshots', 'bodyshots', 'headshots'],
-  })
-  .openapi('ValMatchV1DamageDto')
-
-const ValMatchV1EconomyDtoSchema = z
-  .object({
-    loadoutValue: z.int32().openapi({ 'x-type': 'int' }),
-    weapon: z.string().openapi({ 'x-type': 'string' }),
-    armor: z.string().openapi({ 'x-type': 'string' }),
-    remaining: z.int32().openapi({ 'x-type': 'int' }),
-    spent: z.int32().openapi({ 'x-type': 'int' }),
-  })
-  .openapi({
-    title: 'EconomyDto',
-    required: ['loadoutValue', 'weapon', 'armor', 'remaining', 'spent'],
-  })
-  .openapi('ValMatchV1EconomyDto')
-
-const ValMatchV1AbilityDtoSchema = z
-  .object({
-    grenadeEffects: z.string().exactOptional().openapi({ 'x-type': 'string' }),
-    ability1Effects: z.string().exactOptional().openapi({ 'x-type': 'string' }),
-    ability2Effects: z.string().exactOptional().openapi({ 'x-type': 'string' }),
-    ultimateEffects: z.string().exactOptional().openapi({ 'x-type': 'string' }),
-  })
-  .openapi({ title: 'AbilityDto', required: [] })
-  .openapi('ValMatchV1AbilityDto')
-
-const ValMatchV1PlayerRoundStatsDtoSchema = z
-  .object({
-    puuid: z.string().openapi({ 'x-type': 'string' }),
-    kills: z.array(ValMatchV1KillDtoSchema).openapi({ 'x-type': 'List[KillDto]' }),
-    damage: z.array(ValMatchV1DamageDtoSchema).openapi({ 'x-type': 'List[DamageDto]' }),
-    score: z.int32().openapi({ 'x-type': 'int' }),
-    economy: ValMatchV1EconomyDtoSchema.openapi({ 'x-type': 'EconomyDto' }),
-    ability: ValMatchV1AbilityDtoSchema.openapi({ 'x-type': 'AbilityDto' }),
-  })
-  .openapi({
-    title: 'PlayerRoundStatsDto',
-    required: ['puuid', 'kills', 'damage', 'score', 'economy', 'ability'],
-  })
-  .openapi('ValMatchV1PlayerRoundStatsDto')
-
-const ValMatchV1RoundResultDtoSchema = z
-  .object({
-    roundNum: z.int32().openapi({ 'x-type': 'int' }),
-    roundResult: z.string().openapi({ 'x-type': 'string' }),
-    roundCeremony: z.string().openapi({ 'x-type': 'string' }),
-    winningTeam: z.string().openapi({ 'x-type': 'string' }),
-    winningTeamRole: z.string().openapi({ 'x-type': 'string' }),
-    bombPlanter: z
-      .string()
-      .exactOptional()
-      .openapi({ 'x-type': 'string', description: 'PUUID of player' }),
-    bombDefuser: z
-      .string()
-      .exactOptional()
-      .openapi({ 'x-type': 'string', description: 'PUUID of player' }),
-    plantRoundTime: z.int32().openapi({ 'x-type': 'int' }),
-    plantPlayerLocations: z
-      .array(ValMatchV1PlayerLocationsDtoSchema)
-      .exactOptional()
-      .openapi({ 'x-type': 'List[PlayerLocationsDto]' }),
-    plantLocation: ValMatchV1LocationDtoSchema.openapi({ 'x-type': 'LocationDto' }),
-    plantSite: z.string().openapi({ 'x-type': 'string' }),
-    defuseRoundTime: z.int32().openapi({ 'x-type': 'int' }),
-    defusePlayerLocations: z
-      .array(ValMatchV1PlayerLocationsDtoSchema)
-      .exactOptional()
-      .openapi({ 'x-type': 'List[PlayerLocationsDto]' }),
-    defuseLocation: ValMatchV1LocationDtoSchema.openapi({ 'x-type': 'LocationDto' }),
-    playerStats: z
-      .array(ValMatchV1PlayerRoundStatsDtoSchema)
-      .openapi({ 'x-type': 'List[PlayerRoundStatsDto]' }),
-    roundResultCode: z.string().openapi({ 'x-type': 'string' }),
-  })
-  .openapi({
-    title: 'RoundResultDto',
-    required: [
-      'roundNum',
-      'roundResult',
-      'roundCeremony',
-      'winningTeam',
-      'winningTeamRole',
-      'plantRoundTime',
-      'plantLocation',
-      'plantSite',
-      'defuseRoundTime',
-      'defuseLocation',
-      'playerStats',
-      'roundResultCode',
-    ],
-  })
-  .openapi('ValMatchV1RoundResultDto')
-
-const ValMatchV1MatchDtoSchema = z
+const ValMatchV1MatchDtoSchema: z.ZodType<ValMatchV1MatchDtoType> = z
   .object({
     matchInfo: ValMatchV1MatchInfoDtoSchema.openapi({ 'x-type': 'MatchInfoDto' }),
     players: z.array(ValMatchV1PlayerDtoSchema).openapi({ 'x-type': 'List[PlayerDto]' }),

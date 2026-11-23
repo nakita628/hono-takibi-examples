@@ -206,6 +206,69 @@ const DocSchemaPostSchema = z
       })
       .openapi({ required: ['title', 'categorySlug'], title: '`categorySlug` Parameter' }),
   ])
+  .and(
+    z
+      .object({
+        title: z.string().exactOptional().openapi({ description: 'Title of the page.' }),
+        type: z
+          .enum(['basic', 'error', 'link'])
+          .exactOptional()
+          .openapi({
+            description:
+              'Type of the page. The available types all show up under the /docs/ URL path of your docs project (also known as the "guides" section). Can be "basic" (most common), "error" (page desribing an API error), or "link" (page that redirects to an external link).',
+          }),
+        body: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Body content of the page, formatted in [ReadMe-flavored Markdown](https://docs.readme.com/rdmd/docs).',
+          }),
+        category: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Category ID of the page, which you can get through [the **Get all categories** endpoint](https://docs.readme.com/main/reference/getcategories).',
+          }),
+        hidden: z.boolean().exactOptional().openapi({ description: 'Visibility of the page.' }),
+        order: z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The position of the page in your project sidebar.',
+            example: 999,
+          }),
+        parentDoc: z
+          .string()
+          .exactOptional()
+          .openapi({ description: "The parent doc's ID, if the page is a subpage." }),
+        error: z
+          .object({
+            code: z
+              .string()
+              .exactOptional()
+              .openapi({ description: 'The error code for docs with the "error" type.' }),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+        categorySlug: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The slug of the category this page is associated with. You can get this through [the **Get all categories** endpoint](https://docs.readme.com/main/reference/getcategories). This field is an alternative to the `category` field.',
+          }),
+        parentDocSlug: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'If this page is a subpage, this field will be the slug of the parent document. You can get this through https://docs.readme.com/main/reference/docs#getdoc. This field is an alternative to the `parentDoc` field.',
+          }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi('DocSchemaPost')
 
 const DocSchemaPutSchema = z
@@ -931,7 +994,7 @@ export const getApiRegistryUuidRoute = createRoute({
   responses: {
     200: {
       description: 'Successfully retrieved API registry entry.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     404: ErrorREGISTRYNOTFOUNDResponse,
   },

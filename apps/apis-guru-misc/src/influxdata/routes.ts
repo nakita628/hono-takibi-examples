@@ -1,5 +1,99 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const StatementSchema: z.ZodType<StatementType> = z
+  .lazy(() =>
+    z.xor([
+      BadStatementSchema,
+      VariableAssignmentSchema,
+      MemberAssignmentSchema,
+      ExpressionStatementSchema,
+      ReturnStatementSchema,
+      OptionStatementSchema,
+      BuiltinStatementSchema,
+      TestStatementSchema,
+    ]),
+  )
+  .openapi('Statement')
+
+type NodeTypeType = string
+
+const NodeTypeSchema: z.ZodType<NodeTypeType> = z
+  .string()
+  .openapi({ description: 'Type of AST node' })
+  .openapi('NodeType')
+
+type IdentifierType = { name?: string; type?: z.infer<typeof NodeTypeSchema> }
+
+const IdentifierSchema: z.ZodType<IdentifierType> = z
+  .object({ name: z.string().exactOptional(), type: NodeTypeSchema.exactOptional() })
+  .openapi({ description: 'A valid Flux identifier', required: [] })
+  .openapi('Identifier')
+
+type StringLiteralType = { type?: z.infer<typeof NodeTypeSchema>; value?: string }
+
+const StringLiteralSchema: z.ZodType<StringLiteralType> = z
+  .object({ type: NodeTypeSchema.exactOptional(), value: z.string().exactOptional() })
+  .openapi({ description: 'Expressions begin and end with double quote marks', required: [] })
+  .openapi('StringLiteral')
+
+const ImportDeclarationSchema = z
+  .object({
+    as: IdentifierSchema.exactOptional(),
+    path: StringLiteralSchema.exactOptional(),
+    type: NodeTypeSchema.exactOptional(),
+  })
+  .openapi({ description: 'Declares a package import', required: [] })
+  .openapi('ImportDeclaration')
+
+const PackageClauseSchema = z
+  .object({ name: IdentifierSchema.exactOptional(), type: NodeTypeSchema.exactOptional() })
+  .openapi({ description: 'Defines a package identifier', required: [] })
+  .openapi('PackageClause')
+
+type FileType = {
+  body?: z.infer<typeof StatementSchema>[]
+  imports?: z.infer<typeof ImportDeclarationSchema>[]
+  name?: string
+  package?: z.infer<typeof PackageClauseSchema>
+  type?: z.infer<typeof NodeTypeSchema>
+}
+
+const FileSchema: z.ZodType<FileType> = z
+  .object({
+    body: z
+      .array(StatementSchema)
+      .exactOptional()
+      .openapi({ description: 'List of Flux statements' }),
+    imports: z
+      .array(ImportDeclarationSchema)
+      .exactOptional()
+      .openapi({ description: 'A list of package imports' }),
+    name: z.string().exactOptional().openapi({ description: 'The name of the file.' }),
+    package: PackageClauseSchema.exactOptional(),
+    type: NodeTypeSchema.exactOptional(),
+  })
+  .openapi({ description: 'Represents a source from a single file', required: [] })
+  .openapi('File')
+
+type PackageType = {
+  files?: z.infer<typeof FileSchema>[]
+  package?: string
+  path?: string
+  type?: z.infer<typeof NodeTypeSchema>
+}
+
+const PackageSchema: z.ZodType<PackageType> = z
+  .object({
+    files: z.array(FileSchema).exactOptional().openapi({ description: 'Package files' }),
+    package: z.string().exactOptional().openapi({ description: 'Package name' }),
+    path: z.string().exactOptional().openapi({ description: 'Package import path' }),
+    type: NodeTypeSchema.exactOptional(),
+  })
+  .openapi({ description: 'Represents a complete package source tree.', required: [] })
+  .openapi('Package')
+
+type ASTResponseType = { ast?: z.infer<typeof PackageSchema> }
+
 const ExpressionSchema: z.ZodType<ExpressionType> = z
   .lazy(() =>
     z.xor([
@@ -30,13 +124,6 @@ const ExpressionSchema: z.ZodType<ExpressionType> = z
   )
   .openapi('Expression')
 
-type NodeTypeType = string
-
-const NodeTypeSchema: z.ZodType<NodeTypeType> = z
-  .string()
-  .openapi({ description: 'Type of AST node' })
-  .openapi('NodeType')
-
 type ArrayExpressionType = {
   elements?: z.infer<typeof ExpressionSchema>[]
   type?: z.infer<typeof NodeTypeSchema>
@@ -51,31 +138,9 @@ type BinaryExpressionType = {
   type?: z.infer<typeof NodeTypeSchema>
 }
 
-const StatementSchema: z.ZodType<StatementType> = z
-  .lazy(() =>
-    z.xor([
-      BadStatementSchema,
-      VariableAssignmentSchema,
-      MemberAssignmentSchema,
-      ExpressionStatementSchema,
-      ReturnStatementSchema,
-      OptionStatementSchema,
-      BuiltinStatementSchema,
-      TestStatementSchema,
-    ]),
-  )
-  .openapi('Statement')
-
 type BlockType = { body?: z.infer<typeof StatementSchema>[]; type?: z.infer<typeof NodeTypeSchema> }
 
 type BooleanLiteralType = { type?: z.infer<typeof NodeTypeSchema>; value?: boolean }
-
-type IdentifierType = { name?: string; type?: z.infer<typeof NodeTypeSchema> }
-
-const IdentifierSchema: z.ZodType<IdentifierType> = z
-  .object({ name: z.string().exactOptional(), type: NodeTypeSchema.exactOptional() })
-  .openapi({ description: 'A valid Flux identifier', required: [] })
-  .openapi('Identifier')
 
 type BuiltinStatementType = {
   id?: z.infer<typeof IdentifierSchema>
@@ -88,658 +153,24 @@ type CallExpressionType = {
   type?: z.infer<typeof NodeTypeSchema>
 }
 
-type ConditionalExpressionType = {
-  alternate?: z.infer<typeof ExpressionSchema>
-  consequent?: z.infer<typeof ExpressionSchema>
-  test?: z.infer<typeof ExpressionSchema>
-  type?: z.infer<typeof NodeTypeSchema>
-}
-
-type DateTimeLiteralType = { type?: z.infer<typeof NodeTypeSchema>; value?: string }
-
-const DictItemSchema: z.ZodType<DictItemType> = z
-  .lazy(() =>
-    z
-      .object({
-        key: ExpressionSchema.exactOptional(),
-        type: NodeTypeSchema.exactOptional(),
-        val: ExpressionSchema.exactOptional(),
-      })
-      .openapi({ description: 'A key/value pair in a dictionary', required: [] }),
-  )
-  .openapi('DictItem')
-
-type DictExpressionType = {
-  elements?: z.infer<typeof DictItemSchema>[]
-  type?: z.infer<typeof NodeTypeSchema>
-}
-
-type DictItemType = {
-  key?: z.infer<typeof ExpressionSchema>
-  type?: z.infer<typeof NodeTypeSchema>
-  val?: z.infer<typeof ExpressionSchema>
-}
-
-const DurationSchema = z
+const CellSchema = z
   .object({
-    magnitude: z.int().exactOptional(),
-    type: NodeTypeSchema.exactOptional(),
-    unit: z.string().exactOptional(),
-  })
-  .openapi({
-    description:
-      'A pair consisting of length of time and the unit of time measured. It is the atomic unit from which all duration literals are composed.',
-    required: [],
-  })
-  .openapi('Duration')
-
-type DurationLiteralType = {
-  type?: z.infer<typeof NodeTypeSchema>
-  values?: z.infer<typeof DurationSchema>[]
-}
-
-const ArrayExpressionSchema: z.ZodType<ArrayExpressionType> = z
-  .lazy(() =>
-    z
-      .object({
-        elements: z
-          .array(ExpressionSchema)
-          .exactOptional()
-          .openapi({ description: 'Elements of the array' }),
-        type: NodeTypeSchema.exactOptional(),
-      })
-      .openapi({
-        description: 'Used to create and directly specify the elements of an array object',
-        required: [],
-      }),
-  )
-  .openapi('ArrayExpression')
-
-const DictExpressionSchema: z.ZodType<DictExpressionType> = z
-  .lazy(() =>
-    z
-      .object({
-        elements: z
-          .array(DictItemSchema)
-          .exactOptional()
-          .openapi({ description: 'Elements of the dictionary' }),
-        type: NodeTypeSchema.exactOptional(),
-      })
-      .openapi({
-        description: 'Used to create and directly specify the elements of a dictionary',
-        required: [],
-      }),
-  )
-  .openapi('DictExpression')
-
-const FunctionExpressionSchema: z.ZodType<FunctionExpressionType> = z
-  .lazy(() =>
-    z
-      .object({
-        body: NodeSchema.exactOptional(),
-        params: z
-          .array(PropertySchema)
-          .exactOptional()
-          .openapi({ description: 'Function parameters' }),
-        type: NodeTypeSchema.exactOptional(),
-      })
-      .openapi({ description: 'Function expression', required: [] }),
-  )
-  .openapi('FunctionExpression')
-
-const BinaryExpressionSchema: z.ZodType<BinaryExpressionType> = z
-  .lazy(() =>
-    z
-      .object({
-        left: ExpressionSchema.exactOptional(),
-        operator: z.string().exactOptional(),
-        right: ExpressionSchema.exactOptional(),
-        type: NodeTypeSchema.exactOptional(),
-      })
-      .openapi({
-        description: 'uses binary operators to act on two operands in an expression',
-        required: [],
-      }),
-  )
-  .openapi('BinaryExpression')
-
-const CallExpressionSchema: z.ZodType<CallExpressionType> = z
-  .lazy(() =>
-    z
-      .object({
-        arguments: z
-          .array(ExpressionSchema)
-          .exactOptional()
-          .openapi({ description: 'Function arguments' }),
-        callee: ExpressionSchema.exactOptional(),
-        type: NodeTypeSchema.exactOptional(),
-      })
-      .openapi({ description: 'Represents a function call', required: [] }),
-  )
-  .openapi('CallExpression')
-
-const ConditionalExpressionSchema: z.ZodType<ConditionalExpressionType> = z
-  .lazy(() =>
-    z
-      .object({
-        alternate: ExpressionSchema.exactOptional(),
-        consequent: ExpressionSchema.exactOptional(),
-        test: ExpressionSchema.exactOptional(),
-        type: NodeTypeSchema.exactOptional(),
-      })
-      .openapi({
-        description:
-          'Selects one of two expressions, `Alternate` or `Consequent`, depending on a third boolean expression, `Test`',
-        required: [],
-      }),
-  )
-  .openapi('ConditionalExpression')
-
-const LogicalExpressionSchema: z.ZodType<LogicalExpressionType> = z
-  .lazy(() =>
-    z
-      .object({
-        left: ExpressionSchema.exactOptional(),
-        operator: z.string().exactOptional(),
-        right: ExpressionSchema.exactOptional(),
-        type: NodeTypeSchema.exactOptional(),
-      })
-      .openapi({
-        description:
-          'Represents the rule conditions that collectively evaluate to either true or false',
-        required: [],
-      }),
-  )
-  .openapi('LogicalExpression')
-
-const MemberExpressionSchema: z.ZodType<MemberExpressionType> = z
-  .lazy(() =>
-    z
-      .object({
-        object: ExpressionSchema.exactOptional(),
-        property: PropertyKeySchema.exactOptional(),
-        type: NodeTypeSchema.exactOptional(),
-      })
-      .openapi({ description: 'Represents accessing a property of an object', required: [] }),
-  )
-  .openapi('MemberExpression')
-
-const IndexExpressionSchema: z.ZodType<IndexExpressionType> = z
-  .lazy(() =>
-    z
-      .object({
-        array: ExpressionSchema.exactOptional(),
-        index: ExpressionSchema.exactOptional(),
-        type: NodeTypeSchema.exactOptional(),
-      })
-      .openapi({ description: 'Represents indexing into an array', required: [] }),
-  )
-  .openapi('IndexExpression')
-
-const ObjectExpressionSchema: z.ZodType<ObjectExpressionType> = z
-  .lazy(() =>
-    z
-      .object({
-        properties: z
-          .array(PropertySchema)
-          .exactOptional()
-          .openapi({ description: 'Object properties' }),
-        type: NodeTypeSchema.exactOptional(),
-      })
-      .openapi({
-        description: 'Allows the declaration of an anonymous object within a declaration',
-        required: [],
-      }),
-  )
-  .openapi('ObjectExpression')
-
-const ParenExpressionSchema: z.ZodType<ParenExpressionType> = z
-  .lazy(() =>
-    z
-      .object({
-        expression: ExpressionSchema.exactOptional(),
-        type: NodeTypeSchema.exactOptional(),
-      })
-      .openapi({ description: 'Represents an expression wrapped in parenthesis', required: [] }),
-  )
-  .openapi('ParenExpression')
-
-const PipeExpressionSchema: z.ZodType<PipeExpressionType> = z
-  .lazy(() =>
-    z
-      .object({
-        argument: ExpressionSchema.exactOptional(),
-        call: CallExpressionSchema.exactOptional(),
-        type: NodeTypeSchema.exactOptional(),
-      })
-      .openapi({ description: 'Call expression with pipe argument', required: [] }),
-  )
-  .openapi('PipeExpression')
-
-const UnaryExpressionSchema: z.ZodType<UnaryExpressionType> = z
-  .lazy(() =>
-    z
-      .object({
-        argument: ExpressionSchema.exactOptional(),
-        operator: z.string().exactOptional(),
-        type: NodeTypeSchema.exactOptional(),
-      })
-      .openapi({
-        description: 'Uses operators to act on a single operand in an expression',
-        required: [],
-      }),
-  )
-  .openapi('UnaryExpression')
-
-const BooleanLiteralSchema: z.ZodType<BooleanLiteralType> = z
-  .object({ type: NodeTypeSchema.exactOptional(), value: z.boolean().exactOptional() })
-  .openapi({ description: 'Represents boolean values', required: [] })
-  .openapi('BooleanLiteral')
-
-const DateTimeLiteralSchema: z.ZodType<DateTimeLiteralType> = z
-  .object({
-    type: NodeTypeSchema.exactOptional(),
-    value: z.iso.datetime({ offset: true }).exactOptional(),
-  })
-  .openapi({
-    description:
-      "Represents an instant in time with nanosecond precision using the syntax of golang's RFC3339 Nanosecond variant",
-    required: [],
-  })
-  .openapi('DateTimeLiteral')
-
-const DurationLiteralSchema: z.ZodType<DurationLiteralType> = z
-  .object({
-    type: NodeTypeSchema.exactOptional(),
-    values: z.array(DurationSchema).exactOptional().openapi({ description: 'Duration values' }),
-  })
-  .openapi({
-    description:
-      "Represents the elapsed time between two instants as an int64 nanosecond count with syntax of golang's time.Duration",
-    required: [],
-  })
-  .openapi('DurationLiteral')
-
-type FloatLiteralType = { type?: z.infer<typeof NodeTypeSchema>; value?: number }
-
-const FloatLiteralSchema: z.ZodType<FloatLiteralType> = z
-  .object({ type: NodeTypeSchema.exactOptional(), value: z.number().exactOptional() })
-  .openapi({
-    description:
-      'Represents floating point numbers according to the double representations defined by the IEEE-754-1985',
-    required: [],
-  })
-  .openapi('FloatLiteral')
-
-type IntegerLiteralType = { type?: z.infer<typeof NodeTypeSchema>; value?: string }
-
-const IntegerLiteralSchema: z.ZodType<IntegerLiteralType> = z
-  .object({ type: NodeTypeSchema.exactOptional(), value: z.string().exactOptional() })
-  .openapi({ description: 'Represents integer numbers', required: [] })
-  .openapi('IntegerLiteral')
-
-type PipeLiteralType = { type?: z.infer<typeof NodeTypeSchema> }
-
-const PipeLiteralSchema: z.ZodType<PipeLiteralType> = z
-  .object({ type: NodeTypeSchema.exactOptional() })
-  .openapi({
-    description:
-      'Represents a specialized literal value, indicating the left hand value of a pipe expression',
-    required: [],
-  })
-  .openapi('PipeLiteral')
-
-type RegexpLiteralType = { type?: z.infer<typeof NodeTypeSchema>; value?: string }
-
-const RegexpLiteralSchema: z.ZodType<RegexpLiteralType> = z
-  .object({ type: NodeTypeSchema.exactOptional(), value: z.string().exactOptional() })
-  .openapi({
-    description:
-      'Expressions begin and end with `/` and are regular expressions with syntax accepted by RE2',
-    required: [],
-  })
-  .openapi('RegexpLiteral')
-
-type StringLiteralType = { type?: z.infer<typeof NodeTypeSchema>; value?: string }
-
-const StringLiteralSchema: z.ZodType<StringLiteralType> = z
-  .object({ type: NodeTypeSchema.exactOptional(), value: z.string().exactOptional() })
-  .openapi({ description: 'Expressions begin and end with double quote marks', required: [] })
-  .openapi('StringLiteral')
-
-type UnsignedIntegerLiteralType = { type?: z.infer<typeof NodeTypeSchema>; value?: string }
-
-const UnsignedIntegerLiteralSchema: z.ZodType<UnsignedIntegerLiteralType> = z
-  .object({ type: NodeTypeSchema.exactOptional(), value: z.string().exactOptional() })
-  .openapi({ description: 'Represents integer numbers', required: [] })
-  .openapi('UnsignedIntegerLiteral')
-
-type ExpressionType =
-  | z.infer<typeof ArrayExpressionSchema>
-  | z.infer<typeof DictExpressionSchema>
-  | z.infer<typeof FunctionExpressionSchema>
-  | z.infer<typeof BinaryExpressionSchema>
-  | z.infer<typeof CallExpressionSchema>
-  | z.infer<typeof ConditionalExpressionSchema>
-  | z.infer<typeof LogicalExpressionSchema>
-  | z.infer<typeof MemberExpressionSchema>
-  | z.infer<typeof IndexExpressionSchema>
-  | z.infer<typeof ObjectExpressionSchema>
-  | z.infer<typeof ParenExpressionSchema>
-  | z.infer<typeof PipeExpressionSchema>
-  | z.infer<typeof UnaryExpressionSchema>
-  | z.infer<typeof BooleanLiteralSchema>
-  | z.infer<typeof DateTimeLiteralSchema>
-  | z.infer<typeof DurationLiteralSchema>
-  | z.infer<typeof FloatLiteralSchema>
-  | z.infer<typeof IntegerLiteralSchema>
-  | z.infer<typeof PipeLiteralSchema>
-  | z.infer<typeof RegexpLiteralSchema>
-  | z.infer<typeof StringLiteralSchema>
-  | z.infer<typeof UnsignedIntegerLiteralSchema>
-  | z.infer<typeof IdentifierSchema>
-
-type ExpressionStatementType = {
-  expression?: z.infer<typeof ExpressionSchema>
-  type?: z.infer<typeof NodeTypeSchema>
-}
-
-type FieldType = {
-  alias?: string
-  args?: FieldType[]
-  type?: 'func' | 'field' | 'integer' | 'number' | 'regex' | 'wildcard'
-  value?: string
-}
-
-const NodeSchema: z.ZodType<NodeType> = z
-  .lazy(() => z.xor([ExpressionSchema, BlockSchema]))
-  .openapi('Node')
-
-const PropertySchema: z.ZodType<PropertyType> = z
-  .lazy(() =>
-    z
-      .object({
-        key: PropertyKeySchema.exactOptional(),
-        type: NodeTypeSchema.exactOptional(),
-        value: ExpressionSchema.exactOptional(),
-      })
-      .openapi({ description: 'The value associated with a key', required: [] }),
-  )
-  .openapi('Property')
-
-type FunctionExpressionType = {
-  body?: z.infer<typeof NodeSchema>
-  params?: z.infer<typeof PropertySchema>[]
-  type?: z.infer<typeof NodeTypeSchema>
-}
-
-type HealthCheckType = {
-  checks?: HealthCheckType[]
-  commit?: string
-  message?: string
-  name: string
-  status: 'pass' | 'fail'
-  version?: string
-}
-
-type IndexExpressionType = {
-  array?: z.infer<typeof ExpressionSchema>
-  index?: z.infer<typeof ExpressionSchema>
-  type?: z.infer<typeof NodeTypeSchema>
-}
-
-type LogicalExpressionType = {
-  left?: z.infer<typeof ExpressionSchema>
-  operator?: string
-  right?: z.infer<typeof ExpressionSchema>
-  type?: z.infer<typeof NodeTypeSchema>
-}
-
-type MemberAssignmentType = {
-  init?: z.infer<typeof ExpressionSchema>
-  member?: z.infer<typeof MemberExpressionSchema>
-  type?: z.infer<typeof NodeTypeSchema>
-}
-
-type PropertyKeyType = z.infer<typeof IdentifierSchema> | z.infer<typeof StringLiteralSchema>
-
-const PropertyKeySchema: z.ZodType<PropertyKeyType> = z
-  .xor([IdentifierSchema, StringLiteralSchema])
-  .openapi('PropertyKey')
-
-type MemberExpressionType = {
-  object?: z.infer<typeof ExpressionSchema>
-  property?: z.infer<typeof PropertyKeySchema>
-  type?: z.infer<typeof NodeTypeSchema>
-}
-
-const BlockSchema: z.ZodType<BlockType> = z
-  .lazy(() =>
-    z
-      .object({
-        body: z.array(StatementSchema).exactOptional().openapi({ description: 'Block body' }),
-        type: NodeTypeSchema.exactOptional(),
-      })
-      .openapi({ description: 'A set of statements', required: [] }),
-  )
-  .openapi('Block')
-
-type NodeType = z.infer<typeof ExpressionSchema> | z.infer<typeof BlockSchema>
-
-type ObjectExpressionType = {
-  properties?: z.infer<typeof PropertySchema>[]
-  type?: z.infer<typeof NodeTypeSchema>
-}
-
-const VariableAssignmentSchema: z.ZodType<VariableAssignmentType> = z
-  .lazy(() =>
-    z
-      .object({
-        id: IdentifierSchema.exactOptional(),
-        init: ExpressionSchema.exactOptional(),
-        type: NodeTypeSchema.exactOptional(),
-      })
-      .openapi({ description: 'Represents the declaration of a variable', required: [] }),
-  )
-  .openapi('VariableAssignment')
-
-const MemberAssignmentSchema: z.ZodType<MemberAssignmentType> = z
-  .lazy(() =>
-    z
-      .object({
-        init: ExpressionSchema.exactOptional(),
-        member: MemberExpressionSchema.exactOptional(),
-        type: NodeTypeSchema.exactOptional(),
-      })
-      .openapi({ description: 'Object property assignment', required: [] }),
-  )
-  .openapi('MemberAssignment')
-
-type OptionStatementType = {
-  assignment?: z.infer<typeof VariableAssignmentSchema> | z.infer<typeof MemberAssignmentSchema>
-  type?: z.infer<typeof NodeTypeSchema>
-}
-
-type ParenExpressionType = {
-  expression?: z.infer<typeof ExpressionSchema>
-  type?: z.infer<typeof NodeTypeSchema>
-}
-
-type PipeExpressionType = {
-  argument?: z.infer<typeof ExpressionSchema>
-  call?: z.infer<typeof CallExpressionSchema>
-  type?: z.infer<typeof NodeTypeSchema>
-}
-
-type PropertyType = {
-  key?: z.infer<typeof PropertyKeySchema>
-  type?: z.infer<typeof NodeTypeSchema>
-  value?: z.infer<typeof ExpressionSchema>
-}
-
-type ReturnStatementType = {
-  argument?: z.infer<typeof ExpressionSchema>
-  type?: z.infer<typeof NodeTypeSchema>
-}
-
-const BadStatementSchema: z.ZodType<BadStatementType> = z
-  .object({
-    text: z.string().exactOptional().openapi({ description: 'Raw source text' }),
-    type: NodeTypeSchema.exactOptional(),
-  })
-  .openapi({
-    description: 'A placeholder for statements for which no correct statement nodes can be created',
-    required: [],
-  })
-  .openapi('BadStatement')
-
-const ExpressionStatementSchema: z.ZodType<ExpressionStatementType> = z
-  .lazy(() =>
-    z
-      .object({
-        expression: ExpressionSchema.exactOptional(),
-        type: NodeTypeSchema.exactOptional(),
-      })
-      .openapi({
-        description:
-          'May consist of an expression that does not return a value and is executed solely for its side-effects',
-        required: [],
-      }),
-  )
-  .openapi('ExpressionStatement')
-
-const ReturnStatementSchema: z.ZodType<ReturnStatementType> = z
-  .lazy(() =>
-    z
-      .object({ argument: ExpressionSchema.exactOptional(), type: NodeTypeSchema.exactOptional() })
-      .openapi({ description: 'Defines an expression to return', required: [] }),
-  )
-  .openapi('ReturnStatement')
-
-const OptionStatementSchema: z.ZodType<OptionStatementType> = z
-  .lazy(() =>
-    z
-      .object({
-        assignment: z.xor([VariableAssignmentSchema, MemberAssignmentSchema]).exactOptional(),
-        type: NodeTypeSchema.exactOptional(),
-      })
-      .openapi({ description: 'A single variable declaration', required: [] }),
-  )
-  .openapi('OptionStatement')
-
-const BuiltinStatementSchema: z.ZodType<BuiltinStatementType> = z
-  .object({ id: IdentifierSchema.exactOptional(), type: NodeTypeSchema.exactOptional() })
-  .openapi({ description: 'Declares a builtin identifier and its type', required: [] })
-  .openapi('BuiltinStatement')
-
-const TestStatementSchema: z.ZodType<TestStatementType> = z
-  .lazy(() =>
-    z
-      .object({
-        assignment: VariableAssignmentSchema.exactOptional(),
-        type: NodeTypeSchema.exactOptional(),
-      })
-      .openapi({ description: 'Declares a Flux test case', required: [] }),
-  )
-  .openapi('TestStatement')
-
-type StatementType =
-  | z.infer<typeof BadStatementSchema>
-  | z.infer<typeof VariableAssignmentSchema>
-  | z.infer<typeof MemberAssignmentSchema>
-  | z.infer<typeof ExpressionStatementSchema>
-  | z.infer<typeof ReturnStatementSchema>
-  | z.infer<typeof OptionStatementSchema>
-  | z.infer<typeof BuiltinStatementSchema>
-  | z.infer<typeof TestStatementSchema>
-
-type TestStatementType = {
-  assignment?: z.infer<typeof VariableAssignmentSchema>
-  type?: z.infer<typeof NodeTypeSchema>
-}
-
-const CheckStatusLevelSchema = z
-  .enum(['UNKNOWN', 'OK', 'INFO', 'CRIT', 'WARN'])
-  .openapi({ description: 'The state to record if check matches a criteria.' })
-  .openapi('CheckStatusLevel')
-
-const ThresholdBaseSchema = z
-  .object({
-    allValues: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'If true, only alert if all values meet threshold.' }),
-    level: CheckStatusLevelSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ThresholdBase')
-
-const GreaterThresholdSchema = ThresholdBaseSchema.and(
-  z
-    .object({ type: z.literal('greater'), value: z.float32() })
-    .openapi({ required: ['type', 'value'] }),
-).openapi('GreaterThreshold')
-
-const LesserThresholdSchema = ThresholdBaseSchema.and(
-  z
-    .object({ type: z.literal('lesser'), value: z.float32() })
-    .openapi({ required: ['type', 'value'] }),
-).openapi('LesserThreshold')
-
-const RangeThresholdSchema = ThresholdBaseSchema.and(
-  z
-    .object({ max: z.float32(), min: z.float32(), type: z.literal('range'), within: z.boolean() })
-    .openapi({ required: ['type', 'min', 'max', 'within'] }),
-).openapi('RangeThreshold')
-
-type ThresholdType =
-  | z.infer<typeof GreaterThresholdSchema>
-  | z.infer<typeof LesserThresholdSchema>
-  | z.infer<typeof RangeThresholdSchema>
-
-type UnaryExpressionType = {
-  argument?: z.infer<typeof ExpressionSchema>
-  operator?: string
-  type?: z.infer<typeof NodeTypeSchema>
-}
-
-type VariableAssignmentType = {
-  id?: z.infer<typeof IdentifierSchema>
-  init?: z.infer<typeof ExpressionSchema>
-  type?: z.infer<typeof NodeTypeSchema>
-}
-
-const QueryVariablePropertiesSchema = z
-  .object({
-    type: z.literal('query').exactOptional(),
-    values: z
-      .object({ language: z.string().exactOptional(), query: z.string().exactOptional() })
+    h: z.int32().exactOptional(),
+    id: z.string().exactOptional(),
+    links: z
+      .object({ self: z.string().exactOptional(), view: z.string().exactOptional() })
       .exactOptional()
       .openapi({ required: [] }),
+    viewID: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The reference to a view from the views API.' }),
+    w: z.int32().exactOptional(),
+    x: z.int32().exactOptional(),
+    y: z.int32().exactOptional(),
   })
   .openapi({ required: [] })
-  .openapi('QueryVariableProperties')
-
-const ConstantVariablePropertiesSchema = z
-  .object({
-    type: z.literal('constant').exactOptional(),
-    values: z.array(z.string()).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ConstantVariableProperties')
-
-const MapVariablePropertiesSchema = z
-  .object({
-    type: z.literal('map').exactOptional(),
-    values: z.record(z.string(), z.string()).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('MapVariableProperties')
-
-type VariablePropertiesType =
-  | z.infer<typeof QueryVariablePropertiesSchema>
-  | z.infer<typeof ConstantVariablePropertiesSchema>
-  | z.infer<typeof MapVariablePropertiesSchema>
+  .openapi('Cell')
 
 const AxisScaleSchema = z
   .enum(['log', 'linear'])
@@ -1280,6 +711,11 @@ const CheckBaseSchema = z
   .openapi({ required: ['name', 'orgID', 'query'] })
   .openapi('CheckBase')
 
+const CheckStatusLevelSchema = z
+  .enum(['UNKNOWN', 'OK', 'INFO', 'CRIT', 'WARN'])
+  .openapi({ description: 'The state to record if check matches a criteria.' })
+  .openapi('CheckStatusLevel')
+
 const DeadmanCheckSchema = CheckBaseSchema.and(
   z
     .object({
@@ -1321,21 +757,47 @@ const DeadmanCheckSchema = CheckBaseSchema.and(
     .openapi({ required: ['type'] }),
 ).openapi('DeadmanCheck')
 
-const ThresholdSchema: z.ZodType<ThresholdType> = z
-  .lazy(() =>
-    z
-      .xor([GreaterThresholdSchema, LesserThresholdSchema, RangeThresholdSchema])
-      .openapi({
-        discriminator: {
-          mapping: {
-            greater: '#/components/schemas/GreaterThreshold',
-            lesser: '#/components/schemas/LesserThreshold',
-            range: '#/components/schemas/RangeThreshold',
-          },
-          propertyName: 'type',
-        },
-      }),
-  )
+const ThresholdBaseSchema = z
+  .object({
+    allValues: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'If true, only alert if all values meet threshold.' }),
+    level: CheckStatusLevelSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ThresholdBase')
+
+const GreaterThresholdSchema = ThresholdBaseSchema.and(
+  z
+    .object({ type: z.literal('greater'), value: z.float32() })
+    .openapi({ required: ['type', 'value'] }),
+).openapi('GreaterThreshold')
+
+const LesserThresholdSchema = ThresholdBaseSchema.and(
+  z
+    .object({ type: z.literal('lesser'), value: z.float32() })
+    .openapi({ required: ['type', 'value'] }),
+).openapi('LesserThreshold')
+
+const RangeThresholdSchema = ThresholdBaseSchema.and(
+  z
+    .object({ max: z.float32(), min: z.float32(), type: z.literal('range'), within: z.boolean() })
+    .openapi({ required: ['type', 'min', 'max', 'within'] }),
+).openapi('RangeThreshold')
+
+const ThresholdSchema = z
+  .xor([GreaterThresholdSchema, LesserThresholdSchema, RangeThresholdSchema])
+  .openapi({
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        greater: '#/components/schemas/GreaterThreshold',
+        lesser: '#/components/schemas/LesserThreshold',
+        range: '#/components/schemas/RangeThreshold',
+      },
+    },
+  })
   .openapi('Threshold')
 
 const ThresholdCheckSchema = CheckBaseSchema.and(
@@ -1372,12 +834,12 @@ const CheckDiscriminatorSchema = z
   .xor([DeadmanCheckSchema, ThresholdCheckSchema, CustomCheckSchema])
   .openapi({
     discriminator: {
+      propertyName: 'type',
       mapping: {
         custom: '#/components/schemas/CustomCheck',
         deadman: '#/components/schemas/DeadmanCheck',
         threshold: '#/components/schemas/ThresholdCheck',
       },
-      propertyName: 'type',
     },
   })
   .openapi('CheckDiscriminator')
@@ -1681,7 +1143,7 @@ const GeoPointMapViewLayerSchema = GeoViewLayerPropertiesSchema.and(
 
 const GeoTrackMapViewLayerSchema = GeoViewLayerPropertiesSchema.and(
   z
-    .object({})
+    .looseObject({})
     .openapi({ required: ['trackWidth', 'speed', 'randomColors', 'trackPointVisualization'] }),
 )
   .and(
@@ -1772,63 +1234,1283 @@ const GeoViewPropertiesSchema = z
   })
   .openapi('GeoViewProperties')
 
-type ViewPropertiesType =
-  | z.infer<typeof LinePlusSingleStatPropertiesSchema>
-  | z.infer<typeof XYViewPropertiesSchema>
-  | z.infer<typeof SingleStatViewPropertiesSchema>
-  | z.infer<typeof HistogramViewPropertiesSchema>
-  | z.infer<typeof GaugeViewPropertiesSchema>
-  | z.infer<typeof TableViewPropertiesSchema>
-  | z.infer<typeof MarkdownViewPropertiesSchema>
-  | z.infer<typeof CheckViewPropertiesSchema>
-  | z.infer<typeof ScatterViewPropertiesSchema>
-  | z.infer<typeof HeatmapViewPropertiesSchema>
-  | z.infer<typeof MosaicViewPropertiesSchema>
-  | z.infer<typeof BandViewPropertiesSchema>
-  | z.infer<typeof GeoViewPropertiesSchema>
+const ViewPropertiesSchema = z
+  .xor([
+    LinePlusSingleStatPropertiesSchema,
+    XYViewPropertiesSchema,
+    SingleStatViewPropertiesSchema,
+    HistogramViewPropertiesSchema,
+    GaugeViewPropertiesSchema,
+    TableViewPropertiesSchema,
+    MarkdownViewPropertiesSchema,
+    CheckViewPropertiesSchema,
+    ScatterViewPropertiesSchema,
+    HeatmapViewPropertiesSchema,
+    MosaicViewPropertiesSchema,
+    BandViewPropertiesSchema,
+    GeoViewPropertiesSchema,
+  ])
+  .openapi('ViewProperties')
 
-const ImportDeclarationSchema = z
+type CellWithViewPropertiesType = z.infer<typeof CellSchema> & {
+  name?: string
+  properties?: z.infer<typeof ViewPropertiesSchema>
+}
+
+const CellWithViewPropertiesSchema: z.ZodType<CellWithViewPropertiesType> = CellSchema.and(
+  z
+    .object({ name: z.string().exactOptional(), properties: ViewPropertiesSchema.exactOptional() })
+    .openapi({ required: [] }),
+).openapi('CellWithViewProperties')
+
+type CellsWithViewPropertiesType = z.infer<typeof CellWithViewPropertiesSchema>[]
+
+const LinksSchema = z
+  .object({ next: LinkSchema.exactOptional(), prev: LinkSchema.exactOptional(), self: LinkSchema })
+  .openapi({ required: ['self'] })
+  .openapi('Links')
+
+type ChecksType = { checks?: z.infer<typeof CheckSchema>[]; links?: z.infer<typeof LinksSchema> }
+
+type ConditionalExpressionType = {
+  alternate?: z.infer<typeof ExpressionSchema>
+  consequent?: z.infer<typeof ExpressionSchema>
+  test?: z.infer<typeof ExpressionSchema>
+  type?: z.infer<typeof NodeTypeSchema>
+}
+
+const CreateDashboardRequestSchema = z
   .object({
-    as: IdentifierSchema.exactOptional(),
-    path: StringLiteralSchema.exactOptional(),
-    type: NodeTypeSchema.exactOptional(),
-  })
-  .openapi({ description: 'Declares a package import', required: [] })
-  .openapi('ImportDeclaration')
-
-const PackageClauseSchema = z
-  .object({ name: IdentifierSchema.exactOptional(), type: NodeTypeSchema.exactOptional() })
-  .openapi({ description: 'Defines a package identifier', required: [] })
-  .openapi('PackageClause')
-
-const FileSchema = z
-  .object({
-    body: z
-      .array(StatementSchema)
+    description: z
+      .string()
       .exactOptional()
-      .openapi({ description: 'List of Flux statements' }),
-    imports: z
-      .array(ImportDeclarationSchema)
-      .exactOptional()
-      .openapi({ description: 'A list of package imports' }),
-    name: z.string().exactOptional().openapi({ description: 'The name of the file.' }),
-    package: PackageClauseSchema.exactOptional(),
-    type: NodeTypeSchema.exactOptional(),
+      .openapi({ description: 'The user-facing description of the dashboard.' }),
+    name: z.string().openapi({ description: 'The user-facing name of the dashboard.' }),
+    orgID: z
+      .string()
+      .openapi({ description: 'The ID of the organization that owns the dashboard.' }),
   })
-  .openapi({ description: 'Represents a source from a single file', required: [] })
-  .openapi('File')
+  .openapi({ required: ['orgID', 'name'] })
+  .openapi('CreateDashboardRequest')
 
-const PackageSchema = z
+const CellsWithViewPropertiesSchema: z.ZodType<CellsWithViewPropertiesType> = z
+  .array(CellWithViewPropertiesSchema)
+  .openapi('CellsWithViewProperties')
+
+type DashboardWithViewPropertiesType = z.infer<typeof CreateDashboardRequestSchema> & {
+  cells?: z.infer<typeof CellsWithViewPropertiesSchema>
+  id?: string
+  labels?: z.infer<typeof LabelsSchema>
+  links?: {
+    cells?: z.infer<typeof LinkSchema>
+    labels?: z.infer<typeof LinkSchema>
+    members?: z.infer<typeof LinkSchema>
+    org?: z.infer<typeof LinkSchema>
+    owners?: z.infer<typeof LinkSchema>
+    self?: z.infer<typeof LinkSchema>
+  }
+  meta?: { createdAt?: string; updatedAt?: string }
+}
+
+type DateTimeLiteralType = { type?: z.infer<typeof NodeTypeSchema>; value?: string }
+
+const DictItemSchema: z.ZodType<DictItemType> = z
+  .lazy(() =>
+    z
+      .object({
+        key: ExpressionSchema.exactOptional(),
+        type: NodeTypeSchema.exactOptional(),
+        val: ExpressionSchema.exactOptional(),
+      })
+      .openapi({ description: 'A key/value pair in a dictionary', required: [] }),
+  )
+  .openapi('DictItem')
+
+type DictExpressionType = {
+  elements?: z.infer<typeof DictItemSchema>[]
+  type?: z.infer<typeof NodeTypeSchema>
+}
+
+type DictItemType = {
+  key?: z.infer<typeof ExpressionSchema>
+  type?: z.infer<typeof NodeTypeSchema>
+  val?: z.infer<typeof ExpressionSchema>
+}
+
+const DurationSchema = z
   .object({
-    files: z.array(FileSchema).exactOptional().openapi({ description: 'Package files' }),
-    package: z.string().exactOptional().openapi({ description: 'Package name' }),
-    path: z.string().exactOptional().openapi({ description: 'Package import path' }),
+    magnitude: z.int().exactOptional(),
+    type: NodeTypeSchema.exactOptional(),
+    unit: z.string().exactOptional(),
+  })
+  .openapi({
+    description:
+      'A pair consisting of length of time and the unit of time measured. It is the atomic unit from which all duration literals are composed.',
+    required: [],
+  })
+  .openapi('Duration')
+
+type DurationLiteralType = {
+  type?: z.infer<typeof NodeTypeSchema>
+  values?: z.infer<typeof DurationSchema>[]
+}
+
+const ArrayExpressionSchema: z.ZodType<ArrayExpressionType> = z
+  .lazy(() =>
+    z
+      .object({
+        elements: z
+          .array(ExpressionSchema)
+          .exactOptional()
+          .openapi({ description: 'Elements of the array' }),
+        type: NodeTypeSchema.exactOptional(),
+      })
+      .openapi({
+        description: 'Used to create and directly specify the elements of an array object',
+        required: [],
+      }),
+  )
+  .openapi('ArrayExpression')
+
+const DictExpressionSchema: z.ZodType<DictExpressionType> = z
+  .lazy(() =>
+    z
+      .object({
+        elements: z
+          .array(DictItemSchema)
+          .exactOptional()
+          .openapi({ description: 'Elements of the dictionary' }),
+        type: NodeTypeSchema.exactOptional(),
+      })
+      .openapi({
+        description: 'Used to create and directly specify the elements of a dictionary',
+        required: [],
+      }),
+  )
+  .openapi('DictExpression')
+
+const FunctionExpressionSchema: z.ZodType<FunctionExpressionType> = z
+  .lazy(() =>
+    z
+      .object({
+        body: NodeSchema.exactOptional(),
+        params: z
+          .array(PropertySchema)
+          .exactOptional()
+          .openapi({ description: 'Function parameters' }),
+        type: NodeTypeSchema.exactOptional(),
+      })
+      .openapi({ description: 'Function expression', required: [] }),
+  )
+  .openapi('FunctionExpression')
+
+const BinaryExpressionSchema: z.ZodType<BinaryExpressionType> = z
+  .lazy(() =>
+    z
+      .object({
+        left: ExpressionSchema.exactOptional(),
+        operator: z.string().exactOptional(),
+        right: ExpressionSchema.exactOptional(),
+        type: NodeTypeSchema.exactOptional(),
+      })
+      .openapi({
+        description: 'uses binary operators to act on two operands in an expression',
+        required: [],
+      }),
+  )
+  .openapi('BinaryExpression')
+
+const CallExpressionSchema: z.ZodType<CallExpressionType> = z
+  .lazy(() =>
+    z
+      .object({
+        arguments: z
+          .array(ExpressionSchema)
+          .exactOptional()
+          .openapi({ description: 'Function arguments' }),
+        callee: ExpressionSchema.exactOptional(),
+        type: NodeTypeSchema.exactOptional(),
+      })
+      .openapi({ description: 'Represents a function call', required: [] }),
+  )
+  .openapi('CallExpression')
+
+const ConditionalExpressionSchema: z.ZodType<ConditionalExpressionType> = z
+  .lazy(() =>
+    z
+      .object({
+        alternate: ExpressionSchema.exactOptional(),
+        consequent: ExpressionSchema.exactOptional(),
+        test: ExpressionSchema.exactOptional(),
+        type: NodeTypeSchema.exactOptional(),
+      })
+      .openapi({
+        description:
+          'Selects one of two expressions, `Alternate` or `Consequent`, depending on a third boolean expression, `Test`',
+        required: [],
+      }),
+  )
+  .openapi('ConditionalExpression')
+
+const LogicalExpressionSchema: z.ZodType<LogicalExpressionType> = z
+  .lazy(() =>
+    z
+      .object({
+        left: ExpressionSchema.exactOptional(),
+        operator: z.string().exactOptional(),
+        right: ExpressionSchema.exactOptional(),
+        type: NodeTypeSchema.exactOptional(),
+      })
+      .openapi({
+        description:
+          'Represents the rule conditions that collectively evaluate to either true or false',
+        required: [],
+      }),
+  )
+  .openapi('LogicalExpression')
+
+const MemberExpressionSchema: z.ZodType<MemberExpressionType> = z
+  .lazy(() =>
+    z
+      .object({
+        object: ExpressionSchema.exactOptional(),
+        property: PropertyKeySchema.exactOptional(),
+        type: NodeTypeSchema.exactOptional(),
+      })
+      .openapi({ description: 'Represents accessing a property of an object', required: [] }),
+  )
+  .openapi('MemberExpression')
+
+const IndexExpressionSchema: z.ZodType<IndexExpressionType> = z
+  .lazy(() =>
+    z
+      .object({
+        array: ExpressionSchema.exactOptional(),
+        index: ExpressionSchema.exactOptional(),
+        type: NodeTypeSchema.exactOptional(),
+      })
+      .openapi({ description: 'Represents indexing into an array', required: [] }),
+  )
+  .openapi('IndexExpression')
+
+const ObjectExpressionSchema: z.ZodType<ObjectExpressionType> = z
+  .lazy(() =>
+    z
+      .object({
+        properties: z
+          .array(PropertySchema)
+          .exactOptional()
+          .openapi({ description: 'Object properties' }),
+        type: NodeTypeSchema.exactOptional(),
+      })
+      .openapi({
+        description: 'Allows the declaration of an anonymous object within a declaration',
+        required: [],
+      }),
+  )
+  .openapi('ObjectExpression')
+
+const ParenExpressionSchema: z.ZodType<ParenExpressionType> = z
+  .lazy(() =>
+    z
+      .object({
+        expression: ExpressionSchema.exactOptional(),
+        type: NodeTypeSchema.exactOptional(),
+      })
+      .openapi({ description: 'Represents an expression wrapped in parenthesis', required: [] }),
+  )
+  .openapi('ParenExpression')
+
+const PipeExpressionSchema: z.ZodType<PipeExpressionType> = z
+  .lazy(() =>
+    z
+      .object({
+        argument: ExpressionSchema.exactOptional(),
+        call: CallExpressionSchema.exactOptional(),
+        type: NodeTypeSchema.exactOptional(),
+      })
+      .openapi({ description: 'Call expression with pipe argument', required: [] }),
+  )
+  .openapi('PipeExpression')
+
+const UnaryExpressionSchema: z.ZodType<UnaryExpressionType> = z
+  .lazy(() =>
+    z
+      .object({
+        argument: ExpressionSchema.exactOptional(),
+        operator: z.string().exactOptional(),
+        type: NodeTypeSchema.exactOptional(),
+      })
+      .openapi({
+        description: 'Uses operators to act on a single operand in an expression',
+        required: [],
+      }),
+  )
+  .openapi('UnaryExpression')
+
+const BooleanLiteralSchema: z.ZodType<BooleanLiteralType> = z
+  .object({ type: NodeTypeSchema.exactOptional(), value: z.boolean().exactOptional() })
+  .openapi({ description: 'Represents boolean values', required: [] })
+  .openapi('BooleanLiteral')
+
+const DateTimeLiteralSchema: z.ZodType<DateTimeLiteralType> = z
+  .object({
+    type: NodeTypeSchema.exactOptional(),
+    value: z.iso.datetime({ offset: true }).exactOptional(),
+  })
+  .openapi({
+    description:
+      "Represents an instant in time with nanosecond precision using the syntax of golang's RFC3339 Nanosecond variant",
+    required: [],
+  })
+  .openapi('DateTimeLiteral')
+
+const DurationLiteralSchema: z.ZodType<DurationLiteralType> = z
+  .object({
+    type: NodeTypeSchema.exactOptional(),
+    values: z.array(DurationSchema).exactOptional().openapi({ description: 'Duration values' }),
+  })
+  .openapi({
+    description:
+      "Represents the elapsed time between two instants as an int64 nanosecond count with syntax of golang's time.Duration",
+    required: [],
+  })
+  .openapi('DurationLiteral')
+
+type FloatLiteralType = { type?: z.infer<typeof NodeTypeSchema>; value?: number }
+
+const FloatLiteralSchema: z.ZodType<FloatLiteralType> = z
+  .object({ type: NodeTypeSchema.exactOptional(), value: z.number().exactOptional() })
+  .openapi({
+    description:
+      'Represents floating point numbers according to the double representations defined by the IEEE-754-1985',
+    required: [],
+  })
+  .openapi('FloatLiteral')
+
+type IntegerLiteralType = { type?: z.infer<typeof NodeTypeSchema>; value?: string }
+
+const IntegerLiteralSchema: z.ZodType<IntegerLiteralType> = z
+  .object({ type: NodeTypeSchema.exactOptional(), value: z.string().exactOptional() })
+  .openapi({ description: 'Represents integer numbers', required: [] })
+  .openapi('IntegerLiteral')
+
+type PipeLiteralType = { type?: z.infer<typeof NodeTypeSchema> }
+
+const PipeLiteralSchema: z.ZodType<PipeLiteralType> = z
+  .object({ type: NodeTypeSchema.exactOptional() })
+  .openapi({
+    description:
+      'Represents a specialized literal value, indicating the left hand value of a pipe expression',
+    required: [],
+  })
+  .openapi('PipeLiteral')
+
+type RegexpLiteralType = { type?: z.infer<typeof NodeTypeSchema>; value?: string }
+
+const RegexpLiteralSchema: z.ZodType<RegexpLiteralType> = z
+  .object({ type: NodeTypeSchema.exactOptional(), value: z.string().exactOptional() })
+  .openapi({
+    description:
+      'Expressions begin and end with `/` and are regular expressions with syntax accepted by RE2',
+    required: [],
+  })
+  .openapi('RegexpLiteral')
+
+type UnsignedIntegerLiteralType = { type?: z.infer<typeof NodeTypeSchema>; value?: string }
+
+const UnsignedIntegerLiteralSchema: z.ZodType<UnsignedIntegerLiteralType> = z
+  .object({ type: NodeTypeSchema.exactOptional(), value: z.string().exactOptional() })
+  .openapi({ description: 'Represents integer numbers', required: [] })
+  .openapi('UnsignedIntegerLiteral')
+
+type ExpressionType =
+  | z.infer<typeof ArrayExpressionSchema>
+  | z.infer<typeof DictExpressionSchema>
+  | z.infer<typeof FunctionExpressionSchema>
+  | z.infer<typeof BinaryExpressionSchema>
+  | z.infer<typeof CallExpressionSchema>
+  | z.infer<typeof ConditionalExpressionSchema>
+  | z.infer<typeof LogicalExpressionSchema>
+  | z.infer<typeof MemberExpressionSchema>
+  | z.infer<typeof IndexExpressionSchema>
+  | z.infer<typeof ObjectExpressionSchema>
+  | z.infer<typeof ParenExpressionSchema>
+  | z.infer<typeof PipeExpressionSchema>
+  | z.infer<typeof UnaryExpressionSchema>
+  | z.infer<typeof BooleanLiteralSchema>
+  | z.infer<typeof DateTimeLiteralSchema>
+  | z.infer<typeof DurationLiteralSchema>
+  | z.infer<typeof FloatLiteralSchema>
+  | z.infer<typeof IntegerLiteralSchema>
+  | z.infer<typeof PipeLiteralSchema>
+  | z.infer<typeof RegexpLiteralSchema>
+  | z.infer<typeof StringLiteralSchema>
+  | z.infer<typeof UnsignedIntegerLiteralSchema>
+  | z.infer<typeof IdentifierSchema>
+
+type ExpressionStatementType = {
+  expression?: z.infer<typeof ExpressionSchema>
+  type?: z.infer<typeof NodeTypeSchema>
+}
+
+type FieldType = {
+  alias?: string
+  args?: FieldType[]
+  type?: 'func' | 'field' | 'integer' | 'number' | 'regex' | 'wildcard'
+  value?: string
+}
+
+const NodeSchema: z.ZodType<NodeType> = z
+  .lazy(() => z.xor([ExpressionSchema, BlockSchema]))
+  .openapi('Node')
+
+const PropertySchema: z.ZodType<PropertyType> = z
+  .lazy(() =>
+    z
+      .object({
+        key: PropertyKeySchema.exactOptional(),
+        type: NodeTypeSchema.exactOptional(),
+        value: ExpressionSchema.exactOptional(),
+      })
+      .openapi({ description: 'The value associated with a key', required: [] }),
+  )
+  .openapi('Property')
+
+type FunctionExpressionType = {
+  body?: z.infer<typeof NodeSchema>
+  params?: z.infer<typeof PropertySchema>[]
+  type?: z.infer<typeof NodeTypeSchema>
+}
+
+type HealthCheckType = {
+  checks?: HealthCheckType[]
+  commit?: string
+  message?: string
+  name: string
+  status: 'pass' | 'fail'
+  version?: string
+}
+
+type IndexExpressionType = {
+  array?: z.infer<typeof ExpressionSchema>
+  index?: z.infer<typeof ExpressionSchema>
+  type?: z.infer<typeof NodeTypeSchema>
+}
+
+type LogicalExpressionType = {
+  left?: z.infer<typeof ExpressionSchema>
+  operator?: string
+  right?: z.infer<typeof ExpressionSchema>
+  type?: z.infer<typeof NodeTypeSchema>
+}
+
+type MemberAssignmentType = {
+  init?: z.infer<typeof ExpressionSchema>
+  member?: z.infer<typeof MemberExpressionSchema>
+  type?: z.infer<typeof NodeTypeSchema>
+}
+
+type PropertyKeyType = z.infer<typeof IdentifierSchema> | z.infer<typeof StringLiteralSchema>
+
+const PropertyKeySchema: z.ZodType<PropertyKeyType> = z
+  .xor([IdentifierSchema, StringLiteralSchema])
+  .openapi('PropertyKey')
+
+type MemberExpressionType = {
+  object?: z.infer<typeof ExpressionSchema>
+  property?: z.infer<typeof PropertyKeySchema>
+  type?: z.infer<typeof NodeTypeSchema>
+}
+
+const BlockSchema: z.ZodType<BlockType> = z
+  .lazy(() =>
+    z
+      .object({
+        body: z.array(StatementSchema).exactOptional().openapi({ description: 'Block body' }),
+        type: NodeTypeSchema.exactOptional(),
+      })
+      .openapi({ description: 'A set of statements', required: [] }),
+  )
+  .openapi('Block')
+
+type NodeType = z.infer<typeof ExpressionSchema> | z.infer<typeof BlockSchema>
+
+type ObjectExpressionType = {
+  properties?: z.infer<typeof PropertySchema>[]
+  type?: z.infer<typeof NodeTypeSchema>
+}
+
+const VariableAssignmentSchema: z.ZodType<VariableAssignmentType> = z
+  .lazy(() =>
+    z
+      .object({
+        id: IdentifierSchema.exactOptional(),
+        init: ExpressionSchema.exactOptional(),
+        type: NodeTypeSchema.exactOptional(),
+      })
+      .openapi({ description: 'Represents the declaration of a variable', required: [] }),
+  )
+  .openapi('VariableAssignment')
+
+const MemberAssignmentSchema: z.ZodType<MemberAssignmentType> = z
+  .lazy(() =>
+    z
+      .object({
+        init: ExpressionSchema.exactOptional(),
+        member: MemberExpressionSchema.exactOptional(),
+        type: NodeTypeSchema.exactOptional(),
+      })
+      .openapi({ description: 'Object property assignment', required: [] }),
+  )
+  .openapi('MemberAssignment')
+
+type OptionStatementType = {
+  assignment?: z.infer<typeof VariableAssignmentSchema> | z.infer<typeof MemberAssignmentSchema>
+  type?: z.infer<typeof NodeTypeSchema>
+}
+
+type ParenExpressionType = {
+  expression?: z.infer<typeof ExpressionSchema>
+  type?: z.infer<typeof NodeTypeSchema>
+}
+
+type PipeExpressionType = {
+  argument?: z.infer<typeof ExpressionSchema>
+  call?: z.infer<typeof CallExpressionSchema>
+  type?: z.infer<typeof NodeTypeSchema>
+}
+
+type PropertyType = {
+  key?: z.infer<typeof PropertyKeySchema>
+  type?: z.infer<typeof NodeTypeSchema>
+  value?: z.infer<typeof ExpressionSchema>
+}
+
+const DialectSchema = z
+  .object({
+    annotations: z
+      .array(z.enum(['group', 'datatype', 'default']))
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional()
+      .openapi({
+        description: 'https://www.w3.org/TR/2015/REC-tabular-data-model-20151217/#columns',
+      }),
+    commentPrefix: z
+      .string()
+      .min(0)
+      .max(1)
+      .default('#')
+      .exactOptional()
+      .openapi({ description: 'Character prefixed to comment strings' }),
+    dateTimeFormat: z
+      .enum(['RFC3339', 'RFC3339Nano'])
+      .default('RFC3339')
+      .exactOptional()
+      .openapi({ description: 'Format of timestamps' }),
+    delimiter: z
+      .string()
+      .length(1)
+      .default(',')
+      .exactOptional()
+      .openapi({ description: 'Separator between cells; the default is ,' }),
+    header: z
+      .boolean()
+      .default(true)
+      .exactOptional()
+      .openapi({ description: 'If true, the results will contain a header row' }),
+  })
+  .openapi({
+    description:
+      'Dialect are options to change the default CSV output format; https://www.w3.org/TR/2015/REC-tabular-metadata-20151217/#dialect-descriptions',
+    required: [],
+  })
+  .openapi('Dialect')
+
+type QueryType = {
+  dialect?: z.infer<typeof DialectSchema>
+  extern?: z.infer<typeof FileSchema>
+  now?: string
+  params?: { [key: string]: unknown }
+  query: string
+  type?: 'flux'
+}
+
+type ReturnStatementType = {
+  argument?: z.infer<typeof ExpressionSchema>
+  type?: z.infer<typeof NodeTypeSchema>
+}
+
+const BadStatementSchema: z.ZodType<BadStatementType> = z
+  .object({
+    text: z.string().exactOptional().openapi({ description: 'Raw source text' }),
     type: NodeTypeSchema.exactOptional(),
   })
-  .openapi({ description: 'Represents a complete package source tree.', required: [] })
-  .openapi('Package')
+  .openapi({
+    description: 'A placeholder for statements for which no correct statement nodes can be created',
+    required: [],
+  })
+  .openapi('BadStatement')
 
-const ASTResponseSchema = z
+const ExpressionStatementSchema: z.ZodType<ExpressionStatementType> = z
+  .lazy(() =>
+    z
+      .object({
+        expression: ExpressionSchema.exactOptional(),
+        type: NodeTypeSchema.exactOptional(),
+      })
+      .openapi({
+        description:
+          'May consist of an expression that does not return a value and is executed solely for its side-effects',
+        required: [],
+      }),
+  )
+  .openapi('ExpressionStatement')
+
+const ReturnStatementSchema: z.ZodType<ReturnStatementType> = z
+  .lazy(() =>
+    z
+      .object({ argument: ExpressionSchema.exactOptional(), type: NodeTypeSchema.exactOptional() })
+      .openapi({ description: 'Defines an expression to return', required: [] }),
+  )
+  .openapi('ReturnStatement')
+
+const OptionStatementSchema: z.ZodType<OptionStatementType> = z
+  .lazy(() =>
+    z
+      .object({
+        assignment: z.xor([VariableAssignmentSchema, MemberAssignmentSchema]).exactOptional(),
+        type: NodeTypeSchema.exactOptional(),
+      })
+      .openapi({ description: 'A single variable declaration', required: [] }),
+  )
+  .openapi('OptionStatement')
+
+const BuiltinStatementSchema: z.ZodType<BuiltinStatementType> = z
+  .object({ id: IdentifierSchema.exactOptional(), type: NodeTypeSchema.exactOptional() })
+  .openapi({ description: 'Declares a builtin identifier and its type', required: [] })
+  .openapi('BuiltinStatement')
+
+const TestStatementSchema: z.ZodType<TestStatementType> = z
+  .lazy(() =>
+    z
+      .object({
+        assignment: VariableAssignmentSchema.exactOptional(),
+        type: NodeTypeSchema.exactOptional(),
+      })
+      .openapi({ description: 'Declares a Flux test case', required: [] }),
+  )
+  .openapi('TestStatement')
+
+type StatementType =
+  | z.infer<typeof BadStatementSchema>
+  | z.infer<typeof VariableAssignmentSchema>
+  | z.infer<typeof MemberAssignmentSchema>
+  | z.infer<typeof ExpressionStatementSchema>
+  | z.infer<typeof ReturnStatementSchema>
+  | z.infer<typeof OptionStatementSchema>
+  | z.infer<typeof BuiltinStatementSchema>
+  | z.infer<typeof TestStatementSchema>
+
+type TemplateChartType = {
+  height?: number
+  properties?: z.infer<typeof ViewPropertiesSchema>
+  width?: number
+  xPos?: number
+  yPos?: number
+}
+
+const TemplateKindSchema = z
+  .enum([
+    'Bucket',
+    'Check',
+    'CheckDeadman',
+    'CheckThreshold',
+    'Dashboard',
+    'Label',
+    'NotificationEndpoint',
+    'NotificationEndpointHTTP',
+    'NotificationEndpointPagerDuty',
+    'NotificationEndpointSlack',
+    'NotificationRule',
+    'Task',
+    'Telegraf',
+    'Variable',
+  ])
+  .openapi('TemplateKind')
+
+const RetentionRuleSchema = z
+  .object({
+    everySeconds: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64().min(0n),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        minimum: 0,
+        description:
+          'Duration in seconds for how long data will be kept in the database. 0 means infinite.',
+        example: 86400,
+      }),
+    shardGroupDurationSeconds: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Shard duration measured in seconds.',
+      }),
+    type: z.literal('expire').default('expire'),
+  })
+  .openapi({ required: ['type', 'everySeconds'] })
+  .openapi('RetentionRule')
+
+const RetentionRulesSchema = z
+  .array(RetentionRuleSchema)
+  .openapi({ description: 'Rules to expire or retain data.  No rules means data never expires.' })
+  .openapi('RetentionRules')
+
+const TemplateChartSchema: z.ZodType<TemplateChartType> = z
+  .object({
+    height: z.int().exactOptional(),
+    properties: ViewPropertiesSchema.exactOptional(),
+    width: z.int().exactOptional(),
+    xPos: z.int().exactOptional(),
+    yPos: z.int().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TemplateChart')
+
+const NotificationEndpointTypeSchema = z
+  .enum(['slack', 'pagerduty', 'http', 'telegram'])
+  .openapi('NotificationEndpointType')
+
+const NotificationEndpointBaseSchema = z
+  .object({
+    createdAt: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'An optional description of the notification endpoint.' }),
+    id: z.string().exactOptional(),
+    labels: LabelsSchema.exactOptional(),
+    links: z
+      .object({
+        labels: LinkSchema.exactOptional().openapi({
+          description: 'URL to retrieve labels for this endpoint.',
+        }),
+        members: LinkSchema.exactOptional().openapi({
+          description: 'URL to retrieve members for this endpoint.',
+        }),
+        owners: LinkSchema.exactOptional().openapi({
+          description: 'URL to retrieve owners for this endpoint.',
+        }),
+        self: LinkSchema.exactOptional().openapi({ description: 'URL for this endpoint.' }),
+      })
+      .exactOptional()
+      .openapi({
+        example: {
+          labels: '/api/v2/notificationEndpoints/1/labels',
+          members: '/api/v2/notificationEndpoints/1/members',
+          owners: '/api/v2/notificationEndpoints/1/owners',
+          self: '/api/v2/notificationEndpoints/1',
+        },
+        readOnly: true,
+        required: [],
+      }),
+    name: z.string(),
+    orgID: z.string().exactOptional(),
+    status: z
+      .enum(['active', 'inactive'])
+      .default('active')
+      .exactOptional()
+      .openapi({ description: 'The status of the endpoint.' }),
+    type: NotificationEndpointTypeSchema,
+    updatedAt: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+    userID: z.string().exactOptional(),
+  })
+  .openapi({ required: ['type', 'name'] })
+  .openapi('NotificationEndpointBase')
+
+const SlackNotificationEndpointSchema = NotificationEndpointBaseSchema.and(
+  z
+    .object({
+      token: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'Specifies the API token string. Specify either `URL` or `Token`.',
+        }),
+      url: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'Specifies the URL of the Slack endpoint. Specify either `URL` or `Token`.',
+        }),
+    })
+    .openapi({ required: [] }),
+).openapi('SlackNotificationEndpoint')
+
+const PagerDutyNotificationEndpointSchema = NotificationEndpointBaseSchema.and(
+  z
+    .object({ clientURL: z.string().exactOptional(), routingKey: z.string() })
+    .openapi({ required: ['routingKey'] }),
+).openapi('PagerDutyNotificationEndpoint')
+
+const HTTPNotificationEndpointSchema = NotificationEndpointBaseSchema.and(
+  z
+    .object({
+      authMethod: z.enum(['none', 'basic', 'bearer']),
+      contentTemplate: z.string().exactOptional(),
+      headers: z
+        .record(z.string(), z.string())
+        .exactOptional()
+        .openapi({ description: 'Customized headers.' }),
+      method: z.enum(['POST', 'GET', 'PUT']),
+      password: z.string().exactOptional(),
+      token: z.string().exactOptional(),
+      url: z.string(),
+      username: z.string().exactOptional(),
+    })
+    .openapi({ required: ['url', 'authMethod', 'method'] }),
+).openapi('HTTPNotificationEndpoint')
+
+const TelegramNotificationEndpointSchema = NotificationEndpointBaseSchema.and(
+  z
+    .object({
+      channel: z
+        .string()
+        .openapi({
+          description:
+            'ID of the telegram channel, a chat_id in https://core.telegram.org/bots/api#sendmessage .',
+        }),
+      token: z
+        .string()
+        .openapi({
+          description:
+            'Specifies the Telegram bot token. See https://core.telegram.org/bots#creating-a-new-bot .',
+        }),
+    })
+    .openapi({ required: ['token', 'channel'] }),
+).openapi('TelegramNotificationEndpoint')
+
+const NotificationEndpointDiscriminatorSchema = z
+  .xor([
+    SlackNotificationEndpointSchema,
+    PagerDutyNotificationEndpointSchema,
+    HTTPNotificationEndpointSchema,
+    TelegramNotificationEndpointSchema,
+  ])
+  .openapi({
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        http: '#/components/schemas/HTTPNotificationEndpoint',
+        pagerduty: '#/components/schemas/PagerDutyNotificationEndpoint',
+        slack: '#/components/schemas/SlackNotificationEndpoint',
+        telegram: '#/components/schemas/TelegramNotificationEndpoint',
+      },
+    },
+  })
+  .openapi('NotificationEndpointDiscriminator')
+
+const TelegrafRequestSchema = z
+  .object({
+    config: z.string().exactOptional(),
+    description: z.string().exactOptional(),
+    metadata: z
+      .object({ buckets: z.array(z.string()).exactOptional() })
+      .exactOptional()
+      .openapi({ required: [] }),
+    name: z.string().exactOptional(),
+    orgID: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TelegrafRequest')
+
+const QueryVariablePropertiesSchema = z
+  .object({
+    type: z.literal('query').exactOptional(),
+    values: z
+      .object({ language: z.string().exactOptional(), query: z.string().exactOptional() })
+      .exactOptional()
+      .openapi({ required: [] }),
+  })
+  .openapi({ required: [] })
+  .openapi('QueryVariableProperties')
+
+const ConstantVariablePropertiesSchema = z
+  .object({
+    type: z.literal('constant').exactOptional(),
+    values: z.array(z.string()).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ConstantVariableProperties')
+
+const MapVariablePropertiesSchema = z
+  .object({
+    type: z.literal('map').exactOptional(),
+    values: z.record(z.string(), z.string()).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('MapVariableProperties')
+
+const VariablePropertiesSchema = z
+  .xor([
+    QueryVariablePropertiesSchema,
+    ConstantVariablePropertiesSchema,
+    MapVariablePropertiesSchema,
+  ])
+  .openapi('VariableProperties')
+
+const TemplateEnvReferencesSchema = z
+  .array(
+    z
+      .object({
+        defaultValue: z
+          .xor([z.string(), z.int(), z.number(), z.boolean()])
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'Default value that will be provided for the reference when no value is provided',
+          }),
+        envRefKey: z
+          .string()
+          .openapi({
+            description:
+              'Key identified as environment reference and is the key identified in the template',
+          }),
+        resourceField: z
+          .string()
+          .openapi({ description: 'Field the environment reference corresponds too' }),
+        value: z
+          .xor([z.string(), z.int(), z.number(), z.boolean()])
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Value provided to fulfill reference' }),
+      })
+      .openapi({ required: ['resourceField', 'envRefKey'] }),
+  )
+  .openapi('TemplateEnvReferences')
+
+const TemplateSummaryLabelSchema = z
+  .object({
+    envReferences: TemplateEnvReferencesSchema.exactOptional(),
+    id: z.string().exactOptional(),
+    kind: TemplateKindSchema.exactOptional(),
+    name: z.string().exactOptional(),
+    orgID: z.string().exactOptional(),
+    properties: z
+      .object({ color: z.string().exactOptional(), description: z.string().exactOptional() })
+      .exactOptional()
+      .openapi({ required: [] }),
+    templateMetaName: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TemplateSummaryLabel')
+
+type TemplateSummaryType = {
+  diff?: {
+    buckets?: {
+      id?: string
+      kind?: z.infer<typeof TemplateKindSchema>
+      new?: {
+        description?: string
+        name?: string
+        retentionRules?: z.infer<typeof RetentionRulesSchema>
+      }
+      old?: {
+        description?: string
+        name?: string
+        retentionRules?: z.infer<typeof RetentionRulesSchema>
+      }
+      stateStatus?: string
+      templateMetaName?: string
+    }[]
+    checks?: {
+      id?: string
+      kind?: z.infer<typeof TemplateKindSchema>
+      new?: z.infer<typeof CheckDiscriminatorSchema>
+      old?: z.infer<typeof CheckDiscriminatorSchema>
+      stateStatus?: string
+      templateMetaName?: string
+    }[]
+    dashboards?: {
+      id?: string
+      kind?: z.infer<typeof TemplateKindSchema>
+      new?: { charts?: z.infer<typeof TemplateChartSchema>[]; description?: string; name?: string }
+      old?: { charts?: z.infer<typeof TemplateChartSchema>[]; description?: string; name?: string }
+      stateStatus?: string
+      templateMetaName?: string
+    }[]
+    labelMappings?: {
+      labelID?: string
+      labelName?: string
+      labelTemplateMetaName?: string
+      resourceID?: string
+      resourceName?: string
+      resourceTemplateMetaName?: string
+      resourceType?: string
+      status?: string
+    }[]
+    labels?: {
+      id?: string
+      kind?: z.infer<typeof TemplateKindSchema>
+      new?: { color?: string; description?: string; name?: string }
+      old?: { color?: string; description?: string; name?: string }
+      stateStatus?: string
+      templateMetaName?: string
+    }[]
+    notificationEndpoints?: {
+      id?: string
+      kind?: z.infer<typeof TemplateKindSchema>
+      new?: z.infer<typeof NotificationEndpointDiscriminatorSchema>
+      old?: z.infer<typeof NotificationEndpointDiscriminatorSchema>
+      stateStatus?: string
+      templateMetaName?: string
+    }[]
+    notificationRules?: {
+      id?: string
+      kind?: z.infer<typeof TemplateKindSchema>
+      new?: {
+        description?: string
+        endpointID?: string
+        endpointName?: string
+        endpointType?: string
+        every?: string
+        messageTemplate?: string
+        name?: string
+        offset?: string
+        status?: string
+        statusRules?: { currentLevel?: string; previousLevel?: string }[]
+        tagRules?: { key?: string; operator?: string; value?: string }[]
+      }
+      old?: {
+        description?: string
+        endpointID?: string
+        endpointName?: string
+        endpointType?: string
+        every?: string
+        messageTemplate?: string
+        name?: string
+        offset?: string
+        status?: string
+        statusRules?: { currentLevel?: string; previousLevel?: string }[]
+        tagRules?: { key?: string; operator?: string; value?: string }[]
+      }
+      stateStatus?: string
+      templateMetaName?: string
+    }[]
+    tasks?: {
+      id?: string
+      kind?: z.infer<typeof TemplateKindSchema>
+      new?: {
+        cron?: string
+        description?: string
+        every?: string
+        name?: string
+        offset?: string
+        query?: string
+        status?: string
+      }
+      old?: {
+        cron?: string
+        description?: string
+        every?: string
+        name?: string
+        offset?: string
+        query?: string
+        status?: string
+      }
+      stateStatus?: string
+      templateMetaName?: string
+    }[]
+    telegrafConfigs?: {
+      id?: string
+      kind?: z.infer<typeof TemplateKindSchema>
+      new?: z.infer<typeof TelegrafRequestSchema>
+      old?: z.infer<typeof TelegrafRequestSchema>
+      stateStatus?: string
+      templateMetaName?: string
+    }[]
+    variables?: {
+      id?: string
+      kind?: z.infer<typeof TemplateKindSchema>
+      new?: { args?: z.infer<typeof VariablePropertiesSchema>; description?: string; name?: string }
+      old?: { args?: z.infer<typeof VariablePropertiesSchema>; description?: string; name?: string }
+      stateStatus?: string
+      templateMetaName?: string
+    }[]
+  }
+  errors?: {
+    fields?: string[]
+    indexes?: number[]
+    kind?: z.infer<typeof TemplateKindSchema>
+    reason?: string
+  }[]
+  sources?: string[]
+  stackID?: string
+  summary?: {
+    buckets?: {
+      description?: string
+      envReferences?: z.infer<typeof TemplateEnvReferencesSchema>
+      id?: string
+      kind?: z.infer<typeof TemplateKindSchema>
+      labelAssociations?: z.infer<typeof TemplateSummaryLabelSchema>[]
+      name?: string
+      orgID?: string
+      retentionPeriod?: number
+      templateMetaName?: string
+    }[]
+    checks?: (z.infer<typeof CheckDiscriminatorSchema> & {
+      envReferences?: z.infer<typeof TemplateEnvReferencesSchema>
+      kind?: z.infer<typeof TemplateKindSchema>
+      labelAssociations?: z.infer<typeof TemplateSummaryLabelSchema>[]
+      templateMetaName?: string
+    })[]
+    dashboards?: {
+      charts?: z.infer<typeof TemplateChartSchema>[]
+      description?: string
+      envReferences?: z.infer<typeof TemplateEnvReferencesSchema>
+      id?: string
+      kind?: z.infer<typeof TemplateKindSchema>
+      labelAssociations?: z.infer<typeof TemplateSummaryLabelSchema>[]
+      name?: string
+      orgID?: string
+      templateMetaName?: string
+    }[]
+    labelMappings?: {
+      labelID?: string
+      labelName?: string
+      labelTemplateMetaName?: string
+      resourceID?: string
+      resourceName?: string
+      resourceTemplateMetaName?: string
+      resourceType?: string
+      status?: string
+    }[]
+    labels?: z.infer<typeof TemplateSummaryLabelSchema>[]
+    missingEnvRefs?: string[]
+    missingSecrets?: string[]
+    notificationEndpoints?: (z.infer<typeof NotificationEndpointDiscriminatorSchema> & {
+      envReferences?: z.infer<typeof TemplateEnvReferencesSchema>
+      kind?: z.infer<typeof TemplateKindSchema>
+      labelAssociations?: z.infer<typeof TemplateSummaryLabelSchema>[]
+      templateMetaName?: string
+    })[]
+    notificationRules?: {
+      description?: string
+      endpointID?: string
+      endpointTemplateMetaName?: string
+      endpointType?: string
+      envReferences?: z.infer<typeof TemplateEnvReferencesSchema>
+      every?: string
+      kind?: z.infer<typeof TemplateKindSchema>
+      labelAssociations?: z.infer<typeof TemplateSummaryLabelSchema>[]
+      messageTemplate?: string
+      name?: string
+      offset?: string
+      status?: string
+      statusRules?: { currentLevel?: string; previousLevel?: string }[]
+      tagRules?: { key?: string; operator?: string; value?: string }[]
+      templateMetaName?: string
+    }[]
+    tasks?: {
+      cron?: string
+      description?: string
+      envReferences?: z.infer<typeof TemplateEnvReferencesSchema>
+      every?: string
+      id?: string
+      kind?: z.infer<typeof TemplateKindSchema>
+      name?: string
+      offset?: string
+      query?: string
+      status?: string
+      templateMetaName?: string
+    }[]
+    telegrafConfigs?: (z.infer<typeof TelegrafRequestSchema> & {
+      envReferences?: z.infer<typeof TemplateEnvReferencesSchema>
+      kind?: z.infer<typeof TemplateKindSchema>
+      labelAssociations?: z.infer<typeof TemplateSummaryLabelSchema>[]
+      templateMetaName?: string
+    })[]
+    variables?: {
+      arguments?: z.infer<typeof VariablePropertiesSchema>
+      description?: string
+      envReferences?: z.infer<typeof TemplateEnvReferencesSchema>
+      id?: string
+      kind?: z.infer<typeof TemplateKindSchema>
+      labelAssociations?: z.infer<typeof TemplateSummaryLabelSchema>[]
+      name?: string
+      orgID?: string
+      templateMetaName?: string
+    }[]
+  }
+}
+
+type TestStatementType = {
+  assignment?: z.infer<typeof VariableAssignmentSchema>
+  type?: z.infer<typeof NodeTypeSchema>
+}
+
+type UnaryExpressionType = {
+  argument?: z.infer<typeof ExpressionSchema>
+  operator?: string
+  type?: z.infer<typeof NodeTypeSchema>
+}
+
+type VariableAssignmentType = {
+  id?: z.infer<typeof IdentifierSchema>
+  init?: z.infer<typeof ExpressionSchema>
+  type?: z.infer<typeof NodeTypeSchema>
+}
+
+type ViewType = {
+  id?: string
+  links?: { self?: string }
+  name: string
+  properties: z.infer<typeof ViewPropertiesSchema>
+}
+
+const ViewSchema: z.ZodType<ViewType> = z
+  .object({
+    id: z.string().exactOptional().openapi({ readOnly: true }),
+    links: z
+      .object({ self: z.string().exactOptional() })
+      .exactOptional()
+      .openapi({ readOnly: true, required: [] }),
+    name: z.string(),
+    properties: ViewPropertiesSchema,
+  })
+  .openapi({ required: ['name', 'properties'] })
+  .openapi('View')
+
+type ViewsType = { links?: { self?: string }; views?: z.infer<typeof ViewSchema>[] }
+
+const ASTResponseSchema: z.ZodType<ASTResponseType> = z
   .object({ ast: PackageSchema.exactOptional() })
   .openapi({ description: 'Contains the AST for the supplied Flux query', required: [] })
   .openapi('ASTResponse')
@@ -1932,88 +2614,112 @@ const PermissionSchema = z
   .openapi('Permission')
 
 const AuthorizationSchema = AuthorizationUpdateRequestSchema.and(
-  z
-    .object({
-      createdAt: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-      id: z.string().exactOptional().openapi({ readOnly: true }),
-      links: z
-        .object({
-          self: LinkSchema.exactOptional().openapi({ readOnly: true }),
-          user: LinkSchema.exactOptional().openapi({ readOnly: true }),
-        })
-        .exactOptional()
-        .openapi({
-          example: { self: '/api/v2/authorizations/1', user: '/api/v2/users/12' },
-          readOnly: true,
-          required: [],
-        }),
-      org: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'Name of the org token is scoped to.', readOnly: true }),
-      orgID: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'ID of org that authorization is scoped to.' }),
-      permissions: z
-        .array(PermissionSchema)
-        .min(1)
-        .exactOptional()
-        .openapi({
-          description:
-            'List of permissions for an auth.  An auth must have at least one Permission.',
-        }),
-      token: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Passed via the Authorization Header and Token Authentication type.',
-          readOnly: true,
-        }),
-      updatedAt: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-      user: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'Name of user that created and owns the token.', readOnly: true }),
-      userID: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'ID of user that created and owns the token.', readOnly: true }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['orgID', 'permissions'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'orgID')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'permissions')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        createdAt: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+        id: z.string().exactOptional().openapi({ readOnly: true }),
+        links: z
+          .object({
+            self: LinkSchema.exactOptional().openapi({ readOnly: true }),
+            user: LinkSchema.exactOptional().openapi({ readOnly: true }),
+          })
+          .exactOptional()
+          .openapi({
+            example: { self: '/api/v2/authorizations/1', user: '/api/v2/users/12' },
+            readOnly: true,
+            required: [],
+          }),
+        org: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Name of the org token is scoped to.', readOnly: true }),
+        orgID: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'ID of org that authorization is scoped to.' }),
+        permissions: z
+          .array(PermissionSchema)
+          .min(1)
+          .exactOptional()
+          .openapi({
+            description:
+              'List of permissions for an auth.  An auth must have at least one Permission.',
+          }),
+        token: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Passed via the Authorization Header and Token Authentication type.',
+            readOnly: true,
+          }),
+        updatedAt: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+        user: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Name of user that created and owns the token.',
+            readOnly: true,
+          }),
+        userID: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'ID of user that created and owns the token.', readOnly: true }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['orgID', 'permissions'] })
   .openapi('Authorization')
 
 const AuthorizationPostRequestSchema = AuthorizationUpdateRequestSchema.and(
-  z
-    .object({
-      orgID: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'ID of org that authorization is scoped to.' }),
-      permissions: z
-        .array(PermissionSchema)
-        .min(1)
-        .exactOptional()
-        .openapi({
-          description:
-            'List of permissions for an auth.  An auth must have at least one Permission.',
-        }),
-      userID: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'ID of user that authorization is scoped to.' }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['orgID', 'permissions'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'orgID')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'permissions')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        orgID: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'ID of org that authorization is scoped to.' }),
+        permissions: z
+          .array(PermissionSchema)
+          .min(1)
+          .exactOptional()
+          .openapi({
+            description:
+              'List of permissions for an auth.  An auth must have at least one Permission.',
+          }),
+        userID: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'ID of user that authorization is scoped to.' }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['orgID', 'permissions'] })
   .openapi('AuthorizationPostRequest')
-
-const LinksSchema = z
-  .object({ next: LinkSchema.exactOptional(), prev: LinkSchema.exactOptional(), self: LinkSchema })
-  .openapi({ required: ['self'] })
-  .openapi('Links')
 
 const AuthorizationsSchema = z
   .object({
@@ -2022,52 +2728,6 @@ const AuthorizationsSchema = z
   })
   .openapi({ required: [] })
   .openapi('Authorizations')
-
-const RetentionRuleSchema = z
-  .object({
-    everySeconds: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64().min(0n),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        minimum: 0,
-        description:
-          'Duration in seconds for how long data will be kept in the database. 0 means infinite.',
-        example: 86400,
-      }),
-    shardGroupDurationSeconds: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Shard duration measured in seconds.',
-      }),
-    type: z.literal('expire').default('expire'),
-  })
-  .openapi({ required: ['type', 'everySeconds'] })
-  .openapi('RetentionRule')
-
-const RetentionRulesSchema = z
-  .array(RetentionRuleSchema)
-  .openapi({ description: 'Rules to expire or retain data.  No rules means data never expires.' })
-  .openapi('RetentionRules')
 
 const SchemaTypeSchema = z.enum(['implicit', 'explicit']).openapi('SchemaType')
 
@@ -2128,25 +2788,6 @@ const BucketsSchema = z
   .openapi({ required: [] })
   .openapi('Buckets')
 
-const CellSchema = z
-  .object({
-    h: z.int32().exactOptional(),
-    id: z.string().exactOptional(),
-    links: z
-      .object({ self: z.string().exactOptional(), view: z.string().exactOptional() })
-      .exactOptional()
-      .openapi({ required: [] }),
-    viewID: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The reference to a view from the views API.' }),
-    w: z.int32().exactOptional(),
-    x: z.int32().exactOptional(),
-    y: z.int32().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Cell')
-
 const CellUpdateSchema = z
   .object({
     h: z.int32().exactOptional(),
@@ -2157,37 +2798,7 @@ const CellUpdateSchema = z
   .openapi({ required: [] })
   .openapi('CellUpdate')
 
-const ViewPropertiesSchema: z.ZodType<ViewPropertiesType> = z
-  .lazy(() =>
-    z.xor([
-      LinePlusSingleStatPropertiesSchema,
-      XYViewPropertiesSchema,
-      SingleStatViewPropertiesSchema,
-      HistogramViewPropertiesSchema,
-      GaugeViewPropertiesSchema,
-      TableViewPropertiesSchema,
-      MarkdownViewPropertiesSchema,
-      CheckViewPropertiesSchema,
-      ScatterViewPropertiesSchema,
-      HeatmapViewPropertiesSchema,
-      MosaicViewPropertiesSchema,
-      BandViewPropertiesSchema,
-      GeoViewPropertiesSchema,
-    ]),
-  )
-  .openapi('ViewProperties')
-
-const CellWithViewPropertiesSchema = CellSchema.and(
-  z
-    .object({ name: z.string().exactOptional(), properties: ViewPropertiesSchema.exactOptional() })
-    .openapi({ required: [] }),
-).openapi('CellWithViewProperties')
-
 const CellsSchema = z.array(CellSchema).openapi('Cells')
-
-const CellsWithViewPropertiesSchema = z
-  .array(CellWithViewPropertiesSchema)
-  .openapi('CellsWithViewProperties')
 
 const CheckPatchSchema = z
   .object({
@@ -2198,7 +2809,7 @@ const CheckPatchSchema = z
   .openapi({ required: [] })
   .openapi('CheckPatch')
 
-const ChecksSchema = z
+const ChecksSchema: z.ZodType<ChecksType> = z
   .object({ checks: z.array(CheckSchema).exactOptional(), links: LinksSchema.exactOptional() })
   .openapi({ required: [] })
   .openapi('Checks')
@@ -2217,20 +2828,6 @@ const CreateCellSchema = z
   })
   .openapi({ required: [] })
   .openapi('CreateCell')
-
-const CreateDashboardRequestSchema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The user-facing description of the dashboard.' }),
-    name: z.string().openapi({ description: 'The user-facing name of the dashboard.' }),
-    orgID: z
-      .string()
-      .openapi({ description: 'The ID of the organization that owns the dashboard.' }),
-  })
-  .openapi({ required: ['orgID', 'name'] })
-  .openapi('CreateDashboardRequest')
 
 const DBRPSchema = z
   .xor([
@@ -2273,6 +2870,41 @@ const DBRPSchema = z
       })
       .openapi({ required: ['org', 'bucketID', 'database', 'retention_policy'] }),
   ])
+  .and(
+    z
+      .object({
+        bucketID: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'the bucket ID used as target for the translation.' }),
+        database: z.string().exactOptional().openapi({ description: 'InfluxDB v1 database' }),
+        default: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specify if this mapping represents the default retention policy for the database specificed.',
+          }),
+        id: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'the mapping identifier', readOnly: true }),
+        links: LinksSchema.exactOptional(),
+        org: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'the organization that owns this mapping.' }),
+        orgID: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'the organization ID that owns this mapping.' }),
+        retention_policy: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'InfluxDB v1 retention policy' }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi('DBRP')
 
 const DBRPUpdateSchema = z
@@ -2331,43 +2963,44 @@ const DashboardSchema = CreateDashboardRequestSchema.and(
     .openapi({ required: [] }),
 ).openapi('Dashboard')
 
-const DashboardWithViewPropertiesSchema = CreateDashboardRequestSchema.and(
-  z
-    .object({
-      cells: CellsWithViewPropertiesSchema.exactOptional(),
-      id: z.string().exactOptional().openapi({ readOnly: true }),
-      labels: LabelsSchema.exactOptional(),
-      links: z
-        .object({
-          cells: LinkSchema.exactOptional(),
-          labels: LinkSchema.exactOptional(),
-          members: LinkSchema.exactOptional(),
-          org: LinkSchema.exactOptional(),
-          owners: LinkSchema.exactOptional(),
-          self: LinkSchema.exactOptional(),
-        })
-        .exactOptional()
-        .openapi({
-          example: {
-            cells: '/api/v2/dashboards/1/cells',
-            labels: '/api/v2/dashboards/1/labels',
-            members: '/api/v2/dashboards/1/members',
-            org: '/api/v2/labels/1',
-            owners: '/api/v2/dashboards/1/owners',
-            self: '/api/v2/dashboards/1',
-          },
-          required: [],
-        }),
-      meta: z
-        .object({
-          createdAt: z.iso.datetime({ offset: true }).exactOptional(),
-          updatedAt: z.iso.datetime({ offset: true }).exactOptional(),
-        })
-        .exactOptional()
-        .openapi({ required: [] }),
-    })
-    .openapi({ required: [] }),
-).openapi('DashboardWithViewProperties')
+const DashboardWithViewPropertiesSchema: z.ZodType<DashboardWithViewPropertiesType> =
+  CreateDashboardRequestSchema.and(
+    z
+      .object({
+        cells: CellsWithViewPropertiesSchema.exactOptional(),
+        id: z.string().exactOptional().openapi({ readOnly: true }),
+        labels: LabelsSchema.exactOptional(),
+        links: z
+          .object({
+            cells: LinkSchema.exactOptional(),
+            labels: LinkSchema.exactOptional(),
+            members: LinkSchema.exactOptional(),
+            org: LinkSchema.exactOptional(),
+            owners: LinkSchema.exactOptional(),
+            self: LinkSchema.exactOptional(),
+          })
+          .exactOptional()
+          .openapi({
+            example: {
+              cells: '/api/v2/dashboards/1/cells',
+              labels: '/api/v2/dashboards/1/labels',
+              members: '/api/v2/dashboards/1/members',
+              org: '/api/v2/labels/1',
+              owners: '/api/v2/dashboards/1/owners',
+              self: '/api/v2/dashboards/1',
+            },
+            required: [],
+          }),
+        meta: z
+          .object({
+            createdAt: z.iso.datetime({ offset: true }).exactOptional(),
+            updatedAt: z.iso.datetime({ offset: true }).exactOptional(),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+      })
+      .openapi({ required: [] }),
+  ).openapi('DashboardWithViewProperties')
 
 const DashboardsSchema = z
   .object({
@@ -2392,53 +3025,6 @@ const DeletePredicateRequestSchema = z
   .openapi({ description: 'The delete predicate request.', required: ['start', 'stop'] })
   .openapi('DeletePredicateRequest')
 
-const DialectSchema = z
-  .object({
-    annotations: z
-      .array(z.enum(['group', 'datatype', 'default']))
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional()
-      .openapi({
-        description: 'https://www.w3.org/TR/2015/REC-tabular-data-model-20151217/#columns',
-      }),
-    commentPrefix: z
-      .string()
-      .min(0)
-      .max(1)
-      .default('#')
-      .exactOptional()
-      .openapi({ description: 'Character prefixed to comment strings' }),
-    dateTimeFormat: z
-      .enum(['RFC3339', 'RFC3339Nano'])
-      .default('RFC3339')
-      .exactOptional()
-      .openapi({ description: 'Format of timestamps' }),
-    delimiter: z
-      .string()
-      .length(1)
-      .default(',')
-      .exactOptional()
-      .openapi({ description: 'Separator between cells; the default is ,' }),
-    header: z
-      .boolean()
-      .default(true)
-      .exactOptional()
-      .openapi({ description: 'If true, the results will contain a header row' }),
-  })
-  .openapi({
-    description:
-      'Dialect are options to change the default CSV output format; https://www.w3.org/TR/2015/REC-tabular-metadata-20151217/#dialect-descriptions',
-    required: [],
-  })
-  .openapi('Dialect')
-
 const DocumentMetaSchema = z
   .object({
     createdAt: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
@@ -2454,7 +3040,7 @@ const DocumentMetaSchema = z
 
 const DocumentSchema = z
   .object({
-    content: z.object({}),
+    content: z.looseObject({}),
     id: z.string().openapi({ readOnly: true }),
     labels: LabelsSchema.exactOptional(),
     links: z
@@ -2472,7 +3058,7 @@ const DocumentSchema = z
 
 const DocumentCreateSchema = z
   .object({
-    content: z.object({}),
+    content: z.looseObject({}),
     labels: z
       .array(z.string())
       .exactOptional()
@@ -2508,7 +3094,7 @@ const DocumentListEntrySchema = z
   .openapi('DocumentListEntry')
 
 const DocumentUpdateSchema = z
-  .object({ content: z.object({}).exactOptional(), meta: DocumentMetaSchema.exactOptional() })
+  .object({ content: z.looseObject({}).exactOptional(), meta: DocumentMetaSchema.exactOptional() })
   .openapi({ required: [] })
   .openapi('DocumentUpdate')
 
@@ -2611,75 +3197,6 @@ const FluxSuggestionsSchema = z
   .object({ funcs: z.array(FluxSuggestionSchema).exactOptional() })
   .openapi({ required: [] })
   .openapi('FluxSuggestions')
-
-const NotificationEndpointTypeSchema = z
-  .enum(['slack', 'pagerduty', 'http', 'telegram'])
-  .openapi('NotificationEndpointType')
-
-const NotificationEndpointBaseSchema = z
-  .object({
-    createdAt: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'An optional description of the notification endpoint.' }),
-    id: z.string().exactOptional(),
-    labels: LabelsSchema.exactOptional(),
-    links: z
-      .object({
-        labels: LinkSchema.exactOptional().openapi({
-          description: 'URL to retrieve labels for this endpoint.',
-        }),
-        members: LinkSchema.exactOptional().openapi({
-          description: 'URL to retrieve members for this endpoint.',
-        }),
-        owners: LinkSchema.exactOptional().openapi({
-          description: 'URL to retrieve owners for this endpoint.',
-        }),
-        self: LinkSchema.exactOptional().openapi({ description: 'URL for this endpoint.' }),
-      })
-      .exactOptional()
-      .openapi({
-        example: {
-          labels: '/api/v2/notificationEndpoints/1/labels',
-          members: '/api/v2/notificationEndpoints/1/members',
-          owners: '/api/v2/notificationEndpoints/1/owners',
-          self: '/api/v2/notificationEndpoints/1',
-        },
-        readOnly: true,
-        required: [],
-      }),
-    name: z.string(),
-    orgID: z.string().exactOptional(),
-    status: z
-      .enum(['active', 'inactive'])
-      .default('active')
-      .exactOptional()
-      .openapi({ description: 'The status of the endpoint.' }),
-    type: NotificationEndpointTypeSchema,
-    updatedAt: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-    userID: z.string().exactOptional(),
-  })
-  .openapi({ required: ['type', 'name'] })
-  .openapi('NotificationEndpointBase')
-
-const HTTPNotificationEndpointSchema = NotificationEndpointBaseSchema.and(
-  z
-    .object({
-      authMethod: z.enum(['none', 'basic', 'bearer']),
-      contentTemplate: z.string().exactOptional(),
-      headers: z
-        .record(z.string(), z.string())
-        .exactOptional()
-        .openapi({ description: 'Customized headers.' }),
-      method: z.enum(['POST', 'GET', 'PUT']),
-      password: z.string().exactOptional(),
-      token: z.string().exactOptional(),
-      url: z.string(),
-      username: z.string().exactOptional(),
-    })
-    .openapi({ required: ['url', 'authMethod', 'method'] }),
-).openapi('HTTPNotificationEndpoint')
 
 const RuleStatusLevelSchema = z
   .enum(['UNKNOWN', 'OK', 'INFO', 'CRIT', 'WARN', 'ANY'])
@@ -2990,70 +3507,6 @@ const LogsSchema = z
   .openapi({ required: [] })
   .openapi('Logs')
 
-const SlackNotificationEndpointSchema = NotificationEndpointBaseSchema.and(
-  z
-    .object({
-      token: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Specifies the API token string. Specify either `URL` or `Token`.',
-        }),
-      url: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Specifies the URL of the Slack endpoint. Specify either `URL` or `Token`.',
-        }),
-    })
-    .openapi({ required: [] }),
-).openapi('SlackNotificationEndpoint')
-
-const PagerDutyNotificationEndpointSchema = NotificationEndpointBaseSchema.and(
-  z
-    .object({ clientURL: z.string().exactOptional(), routingKey: z.string() })
-    .openapi({ required: ['routingKey'] }),
-).openapi('PagerDutyNotificationEndpoint')
-
-const TelegramNotificationEndpointSchema = NotificationEndpointBaseSchema.and(
-  z
-    .object({
-      channel: z
-        .string()
-        .openapi({
-          description:
-            'ID of the telegram channel, a chat_id in https://core.telegram.org/bots/api#sendmessage .',
-        }),
-      token: z
-        .string()
-        .openapi({
-          description:
-            'Specifies the Telegram bot token. See https://core.telegram.org/bots#creating-a-new-bot .',
-        }),
-    })
-    .openapi({ required: ['token', 'channel'] }),
-).openapi('TelegramNotificationEndpoint')
-
-const NotificationEndpointDiscriminatorSchema = z
-  .xor([
-    SlackNotificationEndpointSchema,
-    PagerDutyNotificationEndpointSchema,
-    HTTPNotificationEndpointSchema,
-    TelegramNotificationEndpointSchema,
-  ])
-  .openapi({
-    discriminator: {
-      mapping: {
-        http: '#/components/schemas/HTTPNotificationEndpoint',
-        pagerduty: '#/components/schemas/PagerDutyNotificationEndpoint',
-        slack: '#/components/schemas/SlackNotificationEndpoint',
-        telegram: '#/components/schemas/TelegramNotificationEndpoint',
-      },
-      propertyName: 'type',
-    },
-  })
-  .openapi('NotificationEndpointDiscriminator')
-
 const NotificationEndpointSchema =
   NotificationEndpointDiscriminatorSchema.openapi('NotificationEndpoint')
 
@@ -3152,6 +3605,7 @@ const NotificationRuleDiscriminatorSchema = z
   ])
   .openapi({
     discriminator: {
+      propertyName: 'type',
       mapping: {
         http: '#/components/schemas/HTTPNotificationRule',
         pagerduty: '#/components/schemas/PagerDutyNotificationRule',
@@ -3159,7 +3613,6 @@ const NotificationRuleDiscriminatorSchema = z
         smtp: '#/components/schemas/SMTPNotificationRule',
         telegram: '#/components/schemas/TelegramNotificationRule',
       },
-      propertyName: 'type',
     },
   })
   .openapi('NotificationRuleDiscriminator')
@@ -3396,7 +3849,7 @@ const PostOrganizationRequestSchema = z
   .openapi({ required: ['name'] })
   .openapi('PostOrganizationRequest')
 
-const QuerySchema = z
+const QuerySchema: z.ZodType<QueryType> = z
   .object({
     dialect: DialectSchema.exactOptional(),
     extern: FileSchema.exactOptional(),
@@ -3695,25 +4148,6 @@ const SourcesSchema = z
   .openapi({ required: [] })
   .openapi('Sources')
 
-const TemplateKindSchema = z
-  .enum([
-    'Bucket',
-    'Check',
-    'CheckDeadman',
-    'CheckThreshold',
-    'Dashboard',
-    'Label',
-    'NotificationEndpoint',
-    'NotificationEndpointHTTP',
-    'NotificationEndpointPagerDuty',
-    'NotificationEndpointSlack',
-    'NotificationRule',
-    'Task',
-    'Telegraf',
-    'Variable',
-  ])
-  .openapi('TemplateKind')
-
 const StackSchema = z
   .object({
     createdAt: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
@@ -3908,20 +4342,6 @@ const TasksSchema = z
   .openapi({ required: [] })
   .openapi('Tasks')
 
-const TelegrafRequestSchema = z
-  .object({
-    config: z.string().exactOptional(),
-    description: z.string().exactOptional(),
-    metadata: z
-      .object({ buckets: z.array(z.string()).exactOptional() })
-      .exactOptional()
-      .openapi({ required: [] }),
-    name: z.string().exactOptional(),
-    orgID: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TelegrafRequest')
-
 const TelegrafSchema = TelegrafRequestSchema.and(
   z
     .object({
@@ -3983,7 +4403,7 @@ const TemplateSchema = z
           .object({ name: z.string().exactOptional() })
           .exactOptional()
           .openapi({ required: [] }),
-        spec: z.object({}).exactOptional(),
+        spec: z.looseObject({}).exactOptional(),
       })
       .openapi({ required: [] }),
   )
@@ -4052,48 +4472,6 @@ const TemplateApplySchema = z
   .openapi({ required: [] })
   .openapi('TemplateApply')
 
-const TemplateChartSchema = z
-  .object({
-    height: z.int().exactOptional(),
-    properties: ViewPropertiesSchema.exactOptional(),
-    width: z.int().exactOptional(),
-    xPos: z.int().exactOptional(),
-    yPos: z.int().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TemplateChart')
-
-const TemplateEnvReferencesSchema = z
-  .array(
-    z
-      .object({
-        defaultValue: z
-          .xor([z.string(), z.int(), z.number(), z.boolean()])
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'Default value that will be provided for the reference when no value is provided',
-          }),
-        envRefKey: z
-          .string()
-          .openapi({
-            description:
-              'Key identified as environment reference and is the key identified in the template',
-          }),
-        resourceField: z
-          .string()
-          .openapi({ description: 'Field the environment reference corresponds too' }),
-        value: z
-          .xor([z.string(), z.int(), z.number(), z.boolean()])
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Value provided to fulfill reference' }),
-      })
-      .openapi({ required: ['resourceField', 'envRefKey'] }),
-  )
-  .openapi('TemplateEnvReferences')
-
 const TemplateExportByIDSchema = z
   .object({
     orgIDs: z
@@ -4158,33 +4536,7 @@ const TemplateExportByNameSchema = z
   .openapi({ required: [] })
   .openapi('TemplateExportByName')
 
-const VariablePropertiesSchema: z.ZodType<VariablePropertiesType> = z
-  .lazy(() =>
-    z.xor([
-      QueryVariablePropertiesSchema,
-      ConstantVariablePropertiesSchema,
-      MapVariablePropertiesSchema,
-    ]),
-  )
-  .openapi('VariableProperties')
-
-const TemplateSummaryLabelSchema = z
-  .object({
-    envReferences: TemplateEnvReferencesSchema.exactOptional(),
-    id: z.string().exactOptional(),
-    kind: TemplateKindSchema.exactOptional(),
-    name: z.string().exactOptional(),
-    orgID: z.string().exactOptional(),
-    properties: z
-      .object({ color: z.string().exactOptional(), description: z.string().exactOptional() })
-      .exactOptional()
-      .openapi({ required: [] }),
-    templateMetaName: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TemplateSummaryLabel')
-
-const TemplateSummarySchema = z
+const TemplateSummarySchema: z.ZodType<TemplateSummaryType> = z
   .object({
     diff: z
       .object({
@@ -4760,20 +5112,7 @@ const VariablesSchema = z
   })
   .openapi('Variables')
 
-const ViewSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ readOnly: true }),
-    links: z
-      .object({ self: z.string().exactOptional() })
-      .exactOptional()
-      .openapi({ readOnly: true, required: [] }),
-    name: z.string(),
-    properties: ViewPropertiesSchema,
-  })
-  .openapi({ required: ['name', 'properties'] })
-  .openapi('View')
-
-const ViewsSchema = z
+const ViewsSchema: z.ZodType<ViewsType> = z
   .object({
     links: z.object({ self: z.string().exactOptional() }).exactOptional().openapi({ required: [] }),
     views: z.array(ViewSchema).exactOptional(),
@@ -9219,48 +9558,37 @@ export const postQueryRoute = createRoute({
         },
       },
       headers: z.object({
-        'Content-Encoding': {
-          description:
-            'The Content-Encoding entity header is used to compress the media-type.  When present, its value indicates which encodings were applied to the entity-body',
-          schema: z
-            .enum(['gzip', 'identity'])
-            .default('identity')
-            .exactOptional()
-            .openapi({
-              description:
-                'The Content-Encoding entity header is used to compress the media-type.  When present, its value indicates which encodings were applied to the entity-body',
-              param: { required: false },
-            }),
-        },
-        'Trace-Id': {
-          description: "The Trace-Id header reports the request's trace ID, if one was generated.",
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                "The Trace-Id header reports the request's trace ID, if one was generated.",
-              param: { required: false },
-            }),
-        },
+        'Content-Encoding': z
+          .enum(['gzip', 'identity'])
+          .default('identity')
+          .exactOptional()
+          .openapi({
+            description:
+              'The Content-Encoding entity header is used to compress the media-type.  When present, its value indicates which encodings were applied to the entity-body',
+            param: { required: false },
+          }),
+        'Trace-Id': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              "The Trace-Id header reports the request's trace ID, if one was generated.",
+            param: { required: false },
+          }),
       }),
     },
     429: {
       description:
         'Token is temporarily over quota. The Retry-After header describes when to try the read again.',
       headers: z.object({
-        'Retry-After': {
-          description:
-            'A non-negative decimal integer indicating the seconds to delay after the response is received.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description:
-                'A non-negative decimal integer indicating the seconds to delay after the response is received.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description:
+              'A non-negative decimal integer indicating the seconds to delay after the response is received.',
+            param: { required: false },
+          }),
       }),
     },
     default: {
@@ -9305,26 +9633,20 @@ export const postQueryAnalyzeRoute = createRoute({
       description: 'Internal server error',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'X-Influx-Error': {
-          description: 'Error string describing the problem',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Error string describing the problem',
-              param: { required: false },
-            }),
-        },
-        'X-Influx-Reference': {
-          description: 'Reference code unique to the error type',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Reference code unique to the error type',
-              param: { required: false },
-            }),
-        },
+        'X-Influx-Error': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Error string describing the problem',
+            param: { required: false },
+          }),
+        'X-Influx-Reference': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Reference code unique to the error type',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -11504,7 +11826,7 @@ export const postTasksTaskIDRunsRunIDRetryRoute = createRoute({
           },
         }),
     }),
-    body: { content: { 'application/json; charset=utf-8': { schema: z.object({}) } } },
+    body: { content: { 'application/json; charset=utf-8': { schema: z.looseObject({}) } } },
   },
   responses: {
     200: {
@@ -12841,36 +13163,28 @@ export const postWriteRoute = createRoute({
       description:
         'Token is temporarily over quota. The Retry-After header describes when to try the write again.',
       headers: z.object({
-        'Retry-After': {
-          description:
-            'A non-negative decimal integer indicating the seconds to delay after the response is received.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description:
-                'A non-negative decimal integer indicating the seconds to delay after the response is received.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description:
+              'A non-negative decimal integer indicating the seconds to delay after the response is received.',
+            param: { required: false },
+          }),
       }),
     },
     503: {
       description:
         'Server is temporarily unavailable to accept writes.  The Retry-After header describes when to try the write again.',
       headers: z.object({
-        'Retry-After': {
-          description:
-            'A non-negative decimal integer indicating the seconds to delay after the response is received.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description:
-                'A non-negative decimal integer indicating the seconds to delay after the response is received.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description:
+              'A non-negative decimal integer indicating the seconds to delay after the response is received.',
+            param: { required: false },
+          }),
       }),
     },
     default: {

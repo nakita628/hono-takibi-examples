@@ -1,759 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const TypeSchema: z.ZodType<TypeType> = z
-  .lazy(() =>
-    z
-      .object({
-        arrayElementType: TypeSchema.exactOptional().openapi({
-          description:
-            'If code == ARRAY, then `array_element_type` is the type of the array elements.',
-        }),
-        code: z
-          .enum([
-            'TYPE_CODE_UNSPECIFIED',
-            'BOOL',
-            'INT64',
-            'FLOAT64',
-            'TIMESTAMP',
-            'DATE',
-            'STRING',
-            'BYTES',
-            'ARRAY',
-            'STRUCT',
-            'NUMERIC',
-            'JSON',
-            'PROTO',
-            'ENUM',
-          ])
-          .exactOptional()
-          .openapi({ description: 'Required. The TypeCode for this type.' }),
-        protoTypeFqn: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'If code == PROTO or code == ENUM, then `proto_type_fqn` is the fully qualified name of the proto type representing the proto/enum definition.',
-          }),
-        structType: StructTypeSchema.exactOptional().openapi({
-          description:
-            "If code == STRUCT, then `struct_type` provides type information for the struct's fields.",
-        }),
-        typeAnnotation: z
-          .enum(['TYPE_ANNOTATION_CODE_UNSPECIFIED', 'PG_NUMERIC', 'PG_JSONB'])
-          .exactOptional()
-          .openapi({
-            description:
-              "The TypeAnnotationCode that disambiguates SQL type that Spanner will use to represent values of this type during query processing. This is necessary for some type codes because a single TypeCode can be mapped to different SQL types depending on the SQL dialect. type_annotation typically is not needed to process the content of a value (it doesn't affect serialization) and clients can ignore it on the read path.",
-          }),
-      })
-      .openapi({
-        description:
-          '`Type` indicates the type of a Cloud Spanner value, as might be stored in a table cell or returned from an SQL query.',
-        required: [],
-      }),
-  )
-  .openapi('Type')
-
-type FieldType = { name?: string; type?: z.infer<typeof TypeSchema> }
-
-const LocalizedStringSchema = z
-  .object({
-    args: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'A map of arguments used when creating the localized message. Keys represent parameter names which may be used by the localized version when substituting dynamic values.',
-      }),
-    message: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The canonical English version of this message. If no token is provided or the front-end has no message associated with the token, this text will be displayed as-is.',
-      }),
-    token: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The token identifying the message, e.g. 'METRIC_READ_CPU'. This should be unique within the service.",
-      }),
-  })
-  .openapi({
-    description:
-      'A message representing a user-facing string whose value may need to be translated before being displayed.',
-    required: [],
-  })
-  .openapi('LocalizedString')
-
-const DerivedMetricSchema = z
-  .object({
-    denominator: LocalizedStringSchema.exactOptional().openapi({
-      description: 'The name of the denominator metric. e.g. "rows".',
-    }),
-    numerator: LocalizedStringSchema.exactOptional().openapi({
-      description: 'The name of the numerator metric. e.g. "latency".',
-    }),
-  })
-  .openapi({ description: 'A message representing a derived metric.', required: [] })
-  .openapi('DerivedMetric')
-
-const IndexedHotKeySchema = z
-  .object({
-    sparseHotKeys: z
-      .record(z.string(), z.int32())
-      .exactOptional()
-      .openapi({
-        description:
-          'A (sparse) mapping from key bucket index to the index of the specific hot row key for that key bucket. The index of the hot row key can be translated to the actual row key via the ScanData.VisualizationData.indexed_keys repeated field.',
-      }),
-  })
-  .openapi({
-    description:
-      'A message representing a (sparse) collection of hot keys for specific key buckets.',
-    required: [],
-  })
-  .openapi('IndexedHotKey')
-
-const ContextValueSchema = z
-  .object({
-    label: LocalizedStringSchema.exactOptional().openapi({
-      description: 'The label for the context value. e.g. "latency".',
-    }),
-    severity: z
-      .enum(['SEVERITY_UNSPECIFIED', 'INFO', 'WARNING', 'ERROR', 'FATAL'])
-      .exactOptional()
-      .openapi({ description: 'The severity of this context.' }),
-    unit: z.string().exactOptional().openapi({ description: 'The unit of the context value.' }),
-    value: z.float32().exactOptional().openapi({ description: 'The value for the context.' }),
-  })
-  .openapi({
-    description:
-      'A message representing context for a KeyRangeInfo, including a label, value, unit, and severity.',
-    required: [],
-  })
-  .openapi('ContextValue')
-
-const KeyRangeInfoSchema = z
-  .object({
-    contextValues: z
-      .array(ContextValueSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of context values for this key range.' }),
-    endKeyIndex: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The index of the end key in indexed_keys.' }),
-    info: LocalizedStringSchema.exactOptional().openapi({
-      description: 'Information about this key range, for all metrics.',
-    }),
-    keysCount: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The number of keys this range covers.' }),
-    metric: LocalizedStringSchema.exactOptional().openapi({
-      description: 'The name of the metric. e.g. "latency".',
-    }),
-    startKeyIndex: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The index of the start key in indexed_keys.' }),
-    timeOffset: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The time offset. This is the time since the start of the time interval.',
-      }),
-    unit: LocalizedStringSchema.exactOptional().openapi({
-      description:
-        'The unit of the metric. This is an unstructured field and will be mapped as is to the user.',
-    }),
-    value: z.float32().exactOptional().openapi({ description: 'The value of the metric.' }),
-  })
-  .openapi({
-    description: 'A message representing information for a key range (possibly one key).',
-    required: [],
-  })
-  .openapi('KeyRangeInfo')
-
-const KeyRangeInfosSchema = z
-  .object({
-    infos: z
-      .array(KeyRangeInfoSchema)
-      .exactOptional()
-      .openapi({ description: 'The list individual KeyRangeInfos.' }),
-    totalSize: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The total size of the list of all KeyRangeInfos. This may be larger than the number of repeated messages above. If that is the case, this number may be used to determine how many are not being shown.',
-      }),
-  })
-  .openapi({
-    description: 'A message representing a list of specific information for multiple key ranges.',
-    required: [],
-  })
-  .openapi('KeyRangeInfos')
-
-const IndexedKeyRangeInfosSchema = z
-  .object({
-    keyRangeInfos: z
-      .record(z.string(), KeyRangeInfosSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'A (sparse) mapping from key bucket index to the KeyRangeInfos for that key bucket.',
-      }),
-  })
-  .openapi({
-    description:
-      'A message representing a (sparse) collection of KeyRangeInfos for specific key buckets.',
-    required: [],
-  })
-  .openapi('IndexedKeyRangeInfos')
-
-const MetricMatrixRowSchema = z
-  .object({
-    cols: z.array(z.float32()).exactOptional().openapi({ description: 'The columns of the row.' }),
-  })
-  .openapi({ description: 'A message representing a row of a matrix of floats.', required: [] })
-  .openapi('MetricMatrixRow')
-
-const MetricMatrixSchema = z
-  .object({
-    rows: z
-      .array(MetricMatrixRowSchema)
-      .exactOptional()
-      .openapi({ description: 'The rows of the matrix.' }),
-  })
-  .openapi({ description: 'A message representing a matrix of floats.', required: [] })
-  .openapi('MetricMatrix')
-
-type MetricType = {
-  aggregation?: 'AGGREGATION_UNSPECIFIED' | 'MAX' | 'SUM'
-  category?: z.infer<typeof LocalizedStringSchema>
-  derived?: z.infer<typeof DerivedMetricSchema>
-  displayLabel?: z.infer<typeof LocalizedStringSchema>
-  hasNonzeroData?: boolean
-  hotValue?: number
-  indexedHotKeys?: { [key: string]: z.infer<typeof IndexedHotKeySchema> }
-  indexedKeyRangeInfos?: { [key: string]: z.infer<typeof IndexedKeyRangeInfosSchema> }
-  info?: z.infer<typeof LocalizedStringSchema>
-  matrix?: z.infer<typeof MetricMatrixSchema>
-  unit?: z.infer<typeof LocalizedStringSchema>
-  visible?: boolean
-}
-
-const FieldSchema: z.ZodType<FieldType> = z
-  .lazy(() =>
-    z
-      .object({
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The name of the field. For reads, this is the column name. For SQL queries, it is the column alias (e.g., `"Word"` in the query `"SELECT \'hello\' AS Word"`), or the column name (e.g., `"ColName"` in the query `"SELECT ColName FROM Table"`). Some columns might have an empty name (e.g., `"SELECT UPPER(ColName)"`). Note that a query result can contain multiple fields with the same name.',
-          }),
-        type: TypeSchema.exactOptional().openapi({ description: 'The type of the field.' }),
-      })
-      .openapi({ description: 'Message representing a single field of a struct.', required: [] }),
-  )
-  .openapi('Field')
-
-type StructTypeType = { fields?: z.infer<typeof FieldSchema>[] }
-
-const StructTypeSchema: z.ZodType<StructTypeType> = z
-  .lazy(() =>
-    z
-      .object({
-        fields: z
-          .array(FieldSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'The list of fields that make up this struct. Order is significant, because values of this struct type are represented as lists, where the order of field values matches the order of fields in the StructType. In turn, the order of fields matches the order of columns in a read request, or the order of fields in the `SELECT` clause of a query.',
-          }),
-      })
-      .openapi({ description: '`StructType` defines the fields of a STRUCT type.', required: [] }),
-  )
-  .openapi('StructType')
-
-type TypeType = {
-  arrayElementType?: TypeType
-  code?:
-    | 'TYPE_CODE_UNSPECIFIED'
-    | 'BOOL'
-    | 'INT64'
-    | 'FLOAT64'
-    | 'TIMESTAMP'
-    | 'DATE'
-    | 'STRING'
-    | 'BYTES'
-    | 'ARRAY'
-    | 'STRUCT'
-    | 'NUMERIC'
-    | 'JSON'
-    | 'PROTO'
-    | 'ENUM'
-  protoTypeFqn?: string
-  structType?: z.infer<typeof StructTypeSchema>
-  typeAnnotation?: 'TYPE_ANNOTATION_CODE_UNSPECIFIED' | 'PG_NUMERIC' | 'PG_JSONB'
-}
-
-const StatusSchema = z
-  .object({
-    code: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'The status code, which should be an enum value of google.rpc.Code.',
-      }),
-    details: z
-      .array(
-        z.record(
-          z.string(),
-          z
-            .any()
-            .openapi({
-              description: 'Properties of the object. Contains field @type with type URL.',
-            }),
-        ),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of messages that carry the error details. There is a common set of message types for APIs to use.',
-      }),
-    message: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.',
-      }),
-  })
-  .openapi({
-    description:
-      'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).',
-    required: [],
-  })
-  .openapi('Status')
-
-const EncryptionInfoSchema = z
-  .object({
-    encryptionStatus: StatusSchema.exactOptional().openapi({
-      description:
-        'Output only. If present, the status of a recent encrypt/decrypt call on underlying data for this database or backup. Regardless of status, data is always encrypted at rest.',
-      readOnly: true,
-    }),
-    encryptionType: z
-      .enum(['TYPE_UNSPECIFIED', 'GOOGLE_DEFAULT_ENCRYPTION', 'CUSTOMER_MANAGED_ENCRYPTION'])
-      .exactOptional()
-      .openapi({ description: 'Output only. The type of encryption.', readOnly: true }),
-    kmsKeyVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. A Cloud KMS key version that is being used to protect the database or backup.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description: 'Encryption information for a Cloud Spanner database or backup.',
-    required: [],
-  })
-  .openapi('EncryptionInfo')
-
-const BackupSchema = z
-  .object({
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The time the CreateBackup request is received. If the request does not specify `version_time`, the `version_time` of the backup will be equivalent to the `create_time`.',
-        readOnly: true,
-      }),
-    database: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required for the CreateBackup operation. Name of the database from which this backup was created. This needs to be in the same instance as the backup. Values are of the form `projects//instances//databases/`.',
-      }),
-    databaseDialect: z
-      .enum(['DATABASE_DIALECT_UNSPECIFIED', 'GOOGLE_STANDARD_SQL', 'POSTGRESQL'])
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The database dialect information for the backup.',
-        readOnly: true,
-      }),
-    encryptionInfo: EncryptionInfoSchema.exactOptional().openapi({
-      description: 'Output only. The encryption information for the backup.',
-      readOnly: true,
-    }),
-    expireTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required for the CreateBackup operation. The expiration time of the backup, with microseconds granularity that must be at least 6 hours and at most 366 days from the time the CreateBackup request is processed. Once the `expire_time` has passed, the backup is eligible to be automatically deleted by Cloud Spanner to free the resources used by the backup.',
-      }),
-    maxExpireTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Output only. The max allowed expiration time of the backup, with microseconds granularity. A backup's expiration time can be configured in multiple APIs: CreateBackup, UpdateBackup, CopyBackup. When updating or copying an existing backup, the expiration time specified must be less than `Backup.max_expire_time`.",
-        readOnly: true,
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only for the CreateBackup operation. Required for the UpdateBackup operation. A globally unique identifier for the backup which cannot be changed. Values are of the form `projects//instances//backups/a-z*[a-z0-9]` The final segment of the name must be between 2 and 60 characters in length. The backup is stored in the location(s) specified in the instance configuration of the instance containing the backup, identified by the prefix of the backup name of the form `projects//instances/`.',
-      }),
-    referencingBackups: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The names of the destination backups being created by copying this source backup. The backup names are of the form `projects//instances//backups/`. Referencing backups may exist in different instances. The existence of any referencing backup prevents the backup from being deleted. When the copy operation is done (either successfully completed or cancelled or the destination backup is deleted), the reference to the backup is removed.',
-        readOnly: true,
-      }),
-    referencingDatabases: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The names of the restored databases that reference the backup. The database names are of the form `projects//instances//databases/`. Referencing databases may exist in different instances. The existence of any referencing database prevents the backup from being deleted. When a restored database from the backup enters the `READY` state, the reference to the backup is removed.',
-        readOnly: true,
-      }),
-    sizeBytes: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Size of the backup in bytes.', readOnly: true }),
-    state: z
-      .enum(['STATE_UNSPECIFIED', 'CREATING', 'READY'])
-      .exactOptional()
-      .openapi({ description: 'Output only. The current state of the backup.', readOnly: true }),
-    versionTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The backup will contain an externally consistent copy of the database at the timestamp specified by `version_time`. If `version_time` is not specified, the system will set `version_time` to the `create_time` of the backup.',
-      }),
-  })
-  .openapi({ description: 'A backup of a Cloud Spanner database.', required: [] })
-  .openapi('Backup')
-
-const BackupInfoSchema = z
-  .object({
-    backup: z.string().exactOptional().openapi({ description: 'Name of the backup.' }),
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The time the CreateBackup request was received.' }),
-    sourceDatabase: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Name of the database the backup was created from.' }),
-    versionTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The backup contains an externally consistent copy of `source_database` at the timestamp specified by `version_time`. If the CreateBackup request did not specify `version_time`, the `version_time` of the backup is equivalent to the `create_time`.',
-      }),
-  })
-  .openapi({ description: 'Information about a backup.', required: [] })
-  .openapi('BackupInfo')
-
-const SessionSchema = z
-  .object({
-    approximateLastUseTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The approximate timestamp when the session is last used. It is typically earlier than the actual last use time.',
-        readOnly: true,
-      }),
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The timestamp when the session is created.',
-        readOnly: true,
-      }),
-    creatorRole: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The database role which created this session.' }),
-    labels: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'The labels for the session. * Label keys must be between 1 and 63 characters long and must conform to the following regular expression: `[a-z]([-a-z0-9]*[a-z0-9])?`. * Label values must be between 0 and 63 characters long and must conform to the regular expression `([a-z]([-a-z0-9]*[a-z0-9])?)?`. * No more than 64 labels can be associated with a given session. See https://goo.gl/xmQnxf for more information on and examples of labels.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The name of the session. This is always system-assigned.',
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'A session in the Cloud Spanner API.', required: [] })
-  .openapi('Session')
-
-const BatchCreateSessionsRequestSchema = z
-  .object({
-    sessionCount: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The number of sessions to be created in this batch call. The API may return fewer than the requested number of sessions. If a specific number of sessions are desired, the client can make additional calls to BatchCreateSessions (adjusting session_count as necessary).',
-      }),
-    sessionTemplate: SessionSchema.exactOptional().openapi({
-      description: 'Parameters to be applied to each created session.',
-    }),
-  })
-  .openapi({ description: 'The request for BatchCreateSessions.', required: [] })
-  .openapi('BatchCreateSessionsRequest')
-
-const BatchCreateSessionsResponseSchema = z
-  .object({
-    session: z
-      .array(SessionSchema)
-      .exactOptional()
-      .openapi({ description: 'The freshly created sessions.' }),
-  })
-  .openapi({ description: 'The response for BatchCreateSessions.', required: [] })
-  .openapi('BatchCreateSessionsResponse')
-
-const PartitionedDmlSchema = z
-  .object({})
-  .openapi({ description: 'Message type to initiate a Partitioned DML transaction.' })
-  .openapi('PartitionedDml')
-
-const ReadOnlySchema = z
-  .object({
-    exactStaleness: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Executes all reads at a timestamp that is `exact_staleness` old. The timestamp is chosen soon after the read is started. Guarantees that all writes that have committed more than the specified number of seconds ago are visible. Because Cloud Spanner chooses the exact timestamp, this mode works even if the client's local clock is substantially skewed from Cloud Spanner commit timestamps. Useful for reading at nearby replicas without the distributed timestamp negotiation overhead of `max_staleness`.",
-      }),
-    maxStaleness: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Read data at a timestamp >= `NOW - max_staleness` seconds. Guarantees that all writes that have committed more than the specified number of seconds ago are visible. Because Cloud Spanner chooses the exact timestamp, this mode works even if the client's local clock is substantially skewed from Cloud Spanner commit timestamps. Useful for reading the freshest data available at a nearby replica, while bounding the possible staleness if the local replica has fallen behind. Note that this option can only be used in single-use transactions.",
-      }),
-    minReadTimestamp: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Executes all reads at a timestamp >= `min_read_timestamp`. This is useful for requesting fresher data than some previous read, or data that is fresh enough to observe the effects of some previously committed transaction whose timestamp is known. Note that this option can only be used in single-use transactions. A timestamp in RFC3339 UTC \\"Zulu\\" format, accurate to nanoseconds. Example: `"2014-10-02T15:01:23.045123456Z"`.',
-      }),
-    readTimestamp: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Executes all reads at the given timestamp. Unlike other modes, reads at a specific timestamp are repeatable; the same read at the same timestamp always returns the same data. If the timestamp is in the future, the read will block until the specified timestamp, modulo the read\'s deadline. Useful for large scale consistent reads such as mapreduces, or for coordinating many reads against a consistent snapshot of the data. A timestamp in RFC3339 UTC \\"Zulu\\" format, accurate to nanoseconds. Example: `"2014-10-02T15:01:23.045123456Z"`.',
-      }),
-    returnReadTimestamp: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If true, the Cloud Spanner-selected read timestamp is included in the Transaction message that describes the transaction.',
-      }),
-    strong: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Read at a timestamp where all previously committed transactions are visible.',
-      }),
-  })
-  .openapi({ description: 'Message type to initiate a read-only transaction.', required: [] })
-  .openapi('ReadOnly')
-
-const ReadWriteSchema = z
-  .object({
-    readLockMode: z
-      .enum(['READ_LOCK_MODE_UNSPECIFIED', 'PESSIMISTIC', 'OPTIMISTIC'])
-      .exactOptional()
-      .openapi({ description: 'Read lock mode for the transaction.' }),
-  })
-  .openapi({
-    description:
-      'Message type to initiate a read-write transaction. Currently this transaction type has no options.',
-    required: [],
-  })
-  .openapi('ReadWrite')
-
-const TransactionOptionsSchema = z
-  .object({
-    partitionedDml: PartitionedDmlSchema.exactOptional().openapi({
-      description:
-        'Partitioned DML transaction. Authorization to begin a Partitioned DML transaction requires `spanner.databases.beginPartitionedDmlTransaction` permission on the `session` resource.',
-    }),
-    readOnly: ReadOnlySchema.exactOptional().openapi({
-      description:
-        'Transaction will not write. Authorization to begin a read-only transaction requires `spanner.databases.beginReadOnlyTransaction` permission on the `session` resource.',
-    }),
-    readWrite: ReadWriteSchema.exactOptional().openapi({
-      description:
-        'Transaction may write. Authorization to begin a read-write transaction requires `spanner.databases.beginOrRollbackReadWriteTransaction` permission on the `session` resource.',
-    }),
-  })
-  .openapi({
-    description:
-      'Transactions: Each session can have at most one active transaction at a time (note that standalone reads and queries use a transaction internally and do count towards the one transaction limit). After the active transaction is completed, the session can immediately be re-used for the next transaction. It is not necessary to create a new session for each transaction. Transaction modes: Cloud Spanner supports three transaction modes: 1. Locking read-write. This type of transaction is the only way to write data into Cloud Spanner. These transactions rely on pessimistic locking and, if necessary, two-phase commit. Locking read-write transactions may abort, requiring the application to retry. 2. Snapshot read-only. Snapshot read-only transactions provide guaranteed consistency across several reads, but do not allow writes. Snapshot read-only transactions can be configured to read at timestamps in the past, or configured to perform a strong read (where Spanner will select a timestamp such that the read is guaranteed to see the effects of all transactions that have committed before the start of the read). Snapshot read-only transactions do not need to be committed. Queries on change streams must be performed with the snapshot read-only transaction mode, specifying a strong read. Please see TransactionOptions.ReadOnly.strong for more details. 3. Partitioned DML. This type of transaction is used to execute a single Partitioned DML statement. Partitioned DML partitions the key space and runs the DML statement over each partition in parallel using separate, internal transactions that commit independently. Partitioned DML transactions do not need to be committed. For transactions that only read, snapshot read-only transactions provide simpler semantics and are almost always faster. In particular, read-only transactions do not take locks, so they do not conflict with read-write transactions. As a consequence of not taking locks, they also do not abort, so retry loops are not needed. Transactions may only read-write data in a single database. They may, however, read-write data in different tables within that database. Locking read-write transactions: Locking transactions may be used to atomically read-modify-write data anywhere in a database. This type of transaction is externally consistent. Clients should attempt to minimize the amount of time a transaction is active. Faster transactions commit with higher probability and cause less contention. Cloud Spanner attempts to keep read locks active as long as the transaction continues to do reads, and the transaction has not been terminated by Commit or Rollback. Long periods of inactivity at the client may cause Cloud Spanner to release a transaction\'s locks and abort it. Conceptually, a read-write transaction consists of zero or more reads or SQL statements followed by Commit. At any time before Commit, the client can send a Rollback request to abort the transaction. Semantics: Cloud Spanner can commit the transaction if all read locks it acquired are still valid at commit time, and it is able to acquire write locks for all writes. Cloud Spanner can abort the transaction for any reason. If a commit attempt returns `ABORTED`, Cloud Spanner guarantees that the transaction has not modified any user data in Cloud Spanner. Unless the transaction commits, Cloud Spanner makes no guarantees about how long the transaction\'s locks were held for. It is an error to use Cloud Spanner locks for any sort of mutual exclusion other than between Cloud Spanner transactions themselves. Retrying aborted transactions: When a transaction aborts, the application can choose to retry the whole transaction again. To maximize the chances of successfully committing the retry, the client should execute the retry in the same session as the original attempt. The original session\'s lock priority increases with each consecutive abort, meaning that each attempt has a slightly better chance of success than the previous. Under some circumstances (for example, many transactions attempting to modify the same row(s)), a transaction can abort many times in a short period before successfully committing. Thus, it is not a good idea to cap the number of retries a transaction can attempt; instead, it is better to limit the total amount of time spent retrying. Idle transactions: A transaction is considered idle if it has no outstanding reads or SQL queries and has not started a read or SQL query within the last 10 seconds. Idle transactions can be aborted by Cloud Spanner so that they don\'t hold on to locks indefinitely. If an idle transaction is aborted, the commit will fail with error `ABORTED`. If this behavior is undesirable, periodically executing a simple SQL query in the transaction (for example, `SELECT 1`) prevents the transaction from becoming idle. Snapshot read-only transactions: Snapshot read-only transactions provides a simpler method than locking read-write transactions for doing several consistent reads. However, this type of transaction does not support writes. Snapshot transactions do not take locks. Instead, they work by choosing a Cloud Spanner timestamp, then executing all reads at that timestamp. Since they do not acquire locks, they do not block concurrent read-write transactions. Unlike locking read-write transactions, snapshot read-only transactions never abort. They can fail if the chosen read timestamp is garbage collected; however, the default garbage collection policy is generous enough that most applications do not need to worry about this in practice. Snapshot read-only transactions do not need to call Commit or Rollback (and in fact are not permitted to do so). To execute a snapshot transaction, the client specifies a timestamp bound, which tells Cloud Spanner how to choose a read timestamp. The types of timestamp bound are: - Strong (the default). - Bounded staleness. - Exact staleness. If the Cloud Spanner database to be read is geographically distributed, stale read-only transactions can execute more quickly than strong or read-write transactions, because they are able to execute far from the leader replica. Each type of timestamp bound is discussed in detail below. Strong: Strong reads are guaranteed to see the effects of all transactions that have committed before the start of the read. Furthermore, all rows yielded by a single read are consistent with each other -- if any part of the read observes a transaction, all parts of the read see the transaction. Strong reads are not repeatable: two consecutive strong read-only transactions might return inconsistent results if there are concurrent writes. If consistency across reads is required, the reads should be executed within a transaction or at an exact read timestamp. Queries on change streams (see below for more details) must also specify the strong read timestamp bound. See TransactionOptions.ReadOnly.strong. Exact staleness: These timestamp bounds execute reads at a user-specified timestamp. Reads at a timestamp are guaranteed to see a consistent prefix of the global transaction history: they observe modifications done by all transactions with a commit timestamp less than or equal to the read timestamp, and observe none of the modifications done by transactions with a larger commit timestamp. They will block until all conflicting transactions that may be assigned commit timestamps <= the read timestamp have finished. The timestamp can either be expressed as an absolute Cloud Spanner commit timestamp or a staleness relative to the current time. These modes do not require a "negotiation phase" to pick a timestamp. As a result, they execute slightly faster than the equivalent boundedly stale concurrency modes. On the other hand, boundedly stale reads usually return fresher results. See TransactionOptions.ReadOnly.read_timestamp and TransactionOptions.ReadOnly.exact_staleness. Bounded staleness: Bounded staleness modes allow Cloud Spanner to pick the read timestamp, subject to a user-provided staleness bound. Cloud Spanner chooses the newest timestamp within the staleness bound that allows execution of the reads at the closest available replica without blocking. All rows yielded are consistent with each other -- if any part of the read observes a transaction, all parts of the read see the transaction. Boundedly stale reads are not repeatable: two stale reads, even if they use the same staleness bound, can execute at different timestamps and thus return inconsistent results. Boundedly stale reads execute in two phases: the first phase negotiates a timestamp among all replicas needed to serve the read. In the second phase, reads are executed at the negotiated timestamp. As a result of the two phase execution, bounded staleness reads are usually a little slower than comparable exact staleness reads. However, they are typically able to return fresher results, and are more likely to execute at the closest replica. Because the timestamp negotiation requires up-front knowledge of which rows will be read, it can only be used with single-use read-only transactions. See TransactionOptions.ReadOnly.max_staleness and TransactionOptions.ReadOnly.min_read_timestamp. Old read timestamps and garbage collection: Cloud Spanner continuously garbage collects deleted and overwritten data in the background to reclaim storage space. This process is known as "version GC". By default, version GC reclaims versions after they are one hour old. Because of this, Cloud Spanner cannot perform reads at read timestamps more than one hour in the past. This restriction also applies to in-progress reads and/or SQL queries whose timestamp become too old while executing. Reads and SQL queries with too-old read timestamps fail with the error `FAILED_PRECONDITION`. You can configure and extend the `VERSION_RETENTION_PERIOD` of a database up to a period as long as one week, which allows Cloud Spanner to perform reads up to one week in the past. Querying change Streams: A Change Stream is a schema object that can be configured to watch data changes on the entire database, a set of tables, or a set of columns in a database. When a change stream is created, Spanner automatically defines a corresponding SQL Table-Valued Function (TVF) that can be used to query the change records in the associated change stream using the ExecuteStreamingSql API. The name of the TVF for a change stream is generated from the name of the change stream: READ_. All queries on change stream TVFs must be executed using the ExecuteStreamingSql API with a single-use read-only transaction with a strong read-only timestamp_bound. The change stream TVF allows users to specify the start_timestamp and end_timestamp for the time range of interest. All change records within the retention period is accessible using the strong read-only timestamp_bound. All other TransactionOptions are invalid for change stream queries. In addition, if TransactionOptions.read_only.return_read_timestamp is set to true, a special value of 2^63 - 2 will be returned in the Transaction message that describes the transaction, instead of a valid read timestamp. This special value should be discarded and not used for any subsequent queries. Please see https://cloud.google.com/spanner/docs/change-streams for more details on how to query the change stream TVFs. Partitioned DML transactions: Partitioned DML transactions are used to execute DML statements with a different execution strategy that provides different, and often better, scalability properties for large, table-wide operations than DML in a ReadWrite transaction. Smaller scoped statements, such as an OLTP workload, should prefer using ReadWrite transactions. Partitioned DML partitions the keyspace and runs the DML statement on each partition in separate, internal transactions. These transactions commit automatically when complete, and run independently from one another. To reduce lock contention, this execution strategy only acquires read locks on rows that match the WHERE clause of the statement. Additionally, the smaller per-partition transactions hold locks for less time. That said, Partitioned DML is not a drop-in replacement for standard DML used in ReadWrite transactions. - The DML statement must be fully-partitionable. Specifically, the statement must be expressible as the union of many statements which each access only a single row of the table. - The statement is not applied atomically to all rows of the table. Rather, the statement is applied atomically to partitions of the table, in independent transactions. Secondary index rows are updated atomically with the base table rows. - Partitioned DML does not guarantee exactly-once execution semantics against a partition. The statement will be applied at least once to each partition. It is strongly recommended that the DML statement should be idempotent to avoid unexpected results. For instance, it is potentially dangerous to run a statement such as `UPDATE table SET column = column + 1` as it could be run multiple times against some rows. - The partitions are committed automatically - there is no support for Commit or Rollback. If the call returns an error, or if the client issuing the ExecuteSql call dies, it is possible that some rows had the statement executed on them successfully. It is also possible that statement was never executed against other rows. - Partitioned DML transactions may only contain the execution of a single DML statement via ExecuteSql or ExecuteStreamingSql. - If any error is encountered during the execution of the partitioned DML operation (for instance, a UNIQUE INDEX violation, division by zero, or a value that cannot be stored due to schema constraints), then the operation is stopped at that point and an error is returned. It is possible that at this point, some partitions have been committed (or even committed multiple times), and other partitions have not been run at all. Given the above, Partitioned DML is good fit for large, database-wide, operations that are idempotent, such as deleting old rows from a very large table.',
-    required: [],
-  })
-  .openapi('TransactionOptions')
-
-const RequestOptionsSchema = z
-  .object({
-    priority: z
-      .enum(['PRIORITY_UNSPECIFIED', 'PRIORITY_LOW', 'PRIORITY_MEDIUM', 'PRIORITY_HIGH'])
-      .exactOptional()
-      .openapi({ description: 'Priority for the request.' }),
-    requestTag: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "A per-request tag which can be applied to queries or reads, used for statistics collection. Both request_tag and transaction_tag can be specified for a read or query that belongs to a transaction. This field is ignored for requests where it's not applicable (e.g. CommitRequest). Legal characters for `request_tag` values are all printable characters (ASCII 32 - 126) and the length of a request_tag is limited to 50 characters. Values that exceed this limit are truncated. Any leading underscore (_) characters will be removed from the string.",
-      }),
-    transactionTag: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "A tag used for statistics collection about this transaction. Both request_tag and transaction_tag can be specified for a read or query that belongs to a transaction. The value of transaction_tag should be the same for all requests belonging to the same transaction. If this request doesn't belong to any transaction, transaction_tag will be ignored. Legal characters for `transaction_tag` values are all printable characters (ASCII 32 - 126) and the length of a transaction_tag is limited to 50 characters. Values that exceed this limit are truncated. Any leading underscore (_) characters will be removed from the string.",
-      }),
-  })
-  .openapi({ description: 'Common request options for various APIs.', required: [] })
-  .openapi('RequestOptions')
-
-const BeginTransactionRequestSchema = z
-  .object({
-    options: TransactionOptionsSchema.exactOptional().openapi({
-      description: 'Required. Options for the new transaction.',
-    }),
-    requestOptions: RequestOptionsSchema.exactOptional().openapi({
-      description:
-        'Common options for this request. Priority is ignored for this request. Setting the priority in this request_options struct will not do anything. To set the priority for a transaction, set it on the reads and writes that are part of this transaction instead.',
-    }),
-  })
-  .openapi({ description: 'The request for BeginTransaction.', required: [] })
-  .openapi('BeginTransactionRequest')
-
-const ExprSchema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.',
-      }),
-    expression: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Textual representation of an expression in Common Expression Language syntax.',
-      }),
-    location: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. String indicating the location of the expression for error reporting, e.g. a file name and a position in the file.',
-      }),
-    title: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Title for the expression, i.e. a short string describing its purpose. This can be used e.g. in UIs which allow to enter the expression.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents a textual expression in the Common Expression Language (CEL) syntax. CEL is a C-like expression language. The syntax and semantics of CEL are documented at https://github.com/google/cel-spec. Example (Comparison): title: "Summary size limit" description: "Determines if a summary is less than 100 chars" expression: "document.summary.size() < 100" Example (Equality): title: "Requestor is owner" description: "Determines if requestor is the document owner" expression: "document.owner == request.auth.claims.email" Example (Logic): title: "Public documents" description: "Determine whether the document should be publicly visible" expression: "document.type != \'private\' && document.type != \'internal\'" Example (Data Manipulation): title: "Notification string" description: "Create a notification string with a timestamp." expression: "\'New message received at \' + string(document.create_time)" The exact variables and functions that may be referenced within an expression are determined by the service that evaluates it. See the service documentation for additional information.',
-    required: [],
-  })
-  .openapi('Expr')
-
-const BindingSchema = z
-  .object({
-    condition: ExprSchema.exactOptional().openapi({
-      description:
-        'The condition that is associated with this binding. If the condition evaluates to `true`, then this binding applies to the current request. If the condition evaluates to `false`, then this binding does not apply to the current request. However, a different role binding might grant the same role to one or more of the principals in this binding. To learn which resources support conditions in their IAM policies, see the [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).',
-    }),
-    members: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies the principals requesting access for a Google Cloud resource. `members` can have the following values: * `allUsers`: A special identifier that represents anyone who is on the internet; with or without a Google account. * `allAuthenticatedUsers`: A special identifier that represents anyone who is authenticated with a Google account or a service account. Does not include identities that come from external identity providers (IdPs) through identity federation. * `user:{emailid}`: An email address that represents a specific Google account. For example, `alice@example.com` . * `serviceAccount:{emailid}`: An email address that represents a Google service account. For example, `my-other-app@appspot.gserviceaccount.com`. * `serviceAccount:{projectid}.svc.id.goog[{namespace}/{kubernetes-sa}]`: An identifier for a [Kubernetes service account](https://cloud.google.com/kubernetes-engine/docs/how-to/kubernetes-service-accounts). For example, `my-project.svc.id.goog[my-namespace/my-kubernetes-sa]`. * `group:{emailid}`: An email address that represents a Google group. For example, `admins@example.com`. * `domain:{domain}`: The G Suite domain (primary) that represents all the users of that domain. For example, `google.com` or `example.com`. * `deleted:user:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a user that has been recently deleted. For example, `alice@example.com?uid=123456789012345678901`. If the user is recovered, this value reverts to `user:{emailid}` and the recovered user retains the role in the binding. * `deleted:serviceAccount:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a service account that has been recently deleted. For example, `my-other-app@appspot.gserviceaccount.com?uid=123456789012345678901`. If the service account is undeleted, this value reverts to `serviceAccount:{emailid}` and the undeleted service account retains the role in the binding. * `deleted:group:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a Google group that has been recently deleted. For example, `admins@example.com?uid=123456789012345678901`. If the group is recovered, this value reverts to `group:{emailid}` and the recovered group retains the role in the binding.',
-      }),
-    role: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Role that is assigned to the list of `members`, or principals. For example, `roles/viewer`, `roles/editor`, or `roles/owner`.',
-      }),
-  })
-  .openapi({ description: 'Associates `members`, or principals, with a `role`.', required: [] })
-  .openapi('Binding')
-
-const ChildLinkSchema = z
-  .object({
-    childIndex: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The node to which the link points.' }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of the link. For example, in Hash Joins this could be used to distinguish between the build child and the probe child, or in the case of the child being an output variable, to represent the tag associated with the output variable.',
-      }),
-    variable: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Only present if the child node is SCALAR and corresponds to an output variable of the parent node. The field carries the name of the output variable. For example, a `TableScan` operator that reads rows from a table will have child links to the `SCALAR` nodes representing the output variables created for each column that is read by the operator. The corresponding `variable` fields will be set to the variable names assigned to the columns.',
-      }),
-  })
-  .openapi({
-    description: 'Metadata associated with a parent-child relationship appearing in a PlanNode.',
-    required: [],
-  })
-  .openapi('ChildLink')
-
 const KeyRangeSchema = z
   .object({
     endClosed: z
@@ -893,7 +139,1442 @@ const MutationSchema = z
   })
   .openapi('Mutation')
 
-const CommitRequestSchema = z
+const RequestOptionsSchema = z
+  .object({
+    priority: z
+      .enum(['PRIORITY_UNSPECIFIED', 'PRIORITY_LOW', 'PRIORITY_MEDIUM', 'PRIORITY_HIGH'])
+      .exactOptional()
+      .openapi({ description: 'Priority for the request.' }),
+    requestTag: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "A per-request tag which can be applied to queries or reads, used for statistics collection. Both request_tag and transaction_tag can be specified for a read or query that belongs to a transaction. This field is ignored for requests where it's not applicable (e.g. CommitRequest). Legal characters for `request_tag` values are all printable characters (ASCII 32 - 126) and the length of a request_tag is limited to 50 characters. Values that exceed this limit are truncated. Any leading underscore (_) characters will be removed from the string.",
+      }),
+    transactionTag: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "A tag used for statistics collection about this transaction. Both request_tag and transaction_tag can be specified for a read or query that belongs to a transaction. The value of transaction_tag should be the same for all requests belonging to the same transaction. If this request doesn't belong to any transaction, transaction_tag will be ignored. Legal characters for `transaction_tag` values are all printable characters (ASCII 32 - 126) and the length of a transaction_tag is limited to 50 characters. Values that exceed this limit are truncated. Any leading underscore (_) characters will be removed from the string.",
+      }),
+  })
+  .openapi({ description: 'Common request options for various APIs.', required: [] })
+  .openapi('RequestOptions')
+
+const PartitionedDmlSchema = z
+  .looseObject({})
+  .openapi({ description: 'Message type to initiate a Partitioned DML transaction.' })
+  .openapi('PartitionedDml')
+
+const ReadOnlySchema = z
+  .object({
+    exactStaleness: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Executes all reads at a timestamp that is `exact_staleness` old. The timestamp is chosen soon after the read is started. Guarantees that all writes that have committed more than the specified number of seconds ago are visible. Because Cloud Spanner chooses the exact timestamp, this mode works even if the client's local clock is substantially skewed from Cloud Spanner commit timestamps. Useful for reading at nearby replicas without the distributed timestamp negotiation overhead of `max_staleness`.",
+      }),
+    maxStaleness: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Read data at a timestamp >= `NOW - max_staleness` seconds. Guarantees that all writes that have committed more than the specified number of seconds ago are visible. Because Cloud Spanner chooses the exact timestamp, this mode works even if the client's local clock is substantially skewed from Cloud Spanner commit timestamps. Useful for reading the freshest data available at a nearby replica, while bounding the possible staleness if the local replica has fallen behind. Note that this option can only be used in single-use transactions.",
+      }),
+    minReadTimestamp: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Executes all reads at a timestamp >= `min_read_timestamp`. This is useful for requesting fresher data than some previous read, or data that is fresh enough to observe the effects of some previously committed transaction whose timestamp is known. Note that this option can only be used in single-use transactions. A timestamp in RFC3339 UTC \\"Zulu\\" format, accurate to nanoseconds. Example: `"2014-10-02T15:01:23.045123456Z"`.',
+      }),
+    readTimestamp: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Executes all reads at the given timestamp. Unlike other modes, reads at a specific timestamp are repeatable; the same read at the same timestamp always returns the same data. If the timestamp is in the future, the read will block until the specified timestamp, modulo the read\'s deadline. Useful for large scale consistent reads such as mapreduces, or for coordinating many reads against a consistent snapshot of the data. A timestamp in RFC3339 UTC \\"Zulu\\" format, accurate to nanoseconds. Example: `"2014-10-02T15:01:23.045123456Z"`.',
+      }),
+    returnReadTimestamp: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If true, the Cloud Spanner-selected read timestamp is included in the Transaction message that describes the transaction.',
+      }),
+    strong: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Read at a timestamp where all previously committed transactions are visible.',
+      }),
+  })
+  .openapi({ description: 'Message type to initiate a read-only transaction.', required: [] })
+  .openapi('ReadOnly')
+
+const ReadWriteSchema = z
+  .object({
+    readLockMode: z
+      .enum(['READ_LOCK_MODE_UNSPECIFIED', 'PESSIMISTIC', 'OPTIMISTIC'])
+      .exactOptional()
+      .openapi({ description: 'Read lock mode for the transaction.' }),
+  })
+  .openapi({
+    description:
+      'Message type to initiate a read-write transaction. Currently this transaction type has no options.',
+    required: [],
+  })
+  .openapi('ReadWrite')
+
+const TransactionOptionsSchema = z
+  .object({
+    partitionedDml: PartitionedDmlSchema.exactOptional().openapi({
+      description:
+        'Partitioned DML transaction. Authorization to begin a Partitioned DML transaction requires `spanner.databases.beginPartitionedDmlTransaction` permission on the `session` resource.',
+    }),
+    readOnly: ReadOnlySchema.exactOptional().openapi({
+      description:
+        'Transaction will not write. Authorization to begin a read-only transaction requires `spanner.databases.beginReadOnlyTransaction` permission on the `session` resource.',
+    }),
+    readWrite: ReadWriteSchema.exactOptional().openapi({
+      description:
+        'Transaction may write. Authorization to begin a read-write transaction requires `spanner.databases.beginOrRollbackReadWriteTransaction` permission on the `session` resource.',
+    }),
+  })
+  .openapi({
+    description:
+      'Transactions: Each session can have at most one active transaction at a time (note that standalone reads and queries use a transaction internally and do count towards the one transaction limit). After the active transaction is completed, the session can immediately be re-used for the next transaction. It is not necessary to create a new session for each transaction. Transaction modes: Cloud Spanner supports three transaction modes: 1. Locking read-write. This type of transaction is the only way to write data into Cloud Spanner. These transactions rely on pessimistic locking and, if necessary, two-phase commit. Locking read-write transactions may abort, requiring the application to retry. 2. Snapshot read-only. Snapshot read-only transactions provide guaranteed consistency across several reads, but do not allow writes. Snapshot read-only transactions can be configured to read at timestamps in the past, or configured to perform a strong read (where Spanner will select a timestamp such that the read is guaranteed to see the effects of all transactions that have committed before the start of the read). Snapshot read-only transactions do not need to be committed. Queries on change streams must be performed with the snapshot read-only transaction mode, specifying a strong read. Please see TransactionOptions.ReadOnly.strong for more details. 3. Partitioned DML. This type of transaction is used to execute a single Partitioned DML statement. Partitioned DML partitions the key space and runs the DML statement over each partition in parallel using separate, internal transactions that commit independently. Partitioned DML transactions do not need to be committed. For transactions that only read, snapshot read-only transactions provide simpler semantics and are almost always faster. In particular, read-only transactions do not take locks, so they do not conflict with read-write transactions. As a consequence of not taking locks, they also do not abort, so retry loops are not needed. Transactions may only read-write data in a single database. They may, however, read-write data in different tables within that database. Locking read-write transactions: Locking transactions may be used to atomically read-modify-write data anywhere in a database. This type of transaction is externally consistent. Clients should attempt to minimize the amount of time a transaction is active. Faster transactions commit with higher probability and cause less contention. Cloud Spanner attempts to keep read locks active as long as the transaction continues to do reads, and the transaction has not been terminated by Commit or Rollback. Long periods of inactivity at the client may cause Cloud Spanner to release a transaction\'s locks and abort it. Conceptually, a read-write transaction consists of zero or more reads or SQL statements followed by Commit. At any time before Commit, the client can send a Rollback request to abort the transaction. Semantics: Cloud Spanner can commit the transaction if all read locks it acquired are still valid at commit time, and it is able to acquire write locks for all writes. Cloud Spanner can abort the transaction for any reason. If a commit attempt returns `ABORTED`, Cloud Spanner guarantees that the transaction has not modified any user data in Cloud Spanner. Unless the transaction commits, Cloud Spanner makes no guarantees about how long the transaction\'s locks were held for. It is an error to use Cloud Spanner locks for any sort of mutual exclusion other than between Cloud Spanner transactions themselves. Retrying aborted transactions: When a transaction aborts, the application can choose to retry the whole transaction again. To maximize the chances of successfully committing the retry, the client should execute the retry in the same session as the original attempt. The original session\'s lock priority increases with each consecutive abort, meaning that each attempt has a slightly better chance of success than the previous. Under some circumstances (for example, many transactions attempting to modify the same row(s)), a transaction can abort many times in a short period before successfully committing. Thus, it is not a good idea to cap the number of retries a transaction can attempt; instead, it is better to limit the total amount of time spent retrying. Idle transactions: A transaction is considered idle if it has no outstanding reads or SQL queries and has not started a read or SQL query within the last 10 seconds. Idle transactions can be aborted by Cloud Spanner so that they don\'t hold on to locks indefinitely. If an idle transaction is aborted, the commit will fail with error `ABORTED`. If this behavior is undesirable, periodically executing a simple SQL query in the transaction (for example, `SELECT 1`) prevents the transaction from becoming idle. Snapshot read-only transactions: Snapshot read-only transactions provides a simpler method than locking read-write transactions for doing several consistent reads. However, this type of transaction does not support writes. Snapshot transactions do not take locks. Instead, they work by choosing a Cloud Spanner timestamp, then executing all reads at that timestamp. Since they do not acquire locks, they do not block concurrent read-write transactions. Unlike locking read-write transactions, snapshot read-only transactions never abort. They can fail if the chosen read timestamp is garbage collected; however, the default garbage collection policy is generous enough that most applications do not need to worry about this in practice. Snapshot read-only transactions do not need to call Commit or Rollback (and in fact are not permitted to do so). To execute a snapshot transaction, the client specifies a timestamp bound, which tells Cloud Spanner how to choose a read timestamp. The types of timestamp bound are: - Strong (the default). - Bounded staleness. - Exact staleness. If the Cloud Spanner database to be read is geographically distributed, stale read-only transactions can execute more quickly than strong or read-write transactions, because they are able to execute far from the leader replica. Each type of timestamp bound is discussed in detail below. Strong: Strong reads are guaranteed to see the effects of all transactions that have committed before the start of the read. Furthermore, all rows yielded by a single read are consistent with each other -- if any part of the read observes a transaction, all parts of the read see the transaction. Strong reads are not repeatable: two consecutive strong read-only transactions might return inconsistent results if there are concurrent writes. If consistency across reads is required, the reads should be executed within a transaction or at an exact read timestamp. Queries on change streams (see below for more details) must also specify the strong read timestamp bound. See TransactionOptions.ReadOnly.strong. Exact staleness: These timestamp bounds execute reads at a user-specified timestamp. Reads at a timestamp are guaranteed to see a consistent prefix of the global transaction history: they observe modifications done by all transactions with a commit timestamp less than or equal to the read timestamp, and observe none of the modifications done by transactions with a larger commit timestamp. They will block until all conflicting transactions that may be assigned commit timestamps <= the read timestamp have finished. The timestamp can either be expressed as an absolute Cloud Spanner commit timestamp or a staleness relative to the current time. These modes do not require a "negotiation phase" to pick a timestamp. As a result, they execute slightly faster than the equivalent boundedly stale concurrency modes. On the other hand, boundedly stale reads usually return fresher results. See TransactionOptions.ReadOnly.read_timestamp and TransactionOptions.ReadOnly.exact_staleness. Bounded staleness: Bounded staleness modes allow Cloud Spanner to pick the read timestamp, subject to a user-provided staleness bound. Cloud Spanner chooses the newest timestamp within the staleness bound that allows execution of the reads at the closest available replica without blocking. All rows yielded are consistent with each other -- if any part of the read observes a transaction, all parts of the read see the transaction. Boundedly stale reads are not repeatable: two stale reads, even if they use the same staleness bound, can execute at different timestamps and thus return inconsistent results. Boundedly stale reads execute in two phases: the first phase negotiates a timestamp among all replicas needed to serve the read. In the second phase, reads are executed at the negotiated timestamp. As a result of the two phase execution, bounded staleness reads are usually a little slower than comparable exact staleness reads. However, they are typically able to return fresher results, and are more likely to execute at the closest replica. Because the timestamp negotiation requires up-front knowledge of which rows will be read, it can only be used with single-use read-only transactions. See TransactionOptions.ReadOnly.max_staleness and TransactionOptions.ReadOnly.min_read_timestamp. Old read timestamps and garbage collection: Cloud Spanner continuously garbage collects deleted and overwritten data in the background to reclaim storage space. This process is known as "version GC". By default, version GC reclaims versions after they are one hour old. Because of this, Cloud Spanner cannot perform reads at read timestamps more than one hour in the past. This restriction also applies to in-progress reads and/or SQL queries whose timestamp become too old while executing. Reads and SQL queries with too-old read timestamps fail with the error `FAILED_PRECONDITION`. You can configure and extend the `VERSION_RETENTION_PERIOD` of a database up to a period as long as one week, which allows Cloud Spanner to perform reads up to one week in the past. Querying change Streams: A Change Stream is a schema object that can be configured to watch data changes on the entire database, a set of tables, or a set of columns in a database. When a change stream is created, Spanner automatically defines a corresponding SQL Table-Valued Function (TVF) that can be used to query the change records in the associated change stream using the ExecuteStreamingSql API. The name of the TVF for a change stream is generated from the name of the change stream: READ_. All queries on change stream TVFs must be executed using the ExecuteStreamingSql API with a single-use read-only transaction with a strong read-only timestamp_bound. The change stream TVF allows users to specify the start_timestamp and end_timestamp for the time range of interest. All change records within the retention period is accessible using the strong read-only timestamp_bound. All other TransactionOptions are invalid for change stream queries. In addition, if TransactionOptions.read_only.return_read_timestamp is set to true, a special value of 2^63 - 2 will be returned in the Transaction message that describes the transaction, instead of a valid read timestamp. This special value should be discarded and not used for any subsequent queries. Please see https://cloud.google.com/spanner/docs/change-streams for more details on how to query the change stream TVFs. Partitioned DML transactions: Partitioned DML transactions are used to execute DML statements with a different execution strategy that provides different, and often better, scalability properties for large, table-wide operations than DML in a ReadWrite transaction. Smaller scoped statements, such as an OLTP workload, should prefer using ReadWrite transactions. Partitioned DML partitions the keyspace and runs the DML statement on each partition in separate, internal transactions. These transactions commit automatically when complete, and run independently from one another. To reduce lock contention, this execution strategy only acquires read locks on rows that match the WHERE clause of the statement. Additionally, the smaller per-partition transactions hold locks for less time. That said, Partitioned DML is not a drop-in replacement for standard DML used in ReadWrite transactions. - The DML statement must be fully-partitionable. Specifically, the statement must be expressible as the union of many statements which each access only a single row of the table. - The statement is not applied atomically to all rows of the table. Rather, the statement is applied atomically to partitions of the table, in independent transactions. Secondary index rows are updated atomically with the base table rows. - Partitioned DML does not guarantee exactly-once execution semantics against a partition. The statement will be applied at least once to each partition. It is strongly recommended that the DML statement should be idempotent to avoid unexpected results. For instance, it is potentially dangerous to run a statement such as `UPDATE table SET column = column + 1` as it could be run multiple times against some rows. - The partitions are committed automatically - there is no support for Commit or Rollback. If the call returns an error, or if the client issuing the ExecuteSql call dies, it is possible that some rows had the statement executed on them successfully. It is also possible that statement was never executed against other rows. - Partitioned DML transactions may only contain the execution of a single DML statement via ExecuteSql or ExecuteStreamingSql. - If any error is encountered during the execution of the partitioned DML operation (for instance, a UNIQUE INDEX violation, division by zero, or a value that cannot be stored due to schema constraints), then the operation is stopped at that point and an error is returned. It is possible that at this point, some partitions have been committed (or even committed multiple times), and other partitions have not been run at all. Given the above, Partitioned DML is good fit for large, database-wide, operations that are idempotent, such as deleting old rows from a very large table.',
+    required: [],
+  })
+  .openapi('TransactionOptions')
+
+type CommitRequestType = {
+  mutations?: z.infer<typeof MutationSchema>[]
+  requestOptions?: z.infer<typeof RequestOptionsSchema>
+  returnCommitStats?: boolean
+  singleUseTransaction?: z.infer<typeof TransactionOptionsSchema>
+  transactionId?: string
+}
+
+const TypeSchema: z.ZodType<TypeType> = z
+  .lazy(() =>
+    z
+      .object({
+        arrayElementType: TypeSchema.exactOptional().openapi({
+          description:
+            'If code == ARRAY, then `array_element_type` is the type of the array elements.',
+        }),
+        code: z
+          .enum([
+            'TYPE_CODE_UNSPECIFIED',
+            'BOOL',
+            'INT64',
+            'FLOAT64',
+            'TIMESTAMP',
+            'DATE',
+            'STRING',
+            'BYTES',
+            'ARRAY',
+            'STRUCT',
+            'NUMERIC',
+            'JSON',
+            'PROTO',
+            'ENUM',
+          ])
+          .exactOptional()
+          .openapi({ description: 'Required. The TypeCode for this type.' }),
+        protoTypeFqn: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'If code == PROTO or code == ENUM, then `proto_type_fqn` is the fully qualified name of the proto type representing the proto/enum definition.',
+          }),
+        structType: StructTypeSchema.exactOptional().openapi({
+          description:
+            "If code == STRUCT, then `struct_type` provides type information for the struct's fields.",
+        }),
+        typeAnnotation: z
+          .enum(['TYPE_ANNOTATION_CODE_UNSPECIFIED', 'PG_NUMERIC', 'PG_JSONB'])
+          .exactOptional()
+          .openapi({
+            description:
+              "The TypeAnnotationCode that disambiguates SQL type that Spanner will use to represent values of this type during query processing. This is necessary for some type codes because a single TypeCode can be mapped to different SQL types depending on the SQL dialect. type_annotation typically is not needed to process the content of a value (it doesn't affect serialization) and clients can ignore it on the read path.",
+          }),
+      })
+      .openapi({
+        description:
+          '`Type` indicates the type of a Cloud Spanner value, as might be stored in a table cell or returned from an SQL query.',
+        required: [],
+      }),
+  )
+  .openapi('Type')
+
+const StatementSchema = z
+  .object({
+    paramTypes: z
+      .record(z.string(), TypeSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'It is not always possible for Cloud Spanner to infer the right SQL type from a JSON value. For example, values of type `BYTES` and values of type `STRING` both appear in params as JSON strings. In these cases, `param_types` can be used to specify the exact SQL type for some or all of the SQL statement parameters. See the definition of Type for more information about SQL types.',
+      }),
+    params: z
+      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
+      .exactOptional()
+      .openapi({
+        description:
+          'Parameter names and values that bind to placeholders in the DML string. A parameter placeholder consists of the `@` character followed by the parameter name (for example, `@firstName`). Parameter names can contain letters, numbers, and underscores. Parameters can appear anywhere that a literal value is expected. The same parameter name can be used more than once, for example: `"WHERE id > @msg_id AND id < @msg_id + 100"` It is an error to execute a SQL statement with unbound parameters.',
+      }),
+    sql: z.string().exactOptional().openapi({ description: 'Required. The DML string.' }),
+  })
+  .openapi({ description: 'A single DML statement.', required: [] })
+  .openapi('Statement')
+
+const TransactionSelectorSchema = z
+  .object({
+    begin: TransactionOptionsSchema.exactOptional().openapi({
+      description:
+        'Begin a new transaction and execute this read or SQL query in it. The transaction ID of the new transaction is returned in ResultSetMetadata.transaction, which is a Transaction.',
+    }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Execute the read or SQL query in a previously-started transaction.',
+      }),
+    singleUse: TransactionOptionsSchema.exactOptional().openapi({
+      description:
+        'Execute the read or SQL query in a temporary transaction. This is the most efficient way to execute a transaction that consists of a single SQL query.',
+    }),
+  })
+  .openapi({
+    description:
+      'This message is used to select the transaction in which a Read or ExecuteSql call runs. See TransactionOptions for more information about transactions.',
+    required: [],
+  })
+  .openapi('TransactionSelector')
+
+type ExecuteBatchDmlRequestType = {
+  requestOptions?: z.infer<typeof RequestOptionsSchema>
+  seqno?: string
+  statements?: z.infer<typeof StatementSchema>[]
+  transaction?: z.infer<typeof TransactionSelectorSchema>
+}
+
+const StructTypeSchema: z.ZodType<StructTypeType> = z
+  .lazy(() =>
+    z
+      .object({
+        fields: z
+          .array(FieldSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              'The list of fields that make up this struct. Order is significant, because values of this struct type are represented as lists, where the order of field values matches the order of fields in the StructType. In turn, the order of fields matches the order of columns in a read request, or the order of fields in the `SELECT` clause of a query.',
+          }),
+      })
+      .openapi({ description: '`StructType` defines the fields of a STRUCT type.', required: [] }),
+  )
+  .openapi('StructType')
+
+const TransactionSchema = z
+  .object({
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          '`id` may be used to identify the transaction in subsequent Read, ExecuteSql, Commit, or Rollback calls. Single-use read-only transactions do not have IDs, because single-use transactions do not support multiple requests.',
+      }),
+    readTimestamp: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'For snapshot read-only transactions, the read timestamp chosen for the transaction. Not returned by default: see TransactionOptions.ReadOnly.return_read_timestamp. A timestamp in RFC3339 UTC \\"Zulu\\" format, accurate to nanoseconds. Example: `"2014-10-02T15:01:23.045123456Z"`.',
+      }),
+  })
+  .openapi({ description: 'A transaction.', required: [] })
+  .openapi('Transaction')
+
+const ResultSetMetadataSchema = z
+  .object({
+    rowType: StructTypeSchema.exactOptional().openapi({
+      description:
+        'Indicates the field names and types for the rows in the result set. For example, a SQL query like `"SELECT UserId, UserName FROM Users"` could return a `row_type` value like: "fields": [ { "name": "UserId", "type": { "code": "INT64" } }, { "name": "UserName", "type": { "code": "STRING" } }, ]',
+    }),
+    transaction: TransactionSchema.exactOptional().openapi({
+      description:
+        'If the read or SQL query began a transaction as a side-effect, the information about the new transaction is yielded here.',
+    }),
+    undeclaredParameters: StructTypeSchema.exactOptional().openapi({
+      description:
+        'A SQL query can be parameterized. In PLAN mode, these parameters can be undeclared. This indicates the field names and types for those undeclared parameters in the SQL query. For example, a SQL query like `"SELECT * FROM Users where UserId = @userId and UserName = @userName "` could return a `undeclared_parameters` value like: "fields": [ { "name": "UserId", "type": { "code": "INT64" } }, { "name": "UserName", "type": { "code": "STRING" } }, ]',
+    }),
+  })
+  .openapi({ description: 'Metadata about a ResultSet or PartialResultSet.', required: [] })
+  .openapi('ResultSetMetadata')
+
+const ChildLinkSchema = z
+  .object({
+    childIndex: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The node to which the link points.' }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of the link. For example, in Hash Joins this could be used to distinguish between the build child and the probe child, or in the case of the child being an output variable, to represent the tag associated with the output variable.',
+      }),
+    variable: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Only present if the child node is SCALAR and corresponds to an output variable of the parent node. The field carries the name of the output variable. For example, a `TableScan` operator that reads rows from a table will have child links to the `SCALAR` nodes representing the output variables created for each column that is read by the operator. The corresponding `variable` fields will be set to the variable names assigned to the columns.',
+      }),
+  })
+  .openapi({
+    description: 'Metadata associated with a parent-child relationship appearing in a PlanNode.',
+    required: [],
+  })
+  .openapi('ChildLink')
+
+const ShortRepresentationSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A string representation of the expression subtree rooted at this node.',
+      }),
+    subqueries: z
+      .record(z.string(), z.int32())
+      .exactOptional()
+      .openapi({
+        description:
+          'A mapping of (subquery variable name) -> (subquery node id) for cases where the `description` string of this node references a `SCALAR` subquery contained in the expression subtree rooted at this node. The referenced `SCALAR` subquery may not necessarily be a direct child of this node.',
+      }),
+  })
+  .openapi({
+    description:
+      'Condensed representation of a node and its subtree. Only present for `SCALAR` PlanNode(s).',
+    required: [],
+  })
+  .openapi('ShortRepresentation')
+
+const PlanNodeSchema = z
+  .object({
+    childLinks: z
+      .array(ChildLinkSchema)
+      .exactOptional()
+      .openapi({
+        description: 'List of child node `index`es and their relationship to this parent.',
+      }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The display name for the node.' }),
+    executionStats: z
+      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
+      .exactOptional()
+      .openapi({
+        description:
+          'The execution statistics associated with the node, contained in a group of key-value pairs. Only present if the plan was returned as a result of a profile query. For example, number of executions, number of rows/time per execution etc.',
+      }),
+    index: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: "The `PlanNode`'s index in node list." }),
+    kind: z
+      .enum(['KIND_UNSPECIFIED', 'RELATIONAL', 'SCALAR'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Used to determine the type of node. May be needed for visualizing different kinds of nodes differently. For example, If the node is a SCALAR node, it will have a condensed representation which can be used to directly embed a description of the node in its parent.',
+      }),
+    metadata: z
+      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
+      .exactOptional()
+      .openapi({
+        description:
+          'Attributes relevant to the node contained in a group of key-value pairs. For example, a Parameter Reference node could have the following information in its metadata: { "parameter_reference": "param1", "parameter_type": "array" }',
+      }),
+    shortRepresentation: ShortRepresentationSchema.exactOptional().openapi({
+      description: 'Condensed representation for SCALAR nodes.',
+    }),
+  })
+  .openapi({
+    description: 'Node information for nodes appearing in a QueryPlan.plan_nodes.',
+    required: [],
+  })
+  .openapi('PlanNode')
+
+const QueryPlanSchema = z
+  .object({
+    planNodes: z
+      .array(PlanNodeSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "The nodes in the query plan. Plan nodes are returned in pre-order starting with the plan root. Each PlanNode's `id` corresponds to its index in `plan_nodes`.",
+      }),
+  })
+  .openapi({
+    description: 'Contains an ordered list of nodes appearing in the query plan.',
+    required: [],
+  })
+  .openapi('QueryPlan')
+
+const ResultSetStatsSchema = z
+  .object({
+    queryPlan: QueryPlanSchema.exactOptional().openapi({
+      description: 'QueryPlan for the query associated with this result.',
+    }),
+    queryStats: z
+      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
+      .exactOptional()
+      .openapi({
+        description:
+          'Aggregated statistics from the execution of the query. Only present when the query is profiled. For example, a query could return the statistics as follows: { "rows_returned": "3", "elapsed_time": "1.22 secs", "cpu_time": "1.19 secs" }',
+      }),
+    rowCountExact: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Standard DML returns an exact count of rows that were modified.' }),
+    rowCountLowerBound: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Partitioned DML does not offer exactly-once semantics, so it returns a lower bound of the rows modified.',
+      }),
+  })
+  .openapi({
+    description: 'Additional statistics about a ResultSet or PartialResultSet.',
+    required: [],
+  })
+  .openapi('ResultSetStats')
+
+const ResultSetSchema = z
+  .object({
+    metadata: ResultSetMetadataSchema.exactOptional().openapi({
+      description: 'Metadata about the result set, such as row type information.',
+    }),
+    rows: z
+      .array(z.array(z.any()))
+      .exactOptional()
+      .openapi({
+        description:
+          'Each element in `rows` is a row whose format is defined by metadata.row_type. The ith element in each row matches the ith field in metadata.row_type. Elements are encoded based on type as described here.',
+      }),
+    stats: ResultSetStatsSchema.exactOptional().openapi({
+      description:
+        'Query plan and execution statistics for the SQL statement that produced this result set. These can be requested by setting ExecuteSqlRequest.query_mode. DML statements always produce stats containing the number of rows modified, unless executed using the ExecuteSqlRequest.QueryMode.PLAN ExecuteSqlRequest.query_mode. Other fields may or may not be populated, based on the ExecuteSqlRequest.query_mode.',
+    }),
+  })
+  .openapi({ description: 'Results from Read or ExecuteSql.', required: [] })
+  .openapi('ResultSet')
+
+const StatusSchema = z
+  .object({
+    code: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The status code, which should be an enum value of google.rpc.Code.',
+      }),
+    details: z
+      .array(
+        z.record(
+          z.string(),
+          z
+            .any()
+            .openapi({
+              description: 'Properties of the object. Contains field @type with type URL.',
+            }),
+        ),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of messages that carry the error details. There is a common set of message types for APIs to use.',
+      }),
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.',
+      }),
+  })
+  .openapi({
+    description:
+      'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).',
+    required: [],
+  })
+  .openapi('Status')
+
+type ExecuteBatchDmlResponseType = {
+  resultSets?: z.infer<typeof ResultSetSchema>[]
+  status?: z.infer<typeof StatusSchema>
+}
+
+type FieldType = { name?: string; type?: z.infer<typeof TypeSchema> }
+
+const LocalizedStringSchema = z
+  .object({
+    args: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'A map of arguments used when creating the localized message. Keys represent parameter names which may be used by the localized version when substituting dynamic values.',
+      }),
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The canonical English version of this message. If no token is provided or the front-end has no message associated with the token, this text will be displayed as-is.',
+      }),
+    token: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The token identifying the message, e.g. 'METRIC_READ_CPU'. This should be unique within the service.",
+      }),
+  })
+  .openapi({
+    description:
+      'A message representing a user-facing string whose value may need to be translated before being displayed.',
+    required: [],
+  })
+  .openapi('LocalizedString')
+
+const ContextValueSchema = z
+  .object({
+    label: LocalizedStringSchema.exactOptional().openapi({
+      description: 'The label for the context value. e.g. "latency".',
+    }),
+    severity: z
+      .enum(['SEVERITY_UNSPECIFIED', 'INFO', 'WARNING', 'ERROR', 'FATAL'])
+      .exactOptional()
+      .openapi({ description: 'The severity of this context.' }),
+    unit: z.string().exactOptional().openapi({ description: 'The unit of the context value.' }),
+    value: z.float32().exactOptional().openapi({ description: 'The value for the context.' }),
+  })
+  .openapi({
+    description:
+      'A message representing context for a KeyRangeInfo, including a label, value, unit, and severity.',
+    required: [],
+  })
+  .openapi('ContextValue')
+
+const KeyRangeInfoSchema = z
+  .object({
+    contextValues: z
+      .array(ContextValueSchema)
+      .exactOptional()
+      .openapi({ description: 'The list of context values for this key range.' }),
+    endKeyIndex: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The index of the end key in indexed_keys.' }),
+    info: LocalizedStringSchema.exactOptional().openapi({
+      description: 'Information about this key range, for all metrics.',
+    }),
+    keysCount: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The number of keys this range covers.' }),
+    metric: LocalizedStringSchema.exactOptional().openapi({
+      description: 'The name of the metric. e.g. "latency".',
+    }),
+    startKeyIndex: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The index of the start key in indexed_keys.' }),
+    timeOffset: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The time offset. This is the time since the start of the time interval.',
+      }),
+    unit: LocalizedStringSchema.exactOptional().openapi({
+      description:
+        'The unit of the metric. This is an unstructured field and will be mapped as is to the user.',
+    }),
+    value: z.float32().exactOptional().openapi({ description: 'The value of the metric.' }),
+  })
+  .openapi({
+    description: 'A message representing information for a key range (possibly one key).',
+    required: [],
+  })
+  .openapi('KeyRangeInfo')
+
+const KeyRangeInfosSchema = z
+  .object({
+    infos: z
+      .array(KeyRangeInfoSchema)
+      .exactOptional()
+      .openapi({ description: 'The list individual KeyRangeInfos.' }),
+    totalSize: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The total size of the list of all KeyRangeInfos. This may be larger than the number of repeated messages above. If that is the case, this number may be used to determine how many are not being shown.',
+      }),
+  })
+  .openapi({
+    description: 'A message representing a list of specific information for multiple key ranges.',
+    required: [],
+  })
+  .openapi('KeyRangeInfos')
+
+type IndexedKeyRangeInfosType = {
+  keyRangeInfos?: { [key: string]: z.infer<typeof KeyRangeInfosSchema> }
+}
+
+const EncryptionConfigSchema = z
+  .object({
+    kmsKeyName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The Cloud KMS key to be used for encrypting and decrypting the database. Values are of the form `projects//locations//keyRings//cryptoKeys/`.',
+      }),
+  })
+  .openapi({ description: 'Encryption configuration for a Cloud Spanner database.', required: [] })
+  .openapi('EncryptionConfig')
+
+const EncryptionInfoSchema = z
+  .object({
+    encryptionStatus: StatusSchema.exactOptional().openapi({
+      description:
+        'Output only. If present, the status of a recent encrypt/decrypt call on underlying data for this database or backup. Regardless of status, data is always encrypted at rest.',
+      readOnly: true,
+    }),
+    encryptionType: z
+      .enum(['TYPE_UNSPECIFIED', 'GOOGLE_DEFAULT_ENCRYPTION', 'CUSTOMER_MANAGED_ENCRYPTION'])
+      .exactOptional()
+      .openapi({ description: 'Output only. The type of encryption.', readOnly: true }),
+    kmsKeyVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. A Cloud KMS key version that is being used to protect the database or backup.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description: 'Encryption information for a Cloud Spanner database or backup.',
+    required: [],
+  })
+  .openapi('EncryptionInfo')
+
+const BackupInfoSchema = z
+  .object({
+    backup: z.string().exactOptional().openapi({ description: 'Name of the backup.' }),
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The time the CreateBackup request was received.' }),
+    sourceDatabase: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name of the database the backup was created from.' }),
+    versionTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The backup contains an externally consistent copy of `source_database` at the timestamp specified by `version_time`. If the CreateBackup request did not specify `version_time`, the `version_time` of the backup is equivalent to the `create_time`.',
+      }),
+  })
+  .openapi({ description: 'Information about a backup.', required: [] })
+  .openapi('BackupInfo')
+
+const RestoreInfoSchema = z
+  .object({
+    backupInfo: BackupInfoSchema.exactOptional().openapi({
+      description:
+        'Information about the backup used to restore the database. The backup may no longer exist.',
+    }),
+    sourceType: z
+      .enum(['TYPE_UNSPECIFIED', 'BACKUP'])
+      .exactOptional()
+      .openapi({ description: 'The type of the restore source.' }),
+  })
+  .openapi({ description: 'Information about the database restore.', required: [] })
+  .openapi('RestoreInfo')
+
+const DatabaseSchema = z
+  .object({
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. If exists, the time at which the database creation started.',
+        readOnly: true,
+      }),
+    databaseDialect: z
+      .enum(['DATABASE_DIALECT_UNSPECIFIED', 'GOOGLE_STANDARD_SQL', 'POSTGRESQL'])
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The dialect of the Cloud Spanner Database.',
+        readOnly: true,
+      }),
+    defaultLeader: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Output only. The read-write region which contains the database's leader replicas. This is the same as the value of default_leader database option set using DatabaseAdmin.CreateDatabase or DatabaseAdmin.UpdateDatabaseDdl. If not explicitly set, this is empty.",
+        readOnly: true,
+      }),
+    earliestVersionTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Earliest timestamp at which older versions of the data can be read. This value is continuously updated by Cloud Spanner and becomes stale the moment it is queried. If you are using this value to recover data, make sure to account for the time from the moment when the value is queried to the moment when you initiate the recovery.',
+        readOnly: true,
+      }),
+    enableDropProtection: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether drop protection is enabled for this database. Defaults to false, if not set.',
+      }),
+    encryptionConfig: EncryptionConfigSchema.exactOptional().openapi({
+      description:
+        'Output only. For databases that are using customer managed encryption, this field contains the encryption configuration for the database. For databases that are using Google default or other types of encryption, this field is empty.',
+      readOnly: true,
+    }),
+    encryptionInfo: z
+      .array(EncryptionInfoSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "Output only. For databases that are using customer managed encryption, this field contains the encryption information for the database, such as all Cloud KMS key versions that are in use. The `encryption_status' field inside of each `EncryptionInfo` is not populated. For databases that are using Google default or other types of encryption, this field is empty. This field is propagated lazily from the backend. There might be a delay from when a key version is being used and when it appears in this field.",
+        readOnly: true,
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The name of the database. Values are of the form `projects//instances//databases/`, where `` is as specified in the `CREATE DATABASE` statement. This name can be passed to other API methods to identify the database.',
+      }),
+    reconciling: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. If true, the database is being updated. If false, there are no ongoing update operations for the database.',
+        readOnly: true,
+      }),
+    restoreInfo: RestoreInfoSchema.exactOptional().openapi({
+      description:
+        'Output only. Applicable only for restored databases. Contains information about the restore source.',
+      readOnly: true,
+    }),
+    state: z
+      .enum(['STATE_UNSPECIFIED', 'CREATING', 'READY', 'READY_OPTIMIZING'])
+      .exactOptional()
+      .openapi({ description: 'Output only. The current database state.', readOnly: true }),
+    versionRetentionPeriod: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The period in which Cloud Spanner retains all versions of data for the database. This is the same as the value of version_retention_period database option set using UpdateDatabaseDdl. Defaults to 1 hour, if not set.',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'A Cloud Spanner database.', required: [] })
+  .openapi('Database')
+
+type ListDatabasesResponseType = {
+  databases?: z.infer<typeof DatabaseSchema>[]
+  nextPageToken?: string
+}
+
+const DiagnosticMessageSchema = z
+  .object({
+    info: LocalizedStringSchema.exactOptional().openapi({
+      description: 'Information about this diagnostic information.',
+    }),
+    metric: LocalizedStringSchema.exactOptional().openapi({ description: 'The metric.' }),
+    metricSpecific: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether this message is specific only for the current metric. By default Diagnostics are shown for all metrics, regardless which metric is the currently selected metric in the UI. However occasionally a metric will generate so many messages that the resulting visual clutter becomes overwhelming. In this case setting this to true, will show the diagnostic messages for that metric only if it is the currently selected metric.',
+      }),
+    severity: z
+      .enum(['SEVERITY_UNSPECIFIED', 'INFO', 'WARNING', 'ERROR', 'FATAL'])
+      .exactOptional()
+      .openapi({ description: 'The severity of the diagnostic message.' }),
+    shortMessage: LocalizedStringSchema.exactOptional().openapi({
+      description: 'The short message.',
+    }),
+  })
+  .openapi({
+    description: 'A message representing the key visualizer diagnostic messages.',
+    required: [],
+  })
+  .openapi('DiagnosticMessage')
+
+const DerivedMetricSchema = z
+  .object({
+    denominator: LocalizedStringSchema.exactOptional().openapi({
+      description: 'The name of the denominator metric. e.g. "rows".',
+    }),
+    numerator: LocalizedStringSchema.exactOptional().openapi({
+      description: 'The name of the numerator metric. e.g. "latency".',
+    }),
+  })
+  .openapi({ description: 'A message representing a derived metric.', required: [] })
+  .openapi('DerivedMetric')
+
+const IndexedHotKeySchema = z
+  .object({
+    sparseHotKeys: z
+      .record(z.string(), z.int32())
+      .exactOptional()
+      .openapi({
+        description:
+          'A (sparse) mapping from key bucket index to the index of the specific hot row key for that key bucket. The index of the hot row key can be translated to the actual row key via the ScanData.VisualizationData.indexed_keys repeated field.',
+      }),
+  })
+  .openapi({
+    description:
+      'A message representing a (sparse) collection of hot keys for specific key buckets.',
+    required: [],
+  })
+  .openapi('IndexedHotKey')
+
+const IndexedKeyRangeInfosSchema: z.ZodType<IndexedKeyRangeInfosType> = z
+  .object({
+    keyRangeInfos: z
+      .record(z.string(), KeyRangeInfosSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A (sparse) mapping from key bucket index to the KeyRangeInfos for that key bucket.',
+      }),
+  })
+  .openapi({
+    description:
+      'A message representing a (sparse) collection of KeyRangeInfos for specific key buckets.',
+    required: [],
+  })
+  .openapi('IndexedKeyRangeInfos')
+
+const MetricMatrixRowSchema = z
+  .object({
+    cols: z.array(z.float32()).exactOptional().openapi({ description: 'The columns of the row.' }),
+  })
+  .openapi({ description: 'A message representing a row of a matrix of floats.', required: [] })
+  .openapi('MetricMatrixRow')
+
+const MetricMatrixSchema = z
+  .object({
+    rows: z
+      .array(MetricMatrixRowSchema)
+      .exactOptional()
+      .openapi({ description: 'The rows of the matrix.' }),
+  })
+  .openapi({ description: 'A message representing a matrix of floats.', required: [] })
+  .openapi('MetricMatrix')
+
+type MetricType = {
+  aggregation?: 'AGGREGATION_UNSPECIFIED' | 'MAX' | 'SUM'
+  category?: z.infer<typeof LocalizedStringSchema>
+  derived?: z.infer<typeof DerivedMetricSchema>
+  displayLabel?: z.infer<typeof LocalizedStringSchema>
+  hasNonzeroData?: boolean
+  hotValue?: number
+  indexedHotKeys?: { [key: string]: z.infer<typeof IndexedHotKeySchema> }
+  indexedKeyRangeInfos?: { [key: string]: z.infer<typeof IndexedKeyRangeInfosSchema> }
+  info?: z.infer<typeof LocalizedStringSchema>
+  matrix?: z.infer<typeof MetricMatrixSchema>
+  unit?: z.infer<typeof LocalizedStringSchema>
+  visible?: boolean
+}
+
+const MetricSchema: z.ZodType<MetricType> = z
+  .object({
+    aggregation: z
+      .enum(['AGGREGATION_UNSPECIFIED', 'MAX', 'SUM'])
+      .exactOptional()
+      .openapi({ description: 'The aggregation function used to aggregate each key bucket' }),
+    category: LocalizedStringSchema.exactOptional().openapi({
+      description: 'The category of the metric, e.g. "Activity", "Alerts", "Reads", etc.',
+    }),
+    derived: DerivedMetricSchema.exactOptional().openapi({
+      description: 'The references to numerator and denominator metrics for a derived metric.',
+    }),
+    displayLabel: LocalizedStringSchema.exactOptional().openapi({
+      description: 'The displayed label of the metric.',
+    }),
+    hasNonzeroData: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the metric has any non-zero data.' }),
+    hotValue: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The value that is considered hot for the metric. On a per metric basis hotness signals high utilization and something that might potentially be a cause for concern by the end user. hot_value is used to calibrate and scale visual color scales.',
+      }),
+    indexedHotKeys: z
+      .record(z.string(), IndexedHotKeySchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The (sparse) mapping from time index to an IndexedHotKey message, representing those time intervals for which there are hot keys.',
+      }),
+    indexedKeyRangeInfos: z
+      .record(z.string(), IndexedKeyRangeInfosSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The (sparse) mapping from time interval index to an IndexedKeyRangeInfos message, representing those time intervals for which there are informational messages concerning key ranges.',
+      }),
+    info: LocalizedStringSchema.exactOptional().openapi({
+      description: 'Information about the metric.',
+    }),
+    matrix: MetricMatrixSchema.exactOptional().openapi({
+      description: 'The data for the metric as a matrix.',
+    }),
+    unit: LocalizedStringSchema.exactOptional().openapi({ description: 'The unit of the metric.' }),
+    visible: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the metric is visible to the end user.' }),
+  })
+  .openapi({
+    description:
+      'A message representing the actual monitoring data, values for each key bucket over time, of a metric.',
+    required: [],
+  })
+  .openapi('Metric')
+
+const PrefixNodeSchema = z
+  .object({
+    dataSourceNode: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether this corresponds to a data_source name.' }),
+    depth: z.int32().exactOptional().openapi({ description: 'The depth in the prefix hierarchy.' }),
+    endIndex: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The index of the end key bucket of the range that this node spans.',
+      }),
+    startIndex: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The index of the start key bucket of the range that this node spans.',
+      }),
+    word: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The string represented by the prefix node.' }),
+  })
+  .openapi({
+    description:
+      'A message representing a key prefix node in the key prefix hierarchy. for eg. Bigtable keyspaces are lexicographically ordered mappings of keys to values. Keys often have a shared prefix structure where users use the keys to organize data. Eg ///employee In this case Keysight will possibly use one node for a company and reuse it for all employees that fall under the company. Doing so improves legibility in the UI.',
+    required: [],
+  })
+  .openapi('PrefixNode')
+
+type VisualizationDataType = {
+  dataSourceEndToken?: string
+  dataSourceSeparatorToken?: string
+  diagnosticMessages?: z.infer<typeof DiagnosticMessageSchema>[]
+  endKeyStrings?: string[]
+  hasPii?: boolean
+  indexedKeys?: string[]
+  keySeparator?: string
+  keyUnit?: 'KEY_UNIT_UNSPECIFIED' | 'KEY' | 'CHUNK'
+  metrics?: z.infer<typeof MetricSchema>[]
+  prefixNodes?: z.infer<typeof PrefixNodeSchema>[]
+}
+
+const VisualizationDataSchema: z.ZodType<VisualizationDataType> = z
+  .object({
+    dataSourceEndToken: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The token signifying the end of a data_source.' }),
+    dataSourceSeparatorToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The token delimiting a datasource name from the rest of a key in a data_source.',
+      }),
+    diagnosticMessages: z
+      .array(DiagnosticMessageSchema)
+      .exactOptional()
+      .openapi({ description: 'The list of messages (info, alerts, ...)' }),
+    endKeyStrings: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'We discretize the entire keyspace into buckets. Assuming each bucket has an inclusive keyrange and covers keys from k(i) ... k(n). In this case k(n) would be an end key for a given range. end_key_string is the collection of all such end keys',
+      }),
+    hasPii: z.boolean().exactOptional().openapi({ description: 'Whether this scan contains PII.' }),
+    indexedKeys: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Keys of key ranges that contribute significantly to a given metric Can be thought of as heavy hitters.',
+      }),
+    keySeparator: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The token delimiting the key prefixes.' }),
+    keyUnit: z
+      .enum(['KEY_UNIT_UNSPECIFIED', 'KEY', 'CHUNK'])
+      .exactOptional()
+      .openapi({ description: "The unit for the key: e.g. 'key' or 'chunk'." }),
+    metrics: z
+      .array(MetricSchema)
+      .exactOptional()
+      .openapi({ description: 'The list of data objects for each metric.' }),
+    prefixNodes: z
+      .array(PrefixNodeSchema)
+      .exactOptional()
+      .openapi({
+        description: 'The list of extracted key prefix nodes used in the key prefix hierarchy.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('VisualizationData')
+
+type ScanDataType = {
+  data?: z.infer<typeof VisualizationDataSchema>
+  endTime?: string
+  startTime?: string
+}
+
+const ScanDataSchema: z.ZodType<ScanDataType> = z
+  .object({
+    data: VisualizationDataSchema.exactOptional().openapi({
+      description:
+        'Cloud Key Visualizer scan data. The range of time this information covers is captured via the above time range fields. Note, this field is not available to the ListScans method.',
+    }),
+    endTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The upper bound for when the contained data is defined.' }),
+    startTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A range of time (inclusive) for when the contained data is defined. The lower bound for when the contained data is defined.',
+      }),
+  })
+  .openapi({
+    description:
+      'ScanData contains Cloud Key Visualizer scan data used by the caller to construct a visualization.',
+    required: [],
+  })
+  .openapi('ScanData')
+
+type ScanType = {
+  details?: { [key: string]: unknown }
+  endTime?: string
+  name?: string
+  scanData?: z.infer<typeof ScanDataSchema>
+  startTime?: string
+}
+
+const ScanSchema: z.ZodType<ScanType> = z
+  .object({
+    details: z
+      .record(
+        z.string(),
+        z
+          .any()
+          .openapi({
+            description: 'Properties of the object. Contains field @type with type URL.',
+          }),
+      )
+      .exactOptional()
+      .openapi({ description: 'Additional information provided by the implementer.' }),
+    endTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The upper bound for when the scan is defined.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique name of the scan, specific to the Database service implementing this interface.',
+      }),
+    scanData: ScanDataSchema.exactOptional().openapi({
+      description:
+        'Output only. Cloud Key Visualizer scan data. Note, this field is not available to the ListScans method.',
+      readOnly: true,
+    }),
+    startTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A range of time (inclusive) for when the scan is defined. The lower bound for when the scan is defined.',
+      }),
+  })
+  .openapi({
+    description: 'Scan is a structure which describes Cloud Key Visualizer scan information.',
+    required: [],
+  })
+  .openapi('Scan')
+
+type ListScansResponseType = { nextPageToken?: string; scans?: z.infer<typeof ScanSchema>[] }
+
+const FieldSchema: z.ZodType<FieldType> = z
+  .lazy(() =>
+    z
+      .object({
+        name: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The name of the field. For reads, this is the column name. For SQL queries, it is the column alias (e.g., `"Word"` in the query `"SELECT \'hello\' AS Word"`), or the column name (e.g., `"ColName"` in the query `"SELECT ColName FROM Table"`). Some columns might have an empty name (e.g., `"SELECT UPPER(ColName)"`). Note that a query result can contain multiple fields with the same name.',
+          }),
+        type: TypeSchema.exactOptional().openapi({ description: 'The type of the field.' }),
+      })
+      .openapi({ description: 'Message representing a single field of a struct.', required: [] }),
+  )
+  .openapi('Field')
+
+type StructTypeType = { fields?: z.infer<typeof FieldSchema>[] }
+
+type TypeType = {
+  arrayElementType?: TypeType
+  code?:
+    | 'TYPE_CODE_UNSPECIFIED'
+    | 'BOOL'
+    | 'INT64'
+    | 'FLOAT64'
+    | 'TIMESTAMP'
+    | 'DATE'
+    | 'STRING'
+    | 'BYTES'
+    | 'ARRAY'
+    | 'STRUCT'
+    | 'NUMERIC'
+    | 'JSON'
+    | 'PROTO'
+    | 'ENUM'
+  protoTypeFqn?: string
+  structType?: z.infer<typeof StructTypeSchema>
+  typeAnnotation?: 'TYPE_ANNOTATION_CODE_UNSPECIFIED' | 'PG_NUMERIC' | 'PG_JSONB'
+}
+
+const OperationProgressSchema = z
+  .object({
+    endTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'If set, the time at which this operation failed or was completed successfully.',
+      }),
+    progressPercent: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'Percent completion of the operation. Values are between 0 and 100 inclusive.',
+      }),
+    startTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Time the request was received.' }),
+  })
+  .openapi({
+    description:
+      'Encapsulates progress related information for a Cloud Spanner long running operation.',
+    required: [],
+  })
+  .openapi('OperationProgress')
+
+const UpdateDatabaseRequestSchema = z
+  .object({
+    database: DatabaseSchema.exactOptional().openapi({
+      description:
+        'Required. The database to update. The `name` field of the database is of the form `projects//instances//databases/`.',
+    }),
+    updateMask: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The list of fields to update. Currently, only `enable_drop_protection` field can be updated.',
+      }),
+  })
+  .openapi({ description: 'The request for UpdateDatabase.', required: [] })
+  .openapi('UpdateDatabaseRequest')
+
+type UpdateDatabaseMetadataType = {
+  cancelTime?: string
+  progress?: z.infer<typeof OperationProgressSchema>
+  request?: z.infer<typeof UpdateDatabaseRequestSchema>
+}
+
+const BackupSchema = z
+  .object({
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The time the CreateBackup request is received. If the request does not specify `version_time`, the `version_time` of the backup will be equivalent to the `create_time`.',
+        readOnly: true,
+      }),
+    database: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required for the CreateBackup operation. Name of the database from which this backup was created. This needs to be in the same instance as the backup. Values are of the form `projects//instances//databases/`.',
+      }),
+    databaseDialect: z
+      .enum(['DATABASE_DIALECT_UNSPECIFIED', 'GOOGLE_STANDARD_SQL', 'POSTGRESQL'])
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The database dialect information for the backup.',
+        readOnly: true,
+      }),
+    encryptionInfo: EncryptionInfoSchema.exactOptional().openapi({
+      description: 'Output only. The encryption information for the backup.',
+      readOnly: true,
+    }),
+    expireTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required for the CreateBackup operation. The expiration time of the backup, with microseconds granularity that must be at least 6 hours and at most 366 days from the time the CreateBackup request is processed. Once the `expire_time` has passed, the backup is eligible to be automatically deleted by Cloud Spanner to free the resources used by the backup.',
+      }),
+    maxExpireTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Output only. The max allowed expiration time of the backup, with microseconds granularity. A backup's expiration time can be configured in multiple APIs: CreateBackup, UpdateBackup, CopyBackup. When updating or copying an existing backup, the expiration time specified must be less than `Backup.max_expire_time`.",
+        readOnly: true,
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only for the CreateBackup operation. Required for the UpdateBackup operation. A globally unique identifier for the backup which cannot be changed. Values are of the form `projects//instances//backups/a-z*[a-z0-9]` The final segment of the name must be between 2 and 60 characters in length. The backup is stored in the location(s) specified in the instance configuration of the instance containing the backup, identified by the prefix of the backup name of the form `projects//instances/`.',
+      }),
+    referencingBackups: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The names of the destination backups being created by copying this source backup. The backup names are of the form `projects//instances//backups/`. Referencing backups may exist in different instances. The existence of any referencing backup prevents the backup from being deleted. When the copy operation is done (either successfully completed or cancelled or the destination backup is deleted), the reference to the backup is removed.',
+        readOnly: true,
+      }),
+    referencingDatabases: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The names of the restored databases that reference the backup. The database names are of the form `projects//instances//databases/`. Referencing databases may exist in different instances. The existence of any referencing database prevents the backup from being deleted. When a restored database from the backup enters the `READY` state, the reference to the backup is removed.',
+        readOnly: true,
+      }),
+    sizeBytes: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Size of the backup in bytes.', readOnly: true }),
+    state: z
+      .enum(['STATE_UNSPECIFIED', 'CREATING', 'READY'])
+      .exactOptional()
+      .openapi({ description: 'Output only. The current state of the backup.', readOnly: true }),
+    versionTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The backup will contain an externally consistent copy of the database at the timestamp specified by `version_time`. If `version_time` is not specified, the system will set `version_time` to the `create_time` of the backup.',
+      }),
+  })
+  .openapi({ description: 'A backup of a Cloud Spanner database.', required: [] })
+  .openapi('Backup')
+
+const SessionSchema = z
+  .object({
+    approximateLastUseTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The approximate timestamp when the session is last used. It is typically earlier than the actual last use time.',
+        readOnly: true,
+      }),
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The timestamp when the session is created.',
+        readOnly: true,
+      }),
+    creatorRole: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The database role which created this session.' }),
+    labels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The labels for the session. * Label keys must be between 1 and 63 characters long and must conform to the following regular expression: `[a-z]([-a-z0-9]*[a-z0-9])?`. * Label values must be between 0 and 63 characters long and must conform to the regular expression `([a-z]([-a-z0-9]*[a-z0-9])?)?`. * No more than 64 labels can be associated with a given session. See https://goo.gl/xmQnxf for more information on and examples of labels.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The name of the session. This is always system-assigned.',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'A session in the Cloud Spanner API.', required: [] })
+  .openapi('Session')
+
+const BatchCreateSessionsRequestSchema = z
+  .object({
+    sessionCount: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The number of sessions to be created in this batch call. The API may return fewer than the requested number of sessions. If a specific number of sessions are desired, the client can make additional calls to BatchCreateSessions (adjusting session_count as necessary).',
+      }),
+    sessionTemplate: SessionSchema.exactOptional().openapi({
+      description: 'Parameters to be applied to each created session.',
+    }),
+  })
+  .openapi({ description: 'The request for BatchCreateSessions.', required: [] })
+  .openapi('BatchCreateSessionsRequest')
+
+const BatchCreateSessionsResponseSchema = z
+  .object({
+    session: z
+      .array(SessionSchema)
+      .exactOptional()
+      .openapi({ description: 'The freshly created sessions.' }),
+  })
+  .openapi({ description: 'The response for BatchCreateSessions.', required: [] })
+  .openapi('BatchCreateSessionsResponse')
+
+const BeginTransactionRequestSchema = z
+  .object({
+    options: TransactionOptionsSchema.exactOptional().openapi({
+      description: 'Required. Options for the new transaction.',
+    }),
+    requestOptions: RequestOptionsSchema.exactOptional().openapi({
+      description:
+        'Common options for this request. Priority is ignored for this request. Setting the priority in this request_options struct will not do anything. To set the priority for a transaction, set it on the reads and writes that are part of this transaction instead.',
+    }),
+  })
+  .openapi({ description: 'The request for BeginTransaction.', required: [] })
+  .openapi('BeginTransactionRequest')
+
+const ExprSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.',
+      }),
+    expression: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Textual representation of an expression in Common Expression Language syntax.',
+      }),
+    location: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. String indicating the location of the expression for error reporting, e.g. a file name and a position in the file.',
+      }),
+    title: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Title for the expression, i.e. a short string describing its purpose. This can be used e.g. in UIs which allow to enter the expression.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents a textual expression in the Common Expression Language (CEL) syntax. CEL is a C-like expression language. The syntax and semantics of CEL are documented at https://github.com/google/cel-spec. Example (Comparison): title: "Summary size limit" description: "Determines if a summary is less than 100 chars" expression: "document.summary.size() < 100" Example (Equality): title: "Requestor is owner" description: "Determines if requestor is the document owner" expression: "document.owner == request.auth.claims.email" Example (Logic): title: "Public documents" description: "Determine whether the document should be publicly visible" expression: "document.type != \'private\' && document.type != \'internal\'" Example (Data Manipulation): title: "Notification string" description: "Create a notification string with a timestamp." expression: "\'New message received at \' + string(document.create_time)" The exact variables and functions that may be referenced within an expression are determined by the service that evaluates it. See the service documentation for additional information.',
+    required: [],
+  })
+  .openapi('Expr')
+
+const BindingSchema = z
+  .object({
+    condition: ExprSchema.exactOptional().openapi({
+      description:
+        'The condition that is associated with this binding. If the condition evaluates to `true`, then this binding applies to the current request. If the condition evaluates to `false`, then this binding does not apply to the current request. However, a different role binding might grant the same role to one or more of the principals in this binding. To learn which resources support conditions in their IAM policies, see the [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).',
+    }),
+    members: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the principals requesting access for a Google Cloud resource. `members` can have the following values: * `allUsers`: A special identifier that represents anyone who is on the internet; with or without a Google account. * `allAuthenticatedUsers`: A special identifier that represents anyone who is authenticated with a Google account or a service account. Does not include identities that come from external identity providers (IdPs) through identity federation. * `user:{emailid}`: An email address that represents a specific Google account. For example, `alice@example.com` . * `serviceAccount:{emailid}`: An email address that represents a Google service account. For example, `my-other-app@appspot.gserviceaccount.com`. * `serviceAccount:{projectid}.svc.id.goog[{namespace}/{kubernetes-sa}]`: An identifier for a [Kubernetes service account](https://cloud.google.com/kubernetes-engine/docs/how-to/kubernetes-service-accounts). For example, `my-project.svc.id.goog[my-namespace/my-kubernetes-sa]`. * `group:{emailid}`: An email address that represents a Google group. For example, `admins@example.com`. * `domain:{domain}`: The G Suite domain (primary) that represents all the users of that domain. For example, `google.com` or `example.com`. * `deleted:user:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a user that has been recently deleted. For example, `alice@example.com?uid=123456789012345678901`. If the user is recovered, this value reverts to `user:{emailid}` and the recovered user retains the role in the binding. * `deleted:serviceAccount:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a service account that has been recently deleted. For example, `my-other-app@appspot.gserviceaccount.com?uid=123456789012345678901`. If the service account is undeleted, this value reverts to `serviceAccount:{emailid}` and the undeleted service account retains the role in the binding. * `deleted:group:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a Google group that has been recently deleted. For example, `admins@example.com?uid=123456789012345678901`. If the group is recovered, this value reverts to `group:{emailid}` and the recovered group retains the role in the binding.',
+      }),
+    role: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Role that is assigned to the list of `members`, or principals. For example, `roles/viewer`, `roles/editor`, or `roles/owner`.',
+      }),
+  })
+  .openapi({ description: 'Associates `members`, or principals, with a `role`.', required: [] })
+  .openapi('Binding')
+
+const CommitRequestSchema: z.ZodType<CommitRequestType> = z
   .object({
     mutations: z
       .array(MutationSchema)
@@ -972,33 +1653,6 @@ const CopyBackupEncryptionConfigSchema = z
   })
   .openapi({ description: 'Encryption configuration for the copied backup.', required: [] })
   .openapi('CopyBackupEncryptionConfig')
-
-const OperationProgressSchema = z
-  .object({
-    endTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'If set, the time at which this operation failed or was completed successfully.',
-      }),
-    progressPercent: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'Percent completion of the operation. Values are between 0 and 100 inclusive.',
-      }),
-    startTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Time the request was received.' }),
-  })
-  .openapi({
-    description:
-      'Encapsulates progress related information for a Cloud Spanner long running operation.',
-    required: [],
-  })
-  .openapi('OperationProgress')
 
 const CopyBackupMetadataSchema = z
   .object({
@@ -1097,19 +1751,6 @@ const CreateDatabaseMetadataSchema = z
     required: [],
   })
   .openapi('CreateDatabaseMetadata')
-
-const EncryptionConfigSchema = z
-  .object({
-    kmsKeyName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The Cloud KMS key to be used for encrypting and decrypting the database. Values are of the form `projects//locations//keyRings//cryptoKeys/`.',
-      }),
-  })
-  .openapi({ description: 'Encryption configuration for a Cloud Spanner database.', required: [] })
-  .openapi('EncryptionConfig')
 
 const CreateDatabaseRequestSchema = z
   .object({
@@ -1507,108 +2148,6 @@ const CreateSessionRequestSchema = z
   .openapi({ description: 'The request for CreateSession.', required: [] })
   .openapi('CreateSessionRequest')
 
-const RestoreInfoSchema = z
-  .object({
-    backupInfo: BackupInfoSchema.exactOptional().openapi({
-      description:
-        'Information about the backup used to restore the database. The backup may no longer exist.',
-    }),
-    sourceType: z
-      .enum(['TYPE_UNSPECIFIED', 'BACKUP'])
-      .exactOptional()
-      .openapi({ description: 'The type of the restore source.' }),
-  })
-  .openapi({ description: 'Information about the database restore.', required: [] })
-  .openapi('RestoreInfo')
-
-const DatabaseSchema = z
-  .object({
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. If exists, the time at which the database creation started.',
-        readOnly: true,
-      }),
-    databaseDialect: z
-      .enum(['DATABASE_DIALECT_UNSPECIFIED', 'GOOGLE_STANDARD_SQL', 'POSTGRESQL'])
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The dialect of the Cloud Spanner Database.',
-        readOnly: true,
-      }),
-    defaultLeader: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Output only. The read-write region which contains the database's leader replicas. This is the same as the value of default_leader database option set using DatabaseAdmin.CreateDatabase or DatabaseAdmin.UpdateDatabaseDdl. If not explicitly set, this is empty.",
-        readOnly: true,
-      }),
-    earliestVersionTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Earliest timestamp at which older versions of the data can be read. This value is continuously updated by Cloud Spanner and becomes stale the moment it is queried. If you are using this value to recover data, make sure to account for the time from the moment when the value is queried to the moment when you initiate the recovery.',
-        readOnly: true,
-      }),
-    enableDropProtection: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether drop protection is enabled for this database. Defaults to false, if not set.',
-      }),
-    encryptionConfig: EncryptionConfigSchema.exactOptional().openapi({
-      description:
-        'Output only. For databases that are using customer managed encryption, this field contains the encryption configuration for the database. For databases that are using Google default or other types of encryption, this field is empty.',
-      readOnly: true,
-    }),
-    encryptionInfo: z
-      .array(EncryptionInfoSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "Output only. For databases that are using customer managed encryption, this field contains the encryption information for the database, such as all Cloud KMS key versions that are in use. The `encryption_status' field inside of each `EncryptionInfo` is not populated. For databases that are using Google default or other types of encryption, this field is empty. This field is propagated lazily from the backend. There might be a delay from when a key version is being used and when it appears in this field.",
-        readOnly: true,
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The name of the database. Values are of the form `projects//instances//databases/`, where `` is as specified in the `CREATE DATABASE` statement. This name can be passed to other API methods to identify the database.',
-      }),
-    reconciling: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. If true, the database is being updated. If false, there are no ongoing update operations for the database.',
-        readOnly: true,
-      }),
-    restoreInfo: RestoreInfoSchema.exactOptional().openapi({
-      description:
-        'Output only. Applicable only for restored databases. Contains information about the restore source.',
-      readOnly: true,
-    }),
-    state: z
-      .enum(['STATE_UNSPECIFIED', 'CREATING', 'READY', 'READY_OPTIMIZING'])
-      .exactOptional()
-      .openapi({ description: 'Output only. The current database state.', readOnly: true }),
-    versionRetentionPeriod: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The period in which Cloud Spanner retains all versions of data for the database. This is the same as the value of version_retention_period database option set using UpdateDatabaseDdl. Defaults to 1 hour, if not set.',
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'A Cloud Spanner database.', required: [] })
-  .openapi('Database')
-
 const DatabaseRoleSchema = z
   .object({
     name: z
@@ -1622,87 +2161,15 @@ const DatabaseRoleSchema = z
   .openapi({ description: 'A Cloud Spanner database role.', required: [] })
   .openapi('DatabaseRole')
 
-const DiagnosticMessageSchema = z
-  .object({
-    info: LocalizedStringSchema.exactOptional().openapi({
-      description: 'Information about this diagnostic information.',
-    }),
-    metric: LocalizedStringSchema.exactOptional().openapi({ description: 'The metric.' }),
-    metricSpecific: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether this message is specific only for the current metric. By default Diagnostics are shown for all metrics, regardless which metric is the currently selected metric in the UI. However occasionally a metric will generate so many messages that the resulting visual clutter becomes overwhelming. In this case setting this to true, will show the diagnostic messages for that metric only if it is the currently selected metric.',
-      }),
-    severity: z
-      .enum(['SEVERITY_UNSPECIFIED', 'INFO', 'WARNING', 'ERROR', 'FATAL'])
-      .exactOptional()
-      .openapi({ description: 'The severity of the diagnostic message.' }),
-    shortMessage: LocalizedStringSchema.exactOptional().openapi({
-      description: 'The short message.',
-    }),
-  })
-  .openapi({
-    description: 'A message representing the key visualizer diagnostic messages.',
-    required: [],
-  })
-  .openapi('DiagnosticMessage')
-
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
   })
   .openapi('Empty')
 
-const StatementSchema = z
-  .object({
-    paramTypes: z
-      .record(z.string(), TypeSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'It is not always possible for Cloud Spanner to infer the right SQL type from a JSON value. For example, values of type `BYTES` and values of type `STRING` both appear in params as JSON strings. In these cases, `param_types` can be used to specify the exact SQL type for some or all of the SQL statement parameters. See the definition of Type for more information about SQL types.',
-      }),
-    params: z
-      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
-      .exactOptional()
-      .openapi({
-        description:
-          'Parameter names and values that bind to placeholders in the DML string. A parameter placeholder consists of the `@` character followed by the parameter name (for example, `@firstName`). Parameter names can contain letters, numbers, and underscores. Parameters can appear anywhere that a literal value is expected. The same parameter name can be used more than once, for example: `"WHERE id > @msg_id AND id < @msg_id + 100"` It is an error to execute a SQL statement with unbound parameters.',
-      }),
-    sql: z.string().exactOptional().openapi({ description: 'Required. The DML string.' }),
-  })
-  .openapi({ description: 'A single DML statement.', required: [] })
-  .openapi('Statement')
-
-const TransactionSelectorSchema = z
-  .object({
-    begin: TransactionOptionsSchema.exactOptional().openapi({
-      description:
-        'Begin a new transaction and execute this read or SQL query in it. The transaction ID of the new transaction is returned in ResultSetMetadata.transaction, which is a Transaction.',
-    }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Execute the read or SQL query in a previously-started transaction.',
-      }),
-    singleUse: TransactionOptionsSchema.exactOptional().openapi({
-      description:
-        'Execute the read or SQL query in a temporary transaction. This is the most efficient way to execute a transaction that consists of a single SQL query.',
-    }),
-  })
-  .openapi({
-    description:
-      'This message is used to select the transaction in which a Read or ExecuteSql call runs. See TransactionOptions for more information about transactions.',
-    required: [],
-  })
-  .openapi('TransactionSelector')
-
-const ExecuteBatchDmlRequestSchema = z
+const ExecuteBatchDmlRequestSchema: z.ZodType<ExecuteBatchDmlRequestType> = z
   .object({
     requestOptions: RequestOptionsSchema.exactOptional().openapi({
       description: 'Common options for this request.',
@@ -1729,181 +2196,7 @@ const ExecuteBatchDmlRequestSchema = z
   .openapi({ description: 'The request for ExecuteBatchDml.', required: [] })
   .openapi('ExecuteBatchDmlRequest')
 
-const TransactionSchema = z
-  .object({
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          '`id` may be used to identify the transaction in subsequent Read, ExecuteSql, Commit, or Rollback calls. Single-use read-only transactions do not have IDs, because single-use transactions do not support multiple requests.',
-      }),
-    readTimestamp: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'For snapshot read-only transactions, the read timestamp chosen for the transaction. Not returned by default: see TransactionOptions.ReadOnly.return_read_timestamp. A timestamp in RFC3339 UTC \\"Zulu\\" format, accurate to nanoseconds. Example: `"2014-10-02T15:01:23.045123456Z"`.',
-      }),
-  })
-  .openapi({ description: 'A transaction.', required: [] })
-  .openapi('Transaction')
-
-const ResultSetMetadataSchema = z
-  .object({
-    rowType: StructTypeSchema.exactOptional().openapi({
-      description:
-        'Indicates the field names and types for the rows in the result set. For example, a SQL query like `"SELECT UserId, UserName FROM Users"` could return a `row_type` value like: "fields": [ { "name": "UserId", "type": { "code": "INT64" } }, { "name": "UserName", "type": { "code": "STRING" } }, ]',
-    }),
-    transaction: TransactionSchema.exactOptional().openapi({
-      description:
-        'If the read or SQL query began a transaction as a side-effect, the information about the new transaction is yielded here.',
-    }),
-    undeclaredParameters: StructTypeSchema.exactOptional().openapi({
-      description:
-        'A SQL query can be parameterized. In PLAN mode, these parameters can be undeclared. This indicates the field names and types for those undeclared parameters in the SQL query. For example, a SQL query like `"SELECT * FROM Users where UserId = @userId and UserName = @userName "` could return a `undeclared_parameters` value like: "fields": [ { "name": "UserId", "type": { "code": "INT64" } }, { "name": "UserName", "type": { "code": "STRING" } }, ]',
-    }),
-  })
-  .openapi({ description: 'Metadata about a ResultSet or PartialResultSet.', required: [] })
-  .openapi('ResultSetMetadata')
-
-const ShortRepresentationSchema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A string representation of the expression subtree rooted at this node.',
-      }),
-    subqueries: z
-      .record(z.string(), z.int32())
-      .exactOptional()
-      .openapi({
-        description:
-          'A mapping of (subquery variable name) -> (subquery node id) for cases where the `description` string of this node references a `SCALAR` subquery contained in the expression subtree rooted at this node. The referenced `SCALAR` subquery may not necessarily be a direct child of this node.',
-      }),
-  })
-  .openapi({
-    description:
-      'Condensed representation of a node and its subtree. Only present for `SCALAR` PlanNode(s).',
-    required: [],
-  })
-  .openapi('ShortRepresentation')
-
-const PlanNodeSchema = z
-  .object({
-    childLinks: z
-      .array(ChildLinkSchema)
-      .exactOptional()
-      .openapi({
-        description: 'List of child node `index`es and their relationship to this parent.',
-      }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The display name for the node.' }),
-    executionStats: z
-      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
-      .exactOptional()
-      .openapi({
-        description:
-          'The execution statistics associated with the node, contained in a group of key-value pairs. Only present if the plan was returned as a result of a profile query. For example, number of executions, number of rows/time per execution etc.',
-      }),
-    index: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: "The `PlanNode`'s index in node list." }),
-    kind: z
-      .enum(['KIND_UNSPECIFIED', 'RELATIONAL', 'SCALAR'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Used to determine the type of node. May be needed for visualizing different kinds of nodes differently. For example, If the node is a SCALAR node, it will have a condensed representation which can be used to directly embed a description of the node in its parent.',
-      }),
-    metadata: z
-      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
-      .exactOptional()
-      .openapi({
-        description:
-          'Attributes relevant to the node contained in a group of key-value pairs. For example, a Parameter Reference node could have the following information in its metadata: { "parameter_reference": "param1", "parameter_type": "array" }',
-      }),
-    shortRepresentation: ShortRepresentationSchema.exactOptional().openapi({
-      description: 'Condensed representation for SCALAR nodes.',
-    }),
-  })
-  .openapi({
-    description: 'Node information for nodes appearing in a QueryPlan.plan_nodes.',
-    required: [],
-  })
-  .openapi('PlanNode')
-
-const QueryPlanSchema = z
-  .object({
-    planNodes: z
-      .array(PlanNodeSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "The nodes in the query plan. Plan nodes are returned in pre-order starting with the plan root. Each PlanNode's `id` corresponds to its index in `plan_nodes`.",
-      }),
-  })
-  .openapi({
-    description: 'Contains an ordered list of nodes appearing in the query plan.',
-    required: [],
-  })
-  .openapi('QueryPlan')
-
-const ResultSetStatsSchema = z
-  .object({
-    queryPlan: QueryPlanSchema.exactOptional().openapi({
-      description: 'QueryPlan for the query associated with this result.',
-    }),
-    queryStats: z
-      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
-      .exactOptional()
-      .openapi({
-        description:
-          'Aggregated statistics from the execution of the query. Only present when the query is profiled. For example, a query could return the statistics as follows: { "rows_returned": "3", "elapsed_time": "1.22 secs", "cpu_time": "1.19 secs" }',
-      }),
-    rowCountExact: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Standard DML returns an exact count of rows that were modified.' }),
-    rowCountLowerBound: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Partitioned DML does not offer exactly-once semantics, so it returns a lower bound of the rows modified.',
-      }),
-  })
-  .openapi({
-    description: 'Additional statistics about a ResultSet or PartialResultSet.',
-    required: [],
-  })
-  .openapi('ResultSetStats')
-
-const ResultSetSchema = z
-  .object({
-    metadata: ResultSetMetadataSchema.exactOptional().openapi({
-      description: 'Metadata about the result set, such as row type information.',
-    }),
-    rows: z
-      .array(z.array(z.any()))
-      .exactOptional()
-      .openapi({
-        description:
-          'Each element in `rows` is a row whose format is defined by metadata.row_type. The ith element in each row matches the ith field in metadata.row_type. Elements are encoded based on type as described here.',
-      }),
-    stats: ResultSetStatsSchema.exactOptional().openapi({
-      description:
-        'Query plan and execution statistics for the SQL statement that produced this result set. These can be requested by setting ExecuteSqlRequest.query_mode. DML statements always produce stats containing the number of rows modified, unless executed using the ExecuteSqlRequest.QueryMode.PLAN ExecuteSqlRequest.query_mode. Other fields may or may not be populated, based on the ExecuteSqlRequest.query_mode.',
-    }),
-  })
-  .openapi({ description: 'Results from Read or ExecuteSql.', required: [] })
-  .openapi('ResultSet')
-
-const ExecuteBatchDmlResponseSchema = z
+const ExecuteBatchDmlResponseSchema: z.ZodType<ExecuteBatchDmlResponseType> = z
   .object({
     resultSets: z
       .array(ResultSetSchema)
@@ -2185,7 +2478,7 @@ const ListDatabaseRolesResponseSchema = z
   .openapi({ description: 'The response for ListDatabaseRoles.', required: [] })
   .openapi('ListDatabaseRolesResponse')
 
-const ListDatabasesResponseSchema = z
+const ListDatabasesResponseSchema: z.ZodType<ListDatabasesResponseType> = z
   .object({
     databases: z
       .array(DatabaseSchema)
@@ -2279,224 +2572,7 @@ const ListOperationsResponseSchema = z
   .openapi({ description: 'The response message for Operations.ListOperations.', required: [] })
   .openapi('ListOperationsResponse')
 
-const MetricSchema: z.ZodType<MetricType> = z
-  .lazy(() =>
-    z
-      .object({
-        aggregation: z
-          .enum(['AGGREGATION_UNSPECIFIED', 'MAX', 'SUM'])
-          .exactOptional()
-          .openapi({ description: 'The aggregation function used to aggregate each key bucket' }),
-        category: LocalizedStringSchema.exactOptional().openapi({
-          description: 'The category of the metric, e.g. "Activity", "Alerts", "Reads", etc.',
-        }),
-        derived: DerivedMetricSchema.exactOptional().openapi({
-          description: 'The references to numerator and denominator metrics for a derived metric.',
-        }),
-        displayLabel: LocalizedStringSchema.exactOptional().openapi({
-          description: 'The displayed label of the metric.',
-        }),
-        hasNonzeroData: z
-          .boolean()
-          .exactOptional()
-          .openapi({ description: 'Whether the metric has any non-zero data.' }),
-        hotValue: z
-          .float32()
-          .exactOptional()
-          .openapi({
-            description:
-              'The value that is considered hot for the metric. On a per metric basis hotness signals high utilization and something that might potentially be a cause for concern by the end user. hot_value is used to calibrate and scale visual color scales.',
-          }),
-        indexedHotKeys: z
-          .record(z.string(), IndexedHotKeySchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'The (sparse) mapping from time index to an IndexedHotKey message, representing those time intervals for which there are hot keys.',
-          }),
-        indexedKeyRangeInfos: z
-          .record(z.string(), IndexedKeyRangeInfosSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'The (sparse) mapping from time interval index to an IndexedKeyRangeInfos message, representing those time intervals for which there are informational messages concerning key ranges.',
-          }),
-        info: LocalizedStringSchema.exactOptional().openapi({
-          description: 'Information about the metric.',
-        }),
-        matrix: MetricMatrixSchema.exactOptional().openapi({
-          description: 'The data for the metric as a matrix.',
-        }),
-        unit: LocalizedStringSchema.exactOptional().openapi({
-          description: 'The unit of the metric.',
-        }),
-        visible: z
-          .boolean()
-          .exactOptional()
-          .openapi({ description: 'Whether the metric is visible to the end user.' }),
-      })
-      .openapi({
-        description:
-          'A message representing the actual monitoring data, values for each key bucket over time, of a metric.',
-        required: [],
-      }),
-  )
-  .openapi('Metric')
-
-const PrefixNodeSchema = z
-  .object({
-    dataSourceNode: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether this corresponds to a data_source name.' }),
-    depth: z.int32().exactOptional().openapi({ description: 'The depth in the prefix hierarchy.' }),
-    endIndex: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'The index of the end key bucket of the range that this node spans.',
-      }),
-    startIndex: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'The index of the start key bucket of the range that this node spans.',
-      }),
-    word: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The string represented by the prefix node.' }),
-  })
-  .openapi({
-    description:
-      'A message representing a key prefix node in the key prefix hierarchy. for eg. Bigtable keyspaces are lexicographically ordered mappings of keys to values. Keys often have a shared prefix structure where users use the keys to organize data. Eg ///employee In this case Keysight will possibly use one node for a company and reuse it for all employees that fall under the company. Doing so improves legibility in the UI.',
-    required: [],
-  })
-  .openapi('PrefixNode')
-
-const VisualizationDataSchema = z
-  .object({
-    dataSourceEndToken: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The token signifying the end of a data_source.' }),
-    dataSourceSeparatorToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The token delimiting a datasource name from the rest of a key in a data_source.',
-      }),
-    diagnosticMessages: z
-      .array(DiagnosticMessageSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of messages (info, alerts, ...)' }),
-    endKeyStrings: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'We discretize the entire keyspace into buckets. Assuming each bucket has an inclusive keyrange and covers keys from k(i) ... k(n). In this case k(n) would be an end key for a given range. end_key_string is the collection of all such end keys',
-      }),
-    hasPii: z.boolean().exactOptional().openapi({ description: 'Whether this scan contains PII.' }),
-    indexedKeys: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Keys of key ranges that contribute significantly to a given metric Can be thought of as heavy hitters.',
-      }),
-    keySeparator: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The token delimiting the key prefixes.' }),
-    keyUnit: z
-      .enum(['KEY_UNIT_UNSPECIFIED', 'KEY', 'CHUNK'])
-      .exactOptional()
-      .openapi({ description: "The unit for the key: e.g. 'key' or 'chunk'." }),
-    metrics: z
-      .array(MetricSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of data objects for each metric.' }),
-    prefixNodes: z
-      .array(PrefixNodeSchema)
-      .exactOptional()
-      .openapi({
-        description: 'The list of extracted key prefix nodes used in the key prefix hierarchy.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('VisualizationData')
-
-const ScanDataSchema = z
-  .object({
-    data: VisualizationDataSchema.exactOptional().openapi({
-      description:
-        'Cloud Key Visualizer scan data. The range of time this information covers is captured via the above time range fields. Note, this field is not available to the ListScans method.',
-    }),
-    endTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The upper bound for when the contained data is defined.' }),
-    startTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A range of time (inclusive) for when the contained data is defined. The lower bound for when the contained data is defined.',
-      }),
-  })
-  .openapi({
-    description:
-      'ScanData contains Cloud Key Visualizer scan data used by the caller to construct a visualization.',
-    required: [],
-  })
-  .openapi('ScanData')
-
-const ScanSchema = z
-  .object({
-    details: z
-      .record(
-        z.string(),
-        z
-          .any()
-          .openapi({
-            description: 'Properties of the object. Contains field @type with type URL.',
-          }),
-      )
-      .exactOptional()
-      .openapi({ description: 'Additional information provided by the implementer.' }),
-    endTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The upper bound for when the scan is defined.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique name of the scan, specific to the Database service implementing this interface.',
-      }),
-    scanData: ScanDataSchema.exactOptional().openapi({
-      description:
-        'Output only. Cloud Key Visualizer scan data. Note, this field is not available to the ListScans method.',
-      readOnly: true,
-    }),
-    startTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A range of time (inclusive) for when the scan is defined. The lower bound for when the scan is defined.',
-      }),
-  })
-  .openapi({
-    description: 'Scan is a structure which describes Cloud Key Visualizer scan information.',
-    required: [],
-  })
-  .openapi('Scan')
-
-const ListScansResponseSchema = z
+const ListScansResponseSchema: z.ZodType<ListScansResponseType> = z
   .object({
     nextPageToken: z
       .string()
@@ -2995,24 +3071,7 @@ const UpdateDatabaseDdlRequestSchema = z
   })
   .openapi('UpdateDatabaseDdlRequest')
 
-const UpdateDatabaseRequestSchema = z
-  .object({
-    database: DatabaseSchema.exactOptional().openapi({
-      description:
-        'Required. The database to update. The `name` field of the database is of the form `projects//instances//databases/`.',
-    }),
-    updateMask: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The list of fields to update. Currently, only `enable_drop_protection` field can be updated.',
-      }),
-  })
-  .openapi({ description: 'The request for UpdateDatabase.', required: [] })
-  .openapi('UpdateDatabaseRequest')
-
-const UpdateDatabaseMetadataSchema = z
+const UpdateDatabaseMetadataSchema: z.ZodType<UpdateDatabaseMetadataType> = z
   .object({
     cancelTime: z
       .string()

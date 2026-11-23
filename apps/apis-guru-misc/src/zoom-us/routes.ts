@@ -21632,16 +21632,10 @@ export const postAccountsRoute = createRoute({
         },
       },
       headers: z.object({
-        'Content-Location': {
-          description: 'Location of the created account.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Location of the created account.',
-              param: { required: false },
-            }),
-        },
+        'Content-Location': z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Location of the created account.', param: { required: false } }),
       }),
     },
     400: {
@@ -25707,8 +25701,8 @@ export const patchAccountsAccountIdLockSettingsRoute = createRoute({
     204: {
       description: '**HTTP Status Code:** `204`<br>\nAccount lock settings updated.',
       content: {
-        'application/json': { schema: z.object({}) },
-        'application/xml': { schema: z.object({}) },
+        'application/json': { schema: z.looseObject({}) },
+        'application/xml': { schema: z.looseObject({}) },
       },
     },
     404: {
@@ -28920,8 +28914,8 @@ export const patchAccountsAccountIdPlansBaseStatusRoute = createRoute({
     204: {
       description: '**HTTP Status Code:** `204`<br>\nPlan cancelled successfully. ',
       content: {
-        'application/json': { schema: z.object({}) },
-        'application/xml': { schema: z.object({}) },
+        'application/json': { schema: z.looseObject({}) },
+        'application/xml': { schema: z.looseObject({}) },
       },
     },
     400: {
@@ -38723,8 +38717,8 @@ export const deleteAccountsAccountIdSipTrunkTrunksTrunkIdRoute = createRoute({
     204: {
       description: '**HTTP Status Code:** `204` **No Content**<br>\nSIP Trunk deleted.',
       content: {
-        'application/json': { schema: z.object({}) },
-        'application/xml': { schema: z.object({}) },
+        'application/json': { schema: z.looseObject({}) },
+        'application/xml': { schema: z.looseObject({}) },
       },
     },
     400: {
@@ -42107,13 +42101,10 @@ export const postGroupsRoute = createRoute({
         },
       },
       headers: z.object({
-        'Content-Location': {
-          description: 'Location of created group',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'Location of created group', param: { required: false } }),
-        },
+        'Content-Location': z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Location of created group', param: { required: false } }),
       }),
     },
     300: { description: '**Error Code:** `300`<br>\nMissing field: name.' },
@@ -51088,13 +51079,10 @@ export const postH323DevicesRoute = createRoute({
         },
       },
       headers: z.object({
-        'Content-Location': {
-          description: 'Location of created device',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'Location of created device', param: { required: false } }),
-        },
+        'Content-Location': z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Location of created device', param: { required: false } }),
       }),
     },
     404: {
@@ -51240,7 +51228,7 @@ export const postImChatMessagesRoute = createRoute({
                 .string()
                 .openapi({ description: 'Account ID of the authorized account.' }),
               content: z
-                .object({})
+                .looseObject({})
                 .openapi({
                   description:
                     'JSON template describing how the message should be displayed for the user. For more information please see our ["Send Message" templates](https://marketplace.zoom.us/docs/guides/chatbots/sending-messages#example-request).',
@@ -51285,7 +51273,7 @@ export const postImChatMessagesRoute = createRoute({
                 .string()
                 .openapi({ description: 'Account ID of the authorized account.' }),
               content: z
-                .object({})
+                .looseObject({})
                 .openapi({
                   description:
                     'JSON template describing how the message should be displayed for the user. For more information please see our ["Send Message" templates](https://marketplace.zoom.us/docs/guides/chatbots/sending-messages#example-request).',
@@ -51377,7 +51365,7 @@ export const putImChatMessagesMessageIdRoute = createRoute({
                     'The AccountID of the Zoom account to which the message was sent. Retrieve this from the Chatbot request sent to your server as shown in the example [here]( https://marketplace.zoom.us/docs/guides/chatbots/sending-messages).',
                 }),
               content: z
-                .object({})
+                .looseObject({})
                 .openapi({
                   description:
                     'JSON template describing how the edited message should be displayed for the user. For more information please see our ["Send Message" templates](https://marketplace.zoom.us/docs/guides/chatbots/sending-messages#example-request).',
@@ -51415,7 +51403,7 @@ export const putImChatMessagesMessageIdRoute = createRoute({
                     'The AccountID of the Zoom account to which the message was sent. Retrieve this from the Chatbot request sent to your server as shown in the example [here]( https://marketplace.zoom.us/docs/guides/chatbots/sending-messages).',
                 }),
               content: z
-                .object({})
+                .looseObject({})
                 .openapi({
                   description:
                     'JSON template describing how the edited message should be displayed for the user. For more information please see our ["Send Message" templates](https://marketplace.zoom.us/docs/guides/chatbots/sending-messages#example-request).',
@@ -52565,13 +52553,10 @@ export const postImGroupsRoute = createRoute({
         },
       },
       headers: z.object({
-        'Content-Location': {
-          description: 'Location of created IM Group',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'Location of created IM Group', param: { required: false } }),
-        },
+        'Content-Location': z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Location of created IM Group', param: { required: false } }),
       }),
     },
     404: {
@@ -57933,16 +57918,10 @@ export const postMeetingsMeetingIdPollsRoute = createRoute({
         },
       },
       headers: z.object({
-        'Content-Location': {
-          description: 'Location of created Meeting Poll',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Location of created Meeting Poll',
-              param: { required: false },
-            }),
-        },
+        'Content-Location': z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Location of created Meeting Poll', param: { required: false } }),
       }),
     },
     404: { description: '**Error Code:** `404` <br>\nMeeting not found' },
@@ -80735,8 +80714,8 @@ export const postPhoneCallQueuesCallQueueIdMembersRoute = createRoute({
     201: {
       description: '**HTTP Status Code:** `201` **Created**<br>\nMembers added successfully.',
       content: {
-        'application/json': { schema: z.object({}) },
-        'application/xml': { schema: z.object({}) },
+        'application/json': { schema: z.looseObject({}) },
+        'application/xml': { schema: z.looseObject({}) },
       },
     },
     400: {
@@ -80917,8 +80896,8 @@ export const postPhoneCallQueuesCallQueueIdPhoneNumbersRoute = createRoute({
     204: {
       description: '**HTTP Status Code:** `204` **No Content**<br>\n',
       content: {
-        'application/json': { schema: z.object({}) },
-        'application/xml': { schema: z.object({}) },
+        'application/json': { schema: z.looseObject({}) },
+        'application/xml': { schema: z.looseObject({}) },
       },
     },
   },
@@ -80954,8 +80933,8 @@ export const deletePhoneCallQueuesCallQueueIdPhoneNumbersRoute = createRoute({
       description:
         '**HTTP Status Code:** `204` **No Content**<br>\nPhone numbers unassigned successfully.',
       content: {
-        'application/json': { schema: z.object({}) },
-        'application/xml': { schema: z.object({}) },
+        'application/json': { schema: z.looseObject({}) },
+        'application/xml': { schema: z.looseObject({}) },
       },
     },
     400: {
@@ -81006,8 +80985,8 @@ export const deletePhoneCallQueuesCallQueueIdPhoneNumbersPhoneNumberIdRoute = cr
       description:
         '**HTTP Status Code:** `204` **No Content**<br>\nPhone Number unassigned successfuly.',
       content: {
-        'application/json': { schema: z.object({}) },
-        'application/xml': { schema: z.object({}) },
+        'application/json': { schema: z.looseObject({}) },
+        'application/xml': { schema: z.looseObject({}) },
       },
     },
     400: {
@@ -92802,8 +92781,8 @@ export const patchPhoneUsersUserIdSettingsSettingTypeRoute = createRoute({
       description:
         '**HTTP Response Code:** `400`<br>\nVoicemail option has been disabled.<br>\n\n**Error Code:** `300`<br>\nInvalid user setting Type: {settingType}.',
       content: {
-        'application/json': { schema: z.object({}) },
-        'application/xml': { schema: z.object({}) },
+        'application/json': { schema: z.looseObject({}) },
+        'application/xml': { schema: z.looseObject({}) },
       },
     },
     404: {
@@ -97320,8 +97299,8 @@ export const deleteRolesRoleIdRoute = createRoute({
     204: {
       description: '**Status Code:** `204`<br>\nRole deleted.',
       content: {
-        'application/json': { schema: z.object({}) },
-        'application/xml': { schema: z.object({}) },
+        'application/json': { schema: z.looseObject({}) },
+        'application/xml': { schema: z.looseObject({}) },
       },
     },
     300: { description: '**Error Code:** `300`<br>\nRole not found.' },
@@ -97848,13 +97827,10 @@ export const postRolesRoleIdMembersRoute = createRoute({
         },
       },
       headers: z.object({
-        'Content-Location': {
-          description: 'Location of created members',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'Location of created members', param: { required: false } }),
-        },
+        'Content-Location': z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Location of created members', param: { required: false } }),
       }),
     },
     400: {
@@ -98509,8 +98485,8 @@ export const patchRoomsAccountProfileRoute = createRoute({
     204: {
       description: '**HTTP Status Code:** `204` **No Content**<br>\nProfile updated successfully.',
       content: {
-        'application/json': { schema: z.object({}) },
-        'application/xml': { schema: z.object({}) },
+        'application/json': { schema: z.looseObject({}) },
+        'application/xml': { schema: z.looseObject({}) },
       },
     },
     400: {
@@ -100914,8 +100890,8 @@ export const patchRoomsAccountSettingsRoute = createRoute({
       description:
         '**HTTP Status Code:** `204` **No Content**<br>\nSettings updated successfully.\n',
       content: {
-        'application/json': { schema: z.object({}) },
-        'application/xml': { schema: z.object({}) },
+        'application/json': { schema: z.looseObject({}) },
+        'application/xml': { schema: z.looseObject({}) },
       },
     },
     400: {
@@ -105071,8 +105047,8 @@ export const deleteRoomsRoomIdRoute = createRoute({
       description:
         '**HTTP Status Code:** `204` **No Content** <br>\nZoom Room deleted successfully.\n',
       content: {
-        'application/json': { schema: z.object({}) },
-        'application/xml': { schema: z.object({}) },
+        'application/json': { schema: z.looseObject({}) },
+        'application/xml': { schema: z.looseObject({}) },
       },
     },
     400: {
@@ -105225,8 +105201,8 @@ export const patchRoomsRoomIdRoute = createRoute({
       description:
         '**HTTP Status Code:** `204` **No Content**<br>\nRoom Profile information updated successfully.\n',
       content: {
-        'application/json': { schema: z.object({}) },
-        'application/xml': { schema: z.object({}) },
+        'application/json': { schema: z.looseObject({}) },
+        'application/xml': { schema: z.looseObject({}) },
       },
     },
     400: {
@@ -108727,8 +108703,8 @@ export const deleteSipPhonesPhoneIdRoute = createRoute({
     204: {
       description: '**HTTP Status Code:** `204`<br>\nSIP Phone deleted.',
       content: {
-        'application/json': { schema: z.object({}) },
-        'application/xml': { schema: z.object({}) },
+        'application/json': { schema: z.looseObject({}) },
+        'application/xml': { schema: z.looseObject({}) },
       },
     },
     300: {
@@ -109011,8 +108987,8 @@ export const patchSipPhonesPhoneIdRoute = createRoute({
     204: {
       description: '**HTTP Status Code:** `204`<br>\nSIP Phone information updated successfully.\n',
       content: {
-        'application/json': { schema: z.object({}) },
-        'application/xml': { schema: z.object({}) },
+        'application/json': { schema: z.looseObject({}) },
+        'application/xml': { schema: z.looseObject({}) },
       },
     },
     300: {
@@ -109360,16 +109336,13 @@ export const postTrackingFieldsRoute = createRoute({
         },
       },
       headers: z.object({
-        'Content-Location': {
-          description: 'Location of created tracking field',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Location of created tracking field',
-              param: { required: false },
-            }),
-        },
+        'Content-Location': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Location of created tracking field',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -110600,13 +110573,10 @@ export const postUsersRoute = createRoute({
         },
       },
       headers: z.object({
-        'Content-Location': {
-          description: 'Location of created User',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'Location of created User', param: { required: false } }),
-        },
+        'Content-Location': z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Location of created User', param: { required: false } }),
       }),
     },
     400: {
@@ -112053,13 +112023,10 @@ export const postUsersUserIdAssistantsRoute = createRoute({
         },
       },
       headers: z.object({
-        'Content-Location': {
-          description: 'Location of created assistant',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'Location of created assistant', param: { required: false } }),
-        },
+        'Content-Location': z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Location of created assistant', param: { required: false } }),
       }),
     },
     400: {
@@ -115434,13 +115401,10 @@ export const postUsersUserIdMeetingsRoute = createRoute({
         },
       },
       headers: z.object({
-        'Content-Location': {
-          description: 'Location of created Meeting',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'Location of created Meeting', param: { required: false } }),
-        },
+        'Content-Location': z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Location of created Meeting', param: { required: false } }),
       }),
     },
     300: {
@@ -115891,13 +115855,10 @@ export const postUsersUserIdPictureRoute = createRoute({
     201: {
       description: '**HTTP Status Code:** `201`<br>Picture uploaded.',
       headers: z.object({
-        'Content-Location': {
-          description: "Location of user's picture",
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ description: "Location of user's picture", param: { required: false } }),
-        },
+        'Content-Location': z
+          .string()
+          .exactOptional()
+          .openapi({ description: "Location of user's picture", param: { required: false } }),
       }),
     },
     400: {
@@ -126427,13 +126388,10 @@ export const postUsersUserIdWebinarsRoute = createRoute({
         },
       },
       headers: z.object({
-        'Content-Location': {
-          description: 'Location of created Webinar',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'Location of created Webinar', param: { required: false } }),
-        },
+        'Content-Location': z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Location of created Webinar', param: { required: false } }),
       }),
     },
     400: {
@@ -130285,16 +130243,10 @@ export const postWebinarsWebinarIdPollsRoute = createRoute({
         },
       },
       headers: z.object({
-        'Content-Location': {
-          description: 'Location of created Webinar Poll',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Location of created Webinar Poll',
-              param: { required: false },
-            }),
-        },
+        'Content-Location': z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Location of created Webinar Poll', param: { required: false } }),
       }),
     },
     300: { description: '**HTTP Status Code:** `300`<br>Invalid webinarId.' },

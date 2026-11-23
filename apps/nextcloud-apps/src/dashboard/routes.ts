@@ -141,6 +141,7 @@ export const getOcsV2PhpAppsDashboardApiV1WidgetItemsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 7, minimum: 1, maximum: 30 },
             required: false,
           },
+          default: 7,
         }),
       'widgets[]': z
         .preprocess(
@@ -249,6 +250,7 @@ export const getOcsV2PhpAppsDashboardApiV2WidgetItemsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 7, minimum: 1, maximum: 30 },
             required: false,
           },
+          default: 7,
         }),
       'widgets[]': z
         .preprocess(

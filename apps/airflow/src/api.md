@@ -45,6 +45,7 @@ Get assets.
 |uri_pattern|query|string \| null|false|Case-insensitive substring match (SQL `ILIKE`). Slower than `uri_prefix_pattern` on large tables — see "Filtering with pattern parameters".|
 |uri_prefix_pattern|query|string \| null|false|Case-sensitive, index-friendly prefix match. See "Filtering with pattern parameters".|
 |dag_ids|query|[string]|false|none|
+|trigger_id|query|integer \| null|false|Return only the assets this trigger's watchers watch.|
 |only_active|query|boolean|false|none|
 |order_by|query|[string]|false|Attributes to order by, multi criteria sort is supported. Prefix with `-` for descending order. Supported attributes: `id, name, uri, created_at, updated_at`|
 
@@ -102,7 +103,8 @@ Get assets.
         {
           "name": "string",
           "trigger_id": 0,
-          "created_date": "1970-01-01T00:00:00Z"
+          "created_date": "1970-01-01T00:00:00Z",
+          "status": "pending"
         }
       ],
       "last_asset_event": {
@@ -383,6 +385,7 @@ Get asset events.
 |offset|query|integer|false|none|
 |order_by|query|[string]|false|Attributes to order by, multi criteria sort is supported. Prefix with `-` for descending order. Supported attributes: `source_task_id, source_dag_id, source_run_id, source_map_index, timestamp`|
 |asset_id|query|integer \| null|false|none|
+|trigger_id|query|integer \| null|false|Return only the events of the assets this trigger's watchers watch.|
 |source_dag_id|query|string \| null|false|none|
 |source_task_id|query|string \| null|false|none|
 |source_task_instance_id|query|string(uuid) \| null|false|none|
@@ -420,6 +423,8 @@ Get asset events.
       "source_run_id": "string",
       "source_map_index": 0,
       "source_task_instance_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "source_region_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "source_region_index": 0,
       "created_dagruns": [
         {
           "run_id": "string",
@@ -578,6 +583,8 @@ Create asset events.
   "source_run_id": "string",
   "source_map_index": 0,
   "source_task_instance_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "source_region_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "source_region_index": 0,
   "created_dagruns": [
     {
       "run_id": "string",
@@ -966,6 +973,7 @@ Delete queued asset events for an asset.
 |---|---|---|---|---|
 |asset_id|path|integer|true|none|
 |before|query|string \| null|false|none|
+|partition_key|query|string \| null|false|Delete queued events of partitioned assets emitted for this partition key whose Dag run has not been created yet, instead of queued events of non-partitioned assets. The key is matched against the partition key the asset event was emitted for, not against the partition keys of the Dag runs the event feeds; a partition mapper can make them differ.|
 
 > Example responses
 
@@ -1100,7 +1108,8 @@ Get an asset.
     {
       "name": "string",
       "trigger_id": 0,
-      "created_date": "1970-01-01T00:00:00Z"
+      "created_date": "1970-01-01T00:00:00Z",
+      "status": "pending"
     }
   ],
   "last_asset_event": {
@@ -1277,6 +1286,7 @@ curl http://localhost:8080/api/v2/dags/string/assets/queuedEvents \
 |---|---|---|---|---|
 |dag_id|path|string|true|none|
 |before|query|string \| null|false|none|
+|partition_key|query|string \| null|false|Delete queued events of partitioned assets emitted for this partition key whose Dag run has not been created yet, instead of queued events of non-partitioned assets. The key is matched against the partition key the asset event was emitted for, not against the partition keys of the Dag runs the event feeds; a partition mapper can make them differ.|
 
 > Example responses
 
@@ -1464,6 +1474,7 @@ Delete a queued asset event for a Dag.
 |dag_id|path|string|true|none|
 |asset_id|path|integer|true|none|
 |before|query|string \| null|false|none|
+|partition_key|query|string \| null|false|Delete queued events of partitioned assets emitted for this partition key whose Dag run has not been created yet, instead of queued events of non-partitioned assets. The key is matched against the partition key the asset event was emitted for, not against the partition keys of the Dag runs the event feeds; a partition mapper can make them differ.|
 
 > Example responses
 
@@ -4670,6 +4681,8 @@ If dag run is asset-triggered, return the asset events that triggered it.
       "source_run_id": "string",
       "source_map_index": 0,
       "source_task_instance_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "source_region_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "source_region_index": 0,
       "created_dagruns": [
         {
           "run_id": "string",
@@ -4766,6 +4779,7 @@ curl http://localhost:8080/api/v2/dags/string/dagRuns/string/clear \
     "only_failed": false,
     "only_new": false,
     "run_on_latest_version": true,
+    "keep_task_state": false,
     "note": "string"
   }'
 ```
@@ -4780,6 +4794,7 @@ curl http://localhost:8080/api/v2/dags/string/dagRuns/string/clear \
   "only_failed": false,
   "only_new": false,
   "run_on_latest_version": true,
+  "keep_task_state": false,
   "note": "string"
 }
 ```
@@ -4797,6 +4812,7 @@ curl http://localhost:8080/api/v2/dags/string/dagRuns/string/clear \
 |» run_on_latest_version|body|boolean \| null|false|(Experimental) Run on the latest bundle version of the Dag after clearing. If not specified, falls back to the DAG-level ``rerun_with_latest_version`` parameter, then the ``[core] rerun_with_latest_version`` config option, and finally ``False``.|
 |» » *anyOf*|body|boolean|false|none|
 |» » *anyOf*|body|null|false|none|
+|» keep_task_state|body|boolean|false|Keep the task state store entries of the cleared task instances so the next attempt resumes from them. By default they are discarded, so the task starts over.|
 |» note|body|string \| null|false|none|
 |» » *anyOf*|body|string|false|none|
 |» » *anyOf*|body|null|false|none|
@@ -5365,6 +5381,7 @@ curl http://localhost:8080/api/v2/dags/string/clearDagRuns \
     "only_failed": false,
     "only_new": false,
     "run_on_latest_version": true,
+    "keep_task_state": false,
     "note": "string",
     "dag_runs": [
       {
@@ -5392,6 +5409,7 @@ Clear multiple Dag Runs in a single request.
   "only_failed": false,
   "only_new": false,
   "run_on_latest_version": true,
+  "keep_task_state": false,
   "note": "string",
   "dag_runs": [
     {
@@ -5425,6 +5443,7 @@ Clear multiple Dag Runs in a single request.
 |» run_on_latest_version|body|boolean \| null|false|(Experimental) Run on the latest bundle version of the Dag after clearing. If not specified, falls back to the DAG-level ``rerun_with_latest_version`` parameter, then the ``[core] rerun_with_latest_version`` config option, and finally ``False``.|
 |» » *anyOf*|body|boolean|false|none|
 |» » *anyOf*|body|null|false|none|
+|» keep_task_state|body|boolean|false|Keep the task state store entries of the cleared task instances so the next attempt resumes from them. By default they are discarded, so the task starts over.|
 |» note|body|string \| null|false|none|
 |» » *anyOf*|body|string|false|none|
 |» » *anyOf*|body|null|false|none|
@@ -5879,11 +5898,8 @@ List the Dag bundles Airflow knows about.
 Reports the version of each bundle Airflow currently holds and when a Dag processor last
 refreshed it, so whoever deployed the code can tell whether it has been picked up yet.
 
-A bundle is visible to a user who can read at least one Dag recorded against it. A bundle
-holding no registered Dag at all has nothing to authorize against, so it is listed only for a
-user holding the admin-by-default ``AccessView.IMPORT_ERRORS_ALL`` for that bundle's team --
-the same view, scoped the same way, that governs import errors for a file that never
-registered a Dag.
+Needs ``AccessView.DAG_BUNDLES``. In a multi-team deployment it is checked against each
+bundle's team, and bundles of a team the caller cannot see are left out.
 
 <h3 id="get-dag-bundles-parameters">Parameters</h3>
 
@@ -6074,10 +6090,12 @@ curl http://localhost:8080/api/v2/dagBundles/string/files \
 
 List the files in a Dag bundle, ordered by path.
 
-A file is listed when the caller can read at least one Dag it defines. A file that recorded an
-import error without registering any Dag is listed too, on the same admin-by-default terms as
-``GET /importErrors`` -- a file that fails before defining a Dag has no Dag to authorize on,
-and it is the case this page most needs to show.
+Every file the bundle holds is listed, with counts covering the whole file: the bundle is
+authorized as a unit, so its contents are not narrowed to the Dags the caller may read. What a
+file's Dags contain, and the text of its import error, stay behind their own permissions.
+
+``can_read_import_error`` is per caller, unlike the counts: it says whether ``GET /importErrors``
+would return the file's error to them.
 
 ``dag_count`` counts live Dags only. Dag rows are never deleted: a file that fails to import
 has every Dag in it marked stale, and so does a file dropped from the bundle. A file therefore
@@ -6108,7 +6126,8 @@ record Airflow keeps: a file whose every Dag was removed keeps no parse time of 
       "dag_count": 0,
       "last_parsed_time": "1970-01-01T00:00:00Z",
       "last_parse_duration": 0,
-      "import_error_count": 0
+      "import_error_count": 0,
+      "can_read_import_error": true
     }
   ],
   "total_entries": 0
@@ -8048,12 +8067,23 @@ curl http://localhost:8080/api/v2/eventLogs \
 
 Get all Event Logs.
 
+Supports two pagination modes:
+
+**Offset (default):** use `limit` and `offset` query parameters. Returns `total_entries`.
+
+**Cursor:** pass `cursor` (empty string for the first page, then `next_cursor` from the response).
+When `cursor` is provided, `offset` is ignored and `total_entries` is capped at
+`total_entries_limit` (a value equal to that limit means at least that many events match).
+``next_cursor`` is ``null`` when there are no more pages; ``previous_cursor`` is ``null`` on
+the first page.
+
 <h3 id="get-event-logs-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |region_id|query|string(uuid) \| null|false|none|
 |region_index|query|integer \| null|false|none|
+|cursor|query|string \| null|false|Cursor for keyset-based pagination. Pass an empty string for the first page, then use ``next_cursor`` from the response. When ``cursor`` is provided, ``offset`` is ignored.|
 |limit|query|integer|false|none|
 |offset|query|integer|false|none|
 |order_by|query|[string]|false|Attributes to order by, multi criteria sort is supported. Prefix with `-` for descending order. Supported attributes: `id, dttm, dag_id, task_id, run_id, event, logical_date, owner, owner_display_name, extra, when, event_log_id`|
@@ -8109,7 +8139,10 @@ Get all Event Logs.
       "team_name": "string"
     }
   ],
-  "total_entries": 0
+  "total_entries": 0,
+  "total_entries_limit": 0,
+  "next_cursor": "string",
+  "previous_cursor": "string"
 }
 ```
 
@@ -8680,6 +8713,7 @@ curl http://localhost:8080/api/v2/plugins \
               "string"
             ]
           },
+          "show_icon_with_label": false,
           "href": "string",
           "destination": "nav"
         }
@@ -8700,6 +8734,7 @@ curl http://localhost:8080/api/v2/plugins \
               "string"
             ]
           },
+          "show_icon_with_label": false,
           "bundle_url": "string",
           "destination": "nav"
         }
@@ -11580,7 +11615,7 @@ This endpoint allows specifying `~` as the dag_id, dag_run_id, task_id to retrie
 |map_index|query|integer \| null|false|none|
 |region_id|query|string(uuid) \| null|false|none|
 |region_index|query|integer \| null|false|none|
-|exclude_internal_keys|query|boolean|false|Leave out XComs whose keys Airflow reserves for itself, such as loop decision reasons.|
+|exclude_internal_keys|query|boolean|false|Leave out XComs whose keys Airflow reserves for itself, such as loop decision reasons and cross-Dag clear targets.|
 |limit|query|integer|false|none|
 |offset|query|integer|false|none|
 |xcom_key_pattern|query|string \| null|false|Case-insensitive substring match (SQL `ILIKE`). Slower than `xcom_key_prefix_pattern` on large tables — see "Filtering with pattern parameters".|
@@ -14781,6 +14816,7 @@ curl http://localhost:8080/api/v2/dags/string/clearTaskInstances \
     "dag_run_id": "string",
     "include_upstream": false,
     "include_downstream": false,
+    "include_dependent_dags": true,
     "include_future": false,
     "include_past": false,
     "run_on_latest_version": true,
@@ -14818,6 +14854,7 @@ Clear task instances.
   "dag_run_id": "string",
   "include_upstream": false,
   "include_downstream": false,
+  "include_dependent_dags": true,
   "include_future": false,
   "include_past": false,
   "run_on_latest_version": true,
@@ -14861,6 +14898,9 @@ Clear task instances.
 |» » *anyOf*|body|null|false|none|
 |» include_upstream|body|boolean|false|none|
 |» include_downstream|body|boolean|false|none|
+|» include_dependent_dags|body|boolean \| null|false|Also clear the tasks in other Dags that the cleared tasks recorded as external clear targets (for example through ``ExternalTaskMarker``), with their downstream tasks. If not specified, follows ``include_downstream``.|
+|» » *anyOf*|body|boolean|false|none|
+|» » *anyOf*|body|null|false|none|
 |» include_future|body|boolean|false|none|
 |» include_past|body|boolean|false|none|
 |» run_on_latest_version|body|boolean \| null|false|(Experimental) Run on the latest bundle version of the dag after clearing the task instances. If not specified, falls back to the DAG-level ``rerun_with_latest_version`` parameter, then the ``[core] rerun_with_latest_version`` config option, and finally ``False`` (the historical default for clear/rerun).|
@@ -17390,6 +17430,291 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2PasswordBearer, HTTPBearer
 </aside>
 
+<h1 id="airflow-api-trigger">Trigger</h1>
+
+## Get Triggers
+
+<a id="opIdget_triggers"></a>
+
+> Code samples
+
+```bash
+curl http://localhost:8080/api/v2/triggers \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /api/v2/triggers`
+
+Get the triggers the caller can see, of every kind, and how each is doing.
+
+A trigger is visible to whoever can see what it is used by: the task instance or Dag run of its Dag, or
+an asset one of its watchers watches.
+
+<h3 id="get-triggers-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|limit|query|integer|false|none|
+|offset|query|integer|false|none|
+|order_by|query|[string]|false|Attributes to order by, multi criteria sort is supported. Prefix with `-` for descending order. Supported attributes: `id, created_date, consecutive_failures, last_failed_at, last_event_at`|
+|kind|query|[[TriggerKind](#schematriggerkind)]|false|Return only triggers of these kinds.|
+|status|query|[[TriggerStatus](#schematriggerstatus)]|false|Return only triggers with one of these statuses.|
+|triggerer_hostname|query|string \| null|false|Return only the triggers assigned to the triggerer on this host.|
+|dag_id|query|string \| null|false|Return only the triggers of this Dag's task instances and callbacks.|
+|asset_id|query|integer \| null|false|Return only the triggers of this asset's watchers.|
+|scheduled_dag_id|query|string \| null|false|Return only the triggers of watchers on assets this Dag is scheduled on, directly or by an asset name or URI reference.|
+|teams|query|[string]|false|Return only the triggers of these teams.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|kind|task|
+|kind|callback|
+|kind|asset_watcher|
+|status|pending|
+|status|running|
+|status|failing|
+|status|orphaned|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "triggers": [
+    {
+      "id": 0,
+      "kind": "task",
+      "classpath": "string",
+      "created_date": "1970-01-01T00:00:00Z",
+      "queue": "string",
+      "team_name": "string",
+      "status": "pending",
+      "triggerer_hostname": "string",
+      "consecutive_failures": 0,
+      "first_failed_at": "1970-01-01T00:00:00Z",
+      "last_failed_at": "1970-01-01T00:00:00Z",
+      "last_error": "string",
+      "last_event_at": "1970-01-01T00:00:00Z",
+      "dag_id": "string",
+      "task_instance": {
+        "dag_id": "string",
+        "dag_run_id": "string",
+        "task_id": "string",
+        "map_index": 0,
+        "try_number": 0,
+        "state": "removed"
+      },
+      "callback": {
+        "id": "string",
+        "dag_id": "string",
+        "dag_run_id": "string",
+        "state": "scheduled"
+      },
+      "asset_watchers": [
+        {
+          "asset_id": 0,
+          "asset_name": "string",
+          "asset_uri": "string",
+          "watcher_name": "string",
+          "scheduled_dag_ids": [
+            "string"
+          ]
+        }
+      ]
+    }
+  ],
+  "total_entries": 0
+}
+```
+
+> 400 Response
+
+```json
+{
+  "detail": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "detail": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "detail": "string"
+}
+```
+
+> 422 Response
+
+```json
+{
+  "detail": [
+    {
+      "loc": [
+        "string"
+      ],
+      "msg": "string",
+      "type": "string",
+      "input": null,
+      "ctx": {}
+    }
+  ]
+}
+```
+
+<h3 id="get-triggers-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful Response|[TriggerCollectionResponse](#schematriggercollectionresponse)|
+|400|Bad Request|Bad Request|[HTTPExceptionResponse](#schemahttpexceptionresponse)|
+|401|Unauthorized|Unauthorized|[HTTPExceptionResponse](#schemahttpexceptionresponse)|
+|403|Forbidden|Forbidden|[HTTPExceptionResponse](#schemahttpexceptionresponse)|
+|422|Unprocessable Entity|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2PasswordBearer, HTTPBearer
+</aside>
+
+## Get Trigger
+
+<a id="opIdget_trigger"></a>
+
+> Code samples
+
+```bash
+curl http://localhost:8080/api/v2/triggers/0 \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /api/v2/triggers/{trigger_id}`
+
+Get a trigger, who it runs for, and how it is doing.
+
+<h3 id="get-trigger-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|trigger_id|path|integer|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": 0,
+  "kind": "task",
+  "classpath": "string",
+  "created_date": "1970-01-01T00:00:00Z",
+  "queue": "string",
+  "team_name": "string",
+  "status": "pending",
+  "triggerer_hostname": "string",
+  "consecutive_failures": 0,
+  "first_failed_at": "1970-01-01T00:00:00Z",
+  "last_failed_at": "1970-01-01T00:00:00Z",
+  "last_error": "string",
+  "last_event_at": "1970-01-01T00:00:00Z",
+  "dag_id": "string",
+  "task_instance": {
+    "dag_id": "string",
+    "dag_run_id": "string",
+    "task_id": "string",
+    "map_index": 0,
+    "try_number": 0,
+    "state": "removed"
+  },
+  "callback": {
+    "id": "string",
+    "dag_id": "string",
+    "dag_run_id": "string",
+    "state": "scheduled"
+  },
+  "asset_watchers": [
+    {
+      "asset_id": 0,
+      "asset_name": "string",
+      "asset_uri": "string",
+      "watcher_name": "string",
+      "scheduled_dag_ids": [
+        "string"
+      ]
+    }
+  ]
+}
+```
+
+> 401 Response
+
+```json
+{
+  "detail": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "detail": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "detail": "string"
+}
+```
+
+> 422 Response
+
+```json
+{
+  "detail": [
+    {
+      "loc": [
+        "string"
+      ],
+      "msg": "string",
+      "type": "string",
+      "input": null,
+      "ctx": {}
+    }
+  ]
+}
+```
+
+<h3 id="get-trigger-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful Response|[TriggerDetailResponse](#schematriggerdetailresponse)|
+|401|Unauthorized|Unauthorized|[HTTPExceptionResponse](#schemahttpexceptionresponse)|
+|403|Forbidden|Forbidden|[HTTPExceptionResponse](#schemahttpexceptionresponse)|
+|404|Not Found|Not Found|[HTTPExceptionResponse](#schemahttpexceptionresponse)|
+|422|Unprocessable Entity|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2PasswordBearer, HTTPBearer
+</aside>
+
 <h1 id="airflow-api-variable">Variable</h1>
 
 ## Get Variable
@@ -18923,7 +19248,8 @@ Asset alias serializer for responses.
         {
           "name": "string",
           "trigger_id": 0,
-          "created_date": "1970-01-01T00:00:00Z"
+          "created_date": "1970-01-01T00:00:00Z",
+          "status": "pending"
         }
       ],
       "last_asset_event": {
@@ -18995,6 +19321,8 @@ Access control settings for asset event consumer team filtering.
       "source_run_id": "string",
       "source_map_index": 0,
       "source_task_instance_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "source_region_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "source_region_index": 0,
       "created_dagruns": [
         {
           "run_id": "string",
@@ -19049,6 +19377,8 @@ Asset event collection response.
   "source_run_id": "string",
   "source_map_index": 0,
   "source_task_instance_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "source_region_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "source_region_index": 0,
   "created_dagruns": [
     {
       "run_id": "string",
@@ -19085,6 +19415,8 @@ Asset event serializer for responses.
 |source_run_id|string \| null|false|none|none|
 |source_map_index|integer|true|none|none|
 |source_task_instance_id|string(uuid) \| null|false|none|none|
+|source_region_id|string(uuid) \| null|false|none|none|
+|source_region_index|integer \| null|false|none|none|
 |created_dagruns|[[DagRunAssetReference](#schemadagrunassetreference)]|true|none|none|
 |timestamp|string(date-time)|true|none|none|
 |partition_key|string \| null|false|none|none|
@@ -19342,7 +19674,8 @@ An unresolved asset reference leaf: ``{"asset_ref": {"name": ...}}`` or ``{"asse
     {
       "name": "string",
       "trigger_id": 0,
-      "created_date": "1970-01-01T00:00:00Z"
+      "created_date": "1970-01-01T00:00:00Z",
+      "status": "pending"
     }
   ],
   "last_asset_event": {
@@ -19543,7 +19876,8 @@ Identifies what kind of writer last updated an asset state store entry.
 {
   "name": "string",
   "trigger_id": 0,
-  "created_date": "1970-01-01T00:00:00Z"
+  "created_date": "1970-01-01T00:00:00Z",
+  "status": "pending"
 }
 ```
 
@@ -19554,8 +19888,18 @@ Asset watcher serializer for responses.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |name|string|true|none|none|
-|trigger_id|integer|true|none|none|
+|trigger_id|integer|true|none|The watcher's trigger; `GET /triggers/{trigger_id}` has its state.|
 |created_date|string(date-time)|true|none|none|
+|status|[TriggerStatus](#schematriggerstatus)|true|none|Status of the watcher's trigger, as in `GET /triggers`.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|pending|
+|status|running|
+|status|failing|
+|status|orphaned|
 
 <h2 id="tocS_AsyncConnectionTestResponse">AsyncConnectionTestResponse</h2>
 <!-- backwards compatibility -->
@@ -20382,6 +20726,7 @@ Request body for bulk operations on Dag Runs.
   "only_failed": false,
   "only_new": false,
   "run_on_latest_version": true,
+  "keep_task_state": false,
   "note": "string",
   "dag_runs": [
     {
@@ -20407,6 +20752,7 @@ Request body for the bulk clear Dag Runs endpoint.
 |only_failed|boolean|false|none|none|
 |only_new|boolean|false|none|Only queue newly added tasks in the latest Dag version without clearing existing tasks.|
 |run_on_latest_version|boolean \| null|false|none|(Experimental) Run on the latest bundle version of the Dag after clearing. If not specified, falls back to the DAG-level ``rerun_with_latest_version`` parameter, then the ``[core] rerun_with_latest_version`` config option, and finally ``False``.|
+|keep_task_state|boolean|false|none|Keep the task state store entries of the cleared task instances so the next attempt resumes from them. By default they are discarded, so the task starts over.|
 |note|string \| null|false|none|none|
 |dag_runs|[[BulkDAGRunBody](#schemabulkdagrunbody)]|false|none|none|
 
@@ -20943,6 +21289,19 @@ Request body for bulk update, and delete task instances.
 |action_on_non_existence|fail|
 |action_on_non_existence|skip|
 
+<h2 id="tocS_CallbackState">CallbackState</h2>
+<!-- backwards compatibility -->
+<a id="schemacallbackstate"></a>
+<a id="schema_CallbackState"></a>
+<a id="tocScallbackstate"></a>
+<a id="tocscallbackstate"></a>
+
+```json
+"scheduled"
+```
+
+All possible states of callbacks.
+
 <h2 id="tocS_ClearPartitionsBody">ClearPartitionsBody</h2>
 <!-- backwards compatibility -->
 <a id="schemaclearpartitionsbody"></a>
@@ -21132,6 +21491,7 @@ Response for clear dag run dry run, which may contain new tasks without full Tas
   "dag_run_id": "string",
   "include_upstream": false,
   "include_downstream": false,
+  "include_dependent_dags": true,
   "include_future": false,
   "include_past": false,
   "run_on_latest_version": true,
@@ -21161,6 +21521,7 @@ Request body for Clear Task Instances endpoint.
 |dag_run_id|string \| null|false|none|none|
 |include_upstream|boolean|false|none|none|
 |include_downstream|boolean|false|none|none|
+|include_dependent_dags|boolean \| null|false|none|Also clear the tasks in other Dags that the cleared tasks recorded as external clear targets (for example through ``ExternalTaskMarker``), with their downstream tasks. If not specified, follows ``include_downstream``.|
 |include_future|boolean|false|none|none|
 |include_past|boolean|false|none|none|
 |run_on_latest_version|boolean \| null|false|none|(Experimental) Run on the latest bundle version of the dag after clearing the task instances. If not specified, falls back to the DAG-level ``rerun_with_latest_version`` parameter, then the ``[core] rerun_with_latest_version`` config option, and finally ``False`` (the historical default for clear/rerun).|
@@ -21889,6 +22250,7 @@ Dag serializer for responses.
   "only_failed": false,
   "only_new": false,
   "run_on_latest_version": true,
+  "keep_task_state": false,
   "note": "string"
 }
 ```
@@ -21903,6 +22265,7 @@ Dag Run serializer for clear endpoint body.
 |only_failed|boolean|false|none|none|
 |only_new|boolean|false|none|Only queue newly added tasks in the latest Dag version without clearing existing tasks.|
 |run_on_latest_version|boolean \| null|false|none|(Experimental) Run on the latest bundle version of the Dag after clearing. If not specified, falls back to the DAG-level ``rerun_with_latest_version`` parameter, then the ``[core] rerun_with_latest_version`` config option, and finally ``False``.|
+|keep_task_state|boolean|false|none|Keep the task state store entries of the cleared task instances so the next attempt resumes from them. By default they are discarded, so the task starts over.|
 |note|string \| null|false|none|none|
 
 <h2 id="tocS_DAGRunCollectionResponse">DAGRunCollectionResponse</h2>
@@ -22378,10 +22741,10 @@ Dag bundle serializer for the single-bundle response.
 |active|boolean \| null|true|none|Whether the bundle is still present in this deployment's configuration.|
 |version|string \| null|true|none|The latest version Airflow has seen for the bundle. Null when the bundle does not support versioning, or when no Dag processor has refreshed it successfully yet.|
 |last_refreshed|string(date-time) \| null|true|none|When a Dag processor last successfully refreshed the bundle. It advances even when the version did not change, and a failed refresh leaves it untouched.|
-|bundle_url|string \| null|true|none|A link to view the bundle at ``version``, when one is configured and the caller may read Dag versions.|
+|bundle_url|string \| null|true|none|A link to view the bundle at ``version``. Null when the bundle has no URL template, when the template needs a version and the bundle has not been refreshed yet, or when the template cannot be rendered.|
 |team_name|string \| null|true|none|The team owning the bundle, in a multi-team deployment.|
-|import_error_count|integer \| null|true|none|Number of Dag import errors recorded against this bundle that the caller is permitted to see, counted on the same terms as ``GET /importErrors``. Null when the caller may not read import errors.|
-|dag_count|integer|true|none|Number of live Dags recorded against the bundle that the caller is permitted to see, counted on the same terms as ``GET /dags``.|
+|import_error_count|integer|true|none|Number of Dag import errors recorded against the bundle. Reading the errors themselves is authorized separately, through ``GET /importErrors``.|
+|dag_count|integer|true|none|Number of live Dags recorded against the bundle, including Dags the caller may not read.|
 
 <h2 id="tocS_DagBundleFileCollectionResponse">DagBundleFileCollectionResponse</h2>
 <!-- backwards compatibility -->
@@ -22398,7 +22761,8 @@ Dag bundle serializer for the single-bundle response.
       "dag_count": 0,
       "last_parsed_time": "1970-01-01T00:00:00Z",
       "last_parse_duration": 0,
-      "import_error_count": 0
+      "import_error_count": 0,
+      "can_read_import_error": true
     }
   ],
   "total_entries": 0
@@ -22427,7 +22791,8 @@ Dag bundle file collection response.
   "dag_count": 0,
   "last_parsed_time": "1970-01-01T00:00:00Z",
   "last_parse_duration": 0,
-  "import_error_count": 0
+  "import_error_count": 0,
+  "can_read_import_error": true
 }
 ```
 
@@ -22438,10 +22803,11 @@ A file in a Dag bundle, as the Dag processor last saw it.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |relative_fileloc|string|true|none|none|
-|dag_count|integer|true|none|Number of live Dags the file defines that the caller may read.|
+|dag_count|integer|true|none|Number of live Dags the file defines, including Dags the caller may not read.|
 |last_parsed_time|string(date-time) \| null|true|none|When the file was last parsed, or null if it has never parsed successfully.|
 |last_parse_duration|number \| null|true|none|How long the last successful parse of the file took, in seconds.|
-|import_error_count|integer \| null|true|none|Number of import errors recorded against the file, which is at most one. Null when the caller may not read import errors -- deliberately not zero, which would read as a file with nothing wrong.|
+|import_error_count|integer|true|none|Number of import errors recorded against the file, which is at most one. Reading the error itself is authorized separately, through ``GET /importErrors``.|
+|can_read_import_error|boolean|true|none|Whether the caller may read the file's import error through ``GET /importErrors``, possibly with its stack trace redacted. Always false when the file has no error.|
 
 <h2 id="tocS_DagBundleResponse">DagBundleResponse</h2>
 <!-- backwards compatibility -->
@@ -22472,9 +22838,9 @@ Dag bundle serializer for responses.
 |active|boolean \| null|true|none|Whether the bundle is still present in this deployment's configuration.|
 |version|string \| null|true|none|The latest version Airflow has seen for the bundle. Null when the bundle does not support versioning, or when no Dag processor has refreshed it successfully yet.|
 |last_refreshed|string(date-time) \| null|true|none|When a Dag processor last successfully refreshed the bundle. It advances even when the version did not change, and a failed refresh leaves it untouched.|
-|bundle_url|string \| null|true|none|A link to view the bundle at ``version``, when one is configured and the caller may read Dag versions.|
+|bundle_url|string \| null|true|none|A link to view the bundle at ``version``. Null when the bundle has no URL template, when the template needs a version and the bundle has not been refreshed yet, or when the template cannot be rendered.|
 |team_name|string \| null|true|none|The team owning the bundle, in a multi-team deployment.|
-|import_error_count|integer \| null|true|none|Number of Dag import errors recorded against this bundle that the caller is permitted to see, counted on the same terms as ``GET /importErrors``. Null when the caller may not read import errors.|
+|import_error_count|integer|true|none|Number of Dag import errors recorded against the bundle. Reading the errors themselves is authorized separately, through ``GET /importErrors``.|
 
 <h2 id="tocS_DagProcessorInfoResponse">DagProcessorInfoResponse</h2>
 <!-- backwards compatibility -->
@@ -23156,18 +23522,24 @@ Backfill serializer for responses in dry-run mode.
       "team_name": "string"
     }
   ],
-  "total_entries": 0
+  "total_entries": 0,
+  "total_entries_limit": 0,
+  "next_cursor": "string",
+  "previous_cursor": "string"
 }
 ```
 
-Event Log Collection Response.
+Event Log collection response supporting both offset and cursor pagination.
 
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |event_logs|[[EventLogResponse](#schemaeventlogresponse)]|true|none|none|
-|total_entries|integer|true|none|none|
+|total_entries|integer|true|none|Number of matching items. For offset pagination this is the exact total. For cursor pagination it is capped at ``total_entries_limit``; a value equal to that limit means at least that many items match.|
+|total_entries_limit|integer \| null|false|none|Cap applied to ``total_entries`` under cursor pagination. ``null`` for offset pagination, where ``total_entries`` is exact.|
+|next_cursor|string \| null|false|none|Token pointing to the next page. Populated for cursor pagination, ``null`` when using offset pagination or when there is no next page.|
+|previous_cursor|string \| null|false|none|Token pointing to the previous page. Populated for cursor pagination, ``null`` when using offset pagination or when on the first page.|
 
 <h2 id="tocS_EventLogResponse">EventLogResponse</h2>
 <!-- backwards compatibility -->
@@ -23264,6 +23636,7 @@ Response for the external log URL endpoint.
       "string"
     ]
   },
+  "show_icon_with_label": false,
   "href": "string",
   "destination": "nav"
 }
@@ -23282,6 +23655,7 @@ Serializer for External View Plugin responses.
 |category|string \| null|false|none|none|
 |nav_top_level|boolean \| null|false|none|none|
 |applies_to|[PluginAppliesToResponse](#schemapluginappliestoresponse) \| null|false|none|none|
+|show_icon_with_label|boolean \| null|false|none|none|
 |href|string|true|none|none|
 |destination|string|false|none|none|
 
@@ -24327,6 +24701,7 @@ AND across paths, and is evaluated client-side.
               "string"
             ]
           },
+          "show_icon_with_label": false,
           "href": "string",
           "destination": "nav"
         }
@@ -24347,6 +24722,7 @@ AND across paths, and is evaluated client-side.
               "string"
             ]
           },
+          "show_icon_with_label": false,
           "bundle_url": "string",
           "destination": "nav"
         }
@@ -24605,6 +24981,7 @@ Serializer for a UI action that mounts a React component behind a button.
           "string"
         ]
       },
+      "show_icon_with_label": false,
       "href": "string",
       "destination": "nav"
     }
@@ -24625,6 +25002,7 @@ Serializer for a UI action that mounts a React component behind a button.
           "string"
         ]
       },
+      "show_icon_with_label": false,
       "bundle_url": "string",
       "destination": "nav"
     }
@@ -25896,6 +26274,7 @@ Queued Event serializer for responses..
       "string"
     ]
   },
+  "show_icon_with_label": false,
   "bundle_url": "string",
   "destination": "nav"
 }
@@ -25914,6 +26293,7 @@ Serializer for React App Plugin responses.
 |category|string \| null|false|none|none|
 |nav_top_level|boolean \| null|false|none|none|
 |applies_to|[PluginAppliesToResponse](#schemapluginappliestoresponse) \| null|false|none|none|
+|show_icon_with_label|boolean \| null|false|none|none|
 |bundle_url|string|true|none|none|
 |destination|string|false|none|none|
 
@@ -26981,6 +27361,129 @@ TimeDelta can be used to interact with datetime.timedelta objects.
 |seconds|integer|true|none|none|
 |microseconds|integer|true|none|none|
 
+<h2 id="tocS_TriggerAssetWatcherReferenceResponse">TriggerAssetWatcherReferenceResponse</h2>
+<!-- backwards compatibility -->
+<a id="schematriggerassetwatcherreferenceresponse"></a>
+<a id="schema_TriggerAssetWatcherReferenceResponse"></a>
+<a id="tocStriggerassetwatcherreferenceresponse"></a>
+<a id="tocstriggerassetwatcherreferenceresponse"></a>
+
+```json
+{
+  "asset_id": 0,
+  "asset_name": "string",
+  "asset_uri": "string",
+  "watcher_name": "string",
+  "scheduled_dag_ids": [
+    "string"
+  ]
+}
+```
+
+An asset watcher a trigger serves.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|asset_id|integer|true|none|none|
+|asset_name|string|true|none|none|
+|asset_uri|string|true|none|none|
+|watcher_name|string|true|none|none|
+|scheduled_dag_ids|[string]|true|none|The Dags scheduled on the asset (directly or by an asset name or URI reference), which the watcher's events run; only those the caller can read.|
+
+<h2 id="tocS_TriggerCallbackReferenceResponse">TriggerCallbackReferenceResponse</h2>
+<!-- backwards compatibility -->
+<a id="schematriggercallbackreferenceresponse"></a>
+<a id="schema_TriggerCallbackReferenceResponse"></a>
+<a id="tocStriggercallbackreferenceresponse"></a>
+<a id="tocstriggercallbackreferenceresponse"></a>
+
+```json
+{
+  "id": "string",
+  "dag_id": "string",
+  "dag_run_id": "string",
+  "state": "scheduled"
+}
+```
+
+The callback a trigger runs.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|none|
+|dag_id|string \| null|true|none|none|
+|dag_run_id|string \| null|true|none|none|
+|state|[CallbackState](#schemacallbackstate) \| null|true|none|none|
+
+<h2 id="tocS_TriggerCollectionResponse">TriggerCollectionResponse</h2>
+<!-- backwards compatibility -->
+<a id="schematriggercollectionresponse"></a>
+<a id="schema_TriggerCollectionResponse"></a>
+<a id="tocStriggercollectionresponse"></a>
+<a id="tocstriggercollectionresponse"></a>
+
+```json
+{
+  "triggers": [
+    {
+      "id": 0,
+      "kind": "task",
+      "classpath": "string",
+      "created_date": "1970-01-01T00:00:00Z",
+      "queue": "string",
+      "team_name": "string",
+      "status": "pending",
+      "triggerer_hostname": "string",
+      "consecutive_failures": 0,
+      "first_failed_at": "1970-01-01T00:00:00Z",
+      "last_failed_at": "1970-01-01T00:00:00Z",
+      "last_error": "string",
+      "last_event_at": "1970-01-01T00:00:00Z",
+      "dag_id": "string",
+      "task_instance": {
+        "dag_id": "string",
+        "dag_run_id": "string",
+        "task_id": "string",
+        "map_index": 0,
+        "try_number": 0,
+        "state": "removed"
+      },
+      "callback": {
+        "id": "string",
+        "dag_id": "string",
+        "dag_run_id": "string",
+        "state": "scheduled"
+      },
+      "asset_watchers": [
+        {
+          "asset_id": 0,
+          "asset_name": "string",
+          "asset_uri": "string",
+          "watcher_name": "string",
+          "scheduled_dag_ids": [
+            "string"
+          ]
+        }
+      ]
+    }
+  ],
+  "total_entries": 0
+}
+```
+
+Trigger collection response.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|triggers|[[TriggerDetailResponse](#schematriggerdetailresponse)]|true|none|none|
+|total_entries|integer|true|none|none|
+
 <h2 id="tocS_TriggerDAGRunPostBody">TriggerDAGRunPostBody</h2>
 <!-- backwards compatibility -->
 <a id="schematriggerdagrunpostbody"></a>
@@ -27020,6 +27523,106 @@ Trigger Dag Run Serializer for POST body.
 |bundle_version|string \| null|false|none|none|
 |drain_dag|boolean|false|none|Drain the Dag together with this run. Draining changes the whole Dag: unfinished runs can start or resume except those held by paused backfills. No scheduled runs are created, and the Dag pauses once all unfinished runs finish. Paused backfills must be resumed for draining to complete. Requires the same permission as pausing the Dag.|
 
+<h2 id="tocS_TriggerDetailResponse">TriggerDetailResponse</h2>
+<!-- backwards compatibility -->
+<a id="schematriggerdetailresponse"></a>
+<a id="schema_TriggerDetailResponse"></a>
+<a id="tocStriggerdetailresponse"></a>
+<a id="tocstriggerdetailresponse"></a>
+
+```json
+{
+  "id": 0,
+  "kind": "task",
+  "classpath": "string",
+  "created_date": "1970-01-01T00:00:00Z",
+  "queue": "string",
+  "team_name": "string",
+  "status": "pending",
+  "triggerer_hostname": "string",
+  "consecutive_failures": 0,
+  "first_failed_at": "1970-01-01T00:00:00Z",
+  "last_failed_at": "1970-01-01T00:00:00Z",
+  "last_error": "string",
+  "last_event_at": "1970-01-01T00:00:00Z",
+  "dag_id": "string",
+  "task_instance": {
+    "dag_id": "string",
+    "dag_run_id": "string",
+    "task_id": "string",
+    "map_index": 0,
+    "try_number": 0,
+    "state": "removed"
+  },
+  "callback": {
+    "id": "string",
+    "dag_id": "string",
+    "dag_run_id": "string",
+    "state": "scheduled"
+  },
+  "asset_watchers": [
+    {
+      "asset_id": 0,
+      "asset_name": "string",
+      "asset_uri": "string",
+      "watcher_name": "string",
+      "scheduled_dag_ids": [
+        "string"
+      ]
+    }
+  ]
+}
+```
+
+A trigger, who it runs for, and how it is doing; never its kwargs.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|integer|true|none|none|
+|kind|[TriggerKind](#schematriggerkind)|true|none|What the trigger runs for: a deferred `task`, a `callback` or an `asset_watcher`.|
+|classpath|string|true|none|none|
+|created_date|string(date-time)|true|none|none|
+|queue|string \| null|true|none|none|
+|team_name|string \| null|true|none|none|
+|status|[TriggerStatus](#schematriggerstatus)|true|none|`pending`: not picked up by a triggerer yet. `running`: on a live triggerer and not failed since it last recovered. `failing`: on a live triggerer and failed since it last recovered, that is `consecutive_failures` is above 0; it recovers when it fires an event or stays up for two minutes. `orphaned`: its triggerer stopped sending heartbeats; another triggerer will take it.|
+|triggerer_hostname|string \| null|true|none|Host of the triggerer the trigger is assigned to; whether it is alive is the `orphaned` status.|
+|consecutive_failures|integer|true|none|Failures since the trigger last recovered.|
+|first_failed_at|string(date-time) \| null|true|none|When the current run of failures started.|
+|last_failed_at|string(date-time) \| null|true|none|none|
+|last_error|string \| null|true|none|Exception type and message of the last failure, with secrets masked. It is kept after a recovery; the traceback is in the trigger's logs.|
+|last_event_at|string(date-time) \| null|true|none|When the trigger last fired an event.|
+|dag_id|string \| null|true|none|The Dag of the task instance or callback the trigger runs for.|
+|task_instance|[TriggerTaskInstanceReferenceResponse](#schematriggertaskinstancereferenceresponse) \| null|true|none|none|
+|callback|[TriggerCallbackReferenceResponse](#schematriggercallbackreferenceresponse) \| null|true|none|none|
+|asset_watchers|[[TriggerAssetWatcherReferenceResponse](#schematriggerassetwatcherreferenceresponse)]|true|none|The watchers the trigger serves, on the assets the caller can read.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|kind|task|
+|kind|callback|
+|kind|asset_watcher|
+|status|pending|
+|status|running|
+|status|failing|
+|status|orphaned|
+
+<h2 id="tocS_TriggerKind">TriggerKind</h2>
+<!-- backwards compatibility -->
+<a id="schematriggerkind"></a>
+<a id="schema_TriggerKind"></a>
+<a id="tocStriggerkind"></a>
+<a id="tocstriggerkind"></a>
+
+```json
+"task"
+```
+
+What a trigger runs for, worked out from what it is used by rather than stored.
+
 <h2 id="tocS_TriggerResponse">TriggerResponse</h2>
 <!-- backwards compatibility -->
 <a id="schematriggerresponse"></a>
@@ -27050,6 +27653,50 @@ Trigger serializer for responses.
 |created_date|string(date-time)|true|none|none|
 |queue|string \| null|true|none|none|
 |triggerer_id|integer \| null|true|none|none|
+
+<h2 id="tocS_TriggerStatus">TriggerStatus</h2>
+<!-- backwards compatibility -->
+<a id="schematriggerstatus"></a>
+<a id="schema_TriggerStatus"></a>
+<a id="tocStriggerstatus"></a>
+<a id="tocstriggerstatus"></a>
+
+```json
+"pending"
+```
+
+How a trigger is doing, worked out the same way for every kind from its row and its triggerer's heartbeat.
+
+<h2 id="tocS_TriggerTaskInstanceReferenceResponse">TriggerTaskInstanceReferenceResponse</h2>
+<!-- backwards compatibility -->
+<a id="schematriggertaskinstancereferenceresponse"></a>
+<a id="schema_TriggerTaskInstanceReferenceResponse"></a>
+<a id="tocStriggertaskinstancereferenceresponse"></a>
+<a id="tocstriggertaskinstancereferenceresponse"></a>
+
+```json
+{
+  "dag_id": "string",
+  "dag_run_id": "string",
+  "task_id": "string",
+  "map_index": 0,
+  "try_number": 0,
+  "state": "removed"
+}
+```
+
+The task instance a trigger runs for.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|dag_id|string|true|none|none|
+|dag_run_id|string|true|none|none|
+|task_id|string|true|none|none|
+|map_index|integer|true|none|none|
+|try_number|integer|true|none|none|
+|state|[TaskInstanceState](#schemataskinstancestate) \| null|true|none|none|
 
 <h2 id="tocS_TriggererInfoResponse">TriggererInfoResponse</h2>
 <!-- backwards compatibility -->

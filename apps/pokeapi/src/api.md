@@ -59,9 +59,9 @@ Abilities provide passive effects for Pokémon in battle or in the overworld. Po
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/ability/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/ability/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -88,7 +88,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/ability/string/ \
+curl https://pokeapi.co/api/v2/ability/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -167,7 +167,7 @@ Abilities provide passive effects for Pokémon in battle or in the overworld. Po
   "pokemon": [
     {
       "is_hidden": true,
-      "slot": -2147483648,
+      "slot": 1,
       "pokemon": {
         "name": "string",
         "url": "http://example.com"
@@ -208,7 +208,6 @@ Characteristics indicate which stat contains a Pokémon's highest IV. A Pokémon
 |---|---|---|---|---|
 |limit|query|integer|false|Number of results to return per page.|
 |offset|query|integer|false|The initial index from which to return the results.|
-|q|query|string|false|> Only available locally and not at [pokeapi.co](https://pokeapi.co/docs/v2)<br>Case-insensitive query applied on the `name` property. |
 
 > Example responses
 
@@ -216,9 +215,9 @@ Characteristics indicate which stat contains a Pokémon's highest IV. A Pokémon
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/characteristic/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/characteristic/?offset=0&limit=20",
   "results": [
     {
       "url": "http://example.com"
@@ -244,7 +243,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/characteristic/string/ \
+curl https://pokeapi.co/api/v2/characteristic/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -324,9 +323,9 @@ Egg Groups are categories which determine which Pokémon are able to interbreed.
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/egg-group/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/egg-group/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -353,7 +352,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/egg-group/string/ \
+curl https://pokeapi.co/api/v2/egg-group/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -432,9 +431,9 @@ Genders were introduced in Generation II for the purposes of breeding Pokémon b
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/gender/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/gender/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -461,7 +460,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/gender/string/ \
+curl https://pokeapi.co/api/v2/gender/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -540,9 +539,9 @@ Growth rates are the speed with which Pokémon gain levels through experience. C
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/growth-rate/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/growth-rate/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -569,7 +568,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/growth-rate/string/ \
+curl https://pokeapi.co/api/v2/growth-rate/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -603,8 +602,8 @@ Growth rates are the speed with which Pokémon gain levels through experience. C
   ],
   "levels": [
     {
-      "level": -2147483648,
-      "experience": -2147483648
+      "level": 1,
+      "experience": 0
     }
   ],
   "pokemon_species": [
@@ -655,9 +654,9 @@ Damage classes moves can have, e.g. physical, special, or non-damaging.
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/move-damage-class/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/move-damage-class/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -684,7 +683,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/move-damage-class/string/ \
+curl https://pokeapi.co/api/v2/move-damage-class/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -772,9 +771,9 @@ Natures influence how a Pokémon's stats grow. See [Bulbapedia](http://bulbapedi
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/nature/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/nature/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -801,7 +800,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/nature/string/ \
+curl https://pokeapi.co/api/v2/nature/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -839,15 +838,9 @@ Natures influence how a Pokémon's stats grow. See [Bulbapedia](http://bulbapedi
     "name": "string",
     "url": "http://example.com"
   },
-  "berries": [
-    {
-      "name": "string",
-      "url": "http://example.com"
-    }
-  ],
   "pokeathlon_stat_changes": [
     {
-      "max_change": -2147483648,
+      "max_change": -2,
       "pokeathlon_stat": {
         "name": "string",
         "url": "http://example.com"
@@ -856,8 +849,8 @@ Natures influence how a Pokémon's stats grow. See [Bulbapedia](http://bulbapedi
   ],
   "move_battle_style_preferences": [
     {
-      "low_hp_preference": -2147483648,
-      "high_hp_preference": -2147483648,
+      "low_hp_preference": 0,
+      "high_hp_preference": 0,
       "move_battle_style": {
         "name": "string",
         "url": "http://example.com"
@@ -915,9 +908,9 @@ Pokémon are the creatures that inhabit the world of the Pokémon games. They ca
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/pokemon/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/pokemon/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -944,7 +937,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/pokemon/string/ \
+curl https://pokeapi.co/api/v2/pokemon/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -966,15 +959,15 @@ Pokémon are the creatures that inhabit the world of the Pokémon games. They ca
 {
   "id": 0,
   "name": "string",
-  "base_experience": -2147483648,
-  "height": -2147483648,
+  "base_experience": 0,
+  "height": 0,
   "is_default": true,
-  "order": -2147483648,
-  "weight": -2147483648,
+  "order": -1,
+  "weight": 0,
   "abilities": [
     {
       "is_hidden": true,
-      "slot": -2147483648,
+      "slot": 1,
       "ability": {
         "name": "string",
         "url": "http://example.com"
@@ -986,7 +979,7 @@ Pokémon are the creatures that inhabit the world of the Pokémon games. They ca
       "abilities": [
         {
           "is_hidden": true,
-          "slot": -2147483648,
+          "slot": 1,
           "ability": {
             "name": "string",
             "url": "http://example.com"
@@ -1007,7 +1000,7 @@ Pokémon are the creatures that inhabit the world of the Pokémon games. They ca
   ],
   "game_indices": [
     {
-      "game_index": -2147483648,
+      "game_index": 0,
       "version": {
         "name": "string",
         "url": "http://example.com"
@@ -1016,7 +1009,7 @@ Pokémon are the creatures that inhabit the world of the Pokémon games. They ca
   ],
   "held_items": [
     {
-      "pokemon": {
+      "item": {
         "name": "string",
         "url": "http://example.com"
       },
@@ -1049,7 +1042,8 @@ Pokémon are the creatures that inhabit the world of the Pokémon games. They ca
             "name": "string",
             "url": "http://example.com"
           },
-          "order": 0
+          "order": 0,
+          "enhancement_level": 0
         }
       ]
     }
@@ -1059,7 +1053,60 @@ Pokémon are the creatures that inhabit the world of the Pokémon games. They ca
     "url": "http://example.com"
   },
   "sprites": {
-    "front_default": "string"
+    "front_default": "string",
+    "front_shiny": "string",
+    "front_female": "string",
+    "front_shiny_female": "string",
+    "back_default": "string",
+    "back_shiny": "string",
+    "back_female": "string",
+    "back_shiny_female": "string",
+    "other": {
+      "dream_world": {
+        "front_default": "string",
+        "front_female": "string"
+      },
+      "home": {
+        "front_default": "string",
+        "front_female": "string",
+        "front_shiny": "string",
+        "front_shiny_female": "string"
+      },
+      "showdown": {
+        "front_default": "string",
+        "front_female": "string",
+        "front_shiny": "string",
+        "front_shiny_female": "string",
+        "back_default": "string",
+        "back_female": "string",
+        "back_shiny": "string",
+        "back_shiny_female": "string"
+      },
+      "official-artwork": {
+        "front_default": "string",
+        "front_shiny": "string",
+        "versions": {
+          "property1": {
+            "property1": null,
+            "property2": null
+          },
+          "property2": {
+            "property1": null,
+            "property2": null
+          }
+        }
+      }
+    },
+    "versions": {
+      "property1": {
+        "property1": null,
+        "property2": null
+      },
+      "property2": {
+        "property1": null,
+        "property2": null
+      }
+    }
   },
   "cries": {
     "latest": "string",
@@ -1067,8 +1114,8 @@ Pokémon are the creatures that inhabit the world of the Pokémon games. They ca
   },
   "stats": [
     {
-      "base_stat": -2147483648,
-      "effort": -2147483648,
+      "base_stat": 1,
+      "effort": 0,
       "stat": {
         "name": "string",
         "url": "http://example.com"
@@ -1083,8 +1130,8 @@ Pokémon are the creatures that inhabit the world of the Pokémon games. They ca
       },
       "stats": [
         {
-          "base_stat": -2147483648,
-          "effort": -2147483648,
+          "base_stat": 1,
+          "effort": 0,
           "stat": {
             "name": "string",
             "url": "http://example.com"
@@ -1095,7 +1142,7 @@ Pokémon are the creatures that inhabit the world of the Pokémon games. They ca
   ],
   "types": [
     {
-      "slot": -2147483648,
+      "slot": 1,
       "type": {
         "name": "string",
         "url": "http://example.com"
@@ -1110,8 +1157,8 @@ Pokémon are the creatures that inhabit the world of the Pokémon games. They ca
       },
       "types": [
         {
-          "slot": -2147483648,
-          "pokemon": {
+          "slot": 1,
+          "type": {
             "name": "string",
             "url": "http://example.com"
           }
@@ -1161,9 +1208,9 @@ Colors used for sorting Pokémon in a Pokédex. The color listed in the Pokédex
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/pokemon-color/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/pokemon-color/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -1190,7 +1237,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/pokemon-color/string/ \
+curl https://pokeapi.co/api/v2/pokemon-color/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -1269,9 +1316,9 @@ Some Pokémon may appear in one of multiple, visually different forms. These dif
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/pokemon-form/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/pokemon-form/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -1298,7 +1345,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/pokemon-form/string/ \
+curl https://pokeapi.co/api/v2/pokemon-form/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -1320,8 +1367,8 @@ Some Pokémon may appear in one of multiple, visually different forms. These dif
 {
   "id": 0,
   "name": "string",
-  "order": -2147483648,
-  "form_order": -2147483648,
+  "order": -1,
+  "form_order": 0,
   "is_default": true,
   "is_battle_only": true,
   "is_mega": true,
@@ -1331,7 +1378,60 @@ Some Pokémon may appear in one of multiple, visually different forms. These dif
     "url": "http://example.com"
   },
   "sprites": {
-    "sprites": null
+    "front_default": "string",
+    "front_shiny": "string",
+    "front_female": "string",
+    "front_shiny_female": "string",
+    "back_default": "string",
+    "back_shiny": "string",
+    "back_female": "string",
+    "back_shiny_female": "string",
+    "other": {
+      "dream_world": {
+        "front_default": "string",
+        "front_female": "string"
+      },
+      "home": {
+        "front_default": "string",
+        "front_female": "string",
+        "front_shiny": "string",
+        "front_shiny_female": "string"
+      },
+      "showdown": {
+        "front_default": "string",
+        "front_female": "string",
+        "front_shiny": "string",
+        "front_shiny_female": "string",
+        "back_default": "string",
+        "back_female": "string",
+        "back_shiny": "string",
+        "back_shiny_female": "string"
+      },
+      "official-artwork": {
+        "front_default": "string",
+        "front_shiny": "string",
+        "versions": {
+          "property1": {
+            "property1": null,
+            "property2": null
+          },
+          "property2": {
+            "property1": null,
+            "property2": null
+          }
+        }
+      }
+    },
+    "versions": {
+      "property1": {
+        "property1": null,
+        "property2": null
+      },
+      "property2": {
+        "property1": null,
+        "property2": null
+      }
+    }
   },
   "version_group": {
     "name": "string",
@@ -1357,7 +1457,7 @@ Some Pokémon may appear in one of multiple, visually different forms. These dif
   ],
   "types": [
     {
-      "slot": -2147483648,
+      "slot": 1,
       "type": {
         "name": "string",
         "url": "http://example.com"
@@ -1367,6 +1467,8 @@ Some Pokémon may appear in one of multiple, visually different forms. These dif
   "trigger_conditions": [
     {
       "trigger": "string",
+      "name": "string",
+      "url": "http://example.com",
       "base_form": {
         "name": "string",
         "url": "http://example.com"
@@ -1428,9 +1530,9 @@ Habitats are generally different terrain Pokémon can be found in but can also b
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/pokemon-habitat/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/pokemon-habitat/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -1457,7 +1559,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/pokemon-habitat/string/ \
+curl https://pokeapi.co/api/v2/pokemon-habitat/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -1536,9 +1638,9 @@ Shapes used for sorting Pokémon in a Pokédex.
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/pokemon-shape/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/pokemon-shape/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -1565,7 +1667,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/pokemon-shape/string/ \
+curl https://pokeapi.co/api/v2/pokemon-shape/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -1653,9 +1755,9 @@ A Pokémon Species forms the basis for at least one Pokémon. Attributes of a Po
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/pokemon-species/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/pokemon-species/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -1682,7 +1784,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/pokemon-species/string/ \
+curl https://pokeapi.co/api/v2/pokemon-species/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -1704,14 +1806,14 @@ A Pokémon Species forms the basis for at least one Pokémon. Attributes of a Po
 {
   "id": 0,
   "name": "string",
-  "order": -2147483648,
-  "gender_rate": -2147483648,
-  "capture_rate": -2147483648,
-  "base_happiness": -2147483648,
+  "order": -1,
+  "gender_rate": -1,
+  "capture_rate": 0,
+  "base_happiness": 0,
   "is_baby": true,
   "is_legendary": true,
   "is_mythical": true,
-  "hatch_counter": -2147483648,
+  "hatch_counter": 0,
   "has_gender_differences": true,
   "forms_switchable": true,
   "growth_rate": {
@@ -1767,8 +1869,8 @@ A Pokémon Species forms the basis for at least one Pokémon. Attributes of a Po
   ],
   "pal_park_encounters": [
     {
-      "base_score": -2147483648,
-      "rate": -2147483648,
+      "base_score": 0,
+      "rate": 0,
       "area": {
         "name": "string",
         "url": "http://example.com"
@@ -1857,9 +1959,9 @@ Pokeathlon Stats are different attributes of a Pokémon's performance in Pokéat
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/pokeathlon-stat/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/pokeathlon-stat/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -1886,7 +1988,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/pokeathlon-stat/string/ \
+curl https://pokeapi.co/api/v2/pokeathlon-stat/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -1911,7 +2013,7 @@ Pokeathlon Stats are different attributes of a Pokémon's performance in Pokéat
   "affecting_natures": {
     "increase": [
       {
-        "max_change": -2147483648,
+        "max_change": -2,
         "nature": {
           "name": "string",
           "url": "http://example.com"
@@ -1920,7 +2022,7 @@ Pokeathlon Stats are different attributes of a Pokémon's performance in Pokéat
     ],
     "decrease": [
       {
-        "max_change": -2147483648,
+        "max_change": -2,
         "nature": {
           "name": "string",
           "url": "http://example.com"
@@ -1979,9 +2081,9 @@ Stats determine certain aspects of battles. Each Pokémon has a value for each s
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/stat/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/stat/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -2008,7 +2110,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/stat/string/ \
+curl https://pokeapi.co/api/v2/stat/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -2030,12 +2132,12 @@ Stats determine certain aspects of battles. Each Pokémon has a value for each s
 {
   "id": 0,
   "name": "string",
-  "game_index": -2147483648,
+  "game_index": 0,
   "is_battle_only": true,
   "affecting_moves": {
     "increase": [
       {
-        "change": -2147483648,
+        "change": -6,
         "move": {
           "name": "string",
           "url": "http://example.com"
@@ -2044,7 +2146,7 @@ Stats determine certain aspects of battles. Each Pokémon has a value for each s
     ],
     "decrease": [
       {
-        "change": -2147483648,
+        "change": -6,
         "move": {
           "name": "string",
           "url": "http://example.com"
@@ -2132,9 +2234,9 @@ Types are properties for Pokémon and their moves. Each type has three propertie
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/type/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/type/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -2161,7 +2263,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/type/string/ \
+curl https://pokeapi.co/api/v2/type/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -2269,7 +2371,7 @@ Types are properties for Pokémon and their moves. Each type has three propertie
   ],
   "game_indices": [
     {
-      "game_index": -2147483648,
+      "game_index": 0,
       "generation": {
         "name": "string",
         "url": "http://example.com"
@@ -2295,7 +2397,7 @@ Types are properties for Pokémon and their moves. Each type has three propertie
   ],
   "pokemon": [
     {
-      "slot": -2147483648,
+      "slot": 1,
       "pokemon": {
         "name": "string",
         "url": "http://example.com"
@@ -2309,7 +2411,26 @@ Types are properties for Pokémon and their moves. Each type has three propertie
     }
   ],
   "sprites": {
-    "sprites": null
+    "property1": {
+      "property1": {
+        "name_icon": "string",
+        "symbol_icon": "string"
+      },
+      "property2": {
+        "name_icon": "string",
+        "symbol_icon": "string"
+      }
+    },
+    "property2": {
+      "property1": {
+        "name_icon": "string",
+        "symbol_icon": "string"
+      },
+      "property2": {
+        "name_icon": "string",
+        "symbol_icon": "string"
+      }
+    }
   }
 }
 ```
@@ -2351,7 +2472,6 @@ Evolution chains are essentially family trees. They start with the lowest stage 
 |---|---|---|---|---|
 |limit|query|integer|false|Number of results to return per page.|
 |offset|query|integer|false|The initial index from which to return the results.|
-|q|query|string|false|> Only available locally and not at [pokeapi.co](https://pokeapi.co/docs/v2)<br>Case-insensitive query applied on the `name` property. |
 
 > Example responses
 
@@ -2359,9 +2479,9 @@ Evolution chains are essentially family trees. They start with the lowest stage 
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/evolution-chain/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/evolution-chain/?offset=0&limit=20",
   "results": [
     {
       "url": "http://example.com"
@@ -2387,7 +2507,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/evolution-chain/string/ \
+curl https://pokeapi.co/api/v2/evolution-chain/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -2450,10 +2570,10 @@ Evolution chains are essentially family trees. They start with the lowest stage 
           "name": "string",
           "url": "http://example.com"
         },
-        "min_level": -2147483648,
-        "min_happiness": -2147483648,
-        "min_beauty": -2147483648,
-        "min_affection": -2147483648,
+        "min_level": 1,
+        "min_happiness": 0,
+        "min_beauty": 0,
+        "min_affection": 0,
         "near_special_rock": true,
         "needs_multiplayer": true,
         "needs_overworld_rain": true,
@@ -2465,7 +2585,7 @@ Evolution chains are essentially family trees. They start with the lowest stage 
           "name": "string",
           "url": "http://example.com"
         },
-        "relative_physical_stats": -2147483648,
+        "relative_physical_stats": -1,
         "time_of_day": "string",
         "trade_species": {
           "name": "string",
@@ -2488,9 +2608,9 @@ Evolution chains are essentially family trees. They start with the lowest stage 
           "name": "string",
           "url": "http://example.com"
         },
-        "min_move_count": -2147483648,
-        "min_steps": -2147483648,
-        "min_damage_taken": -2147483648,
+        "min_move_count": 0,
+        "min_steps": 0,
+        "min_damage_taken": 0,
         "allowed_natures": [
           {
             "name": "string",
@@ -2510,10 +2630,7 @@ Evolution chains are essentially family trees. They start with the lowest stage 
       }
     ],
     "evolves_to": [
-      {
-        "property1": null,
-        "property2": null
-      }
+      {}
     ]
   }
 }
@@ -2558,9 +2675,9 @@ Evolution triggers are the events and conditions that cause a Pokémon to evolve
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/evolution-trigger/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/evolution-trigger/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -2587,7 +2704,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/evolution-trigger/string/ \
+curl https://pokeapi.co/api/v2/evolution-trigger/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -2666,9 +2783,9 @@ Evolution variables represent parameters (such as Encryption Constant and Person
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/evolution-variable/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/evolution-variable/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -2695,7 +2812,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/evolution-variable/string/ \
+curl https://pokeapi.co/api/v2/evolution-variable/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -2790,9 +2907,9 @@ Berries are small fruits that can provide HP and status condition restoration, s
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/berry/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/berry/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -2819,7 +2936,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/berry/string/ \
+curl https://pokeapi.co/api/v2/berry/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -2841,19 +2958,19 @@ Berries are small fruits that can provide HP and status condition restoration, s
 {
   "id": 0,
   "name": "string",
-  "growth_time": -2147483648,
-  "max_harvest": -2147483648,
-  "natural_gift_power": -2147483648,
-  "size": -2147483648,
-  "smoothness": -2147483648,
-  "soil_dryness": -2147483648,
+  "growth_time": 0,
+  "max_harvest": 0,
+  "natural_gift_power": 0,
+  "size": 0,
+  "smoothness": 20,
+  "soil_dryness": 4,
   "firmness": {
     "name": "string",
     "url": "http://example.com"
   },
   "flavors": [
     {
-      "potency": -2147483648,
+      "potency": 0,
       "flavor": {
         "name": "string",
         "url": "http://example.com"
@@ -2910,9 +3027,9 @@ Berries can be soft or hard. Check out [Bulbapedia](http://bulbapedia.bulbagarde
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/berry-firmness/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/berry-firmness/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -2939,7 +3056,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/berry-firmness/string/ \
+curl https://pokeapi.co/api/v2/berry-firmness/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -3018,9 +3135,9 @@ Flavors determine whether a Pokémon will benefit or suffer from eating a berry 
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/berry-flavor/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/berry-flavor/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -3047,7 +3164,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/berry-flavor/string/ \
+curl https://pokeapi.co/api/v2/berry-flavor/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -3071,7 +3188,7 @@ Flavors determine whether a Pokémon will benefit or suffer from eating a berry 
   "name": "string",
   "berries": [
     {
-      "potency": -2147483648,
+      "potency": 0,
       "berry": {
         "name": "string",
         "url": "http://example.com"
@@ -3139,9 +3256,9 @@ An item is an object in the games which the player can pick up, keep in their ba
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/item/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/item/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -3168,7 +3285,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/item/string/ \
+curl https://pokeapi.co/api/v2/item/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -3190,7 +3307,7 @@ An item is an object in the games which the player can pick up, keep in their ba
 {
   "id": 0,
   "name": "string",
-  "fling_power": -2147483648,
+  "fling_power": 0,
   "fling_effect": {
     "name": "string",
     "url": "http://example.com"
@@ -3230,7 +3347,7 @@ An item is an object in the games which the player can pick up, keep in their ba
   ],
   "game_indices": [
     {
-      "game_index": -2147483648,
+      "game_index": 0,
       "generation": {
         "name": "string",
         "url": "http://example.com"
@@ -3239,8 +3356,8 @@ An item is an object in the games which the player can pick up, keep in their ba
   ],
   "prices": [
     {
-      "purchase_price": -2147483648,
-      "sell_price": -2147483648,
+      "purchase_price": 0,
+      "sell_price": 0,
       "currency": {
         "name": "string",
         "url": "http://example.com"
@@ -3336,9 +3453,9 @@ Item categories determine where items will be placed in the players bag.
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/item-category/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/item-category/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -3365,7 +3482,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/item-category/string/ \
+curl https://pokeapi.co/api/v2/item-category/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -3448,9 +3565,9 @@ Item attributes define particular aspects of items, e.g."usable in battle" or "c
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/item-attribute/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/item-attribute/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -3477,7 +3594,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/item-attribute/string/ \
+curl https://pokeapi.co/api/v2/item-attribute/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -3565,9 +3682,9 @@ The various effects of the move"Fling" when used with different items.
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/item-fling-effect/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/item-fling-effect/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -3594,7 +3711,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/item-fling-effect/string/ \
+curl https://pokeapi.co/api/v2/item-fling-effect/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -3673,9 +3790,9 @@ Pockets within the players bag used for storing items by category.
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/item-pocket/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/item-pocket/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -3702,7 +3819,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/item-pocket/string/ \
+curl https://pokeapi.co/api/v2/item-pocket/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -3781,9 +3898,9 @@ Currencies used to buy items.
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/currency/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/currency/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -3810,7 +3927,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/currency/string/ \
+curl https://pokeapi.co/api/v2/currency/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -3881,7 +3998,6 @@ Machines are the representation of items that teach moves to Pokémon. They vary
 |---|---|---|---|---|
 |limit|query|integer|false|Number of results to return per page.|
 |offset|query|integer|false|The initial index from which to return the results.|
-|q|query|string|false|> Only available locally and not at [pokeapi.co](https://pokeapi.co/docs/v2)<br>Case-insensitive query applied on the `name` property. |
 
 > Example responses
 
@@ -3889,9 +4005,9 @@ Machines are the representation of items that teach moves to Pokémon. They vary
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/machine/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/machine/?offset=0&limit=20",
   "results": [
     {
       "url": "http://example.com"
@@ -3917,7 +4033,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/machine/string/ \
+curl https://pokeapi.co/api/v2/machine/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -3998,9 +4114,9 @@ Locations that can be visited within the games. Locations make up sizable portio
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/location/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/location/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -4027,7 +4143,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/location/string/ \
+curl https://pokeapi.co/api/v2/location/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -4064,7 +4180,7 @@ Locations that can be visited within the games. Locations make up sizable portio
   ],
   "game_indices": [
     {
-      "game_index": -2147483648,
+      "game_index": 0,
       "generation": {
         "name": "string",
         "url": "http://example.com"
@@ -4118,9 +4234,9 @@ Location areas are sections of areas, such as floors in a building or cave. Each
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/location-area/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/location-area/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -4147,7 +4263,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/location-area/0/ \
+curl https://pokeapi.co/api/v2/location-area/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -4169,7 +4285,7 @@ Location areas are sections of areas, such as floors in a building or cave. Each
 {
   "id": 0,
   "name": "string",
-  "game_index": -2147483648,
+  "game_index": 0,
   "encounter_method_rates": [
     {
       "encounter_method": {
@@ -4229,7 +4345,7 @@ Location areas are sections of areas, such as floors in a building or cave. Each
                 }
               ],
               "pokemon_details": {
-                "min_perfect_ivs": -2147483648,
+                "min_perfect_ivs": 0,
                 "always_shiny": true,
                 "never_shiny": true,
                 "is_alpha": true
@@ -4282,9 +4398,9 @@ Areas used for grouping Pokémon encounters in Pal Park. They're like habitats t
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/pal-park-area/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/pal-park-area/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -4311,7 +4427,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/pal-park-area/string/ \
+curl https://pokeapi.co/api/v2/pal-park-area/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -4344,8 +4460,8 @@ Areas used for grouping Pokémon encounters in Pal Park. They're like habitats t
   ],
   "pokemon_encounters": [
     {
-      "base_score": -2147483648,
-      "rate": -2147483648,
+      "base_score": 0,
+      "rate": 0,
       "pokemon_species": {
         "name": "string",
         "url": "http://example.com"
@@ -4394,9 +4510,9 @@ A region is an organized area of the Pokémon world. Most often, the main differ
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/region/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/region/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -4423,7 +4539,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/region/string/ \
+curl https://pokeapi.co/api/v2/region/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -4524,9 +4640,9 @@ Moves are the skills of Pokémon in battle. In battle, a Pokémon uses one move 
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/move/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/move/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -4553,7 +4669,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/move/string/ \
+curl https://pokeapi.co/api/v2/move/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -4575,11 +4691,11 @@ Moves are the skills of Pokémon in battle. In battle, a Pokémon uses one move 
 {
   "id": 0,
   "name": "string",
-  "accuracy": -2147483648,
+  "accuracy": 0,
   "effect_chance": 0,
-  "pp": -2147483648,
-  "priority": -2147483648,
-  "power": -2147483648,
+  "pp": 0,
+  "priority": -8,
+  "power": 0,
   "contest_combos": {
     "normal": {
       "use_before": [
@@ -4661,16 +4777,16 @@ Moves are the skills of Pokémon in battle. In battle, a Pokémon uses one move 
       "name": "string",
       "url": "http://example.com"
     },
-    "min_hits": -2147483648,
-    "max_hits": -2147483648,
-    "min_turns": -2147483648,
-    "max_turns": -2147483648,
-    "drain": -2147483648,
-    "healing": -2147483648,
-    "crit_rate": -2147483648,
-    "ailment_chance": -2147483648,
-    "flinch_chance": -2147483648,
-    "stat_chance": -2147483648
+    "min_hits": 2,
+    "max_hits": 2,
+    "min_turns": 2,
+    "max_turns": 2,
+    "drain": -100,
+    "healing": -100,
+    "crit_rate": 0,
+    "ailment_chance": 0,
+    "flinch_chance": 0,
+    "stat_chance": 0
   },
   "names": [
     {
@@ -4683,9 +4799,9 @@ Moves are the skills of Pokémon in battle. In battle, a Pokémon uses one move 
   ],
   "past_values": [
     {
-      "accuracy": -2147483648,
-      "power": -2147483648,
-      "pp": -2147483648,
+      "accuracy": 0,
+      "power": 0,
+      "pp": 0,
       "effect_chance": 0,
       "effect_entries": [
         {
@@ -4709,7 +4825,7 @@ Moves are the skills of Pokémon in battle. In battle, a Pokémon uses one move 
   ],
   "stat_changes": [
     {
-      "change": -2147483648,
+      "change": -6,
       "stat": {
         "name": "string",
         "url": "http://example.com"
@@ -4799,9 +4915,9 @@ Move Ailments are status conditions caused by moves used during battle. See [Bul
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/move-ailment/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/move-ailment/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -4828,7 +4944,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/move-ailment/string/ \
+curl https://pokeapi.co/api/v2/move-ailment/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -4907,9 +5023,9 @@ Styles of moves when used in the Battle Palace. See [Bulbapedia](http://bulbaped
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/move-battle-style/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/move-battle-style/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -4936,7 +5052,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/move-battle-style/string/ \
+curl https://pokeapi.co/api/v2/move-battle-style/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -5009,9 +5125,9 @@ Very general categories that loosely group move effects.
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/move-category/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/move-category/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -5038,7 +5154,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/move-category/string/ \
+curl https://pokeapi.co/api/v2/move-category/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -5117,9 +5233,9 @@ Methods by which Pokémon can learn moves.
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/move-learn-method/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/move-learn-method/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -5146,7 +5262,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/move-learn-method/string/ \
+curl https://pokeapi.co/api/v2/move-learn-method/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -5234,9 +5350,9 @@ Targets moves can be directed at during battle. Targets can be Pokémon, environ
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/move-target/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/move-target/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -5263,7 +5379,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/move-target/string/ \
+curl https://pokeapi.co/api/v2/move-target/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -5353,9 +5469,9 @@ Methods by which the player might can encounter Pokémon in the wild, e.g., walk
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/encounter-method/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/encounter-method/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -5382,7 +5498,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/encounter-method/string/ \
+curl https://pokeapi.co/api/v2/encounter-method/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -5404,7 +5520,7 @@ Methods by which the player might can encounter Pokémon in the wild, e.g., walk
 {
   "id": 0,
   "name": "string",
-  "order": -2147483648,
+  "order": -1,
   "names": [
     {
       "name": "string",
@@ -5456,9 +5572,9 @@ Conditions which affect what pokemon might appear in the wild, e.g., day or nigh
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/encounter-condition/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/encounter-condition/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -5485,7 +5601,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/encounter-condition/string/ \
+curl https://pokeapi.co/api/v2/encounter-condition/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -5564,9 +5680,9 @@ Encounter condition values are the various states that an encounter condition ca
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/encounter-condition-value/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/encounter-condition-value/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -5593,7 +5709,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/encounter-condition-value/string/ \
+curl https://pokeapi.co/api/v2/encounter-condition-value/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -5648,7 +5764,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/pokemon/string/encounters \
+curl https://pokeapi.co/api/v2/pokemon/1/encounters \
   -H 'Accept: application/json'
 ```
 
@@ -5660,7 +5776,7 @@ Handles Pokemon Encounters as a sub-resource.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|pokemon_id|path|string|true|none|
+|pokemon_id|path|integer|true|A unique integer value identifying the Pokémon.|
 
 > Example responses
 
@@ -5756,9 +5872,9 @@ A generation is a grouping of the Pokémon games that separates them based on th
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/generation/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/generation/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -5785,7 +5901,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/generation/string/ \
+curl https://pokeapi.co/api/v2/generation/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -5892,9 +6008,9 @@ A Pokédex is a handheld electronic encyclopedia device; one which is capable of
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/pokedex/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/pokedex/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -5921,7 +6037,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/pokedex/string/ \
+curl https://pokeapi.co/api/v2/pokedex/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -6023,9 +6139,9 @@ Versions of the games, e.g., Red, Blue or Yellow.
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/version/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/version/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -6052,7 +6168,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/version/string/ \
+curl https://pokeapi.co/api/v2/version/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -6129,9 +6245,9 @@ Version groups categorize highly similar versions of the games.
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/version-group/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/version-group/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -6158,7 +6274,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/version-group/string/ \
+curl https://pokeapi.co/api/v2/version-group/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -6180,7 +6296,7 @@ Version groups categorize highly similar versions of the games.
 {
   "id": 0,
   "name": "string",
-  "order": -2147483648,
+  "order": -1,
   "generation": {
     "name": "string",
     "url": "http://example.com"
@@ -6290,9 +6406,9 @@ Languages for translations of API resource information.
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/language/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/language/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -6319,7 +6435,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/language/string/ \
+curl https://pokeapi.co/api/v2/language/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -6397,9 +6513,9 @@ Contest types are categories judges used to weigh a Pokémon's condition in Pok�
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/contest-type/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/contest-type/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -6426,7 +6542,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/contest-type/string/ \
+curl https://pokeapi.co/api/v2/contest-type/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -6496,7 +6612,6 @@ Contest effects refer to the effects of moves when used in contests.
 |---|---|---|---|---|
 |limit|query|integer|false|Number of results to return per page.|
 |offset|query|integer|false|The initial index from which to return the results.|
-|q|query|string|false|> Only available locally and not at [pokeapi.co](https://pokeapi.co/docs/v2)<br>Case-insensitive query applied on the `name` property. |
 
 > Example responses
 
@@ -6504,9 +6619,9 @@ Contest effects refer to the effects of moves when used in contests.
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/contest-effect/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/contest-effect/?offset=0&limit=20",
   "results": [
     {
       "url": "http://example.com"
@@ -6532,7 +6647,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/contest-effect/string/ \
+curl https://pokeapi.co/api/v2/contest-effect/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -6553,8 +6668,8 @@ Contest effects refer to the effects of moves when used in contests.
 ```json
 {
   "id": 0,
-  "appeal": -2147483648,
-  "jam": -2147483648,
+  "appeal": 0,
+  "jam": 0,
   "effect_entries": [
     {
       "effect": "string",
@@ -6607,7 +6722,6 @@ Super contest effects refer to the effects of moves when used in super contests.
 |---|---|---|---|---|
 |limit|query|integer|false|Number of results to return per page.|
 |offset|query|integer|false|The initial index from which to return the results.|
-|q|query|string|false|> Only available locally and not at [pokeapi.co](https://pokeapi.co/docs/v2)<br>Case-insensitive query applied on the `name` property. |
 
 > Example responses
 
@@ -6615,9 +6729,9 @@ Super contest effects refer to the effects of moves when used in super contests.
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/super-contest-effect/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/super-contest-effect/?offset=0&limit=20",
   "results": [
     {
       "url": "http://example.com"
@@ -6643,7 +6757,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://pokeapi.co/api/v2/super-contest-effect/string/ \
+curl https://pokeapi.co/api/v2/super-contest-effect/1/ \
   -H 'Accept: application/json'
 ```
 
@@ -6664,7 +6778,7 @@ Super contest effects refer to the effects of moves when used in super contests.
 ```json
 {
   "id": 0,
-  "appeal": -2147483648,
+  "appeal": 0,
   "flavor_text_entries": [
     {
       "flavor_text": "string",
@@ -6724,8 +6838,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|version_group|[VersionGroupSummary](#schemaversiongroupsummary)|true|none|none|
-|effect_entries|[[AbilityChangeEffectText](#schemaabilitychangeeffecttext)]|true|read-only|none|
+|version_group|object|true|none|The version group in which the previous effect of this ability originated.|
+|effect_entries|[[AbilityChangeEffectText](#schemaabilitychangeeffecttext)]|true|read-only|The previous effect of this ability listed in different languages.|
 
 <h2 id="tocS_AbilityChangeEffectText">AbilityChangeEffectText</h2>
 <!-- backwards compatibility -->
@@ -6748,8 +6862,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|effect|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|effect|string|true|none|The localized effect text for an API resource in a specific language.|
+|language|object|true|none|The language this effect is in.|
 
 <h2 id="tocS_AbilityDetail">AbilityDetail</h2>
 <!-- backwards compatibility -->
@@ -6819,7 +6933,7 @@ This operation does not require authentication
   "pokemon": [
     {
       "is_hidden": true,
-      "slot": -2147483648,
+      "slot": 1,
       "pokemon": {
         "name": "string",
         "url": "http://example.com"
@@ -6833,15 +6947,15 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|name|string|true|none|none|
-|is_main_series|boolean|false|none|none|
-|generation|[GenerationSummary](#schemagenerationsummary)|true|none|none|
-|names|[[AbilityName](#schemaabilityname)]|true|read-only|none|
-|effect_entries|[[AbilityEffectText](#schemaabilityeffecttext)]|true|read-only|none|
-|effect_changes|[[AbilityChange](#schemaabilitychange)]|true|read-only|none|
-|flavor_text_entries|[[AbilityFlavorText](#schemaabilityflavortext)]|true|read-only|none|
-|pokemon|[[AbilityPokemonDetail](#schemaabilitypokemondetail)]|true|read-only|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|name|string|true|none|The name for this resource.|
+|is_main_series|boolean|false|none|Whether or not this ability originated in the main series of the video games.|
+|generation|object|true|none|The generation this ability originated in.|
+|names|[[AbilityName](#schemaabilityname)]|true|read-only|The name of this resource listed in different languages.|
+|effect_entries|[[AbilityEffectText](#schemaabilityeffecttext)]|true|read-only|The effect of this ability listed in different languages.|
+|effect_changes|[[AbilityChange](#schemaabilitychange)]|true|read-only|The list of previous effects this ability has had across version groups.|
+|flavor_text_entries|[[AbilityFlavorText](#schemaabilityflavortext)]|true|read-only|The flavor text of this ability listed in different languages.|
+|pokemon|[[AbilityPokemonDetail](#schemaabilitypokemondetail)]|true|read-only|A list of Pokémon that could potentially have this ability.|
 
 <h2 id="tocS_AbilityEffectText">AbilityEffectText</h2>
 <!-- backwards compatibility -->
@@ -6865,9 +6979,9 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|effect|string|true|none|none|
-|short_effect|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|effect|string|true|none|The localized effect text for an API resource in a specific language.|
+|short_effect|string|true|none|The localized effect text in brief.|
+|language|object|true|none|The language this effect is in.|
 
 <h2 id="tocS_AbilityFlavorText">AbilityFlavorText</h2>
 <!-- backwards compatibility -->
@@ -6894,9 +7008,9 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|flavor_text|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
-|version_group|[VersionGroupSummary](#schemaversiongroupsummary)|true|none|none|
+|flavor_text|string|true|none|The localized name for an API resource in a specific language.|
+|language|object|true|none|The language this text resource is in.|
+|version_group|object|true|none|The version group that uses this flavor text.|
 
 <h2 id="tocS_AbilityName">AbilityName</h2>
 <!-- backwards compatibility -->
@@ -6919,8 +7033,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|name|string|true|none|The localized name for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_AbilityPokemonDetail">AbilityPokemonDetail</h2>
 <!-- backwards compatibility -->
@@ -6932,7 +7046,7 @@ This operation does not require authentication
 ```json
 {
   "is_hidden": true,
-  "slot": -2147483648,
+  "slot": 1,
   "pokemon": {
     "name": "string",
     "url": "http://example.com"
@@ -6944,9 +7058,9 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|is_hidden|boolean|false|none|none|
-|slot|integer|true|none|none|
-|pokemon|[PokemonSummary](#schemapokemonsummary)|true|none|none|
+|is_hidden|boolean|false|none|Whether or not this a hidden ability for the referenced Pokémon.|
+|slot|integer|true|none|Pokémon have 3 ability 'slots' which hold references to possible abilities they could have. This is the slot of this ability for the referenced pokemon.|
+|pokemon|object|true|none|The Pokémon this ability could belong to.|
 
 <h2 id="tocS_AbilitySummary">AbilitySummary</h2>
 <!-- backwards compatibility -->
@@ -6966,8 +7080,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|url|string(uri)|true|read-only|none|
+|name|string|true|none|The name of the referenced resource.|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_BerryDetail">BerryDetail</h2>
 <!-- backwards compatibility -->
@@ -6980,19 +7094,19 @@ This operation does not require authentication
 {
   "id": 0,
   "name": "string",
-  "growth_time": -2147483648,
-  "max_harvest": -2147483648,
-  "natural_gift_power": -2147483648,
-  "size": -2147483648,
-  "smoothness": -2147483648,
-  "soil_dryness": -2147483648,
+  "growth_time": 0,
+  "max_harvest": 0,
+  "natural_gift_power": 0,
+  "size": 0,
+  "smoothness": 20,
+  "soil_dryness": 4,
   "firmness": {
     "name": "string",
     "url": "http://example.com"
   },
   "flavors": [
     {
-      "potency": -2147483648,
+      "potency": 0,
       "flavor": {
         "name": "string",
         "url": "http://example.com"
@@ -7014,18 +7128,18 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|name|string|true|none|none|
-|growth_time|integer \| null|false|none|none|
-|max_harvest|integer \| null|false|none|none|
-|natural_gift_power|integer \| null|false|none|none|
-|size|integer \| null|false|none|none|
-|smoothness|integer \| null|false|none|none|
-|soil_dryness|integer \| null|false|none|none|
-|firmness|[BerryFirmnessSummary](#schemaberryfirmnesssummary)|true|none|none|
-|flavors|[[BerryFlavorMap](#schemaberryflavormap)]|true|read-only|none|
-|item|[ItemSummary](#schemaitemsummary)|true|none|none|
-|natural_gift_type|[TypeSummary](#schematypesummary)|true|none|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|name|string|true|none|The name for this resource.|
+|growth_time|integer \| null|false|none|Time it takes the tree to grow one stage, in hours. Berry trees go through four of these growth stages before they can be picked.|
+|max_harvest|integer \| null|false|none|The maximum number of these berries that can grow on one tree in Generation IV.|
+|natural_gift_power|integer \| null|false|none|The power of the move "Natural Gift" when used with this Berry.|
+|size|integer \| null|false|none|The size of this Berry, in millimeters.|
+|smoothness|integer \| null|false|none|The smoothness of this Berry, used in making Pokéblocks or Poffins.|
+|soil_dryness|integer \| null|false|none|The speed at which this Berry dries out the soil as it grows. A higher rate means the soil dries more quickly.|
+|firmness|[BerryFirmnessSummary](#schemaberryfirmnesssummary) \| null|true|none|The firmness of this berry, used in making Pokéblocks or Poffins.|
+|flavors|[[BerryFlavorMap](#schemaberryflavormap)]|true|read-only|A list of references to each flavor a berry can have and the potency of each of those flavors in regard to this berry.|
+|item|object|true|none|Berries are actually items. This is a reference to the item specific data for this berry.|
+|natural_gift_type|[TypeSummary](#schematypesummary) \| null|true|none|The type inherited by "Natural Gift" when used with this Berry.|
 
 <h2 id="tocS_BerryFirmnessDetail">BerryFirmnessDetail</h2>
 <!-- backwards compatibility -->
@@ -7060,10 +7174,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|name|string|true|none|none|
-|berries|[[BerrySummary](#schemaberrysummary)]|true|read-only|none|
-|names|[[BerryFirmnessName](#schemaberryfirmnessname)]|true|read-only|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|name|string|true|none|The name for this resource.|
+|berries|[[BerrySummary](#schemaberrysummary)]|true|read-only|A list of the berries with this firmness.|
+|names|[[BerryFirmnessName](#schemaberryfirmnessname)]|true|read-only|The name of this resource listed in different languages.|
 
 <h2 id="tocS_BerryFirmnessName">BerryFirmnessName</h2>
 <!-- backwards compatibility -->
@@ -7086,8 +7200,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|name|string|true|none|The localized name for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_BerryFirmnessSummary">BerryFirmnessSummary</h2>
 <!-- backwards compatibility -->
@@ -7107,8 +7221,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|url|string(uri)|true|read-only|none|
+|name|string|true|none|The name of the referenced resource.|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_BerryFlavorBerryMap">BerryFlavorBerryMap</h2>
 <!-- backwards compatibility -->
@@ -7119,7 +7233,7 @@ This operation does not require authentication
 
 ```json
 {
-  "potency": -2147483648,
+  "potency": 0,
   "berry": {
     "name": "string",
     "url": "http://example.com"
@@ -7131,8 +7245,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|potency|integer|true|none|none|
-|berry|[BerrySummary](#schemaberrysummary)|true|none|none|
+|potency|integer|true|none|How powerful the referenced flavor is for this berry.|
+|berry|object|true|none|The berry with the referenced flavor.|
 
 <h2 id="tocS_BerryFlavorDetail">BerryFlavorDetail</h2>
 <!-- backwards compatibility -->
@@ -7147,7 +7261,7 @@ This operation does not require authentication
   "name": "string",
   "berries": [
     {
-      "potency": -2147483648,
+      "potency": 0,
       "berry": {
         "name": "string",
         "url": "http://example.com"
@@ -7174,11 +7288,11 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|name|string|true|none|none|
-|berries|[[BerryFlavorBerryMap](#schemaberryflavorberrymap)]|true|read-only|none|
-|contest_type|[ContestTypeSummary](#schemacontesttypesummary)|true|none|none|
-|names|[[BerryFlavorName](#schemaberryflavorname)]|true|read-only|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|name|string|true|none|The name for this resource.|
+|berries|[[BerryFlavorBerryMap](#schemaberryflavorberrymap)]|true|read-only|A list of the berries with this flavor.|
+|contest_type|object|true|none|The contest type that correlates with this berry flavor.|
+|names|[[BerryFlavorName](#schemaberryflavorname)]|true|read-only|The name of this resource listed in different languages.|
 
 <h2 id="tocS_BerryFlavorMap">BerryFlavorMap</h2>
 <!-- backwards compatibility -->
@@ -7189,7 +7303,7 @@ This operation does not require authentication
 
 ```json
 {
-  "potency": -2147483648,
+  "potency": 0,
   "flavor": {
     "name": "string",
     "url": "http://example.com"
@@ -7201,8 +7315,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|potency|integer|true|none|none|
-|flavor|[BerryFlavorSummary](#schemaberryflavorsummary)|true|none|none|
+|potency|integer|true|none|How powerful the referenced flavor is for this berry.|
+|flavor|object|true|none|The referenced berry flavor.|
 
 <h2 id="tocS_BerryFlavorName">BerryFlavorName</h2>
 <!-- backwards compatibility -->
@@ -7225,8 +7339,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|name|string|true|none|The localized name for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_BerryFlavorSummary">BerryFlavorSummary</h2>
 <!-- backwards compatibility -->
@@ -7246,8 +7360,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|url|string(uri)|true|read-only|none|
+|name|string|true|none|The name of the referenced resource.|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_BerrySummary">BerrySummary</h2>
 <!-- backwards compatibility -->
@@ -7267,8 +7381,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|url|string(uri)|true|read-only|none|
+|name|string|true|none|The name of the referenced resource.|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_CharacteristicDescription">CharacteristicDescription</h2>
 <!-- backwards compatibility -->
@@ -7291,8 +7405,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|description|string|false|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|description|string|false|none|The localized description for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_CharacteristicDetail">CharacteristicDetail</h2>
 <!-- backwards compatibility -->
@@ -7328,11 +7442,11 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|gene_modulo|integer|true|none|none|
-|possible_values|[integer]|true|read-only|none|
-|highest_stat|[StatSummary](#schemastatsummary)|true|none|none|
-|descriptions|[[CharacteristicDescription](#schemacharacteristicdescription)]|true|read-only|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|gene_modulo|integer|true|none|The remainder of the highest stat/IV divided by 5.|
+|possible_values|[integer]|true|read-only|The possible values of the highest stat that would result in a Pokémon recieving this characteristic when divided by 5.|
+|highest_stat|object|true|none|The stat which results in this characteristic.|
+|descriptions|[[CharacteristicDescription](#schemacharacteristicdescription)]|true|read-only|The descriptions of this characteristic listed in different languages.|
 
 <h2 id="tocS_CharacteristicSummary">CharacteristicSummary</h2>
 <!-- backwards compatibility -->
@@ -7351,7 +7465,7 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|url|string(uri)|true|read-only|none|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_ContestEffectDetail">ContestEffectDetail</h2>
 <!-- backwards compatibility -->
@@ -7363,8 +7477,8 @@ This operation does not require authentication
 ```json
 {
   "id": 0,
-  "appeal": -2147483648,
-  "jam": -2147483648,
+  "appeal": 0,
+  "jam": 0,
   "effect_entries": [
     {
       "effect": "string",
@@ -7390,11 +7504,11 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|appeal|integer|true|none|none|
-|jam|integer|true|none|none|
-|effect_entries|[[ContestEffectEffectText](#schemacontesteffecteffecttext)]|true|read-only|none|
-|flavor_text_entries|[[ContestEffectFlavorText](#schemacontesteffectflavortext)]|true|read-only|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|appeal|integer|true|none|The base number of hearts the user of this move gets.|
+|jam|integer|true|none|The base number of hearts the user's opponent loses.|
+|effect_entries|[[ContestEffectEffectText](#schemacontesteffecteffecttext)]|true|read-only|The result of this contest effect listed in different languages.|
+|flavor_text_entries|[[ContestEffectFlavorText](#schemacontesteffectflavortext)]|true|read-only|The flavor text of this contest effect listed in different languages.|
 
 <h2 id="tocS_ContestEffectEffectText">ContestEffectEffectText</h2>
 <!-- backwards compatibility -->
@@ -7417,8 +7531,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|effect|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|effect|string|true|none|The localized effect text for an API resource in a specific language.|
+|language|object|true|none|The language this effect is in.|
 
 <h2 id="tocS_ContestEffectFlavorText">ContestEffectFlavorText</h2>
 <!-- backwards compatibility -->
@@ -7441,8 +7555,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|flavor_text|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|flavor_text|string|true|none|The localized flavor text for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_ContestEffectSummary">ContestEffectSummary</h2>
 <!-- backwards compatibility -->
@@ -7461,7 +7575,7 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|url|string(uri)|true|read-only|none|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_ContestTypeDetail">ContestTypeDetail</h2>
 <!-- backwards compatibility -->
@@ -7495,10 +7609,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|name|string|true|none|none|
-|berry_flavor|object|true|read-only|none|
-|names|[[ContestTypeName](#schemacontesttypename)]|true|read-only|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|name|string|true|none|The name for this resource.|
+|berry_flavor|object|true|read-only|The berry flavor that correlates with this contest type.|
+|names|[[ContestTypeName](#schemacontesttypename)]|true|read-only|The name of this contest type listed in different languages.|
 
 <h2 id="tocS_ContestTypeName">ContestTypeName</h2>
 <!-- backwards compatibility -->
@@ -7522,9 +7636,9 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|color|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|name|string|true|none|The name for this contest.|
+|color|string|true|none|The color associated with this contest's name.|
+|language|object|true|none|The language that this name is in.|
 
 <h2 id="tocS_ContestTypeSummary">ContestTypeSummary</h2>
 <!-- backwards compatibility -->
@@ -7544,8 +7658,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|url|string(uri)|true|read-only|none|
+|name|string|true|none|The name of the referenced resource.|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_CurrencyDetail">CurrencyDetail</h2>
 <!-- backwards compatibility -->
@@ -7574,9 +7688,9 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|name|string|true|none|none|
-|names|[[CurrencyName](#schemacurrencyname)]|true|read-only|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|name|string|true|none|The name for this resource.|
+|names|[[CurrencyName](#schemacurrencyname)]|true|read-only|The name of this resource listed in different languages.|
 
 <h2 id="tocS_CurrencyName">CurrencyName</h2>
 <!-- backwards compatibility -->
@@ -7599,8 +7713,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|name|string|true|none|The localized name for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_CurrencySummary">CurrencySummary</h2>
 <!-- backwards compatibility -->
@@ -7620,8 +7734,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|url|string(uri)|true|read-only|none|
+|name|string|true|none|The name of the referenced resource.|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_EggGroupDetail">EggGroupDetail</h2>
 <!-- backwards compatibility -->
@@ -7656,10 +7770,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|name|string|true|none|none|
-|names|[[EggGroupName](#schemaegggroupname)]|true|read-only|none|
-|pokemon_species|[[PokemonSpeciesSummary](#schemapokemonspeciessummary)]|true|read-only|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|name|string|true|none|The name for this resource.|
+|names|[[EggGroupName](#schemaegggroupname)]|true|read-only|The name of this resource listed in different languages.|
+|pokemon_species|[[PokemonSpeciesSummary](#schemapokemonspeciessummary)]|true|read-only|A list of all Pokémon species that are members of this egg group.|
 
 <h2 id="tocS_EggGroupName">EggGroupName</h2>
 <!-- backwards compatibility -->
@@ -7682,8 +7796,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|name|string|true|none|The localized name for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_EggGroupSummary">EggGroupSummary</h2>
 <!-- backwards compatibility -->
@@ -7703,8 +7817,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|url|string(uri)|true|read-only|none|
+|name|string|true|none|The name of the referenced resource.|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_EncounterConditionDetail">EncounterConditionDetail</h2>
 <!-- backwards compatibility -->
@@ -7739,10 +7853,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|name|string|true|none|none|
-|values|[[EncounterConditionValueSummary](#schemaencounterconditionvaluesummary)]|true|read-only|none|
-|names|[[EncounterConditionName](#schemaencounterconditionname)]|true|read-only|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|name|string|true|none|The name for this resource.|
+|values|[[EncounterConditionValueSummary](#schemaencounterconditionvaluesummary)]|true|read-only|A list of possible values for this encounter condition.|
+|names|[[EncounterConditionName](#schemaencounterconditionname)]|true|read-only|The name of this resource listed in different languages.|
 
 <h2 id="tocS_EncounterConditionName">EncounterConditionName</h2>
 <!-- backwards compatibility -->
@@ -7765,8 +7879,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|name|string|true|none|The localized name for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_EncounterConditionSummary">EncounterConditionSummary</h2>
 <!-- backwards compatibility -->
@@ -7786,8 +7900,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|url|string(uri)|true|read-only|none|
+|name|string|true|none|The name of the referenced resource.|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_EncounterConditionValueDetail">EncounterConditionValueDetail</h2>
 <!-- backwards compatibility -->
@@ -7820,10 +7934,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|name|string|true|none|none|
-|condition|[EncounterConditionSummary](#schemaencounterconditionsummary)|true|none|none|
-|names|[[EncounterConditionValueName](#schemaencounterconditionvaluename)]|true|read-only|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|name|string|true|none|The name for this resource.|
+|condition|object|true|none|The condition this encounter condition value pertains to.|
+|names|[[EncounterConditionValueName](#schemaencounterconditionvaluename)]|true|read-only|The name of this resource listed in different languages.|
 
 <h2 id="tocS_EncounterConditionValueName">EncounterConditionValueName</h2>
 <!-- backwards compatibility -->
@@ -7846,8 +7960,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|name|string|true|none|The localized name for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_EncounterConditionValueSummary">EncounterConditionValueSummary</h2>
 <!-- backwards compatibility -->
@@ -7867,8 +7981,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|url|string(uri)|true|read-only|none|
+|name|string|true|none|The name of the referenced resource.|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_EncounterMethodDetail">EncounterMethodDetail</h2>
 <!-- backwards compatibility -->
@@ -7881,7 +7995,7 @@ This operation does not require authentication
 {
   "id": 0,
   "name": "string",
-  "order": -2147483648,
+  "order": -1,
   "names": [
     {
       "name": "string",
@@ -7898,10 +8012,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|name|string|true|none|none|
-|order|integer \| null|false|none|none|
-|names|[[EncounterMethodName](#schemaencountermethodname)]|true|read-only|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|name|string|true|none|The name for this resource.|
+|order|integer \| null|false|none|A good value for sorting.|
+|names|[[EncounterMethodName](#schemaencountermethodname)]|true|read-only|The name of this resource listed in different languages.|
 
 <h2 id="tocS_EncounterMethodName">EncounterMethodName</h2>
 <!-- backwards compatibility -->
@@ -7924,8 +8038,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|name|string|true|none|The localized name for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_EncounterMethodSummary">EncounterMethodSummary</h2>
 <!-- backwards compatibility -->
@@ -7945,8 +8059,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|url|string(uri)|true|read-only|none|
+|name|string|true|none|The name of the referenced resource.|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_EncounterPokemonDetail">EncounterPokemonDetail</h2>
 <!-- backwards compatibility -->
@@ -7957,7 +8071,7 @@ This operation does not require authentication
 
 ```json
 {
-  "min_perfect_ivs": -2147483648,
+  "min_perfect_ivs": 0,
   "always_shiny": true,
   "never_shiny": true,
   "is_alpha": true
@@ -7968,10 +8082,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|min_perfect_ivs|integer \| null|false|none|none|
-|always_shiny|boolean|false|none|none|
-|never_shiny|boolean|false|none|none|
-|is_alpha|boolean|false|none|none|
+|min_perfect_ivs|integer \| null|false|none|The minimum number of perfect IVs, or null if unspecified.|
+|always_shiny|boolean|false|none|Whether the encountered Pokémon is always shiny.|
+|never_shiny|boolean|false|none|Whether the encountered Pokémon can never be shiny.|
+|is_alpha|boolean|false|none|Whether the encountered Pokémon is an alpha Pokémon.|
 
 <h2 id="tocS_EvolutionChainDetail">EvolutionChainDetail</h2>
 <!-- backwards compatibility -->
@@ -8025,10 +8139,10 @@ This operation does not require authentication
           "name": "string",
           "url": "http://example.com"
         },
-        "min_level": -2147483648,
-        "min_happiness": -2147483648,
-        "min_beauty": -2147483648,
-        "min_affection": -2147483648,
+        "min_level": 1,
+        "min_happiness": 0,
+        "min_beauty": 0,
+        "min_affection": 0,
         "near_special_rock": true,
         "needs_multiplayer": true,
         "needs_overworld_rain": true,
@@ -8040,7 +8154,7 @@ This operation does not require authentication
           "name": "string",
           "url": "http://example.com"
         },
-        "relative_physical_stats": -2147483648,
+        "relative_physical_stats": -1,
         "time_of_day": "string",
         "trade_species": {
           "name": "string",
@@ -8063,9 +8177,9 @@ This operation does not require authentication
           "name": "string",
           "url": "http://example.com"
         },
-        "min_move_count": -2147483648,
-        "min_steps": -2147483648,
-        "min_damage_taken": -2147483648,
+        "min_move_count": 0,
+        "min_steps": 0,
+        "min_damage_taken": 0,
         "allowed_natures": [
           {
             "name": "string",
@@ -8085,10 +8199,7 @@ This operation does not require authentication
       }
     ],
     "evolves_to": [
-      {
-        "property1": null,
-        "property2": null
-      }
+      {}
     ]
   }
 }
@@ -8098,9 +8209,9 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|baby_trigger_item|[ItemSummary](#schemaitemsummary)|true|none|none|
-|chain|object|true|read-only|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|baby_trigger_item|[ItemSummary](#schemaitemsummary) \| null|true|none|The item that a Pokémon would be holding when mating that would trigger the egg hatching a baby Pokémon rather than a basic Pokémon.|
+|chain|object|true|read-only|The base chain link object. Each link contains evolution details for a Pokémon in the chain. Each link references the next Pokémon in the natural evolution order.|
 
 <h2 id="tocS_EvolutionChainLink">EvolutionChainLink</h2>
 <!-- backwards compatibility -->
@@ -8148,10 +8259,10 @@ This operation does not require authentication
         "name": "string",
         "url": "http://example.com"
       },
-      "min_level": -2147483648,
-      "min_happiness": -2147483648,
-      "min_beauty": -2147483648,
-      "min_affection": -2147483648,
+      "min_level": 1,
+      "min_happiness": 0,
+      "min_beauty": 0,
+      "min_affection": 0,
       "near_special_rock": true,
       "needs_multiplayer": true,
       "needs_overworld_rain": true,
@@ -8163,7 +8274,7 @@ This operation does not require authentication
         "name": "string",
         "url": "http://example.com"
       },
-      "relative_physical_stats": -2147483648,
+      "relative_physical_stats": -1,
       "time_of_day": "string",
       "trade_species": {
         "name": "string",
@@ -8186,9 +8297,9 @@ This operation does not require authentication
         "name": "string",
         "url": "http://example.com"
       },
-      "min_move_count": -2147483648,
-      "min_steps": -2147483648,
-      "min_damage_taken": -2147483648,
+      "min_move_count": 0,
+      "min_steps": 0,
+      "min_damage_taken": 0,
       "allowed_natures": [
         {
           "name": "string",
@@ -8209,8 +8320,105 @@ This operation does not require authentication
   ],
   "evolves_to": [
     {
-      "property1": null,
-      "property2": null
+      "is_baby": true,
+      "species": {
+        "name": "string",
+        "url": "http://example.com"
+      },
+      "evolution_details": [
+        {
+          "version_group": {
+            "name": "string",
+            "url": "http://example.com"
+          },
+          "is_default": true,
+          "item": {
+            "name": "string",
+            "url": "http://example.com"
+          },
+          "trigger": {
+            "name": "string",
+            "url": "http://example.com"
+          },
+          "gender": 0,
+          "held_item": {
+            "name": "string",
+            "url": "http://example.com"
+          },
+          "known_move": {
+            "name": "string",
+            "url": "http://example.com"
+          },
+          "known_move_type": {
+            "name": "string",
+            "url": "http://example.com"
+          },
+          "location": {
+            "name": "string",
+            "url": "http://example.com"
+          },
+          "min_level": 1,
+          "min_happiness": 0,
+          "min_beauty": 0,
+          "min_affection": 0,
+          "near_special_rock": true,
+          "needs_multiplayer": true,
+          "needs_overworld_rain": true,
+          "party_species": {
+            "name": "string",
+            "url": "http://example.com"
+          },
+          "party_type": {
+            "name": "string",
+            "url": "http://example.com"
+          },
+          "relative_physical_stats": -1,
+          "time_of_day": "string",
+          "trade_species": {
+            "name": "string",
+            "url": "http://example.com"
+          },
+          "turn_upside_down": true,
+          "region": {
+            "name": "string",
+            "url": "http://example.com"
+          },
+          "required_pokemon_form": {
+            "name": "string",
+            "url": "http://example.com"
+          },
+          "evolved_pokemon_form": {
+            "name": "string",
+            "url": "http://example.com"
+          },
+          "used_move": {
+            "name": "string",
+            "url": "http://example.com"
+          },
+          "min_move_count": 0,
+          "min_steps": 0,
+          "min_damage_taken": 0,
+          "allowed_natures": [
+            {
+              "name": "string",
+              "url": "http://example.com"
+            }
+          ],
+          "condition_expression": {
+            "expression": "string",
+            "percentage_chance": 0,
+            "variables": [
+              {
+                "name": "string",
+                "url": "http://example.com"
+              }
+            ]
+          }
+        }
+      ],
+      "evolves_to": [
+        {}
+      ]
     }
   ]
 }
@@ -8220,10 +8428,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|is_baby|boolean|true|none|none|
-|species|[PokemonSpeciesSummary](#schemapokemonspeciessummary)|true|none|none|
-|evolution_details|[[PokemonEvolution](#schemapokemonevolution)]|true|none|none|
-|evolves_to|[object]|true|none|none|
+|is_baby|boolean|true|none|Whether or not this link is for a baby Pokémon. This would only ever be true on the base link.|
+|species|object|true|none|The Pokémon species at this point in the evolution chain.|
+|evolution_details|[[PokemonEvolution](#schemapokemonevolution)]|true|none|All details regarding the specific details of the referenced Pokémon species evolution.|
+|evolves_to|[[EvolutionChainLink](#schemaevolutionchainlink)]|true|read-only|A List of chain objects.|
 
 <h2 id="tocS_EvolutionChainSummary">EvolutionChainSummary</h2>
 <!-- backwards compatibility -->
@@ -8242,7 +8450,7 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|url|string(uri)|true|read-only|none|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_EvolutionConditionExpression">EvolutionConditionExpression</h2>
 <!-- backwards compatibility -->
@@ -8305,10 +8513,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|name|string|true|none|none|
-|names|[[EvolutionTriggerName](#schemaevolutiontriggername)]|true|read-only|none|
-|pokemon_species|[[PokemonSpeciesSummary](#schemapokemonspeciessummary)]|true|read-only|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|name|string|true|none|The name for this resource.|
+|names|[[EvolutionTriggerName](#schemaevolutiontriggername)]|true|read-only|The name of this resource listed in different languages.|
+|pokemon_species|[[PokemonSpeciesSummary](#schemapokemonspeciessummary)]|true|read-only|A list of pokemon species that result from this evolution trigger.|
 
 <h2 id="tocS_EvolutionTriggerName">EvolutionTriggerName</h2>
 <!-- backwards compatibility -->
@@ -8331,8 +8539,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|name|string|true|none|The localized name for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_EvolutionTriggerSummary">EvolutionTriggerSummary</h2>
 <!-- backwards compatibility -->
@@ -8352,8 +8560,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|url|string(uri)|true|read-only|none|
+|name|string|true|none|The name of the referenced resource.|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_EvolutionVariableDescription">EvolutionVariableDescription</h2>
 <!-- backwards compatibility -->
@@ -8376,8 +8584,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|description|string|false|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|description|string|false|none|The localized description for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_EvolutionVariableDetail">EvolutionVariableDetail</h2>
 <!-- backwards compatibility -->
@@ -8422,14 +8630,14 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|name|string|true|none|none|
-|symbol|string|true|none|none|
-|data_type|string|false|none|none|
-|source|string|false|none|Where the value comes from: 'pokemon' for data stored on the Pokemon (e.g. EC, PID), 'player-input' for an action taken by the player while evolving (e.g. SPIN_DIR, SPIN_SEC)|
-|version_group|[VersionGroupSummary](#schemaversiongroupsummary)|true|none|none|
-|names|[[EvolutionVariableName](#schemaevolutionvariablename)]|true|read-only|none|
-|descriptions|[[EvolutionVariableDescription](#schemaevolutionvariabledescription)]|true|read-only|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|name|string|true|none|The name for this resource.|
+|symbol|string|true|none|The symbol used for this variable in evolution condition expressions.|
+|data_type|string|false|none|The data type of this variable.|
+|source|string|false|none|The source of the variable value.|
+|version_group|object|true|none|The version group in which this variable was introduced.|
+|names|[[EvolutionVariableName](#schemaevolutionvariablename)]|true|read-only|The name of this resource listed in different languages.|
+|descriptions|[[EvolutionVariableDescription](#schemaevolutionvariabledescription)]|true|read-only|The description of this resource listed in different languages.|
 
 <h2 id="tocS_EvolutionVariableName">EvolutionVariableName</h2>
 <!-- backwards compatibility -->
@@ -8452,8 +8660,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|name|string|true|none|The localized name for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_EvolutionVariableSummary">EvolutionVariableSummary</h2>
 <!-- backwards compatibility -->
@@ -8473,8 +8681,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|url|string(uri)|true|read-only|none|
+|name|string|true|none|The name of the referenced resource.|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_Experience">Experience</h2>
 <!-- backwards compatibility -->
@@ -8485,8 +8693,8 @@ This operation does not require authentication
 
 ```json
 {
-  "level": -2147483648,
-  "experience": -2147483648
+  "level": 1,
+  "experience": 0
 }
 ```
 
@@ -8494,8 +8702,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|level|integer|true|none|none|
-|experience|integer|true|none|none|
+|level|integer|true|none|The level gained.|
+|experience|integer|true|none|The amount of experience required to reach the referenced level.|
 
 <h2 id="tocS_GenderDetail">GenderDetail</h2>
 <!-- backwards compatibility -->
@@ -8530,10 +8738,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|name|string|true|none|none|
-|pokemon_species_details|[[GenderPokemonSpecies](#schemagenderpokemonspecies)]|true|read-only|none|
-|required_for_evolution|[[PokemonSpeciesSummary](#schemapokemonspeciessummary)]|true|read-only|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|name|string|true|none|The name for this resource.|
+|pokemon_species_details|[[GenderPokemonSpecies](#schemagenderpokemonspecies)]|true|read-only|A list of Pokémon species that can be this gender and how likely it is that they will be.|
+|required_for_evolution|[[PokemonSpeciesSummary](#schemapokemonspeciessummary)]|true|read-only|A list of Pokémon species that required this gender in order for a Pokémon to evolve into them.|
 
 <h2 id="tocS_GenderPokemonSpecies">GenderPokemonSpecies</h2>
 <!-- backwards compatibility -->
@@ -8556,8 +8764,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|rate|integer|true|none|none|
-|pokemon_species|[PokemonSpeciesSummary](#schemapokemonspeciessummary)|true|none|none|
+|rate|integer|true|none|The chance of this Pokémon being female, in eighths; or -1 for genderless.|
+|pokemon_species|object|true|none|A Pokémon species that can be the referenced gender.|
 
 <h2 id="tocS_GenderSummary">GenderSummary</h2>
 <!-- backwards compatibility -->
@@ -8577,8 +8785,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|url|string(uri)|true|read-only|none|
+|name|string|true|none|The name of the referenced resource.|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_GenerationDetail">GenerationDetail</h2>
 <!-- backwards compatibility -->
@@ -8641,15 +8849,15 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|name|string|true|none|none|
-|abilities|[[AbilitySummary](#schemaabilitysummary)]|true|read-only|none|
-|main_region|[RegionSummary](#schemaregionsummary)|true|none|none|
-|moves|[[MoveSummary](#schemamovesummary)]|true|read-only|none|
-|names|[[GenerationName](#schemagenerationname)]|true|read-only|none|
-|pokemon_species|[[PokemonSpeciesSummary](#schemapokemonspeciessummary)]|true|read-only|none|
-|types|[[TypeSummary](#schematypesummary)]|true|read-only|none|
-|version_groups|[[VersionGroupSummary](#schemaversiongroupsummary)]|true|read-only|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|name|string|true|none|The name for this resource.|
+|abilities|[[AbilitySummary](#schemaabilitysummary)]|true|read-only|A list of abilities that were introduced in this generation.|
+|main_region|object|true|none|The main region travelled in this generation.|
+|moves|[[MoveSummary](#schemamovesummary)]|true|read-only|A list of moves that were introduced in this generation.|
+|names|[[GenerationName](#schemagenerationname)]|true|read-only|The name of this resource listed in different languages.|
+|pokemon_species|[[PokemonSpeciesSummary](#schemapokemonspeciessummary)]|true|read-only|A list of Pokémon species that were introduced in this generation.|
+|types|[[TypeSummary](#schematypesummary)]|true|read-only|A list of types that were introduced in this generation.|
+|version_groups|[[VersionGroupSummary](#schemaversiongroupsummary)]|true|read-only|A list of version groups that were introduced in this generation.|
 
 <h2 id="tocS_GenerationName">GenerationName</h2>
 <!-- backwards compatibility -->
@@ -8672,8 +8880,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|name|string|true|none|The localized name for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_GenerationSummary">GenerationSummary</h2>
 <!-- backwards compatibility -->
@@ -8693,8 +8901,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|url|string(uri)|true|read-only|none|
+|name|string|true|none|The name of the referenced resource.|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_GrowthRateDescription">GrowthRateDescription</h2>
 <!-- backwards compatibility -->
@@ -8717,8 +8925,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|description|string|false|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|description|string|false|none|The localized description for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_GrowthRateDetail">GrowthRateDetail</h2>
 <!-- backwards compatibility -->
@@ -8743,8 +8951,8 @@ This operation does not require authentication
   ],
   "levels": [
     {
-      "level": -2147483648,
-      "experience": -2147483648
+      "level": 1,
+      "experience": 0
     }
   ],
   "pokemon_species": [
@@ -8760,12 +8968,12 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|name|string|true|none|none|
-|formula|string|true|none|none|
-|descriptions|[[GrowthRateDescription](#schemagrowthratedescription)]|true|read-only|none|
-|levels|[[Experience](#schemaexperience)]|true|read-only|none|
-|pokemon_species|[[PokemonSpeciesSummary](#schemapokemonspeciessummary)]|true|read-only|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|name|string|true|none|The name for this resource.|
+|formula|string|true|none|The formula used to calculate the rate at which the Pokémon species gains level.|
+|descriptions|[[GrowthRateDescription](#schemagrowthratedescription)]|true|read-only|The descriptions of this characteristic listed in different languages.|
+|levels|[[Experience](#schemaexperience)]|true|read-only|A list of levels and the amount of experienced needed to atain them based on this growth rate.|
+|pokemon_species|[[PokemonSpeciesSummary](#schemapokemonspeciessummary)]|true|read-only|A list of Pokémon species that gain levels at this growth rate.|
 
 <h2 id="tocS_GrowthRateSummary">GrowthRateSummary</h2>
 <!-- backwards compatibility -->
@@ -8785,8 +8993,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|url|string(uri)|true|read-only|none|
+|name|string|true|none|The name of the referenced resource.|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_ItemAttributeDescription">ItemAttributeDescription</h2>
 <!-- backwards compatibility -->
@@ -8809,8 +9017,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|description|string|false|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|description|string|false|none|The localized description for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_ItemAttributeDetail">ItemAttributeDetail</h2>
 <!-- backwards compatibility -->
@@ -8854,11 +9062,11 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|name|string|true|none|none|
-|descriptions|[[ItemAttributeDescription](#schemaitemattributedescription)]|true|read-only|none|
-|items|[[ItemSummary](#schemaitemsummary)]|true|read-only|none|
-|names|[[ItemAttributeName](#schemaitemattributename)]|true|read-only|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|name|string|true|none|The name for this resource.|
+|descriptions|[[ItemAttributeDescription](#schemaitemattributedescription)]|true|read-only|The description of this item attribute listed in different languages.|
+|items|[[ItemSummary](#schemaitemsummary)]|true|read-only|A list of items that have this attribute.|
+|names|[[ItemAttributeName](#schemaitemattributename)]|true|read-only|The name of this item attribute listed in different languages.|
 
 <h2 id="tocS_ItemAttributeName">ItemAttributeName</h2>
 <!-- backwards compatibility -->
@@ -8881,8 +9089,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|name|string|true|none|The localized name for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_ItemAttributeSummary">ItemAttributeSummary</h2>
 <!-- backwards compatibility -->
@@ -8902,8 +9110,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|url|string(uri)|true|read-only|none|
+|name|string|true|none|The name of the referenced resource.|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_ItemCategoryDetail">ItemCategoryDetail</h2>
 <!-- backwards compatibility -->
@@ -8942,11 +9150,11 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|name|string|true|none|none|
-|items|[[ItemSummary](#schemaitemsummary)]|true|read-only|none|
-|names|[[ItemCategoryName](#schemaitemcategoryname)]|true|read-only|none|
-|pocket|[ItemPocketSummary](#schemaitempocketsummary)|true|none|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|name|string|true|none|The name for this resource.|
+|items|[[ItemSummary](#schemaitemsummary)]|true|read-only|A list of items that are a part of this category.|
+|names|[[ItemCategoryName](#schemaitemcategoryname)]|true|read-only|The name of this item category listed in different languages.|
+|pocket|object|true|none|The pocket items in this category would be put in.|
 
 <h2 id="tocS_ItemCategoryName">ItemCategoryName</h2>
 <!-- backwards compatibility -->
@@ -8969,8 +9177,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|name|string|true|none|The localized name for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_ItemCategorySummary">ItemCategorySummary</h2>
 <!-- backwards compatibility -->
@@ -8990,8 +9198,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|url|string(uri)|true|read-only|none|
+|name|string|true|none|The name of the referenced resource.|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_ItemDetail">ItemDetail</h2>
 <!-- backwards compatibility -->
@@ -9004,7 +9212,7 @@ This operation does not require authentication
 {
   "id": 0,
   "name": "string",
-  "fling_power": -2147483648,
+  "fling_power": 0,
   "fling_effect": {
     "name": "string",
     "url": "http://example.com"
@@ -9044,7 +9252,7 @@ This operation does not require authentication
   ],
   "game_indices": [
     {
-      "game_index": -2147483648,
+      "game_index": 0,
       "generation": {
         "name": "string",
         "url": "http://example.com"
@@ -9053,8 +9261,8 @@ This operation does not require authentication
   ],
   "prices": [
     {
-      "purchase_price": -2147483648,
-      "sell_price": -2147483648,
+      "purchase_price": 0,
+      "sell_price": 0,
       "currency": {
         "name": "string",
         "url": "http://example.com"
@@ -9115,21 +9323,21 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|name|string|true|none|none|
-|fling_power|integer \| null|false|none|none|
-|fling_effect|[ItemFlingEffectSummary](#schemaitemflingeffectsummary)|true|none|none|
-|attributes|[[ItemAttributeSummary](#schemaitemattributesummary)]|true|read-only|none|
-|category|[ItemCategorySummary](#schemaitemcategorysummary)|true|none|none|
-|effect_entries|[[ItemEffectText](#schemaitemeffecttext)]|true|read-only|none|
-|flavor_text_entries|[[ItemFlavorText](#schemaitemflavortext)]|true|read-only|none|
-|game_indices|[[ItemGameIndex](#schemaitemgameindex)]|true|read-only|none|
-|prices|[[ItemPrice](#schemaitemprice)]|true|read-only|none|
-|names|[[ItemName](#schemaitemname)]|true|read-only|none|
-|held_by_pokemon|[[PokemonHeldItem](#schemapokemonhelditem)]|true|read-only|none|
-|sprites|object|true|read-only|none|
-|baby_trigger_for|[EvolutionChainSummary](#schemaevolutionchainsummary) \| null|true|read-only|none|
-|machines|[[ItemMachine](#schemaitemmachine)]|true|read-only|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|name|string|true|none|The name for this resource.|
+|fling_power|integer \| null|false|none|The power of the move Fling when used with this item.|
+|fling_effect|[ItemFlingEffectSummary](#schemaitemflingeffectsummary) \| null|true|none|The effect of the move Fling when used with this item.|
+|attributes|[[ItemAttributeSummary](#schemaitemattributesummary)]|true|read-only|A list of attributes this item has.|
+|category|object|true|none|The category of items this item falls into.|
+|effect_entries|[[ItemEffectText](#schemaitemeffecttext)]|true|read-only|The effect of this ability listed in different languages.|
+|flavor_text_entries|[[ItemFlavorText](#schemaitemflavortext)]|true|read-only|The flavor text of this ability listed in different languages.|
+|game_indices|[[ItemGameIndex](#schemaitemgameindex)]|true|read-only|A list of game indices relevent to this item by generation.|
+|prices|[[ItemPrice](#schemaitemprice)]|true|read-only|Purchase and sell prices by currency and version group. Prices may be null when the item cannot be bought or sold.|
+|names|[[ItemName](#schemaitemname)]|true|read-only|The name of this item listed in different languages.|
+|held_by_pokemon|[[PokemonHeldItem](#schemapokemonhelditem)]|true|read-only|A list of Pokémon that might be found in the wild holding this item.|
+|sprites|object|true|read-only|A set of sprites used to depict this item in the game.|
+|baby_trigger_for|[EvolutionChainSummary](#schemaevolutionchainsummary) \| null|true|read-only|An evolution chain this item requires to produce a bay during mating.|
+|machines|[[ItemMachine](#schemaitemmachine)]|true|read-only|A list of the machines related to this item.|
 
 <h2 id="tocS_ItemEffectText">ItemEffectText</h2>
 <!-- backwards compatibility -->
@@ -9153,9 +9361,9 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|effect|string|true|none|none|
-|short_effect|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|effect|string|true|none|The localized effect text for an API resource in a specific language.|
+|short_effect|string|true|none|The localized effect text in brief.|
+|language|object|true|none|The language this effect is in.|
 
 <h2 id="tocS_ItemFlavorText">ItemFlavorText</h2>
 <!-- backwards compatibility -->
@@ -9182,9 +9390,9 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|text|string|true|none|none|
-|version_group|[VersionGroupSummary](#schemaversiongroupsummary)|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|text|string|true|none|The localized flavor text for an API resource in a specific language.|
+|version_group|object|true|none|The version group which uses this flavor text.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_ItemFlingEffectDetail">ItemFlingEffectDetail</h2>
 <!-- backwards compatibility -->
@@ -9219,10 +9427,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|name|string|true|none|none|
-|effect_entries|[[ItemFlingEffectEffectText](#schemaitemflingeffecteffecttext)]|true|read-only|none|
-|items|[[ItemSummary](#schemaitemsummary)]|true|read-only|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|name|string|true|none|The name for this resource.|
+|effect_entries|[[ItemFlingEffectEffectText](#schemaitemflingeffecteffecttext)]|true|read-only|The result of this fling effect listed in different languages.|
+|items|[[ItemSummary](#schemaitemsummary)]|true|read-only|A list of items that have this fling effect.|
 
 <h2 id="tocS_ItemFlingEffectEffectText">ItemFlingEffectEffectText</h2>
 <!-- backwards compatibility -->
@@ -9245,8 +9453,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|effect|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|effect|string|true|none|The localized effect text for an API resource in a specific language.|
+|language|object|true|none|The language this effect is in.|
 
 <h2 id="tocS_ItemFlingEffectSummary">ItemFlingEffectSummary</h2>
 <!-- backwards compatibility -->
@@ -9266,8 +9474,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|url|string(uri)|true|read-only|none|
+|name|string|true|none|The name of the referenced resource.|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_ItemGameIndex">ItemGameIndex</h2>
 <!-- backwards compatibility -->
@@ -9278,7 +9486,7 @@ This operation does not require authentication
 
 ```json
 {
-  "game_index": -2147483648,
+  "game_index": 0,
   "generation": {
     "name": "string",
     "url": "http://example.com"
@@ -9290,8 +9498,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|game_index|integer|true|none|none|
-|generation|[GenerationSummary](#schemagenerationsummary)|true|none|none|
+|game_index|integer|true|none|The internal id of an API resource within game data.|
+|generation|object|true|none|The generation relevent to this game index.|
 
 <h2 id="tocS_ItemMachine">ItemMachine</h2>
 <!-- backwards compatibility -->
@@ -9316,8 +9524,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|machine|[MachineSummary](#schemamachinesummary)|true|none|none|
-|version_group|[VersionGroupSummary](#schemaversiongroupsummary)|true|none|none|
+|machine|object|true|none|The machine that teaches a move from an item.|
+|version_group|object|true|none|The version group of this specific machine.|
 
 <h2 id="tocS_ItemName">ItemName</h2>
 <!-- backwards compatibility -->
@@ -9340,8 +9548,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|name|string|true|none|The localized name for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_ItemPocketDetail">ItemPocketDetail</h2>
 <!-- backwards compatibility -->
@@ -9376,10 +9584,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|name|string|true|none|none|
-|categories|[[ItemCategorySummary](#schemaitemcategorysummary)]|true|read-only|none|
-|names|[[ItemPocketName](#schemaitempocketname)]|true|read-only|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|name|string|true|none|The name for this resource.|
+|categories|[[ItemCategorySummary](#schemaitemcategorysummary)]|true|read-only|A list of item categories that are relevant to this item pocket.|
+|names|[[ItemPocketName](#schemaitempocketname)]|true|read-only|The name of this resource listed in different languages.|
 
 <h2 id="tocS_ItemPocketName">ItemPocketName</h2>
 <!-- backwards compatibility -->
@@ -9402,8 +9610,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|name|string|true|none|The localized name for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_ItemPocketSummary">ItemPocketSummary</h2>
 <!-- backwards compatibility -->
@@ -9423,8 +9631,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|url|string(uri)|true|read-only|none|
+|name|string|true|none|The name of the referenced resource.|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_ItemPrice">ItemPrice</h2>
 <!-- backwards compatibility -->
@@ -9435,8 +9643,8 @@ This operation does not require authentication
 
 ```json
 {
-  "purchase_price": -2147483648,
-  "sell_price": -2147483648,
+  "purchase_price": 0,
+  "sell_price": 0,
   "currency": {
     "name": "string",
     "url": "http://example.com"
@@ -9452,10 +9660,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|purchase_price|integer \| null|false|none|none|
-|sell_price|integer \| null|false|none|none|
-|currency|[CurrencySummary](#schemacurrencysummary)|true|none|none|
-|version_group|[VersionGroupSummary](#schemaversiongroupsummary)|true|none|none|
+|purchase_price|integer \| null|false|none|The purchase price in this currency and version group, or null if unavailable.|
+|sell_price|integer \| null|false|none|The sell price in this currency and version group, or null if unavailable.|
+|currency|object|true|none|The currency used for this price.|
+|version_group|object|true|none|The version group to which this price applies.|
 
 <h2 id="tocS_ItemSprites">ItemSprites</h2>
 <!-- backwards compatibility -->
@@ -9474,7 +9682,7 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|default|string \| null|true|none|none|
+|default|string \| null|true|none|The default depiction of this item.|
 
 <h2 id="tocS_ItemSummary">ItemSummary</h2>
 <!-- backwards compatibility -->
@@ -9494,8 +9702,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|url|string(uri)|true|read-only|none|
+|name|string|true|none|The name of the referenced resource.|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_LanguageDetail">LanguageDetail</h2>
 <!-- backwards compatibility -->
@@ -9527,12 +9735,12 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|name|string|true|none|none|
-|official|boolean|false|none|none|
-|iso639|string|true|none|none|
-|iso3166|string|true|none|none|
-|names|[[LanguageName](#schemalanguagename)]|true|read-only|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|name|string|true|none|The name for this resource.|
+|official|boolean|false|none|Whether or not the games are published in this language.|
+|iso639|string|true|none|The two-letter ISO 639-1 language code. Multiple PokéAPI language records may share this code.|
+|iso3166|string|true|none|The two-letter ISO 3166-1 alpha-2 code of the country or region associated with this language record. Multiple PokéAPI language records may share this code.|
+|names|[[LanguageName](#schemalanguagename)]|true|read-only|The name of this resource listed in different languages.|
 
 <h2 id="tocS_LanguageName">LanguageName</h2>
 <!-- backwards compatibility -->
@@ -9555,8 +9763,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|name|string|true|none|The localized name for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_LanguageSummary">LanguageSummary</h2>
 <!-- backwards compatibility -->
@@ -9576,8 +9784,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|url|string(uri)|true|read-only|none|
+|name|string|true|none|The name of the referenced resource.|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_LocationAreaDetail">LocationAreaDetail</h2>
 <!-- backwards compatibility -->
@@ -9590,7 +9798,7 @@ This operation does not require authentication
 {
   "id": 0,
   "name": "string",
-  "game_index": -2147483648,
+  "game_index": 0,
   "encounter_method_rates": [
     {
       "encounter_method": {
@@ -9650,7 +9858,7 @@ This operation does not require authentication
                 }
               ],
               "pokemon_details": {
-                "min_perfect_ivs": -2147483648,
+                "min_perfect_ivs": 0,
                 "always_shiny": true,
                 "never_shiny": true,
                 "is_alpha": true
@@ -9668,13 +9876,13 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|name|string|true|none|none|
-|game_index|integer|true|none|none|
-|encounter_method_rates|[[LocationAreaEncounterRate](#schemalocationareaencounterrate)]|true|read-only|none|
-|location|[LocationSummary](#schemalocationsummary)|true|none|none|
-|names|[[LocationAreaName](#schemalocationareaname)]|true|read-only|none|
-|pokemon_encounters|[[LocationAreaPokemonEncounter](#schemalocationareapokemonencounter)]|true|read-only|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|name|string|true|none|The name for this resource.|
+|game_index|integer|true|none|The internal id of an API resource within game data.|
+|encounter_method_rates|[[LocationAreaEncounterRate](#schemalocationareaencounterrate)]|true|read-only|A list of methods in which Pokémon may be encountered in this area and how likely the method will occur depending on the version of the game.|
+|location|object|true|none|The region this location area can be found in.|
+|names|[[LocationAreaName](#schemalocationareaname)]|true|read-only|The name of this resource listed in different languages.|
+|pokemon_encounters|[[LocationAreaPokemonEncounter](#schemalocationareapokemonencounter)]|true|read-only|A list of Pokémon that can be encountered in this area along with version specific details about the encounter.|
 
 <h2 id="tocS_LocationAreaEncounterDetail">LocationAreaEncounterDetail</h2>
 <!-- backwards compatibility -->
@@ -9699,7 +9907,7 @@ This operation does not require authentication
     }
   ],
   "pokemon_details": {
-    "min_perfect_ivs": -2147483648,
+    "min_perfect_ivs": 0,
     "always_shiny": true,
     "never_shiny": true,
     "is_alpha": true
@@ -9711,12 +9919,12 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|min_level|integer|true|none|none|
-|max_level|integer|true|none|none|
-|chance|integer|false|none|none|
-|method|[EncounterMethodSummary](#schemaencountermethodsummary)|false|none|none|
-|condition_values|[[EncounterConditionValueSummary](#schemaencounterconditionvaluesummary)]|true|read-only|none|
-|pokemon_details|[EncounterPokemonDetail](#schemaencounterpokemondetail) \| null|true|read-only|none|
+|min_level|integer|true|none|The lowest level the Pokémon could be encountered at.|
+|max_level|integer|true|none|The highest level the Pokémon could be encountered at.|
+|chance|integer|false|none|Percent chance that this encounter will occur.|
+|method|object|false|none|The method by which this encounter happens.|
+|condition_values|[[EncounterConditionValueSummary](#schemaencounterconditionvaluesummary)]|true|read-only|A list of condition values that must be in effect for this encounter to occur.|
+|pokemon_details|[EncounterPokemonDetail](#schemaencounterpokemondetail) \| null|true|read-only|Additional properties of the encountered Pokémon, or null if unspecified.|
 
 <h2 id="tocS_LocationAreaEncounterRate">LocationAreaEncounterRate</h2>
 <!-- backwards compatibility -->
@@ -9747,8 +9955,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|encounter_method|[EncounterMethodSummary](#schemaencountermethodsummary)|true|none|none|
-|version_details|[[LocationAreaEncounterVersionDetail](#schemalocationareaencounterversiondetail)]|true|none|none|
+|encounter_method|object|true|none|The method in which Pokémon may be encountered in an area..|
+|version_details|[[LocationAreaEncounterVersionDetail](#schemalocationareaencounterversiondetail)]|true|none|The chance of the encounter to occur on a version of the game.|
 
 <h2 id="tocS_LocationAreaEncounterVersionDetail">LocationAreaEncounterVersionDetail</h2>
 <!-- backwards compatibility -->
@@ -9771,8 +9979,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|rate|integer|true|none|none|
-|version|[VersionSummary](#schemaversionsummary)|true|none|none|
+|rate|integer|true|none|The chance of an encounter to occur.|
+|version|object|true|none|The version of the game in which the encounter can occur with the given chance.|
 
 <h2 id="tocS_LocationAreaName">LocationAreaName</h2>
 <!-- backwards compatibility -->
@@ -9795,8 +10003,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|name|string|true|none|The localized name for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_LocationAreaPokemonEncounter">LocationAreaPokemonEncounter</h2>
 <!-- backwards compatibility -->
@@ -9834,7 +10042,7 @@ This operation does not require authentication
             }
           ],
           "pokemon_details": {
-            "min_perfect_ivs": -2147483648,
+            "min_perfect_ivs": 0,
             "always_shiny": true,
             "never_shiny": true,
             "is_alpha": true
@@ -9850,8 +10058,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|pokemon|[PokemonSummary](#schemapokemonsummary)|true|none|none|
-|version_details|[[LocationAreaPokemonEncounterVersion](#schemalocationareapokemonencounterversion)]|true|none|none|
+|pokemon|object|true|none|The Pokémon being encountered.|
+|version_details|[[LocationAreaPokemonEncounterVersion](#schemalocationareapokemonencounterversion)]|true|none|A list of versions and encounters with Pokémon that might happen in the referenced location area.|
 
 <h2 id="tocS_LocationAreaPokemonEncounterVersion">LocationAreaPokemonEncounterVersion</h2>
 <!-- backwards compatibility -->
@@ -9883,7 +10091,7 @@ This operation does not require authentication
         }
       ],
       "pokemon_details": {
-        "min_perfect_ivs": -2147483648,
+        "min_perfect_ivs": 0,
         "always_shiny": true,
         "never_shiny": true,
         "is_alpha": true
@@ -9897,9 +10105,9 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|version|[VersionSummary](#schemaversionsummary)|true|none|none|
-|max_chance|integer|true|none|none|
-|encounter_details|[[LocationAreaEncounterDetail](#schemalocationareaencounterdetail)]|true|none|none|
+|version|object|true|none|The game version this encounter happens in.|
+|max_chance|integer|true|none|The total percentage of all encounter potential.|
+|encounter_details|[[LocationAreaEncounterDetail](#schemalocationareaencounterdetail)]|true|none|A list of encounters and their specifics.|
 
 <h2 id="tocS_LocationAreaSummary">LocationAreaSummary</h2>
 <!-- backwards compatibility -->
@@ -9919,8 +10127,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|url|string(uri)|true|read-only|none|
+|name|string|true|none|The name of the referenced resource.|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_LocationDetail">LocationDetail</h2>
 <!-- backwards compatibility -->
@@ -9948,7 +10156,7 @@ This operation does not require authentication
   ],
   "game_indices": [
     {
-      "game_index": -2147483648,
+      "game_index": 0,
       "generation": {
         "name": "string",
         "url": "http://example.com"
@@ -9968,12 +10176,12 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|name|string|true|none|none|
-|region|[RegionSummary](#schemaregionsummary) \| null|true|none|none|
-|names|[[LocationName](#schemalocationname)]|true|read-only|none|
-|game_indices|[[LocationGameIndex](#schemalocationgameindex)]|true|read-only|none|
-|areas|[[LocationAreaSummary](#schemalocationareasummary)]|true|read-only|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|name|string|true|none|The name for this resource.|
+|region|[RegionSummary](#schemaregionsummary) \| null|true|none|The region this location can be found in.|
+|names|[[LocationName](#schemalocationname)]|true|read-only|The name of this resource listed in different languages.|
+|game_indices|[[LocationGameIndex](#schemalocationgameindex)]|true|read-only|A list of game indices relevent to this location by generation.|
+|areas|[[LocationAreaSummary](#schemalocationareasummary)]|true|read-only|Areas that can be found within this location.|
 
 <h2 id="tocS_LocationGameIndex">LocationGameIndex</h2>
 <!-- backwards compatibility -->
@@ -9984,7 +10192,7 @@ This operation does not require authentication
 
 ```json
 {
-  "game_index": -2147483648,
+  "game_index": 0,
   "generation": {
     "name": "string",
     "url": "http://example.com"
@@ -9996,8 +10204,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|game_index|integer|true|none|none|
-|generation|[GenerationSummary](#schemagenerationsummary)|true|none|none|
+|game_index|integer|true|none|The internal id of an API resource within game data.|
+|generation|object|true|none|The generation relevent to this game index.|
 
 <h2 id="tocS_LocationName">LocationName</h2>
 <!-- backwards compatibility -->
@@ -10020,8 +10228,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|name|string|true|none|The localized name for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_LocationSummary">LocationSummary</h2>
 <!-- backwards compatibility -->
@@ -10041,8 +10249,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|url|string(uri)|true|read-only|none|
+|name|string|true|none|The name of the referenced resource.|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_MachineDetail">MachineDetail</h2>
 <!-- backwards compatibility -->
@@ -10073,10 +10281,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|item|[ItemSummary](#schemaitemsummary)|true|none|none|
-|version_group|[VersionGroupSummary](#schemaversiongroupsummary)|true|none|none|
-|move|[MoveSummary](#schemamovesummary)|true|none|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|item|object|true|none|The TM or HM item that corresponds to this machine.|
+|version_group|object|true|none|The version group that this machine applies to.|
+|move|object|true|none|The move that is taught by this machine.|
 
 <h2 id="tocS_MachineSummary">MachineSummary</h2>
 <!-- backwards compatibility -->
@@ -10095,7 +10303,7 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|url|string(uri)|true|read-only|none|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_MoveBattleStyleDetail">MoveBattleStyleDetail</h2>
 <!-- backwards compatibility -->
@@ -10124,9 +10332,9 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|name|string|true|none|none|
-|names|[[MoveBattleStyleName](#schemamovebattlestylename)]|true|read-only|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|name|string|true|none|The name for this resource.|
+|names|[[MoveBattleStyleName](#schemamovebattlestylename)]|true|read-only|The name of this resource listed in different languages.|
 
 <h2 id="tocS_MoveBattleStyleName">MoveBattleStyleName</h2>
 <!-- backwards compatibility -->
@@ -10149,8 +10357,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|name|string|true|none|The localized name for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_MoveBattleStyleSummary">MoveBattleStyleSummary</h2>
 <!-- backwards compatibility -->
@@ -10170,8 +10378,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|url|string(uri)|true|read-only|none|
+|name|string|true|none|The name of the referenced resource.|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_MoveChange">MoveChange</h2>
 <!-- backwards compatibility -->
@@ -10182,9 +10390,9 @@ This operation does not require authentication
 
 ```json
 {
-  "accuracy": -2147483648,
-  "power": -2147483648,
-  "pp": -2147483648,
+  "accuracy": 0,
+  "power": 0,
+  "pp": 0,
   "effect_chance": 0,
   "effect_entries": [
     {
@@ -10211,13 +10419,13 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|accuracy|integer \| null|false|none|none|
-|power|integer \| null|false|none|none|
-|pp|integer \| null|false|none|none|
-|effect_chance|integer|true|none|none|
-|effect_entries|[[MoveEffectEffectText](#schemamoveeffecteffecttext)]|true|read-only|none|
-|type|[TypeSummary](#schematypesummary)|true|none|none|
-|version_group|[VersionGroupSummary](#schemaversiongroupsummary)|true|none|none|
+|accuracy|integer \| null|false|none|The percent value of how likely this move is to be successful.|
+|power|integer \| null|false|none|The base power before the listed version group, or null if power did not change.|
+|pp|integer \| null|false|none|Power points. The number of times this move can be used.|
+|effect_chance|integer \| null|true|none|The percent value of how likely it is this moves effect will take effect.|
+|effect_entries|[[MoveEffectEffectText](#schemamoveeffecteffecttext)]|true|read-only|The effect of this move listed in different languages.|
+|type|[TypeSummary](#schematypesummary) \| null|true|none|The elemental type of this move.|
+|version_group|object|true|none|The version group in which these move stat values were in effect.|
 
 <h2 id="tocS_MoveComboUsage">MoveComboUsage</h2>
 <!-- backwards compatibility -->
@@ -10247,8 +10455,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|use_before|[[MoveSummary](#schemamovesummary)]|true|none|none|
-|use_after|[[MoveSummary](#schemamovesummary)]|true|none|none|
+|use_before|[[MoveSummary](#schemamovesummary)]|true|none|A list of moves to use before this move.|
+|use_after|[[MoveSummary](#schemamovesummary)]|true|none|A list of moves to use after this move.|
 
 <h2 id="tocS_MoveCombos">MoveCombos</h2>
 <!-- backwards compatibility -->
@@ -10294,8 +10502,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|normal|[MoveComboUsage](#schemamovecombousage)|true|none|none|
-|super|[MoveComboUsage](#schemamovecombousage)|true|none|none|
+|normal|object|true|none|A detail of moves this move can be used before or after, granting additional appeal points in contests.|
+|super|object|true|none|A detail of moves this move can be used before or after, granting additional appeal points in super contests.|
 
 <h2 id="tocS_MoveDamageClassDescription">MoveDamageClassDescription</h2>
 <!-- backwards compatibility -->
@@ -10318,8 +10526,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|description|string|false|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|description|string|false|none|The localized description for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_MoveDamageClassDetail">MoveDamageClassDetail</h2>
 <!-- backwards compatibility -->
@@ -10363,11 +10571,11 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|name|string|true|none|none|
-|descriptions|[[MoveDamageClassDescription](#schemamovedamageclassdescription)]|true|read-only|none|
-|moves|[[MoveSummary](#schemamovesummary)]|true|read-only|none|
-|names|[[MoveDamageClassName](#schemamovedamageclassname)]|true|read-only|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|name|string|true|none|The name for this resource.|
+|descriptions|[[MoveDamageClassDescription](#schemamovedamageclassdescription)]|true|read-only|The description of this resource listed in different languages.|
+|moves|[[MoveSummary](#schemamovesummary)]|true|read-only|A list of moves that fall into this damage class.|
+|names|[[MoveDamageClassName](#schemamovedamageclassname)]|true|read-only|The name of this resource listed in different languages.|
 
 <h2 id="tocS_MoveDamageClassName">MoveDamageClassName</h2>
 <!-- backwards compatibility -->
@@ -10390,8 +10598,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|name|string|true|none|The localized name for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_MoveDamageClassSummary">MoveDamageClassSummary</h2>
 <!-- backwards compatibility -->
@@ -10411,8 +10619,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|url|string(uri)|true|read-only|none|
+|name|string|true|none|The name of the referenced resource.|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_MoveDetail">MoveDetail</h2>
 <!-- backwards compatibility -->
@@ -10425,11 +10633,11 @@ This operation does not require authentication
 {
   "id": 0,
   "name": "string",
-  "accuracy": -2147483648,
+  "accuracy": 0,
   "effect_chance": 0,
-  "pp": -2147483648,
-  "priority": -2147483648,
-  "power": -2147483648,
+  "pp": 0,
+  "priority": -8,
+  "power": 0,
   "contest_combos": {
     "normal": {
       "use_before": [
@@ -10511,16 +10719,16 @@ This operation does not require authentication
       "name": "string",
       "url": "http://example.com"
     },
-    "min_hits": -2147483648,
-    "max_hits": -2147483648,
-    "min_turns": -2147483648,
-    "max_turns": -2147483648,
-    "drain": -2147483648,
-    "healing": -2147483648,
-    "crit_rate": -2147483648,
-    "ailment_chance": -2147483648,
-    "flinch_chance": -2147483648,
-    "stat_chance": -2147483648
+    "min_hits": 2,
+    "max_hits": 2,
+    "min_turns": 2,
+    "max_turns": 2,
+    "drain": -100,
+    "healing": -100,
+    "crit_rate": 0,
+    "ailment_chance": 0,
+    "flinch_chance": 0,
+    "stat_chance": 0
   },
   "names": [
     {
@@ -10533,9 +10741,9 @@ This operation does not require authentication
   ],
   "past_values": [
     {
-      "accuracy": -2147483648,
-      "power": -2147483648,
-      "pp": -2147483648,
+      "accuracy": 0,
+      "power": 0,
+      "pp": 0,
       "effect_chance": 0,
       "effect_entries": [
         {
@@ -10559,7 +10767,7 @@ This operation does not require authentication
   ],
   "stat_changes": [
     {
-      "change": -2147483648,
+      "change": -6,
       "stat": {
         "name": "string",
         "url": "http://example.com"
@@ -10614,30 +10822,30 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|name|string|true|none|none|
-|accuracy|integer \| null|false|none|none|
-|effect_chance|integer|true|none|none|
-|pp|integer \| null|false|none|none|
-|priority|integer \| null|false|none|none|
-|power|integer \| null|false|none|none|
-|contest_combos|[MoveCombos](#schemamovecombos) \| null|true|read-only|none|
-|contest_type|[ContestTypeSummary](#schemacontesttypesummary)|true|none|none|
-|contest_effect|[ContestEffectSummary](#schemacontesteffectsummary)|true|none|none|
-|damage_class|[MoveDamageClassSummary](#schemamovedamageclasssummary)|true|none|none|
-|effect_entries|[[MoveEffectEffectText](#schemamoveeffecteffecttext)]|true|read-only|none|
-|effect_changes|[[MoveEffectChange](#schemamoveeffectchange)]|true|read-only|none|
-|generation|[GenerationSummary](#schemagenerationsummary)|true|none|none|
-|meta|object|true|read-only|none|
-|names|[[MoveName](#schemamovename)]|true|read-only|none|
-|past_values|[[MoveChange](#schemamovechange)]|true|read-only|none|
-|stat_changes|[[MoveMetaStatChange](#schemamovemetastatchange)]|true|read-only|none|
-|super_contest_effect|[SuperContestEffectSummary](#schemasupercontesteffectsummary)|true|none|none|
-|target|[MoveTargetSummary](#schemamovetargetsummary)|true|none|none|
-|type|[TypeSummary](#schematypesummary)|true|none|none|
-|machines|[[ItemMachine](#schemaitemmachine)]|true|read-only|none|
-|flavor_text_entries|[[MoveFlavorText](#schemamoveflavortext)]|true|read-only|none|
-|learned_by_pokemon|[[PokemonSummary](#schemapokemonsummary)]|true|read-only|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|name|string|true|none|The name for this resource.|
+|accuracy|integer \| null|false|none|The percent value of how likely this move is to be successful.|
+|effect_chance|integer \| null|true|none|The percent value of how likely it is this moves effect will happen.|
+|pp|integer \| null|false|none|Power points. The number of times this move can be used.|
+|priority|integer \| null|false|none|A value between -8 and 8. Sets the order in which moves are executed during battle. See [Bulbapedia](http://bulbapedia.bulbagarden.net/wiki/Priority) for greater detail.|
+|power|integer \| null|false|none|The base power of this move, or null if it has no fixed base power.|
+|contest_combos|[MoveCombos](#schemamovecombos) \| null|true|read-only|A detail of normal and super contest combos that require this move.|
+|contest_type|[ContestTypeSummary](#schemacontesttypesummary) \| null|true|none|The type of appeal this move gives a Pokémon when used in a contest.|
+|contest_effect|[ContestEffectSummary](#schemacontesteffectsummary) \| null|true|none|The effect the move has when used in a contest.|
+|damage_class|object|true|none|The type of damage the move inflicts on the target, e.g. physical.|
+|effect_entries|[[MoveEffectEffectText](#schemamoveeffecteffecttext)]|true|read-only|The effect of this move listed in different languages.|
+|effect_changes|[[MoveEffectChange](#schemamoveeffectchange)]|true|read-only|The list of previous effects this move has had across version groups of the games.|
+|generation|object|true|none|The generation in which this move was introduced.|
+|meta|[MoveMeta](#schemamovemeta) \| null|true|read-only|Metadata about this move|
+|names|[[MoveName](#schemamovename)]|true|read-only|The name of this resource listed in different languages.|
+|past_values|[[MoveChange](#schemamovechange)]|true|read-only|A list of move resource value changes across version groups of the game.|
+|stat_changes|[[MoveMetaStatChange](#schemamovemetastatchange)]|true|read-only|A list of stats this moves effects and how much it effects them.|
+|super_contest_effect|[SuperContestEffectSummary](#schemasupercontesteffectsummary) \| null|true|none|The effect the move has when used in a super contest.|
+|target|object|true|none|The type of target that will receive the effects of the attack.|
+|type|object|true|none|The elemental type of this move.|
+|machines|[[ItemMachine](#schemaitemmachine)]|true|read-only|A list of the machines that teach this move.|
+|flavor_text_entries|[[MoveFlavorText](#schemamoveflavortext)]|true|read-only|The flavor text of this move listed in different languages.|
+|learned_by_pokemon|[[PokemonSummary](#schemapokemonsummary)]|true|read-only|List of Pokemon that can learn the move|
 
 <h2 id="tocS_MoveEffectChange">MoveEffectChange</h2>
 <!-- backwards compatibility -->
@@ -10668,8 +10876,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|version_group|[VersionGroupSummary](#schemaversiongroupsummary)|true|none|none|
-|effect_entries|[[MoveEffectChangeEffectText](#schemamoveeffectchangeeffecttext)]|true|read-only|none|
+|version_group|object|true|none|The version group in which the previous effect of this ability originated.|
+|effect_entries|[[MoveEffectChangeEffectText](#schemamoveeffectchangeeffecttext)]|true|read-only|The previous effect of this ability listed in different languages.|
 
 <h2 id="tocS_MoveEffectChangeEffectText">MoveEffectChangeEffectText</h2>
 <!-- backwards compatibility -->
@@ -10692,8 +10900,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|effect|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|effect|string|true|none|The localized effect text for an API resource in a specific language.|
+|language|object|true|none|The language this effect is in.|
 
 <h2 id="tocS_MoveEffectEffectText">MoveEffectEffectText</h2>
 <!-- backwards compatibility -->
@@ -10717,9 +10925,9 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|effect|string|true|none|none|
-|short_effect|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|effect|string|true|none|The localized effect text for an API resource in a specific language.|
+|short_effect|string|true|none|The localized effect text in brief.|
+|language|object|true|none|The language this effect is in.|
 
 <h2 id="tocS_MoveFlavorText">MoveFlavorText</h2>
 <!-- backwards compatibility -->
@@ -10746,9 +10954,9 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|flavor_text|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
-|version_group|[VersionGroupSummary](#schemaversiongroupsummary)|true|none|none|
+|flavor_text|string|true|none|The localized flavor text for an api resource in a specific language.|
+|language|object|true|none|The language this name is in.|
+|version_group|object|true|none|The version group that uses this flavor text.|
 
 <h2 id="tocS_MoveLearnMethodDescription">MoveLearnMethodDescription</h2>
 <!-- backwards compatibility -->
@@ -10771,8 +10979,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|description|string|false|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|description|string|false|none|The localized description for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_MoveLearnMethodDetail">MoveLearnMethodDetail</h2>
 <!-- backwards compatibility -->
@@ -10816,11 +11024,11 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|name|string|true|none|none|
-|names|[[MoveLearnMethodName](#schemamovelearnmethodname)]|true|read-only|none|
-|descriptions|[[MoveLearnMethodDescription](#schemamovelearnmethoddescription)]|true|read-only|none|
-|version_groups|[[VersionGroupSummary](#schemaversiongroupsummary)]|true|read-only|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|name|string|true|none|The name for this resource.|
+|names|[[MoveLearnMethodName](#schemamovelearnmethodname)]|true|read-only|The name of this resource listed in different languages.|
+|descriptions|[[MoveLearnMethodDescription](#schemamovelearnmethoddescription)]|true|read-only|The description of this resource listed in different languages.|
+|version_groups|[[VersionGroupSummary](#schemaversiongroupsummary)]|true|read-only|A list of version groups where moves can be learned through this method.|
 
 <h2 id="tocS_MoveLearnMethodName">MoveLearnMethodName</h2>
 <!-- backwards compatibility -->
@@ -10843,8 +11051,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|name|string|true|none|The localized name for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_MoveLearnMethodSummary">MoveLearnMethodSummary</h2>
 <!-- backwards compatibility -->
@@ -10864,8 +11072,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|url|string(uri)|true|read-only|none|
+|name|string|true|none|The name of the referenced resource.|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_MoveMeta">MoveMeta</h2>
 <!-- backwards compatibility -->
@@ -10884,16 +11092,16 @@ This operation does not require authentication
     "name": "string",
     "url": "http://example.com"
   },
-  "min_hits": -2147483648,
-  "max_hits": -2147483648,
-  "min_turns": -2147483648,
-  "max_turns": -2147483648,
-  "drain": -2147483648,
-  "healing": -2147483648,
-  "crit_rate": -2147483648,
-  "ailment_chance": -2147483648,
-  "flinch_chance": -2147483648,
-  "stat_chance": -2147483648
+  "min_hits": 2,
+  "max_hits": 2,
+  "min_turns": 2,
+  "max_turns": 2,
+  "drain": -100,
+  "healing": -100,
+  "crit_rate": 0,
+  "ailment_chance": 0,
+  "flinch_chance": 0,
+  "stat_chance": 0
 }
 ```
 
@@ -10901,18 +11109,18 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|ailment|[MoveMetaAilmentSummary](#schemamovemetaailmentsummary)|true|none|none|
-|category|[MoveMetaCategorySummary](#schemamovemetacategorysummary)|true|none|none|
-|min_hits|integer \| null|false|none|none|
-|max_hits|integer \| null|false|none|none|
-|min_turns|integer \| null|false|none|none|
-|max_turns|integer \| null|false|none|none|
-|drain|integer \| null|false|none|none|
-|healing|integer \| null|false|none|none|
-|crit_rate|integer \| null|false|none|none|
-|ailment_chance|integer \| null|false|none|none|
-|flinch_chance|integer \| null|false|none|none|
-|stat_chance|integer \| null|false|none|none|
+|ailment|object|true|none|The status ailment this move inflicts on its target.|
+|category|object|true|none|The category of move this move falls under, e.g. damage or ailment.|
+|min_hits|integer \| null|false|none|The minimum number of times this move hits. Null if it always only hits once.|
+|max_hits|integer \| null|false|none|The maximum number of times this move hits. Null if it always only hits once.|
+|min_turns|integer \| null|false|none|The minimum number of turns this move continues to take effect. Null if it always only lasts one turn.|
+|max_turns|integer \| null|false|none|The maximum number of turns this move continues to take effect. Null if it always only lasts one turn.|
+|drain|integer \| null|false|none|HP drain (if positive) or Recoil damage (if negative), in percent of damage done.|
+|healing|integer \| null|false|none|The amount of hp gained by the attacking Pokemon, in percent of it's maximum HP.|
+|crit_rate|integer \| null|false|none|Critical hit rate bonus.|
+|ailment_chance|integer \| null|false|none|The likelihood this attack will cause an ailment.|
+|flinch_chance|integer \| null|false|none|The likelihood this attack will cause the target Pokémon to flinch.|
+|stat_chance|integer \| null|false|none|The likelihood this attack will cause a stat change in the target Pokémon.|
 
 <h2 id="tocS_MoveMetaAilmentDetail">MoveMetaAilmentDetail</h2>
 <!-- backwards compatibility -->
@@ -10947,10 +11155,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|name|string|true|none|none|
-|moves|[[MoveSummary](#schemamovesummary)]|true|read-only|none|
-|names|[[MoveMetaAilmentName](#schemamovemetaailmentname)]|true|read-only|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|name|string|true|none|The name for this resource.|
+|moves|[[MoveSummary](#schemamovesummary)]|true|read-only|A list of moves that cause this ailment.|
+|names|[[MoveMetaAilmentName](#schemamovemetaailmentname)]|true|read-only|The name of this resource listed in different languages.|
 
 <h2 id="tocS_MoveMetaAilmentName">MoveMetaAilmentName</h2>
 <!-- backwards compatibility -->
@@ -10973,8 +11181,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|name|string|true|none|The localized name for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_MoveMetaAilmentSummary">MoveMetaAilmentSummary</h2>
 <!-- backwards compatibility -->
@@ -10994,8 +11202,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|url|string(uri)|true|read-only|none|
+|name|string|true|none|The name of the referenced resource.|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_MoveMetaCategoryDescription">MoveMetaCategoryDescription</h2>
 <!-- backwards compatibility -->
@@ -11018,8 +11226,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|description|string|false|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|description|string|false|none|The localized description for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_MoveMetaCategoryDetail">MoveMetaCategoryDetail</h2>
 <!-- backwards compatibility -->
@@ -11054,10 +11262,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|name|string|true|none|none|
-|descriptions|[[MoveMetaCategoryDescription](#schemamovemetacategorydescription)]|true|read-only|none|
-|moves|[[MoveSummary](#schemamovesummary)]|true|read-only|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|name|string|true|none|The name for this resource.|
+|descriptions|[[MoveMetaCategoryDescription](#schemamovemetacategorydescription)]|true|read-only|The description of this resource listed in different languages.|
+|moves|[[MoveSummary](#schemamovesummary)]|true|read-only|A list of moves that fall into this category.|
 
 <h2 id="tocS_MoveMetaCategorySummary">MoveMetaCategorySummary</h2>
 <!-- backwards compatibility -->
@@ -11077,8 +11285,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|url|string(uri)|true|read-only|none|
+|name|string|true|none|The name of the referenced resource.|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_MoveMetaStatChange">MoveMetaStatChange</h2>
 <!-- backwards compatibility -->
@@ -11089,7 +11297,7 @@ This operation does not require authentication
 
 ```json
 {
-  "change": -2147483648,
+  "change": -6,
   "stat": {
     "name": "string",
     "url": "http://example.com"
@@ -11101,8 +11309,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|change|integer|true|none|none|
-|stat|[StatSummary](#schemastatsummary)|true|none|none|
+|change|integer|true|none|The amount of change.|
+|stat|object|true|none|The stat being affected.|
 
 <h2 id="tocS_MoveName">MoveName</h2>
 <!-- backwards compatibility -->
@@ -11125,8 +11333,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|name|string|true|none|The localized name for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_MoveStatChange">MoveStatChange</h2>
 <!-- backwards compatibility -->
@@ -11137,7 +11345,7 @@ This operation does not require authentication
 
 ```json
 {
-  "change": -2147483648,
+  "change": -6,
   "move": {
     "name": "string",
     "url": "http://example.com"
@@ -11149,8 +11357,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|change|integer|true|none|none|
-|move|[MoveSummary](#schemamovesummary)|true|none|none|
+|change|integer|true|none|The maximum amount of change to the referenced stat.|
+|move|object|true|none|The move causing the change.|
 
 <h2 id="tocS_MoveSummary">MoveSummary</h2>
 <!-- backwards compatibility -->
@@ -11170,8 +11378,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|url|string(uri)|true|read-only|none|
+|name|string|true|none|The name of the referenced resource.|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_MoveTargetDescription">MoveTargetDescription</h2>
 <!-- backwards compatibility -->
@@ -11194,8 +11402,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|description|string|false|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|description|string|false|none|The localized description for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_MoveTargetDetail">MoveTargetDetail</h2>
 <!-- backwards compatibility -->
@@ -11239,11 +11447,11 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|name|string|true|none|none|
-|descriptions|[[MoveTargetDescription](#schemamovetargetdescription)]|true|read-only|none|
-|moves|[[MoveSummary](#schemamovesummary)]|true|read-only|none|
-|names|[[MoveTargetName](#schemamovetargetname)]|true|read-only|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|name|string|true|none|The name for this resource.|
+|descriptions|[[MoveTargetDescription](#schemamovetargetdescription)]|true|read-only|The description of this resource listed in different languages.|
+|moves|[[MoveSummary](#schemamovesummary)]|true|read-only|A list of moves that that are directed at this target.|
+|names|[[MoveTargetName](#schemamovetargetname)]|true|read-only|The name of this resource listed in different languages.|
 
 <h2 id="tocS_MoveTargetName">MoveTargetName</h2>
 <!-- backwards compatibility -->
@@ -11266,8 +11474,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|name|string|true|none|The localized name for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_MoveTargetSummary">MoveTargetSummary</h2>
 <!-- backwards compatibility -->
@@ -11287,8 +11495,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|url|string(uri)|true|read-only|none|
+|name|string|true|none|The name of the referenced resource.|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_NatureBattleStylePreference">NatureBattleStylePreference</h2>
 <!-- backwards compatibility -->
@@ -11299,8 +11507,8 @@ This operation does not require authentication
 
 ```json
 {
-  "low_hp_preference": -2147483648,
-  "high_hp_preference": -2147483648,
+  "low_hp_preference": 0,
+  "high_hp_preference": 0,
   "move_battle_style": {
     "name": "string",
     "url": "http://example.com"
@@ -11312,9 +11520,9 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|low_hp_preference|integer|true|none|none|
-|high_hp_preference|integer|true|none|none|
-|move_battle_style|[MoveBattleStyleSummary](#schemamovebattlestylesummary)|true|none|none|
+|low_hp_preference|integer|true|none|Chance of using the move, in percent, if HP is under one half.|
+|high_hp_preference|integer|true|none|Chance of using the move, in percent, if HP is over one half.|
+|move_battle_style|object|true|none|The move battle style.|
 
 <h2 id="tocS_NatureDetail">NatureDetail</h2>
 <!-- backwards compatibility -->
@@ -11343,15 +11551,9 @@ This operation does not require authentication
     "name": "string",
     "url": "http://example.com"
   },
-  "berries": [
-    {
-      "name": "string",
-      "url": "http://example.com"
-    }
-  ],
   "pokeathlon_stat_changes": [
     {
-      "max_change": -2147483648,
+      "max_change": -2,
       "pokeathlon_stat": {
         "name": "string",
         "url": "http://example.com"
@@ -11360,8 +11562,8 @@ This operation does not require authentication
   ],
   "move_battle_style_preferences": [
     {
-      "low_hp_preference": -2147483648,
-      "high_hp_preference": -2147483648,
+      "low_hp_preference": 0,
+      "high_hp_preference": 0,
       "move_battle_style": {
         "name": "string",
         "url": "http://example.com"
@@ -11384,16 +11586,15 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|name|string|true|none|none|
-|decreased_stat|[StatSummary](#schemastatsummary)|true|none|none|
-|increased_stat|[StatSummary](#schemastatsummary)|true|none|none|
-|likes_flavor|[BerryFlavorSummary](#schemaberryflavorsummary)|true|none|none|
-|hates_flavor|[BerryFlavorSummary](#schemaberryflavorsummary)|true|none|none|
-|berries|[[BerrySummary](#schemaberrysummary)]|true|read-only|none|
-|pokeathlon_stat_changes|[[NaturePokeathlonStat](#schemanaturepokeathlonstat)]|true|read-only|none|
-|move_battle_style_preferences|[[NatureBattleStylePreference](#schemanaturebattlestylepreference)]|true|read-only|none|
-|names|[[NatureName](#schemanaturename)]|true|read-only|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|name|string|true|none|The name for this resource.|
+|decreased_stat|[StatSummary](#schemastatsummary) \| null|true|none|The stat decreased by 10% in Pokémon with this nature.|
+|increased_stat|[StatSummary](#schemastatsummary) \| null|true|none|The stat increased by 10% in Pokémon with this nature.|
+|likes_flavor|[BerryFlavorSummary](#schemaberryflavorsummary) \| null|true|none|The flavor liked by Pokémon with this nature.|
+|hates_flavor|[BerryFlavorSummary](#schemaberryflavorsummary) \| null|true|none|The flavor hated by Pokémon with this nature.|
+|pokeathlon_stat_changes|[[NaturePokeathlonStat](#schemanaturepokeathlonstat)]|true|read-only|A list of Pokéathlon stats this nature effects and how much it effects them.|
+|move_battle_style_preferences|[[NatureBattleStylePreference](#schemanaturebattlestylepreference)]|true|read-only|A list of battle styles and how likely a Pokémon with this nature is to use them in the Battle Palace or Battle Tent.|
+|names|[[NatureName](#schemanaturename)]|true|read-only|The name of this resource listed in different languages.|
 
 <h2 id="tocS_NatureName">NatureName</h2>
 <!-- backwards compatibility -->
@@ -11416,8 +11617,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|name|string|true|none|The localized name for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_NaturePokeathlonStat">NaturePokeathlonStat</h2>
 <!-- backwards compatibility -->
@@ -11428,7 +11629,7 @@ This operation does not require authentication
 
 ```json
 {
-  "max_change": -2147483648,
+  "max_change": -2,
   "pokeathlon_stat": {
     "name": "string",
     "url": "http://example.com"
@@ -11440,8 +11641,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|max_change|integer|true|none|none|
-|pokeathlon_stat|[PokeathlonStatSummary](#schemapokeathlonstatsummary)|true|none|none|
+|max_change|integer|true|none|The amount of change.|
+|pokeathlon_stat|object|true|none|The stat being affected.|
 
 <h2 id="tocS_NatureSummary">NatureSummary</h2>
 <!-- backwards compatibility -->
@@ -11461,8 +11662,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|url|string(uri)|true|read-only|none|
+|name|string|true|none|The name of the referenced resource.|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_PaginatedAbilitySummaryList">PaginatedAbilitySummaryList</h2>
 <!-- backwards compatibility -->
@@ -11473,9 +11674,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/ability/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/ability/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -11489,10 +11690,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[AbilitySummary](#schemaabilitysummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[AbilitySummary](#schemaabilitysummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedBerryFirmnessSummaryList">PaginatedBerryFirmnessSummaryList</h2>
 <!-- backwards compatibility -->
@@ -11503,9 +11704,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/berry-firmness/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/berry-firmness/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -11519,10 +11720,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[BerryFirmnessSummary](#schemaberryfirmnesssummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[BerryFirmnessSummary](#schemaberryfirmnesssummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedBerryFlavorSummaryList">PaginatedBerryFlavorSummaryList</h2>
 <!-- backwards compatibility -->
@@ -11533,9 +11734,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/berry-flavor/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/berry-flavor/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -11549,10 +11750,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[BerryFlavorSummary](#schemaberryflavorsummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[BerryFlavorSummary](#schemaberryflavorsummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedBerrySummaryList">PaginatedBerrySummaryList</h2>
 <!-- backwards compatibility -->
@@ -11563,9 +11764,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/berry/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/berry/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -11579,10 +11780,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[BerrySummary](#schemaberrysummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[BerrySummary](#schemaberrysummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedCharacteristicSummaryList">PaginatedCharacteristicSummaryList</h2>
 <!-- backwards compatibility -->
@@ -11593,9 +11794,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/characteristic/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/characteristic/?offset=0&limit=20",
   "results": [
     {
       "url": "http://example.com"
@@ -11608,10 +11809,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[CharacteristicSummary](#schemacharacteristicsummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[CharacteristicSummary](#schemacharacteristicsummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedContestEffectSummaryList">PaginatedContestEffectSummaryList</h2>
 <!-- backwards compatibility -->
@@ -11622,9 +11823,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/contest-effect/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/contest-effect/?offset=0&limit=20",
   "results": [
     {
       "url": "http://example.com"
@@ -11637,10 +11838,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[ContestEffectSummary](#schemacontesteffectsummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[ContestEffectSummary](#schemacontesteffectsummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedContestTypeSummaryList">PaginatedContestTypeSummaryList</h2>
 <!-- backwards compatibility -->
@@ -11651,9 +11852,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/contest-type/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/contest-type/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -11667,10 +11868,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[ContestTypeSummary](#schemacontesttypesummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[ContestTypeSummary](#schemacontesttypesummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedCurrencySummaryList">PaginatedCurrencySummaryList</h2>
 <!-- backwards compatibility -->
@@ -11681,9 +11882,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/currency/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/currency/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -11697,10 +11898,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[CurrencySummary](#schemacurrencysummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[CurrencySummary](#schemacurrencysummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedEggGroupSummaryList">PaginatedEggGroupSummaryList</h2>
 <!-- backwards compatibility -->
@@ -11711,9 +11912,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/egg-group/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/egg-group/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -11727,10 +11928,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[EggGroupSummary](#schemaegggroupsummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[EggGroupSummary](#schemaegggroupsummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedEncounterConditionSummaryList">PaginatedEncounterConditionSummaryList</h2>
 <!-- backwards compatibility -->
@@ -11741,9 +11942,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/encounter-condition/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/encounter-condition/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -11757,10 +11958,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[EncounterConditionSummary](#schemaencounterconditionsummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[EncounterConditionSummary](#schemaencounterconditionsummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedEncounterConditionValueSummaryList">PaginatedEncounterConditionValueSummaryList</h2>
 <!-- backwards compatibility -->
@@ -11771,9 +11972,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/encounter-condition-value/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/encounter-condition-value/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -11787,10 +11988,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[EncounterConditionValueSummary](#schemaencounterconditionvaluesummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[EncounterConditionValueSummary](#schemaencounterconditionvaluesummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedEncounterMethodSummaryList">PaginatedEncounterMethodSummaryList</h2>
 <!-- backwards compatibility -->
@@ -11801,9 +12002,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/encounter-method/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/encounter-method/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -11817,10 +12018,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[EncounterMethodSummary](#schemaencountermethodsummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[EncounterMethodSummary](#schemaencountermethodsummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedEvolutionChainSummaryList">PaginatedEvolutionChainSummaryList</h2>
 <!-- backwards compatibility -->
@@ -11831,9 +12032,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/evolution-chain/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/evolution-chain/?offset=0&limit=20",
   "results": [
     {
       "url": "http://example.com"
@@ -11846,10 +12047,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[EvolutionChainSummary](#schemaevolutionchainsummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[EvolutionChainSummary](#schemaevolutionchainsummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedEvolutionTriggerSummaryList">PaginatedEvolutionTriggerSummaryList</h2>
 <!-- backwards compatibility -->
@@ -11860,9 +12061,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/evolution-trigger/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/evolution-trigger/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -11876,10 +12077,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[EvolutionTriggerSummary](#schemaevolutiontriggersummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[EvolutionTriggerSummary](#schemaevolutiontriggersummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedEvolutionVariableSummaryList">PaginatedEvolutionVariableSummaryList</h2>
 <!-- backwards compatibility -->
@@ -11890,9 +12091,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/evolution-variable/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/evolution-variable/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -11906,10 +12107,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[EvolutionVariableSummary](#schemaevolutionvariablesummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[EvolutionVariableSummary](#schemaevolutionvariablesummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedGenderSummaryList">PaginatedGenderSummaryList</h2>
 <!-- backwards compatibility -->
@@ -11920,9 +12121,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/gender/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/gender/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -11936,10 +12137,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[GenderSummary](#schemagendersummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[GenderSummary](#schemagendersummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedGenerationSummaryList">PaginatedGenerationSummaryList</h2>
 <!-- backwards compatibility -->
@@ -11950,9 +12151,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/generation/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/generation/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -11966,10 +12167,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[GenerationSummary](#schemagenerationsummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[GenerationSummary](#schemagenerationsummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedGrowthRateSummaryList">PaginatedGrowthRateSummaryList</h2>
 <!-- backwards compatibility -->
@@ -11980,9 +12181,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/growth-rate/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/growth-rate/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -11996,10 +12197,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[GrowthRateSummary](#schemagrowthratesummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[GrowthRateSummary](#schemagrowthratesummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedItemAttributeSummaryList">PaginatedItemAttributeSummaryList</h2>
 <!-- backwards compatibility -->
@@ -12010,9 +12211,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/item-attribute/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/item-attribute/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -12026,10 +12227,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[ItemAttributeSummary](#schemaitemattributesummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[ItemAttributeSummary](#schemaitemattributesummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedItemCategorySummaryList">PaginatedItemCategorySummaryList</h2>
 <!-- backwards compatibility -->
@@ -12040,9 +12241,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/item-category/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/item-category/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -12056,10 +12257,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[ItemCategorySummary](#schemaitemcategorysummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[ItemCategorySummary](#schemaitemcategorysummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedItemFlingEffectSummaryList">PaginatedItemFlingEffectSummaryList</h2>
 <!-- backwards compatibility -->
@@ -12070,9 +12271,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/item-fling-effect/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/item-fling-effect/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -12086,10 +12287,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[ItemFlingEffectSummary](#schemaitemflingeffectsummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[ItemFlingEffectSummary](#schemaitemflingeffectsummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedItemPocketSummaryList">PaginatedItemPocketSummaryList</h2>
 <!-- backwards compatibility -->
@@ -12100,9 +12301,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/item-pocket/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/item-pocket/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -12116,10 +12317,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[ItemPocketSummary](#schemaitempocketsummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[ItemPocketSummary](#schemaitempocketsummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedItemSummaryList">PaginatedItemSummaryList</h2>
 <!-- backwards compatibility -->
@@ -12130,9 +12331,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/item/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/item/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -12146,10 +12347,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[ItemSummary](#schemaitemsummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[ItemSummary](#schemaitemsummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedLanguageSummaryList">PaginatedLanguageSummaryList</h2>
 <!-- backwards compatibility -->
@@ -12160,9 +12361,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/language/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/language/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -12176,10 +12377,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[LanguageSummary](#schemalanguagesummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[LanguageSummary](#schemalanguagesummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedLocationAreaSummaryList">PaginatedLocationAreaSummaryList</h2>
 <!-- backwards compatibility -->
@@ -12190,9 +12391,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/location-area/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/location-area/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -12206,10 +12407,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[LocationAreaSummary](#schemalocationareasummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[LocationAreaSummary](#schemalocationareasummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedLocationSummaryList">PaginatedLocationSummaryList</h2>
 <!-- backwards compatibility -->
@@ -12220,9 +12421,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/location/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/location/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -12236,10 +12437,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[LocationSummary](#schemalocationsummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[LocationSummary](#schemalocationsummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedMachineSummaryList">PaginatedMachineSummaryList</h2>
 <!-- backwards compatibility -->
@@ -12250,9 +12451,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/machine/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/machine/?offset=0&limit=20",
   "results": [
     {
       "url": "http://example.com"
@@ -12265,10 +12466,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[MachineSummary](#schemamachinesummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[MachineSummary](#schemamachinesummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedMoveBattleStyleSummaryList">PaginatedMoveBattleStyleSummaryList</h2>
 <!-- backwards compatibility -->
@@ -12279,9 +12480,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/move-battle-style/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/move-battle-style/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -12295,10 +12496,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[MoveBattleStyleSummary](#schemamovebattlestylesummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[MoveBattleStyleSummary](#schemamovebattlestylesummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedMoveDamageClassSummaryList">PaginatedMoveDamageClassSummaryList</h2>
 <!-- backwards compatibility -->
@@ -12309,9 +12510,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/move-damage-class/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/move-damage-class/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -12325,10 +12526,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[MoveDamageClassSummary](#schemamovedamageclasssummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[MoveDamageClassSummary](#schemamovedamageclasssummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedMoveLearnMethodSummaryList">PaginatedMoveLearnMethodSummaryList</h2>
 <!-- backwards compatibility -->
@@ -12339,9 +12540,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/move-learn-method/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/move-learn-method/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -12355,10 +12556,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[MoveLearnMethodSummary](#schemamovelearnmethodsummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[MoveLearnMethodSummary](#schemamovelearnmethodsummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedMoveMetaAilmentSummaryList">PaginatedMoveMetaAilmentSummaryList</h2>
 <!-- backwards compatibility -->
@@ -12369,9 +12570,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/move-ailment/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/move-ailment/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -12385,10 +12586,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[MoveMetaAilmentSummary](#schemamovemetaailmentsummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[MoveMetaAilmentSummary](#schemamovemetaailmentsummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedMoveMetaCategorySummaryList">PaginatedMoveMetaCategorySummaryList</h2>
 <!-- backwards compatibility -->
@@ -12399,9 +12600,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/move-category/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/move-category/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -12415,10 +12616,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[MoveMetaCategorySummary](#schemamovemetacategorysummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[MoveMetaCategorySummary](#schemamovemetacategorysummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedMoveSummaryList">PaginatedMoveSummaryList</h2>
 <!-- backwards compatibility -->
@@ -12429,9 +12630,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/move/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/move/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -12445,10 +12646,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[MoveSummary](#schemamovesummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[MoveSummary](#schemamovesummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedMoveTargetSummaryList">PaginatedMoveTargetSummaryList</h2>
 <!-- backwards compatibility -->
@@ -12459,9 +12660,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/move-target/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/move-target/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -12475,10 +12676,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[MoveTargetSummary](#schemamovetargetsummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[MoveTargetSummary](#schemamovetargetsummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedNatureSummaryList">PaginatedNatureSummaryList</h2>
 <!-- backwards compatibility -->
@@ -12489,9 +12690,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/nature/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/nature/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -12505,10 +12706,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[NatureSummary](#schemanaturesummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[NatureSummary](#schemanaturesummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedPalParkAreaSummaryList">PaginatedPalParkAreaSummaryList</h2>
 <!-- backwards compatibility -->
@@ -12519,9 +12720,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/pal-park-area/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/pal-park-area/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -12535,10 +12736,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[PalParkAreaSummary](#schemapalparkareasummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[PalParkAreaSummary](#schemapalparkareasummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedPokeathlonStatSummaryList">PaginatedPokeathlonStatSummaryList</h2>
 <!-- backwards compatibility -->
@@ -12549,9 +12750,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/pokeathlon-stat/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/pokeathlon-stat/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -12565,10 +12766,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[PokeathlonStatSummary](#schemapokeathlonstatsummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[PokeathlonStatSummary](#schemapokeathlonstatsummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedPokedexSummaryList">PaginatedPokedexSummaryList</h2>
 <!-- backwards compatibility -->
@@ -12579,9 +12780,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/pokedex/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/pokedex/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -12595,10 +12796,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[PokedexSummary](#schemapokedexsummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[PokedexSummary](#schemapokedexsummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedPokemonColorSummaryList">PaginatedPokemonColorSummaryList</h2>
 <!-- backwards compatibility -->
@@ -12609,9 +12810,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/pokemon-color/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/pokemon-color/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -12625,10 +12826,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[PokemonColorSummary](#schemapokemoncolorsummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[PokemonColorSummary](#schemapokemoncolorsummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedPokemonFormSummaryList">PaginatedPokemonFormSummaryList</h2>
 <!-- backwards compatibility -->
@@ -12639,9 +12840,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/pokemon-form/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/pokemon-form/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -12655,10 +12856,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[PokemonFormSummary](#schemapokemonformsummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[PokemonFormSummary](#schemapokemonformsummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedPokemonHabitatSummaryList">PaginatedPokemonHabitatSummaryList</h2>
 <!-- backwards compatibility -->
@@ -12669,9 +12870,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/pokemon-habitat/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/pokemon-habitat/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -12685,10 +12886,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[PokemonHabitatSummary](#schemapokemonhabitatsummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[PokemonHabitatSummary](#schemapokemonhabitatsummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedPokemonShapeSummaryList">PaginatedPokemonShapeSummaryList</h2>
 <!-- backwards compatibility -->
@@ -12699,9 +12900,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/pokemon-shape/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/pokemon-shape/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -12715,10 +12916,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[PokemonShapeSummary](#schemapokemonshapesummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[PokemonShapeSummary](#schemapokemonshapesummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedPokemonSpeciesSummaryList">PaginatedPokemonSpeciesSummaryList</h2>
 <!-- backwards compatibility -->
@@ -12729,9 +12930,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/pokemon-species/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/pokemon-species/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -12745,10 +12946,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[PokemonSpeciesSummary](#schemapokemonspeciessummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[PokemonSpeciesSummary](#schemapokemonspeciessummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedPokemonSummaryList">PaginatedPokemonSummaryList</h2>
 <!-- backwards compatibility -->
@@ -12759,9 +12960,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/pokemon/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/pokemon/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -12775,10 +12976,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[PokemonSummary](#schemapokemonsummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[PokemonSummary](#schemapokemonsummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedRegionSummaryList">PaginatedRegionSummaryList</h2>
 <!-- backwards compatibility -->
@@ -12789,9 +12990,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/region/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/region/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -12805,10 +13006,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[RegionSummary](#schemaregionsummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[RegionSummary](#schemaregionsummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedStatSummaryList">PaginatedStatSummaryList</h2>
 <!-- backwards compatibility -->
@@ -12819,9 +13020,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/stat/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/stat/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -12835,10 +13036,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[StatSummary](#schemastatsummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[StatSummary](#schemastatsummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedSuperContestEffectSummaryList">PaginatedSuperContestEffectSummaryList</h2>
 <!-- backwards compatibility -->
@@ -12849,9 +13050,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/super-contest-effect/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/super-contest-effect/?offset=0&limit=20",
   "results": [
     {
       "url": "http://example.com"
@@ -12864,10 +13065,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[SuperContestEffectSummary](#schemasupercontesteffectsummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[SuperContestEffectSummary](#schemasupercontesteffectsummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedTypeSummaryList">PaginatedTypeSummaryList</h2>
 <!-- backwards compatibility -->
@@ -12878,9 +13079,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/type/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/type/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -12894,10 +13095,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[TypeSummary](#schematypesummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[TypeSummary](#schematypesummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedVersionGroupSummaryList">PaginatedVersionGroupSummaryList</h2>
 <!-- backwards compatibility -->
@@ -12908,9 +13109,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/version-group/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/version-group/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -12924,10 +13125,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[VersionGroupSummary](#schemaversiongroupsummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[VersionGroupSummary](#schemaversiongroupsummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PaginatedVersionSummaryList">PaginatedVersionSummaryList</h2>
 <!-- backwards compatibility -->
@@ -12938,9 +13139,9 @@ This operation does not require authentication
 
 ```json
 {
-  "count": 123,
-  "next": "http://api.example.org/accounts/?offset=400&limit=100",
-  "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+  "count": 100,
+  "next": "https://pokeapi.co/api/v2/version/?offset=40&limit=20",
+  "previous": "https://pokeapi.co/api/v2/version/?offset=0&limit=20",
   "results": [
     {
       "name": "string",
@@ -12954,10 +13155,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|count|integer|true|none|none|
-|next|string(uri) \| null|false|none|none|
-|previous|string(uri) \| null|false|none|none|
-|results|[[VersionSummary](#schemaversionsummary)]|true|none|none|
+|count|integer|true|none|The total number of resources available from this API.|
+|next|string \| null(uri)|false|none|The URL for the next page in the list, or null if there is no next page.|
+|previous|string \| null(uri)|false|none|The URL for the previous page in the list, or null if there is no previous page.|
+|results|[[VersionSummary](#schemaversionsummary)]|true|none|A list of API resources on this page.|
 
 <h2 id="tocS_PalParkAreaDetail">PalParkAreaDetail</h2>
 <!-- backwards compatibility -->
@@ -12981,8 +13182,8 @@ This operation does not require authentication
   ],
   "pokemon_encounters": [
     {
-      "base_score": -2147483648,
-      "rate": -2147483648,
+      "base_score": 0,
+      "rate": 0,
       "pokemon_species": {
         "name": "string",
         "url": "http://example.com"
@@ -12996,10 +13197,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|name|string|true|none|none|
-|names|[[PalParkAreaName](#schemapalparkareaname)]|true|read-only|none|
-|pokemon_encounters|[[PalParkEncounter](#schemapalparkencounter)]|true|read-only|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|name|string|true|none|The name for this resource.|
+|names|[[PalParkAreaName](#schemapalparkareaname)]|true|read-only|The name of this resource listed in different languages.|
+|pokemon_encounters|[[PalParkEncounter](#schemapalparkencounter)]|true|read-only|A list of Pokémon encountered in thi pal park area along with details.|
 
 <h2 id="tocS_PalParkAreaName">PalParkAreaName</h2>
 <!-- backwards compatibility -->
@@ -13022,8 +13223,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|name|string|true|none|The localized name for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_PalParkAreaSummary">PalParkAreaSummary</h2>
 <!-- backwards compatibility -->
@@ -13043,8 +13244,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|url|string(uri)|true|read-only|none|
+|name|string|true|none|The name of the referenced resource.|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_PalParkEncounter">PalParkEncounter</h2>
 <!-- backwards compatibility -->
@@ -13055,8 +13256,8 @@ This operation does not require authentication
 
 ```json
 {
-  "base_score": -2147483648,
-  "rate": -2147483648,
+  "base_score": 0,
+  "rate": 0,
   "pokemon_species": {
     "name": "string",
     "url": "http://example.com"
@@ -13068,9 +13269,9 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|base_score|integer \| null|false|none|none|
-|rate|integer|true|none|none|
-|pokemon_species|[PokemonSpeciesSummary](#schemapokemonspeciessummary)|true|none|none|
+|base_score|integer \| null|false|none|The base score given to the player when this Pokémon is caught during a pal park run.|
+|rate|integer|true|none|The base rate for encountering this Pokémon in this pal park area.|
+|pokemon_species|object|true|none|The Pokémon species being encountered.|
 
 <h2 id="tocS_PokeapiMetaResponse">PokeapiMetaResponse</h2>
 <!-- backwards compatibility -->
@@ -13091,9 +13292,9 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|deploy_date|string \| null|true|none|none|
-|hash|string \| null|true|none|none|
-|tag|string \| null|true|none|none|
+|deploy_date|string \| null|true|none|The deployment time as a Unix timestamp string.|
+|hash|string \| null|true|none|The source commit hash used for this deployment.|
+|tag|string \| null|true|none|The deployment tag, or null if the deployment has no tag.|
 
 <h2 id="tocS_PokeathlonStatAffectingNature">PokeathlonStatAffectingNature</h2>
 <!-- backwards compatibility -->
@@ -13104,7 +13305,7 @@ This operation does not require authentication
 
 ```json
 {
-  "max_change": -2147483648,
+  "max_change": -2,
   "nature": {
     "name": "string",
     "url": "http://example.com"
@@ -13116,8 +13317,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|max_change|integer|true|none|none|
-|nature|[NatureSummary](#schemanaturesummary)|true|none|none|
+|max_change|integer|true|none|The maximum amount of change to the referenced Pokéathlon stat.|
+|nature|object|true|none|The nature causing the change.|
 
 <h2 id="tocS_PokeathlonStatAffectingNatures">PokeathlonStatAffectingNatures</h2>
 <!-- backwards compatibility -->
@@ -13130,7 +13331,7 @@ This operation does not require authentication
 {
   "increase": [
     {
-      "max_change": -2147483648,
+      "max_change": -2,
       "nature": {
         "name": "string",
         "url": "http://example.com"
@@ -13139,7 +13340,7 @@ This operation does not require authentication
   ],
   "decrease": [
     {
-      "max_change": -2147483648,
+      "max_change": -2,
       "nature": {
         "name": "string",
         "url": "http://example.com"
@@ -13153,8 +13354,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|increase|[[PokeathlonStatAffectingNature](#schemapokeathlonstataffectingnature)]|true|none|none|
-|decrease|[[PokeathlonStatAffectingNature](#schemapokeathlonstataffectingnature)]|true|none|none|
+|increase|[[PokeathlonStatAffectingNature](#schemapokeathlonstataffectingnature)]|true|none|A list of natures and how they change the referenced Pokéathlon stat.|
+|decrease|[[PokeathlonStatAffectingNature](#schemapokeathlonstataffectingnature)]|true|none|A list of natures and how they change the referenced Pokéathlon stat.|
 
 <h2 id="tocS_PokeathlonStatDetail">PokeathlonStatDetail</h2>
 <!-- backwards compatibility -->
@@ -13170,7 +13371,7 @@ This operation does not require authentication
   "affecting_natures": {
     "increase": [
       {
-        "max_change": -2147483648,
+        "max_change": -2,
         "nature": {
           "name": "string",
           "url": "http://example.com"
@@ -13179,7 +13380,7 @@ This operation does not require authentication
     ],
     "decrease": [
       {
-        "max_change": -2147483648,
+        "max_change": -2,
         "nature": {
           "name": "string",
           "url": "http://example.com"
@@ -13203,10 +13404,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|name|string|true|none|none|
-|affecting_natures|object|true|read-only|none|
-|names|[[PokeathlonStatName](#schemapokeathlonstatname)]|true|read-only|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|name|string|true|none|The name for this resource.|
+|affecting_natures|object|true|read-only|A detail of natures which affect this Pokéathlon stat positively or negatively.|
+|names|[[PokeathlonStatName](#schemapokeathlonstatname)]|true|read-only|The name of this resource listed in different languages.|
 
 <h2 id="tocS_PokeathlonStatName">PokeathlonStatName</h2>
 <!-- backwards compatibility -->
@@ -13229,8 +13430,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|name|string|true|none|The localized name for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_PokeathlonStatSummary">PokeathlonStatSummary</h2>
 <!-- backwards compatibility -->
@@ -13250,8 +13451,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|url|string(uri)|true|read-only|none|
+|name|string|true|none|The name of the referenced resource.|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_PokedexDescription">PokedexDescription</h2>
 <!-- backwards compatibility -->
@@ -13274,8 +13475,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|description|string|false|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|description|string|false|none|The localized description for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_PokedexDetail">PokedexDetail</h2>
 <!-- backwards compatibility -->
@@ -13333,14 +13534,14 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|name|string|true|none|none|
-|is_main_series|boolean|false|none|none|
-|descriptions|[[PokedexDescription](#schemapokedexdescription)]|true|read-only|none|
-|names|[[PokedexName](#schemapokedexname)]|true|read-only|none|
-|pokemon_entries|[[PokemonDexNumber](#schemapokemondexnumber)]|true|read-only|none|
-|region|[RegionSummary](#schemaregionsummary)|true|none|none|
-|version_groups|[[VersionGroupSummary](#schemaversiongroupsummary)]|true|read-only|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|name|string|true|none|The name for this resource.|
+|is_main_series|boolean|false|none|Whether or not this Pokédex originated in the main series of the video games.|
+|descriptions|[[PokedexDescription](#schemapokedexdescription)]|true|read-only|The description of this resource listed in different languages.|
+|names|[[PokedexName](#schemapokedexname)]|true|read-only|The name of this resource listed in different languages.|
+|pokemon_entries|[[PokemonDexNumber](#schemapokemondexnumber)]|true|read-only|A list of Pokémon catalogued in this Pokédex and their indexes.|
+|region|[RegionSummary](#schemaregionsummary) \| null|true|none|The region this Pokédex catalogues Pokémon for.|
+|version_groups|[[VersionGroupSummary](#schemaversiongroupsummary)]|true|read-only|A list of version groups this Pokédex is relevant to.|
 
 <h2 id="tocS_PokedexName">PokedexName</h2>
 <!-- backwards compatibility -->
@@ -13363,8 +13564,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|name|string|true|none|The localized name for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_PokedexSummary">PokedexSummary</h2>
 <!-- backwards compatibility -->
@@ -13384,8 +13585,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|url|string(uri)|true|read-only|none|
+|name|string|true|none|The name of the referenced resource.|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_PokemonAbility">PokemonAbility</h2>
 <!-- backwards compatibility -->
@@ -13397,7 +13598,7 @@ This operation does not require authentication
 ```json
 {
   "is_hidden": true,
-  "slot": -2147483648,
+  "slot": 1,
   "ability": {
     "name": "string",
     "url": "http://example.com"
@@ -13409,9 +13610,9 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|is_hidden|boolean|false|none|none|
-|slot|integer|true|none|none|
-|ability|[AbilitySummary](#schemaabilitysummary)|true|none|none|
+|is_hidden|boolean|false|none|Whether or not this is a hidden ability.|
+|slot|integer|true|none|The slot this ability occupies in this Pokémon species.|
+|ability|object|true|none|The ability the Pokémon may have.|
 
 <h2 id="tocS_PokemonAbilityPast">PokemonAbilityPast</h2>
 <!-- backwards compatibility -->
@@ -13423,7 +13624,7 @@ This operation does not require authentication
 ```json
 {
   "is_hidden": true,
-  "slot": -2147483648,
+  "slot": 1,
   "ability": {
     "name": "string",
     "url": "http://example.com"
@@ -13435,9 +13636,9 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|is_hidden|boolean|false|none|none|
-|slot|integer|true|none|none|
-|ability|[AbilitySummary](#schemaabilitysummary)|true|none|none|
+|is_hidden|boolean|false|none|Whether or not this is a hidden ability.|
+|slot|integer|true|none|The slot this ability occupies in this Pokémon species.|
+|ability|[AbilitySummary](#schemaabilitysummary) \| null|true|none|The ability the Pokémon may have.|
 
 <h2 id="tocS_PokemonColorDetail">PokemonColorDetail</h2>
 <!-- backwards compatibility -->
@@ -13472,10 +13673,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|name|string|true|none|none|
-|names|[[PokemonColorName](#schemapokemoncolorname)]|true|read-only|none|
-|pokemon_species|[[PokemonSpeciesSummary](#schemapokemonspeciessummary)]|true|read-only|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|name|string|true|none|The name for this resource.|
+|names|[[PokemonColorName](#schemapokemoncolorname)]|true|read-only|The name of this resource listed in different languages.|
+|pokemon_species|[[PokemonSpeciesSummary](#schemapokemonspeciessummary)]|true|read-only|A list of the Pokémon species that have this color.|
 
 <h2 id="tocS_PokemonColorName">PokemonColorName</h2>
 <!-- backwards compatibility -->
@@ -13498,8 +13699,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|name|string|true|none|The localized name for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_PokemonColorSummary">PokemonColorSummary</h2>
 <!-- backwards compatibility -->
@@ -13519,8 +13720,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|url|string(uri)|true|read-only|none|
+|name|string|true|none|The name of the referenced resource.|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_PokemonCries">PokemonCries</h2>
 <!-- backwards compatibility -->
@@ -13540,8 +13741,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|latest|string \| null|true|none|none|
-|legacy|string \| null|true|none|none|
+|latest|string \| null|true|none|The latest depiction of this Pokémon's cry.|
+|legacy|string \| null|true|none|The legacy depiction of this Pokémon's cry.|
 
 <h2 id="tocS_PokemonDetail">PokemonDetail</h2>
 <!-- backwards compatibility -->
@@ -13554,15 +13755,15 @@ This operation does not require authentication
 {
   "id": 0,
   "name": "string",
-  "base_experience": -2147483648,
-  "height": -2147483648,
+  "base_experience": 0,
+  "height": 0,
   "is_default": true,
-  "order": -2147483648,
-  "weight": -2147483648,
+  "order": -1,
+  "weight": 0,
   "abilities": [
     {
       "is_hidden": true,
-      "slot": -2147483648,
+      "slot": 1,
       "ability": {
         "name": "string",
         "url": "http://example.com"
@@ -13574,7 +13775,7 @@ This operation does not require authentication
       "abilities": [
         {
           "is_hidden": true,
-          "slot": -2147483648,
+          "slot": 1,
           "ability": {
             "name": "string",
             "url": "http://example.com"
@@ -13595,7 +13796,7 @@ This operation does not require authentication
   ],
   "game_indices": [
     {
-      "game_index": -2147483648,
+      "game_index": 0,
       "version": {
         "name": "string",
         "url": "http://example.com"
@@ -13604,7 +13805,7 @@ This operation does not require authentication
   ],
   "held_items": [
     {
-      "pokemon": {
+      "item": {
         "name": "string",
         "url": "http://example.com"
       },
@@ -13637,7 +13838,8 @@ This operation does not require authentication
             "name": "string",
             "url": "http://example.com"
           },
-          "order": 0
+          "order": 0,
+          "enhancement_level": 0
         }
       ]
     }
@@ -13647,7 +13849,60 @@ This operation does not require authentication
     "url": "http://example.com"
   },
   "sprites": {
-    "front_default": "string"
+    "front_default": "string",
+    "front_shiny": "string",
+    "front_female": "string",
+    "front_shiny_female": "string",
+    "back_default": "string",
+    "back_shiny": "string",
+    "back_female": "string",
+    "back_shiny_female": "string",
+    "other": {
+      "dream_world": {
+        "front_default": "string",
+        "front_female": "string"
+      },
+      "home": {
+        "front_default": "string",
+        "front_female": "string",
+        "front_shiny": "string",
+        "front_shiny_female": "string"
+      },
+      "showdown": {
+        "front_default": "string",
+        "front_female": "string",
+        "front_shiny": "string",
+        "front_shiny_female": "string",
+        "back_default": "string",
+        "back_female": "string",
+        "back_shiny": "string",
+        "back_shiny_female": "string"
+      },
+      "official-artwork": {
+        "front_default": "string",
+        "front_shiny": "string",
+        "versions": {
+          "property1": {
+            "property1": null,
+            "property2": null
+          },
+          "property2": {
+            "property1": null,
+            "property2": null
+          }
+        }
+      }
+    },
+    "versions": {
+      "property1": {
+        "property1": null,
+        "property2": null
+      },
+      "property2": {
+        "property1": null,
+        "property2": null
+      }
+    }
   },
   "cries": {
     "latest": "string",
@@ -13655,8 +13910,8 @@ This operation does not require authentication
   },
   "stats": [
     {
-      "base_stat": -2147483648,
-      "effort": -2147483648,
+      "base_stat": 1,
+      "effort": 0,
       "stat": {
         "name": "string",
         "url": "http://example.com"
@@ -13671,8 +13926,8 @@ This operation does not require authentication
       },
       "stats": [
         {
-          "base_stat": -2147483648,
-          "effort": -2147483648,
+          "base_stat": 1,
+          "effort": 0,
           "stat": {
             "name": "string",
             "url": "http://example.com"
@@ -13683,7 +13938,7 @@ This operation does not require authentication
   ],
   "types": [
     {
-      "slot": -2147483648,
+      "slot": 1,
       "type": {
         "name": "string",
         "url": "http://example.com"
@@ -13698,8 +13953,8 @@ This operation does not require authentication
       },
       "types": [
         {
-          "slot": -2147483648,
-          "pokemon": {
+          "slot": 1,
+          "type": {
             "name": "string",
             "url": "http://example.com"
           }
@@ -13714,27 +13969,27 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|name|string|true|none|none|
-|base_experience|integer \| null|false|none|none|
-|height|integer \| null|false|none|none|
-|is_default|boolean|false|none|none|
-|order|integer \| null|false|none|none|
-|weight|integer \| null|false|none|none|
-|abilities|[[PokemonAbility](#schemapokemonability)]|true|read-only|none|
-|past_abilities|[[PokemonPastAbility](#schemapokemonpastability)]|true|read-only|none|
-|forms|[[PokemonFormSummary](#schemapokemonformsummary)]|true|read-only|none|
-|game_indices|[[PokemonGameIndex](#schemapokemongameindex)]|true|read-only|none|
-|held_items|[[PokemonHeldItem](#schemapokemonhelditem)]|true|read-only|none|
-|location_area_encounters|string|true|read-only|none|
-|moves|[[PokemonMove](#schemapokemonmove)]|true|read-only|none|
-|species|[PokemonSpeciesSummary](#schemapokemonspeciessummary)|true|none|none|
-|sprites|object|true|read-only|none|
-|cries|object|true|read-only|none|
-|stats|[[PokemonStat](#schemapokemonstat)]|true|read-only|none|
-|past_stats|[[PokemonPastStat](#schemapokemonpaststat)]|true|read-only|none|
-|types|[[PokemonType](#schemapokemontype)]|true|read-only|none|
-|past_types|[[PokemonPastType](#schemapokemonpasttype)]|true|read-only|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|name|string|true|none|The name for this resource.|
+|base_experience|integer \| null|false|none|The base experience gained for defeating this Pokémon.|
+|height|integer \| null|false|none|The height of this Pokémon in decimetres.|
+|is_default|boolean|false|none|Set for exactly one Pokémon used as the default for each species.|
+|order|integer \| null|false|none|Order for sorting. Almost national order, except families are grouped together.|
+|weight|integer \| null|false|none|The weight of this Pokémon in hectograms.|
+|abilities|[[PokemonAbility](#schemapokemonability)]|true|read-only|A list of abilities this Pokémon could potentially have.|
+|past_abilities|[[PokemonPastAbility](#schemapokemonpastability)]|true|read-only|A list of details showing abilities this pokémon had in previous generations|
+|forms|[[PokemonFormSummary](#schemapokemonformsummary)]|true|read-only|A list of forms this Pokémon can take on.|
+|game_indices|[[PokemonGameIndex](#schemapokemongameindex)]|true|read-only|A list of game indices relevent to Pokémon item by generation.|
+|held_items|[[PokemonHeldItemSummary](#schemapokemonhelditemsummary)]|true|read-only|A list of items this Pokémon may be holding when encountered.|
+|location_area_encounters|string|true|read-only|A link to a list of location areas, as well as encounter details pertaining to specific versions.|
+|moves|[[PokemonMove](#schemapokemonmove)]|true|read-only|A list of moves along with learn methods and level details pertaining to specific version groups.|
+|species|object|true|none|The species this Pokémon belongs to.|
+|sprites|object|true|read-only|A set of sprites used to depict this Pokémon in the game. A visual representation of the various sprites can be found at <a href='https://github.com/PokeAPI/sprites#sprites'>PokeAPI/sprites</a>|
+|cries|object|true|read-only|A set of cries used to depict this Pokémon in the game. A visual representation of the various cries can be found at <a href='https://github.com/PokeAPI/cries#cries'>PokeAPI/cries</a>|
+|stats|[[PokemonStat](#schemapokemonstat)]|true|read-only|A list of base stat values for this Pokémon.|
+|past_stats|[[PokemonPastStat](#schemapokemonpaststat)]|true|read-only|A list of details showing stats this pokémon had in previous generations|
+|types|[[PokemonType](#schemapokemontype)]|true|read-only|A list of details showing types this Pokémon has.|
+|past_types|[[PokemonPastType](#schemapokemonpasttype)]|true|read-only|A list of details showing types this pokémon had in previous generations|
 
 <h2 id="tocS_PokemonDexEntry">PokemonDexEntry</h2>
 <!-- backwards compatibility -->
@@ -13757,8 +14012,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|entry_number|integer|true|none|none|
-|pokedex|[PokedexSummary](#schemapokedexsummary)|true|none|none|
+|entry_number|integer|true|none|The index number within the Pokédex.|
+|pokedex|object|true|none|The Pokédex the referenced Pokémon species can be found in.|
 
 <h2 id="tocS_PokemonDexNumber">PokemonDexNumber</h2>
 <!-- backwards compatibility -->
@@ -13781,8 +14036,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|entry_number|integer|true|none|none|
-|pokemon_species|[PokemonSpeciesSummary](#schemapokemonspeciessummary)|true|none|none|
+|entry_number|integer|true|none|The index of this Pokémon species entry within the Pokédex.|
+|pokemon_species|object|true|none|The Pokémon species being encountered.|
 
 <h2 id="tocS_PokemonEncounterDetailResponse">PokemonEncounterDetailResponse</h2>
 <!-- backwards compatibility -->
@@ -13813,11 +14068,11 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|chance|integer|true|none|none|
-|condition_values|[[EncounterConditionValueSummary](#schemaencounterconditionvaluesummary)]|true|none|none|
-|max_level|integer|true|none|none|
-|method|[EncounterMethodSummary](#schemaencountermethodsummary)|true|none|none|
-|min_level|integer|true|none|none|
+|chance|integer|true|none|Percent chance that this encounter will occur.|
+|condition_values|[[EncounterConditionValueSummary](#schemaencounterconditionvaluesummary)]|true|none|A list of condition values that must be in effect for this encounter to occur.|
+|max_level|integer|true|none|The highest level the Pokémon could be encountered at.|
+|method|object|true|none|The method by which this encounter happens.|
+|min_level|integer|true|none|The lowest level the Pokémon could be encountered at.|
 
 <h2 id="tocS_PokemonEncounterResponse">PokemonEncounterResponse</h2>
 <!-- backwards compatibility -->
@@ -13865,8 +14120,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|location_area|[LocationAreaSummary](#schemalocationareasummary)|true|none|none|
-|version_details|[[PokemonEncounterVersionDetailResponse](#schemapokemonencounterversiondetailresponse)]|true|none|none|
+|location_area|object|true|none|The location area the referenced Pokémon can be encountered in.|
+|version_details|[[PokemonEncounterVersionDetailResponse](#schemapokemonencounterversiondetailresponse)]|true|none|A list of versions and encounters with the referenced Pokémon that might happen.|
 
 <h2 id="tocS_PokemonEncounterVersionDetailResponse">PokemonEncounterVersionDetailResponse</h2>
 <!-- backwards compatibility -->
@@ -13906,9 +14161,9 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|version|[VersionSummary](#schemaversionsummary)|true|none|none|
-|max_chance|integer|true|none|none|
-|encounter_details|[[PokemonEncounterDetailResponse](#schemapokemonencounterdetailresponse)]|true|none|none|
+|version|object|true|none|The game version this encounter happens in.|
+|max_chance|integer|true|none|The total percentage of all encounter potential.|
+|encounter_details|[[PokemonEncounterDetailResponse](#schemapokemonencounterdetailresponse)]|true|none|A list of encounters and their specifics.|
 
 <h2 id="tocS_PokemonEvolution">PokemonEvolution</h2>
 <!-- backwards compatibility -->
@@ -13949,10 +14204,10 @@ This operation does not require authentication
     "name": "string",
     "url": "http://example.com"
   },
-  "min_level": -2147483648,
-  "min_happiness": -2147483648,
-  "min_beauty": -2147483648,
-  "min_affection": -2147483648,
+  "min_level": 1,
+  "min_happiness": 0,
+  "min_beauty": 0,
+  "min_affection": 0,
   "near_special_rock": true,
   "needs_multiplayer": true,
   "needs_overworld_rain": true,
@@ -13964,7 +14219,7 @@ This operation does not require authentication
     "name": "string",
     "url": "http://example.com"
   },
-  "relative_physical_stats": -2147483648,
+  "relative_physical_stats": -1,
   "time_of_day": "string",
   "trade_species": {
     "name": "string",
@@ -13987,9 +14242,9 @@ This operation does not require authentication
     "name": "string",
     "url": "http://example.com"
   },
-  "min_move_count": -2147483648,
-  "min_steps": -2147483648,
-  "min_damage_taken": -2147483648,
+  "min_move_count": 0,
+  "min_steps": 0,
+  "min_damage_taken": 0,
   "allowed_natures": [
     {
       "name": "string",
@@ -14013,37 +14268,37 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|version_group|[VersionGroupSummary](#schemaversiongroupsummary)|true|none|none|
-|is_default|boolean|false|none|none|
-|item|[ItemSummary](#schemaitemsummary)|true|none|none|
-|trigger|[EvolutionTriggerSummary](#schemaevolutiontriggersummary)|true|none|none|
-|gender|integer \| null|false|none|none|
-|held_item|[ItemSummary](#schemaitemsummary)|true|none|none|
-|known_move|[MoveSummary](#schemamovesummary)|true|none|none|
-|known_move_type|[TypeSummary](#schematypesummary)|true|none|none|
-|location|[LocationSummary](#schemalocationsummary)|true|none|none|
-|min_level|integer \| null|false|none|none|
-|min_happiness|integer \| null|false|none|none|
-|min_beauty|integer \| null|false|none|none|
-|min_affection|integer \| null|false|none|none|
-|near_special_rock|boolean|false|none|none|
-|needs_multiplayer|boolean|false|none|none|
-|needs_overworld_rain|boolean|false|none|none|
-|party_species|[PokemonSpeciesSummary](#schemapokemonspeciessummary)|true|none|none|
-|party_type|[TypeSummary](#schematypesummary)|true|none|none|
-|relative_physical_stats|integer \| null|false|none|none|
-|time_of_day|string|false|none|none|
-|trade_species|[PokemonSpeciesSummary](#schemapokemonspeciessummary)|true|none|none|
-|turn_upside_down|boolean|false|none|none|
-|region|[RegionSummary](#schemaregionsummary)|true|none|none|
-|required_pokemon_form|[PokemonFormSummary](#schemapokemonformsummary)|true|none|none|
-|evolved_pokemon_form|[PokemonFormSummary](#schemapokemonformsummary)|true|none|none|
-|used_move|[MoveSummary](#schemamovesummary)|true|none|none|
-|min_move_count|integer \| null|false|none|none|
-|min_steps|integer \| null|false|none|none|
-|min_damage_taken|integer \| null|false|none|none|
-|allowed_natures|[[NatureSummary](#schemanaturesummary)]|true|read-only|none|
-|condition_expression|[EvolutionConditionExpression](#schemaevolutionconditionexpression) \| null|true|read-only|none|
+|version_group|object|true|none|The version group in which these evolution requirements apply.|
+|is_default|boolean|false|none|Whether the evolution is considered as the expected evolution in a main series game. Each unique Pokémon variety of a line capable of evolution should have exactly one 'default' evolution. For example, the Meowth species has three default evolutions as there are three distinct varieties it can evolve into: Persian, Alolan Persian, and Perrserker.|
+|item|[ItemSummary](#schemaitemsummary) \| null|true|none|The item required to cause evolution this into Pokémon species.|
+|trigger|object|true|none|The type of event that triggers evolution into this Pokémon species.|
+|gender|integer \| null|false|none|The id of the gender of the evolving Pokémon species must be in order to evolve into this Pokémon species.|
+|held_item|[ItemSummary](#schemaitemsummary) \| null|true|none|The item the evolving Pokémon species must be holding during the evolution trigger event to evolve into this Pokémon species.|
+|known_move|[MoveSummary](#schemamovesummary) \| null|true|none|The move that must be known by the evolving Pokémon species during the evolution trigger event in order to evolve into this Pokémon species.|
+|known_move_type|[TypeSummary](#schematypesummary) \| null|true|none|The evolving Pokémon species must know a move with this type during the evolution trigger event in order to evolve into this Pokémon species.|
+|location|[LocationSummary](#schemalocationsummary) \| null|true|none|The location the evolution must be triggered at.|
+|min_level|integer \| null|false|none|The minimum required level of the evolving Pokémon species to evolve into this Pokémon species.|
+|min_happiness|integer \| null|false|none|The minimum required level of happiness the evolving Pokémon species to evolve into this Pokémon species.|
+|min_beauty|integer \| null|false|none|The minimum required level of beauty the evolving Pokémon species to evolve into this Pokémon species.|
+|min_affection|integer \| null|false|none|The minimum required level of affection the evolving Pokémon species to evolve into this Pokémon species.|
+|near_special_rock|boolean|false|none|Whether or not you need to be near a Moss Rock or Icy Rock to evolve into this Pokémon species.|
+|needs_multiplayer|boolean|false|none|Whether or not multiplayer link play is needed to evolve into this Pokémon species (e.g. Union Circle).|
+|needs_overworld_rain|boolean|false|none|Whether or not it must be raining in the overworld to cause evolution this Pokémon species.|
+|party_species|[PokemonSpeciesSummary](#schemapokemonspeciessummary) \| null|true|none|The Pokémon species that must be in the players party in order for the evolving Pokémon species to evolve into this Pokémon species.|
+|party_type|[TypeSummary](#schematypesummary) \| null|true|none|The player must have a Pokémon of this type in their party during the evolution trigger event in order for the evolving Pokémon species to evolve into this Pokémon species.|
+|relative_physical_stats|integer \| null|false|none|The required relation between the Pokémon's Attack and Defense stats. 1 means Attack > Defense. 0 means Attack = Defense. -1 means Attack < Defense.|
+|time_of_day|string|false|none|The required time of day. Day or night.|
+|trade_species|[PokemonSpeciesSummary](#schemapokemonspeciessummary) \| null|true|none|Pokémon species for which this one must be traded.|
+|turn_upside_down|boolean|false|none|Whether or not the 3DS needs to be turned upside-down as this Pokémon levels up.|
+|region|[RegionSummary](#schemaregionsummary) \| null|true|none|The required region in which this evolution can occur.|
+|required_pokemon_form|[PokemonFormSummary](#schemapokemonformsummary) \| null|true|none|The Pokémon form required before evolving, or null if unrestricted.|
+|evolved_pokemon_form|[PokemonFormSummary](#schemapokemonformsummary) \| null|true|none|The Pokémon form produced by this evolution, or null if unspecified.|
+|used_move|[MoveSummary](#schemamovesummary) \| null|true|none|The move that must be used by the evolving Pokémon species during the evolution trigger event in order to evolve into this Pokémon species.|
+|min_move_count|integer \| null|false|none|The minimum number of times a move must be used in order to evolve into this Pokémon species.|
+|min_steps|integer \| null|false|none|The minimum number of steps that must be taken in order to evolve into this Pokémon species.|
+|min_damage_taken|integer \| null|false|none|The minimum amount of damage taken during the evolution trigger event in order to evolve into this Pokémon species.|
+|allowed_natures|[[NatureSummary](#schemanaturesummary)]|true|read-only|The natures that allow this evolution, or null if unrestricted.|
+|condition_expression|[EvolutionConditionExpression](#schemaevolutionconditionexpression) \| null|true|read-only|An additional evolution condition expressed in reverse Polish notation, or null if none.|
 
 <h2 id="tocS_PokemonFormDetail">PokemonFormDetail</h2>
 <!-- backwards compatibility -->
@@ -14056,8 +14311,8 @@ This operation does not require authentication
 {
   "id": 0,
   "name": "string",
-  "order": -2147483648,
-  "form_order": -2147483648,
+  "order": -1,
+  "form_order": 0,
   "is_default": true,
   "is_battle_only": true,
   "is_mega": true,
@@ -14067,7 +14322,60 @@ This operation does not require authentication
     "url": "http://example.com"
   },
   "sprites": {
-    "sprites": null
+    "front_default": "string",
+    "front_shiny": "string",
+    "front_female": "string",
+    "front_shiny_female": "string",
+    "back_default": "string",
+    "back_shiny": "string",
+    "back_female": "string",
+    "back_shiny_female": "string",
+    "other": {
+      "dream_world": {
+        "front_default": "string",
+        "front_female": "string"
+      },
+      "home": {
+        "front_default": "string",
+        "front_female": "string",
+        "front_shiny": "string",
+        "front_shiny_female": "string"
+      },
+      "showdown": {
+        "front_default": "string",
+        "front_female": "string",
+        "front_shiny": "string",
+        "front_shiny_female": "string",
+        "back_default": "string",
+        "back_female": "string",
+        "back_shiny": "string",
+        "back_shiny_female": "string"
+      },
+      "official-artwork": {
+        "front_default": "string",
+        "front_shiny": "string",
+        "versions": {
+          "property1": {
+            "property1": null,
+            "property2": null
+          },
+          "property2": {
+            "property1": null,
+            "property2": null
+          }
+        }
+      }
+    },
+    "versions": {
+      "property1": {
+        "property1": null,
+        "property2": null
+      },
+      "property2": {
+        "property1": null,
+        "property2": null
+      }
+    }
   },
   "version_group": {
     "name": "string",
@@ -14093,7 +14401,7 @@ This operation does not require authentication
   ],
   "types": [
     {
-      "slot": -2147483648,
+      "slot": 1,
       "type": {
         "name": "string",
         "url": "http://example.com"
@@ -14103,6 +14411,8 @@ This operation does not require authentication
   "trigger_conditions": [
     {
       "trigger": "string",
+      "name": "string",
+      "url": "http://example.com",
       "base_form": {
         "name": "string",
         "url": "http://example.com"
@@ -14129,22 +14439,22 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|name|string|true|none|none|
-|order|integer \| null|false|none|none|
-|form_order|integer \| null|false|none|none|
-|is_default|boolean|false|none|none|
-|is_battle_only|boolean|false|none|none|
-|is_mega|boolean|false|none|none|
-|form_name|string|true|none|none|
-|pokemon|[PokemonSummary](#schemapokemonsummary)|true|none|none|
-|sprites|object|true|read-only|none|
-|version_group|[VersionGroupSummary](#schemaversiongroupsummary)|true|none|none|
-|form_names|[[PokemonFormName](#schemapokemonformname)]|true|read-only|none|
-|names|[[PokemonFormName](#schemapokemonformname)]|true|read-only|none|
-|types|[[PokemonFormType](#schemapokemonformtype)]|true|read-only|none|
-|trigger_conditions|[[PokemonFormTriggerCondition](#schemapokemonformtriggercondition)]|true|read-only|none|
-|flavor_text_entries|[[PokemonFormFlavorText](#schemapokemonformflavortext)]|true|read-only|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|name|string|true|none|The name for this resource.|
+|order|integer \| null|false|none|The order in which forms should be sorted within all forms. Multiple forms may have equal order, in which case they should fall back on sorting by name.|
+|form_order|integer \| null|false|none|The order in which forms should be sorted within a species' forms.|
+|is_default|boolean|false|none|True for exactly one form used as the default for each Pokémon.|
+|is_battle_only|boolean|false|none|Whether or not this form can only happen during battle.|
+|is_mega|boolean|false|none|Whether or not this form requires mega evolution.|
+|form_name|string|true|none|The name of this form.|
+|pokemon|object|true|none|The Pokémon that can take on this form.|
+|sprites|object|true|read-only|A set of sprites used to depict this Pokémon form in the game.|
+|version_group|object|true|none|The version group this Pokémon form was introduced in.|
+|form_names|[[PokemonFormName](#schemapokemonformname)]|true|read-only|The form specific form name of this Pokémon form, or empty if the form does not have a specific name.|
+|names|[[PokemonFormName](#schemapokemonformname)]|true|read-only|The form specific full name of this Pokémon form, or empty if the form does not have a specific name.|
+|types|[[PokemonFormType](#schemapokemonformtype)]|true|read-only|A list of details showing types this Pokémon form has.|
+|trigger_conditions|[[PokemonFormTriggerCondition](#schemapokemonformtriggercondition)]|true|read-only|The conditions that trigger this form. Resource names and URLs are included when the trigger requires a resource.|
+|flavor_text_entries|[[PokemonFormFlavorText](#schemapokemonformflavortext)]|true|read-only|The flavor text of this form listed in different languages and versions.|
 
 <h2 id="tocS_PokemonFormFlavorText">PokemonFormFlavorText</h2>
 <!-- backwards compatibility -->
@@ -14171,9 +14481,9 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|flavor_text|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
-|version|[VersionSummary](#schemaversionsummary)|true|none|none|
+|flavor_text|string|true|none|The localized flavor text for an API resource in a specific language. Note that this text is left unprocessed as it is found in game files. This means that it contains special characters that one might want to replace with their visible decodable version. Please check out this <a href='https://github.com/veekun/pokedex/issues/218#issuecomment-339841781' >issue</a> to find out more. |
+|language|object|true|none|The language this name is in.|
+|version|object|true|none|The game version this flavor text is extracted from.|
 
 <h2 id="tocS_PokemonFormName">PokemonFormName</h2>
 <!-- backwards compatibility -->
@@ -14196,8 +14506,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|name|string|true|none|The localized name for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_PokemonFormSprites">PokemonFormSprites</h2>
 <!-- backwards compatibility -->
@@ -14208,7 +14518,60 @@ This operation does not require authentication
 
 ```json
 {
-  "sprites": null
+  "front_default": "string",
+  "front_shiny": "string",
+  "front_female": "string",
+  "front_shiny_female": "string",
+  "back_default": "string",
+  "back_shiny": "string",
+  "back_female": "string",
+  "back_shiny_female": "string",
+  "other": {
+    "dream_world": {
+      "front_default": "string",
+      "front_female": "string"
+    },
+    "home": {
+      "front_default": "string",
+      "front_female": "string",
+      "front_shiny": "string",
+      "front_shiny_female": "string"
+    },
+    "showdown": {
+      "front_default": "string",
+      "front_female": "string",
+      "front_shiny": "string",
+      "front_shiny_female": "string",
+      "back_default": "string",
+      "back_female": "string",
+      "back_shiny": "string",
+      "back_shiny_female": "string"
+    },
+    "official-artwork": {
+      "front_default": "string",
+      "front_shiny": "string",
+      "versions": {
+        "property1": {
+          "property1": null,
+          "property2": null
+        },
+        "property2": {
+          "property1": null,
+          "property2": null
+        }
+      }
+    }
+  },
+  "versions": {
+    "property1": {
+      "property1": null,
+      "property2": null
+    },
+    "property2": {
+      "property1": null,
+      "property2": null
+    }
+  }
 }
 ```
 
@@ -14216,7 +14579,16 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|sprites|object|true|none|none|
+|front_default|string \| null|true|none|The default depiction of this Pokémon from the front in battle.|
+|front_shiny|string \| null|true|none|The shiny depiction of this Pokémon from the front in battle.|
+|front_female|string \| null|true|none|The female depiction of this Pokémon from the front in battle.|
+|front_shiny_female|string \| null|true|none|The shiny female depiction of this Pokémon from the front in battle.|
+|back_default|string \| null|true|none|The default depiction of this Pokémon from the back in battle.|
+|back_shiny|string \| null|true|none|The shiny depiction of this Pokémon from the back in battle.|
+|back_female|string \| null|true|none|The female depiction of this Pokémon from the back in battle.|
+|back_shiny_female|string \| null|true|none|The shiny female depiction of this Pokémon from the back in battle.|
+|other|object|false|none|Additional sprites grouped by source, such as official artwork, HOME, and Showdown. Available keys vary by resource.|
+|versions|object|false|none|Sprites grouped by generation and game. Available keys vary by resource.|
 
 <h2 id="tocS_PokemonFormSummary">PokemonFormSummary</h2>
 <!-- backwards compatibility -->
@@ -14236,8 +14608,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|url|string(uri)|true|read-only|none|
+|name|string|true|none|The name of the referenced resource.|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_PokemonFormTriggerCondition">PokemonFormTriggerCondition</h2>
 <!-- backwards compatibility -->
@@ -14249,6 +14621,8 @@ This operation does not require authentication
 ```json
 {
   "trigger": "string",
+  "name": "string",
+  "url": "http://example.com",
   "base_form": {
     "name": "string",
     "url": "http://example.com"
@@ -14260,8 +14634,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|trigger|string|true|none|none|
-|base_form|[PokemonFormSummary](#schemapokemonformsummary)|true|none|none|
+|trigger|string|true|none|The trigger for this form change.|
+|name|string|false|none|The name of the required item, ability, or move. Only present for a resource-based trigger.|
+|url|string(uri)|false|none|The URL of the required item, ability, or move. Only present for a resource-based trigger.|
+|base_form|object|false|none|The required base form. Only present when the trigger specifies one.|
 
 <h2 id="tocS_PokemonFormType">PokemonFormType</h2>
 <!-- backwards compatibility -->
@@ -14272,7 +14648,7 @@ This operation does not require authentication
 
 ```json
 {
-  "slot": -2147483648,
+  "slot": 1,
   "type": {
     "name": "string",
     "url": "http://example.com"
@@ -14284,8 +14660,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|slot|integer|true|none|none|
-|type|[TypeSummary](#schematypesummary)|true|none|none|
+|slot|integer|true|none|The order the Pokémon's types are listed in.|
+|type|object|true|none|The type the referenced Form has.|
 
 <h2 id="tocS_PokemonGameIndex">PokemonGameIndex</h2>
 <!-- backwards compatibility -->
@@ -14296,7 +14672,7 @@ This operation does not require authentication
 
 ```json
 {
-  "game_index": -2147483648,
+  "game_index": 0,
   "version": {
     "name": "string",
     "url": "http://example.com"
@@ -14308,8 +14684,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|game_index|integer|true|none|none|
-|version|[VersionSummary](#schemaversionsummary)|true|none|none|
+|game_index|integer|true|none|The internal id of an API resource within game data.|
+|version|object|true|none|The version relevent to this game index.|
 
 <h2 id="tocS_PokemonHabitatDetail">PokemonHabitatDetail</h2>
 <!-- backwards compatibility -->
@@ -14344,10 +14720,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|name|string|true|none|none|
-|names|[[PokemonHabitatName](#schemapokemonhabitatname)]|true|read-only|none|
-|pokemon_species|[[PokemonSpeciesSummary](#schemapokemonspeciessummary)]|true|read-only|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|name|string|true|none|The name for this resource.|
+|names|[[PokemonHabitatName](#schemapokemonhabitatname)]|true|read-only|The name of this resource listed in different languages.|
+|pokemon_species|[[PokemonSpeciesSummary](#schemapokemonspeciessummary)]|true|read-only|A list of the Pokémon species that can be found in this habitat.|
 
 <h2 id="tocS_PokemonHabitatName">PokemonHabitatName</h2>
 <!-- backwards compatibility -->
@@ -14370,8 +14746,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|name|string|true|none|The localized name for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_PokemonHabitatSummary">PokemonHabitatSummary</h2>
 <!-- backwards compatibility -->
@@ -14391,8 +14767,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|url|string(uri)|true|read-only|none|
+|name|string|true|none|The name of the referenced resource.|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_PokemonHeldItem">PokemonHeldItem</h2>
 <!-- backwards compatibility -->
@@ -14423,8 +14799,40 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|pokemon|[PokemonSummary](#schemapokemonsummary)|true|none|none|
-|version_details|[[PokemonHeldItemVersion](#schemapokemonhelditemversion)]|true|none|none|
+|pokemon|object|true|none|The Pokémon that holds this item.|
+|version_details|[[PokemonHeldItemVersion](#schemapokemonhelditemversion)]|true|none|The details for the version that this item is held in by the Pokémon.|
+
+<h2 id="tocS_PokemonHeldItemSummary">PokemonHeldItemSummary</h2>
+<!-- backwards compatibility -->
+<a id="schemapokemonhelditemsummary"></a>
+<a id="schema_PokemonHeldItemSummary"></a>
+<a id="tocSpokemonhelditemsummary"></a>
+<a id="tocspokemonhelditemsummary"></a>
+
+```json
+{
+  "item": {
+    "name": "string",
+    "url": "http://example.com"
+  },
+  "version_details": [
+    {
+      "rarity": 0,
+      "version": {
+        "name": "string",
+        "url": "http://example.com"
+      }
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|item|object|true|none|The item the referenced Pokémon holds.|
+|version_details|[[PokemonHeldItemVersion](#schemapokemonhelditemversion)]|true|none|The details of the different versions in which the item is held.|
 
 <h2 id="tocS_PokemonHeldItemVersion">PokemonHeldItemVersion</h2>
 <!-- backwards compatibility -->
@@ -14447,8 +14855,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|rarity|integer|true|none|none|
-|version|[VersionSummary](#schemaversionsummary)|true|none|none|
+|rarity|integer|true|none|How often the item is held.|
+|version|object|true|none|The version in which the item is held.|
 
 <h2 id="tocS_PokemonMove">PokemonMove</h2>
 <!-- backwards compatibility -->
@@ -14474,7 +14882,8 @@ This operation does not require authentication
         "name": "string",
         "url": "http://example.com"
       },
-      "order": 0
+      "order": 0,
+      "enhancement_level": 0
     }
   ]
 }
@@ -14484,8 +14893,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|move|[MoveSummary](#schemamovesummary)|true|none|none|
-|version_group_details|[[PokemonMoveVersionGroup](#schemapokemonmoveversiongroup)]|true|none|none|
+|move|object|true|none|The move the Pokémon can learn.|
+|version_group_details|[[PokemonMoveVersionGroup](#schemapokemonmoveversiongroup)]|true|none|The details of the version in which the Pokémon can learn the move.|
 
 <h2 id="tocS_PokemonMoveVersionGroup">PokemonMoveVersionGroup</h2>
 <!-- backwards compatibility -->
@@ -14505,7 +14914,8 @@ This operation does not require authentication
     "name": "string",
     "url": "http://example.com"
   },
-  "order": 0
+  "order": 0,
+  "enhancement_level": 0
 }
 ```
 
@@ -14513,10 +14923,11 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|level_learned_at|integer|true|none|none|
-|move_learn_method|[MoveLearnMethodSummary](#schemamovelearnmethodsummary)|true|none|none|
-|version_group|[VersionGroupSummary](#schemaversiongroupsummary)|true|none|none|
-|order|integer|false|none|none|
+|level_learned_at|integer|true|none|The minimum level to learn the move.|
+|move_learn_method|object|true|none|The method by which the move is learned.|
+|version_group|object|true|none|The version group in which the move is learned.|
+|order|integer \| null|false|none|Order by which the pokemon will learn the move. A newly learnt move will replace the move with lowest order.|
+|enhancement_level|integer \| null|false|none|The level at which move styles unlock in Pokémon Legends: Arceus or Plus Moves unlock in Pokémon Legends: Z-A. Null when no natural unlock level is recorded.|
 
 <h2 id="tocS_PokemonPastAbility">PokemonPastAbility</h2>
 <!-- backwards compatibility -->
@@ -14530,7 +14941,7 @@ This operation does not require authentication
   "abilities": [
     {
       "is_hidden": true,
-      "slot": -2147483648,
+      "slot": 1,
       "ability": {
         "name": "string",
         "url": "http://example.com"
@@ -14548,8 +14959,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|abilities|[[PokemonAbilityPast](#schemapokemonabilitypast)]|true|none|none|
-|generation|[GenerationSummary](#schemagenerationsummary)|true|none|none|
+|abilities|[[PokemonAbilityPast](#schemapokemonabilitypast)]|true|none|The abilities the referenced pokémon had up to and including the listed generation. If null, the slot was previously empty.|
+|generation|object|true|none|The last generation in which the referenced pokémon had the listed abilities.|
 
 <h2 id="tocS_PokemonPastStat">PokemonPastStat</h2>
 <!-- backwards compatibility -->
@@ -14566,8 +14977,8 @@ This operation does not require authentication
   },
   "stats": [
     {
-      "base_stat": -2147483648,
-      "effort": -2147483648,
+      "base_stat": 1,
+      "effort": 0,
       "stat": {
         "name": "string",
         "url": "http://example.com"
@@ -14581,8 +14992,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|generation|[GenerationSummary](#schemagenerationsummary)|true|none|none|
-|stats|[[PokemonStat](#schemapokemonstat)]|true|none|none|
+|generation|object|true|none|The last generation in which the referenced pokémon had the listed stats.|
+|stats|[[PokemonStat](#schemapokemonstat)]|true|none|The stat the Pokémon had up to and including the listed generation.|
 
 <h2 id="tocS_PokemonPastType">PokemonPastType</h2>
 <!-- backwards compatibility -->
@@ -14599,8 +15010,8 @@ This operation does not require authentication
   },
   "types": [
     {
-      "slot": -2147483648,
-      "pokemon": {
+      "slot": 1,
+      "type": {
         "name": "string",
         "url": "http://example.com"
       }
@@ -14613,8 +15024,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|generation|[GenerationSummary](#schemagenerationsummary)|true|none|none|
-|types|[[TypePokemon](#schematypepokemon)]|true|none|none|
+|generation|object|true|none|The last generation in which the referenced pokémon had the listed types.|
+|types|[[PokemonType](#schemapokemontype)]|true|none|The types the referenced pokémon had up to and including the listed generation.|
 
 <h2 id="tocS_PokemonShapeAwesomeName">PokemonShapeAwesomeName</h2>
 <!-- backwards compatibility -->
@@ -14637,8 +15048,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|awesome_name|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|awesome_name|string|true|none|The localized "scientific" name for an API resource in a specific language.|
+|language|object|true|none|The language this "scientific" name is in.|
 
 <h2 id="tocS_PokemonShapeDetail">PokemonShapeDetail</h2>
 <!-- backwards compatibility -->
@@ -14682,11 +15093,11 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|name|string|true|none|none|
-|awesome_names|[[PokemonShapeAwesomeName](#schemapokemonshapeawesomename)]|true|read-only|none|
-|names|[[PokemonShapeName](#schemapokemonshapename)]|true|read-only|none|
-|pokemon_species|[[PokemonSpeciesSummary](#schemapokemonspeciessummary)]|true|read-only|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|name|string|true|none|The name for this resource.|
+|awesome_names|[[PokemonShapeAwesomeName](#schemapokemonshapeawesomename)]|true|read-only|The "scientific" name of this Pokémon shape listed in different languages.|
+|names|[[PokemonShapeName](#schemapokemonshapename)]|true|read-only|The name of this resource listed in different languages.|
+|pokemon_species|[[PokemonSpeciesSummary](#schemapokemonspeciessummary)]|true|read-only|A list of the Pokémon species that have this shape.|
 
 <h2 id="tocS_PokemonShapeName">PokemonShapeName</h2>
 <!-- backwards compatibility -->
@@ -14709,8 +15120,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|name|string|true|none|The localized name for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_PokemonShapeSummary">PokemonShapeSummary</h2>
 <!-- backwards compatibility -->
@@ -14730,8 +15141,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|url|string(uri)|true|read-only|none|
+|name|string|true|none|The name of the referenced resource.|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_PokemonSpeciesDescription">PokemonSpeciesDescription</h2>
 <!-- backwards compatibility -->
@@ -14754,8 +15165,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|description|string|false|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|description|string|false|none|The localized description for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_PokemonSpeciesDetail">PokemonSpeciesDetail</h2>
 <!-- backwards compatibility -->
@@ -14768,14 +15179,14 @@ This operation does not require authentication
 {
   "id": 0,
   "name": "string",
-  "order": -2147483648,
-  "gender_rate": -2147483648,
-  "capture_rate": -2147483648,
-  "base_happiness": -2147483648,
+  "order": -1,
+  "gender_rate": -1,
+  "capture_rate": 0,
+  "base_happiness": 0,
   "is_baby": true,
   "is_legendary": true,
   "is_mythical": true,
-  "hatch_counter": -2147483648,
+  "hatch_counter": 0,
   "has_gender_differences": true,
   "forms_switchable": true,
   "growth_rate": {
@@ -14831,8 +15242,8 @@ This operation does not require authentication
   ],
   "pal_park_encounters": [
     {
-      "base_score": -2147483648,
-      "rate": -2147483648,
+      "base_score": 0,
+      "rate": 0,
       "area": {
         "name": "string",
         "url": "http://example.com"
@@ -14886,33 +15297,33 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|name|string|true|none|none|
-|order|integer \| null|false|none|none|
-|gender_rate|integer \| null|false|none|none|
-|capture_rate|integer \| null|false|none|none|
-|base_happiness|integer \| null|false|none|none|
-|is_baby|boolean|false|none|none|
-|is_legendary|boolean|false|none|none|
-|is_mythical|boolean|false|none|none|
-|hatch_counter|integer \| null|false|none|none|
-|has_gender_differences|boolean|false|none|none|
-|forms_switchable|boolean|false|none|none|
-|growth_rate|[GrowthRateSummary](#schemagrowthratesummary)|true|none|none|
-|pokedex_numbers|[[PokemonDexEntry](#schemapokemondexentry)]|true|read-only|none|
-|egg_groups|[[EggGroupSummary](#schemaegggroupsummary)]|true|read-only|none|
-|color|[PokemonColorSummary](#schemapokemoncolorsummary)|true|none|none|
-|shape|[PokemonShapeSummary](#schemapokemonshapesummary)|true|none|none|
-|evolves_from_species|[PokemonSpeciesSummary](#schemapokemonspeciessummary)|true|none|none|
-|evolution_chain|[EvolutionChainSummary](#schemaevolutionchainsummary)|true|none|none|
-|habitat|[PokemonHabitatSummary](#schemapokemonhabitatsummary)|true|none|none|
-|generation|[GenerationSummary](#schemagenerationsummary)|true|none|none|
-|names|[[PokemonSpeciesName](#schemapokemonspeciesname)]|true|read-only|none|
-|pal_park_encounters|[[PokemonSpeciesPalParkEncounter](#schemapokemonspeciespalparkencounter)]|true|read-only|none|
-|form_descriptions|[[PokemonSpeciesDescription](#schemapokemonspeciesdescription)]|true|read-only|none|
-|flavor_text_entries|[[PokemonSpeciesFlavorText](#schemapokemonspeciesflavortext)]|true|read-only|none|
-|genera|[[PokemonSpeciesGenus](#schemapokemonspeciesgenus)]|true|read-only|none|
-|varieties|[[PokemonSpeciesVariety](#schemapokemonspeciesvariety)]|true|read-only|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|name|string|true|none|The name for this resource.|
+|order|integer \| null|false|none|The order in which species should be sorted. Based on National Dex order, except families are grouped together and sorted by stage.|
+|gender_rate|integer \| null|false|none|The chance of this Pokémon being female, in eighths; or -1 for genderless.|
+|capture_rate|integer \| null|false|none|The base capture rate; up to 255. The higher the number, the easier the catch.|
+|base_happiness|integer \| null|false|none|The happiness when caught by a normal Pokéball; up to 255. The higher the number, the happier the Pokémon.|
+|is_baby|boolean|false|none|Whether or not this is a baby Pokémon.|
+|is_legendary|boolean|false|none|Whether or not this is a legendary Pokémon.|
+|is_mythical|boolean|false|none|Whether or not this is a mythical Pokémon.|
+|hatch_counter|integer \| null|false|none|Initial hatch counter: one must walk Y × (hatch_counter + 1) steps before this Pokémon's egg hatches, unless utilizing bonuses like Flame Body's. Y varies per generation. In Generations II, III, and VII, Egg cycles are 256 steps long. In Generation IV, Egg cycles are 255 steps long. In Pokémon Brilliant Diamond and Shining Pearl, Egg cycles are also 255 steps long, but are shorter on special dates. In Generations V and VI, Egg cycles are 257 steps long. In Pokémon Sword and Shield, and in Pokémon Scarlet and Violet, Egg cycles are 128 steps long.|
+|has_gender_differences|boolean|false|none|Whether or not this Pokémon has visual gender differences.|
+|forms_switchable|boolean|false|none|Whether or not this Pokémon has multiple forms and can switch between them.|
+|growth_rate|object|true|none|The rate at which this Pokémon species gains levels.|
+|pokedex_numbers|[[PokemonDexEntry](#schemapokemondexentry)]|true|read-only|A list of Pokedexes and the indexes reserved within them for this Pokémon species.|
+|egg_groups|[[EggGroupSummary](#schemaegggroupsummary)]|true|read-only|A list of egg groups this Pokémon species is a member of.|
+|color|object|true|none|The color of this Pokémon for Pokédex search.|
+|shape|object|true|none|The shape of this Pokémon for Pokédex search.|
+|evolves_from_species|[PokemonSpeciesSummary](#schemapokemonspeciessummary) \| null|true|none|The Pokémon species that evolves into this Pokemon_species.|
+|evolution_chain|object|true|none|The evolution chain this Pokémon species is a member of.|
+|habitat|[PokemonHabitatSummary](#schemapokemonhabitatsummary) \| null|true|none|The habitat this Pokémon species can be encountered in.|
+|generation|object|true|none|The generation this Pokémon species was introduced in.|
+|names|[[PokemonSpeciesName](#schemapokemonspeciesname)]|true|read-only|The name of this resource listed in different languages.|
+|pal_park_encounters|[[PokemonSpeciesPalParkEncounter](#schemapokemonspeciespalparkencounter)]|true|read-only|A list of encounters that can be had with this Pokémon species in pal park.|
+|form_descriptions|[[PokemonSpeciesDescription](#schemapokemonspeciesdescription)]|true|read-only|Descriptions of different forms Pokémon take on within the Pokémon species.|
+|flavor_text_entries|[[PokemonSpeciesFlavorText](#schemapokemonspeciesflavortext)]|true|read-only|A list of flavor text entries for this Pokémon species.|
+|genera|[[PokemonSpeciesGenus](#schemapokemonspeciesgenus)]|true|read-only|The genus of this Pokémon species listed in multiple languages.|
+|varieties|[[PokemonSpeciesVariety](#schemapokemonspeciesvariety)]|true|read-only|A list of the Pokémon that exist within this Pokémon species.|
 
 <h2 id="tocS_PokemonSpeciesFlavorText">PokemonSpeciesFlavorText</h2>
 <!-- backwards compatibility -->
@@ -14939,9 +15350,9 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|flavor_text|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
-|version|[VersionSummary](#schemaversionsummary)|true|none|none|
+|flavor_text|string|true|none|The localized flavor text for an API resource in a specific language. Note that this text is left unprocessed as it is found in game files. This means that it contains special characters that one might want to replace with their visible decodable version. Please check out this <a href='https://github.com/veekun/pokedex/issues/218#issuecomment-339841781' >issue</a> to find out more. |
+|language|object|true|none|The language this name is in.|
+|version|object|true|none|The game version this flavor text is extracted from.|
 
 <h2 id="tocS_PokemonSpeciesGenus">PokemonSpeciesGenus</h2>
 <!-- backwards compatibility -->
@@ -14964,8 +15375,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|genus|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|genus|string|true|none|The localized genus for the referenced Pokémon species|
+|language|object|true|none|The language this genus is in.|
 
 <h2 id="tocS_PokemonSpeciesName">PokemonSpeciesName</h2>
 <!-- backwards compatibility -->
@@ -14988,8 +15399,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|name|string|true|none|The localized name for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_PokemonSpeciesPalParkEncounter">PokemonSpeciesPalParkEncounter</h2>
 <!-- backwards compatibility -->
@@ -15000,8 +15411,8 @@ This operation does not require authentication
 
 ```json
 {
-  "base_score": -2147483648,
-  "rate": -2147483648,
+  "base_score": 0,
+  "rate": 0,
   "area": {
     "name": "string",
     "url": "http://example.com"
@@ -15013,9 +15424,9 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|base_score|integer \| null|false|none|none|
-|rate|integer|true|none|none|
-|area|[PalParkAreaSummary](#schemapalparkareasummary)|true|none|none|
+|base_score|integer \| null|false|none|The base score given to the player when the referenced Pokémon is caught during a pal park run.|
+|rate|integer|true|none|The base rate for encountering the referenced Pokémon in this pal park area.|
+|area|object|true|none|The pal park area where this encounter happens.|
 
 <h2 id="tocS_PokemonSpeciesSummary">PokemonSpeciesSummary</h2>
 <!-- backwards compatibility -->
@@ -15035,8 +15446,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|url|string(uri)|true|read-only|none|
+|name|string|true|none|The name of the referenced resource.|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_PokemonSpeciesVariety">PokemonSpeciesVariety</h2>
 <!-- backwards compatibility -->
@@ -15059,8 +15470,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|is_default|boolean|true|none|none|
-|pokemon|[PokemonSummary](#schemapokemonsummary)|true|none|none|
+|is_default|boolean|true|none|Whether this variety is the default variety.|
+|pokemon|object|true|none|The Pokémon variety.|
 
 <h2 id="tocS_PokemonSprites">PokemonSprites</h2>
 <!-- backwards compatibility -->
@@ -15071,7 +15482,60 @@ This operation does not require authentication
 
 ```json
 {
-  "front_default": "string"
+  "front_default": "string",
+  "front_shiny": "string",
+  "front_female": "string",
+  "front_shiny_female": "string",
+  "back_default": "string",
+  "back_shiny": "string",
+  "back_female": "string",
+  "back_shiny_female": "string",
+  "other": {
+    "dream_world": {
+      "front_default": "string",
+      "front_female": "string"
+    },
+    "home": {
+      "front_default": "string",
+      "front_female": "string",
+      "front_shiny": "string",
+      "front_shiny_female": "string"
+    },
+    "showdown": {
+      "front_default": "string",
+      "front_female": "string",
+      "front_shiny": "string",
+      "front_shiny_female": "string",
+      "back_default": "string",
+      "back_female": "string",
+      "back_shiny": "string",
+      "back_shiny_female": "string"
+    },
+    "official-artwork": {
+      "front_default": "string",
+      "front_shiny": "string",
+      "versions": {
+        "property1": {
+          "property1": null,
+          "property2": null
+        },
+        "property2": {
+          "property1": null,
+          "property2": null
+        }
+      }
+    }
+  },
+  "versions": {
+    "property1": {
+      "property1": null,
+      "property2": null
+    },
+    "property2": {
+      "property1": null,
+      "property2": null
+    }
+  }
 }
 ```
 
@@ -15079,7 +15543,182 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|front_default|string \| null|true|none|none|
+|front_default|string \| null|true|none|The default depiction of this Pokémon from the front in battle.|
+|front_shiny|string \| null|true|none|The shiny depiction of this Pokémon from the front in battle.|
+|front_female|string \| null|true|none|The female depiction of this Pokémon from the front in battle.|
+|front_shiny_female|string \| null|true|none|The shiny female depiction of this Pokémon from the front in battle.|
+|back_default|string \| null|true|none|The default depiction of this Pokémon from the back in battle.|
+|back_shiny|string \| null|true|none|The shiny depiction of this Pokémon from the back in battle.|
+|back_female|string \| null|true|none|The female depiction of this Pokémon from the back in battle.|
+|back_shiny_female|string \| null|true|none|The shiny female depiction of this Pokémon from the back in battle.|
+|other|object|false|none|Additional sprites grouped by source, such as official artwork, HOME, and Showdown. Available keys vary by resource.|
+|versions|object|false|none|Sprites grouped by generation and game. Available keys vary by resource.|
+
+<h2 id="tocS_PokemonSpritesOther">PokemonSpritesOther</h2>
+<!-- backwards compatibility -->
+<a id="schemapokemonspritesother"></a>
+<a id="schema_PokemonSpritesOther"></a>
+<a id="tocSpokemonspritesother"></a>
+<a id="tocspokemonspritesother"></a>
+
+```json
+{
+  "dream_world": {
+    "front_default": "string",
+    "front_female": "string"
+  },
+  "home": {
+    "front_default": "string",
+    "front_female": "string",
+    "front_shiny": "string",
+    "front_shiny_female": "string"
+  },
+  "showdown": {
+    "front_default": "string",
+    "front_female": "string",
+    "front_shiny": "string",
+    "front_shiny_female": "string",
+    "back_default": "string",
+    "back_female": "string",
+    "back_shiny": "string",
+    "back_shiny_female": "string"
+  },
+  "official-artwork": {
+    "front_default": "string",
+    "front_shiny": "string",
+    "versions": {
+      "property1": {
+        "property1": null,
+        "property2": null
+      },
+      "property2": {
+        "property1": null,
+        "property2": null
+      }
+    }
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|dream_world|object|false|none|Pokémon Dream World artwork URLs.|
+|home|object|false|none|Pokémon HOME sprite URLs.|
+|showdown|object|false|none|Pokémon Showdown sprite URLs.|
+|official-artwork|object|false|none|Official Pokémon artwork URLs, including shiny artwork and version-specific variants.|
+
+<h2 id="tocS_PokemonSpritesOtherDreamWorld">PokemonSpritesOtherDreamWorld</h2>
+<!-- backwards compatibility -->
+<a id="schemapokemonspritesotherdreamworld"></a>
+<a id="schema_PokemonSpritesOtherDreamWorld"></a>
+<a id="tocSpokemonspritesotherdreamworld"></a>
+<a id="tocspokemonspritesotherdreamworld"></a>
+
+```json
+{
+  "front_default": "string",
+  "front_female": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|front_default|string \| null|true|none|The URL of the default Pokémon Dream World front image, or null if unavailable.|
+|front_female|string \| null|true|none|The URL of the female Pokémon Dream World front image, or null if unavailable.|
+
+<h2 id="tocS_PokemonSpritesOtherHome">PokemonSpritesOtherHome</h2>
+<!-- backwards compatibility -->
+<a id="schemapokemonspritesotherhome"></a>
+<a id="schema_PokemonSpritesOtherHome"></a>
+<a id="tocSpokemonspritesotherhome"></a>
+<a id="tocspokemonspritesotherhome"></a>
+
+```json
+{
+  "front_default": "string",
+  "front_female": "string",
+  "front_shiny": "string",
+  "front_shiny_female": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|front_default|string \| null|true|none|The URL of the default Pokémon HOME front image, or null if unavailable.|
+|front_female|string \| null|true|none|The URL of the female Pokémon HOME front image, or null if unavailable.|
+|front_shiny|string \| null|true|none|The URL of the shiny Pokémon HOME front image, or null if unavailable.|
+|front_shiny_female|string \| null|true|none|The URL of the shiny female Pokémon HOME front image, or null if unavailable.|
+
+<h2 id="tocS_PokemonSpritesOtherOfficialArtwork">PokemonSpritesOtherOfficialArtwork</h2>
+<!-- backwards compatibility -->
+<a id="schemapokemonspritesotherofficialartwork"></a>
+<a id="schema_PokemonSpritesOtherOfficialArtwork"></a>
+<a id="tocSpokemonspritesotherofficialartwork"></a>
+<a id="tocspokemonspritesotherofficialartwork"></a>
+
+```json
+{
+  "front_default": "string",
+  "front_shiny": "string",
+  "versions": {
+    "property1": {
+      "property1": null,
+      "property2": null
+    },
+    "property2": {
+      "property1": null,
+      "property2": null
+    }
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|front_default|string \| null|true|none|The URL of the default front official artwork, or null if unavailable.|
+|front_shiny|string \| null|true|none|The URL of the shiny front official artwork, or null if unavailable.|
+|versions|object|false|none|Additional official artwork grouped by version. Available keys vary by resource.|
+
+<h2 id="tocS_PokemonSpritesOtherShowdown">PokemonSpritesOtherShowdown</h2>
+<!-- backwards compatibility -->
+<a id="schemapokemonspritesothershowdown"></a>
+<a id="schema_PokemonSpritesOtherShowdown"></a>
+<a id="tocSpokemonspritesothershowdown"></a>
+<a id="tocspokemonspritesothershowdown"></a>
+
+```json
+{
+  "front_default": "string",
+  "front_female": "string",
+  "front_shiny": "string",
+  "front_shiny_female": "string",
+  "back_default": "string",
+  "back_female": "string",
+  "back_shiny": "string",
+  "back_shiny_female": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|front_default|string \| null|true|none|The URL of the default Pokémon Showdown front image, or null if unavailable.|
+|front_female|string \| null|true|none|The URL of the female Pokémon Showdown front image, or null if unavailable.|
+|front_shiny|string \| null|true|none|The URL of the shiny Pokémon Showdown front image, or null if unavailable.|
+|front_shiny_female|string \| null|true|none|The URL of the shiny female Pokémon Showdown front image, or null if unavailable.|
+|back_default|string \| null|true|none|The URL of the default Pokémon Showdown back image, or null if unavailable.|
+|back_female|string \| null|true|none|The URL of the female Pokémon Showdown back image, or null if unavailable.|
+|back_shiny|string \| null|true|none|The URL of the shiny Pokémon Showdown back image, or null if unavailable.|
+|back_shiny_female|string \| null|true|none|The URL of the shiny female Pokémon Showdown back image, or null if unavailable.|
 
 <h2 id="tocS_PokemonStat">PokemonStat</h2>
 <!-- backwards compatibility -->
@@ -15090,8 +15729,8 @@ This operation does not require authentication
 
 ```json
 {
-  "base_stat": -2147483648,
-  "effort": -2147483648,
+  "base_stat": 1,
+  "effort": 0,
   "stat": {
     "name": "string",
     "url": "http://example.com"
@@ -15103,9 +15742,9 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|base_stat|integer|true|none|none|
-|effort|integer|true|none|none|
-|stat|[StatSummary](#schemastatsummary)|true|none|none|
+|base_stat|integer|true|none|The base value of the stat.|
+|effort|integer|true|none|The effort points (EV) the Pokémon has in the stat.|
+|stat|object|true|none|The stat the Pokémon has.|
 
 <h2 id="tocS_PokemonSummary">PokemonSummary</h2>
 <!-- backwards compatibility -->
@@ -15125,8 +15764,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|url|string(uri)|true|read-only|none|
+|name|string|true|none|The name of the referenced resource.|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_PokemonType">PokemonType</h2>
 <!-- backwards compatibility -->
@@ -15137,7 +15776,7 @@ This operation does not require authentication
 
 ```json
 {
-  "slot": -2147483648,
+  "slot": 1,
   "type": {
     "name": "string",
     "url": "http://example.com"
@@ -15149,8 +15788,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|slot|integer|true|none|none|
-|type|[TypeSummary](#schematypesummary)|true|none|none|
+|slot|integer|true|none|The order the Pokémon's types are listed in.|
+|type|object|true|none|The type the referenced Pokémon has.|
 
 <h2 id="tocS_RegionDetail">RegionDetail</h2>
 <!-- backwards compatibility -->
@@ -15201,13 +15840,13 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|name|string|true|none|none|
-|locations|[[LocationSummary](#schemalocationsummary)]|true|read-only|none|
-|main_generation|[GenerationSummary](#schemagenerationsummary) \| null|true|read-only|none|
-|names|[[RegionName](#schemaregionname)]|true|read-only|none|
-|pokedexes|[[PokedexSummary](#schemapokedexsummary)]|true|read-only|none|
-|version_groups|[[VersionGroupSummary](#schemaversiongroupsummary)]|true|read-only|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|name|string|true|none|The name for this resource.|
+|locations|[[LocationSummary](#schemalocationsummary)]|true|read-only|A list of locations that can be found in this region.|
+|main_generation|[GenerationSummary](#schemagenerationsummary) \| null|true|read-only|The generation this region was introduced in.|
+|names|[[RegionName](#schemaregionname)]|true|read-only|The name of this resource listed in different languages.|
+|pokedexes|[[PokedexSummary](#schemapokedexsummary)]|true|read-only|A list of pokédexes that catalogue Pokémon in this region.|
+|version_groups|[[VersionGroupSummary](#schemaversiongroupsummary)]|true|read-only|A list of version groups where this region can be visited.|
 
 <h2 id="tocS_RegionName">RegionName</h2>
 <!-- backwards compatibility -->
@@ -15230,8 +15869,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|name|string|true|none|The localized name for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_RegionSummary">RegionSummary</h2>
 <!-- backwards compatibility -->
@@ -15251,8 +15890,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|url|string(uri)|true|read-only|none|
+|name|string|true|none|The name of the referenced resource.|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_StatAffectingMoves">StatAffectingMoves</h2>
 <!-- backwards compatibility -->
@@ -15265,7 +15904,7 @@ This operation does not require authentication
 {
   "increase": [
     {
-      "change": -2147483648,
+      "change": -6,
       "move": {
         "name": "string",
         "url": "http://example.com"
@@ -15274,7 +15913,7 @@ This operation does not require authentication
   ],
   "decrease": [
     {
-      "change": -2147483648,
+      "change": -6,
       "move": {
         "name": "string",
         "url": "http://example.com"
@@ -15288,8 +15927,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|increase|[[MoveStatChange](#schemamovestatchange)]|true|none|none|
-|decrease|[[MoveStatChange](#schemamovestatchange)]|true|none|none|
+|increase|[[MoveStatChange](#schemamovestatchange)]|true|none|A list of moves and how they change the referenced stat.|
+|decrease|[[MoveStatChange](#schemamovestatchange)]|true|none|A list of moves and how they change the referenced stat.|
 
 <h2 id="tocS_StatAffectingNatures">StatAffectingNatures</h2>
 <!-- backwards compatibility -->
@@ -15319,8 +15958,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|increase|[[NatureSummary](#schemanaturesummary)]|true|none|none|
-|decrease|[[NatureSummary](#schemanaturesummary)]|true|none|none|
+|increase|[[NatureSummary](#schemanaturesummary)]|true|none|A list of natures and how they change the referenced stat.|
+|decrease|[[NatureSummary](#schemanaturesummary)]|true|none|A list of nature sand how they change the referenced stat.|
 
 <h2 id="tocS_StatDetail">StatDetail</h2>
 <!-- backwards compatibility -->
@@ -15333,12 +15972,12 @@ This operation does not require authentication
 {
   "id": 0,
   "name": "string",
-  "game_index": -2147483648,
+  "game_index": 0,
   "is_battle_only": true,
   "affecting_moves": {
     "increase": [
       {
-        "change": -2147483648,
+        "change": -6,
         "move": {
           "name": "string",
           "url": "http://example.com"
@@ -15347,7 +15986,7 @@ This operation does not require authentication
     ],
     "decrease": [
       {
-        "change": -2147483648,
+        "change": -6,
         "move": {
           "name": "string",
           "url": "http://example.com"
@@ -15400,16 +16039,16 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|name|string|true|none|none|
-|game_index|integer|true|none|none|
-|is_battle_only|boolean|false|none|none|
-|affecting_moves|object|true|read-only|none|
-|affecting_natures|object|true|read-only|none|
-|affecting_items|[[ItemSummary](#schemaitemsummary)]|true|read-only|none|
-|characteristics|[[CharacteristicSummary](#schemacharacteristicsummary)]|true|read-only|none|
-|move_damage_class|[MoveDamageClassSummary](#schemamovedamageclasssummary)|true|none|none|
-|names|[[StatName](#schemastatname)]|true|read-only|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|name|string|true|none|The name for this resource.|
+|game_index|integer|true|none|ID the games use for this stat.|
+|is_battle_only|boolean|false|none|Whether this stat only exists within a battle.|
+|affecting_moves|object|true|read-only|A detail of moves which affect this stat positively or negatively.|
+|affecting_natures|object|true|read-only|A detail of natures which affect this stat positively or negatively.|
+|affecting_items|[[ItemSummary](#schemaitemsummary)]|true|read-only|Items that affect this stat, such as vitamins and battle items.|
+|characteristics|[[CharacteristicSummary](#schemacharacteristicsummary)]|true|read-only|A list of characteristics that are set on a Pokémon when its highest base stat is this stat.|
+|move_damage_class|[MoveDamageClassSummary](#schemamovedamageclasssummary) \| null|true|none|The class of damage this stat is directly related to.|
+|names|[[StatName](#schemastatname)]|true|read-only|The name of this resource listed in different languages.|
 
 <h2 id="tocS_StatName">StatName</h2>
 <!-- backwards compatibility -->
@@ -15432,8 +16071,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|name|string|true|none|The localized name for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_StatSummary">StatSummary</h2>
 <!-- backwards compatibility -->
@@ -15453,8 +16092,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|url|string(uri)|true|read-only|none|
+|name|string|true|none|The name of the referenced resource.|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_SuperContestEffectDetail">SuperContestEffectDetail</h2>
 <!-- backwards compatibility -->
@@ -15466,7 +16105,7 @@ This operation does not require authentication
 ```json
 {
   "id": 0,
-  "appeal": -2147483648,
+  "appeal": 0,
   "flavor_text_entries": [
     {
       "flavor_text": "string",
@@ -15489,10 +16128,10 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|appeal|integer|true|none|none|
-|flavor_text_entries|[[SuperContestEffectFlavorText](#schemasupercontesteffectflavortext)]|true|read-only|none|
-|moves|[[MoveSummary](#schemamovesummary)]|true|read-only|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|appeal|integer|true|none|The level of appeal this super contest effect has.|
+|flavor_text_entries|[[SuperContestEffectFlavorText](#schemasupercontesteffectflavortext)]|true|read-only|The flavor text of this super contest effect listed in different languages.|
+|moves|[[MoveSummary](#schemamovesummary)]|true|read-only|A list of moves that have the effect when used in super contests.|
 
 <h2 id="tocS_SuperContestEffectFlavorText">SuperContestEffectFlavorText</h2>
 <!-- backwards compatibility -->
@@ -15515,8 +16154,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|flavor_text|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|flavor_text|string|true|none|The localized flavor text for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_SuperContestEffectSummary">SuperContestEffectSummary</h2>
 <!-- backwards compatibility -->
@@ -15535,7 +16174,7 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|url|string(uri)|true|read-only|none|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_TypeDetail">TypeDetail</h2>
 <!-- backwards compatibility -->
@@ -15634,7 +16273,7 @@ This operation does not require authentication
   ],
   "game_indices": [
     {
-      "game_index": -2147483648,
+      "game_index": 0,
       "generation": {
         "name": "string",
         "url": "http://example.com"
@@ -15660,7 +16299,7 @@ This operation does not require authentication
   ],
   "pokemon": [
     {
-      "slot": -2147483648,
+      "slot": 1,
       "pokemon": {
         "name": "string",
         "url": "http://example.com"
@@ -15674,7 +16313,26 @@ This operation does not require authentication
     }
   ],
   "sprites": {
-    "sprites": null
+    "property1": {
+      "property1": {
+        "name_icon": "string",
+        "symbol_icon": "string"
+      },
+      "property2": {
+        "name_icon": "string",
+        "symbol_icon": "string"
+      }
+    },
+    "property2": {
+      "property1": {
+        "name_icon": "string",
+        "symbol_icon": "string"
+      },
+      "property2": {
+        "name_icon": "string",
+        "symbol_icon": "string"
+      }
+    }
   }
 }
 ```
@@ -15685,17 +16343,17 @@ Serializer for the Type resource
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|name|string|true|none|none|
-|damage_relations|object|true|read-only|none|
-|past_damage_relations|[[TypePastRelationships](#schematypepastrelationships)]|true|read-only|none|
-|game_indices|[[TypeGameIndex](#schematypegameindex)]|true|read-only|none|
-|generation|[GenerationSummary](#schemagenerationsummary)|true|none|none|
-|move_damage_class|[MoveDamageClassSummary](#schemamovedamageclasssummary)|true|none|none|
-|names|[[TypeName](#schematypename)]|true|read-only|none|
-|pokemon|[[TypePokemon](#schematypepokemon)]|true|read-only|none|
-|moves|[[MoveSummary](#schemamovesummary)]|true|read-only|none|
-|sprites|object|true|read-only|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|name|string|true|none|The name for this resource.|
+|damage_relations|object|true|read-only|A detail of how effective this type is toward others and vice versa.|
+|past_damage_relations|[[TypePastRelationships](#schematypepastrelationships)]|true|read-only|A list of details of how effective this type was toward others and vice versa in previous generations|
+|game_indices|[[TypeGameIndex](#schematypegameindex)]|true|read-only|A list of game indices relevent to this item by generation.|
+|generation|object|true|none|The generation this type was introduced in.|
+|move_damage_class|[MoveDamageClassSummary](#schemamovedamageclasssummary) \| null|true|none|The class of damage inflicted by this type.|
+|names|[[TypeName](#schematypename)]|true|read-only|The name of this resource listed in different languages.|
+|pokemon|[[TypePokemon](#schematypepokemon)]|true|read-only|A list of details of Pokémon that have this type.|
+|moves|[[MoveSummary](#schemamovesummary)]|true|read-only|A list of moves that have this type.|
+|sprites|object|true|read-only|Type icons grouped by generation and game, with name_icon and symbol_icon URLs. Unavailable icons are null.|
 
 <h2 id="tocS_TypeGameIndex">TypeGameIndex</h2>
 <!-- backwards compatibility -->
@@ -15706,7 +16364,7 @@ Serializer for the Type resource
 
 ```json
 {
-  "game_index": -2147483648,
+  "game_index": 0,
   "generation": {
     "name": "string",
     "url": "http://example.com"
@@ -15718,8 +16376,29 @@ Serializer for the Type resource
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|game_index|integer|true|none|none|
-|generation|[GenerationSummary](#schemagenerationsummary)|true|none|none|
+|game_index|integer|true|none|The internal id of an API resource within game data.|
+|generation|object|true|none|The generation relevent to this game index.|
+
+<h2 id="tocS_TypeGameSprite">TypeGameSprite</h2>
+<!-- backwards compatibility -->
+<a id="schematypegamesprite"></a>
+<a id="schema_TypeGameSprite"></a>
+<a id="tocStypegamesprite"></a>
+<a id="tocstypegamesprite"></a>
+
+```json
+{
+  "name_icon": "string",
+  "symbol_icon": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name_icon|string \| null|false|none|The URL of the icon displaying the type name in this game, or null if unavailable.|
+|symbol_icon|string \| null|false|none|The URL of the type symbol icon in this game, or null if unavailable.|
 
 <h2 id="tocS_TypeName">TypeName</h2>
 <!-- backwards compatibility -->
@@ -15742,8 +16421,8 @@ Serializer for the Type resource
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|name|string|true|none|The localized name for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_TypePastRelationships">TypePastRelationships</h2>
 <!-- backwards compatibility -->
@@ -15803,8 +16482,8 @@ Serializer for the Type resource
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|generation|[GenerationSummary](#schemagenerationsummary)|true|none|none|
-|damage_relations|[TypeRelationships](#schematyperelationships)|true|none|none|
+|generation|object|true|none|The last generation in which the referenced type had the listed damage relations|
+|damage_relations|object|true|none|The damage relations the referenced type had up to and including the listed generation|
 
 <h2 id="tocS_TypePokemon">TypePokemon</h2>
 <!-- backwards compatibility -->
@@ -15815,7 +16494,7 @@ Serializer for the Type resource
 
 ```json
 {
-  "slot": -2147483648,
+  "slot": 1,
   "pokemon": {
     "name": "string",
     "url": "http://example.com"
@@ -15827,8 +16506,8 @@ Serializer for the Type resource
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|slot|integer|true|none|none|
-|pokemon|[PokemonSummary](#schemapokemonsummary)|true|none|none|
+|slot|integer|true|none|The order the Pokémon's types are listed in.|
+|pokemon|object|true|none|The Pokémon that has the referenced type.|
 
 <h2 id="tocS_TypeRelationships">TypeRelationships</h2>
 <!-- backwards compatibility -->
@@ -15882,31 +16561,12 @@ Serializer for the Type resource
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|no_damage_to|[[TypeSummary](#schematypesummary)]|true|none|none|
-|half_damage_to|[[TypeSummary](#schematypesummary)]|true|none|none|
-|double_damage_to|[[TypeSummary](#schematypesummary)]|true|none|none|
-|no_damage_from|[[TypeSummary](#schematypesummary)]|true|none|none|
-|half_damage_from|[[TypeSummary](#schematypesummary)]|true|none|none|
-|double_damage_from|[[TypeSummary](#schematypesummary)]|true|none|none|
-
-<h2 id="tocS_TypeSprite">TypeSprite</h2>
-<!-- backwards compatibility -->
-<a id="schematypesprite"></a>
-<a id="schema_TypeSprite"></a>
-<a id="tocStypesprite"></a>
-<a id="tocstypesprite"></a>
-
-```json
-{
-  "sprites": null
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|sprites|object|true|none|none|
+|no_damage_to|[[TypeSummary](#schematypesummary)]|true|none|A list of types this type has no effect on.|
+|half_damage_to|[[TypeSummary](#schematypesummary)]|true|none|A list of types this type is not very effect against.|
+|double_damage_to|[[TypeSummary](#schematypesummary)]|true|none|A list of types this type is very effect against.|
+|no_damage_from|[[TypeSummary](#schematypesummary)]|true|none|A list of types that have no effect on this type.|
+|half_damage_from|[[TypeSummary](#schematypesummary)]|true|none|A list of types that are not very effective against this type.|
+|double_damage_from|[[TypeSummary](#schematypesummary)]|true|none|A list of types that are very effective against this type.|
 
 <h2 id="tocS_TypeSummary">TypeSummary</h2>
 <!-- backwards compatibility -->
@@ -15926,8 +16586,8 @@ Serializer for the Type resource
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|url|string(uri)|true|read-only|none|
+|name|string|true|none|The name of the referenced resource.|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_VersionDetail">VersionDetail</h2>
 <!-- backwards compatibility -->
@@ -15964,10 +16624,10 @@ not sure how to add anything other than a hyperlink
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|name|string|true|none|none|
-|names|[[VersionName](#schemaversionname)]|true|read-only|none|
-|version_group|[VersionGroupSummary](#schemaversiongroupsummary)|true|none|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|name|string|true|none|The name for this resource.|
+|names|[[VersionName](#schemaversionname)]|true|read-only|The name of this resource listed in different languages.|
+|version_group|object|true|none|The version group this version belongs to.|
 
 <h2 id="tocS_VersionGroupDetail">VersionGroupDetail</h2>
 <!-- backwards compatibility -->
@@ -15980,7 +16640,7 @@ not sure how to add anything other than a hyperlink
 {
   "id": 0,
   "name": "string",
-  "order": -2147483648,
+  "order": -1,
   "generation": {
     "name": "string",
     "url": "http://example.com"
@@ -16016,14 +16676,14 @@ not sure how to add anything other than a hyperlink
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|read-only|none|
-|name|string|true|none|none|
-|order|integer \| null|false|none|none|
-|generation|[GenerationSummary](#schemagenerationsummary)|true|none|none|
-|move_learn_methods|[[MoveLearnMethodSummary](#schemamovelearnmethodsummary)]|true|read-only|none|
-|pokedexes|[[PokedexSummary](#schemapokedexsummary)]|true|read-only|none|
-|regions|[[RegionSummary](#schemaregionsummary)]|true|read-only|none|
-|versions|[[VersionSummary](#schemaversionsummary)]|true|read-only|none|
+|id|integer|true|read-only|The identifier for this resource.|
+|name|string|true|none|The name for this resource.|
+|order|integer \| null|false|none|Order for sorting. Almost by date of release, except similar versions are grouped together.|
+|generation|object|true|none|The generation this version was introduced in.|
+|move_learn_methods|[[MoveLearnMethodSummary](#schemamovelearnmethodsummary)]|true|read-only|A list of methods in which Pokémon can learn moves in this version group.|
+|pokedexes|[[PokedexSummary](#schemapokedexsummary)]|true|read-only|A list of Pokédexes introduces in this version group.|
+|regions|[[RegionSummary](#schemaregionsummary)]|true|read-only|A list of regions that can be visited in this version group.|
+|versions|[[VersionSummary](#schemaversionsummary)]|true|read-only|The versions this version group owns.|
 
 <h2 id="tocS_VersionGroupSummary">VersionGroupSummary</h2>
 <!-- backwards compatibility -->
@@ -16043,8 +16703,8 @@ not sure how to add anything other than a hyperlink
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|url|string(uri)|true|read-only|none|
+|name|string|true|none|The name of the referenced resource.|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|
 
 <h2 id="tocS_VersionName">VersionName</h2>
 <!-- backwards compatibility -->
@@ -16067,8 +16727,8 @@ not sure how to add anything other than a hyperlink
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|language|[LanguageSummary](#schemalanguagesummary)|true|none|none|
+|name|string|true|none|The localized name for an API resource in a specific language.|
+|language|object|true|none|The language this name is in.|
 
 <h2 id="tocS_VersionSummary">VersionSummary</h2>
 <!-- backwards compatibility -->
@@ -16088,5 +16748,5 @@ not sure how to add anything other than a hyperlink
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|true|none|none|
-|url|string(uri)|true|read-only|none|
+|name|string|true|none|The name of the referenced resource.|
+|url|string(uri)|true|read-only|The URL of the referenced resource.|

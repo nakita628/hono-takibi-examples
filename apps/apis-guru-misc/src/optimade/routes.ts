@@ -5,130 +5,8 @@ const AggregateSchema = z
   .openapi({ description: 'Enumeration of aggregate values', title: 'Aggregate' })
   .openapi('Aggregate')
 
-const AssemblySchema = z
-  .object({
-    group_probabilities: z
-      .array(z.number())
-      .openapi({
-        description:
-          'Statistical probability of each group. It MUST have the same length as `sites_in_groups`.\nIt SHOULD sum to one.\nSee below for examples of how to specify the probability of the occurrence of a vacancy.\nThe possible reasons for the values not to sum to one are the same as already specified above for the `concentration` of each `species`.',
-        title: 'Group Probabilities',
-      }),
-    sites_in_groups: z
-      .array(z.array(z.int()))
-      .openapi({
-        description:
-          'Index of the sites (0-based) that belong to each group for each assembly.\n\n- **Examples**:\n    - `[[1], [2]]`: two groups, one with the second site, one with the third.\n    - `[[1,2], [3]]`: one group with the second and third site, one with the fourth.',
-        title: 'Sites In Groups',
-      }),
-  })
-  .openapi({
-    description:
-      'A description of groups of sites that are statistically correlated.\n\n- **Examples** (for each entry of the assemblies list):\n    - `{"sites_in_groups": [[0], [1]], "group_probabilities: [0.3, 0.7]}`: the first site and the second site never occur at the same time in the unit cell.\n      Statistically, 30 % of the times the first site is present, while 70 % of the times the second site is present.\n    - `{"sites_in_groups": [[1,2], [3]], "group_probabilities: [0.3, 0.7]}`: the second and third site are either present together or not present; they form the first group of atoms for this assembly.\n      The second group is formed by the fourth site. Sites of the first group (the second and the third) are never present at the same time as the fourth site.\n      30 % of times sites 1 and 2 are present (and site 3 is absent); 70 % of times site 3 is present (and sites 1 and 2 are absent).',
-    required: ['sites_in_groups', 'group_probabilities'],
-    title: 'Assembly',
-  })
-  .openapi('Assembly')
-
-const AttributesSchema = z
-  .object({})
-  .openapi({
-    description:
-      'Members of the attributes object ("attributes") represent information about the resource object in which it\'s defined.\nThe keys for Attributes MUST NOT be:\n    relationships\n    links\n    id\n    type',
-    title: 'Attributes',
-  })
-  .openapi('Attributes')
-
-const AvailableApiVersionSchema = z
-  .object({
-    url: z
-      .url()
-      .regex(/.+\/v[0-1](\.[0-9]+)*\/?$/)
-      .min(1)
-      .max(65536)
-      .openapi({
-        description:
-          'A string specifying a versioned base URL that MUST adhere to the rules in section Base URL',
-        title: 'Url',
-      }),
-    version: z
-      .string()
-      .regex(
-        /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/,
-      )
-      .openapi({
-        description:
-          "A string containing the full version number of the API served at that versioned base URL.\nThe version number string MUST NOT be prefixed by, e.g., 'v'.\nExamples: `1.0.0`, `1.0.0-rc.2`.",
-        title: 'Version',
-      }),
-  })
-  .openapi({
-    description: 'A JSON object containing information about an available API version',
-    required: ['url', 'version'],
-    title: 'AvailableApiVersion',
-  })
-  .openapi('AvailableApiVersion')
-
-const BaseInfoAttributesSchema = z
-  .object({
-    api_version: z
-      .string()
-      .regex(
-        /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/,
-      )
-      .openapi({
-        description:
-          'Presently used full version of the OPTIMADE API.\nThe version number string MUST NOT be prefixed by, e.g., "v".\nExamples: `1.0.0`, `1.0.0-rc.2`.',
-        title: 'Api Version',
-      }),
-    available_api_versions: z
-      .array(AvailableApiVersionSchema)
-      .openapi({
-        description: 'A list of dictionaries of available API versions at other base URLs',
-        title: 'Available Api Versions',
-      }),
-    available_endpoints: z
-      .array(z.string())
-      .openapi({
-        description:
-          'List of available endpoints (i.e., the string to be appended to the versioned base URL).',
-        title: 'Available Endpoints',
-      }),
-    entry_types_by_format: z
-      .record(z.string(), z.array(z.string()))
-      .openapi({
-        description: 'Available entry endpoints as a function of output formats.',
-        title: 'Entry Types By Format',
-      }),
-    formats: z
-      .array(z.string())
-      .default(['json'])
-      .exactOptional()
-      .openapi({ description: 'List of available output formats.', title: 'Formats' }),
-    is_index: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          'If true, this is an index meta-database base URL (see section Index Meta-Database). If this member is not provided, the client MUST assume this is not an index meta-database base URL (i.e., the default is for `is_index` to be `false`).',
-        title: 'Is Index',
-      }),
-  })
-  .openapi({
-    description: 'Attributes for Base URL Info endpoint',
-    required: [
-      'api_version',
-      'available_api_versions',
-      'available_endpoints',
-      'entry_types_by_format',
-    ],
-    title: 'BaseInfoAttributes',
-  })
-  .openapi('BaseInfoAttributes')
-
 const MetaSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Non-standard meta-information that can not be represented as an attribute or relationship.',
@@ -156,6 +34,67 @@ const LinkSchema = z
   })
   .openapi('Link')
 
+const LinkTypeSchema = z
+  .enum(['child', 'root', 'external', 'providers'])
+  .openapi({ description: 'Enumeration of link_type values', title: 'LinkType' })
+  .openapi('LinkType')
+
+const LinksResourceAttributesSchema = z
+  .object({
+    aggregate: AggregateSchema.default('ok')
+      .exactOptional()
+      .openapi({
+        description:
+          'A string indicating whether a client that is following links to aggregate results from different OPTIMADE implementations should follow this link or not.\nThis flag SHOULD NOT be indicated for links where `link_type` is not `child`.\n\nIf not specified, clients MAY assume that the value is `ok`.\nIf specified, and the value is anything different than `ok`, the client MUST assume that the server is suggesting not to follow the link during aggregation by default (also if the value is not among the known ones, in case a future specification adds new accepted values).\n\nSpecific values indicate the reason why the server is providing the suggestion.\nA client MAY follow the link anyway if it has reason to do so (e.g., if the client is looking for all test databases, it MAY follow the links marked with `aggregate`=`test`).\n\nIf specified, it MUST be one of the values listed in section Link Aggregate Options.',
+        title: 'Aggregate',
+      }),
+    base_url: z
+      .union([z.url().min(1).max(65536), LinkSchema])
+      .openapi({
+        description: 'JSON API links object, pointing to the base URL for this implementation',
+        title: 'Base Url',
+      }),
+    description: z
+      .string()
+      .openapi({
+        description:
+          'Human-readable description for the OPTIMADE API implementation, e.g., for use in clients to show a description to the end-user.',
+        title: 'Description',
+      }),
+    homepage: z
+      .union([z.url().min(1).max(65536), LinkSchema])
+      .openapi({
+        description: 'JSON API links object, pointing to a homepage URL for this implementation',
+        title: 'Homepage',
+      }),
+    link_type: LinkTypeSchema.openapi({
+      description:
+        "The type of the linked relation.\nMUST be one of these values: 'child', 'root', 'external', 'providers'.",
+      title: 'Link Type',
+    }),
+    name: z
+      .string()
+      .openapi({
+        description:
+          'Human-readable name for the OPTIMADE API implementation, e.g., for use in clients to show the name to the end-user.',
+        title: 'Name',
+      }),
+    no_aggregate_reason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'An OPTIONAL human-readable string indicating the reason for suggesting not to aggregate results following the link.\nIt SHOULD NOT be present if `aggregate`=`ok`.',
+        title: 'No Aggregate Reason',
+      }),
+  })
+  .openapi({
+    description: 'Links endpoint resource object attributes',
+    required: ['name', 'description', 'base_url', 'homepage', 'link_type'],
+    title: 'LinksResourceAttributes',
+  })
+  .openapi('LinksResourceAttributes')
+
 const ResourceLinksSchema = z
   .object({
     self: z
@@ -168,45 +107,6 @@ const ResourceLinksSchema = z
   })
   .openapi({ description: 'A Resource Links object', title: 'ResourceLinks', required: [] })
   .openapi('ResourceLinks')
-
-const RelationshipsSchema = z
-  .object({})
-  .openapi({
-    description:
-      'Members of the relationships object ("relationships") represent references from the resource object in which it\'s defined to other resource objects.\nKeys MUST NOT be:\n    type\n    id',
-    title: 'Relationships',
-  })
-  .openapi('Relationships')
-
-const BaseInfoResourceSchema = z
-  .object({
-    attributes: BaseInfoAttributesSchema,
-    id: z.string().regex(/^\/$/).openapi({ title: 'Id' }),
-    links: ResourceLinksSchema.exactOptional().openapi({
-      description: 'a links object containing links related to the resource.',
-      title: 'Links',
-    }),
-    meta: MetaSchema.exactOptional().openapi({
-      description:
-        'a meta object containing non-standard meta-information about a resource that can not be represented as an attribute or relationship.',
-      title: 'Meta',
-    }),
-    relationships: RelationshipsSchema.exactOptional().openapi({
-      description:
-        '[Relationships object](https://jsonapi.org/format/1.0/#document-resource-object-relationships)\ndescribing relationships between the resource and other JSON API resources.',
-      title: 'Relationships',
-    }),
-    type: z
-      .string()
-      .regex(/^info$/)
-      .openapi({ title: 'Type' }),
-  })
-  .openapi({
-    description: 'Resource objects appear in a JSON API document to represent resources.',
-    required: ['id', 'type', 'attributes'],
-    title: 'BaseInfoResource',
-  })
-  .openapi('BaseInfoResource')
 
 const BaseRelationshipMetaSchema = z
   .object({
@@ -240,79 +140,144 @@ const BaseRelationshipResourceSchema = z
   })
   .openapi('BaseRelationshipResource')
 
-const DataTypeSchema = z
-  .enum(['string', 'integer', 'float', 'boolean', 'timestamp', 'list', 'dictionary', 'unknown'])
+const RelationshipLinksSchema = z
+  .object({
+    related: z
+      .union([z.url().min(1).max(65536), LinkSchema])
+      .exactOptional()
+      .openapi({
+        description:
+          'A [related resource link](https://jsonapi.org/format/1.0/#document-resource-object-related-resource-links).',
+        title: 'Related',
+      }),
+    self: z
+      .union([z.url().min(1).max(65536), LinkSchema])
+      .exactOptional()
+      .openapi({
+        description:
+          "A link for the relationship itself (a 'relationship link').\nThis link allows the client to directly manipulate the relationship.\nWhen fetched successfully, this link returns the [linkage](https://jsonapi.org/format/1.0/#document-resource-object-linkage) for the related resources as its primary data.\n(See [Fetching Relationships](https://jsonapi.org/format/1.0/#fetching-relationships).)",
+        title: 'Self',
+      }),
+  })
+  .openapi({
+    description:
+      'A resource object **MAY** contain references to other resource objects ("relationships").\nRelationships may be to-one or to-many.\nRelationships can be specified by including a member in a resource\'s links object.',
+    title: 'RelationshipLinks',
+    required: [],
+  })
+  .openapi('RelationshipLinks')
+
+const ReferenceRelationshipSchema = z
+  .object({
+    data: z
+      .union([BaseRelationshipResourceSchema, z.array(BaseRelationshipResourceSchema)])
+      .exactOptional()
+      .openapi({ description: 'Resource linkage', title: 'Data' }),
+    links: RelationshipLinksSchema.exactOptional().openapi({
+      description: 'a links object containing at least one of the following: self, related',
+      title: 'Links',
+    }),
+    meta: MetaSchema.exactOptional().openapi({
+      description:
+        'a meta object that contains non-standard meta-information about the relationship.',
+      title: 'Meta',
+    }),
+  })
   .openapi({
     description:
-      'Optimade Data Types\n\nSee the section "Data types" in the OPTIMADE API specification for more information.',
-    title: 'DataType',
+      'Similar to normal JSON API relationship, but with addition of OPTIONAL meta field for a resource',
+    title: 'ReferenceRelationship',
+    required: [],
   })
-  .openapi('DataType')
+  .openapi('ReferenceRelationship')
 
-const EntryInfoPropertySchema = z
+const StructureRelationshipSchema = z
   .object({
-    description: z
-      .string()
-      .openapi({
-        description: 'A human-readable description of the entry property',
-        title: 'Description',
-      }),
-    sortable: z
-      .boolean()
+    data: z
+      .union([BaseRelationshipResourceSchema, z.array(BaseRelationshipResourceSchema)])
       .exactOptional()
-      .openapi({
-        description:
-          'Defines whether the entry property can be used for sorting with the "sort" parameter.\nIf the entry listing endpoint supports sorting, this key MUST be present for sortable properties with value `true`.',
-        title: 'Sortable',
-      }),
-    type: DataTypeSchema.exactOptional().openapi({
-      description:
-        "The type of the property's value.\nThis MUST be any of the types defined in the Data types section.\nFor the purpose of compatibility with future versions of this specification, a client MUST accept values that are not `string` values specifying any of the OPTIMADE Data types, but MUST then also disregard the `type` field.\nNote, if the value is a nested type, only the outermost type should be reported.\nE.g., for the entry resource `structures`, the `species` property is defined as a list of dictionaries, hence its `type` value would be `list`.",
-      title: 'Type',
+      .openapi({ description: 'Resource linkage', title: 'Data' }),
+    links: RelationshipLinksSchema.exactOptional().openapi({
+      description: 'a links object containing at least one of the following: self, related',
+      title: 'Links',
     }),
-    unit: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The physical unit of the entry property.\nThis MUST be a valid representation of units according to version 2.1 of [The Unified Code for Units of Measure](https://unitsofmeasure.org/ucum.html).\nIt is RECOMMENDED that non-standard (non-SI) units are described in the description for the property.',
-        title: 'Unit',
-      }),
+    meta: MetaSchema.exactOptional().openapi({
+      description:
+        'a meta object that contains non-standard meta-information about the relationship.',
+      title: 'Meta',
+    }),
   })
-  .openapi({ required: ['description'], title: 'EntryInfoProperty' })
-  .openapi('EntryInfoProperty')
+  .openapi({
+    description:
+      'Similar to normal JSON API relationship, but with addition of OPTIONAL meta field for a resource',
+    title: 'StructureRelationship',
+    required: [],
+  })
+  .openapi('StructureRelationship')
 
-const EntryInfoResourceSchema = z
+const EntryRelationshipsSchema = z
   .object({
-    description: z
+    references: ReferenceRelationshipSchema.exactOptional().openapi({
+      description:
+        'Object containing links to relationships with entries of the `references` type.',
+      title: 'References',
+    }),
+    structures: StructureRelationshipSchema.exactOptional().openapi({
+      description:
+        'Object containing links to relationships with entries of the `structures` type.',
+      title: 'Structures',
+    }),
+  })
+  .openapi({
+    description:
+      'This model wraps the JSON API Relationships to include type-specific top level keys.',
+    title: 'EntryRelationships',
+    required: [],
+  })
+  .openapi('EntryRelationships')
+
+const LinksResourceSchema = z
+  .object({
+    attributes: LinksResourceAttributesSchema.openapi({
+      description:
+        "A dictionary containing key-value pairs representing the Links resource's properties.",
+      title: 'Attributes',
+    }),
+    id: z
       .string()
-      .openapi({ description: 'Description of the entry.', title: 'Description' }),
-    formats: z
-      .array(z.string())
-      .openapi({
-        description: 'List of output formats available for this type of entry.',
-        title: 'Formats',
-      }),
-    output_fields_by_format: z
-      .record(z.string(), z.array(z.string()))
       .openapi({
         description:
-          'Dictionary of available output fields for this entry type, where the keys are the values of the `formats` list and the values are the keys of the `properties` dictionary.',
-        title: 'Output Fields By Format',
+          'An entry\'s ID as defined in section Definition of Terms.\n\n- **Type**: string.\n\n- **Requirements/Conventions**:\n    - **Support**: MUST be supported by all implementations, MUST NOT be `null`.\n    - **Query**: MUST be a queryable property with support for all mandatory filter features.\n    - **Response**: REQUIRED in the response.\n\n- **Examples**:\n    - `"db/1234567"`\n    - `"cod/2000000"`\n    - `"cod/2000000@1234567"`\n    - `"nomad/L1234567890"`\n    - `"42"`',
+        title: 'Id',
       }),
-    properties: z
-      .record(z.string(), EntryInfoPropertySchema)
+    links: ResourceLinksSchema.exactOptional().openapi({
+      description: 'a links object containing links related to the resource.',
+      title: 'Links',
+    }),
+    meta: MetaSchema.exactOptional().openapi({
+      description:
+        'a meta object containing non-standard meta-information about a resource that can not be represented as an attribute or relationship.',
+      title: 'Meta',
+    }),
+    relationships: EntryRelationshipsSchema.exactOptional().openapi({
+      description:
+        'A dictionary containing references to other entries according to the description in section Relationships encoded as [JSON API Relationships](https://jsonapi.org/format/1.0/#document-resource-object-relationships).\nThe OPTIONAL human-readable description of the relationship MAY be provided in the `description` field inside the `meta` dictionary of the JSON API resource identifier object.',
+      title: 'Relationships',
+    }),
+    type: z
+      .string()
+      .regex(/^links$/)
       .openapi({
-        description:
-          'A dictionary describing queryable properties for this entry type, where each key is a property name.',
-        title: 'Properties',
+        description: 'These objects are described in detail in the section Links Endpoint',
+        title: 'Type',
       }),
   })
   .openapi({
-    required: ['formats', 'description', 'properties', 'output_fields_by_format'],
-    title: 'EntryInfoResource',
+    description: 'A Links endpoint resource object',
+    required: ['id', 'type', 'attributes'],
+    title: 'LinksResource',
   })
-  .openapi('EntryInfoResource')
+  .openapi('LinksResource')
 
 const ErrorLinksSchema = z
   .object({
@@ -412,13 +377,45 @@ const ErrorSchema = z
   .openapi({ description: 'An error response', title: 'Error', required: [] })
   .openapi('Error')
 
-const ResourceSchema = z
+const EntryResourceAttributesSchema = z
   .object({
-    attributes: AttributesSchema.exactOptional().openapi({
-      description: 'an attributes object representing some of the resource’s data.',
+    immutable_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The entry\'s immutable ID (e.g., an UUID). This is important for databases having preferred IDs that point to "the latest version" of a record, but still offer access to older variants. This ID maps to the version-specific record, in case it changes in the future.\n\n- **Type**: string.\n\n- **Requirements/Conventions**:\n    - **Support**: OPTIONAL support in implementations, i.e., MAY be `null`.\n    - **Query**: MUST be a queryable property with support for all mandatory filter features.\n\n- **Examples**:\n    - `"8bd3e750-b477-41a0-9b11-3a799f21b44f"`\n    - `"fjeiwoj,54;@=%<>#32"` (Strings that are not URL-safe are allowed.)',
+        title: 'Immutable Id',
+      }),
+    last_modified: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description:
+          'Date and time representing when the entry was last modified.\n\n- **Type**: timestamp.\n\n- **Requirements/Conventions**:\n    - **Support**: SHOULD be supported by all implementations, i.e., SHOULD NOT be `null`.\n    - **Query**: MUST be a queryable property with support for all mandatory filter features.\n    - **Response**: REQUIRED in the response unless the query parameter `response_fields` is present and does not include this property.\n\n- **Example**:\n    - As part of JSON response format: `"2007-04-05T14:30:20Z"` (i.e., encoded as an [RFC 3339 Internet Date/Time Format](https://tools.ietf.org/html/rfc3339#section-5.6) string.)',
+        title: 'Last Modified',
+      }),
+  })
+  .openapi({
+    description: "Contains key-value pairs representing the entry's properties.",
+    required: ['last_modified'],
+    title: 'EntryResourceAttributes',
+  })
+  .openapi('EntryResourceAttributes')
+
+const EntryResourceSchema = z
+  .object({
+    attributes: EntryResourceAttributesSchema.openapi({
+      description:
+        "A dictionary, containing key-value pairs representing the entry's properties, except for `type` and `id`.\nDatabase-provider-specific properties need to include the database-provider-specific prefix (see section on Database-Provider-Specific Namespace Prefixes).",
       title: 'Attributes',
     }),
-    id: z.string().openapi({ description: 'Resource ID', title: 'Id' }),
+    id: z
+      .string()
+      .openapi({
+        description:
+          'An entry\'s ID as defined in section Definition of Terms.\n\n- **Type**: string.\n\n- **Requirements/Conventions**:\n    - **Support**: MUST be supported by all implementations, MUST NOT be `null`.\n    - **Query**: MUST be a queryable property with support for all mandatory filter features.\n    - **Response**: REQUIRED in the response.\n\n- **Examples**:\n    - `"db/1234567"`\n    - `"cod/2000000"`\n    - `"cod/2000000@1234567"`\n    - `"nomad/L1234567890"`\n    - `"42"`',
+        title: 'Id',
+      }),
     links: ResourceLinksSchema.exactOptional().openapi({
       description: 'a links object containing links related to the resource.',
       title: 'Links',
@@ -428,19 +425,25 @@ const ResourceSchema = z
         'a meta object containing non-standard meta-information about a resource that can not be represented as an attribute or relationship.',
       title: 'Meta',
     }),
-    relationships: RelationshipsSchema.exactOptional().openapi({
+    relationships: EntryRelationshipsSchema.exactOptional().openapi({
       description:
-        '[Relationships object](https://jsonapi.org/format/1.0/#document-resource-object-relationships)\ndescribing relationships between the resource and other JSON API resources.',
+        'A dictionary containing references to other entries according to the description in section Relationships encoded as [JSON API Relationships](https://jsonapi.org/format/1.0/#document-resource-object-relationships).\nThe OPTIONAL human-readable description of the relationship MAY be provided in the `description` field inside the `meta` dictionary of the JSON API resource identifier object.',
       title: 'Relationships',
     }),
-    type: z.string().openapi({ description: 'Resource type', title: 'Type' }),
+    type: z
+      .string()
+      .openapi({
+        description:
+          'The name of the type of an entry.\n\n- **Type**: string.\n\n- **Requirements/Conventions**:\n    - **Support**: MUST be supported by all implementations, MUST NOT be `null`.\n    - **Query**: MUST be a queryable property with support for all mandatory filter features.\n    - **Response**: REQUIRED in the response.\n    - MUST be an existing entry type.\n    - The entry of type `<type>` and ID `<id>` MUST be returned in response to a request for `/<type>/<id>` under the versioned base URL.\n\n- **Example**: `"structures"`',
+        title: 'Type',
+      }),
   })
   .openapi({
-    description: 'Resource objects appear in a JSON API document to represent resources.',
-    required: ['id', 'type'],
-    title: 'Resource',
+    description: 'The base model for an entry resource.',
+    required: ['id', 'type', 'attributes'],
+    title: 'EntryResource',
   })
-  .openapi('Resource')
+  .openapi('EntryResource')
 
 const JsonApiSchema = z
   .object({
@@ -755,526 +758,14 @@ const ResponseMetaSchema = z
   })
   .openapi('ResponseMeta')
 
-const EntryInfoResponseSchema = z
-  .object({
-    data: EntryInfoResourceSchema.openapi({
-      description: 'OPTIMADE information for an entry endpoint',
-      title: 'Data',
-    }),
-    errors: z
-      .array(ErrorSchema)
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional()
-      .openapi({ description: 'A list of unique errors', title: 'Errors' }),
-    included: z
-      .array(ResourceSchema)
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional()
-      .openapi({ description: 'A list of unique included resources', title: 'Included' }),
-    jsonapi: JsonApiSchema.exactOptional().openapi({
-      description: 'Information about the JSON API used',
-      title: 'Jsonapi',
-    }),
-    links: ToplevelLinksSchema.exactOptional().openapi({
-      description: 'Links associated with the primary data or errors',
-      title: 'Links',
-    }),
-    meta: ResponseMetaSchema.openapi({
-      description: 'A meta object containing non-standard information',
-      title: 'Meta',
-    }),
-  })
-  .openapi({
-    description: 'errors are not allowed',
-    required: ['data', 'meta'],
-    title: 'EntryInfoResponse',
-  })
-  .openapi('EntryInfoResponse')
-
-const RelationshipLinksSchema = z
-  .object({
-    related: z
-      .union([z.url().min(1).max(65536), LinkSchema])
-      .exactOptional()
-      .openapi({
-        description:
-          'A [related resource link](https://jsonapi.org/format/1.0/#document-resource-object-related-resource-links).',
-        title: 'Related',
-      }),
-    self: z
-      .union([z.url().min(1).max(65536), LinkSchema])
-      .exactOptional()
-      .openapi({
-        description:
-          "A link for the relationship itself (a 'relationship link').\nThis link allows the client to directly manipulate the relationship.\nWhen fetched successfully, this link returns the [linkage](https://jsonapi.org/format/1.0/#document-resource-object-linkage) for the related resources as its primary data.\n(See [Fetching Relationships](https://jsonapi.org/format/1.0/#fetching-relationships).)",
-        title: 'Self',
-      }),
-  })
-  .openapi({
-    description:
-      'A resource object **MAY** contain references to other resource objects ("relationships").\nRelationships may be to-one or to-many.\nRelationships can be specified by including a member in a resource\'s links object.',
-    title: 'RelationshipLinks',
-    required: [],
-  })
-  .openapi('RelationshipLinks')
-
-const ReferenceRelationshipSchema = z
-  .object({
-    data: z
-      .union([BaseRelationshipResourceSchema, z.array(BaseRelationshipResourceSchema)])
-      .exactOptional()
-      .openapi({ description: 'Resource linkage', title: 'Data' }),
-    links: RelationshipLinksSchema.exactOptional().openapi({
-      description: 'a links object containing at least one of the following: self, related',
-      title: 'Links',
-    }),
-    meta: MetaSchema.exactOptional().openapi({
-      description:
-        'a meta object that contains non-standard meta-information about the relationship.',
-      title: 'Meta',
-    }),
-  })
-  .openapi({
-    description:
-      'Similar to normal JSON API relationship, but with addition of OPTIONAL meta field for a resource',
-    title: 'ReferenceRelationship',
-    required: [],
-  })
-  .openapi('ReferenceRelationship')
-
-const StructureRelationshipSchema = z
-  .object({
-    data: z
-      .union([BaseRelationshipResourceSchema, z.array(BaseRelationshipResourceSchema)])
-      .exactOptional()
-      .openapi({ description: 'Resource linkage', title: 'Data' }),
-    links: RelationshipLinksSchema.exactOptional().openapi({
-      description: 'a links object containing at least one of the following: self, related',
-      title: 'Links',
-    }),
-    meta: MetaSchema.exactOptional().openapi({
-      description:
-        'a meta object that contains non-standard meta-information about the relationship.',
-      title: 'Meta',
-    }),
-  })
-  .openapi({
-    description:
-      'Similar to normal JSON API relationship, but with addition of OPTIONAL meta field for a resource',
-    title: 'StructureRelationship',
-    required: [],
-  })
-  .openapi('StructureRelationship')
-
-const EntryRelationshipsSchema = z
-  .object({
-    references: ReferenceRelationshipSchema.exactOptional().openapi({
-      description:
-        'Object containing links to relationships with entries of the `references` type.',
-      title: 'References',
-    }),
-    structures: StructureRelationshipSchema.exactOptional().openapi({
-      description:
-        'Object containing links to relationships with entries of the `structures` type.',
-      title: 'Structures',
-    }),
-  })
-  .openapi({
-    description:
-      'This model wraps the JSON API Relationships to include type-specific top level keys.',
-    title: 'EntryRelationships',
-    required: [],
-  })
-  .openapi('EntryRelationships')
-
-const EntryResourceAttributesSchema = z
-  .object({
-    immutable_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The entry\'s immutable ID (e.g., an UUID). This is important for databases having preferred IDs that point to "the latest version" of a record, but still offer access to older variants. This ID maps to the version-specific record, in case it changes in the future.\n\n- **Type**: string.\n\n- **Requirements/Conventions**:\n    - **Support**: OPTIONAL support in implementations, i.e., MAY be `null`.\n    - **Query**: MUST be a queryable property with support for all mandatory filter features.\n\n- **Examples**:\n    - `"8bd3e750-b477-41a0-9b11-3a799f21b44f"`\n    - `"fjeiwoj,54;@=%<>#32"` (Strings that are not URL-safe are allowed.)',
-        title: 'Immutable Id',
-      }),
-    last_modified: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description:
-          'Date and time representing when the entry was last modified.\n\n- **Type**: timestamp.\n\n- **Requirements/Conventions**:\n    - **Support**: SHOULD be supported by all implementations, i.e., SHOULD NOT be `null`.\n    - **Query**: MUST be a queryable property with support for all mandatory filter features.\n    - **Response**: REQUIRED in the response unless the query parameter `response_fields` is present and does not include this property.\n\n- **Example**:\n    - As part of JSON response format: `"2007-04-05T14:30:20Z"` (i.e., encoded as an [RFC 3339 Internet Date/Time Format](https://tools.ietf.org/html/rfc3339#section-5.6) string.)',
-        title: 'Last Modified',
-      }),
-  })
-  .openapi({
-    description: "Contains key-value pairs representing the entry's properties.",
-    required: ['last_modified'],
-    title: 'EntryResourceAttributes',
-  })
-  .openapi('EntryResourceAttributes')
-
-const EntryResourceSchema = z
-  .object({
-    attributes: EntryResourceAttributesSchema.openapi({
-      description:
-        "A dictionary, containing key-value pairs representing the entry's properties, except for `type` and `id`.\nDatabase-provider-specific properties need to include the database-provider-specific prefix (see section on Database-Provider-Specific Namespace Prefixes).",
-      title: 'Attributes',
-    }),
-    id: z
-      .string()
-      .openapi({
-        description:
-          'An entry\'s ID as defined in section Definition of Terms.\n\n- **Type**: string.\n\n- **Requirements/Conventions**:\n    - **Support**: MUST be supported by all implementations, MUST NOT be `null`.\n    - **Query**: MUST be a queryable property with support for all mandatory filter features.\n    - **Response**: REQUIRED in the response.\n\n- **Examples**:\n    - `"db/1234567"`\n    - `"cod/2000000"`\n    - `"cod/2000000@1234567"`\n    - `"nomad/L1234567890"`\n    - `"42"`',
-        title: 'Id',
-      }),
-    links: ResourceLinksSchema.exactOptional().openapi({
-      description: 'a links object containing links related to the resource.',
-      title: 'Links',
-    }),
-    meta: MetaSchema.exactOptional().openapi({
-      description:
-        'a meta object containing non-standard meta-information about a resource that can not be represented as an attribute or relationship.',
-      title: 'Meta',
-    }),
-    relationships: EntryRelationshipsSchema.exactOptional().openapi({
-      description:
-        'A dictionary containing references to other entries according to the description in section Relationships encoded as [JSON API Relationships](https://jsonapi.org/format/1.0/#document-resource-object-relationships).\nThe OPTIONAL human-readable description of the relationship MAY be provided in the `description` field inside the `meta` dictionary of the JSON API resource identifier object.',
-      title: 'Relationships',
-    }),
-    type: z
-      .string()
-      .openapi({
-        description:
-          'The name of the type of an entry.\n\n- **Type**: string.\n\n- **Requirements/Conventions**:\n    - **Support**: MUST be supported by all implementations, MUST NOT be `null`.\n    - **Query**: MUST be a queryable property with support for all mandatory filter features.\n    - **Response**: REQUIRED in the response.\n    - MUST be an existing entry type.\n    - The entry of type `<type>` and ID `<id>` MUST be returned in response to a request for `/<type>/<id>` under the versioned base URL.\n\n- **Example**: `"structures"`',
-        title: 'Type',
-      }),
-  })
-  .openapi({
-    description: 'The base model for an entry resource.',
-    required: ['id', 'type', 'attributes'],
-    title: 'EntryResource',
-  })
-  .openapi('EntryResource')
-
-const OptimadeErrorSchema = z
-  .object({
-    code: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'an application-specific error code, expressed as a string value.',
-        title: 'Code',
-      }),
-    detail: z
-      .string()
-      .openapi({
-        description: 'A human-readable explanation specific to this occurrence of the problem.',
-        title: 'Detail',
-      }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A unique identifier for this particular occurrence of the problem.',
-        title: 'Id',
-      }),
-    links: ErrorLinksSchema.exactOptional().openapi({
-      description: 'A links object storing about',
-      title: 'Links',
-    }),
-    meta: MetaSchema.exactOptional().openapi({
-      description: 'a meta object containing non-standard meta-information about the error.',
-      title: 'Meta',
-    }),
-    source: ErrorSourceSchema.exactOptional().openapi({
-      description: 'An object containing references to the source of the error',
-      title: 'Source',
-    }),
-    status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'the HTTP status code applicable to this problem, expressed as a string value.',
-        title: 'Status',
-      }),
-    title: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A short, human-readable summary of the problem. It **SHOULD NOT** change from occurrence to occurrence of the problem, except for purposes of localization.',
-        title: 'Title',
-      }),
-  })
-  .openapi({ description: 'detail MUST be present', required: ['detail'], title: 'OptimadeError' })
-  .openapi('OptimadeError')
-
-const ErrorResponseSchema = z
-  .object({
-    data: z
-      .union([ResourceSchema, z.array(ResourceSchema)])
-      .exactOptional()
-      .openapi({ description: 'Outputted Data', title: 'Data' }),
-    errors: z
-      .array(OptimadeErrorSchema)
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .openapi({
-        description:
-          'A list of OPTIMADE-specific JSON API error objects, where the field detail MUST be present.',
-        title: 'Errors',
-      }),
-    included: z
-      .array(ResourceSchema)
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional()
-      .openapi({ description: 'A list of unique included resources', title: 'Included' }),
-    jsonapi: JsonApiSchema.exactOptional().openapi({
-      description: 'Information about the JSON API used',
-      title: 'Jsonapi',
-    }),
-    links: ToplevelLinksSchema.exactOptional().openapi({
-      description: 'Links associated with the primary data or errors',
-      title: 'Links',
-    }),
-    meta: ResponseMetaSchema.openapi({
-      description: 'A meta object containing non-standard information',
-      title: 'Meta',
-    }),
-  })
-  .openapi({
-    description: 'errors MUST be present and data MUST be skipped',
-    required: ['meta', 'errors'],
-    title: 'ErrorResponse',
-  })
-  .openapi('ErrorResponse')
-
-const InfoResponseSchema = z
-  .object({
-    data: BaseInfoResourceSchema.openapi({
-      description: 'The implementations /info data',
-      title: 'Data',
-    }),
-    errors: z
-      .array(ErrorSchema)
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional()
-      .openapi({ description: 'A list of unique errors', title: 'Errors' }),
-    included: z
-      .array(ResourceSchema)
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional()
-      .openapi({ description: 'A list of unique included resources', title: 'Included' }),
-    jsonapi: JsonApiSchema.exactOptional().openapi({
-      description: 'Information about the JSON API used',
-      title: 'Jsonapi',
-    }),
-    links: ToplevelLinksSchema.exactOptional().openapi({
-      description: 'Links associated with the primary data or errors',
-      title: 'Links',
-    }),
-    meta: ResponseMetaSchema.openapi({
-      description: 'A meta object containing non-standard information',
-      title: 'Meta',
-    }),
-  })
-  .openapi({
-    description: 'errors are not allowed',
-    required: ['data', 'meta'],
-    title: 'InfoResponse',
-  })
-  .openapi('InfoResponse')
-
-const LinkTypeSchema = z
-  .enum(['child', 'root', 'external', 'providers'])
-  .openapi({ description: 'Enumeration of link_type values', title: 'LinkType' })
-  .openapi('LinkType')
-
-const LinksResourceAttributesSchema = z
-  .object({
-    aggregate: AggregateSchema.default('ok')
-      .exactOptional()
-      .openapi({
-        description:
-          'A string indicating whether a client that is following links to aggregate results from different OPTIMADE implementations should follow this link or not.\nThis flag SHOULD NOT be indicated for links where `link_type` is not `child`.\n\nIf not specified, clients MAY assume that the value is `ok`.\nIf specified, and the value is anything different than `ok`, the client MUST assume that the server is suggesting not to follow the link during aggregation by default (also if the value is not among the known ones, in case a future specification adds new accepted values).\n\nSpecific values indicate the reason why the server is providing the suggestion.\nA client MAY follow the link anyway if it has reason to do so (e.g., if the client is looking for all test databases, it MAY follow the links marked with `aggregate`=`test`).\n\nIf specified, it MUST be one of the values listed in section Link Aggregate Options.',
-        title: 'Aggregate',
-      }),
-    base_url: z
-      .union([z.url().min(1).max(65536), LinkSchema])
-      .openapi({
-        description: 'JSON API links object, pointing to the base URL for this implementation',
-        title: 'Base Url',
-      }),
-    description: z
-      .string()
-      .openapi({
-        description:
-          'Human-readable description for the OPTIMADE API implementation, e.g., for use in clients to show a description to the end-user.',
-        title: 'Description',
-      }),
-    homepage: z
-      .union([z.url().min(1).max(65536), LinkSchema])
-      .openapi({
-        description: 'JSON API links object, pointing to a homepage URL for this implementation',
-        title: 'Homepage',
-      }),
-    link_type: LinkTypeSchema.openapi({
-      description:
-        "The type of the linked relation.\nMUST be one of these values: 'child', 'root', 'external', 'providers'.",
-      title: 'Link Type',
-    }),
-    name: z
-      .string()
-      .openapi({
-        description:
-          'Human-readable name for the OPTIMADE API implementation, e.g., for use in clients to show the name to the end-user.',
-        title: 'Name',
-      }),
-    no_aggregate_reason: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'An OPTIONAL human-readable string indicating the reason for suggesting not to aggregate results following the link.\nIt SHOULD NOT be present if `aggregate`=`ok`.',
-        title: 'No Aggregate Reason',
-      }),
-  })
-  .openapi({
-    description: 'Links endpoint resource object attributes',
-    required: ['name', 'description', 'base_url', 'homepage', 'link_type'],
-    title: 'LinksResourceAttributes',
-  })
-  .openapi('LinksResourceAttributes')
-
-const LinksResourceSchema = z
-  .object({
-    attributes: LinksResourceAttributesSchema.openapi({
-      description:
-        "A dictionary containing key-value pairs representing the Links resource's properties.",
-      title: 'Attributes',
-    }),
-    id: z
-      .string()
-      .openapi({
-        description:
-          'An entry\'s ID as defined in section Definition of Terms.\n\n- **Type**: string.\n\n- **Requirements/Conventions**:\n    - **Support**: MUST be supported by all implementations, MUST NOT be `null`.\n    - **Query**: MUST be a queryable property with support for all mandatory filter features.\n    - **Response**: REQUIRED in the response.\n\n- **Examples**:\n    - `"db/1234567"`\n    - `"cod/2000000"`\n    - `"cod/2000000@1234567"`\n    - `"nomad/L1234567890"`\n    - `"42"`',
-        title: 'Id',
-      }),
-    links: ResourceLinksSchema.exactOptional().openapi({
-      description: 'a links object containing links related to the resource.',
-      title: 'Links',
-    }),
-    meta: MetaSchema.exactOptional().openapi({
-      description:
-        'a meta object containing non-standard meta-information about a resource that can not be represented as an attribute or relationship.',
-      title: 'Meta',
-    }),
-    relationships: EntryRelationshipsSchema.exactOptional().openapi({
-      description:
-        'A dictionary containing references to other entries according to the description in section Relationships encoded as [JSON API Relationships](https://jsonapi.org/format/1.0/#document-resource-object-relationships).\nThe OPTIONAL human-readable description of the relationship MAY be provided in the `description` field inside the `meta` dictionary of the JSON API resource identifier object.',
-      title: 'Relationships',
-    }),
-    type: z
-      .string()
-      .regex(/^links$/)
-      .openapi({
-        description: 'These objects are described in detail in the section Links Endpoint',
-        title: 'Type',
-      }),
-  })
-  .openapi({
-    description: 'A Links endpoint resource object',
-    required: ['id', 'type', 'attributes'],
-    title: 'LinksResource',
-  })
-  .openapi('LinksResource')
-
-const LinksResponseSchema = z
-  .object({
-    data: z
-      .union([z.array(LinksResourceSchema), z.array(z.object({}))])
-      .openapi({ description: 'List of unique OPTIMADE links resource objects', title: 'Data' }),
-    errors: z
-      .array(ErrorSchema)
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional()
-      .openapi({ description: 'A list of unique errors', title: 'Errors' }),
-    included: z
-      .union([z.array(EntryResourceSchema), z.array(z.object({}))])
-      .exactOptional()
-      .openapi({ title: 'Included' }),
-    jsonapi: JsonApiSchema.exactOptional().openapi({
-      description: 'Information about the JSON API used',
-      title: 'Jsonapi',
-    }),
-    links: ToplevelLinksSchema.exactOptional().openapi({
-      description: 'Links associated with the primary data or errors',
-      title: 'Links',
-    }),
-    meta: ResponseMetaSchema.openapi({
-      description: 'A meta object containing non-standard information',
-      title: 'Meta',
-    }),
-  })
-  .openapi({
-    description: 'errors are not allowed',
-    required: ['data', 'meta'],
-    title: 'LinksResponse',
-  })
-  .openapi('LinksResponse')
-
-const PeriodicitySchema = z
-  .union([z.literal(0), z.literal(1)])
-  .openapi({ description: 'Integer enumeration of dimension_types values', title: 'Periodicity' })
-  .openapi('Periodicity')
+type LinksResponseType = {
+  data: z.infer<typeof LinksResourceSchema>[] | { [key: string]: unknown }[]
+  errors?: z.infer<typeof ErrorSchema>[]
+  included?: z.infer<typeof EntryResourceSchema>[] | { [key: string]: unknown }[]
+  jsonapi?: z.infer<typeof JsonApiSchema>
+  links?: z.infer<typeof ToplevelLinksSchema>
+  meta: z.infer<typeof ResponseMetaSchema>
+}
 
 const PersonSchema = z
   .object({
@@ -1541,90 +1032,53 @@ const ReferenceResourceSchema = z
   })
   .openapi('ReferenceResource')
 
-const ReferenceResponseManySchema = z
-  .object({
-    data: z
-      .union([z.array(ReferenceResourceSchema), z.array(z.object({}))])
-      .openapi({
-        description: 'List of unique OPTIMADE references entry resource objects',
-        title: 'Data',
-      }),
-    errors: z
-      .array(ErrorSchema)
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional()
-      .openapi({ description: 'A list of unique errors', title: 'Errors' }),
-    included: z
-      .union([z.array(EntryResourceSchema), z.array(z.object({}))])
-      .exactOptional()
-      .openapi({ title: 'Included' }),
-    jsonapi: JsonApiSchema.exactOptional().openapi({
-      description: 'Information about the JSON API used',
-      title: 'Jsonapi',
-    }),
-    links: ToplevelLinksSchema.exactOptional().openapi({
-      description: 'Links associated with the primary data or errors',
-      title: 'Links',
-    }),
-    meta: ResponseMetaSchema.openapi({
-      description: 'A meta object containing non-standard information',
-      title: 'Meta',
-    }),
-  })
-  .openapi({
-    description: 'errors are not allowed',
-    required: ['data', 'meta'],
-    title: 'ReferenceResponseMany',
-  })
-  .openapi('ReferenceResponseMany')
+type ReferenceResponseManyType = {
+  data: z.infer<typeof ReferenceResourceSchema>[] | { [key: string]: unknown }[]
+  errors?: z.infer<typeof ErrorSchema>[]
+  included?: z.infer<typeof EntryResourceSchema>[] | { [key: string]: unknown }[]
+  jsonapi?: z.infer<typeof JsonApiSchema>
+  links?: z.infer<typeof ToplevelLinksSchema>
+  meta: z.infer<typeof ResponseMetaSchema>
+}
 
-const ReferenceResponseOneSchema = z
+type ReferenceResponseOneType = {
+  data: z.infer<typeof ReferenceResourceSchema> | { [key: string]: unknown }
+  errors?: z.infer<typeof ErrorSchema>[]
+  included?: z.infer<typeof EntryResourceSchema>[] | { [key: string]: unknown }[]
+  jsonapi?: z.infer<typeof JsonApiSchema>
+  links?: z.infer<typeof ToplevelLinksSchema>
+  meta: z.infer<typeof ResponseMetaSchema>
+}
+
+const AssemblySchema = z
   .object({
-    data: z
-      .union([ReferenceResourceSchema, z.object({})])
-      .openapi({ description: 'A single references entry resource', title: 'Data' }),
-    errors: z
-      .array(ErrorSchema)
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional()
-      .openapi({ description: 'A list of unique errors', title: 'Errors' }),
-    included: z
-      .union([z.array(EntryResourceSchema), z.array(z.object({}))])
-      .exactOptional()
-      .openapi({ title: 'Included' }),
-    jsonapi: JsonApiSchema.exactOptional().openapi({
-      description: 'Information about the JSON API used',
-      title: 'Jsonapi',
-    }),
-    links: ToplevelLinksSchema.exactOptional().openapi({
-      description: 'Links associated with the primary data or errors',
-      title: 'Links',
-    }),
-    meta: ResponseMetaSchema.openapi({
-      description: 'A meta object containing non-standard information',
-      title: 'Meta',
-    }),
+    group_probabilities: z
+      .array(z.number())
+      .openapi({
+        description:
+          'Statistical probability of each group. It MUST have the same length as `sites_in_groups`.\nIt SHOULD sum to one.\nSee below for examples of how to specify the probability of the occurrence of a vacancy.\nThe possible reasons for the values not to sum to one are the same as already specified above for the `concentration` of each `species`.',
+        title: 'Group Probabilities',
+      }),
+    sites_in_groups: z
+      .array(z.array(z.int()))
+      .openapi({
+        description:
+          'Index of the sites (0-based) that belong to each group for each assembly.\n\n- **Examples**:\n    - `[[1], [2]]`: two groups, one with the second site, one with the third.\n    - `[[1,2], [3]]`: one group with the second and third site, one with the fourth.',
+        title: 'Sites In Groups',
+      }),
   })
   .openapi({
-    description: 'errors are not allowed',
-    required: ['data', 'meta'],
-    title: 'ReferenceResponseOne',
+    description:
+      'A description of groups of sites that are statistically correlated.\n\n- **Examples** (for each entry of the assemblies list):\n    - `{"sites_in_groups": [[0], [1]], "group_probabilities: [0.3, 0.7]}`: the first site and the second site never occur at the same time in the unit cell.\n      Statistically, 30 % of the times the first site is present, while 70 % of the times the second site is present.\n    - `{"sites_in_groups": [[1,2], [3]], "group_probabilities: [0.3, 0.7]}`: the second and third site are either present together or not present; they form the first group of atoms for this assembly.\n      The second group is formed by the fourth site. Sites of the first group (the second and the third) are never present at the same time as the fourth site.\n      30 % of times sites 1 and 2 are present (and site 3 is absent); 70 % of times site 3 is present (and sites 1 and 2 are absent).',
+    required: ['sites_in_groups', 'group_probabilities'],
+    title: 'Assembly',
   })
-  .openapi('ReferenceResponseOne')
+  .openapi('Assembly')
+
+const PeriodicitySchema = z
+  .union([z.literal(0), z.literal(1)])
+  .openapi({ description: 'Integer enumeration of dimension_types values', title: 'Periodicity' })
+  .openapi('Periodicity')
 
 const SpeciesSchema = z
   .object({
@@ -1910,10 +1364,601 @@ const StructureResourceSchema = z
   })
   .openapi('StructureResource')
 
-const StructureResponseManySchema = z
+type StructureResponseManyType = {
+  data: z.infer<typeof StructureResourceSchema>[] | { [key: string]: unknown }[]
+  errors?: z.infer<typeof ErrorSchema>[]
+  included?: z.infer<typeof EntryResourceSchema>[] | { [key: string]: unknown }[]
+  jsonapi?: z.infer<typeof JsonApiSchema>
+  links?: z.infer<typeof ToplevelLinksSchema>
+  meta: z.infer<typeof ResponseMetaSchema>
+}
+
+type StructureResponseOneType = {
+  data: z.infer<typeof StructureResourceSchema> | { [key: string]: unknown }
+  errors?: z.infer<typeof ErrorSchema>[]
+  included?: z.infer<typeof EntryResourceSchema>[] | { [key: string]: unknown }[]
+  jsonapi?: z.infer<typeof JsonApiSchema>
+  links?: z.infer<typeof ToplevelLinksSchema>
+  meta: z.infer<typeof ResponseMetaSchema>
+}
+
+const AttributesSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'Members of the attributes object ("attributes") represent information about the resource object in which it\'s defined.\nThe keys for Attributes MUST NOT be:\n    relationships\n    links\n    id\n    type',
+    title: 'Attributes',
+  })
+  .openapi('Attributes')
+
+const AvailableApiVersionSchema = z
+  .object({
+    url: z
+      .url()
+      .regex(/.+\/v[0-1](\.[0-9]+)*\/?$/)
+      .min(1)
+      .max(65536)
+      .openapi({
+        description:
+          'A string specifying a versioned base URL that MUST adhere to the rules in section Base URL',
+        title: 'Url',
+      }),
+    version: z
+      .string()
+      .regex(
+        /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/,
+      )
+      .openapi({
+        description:
+          "A string containing the full version number of the API served at that versioned base URL.\nThe version number string MUST NOT be prefixed by, e.g., 'v'.\nExamples: `1.0.0`, `1.0.0-rc.2`.",
+        title: 'Version',
+      }),
+  })
+  .openapi({
+    description: 'A JSON object containing information about an available API version',
+    required: ['url', 'version'],
+    title: 'AvailableApiVersion',
+  })
+  .openapi('AvailableApiVersion')
+
+const BaseInfoAttributesSchema = z
+  .object({
+    api_version: z
+      .string()
+      .regex(
+        /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/,
+      )
+      .openapi({
+        description:
+          'Presently used full version of the OPTIMADE API.\nThe version number string MUST NOT be prefixed by, e.g., "v".\nExamples: `1.0.0`, `1.0.0-rc.2`.',
+        title: 'Api Version',
+      }),
+    available_api_versions: z
+      .array(AvailableApiVersionSchema)
+      .openapi({
+        description: 'A list of dictionaries of available API versions at other base URLs',
+        title: 'Available Api Versions',
+      }),
+    available_endpoints: z
+      .array(z.string())
+      .openapi({
+        description:
+          'List of available endpoints (i.e., the string to be appended to the versioned base URL).',
+        title: 'Available Endpoints',
+      }),
+    entry_types_by_format: z
+      .record(z.string(), z.array(z.string()))
+      .openapi({
+        description: 'Available entry endpoints as a function of output formats.',
+        title: 'Entry Types By Format',
+      }),
+    formats: z
+      .array(z.string())
+      .default(['json'])
+      .exactOptional()
+      .openapi({ description: 'List of available output formats.', title: 'Formats' }),
+    is_index: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'If true, this is an index meta-database base URL (see section Index Meta-Database). If this member is not provided, the client MUST assume this is not an index meta-database base URL (i.e., the default is for `is_index` to be `false`).',
+        title: 'Is Index',
+      }),
+  })
+  .openapi({
+    description: 'Attributes for Base URL Info endpoint',
+    required: [
+      'api_version',
+      'available_api_versions',
+      'available_endpoints',
+      'entry_types_by_format',
+    ],
+    title: 'BaseInfoAttributes',
+  })
+  .openapi('BaseInfoAttributes')
+
+const RelationshipsSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'Members of the relationships object ("relationships") represent references from the resource object in which it\'s defined to other resource objects.\nKeys MUST NOT be:\n    type\n    id',
+    title: 'Relationships',
+  })
+  .openapi('Relationships')
+
+const BaseInfoResourceSchema = z
+  .object({
+    attributes: BaseInfoAttributesSchema,
+    id: z.string().regex(/^\/$/).openapi({ title: 'Id' }),
+    links: ResourceLinksSchema.exactOptional().openapi({
+      description: 'a links object containing links related to the resource.',
+      title: 'Links',
+    }),
+    meta: MetaSchema.exactOptional().openapi({
+      description:
+        'a meta object containing non-standard meta-information about a resource that can not be represented as an attribute or relationship.',
+      title: 'Meta',
+    }),
+    relationships: RelationshipsSchema.exactOptional().openapi({
+      description:
+        '[Relationships object](https://jsonapi.org/format/1.0/#document-resource-object-relationships)\ndescribing relationships between the resource and other JSON API resources.',
+      title: 'Relationships',
+    }),
+    type: z
+      .string()
+      .regex(/^info$/)
+      .openapi({ title: 'Type' }),
+  })
+  .openapi({
+    description: 'Resource objects appear in a JSON API document to represent resources.',
+    required: ['id', 'type', 'attributes'],
+    title: 'BaseInfoResource',
+  })
+  .openapi('BaseInfoResource')
+
+const DataTypeSchema = z
+  .enum(['string', 'integer', 'float', 'boolean', 'timestamp', 'list', 'dictionary', 'unknown'])
+  .openapi({
+    description:
+      'Optimade Data Types\n\nSee the section "Data types" in the OPTIMADE API specification for more information.',
+    title: 'DataType',
+  })
+  .openapi('DataType')
+
+const EntryInfoPropertySchema = z
+  .object({
+    description: z
+      .string()
+      .openapi({
+        description: 'A human-readable description of the entry property',
+        title: 'Description',
+      }),
+    sortable: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Defines whether the entry property can be used for sorting with the "sort" parameter.\nIf the entry listing endpoint supports sorting, this key MUST be present for sortable properties with value `true`.',
+        title: 'Sortable',
+      }),
+    type: DataTypeSchema.exactOptional().openapi({
+      description:
+        "The type of the property's value.\nThis MUST be any of the types defined in the Data types section.\nFor the purpose of compatibility with future versions of this specification, a client MUST accept values that are not `string` values specifying any of the OPTIMADE Data types, but MUST then also disregard the `type` field.\nNote, if the value is a nested type, only the outermost type should be reported.\nE.g., for the entry resource `structures`, the `species` property is defined as a list of dictionaries, hence its `type` value would be `list`.",
+      title: 'Type',
+    }),
+    unit: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The physical unit of the entry property.\nThis MUST be a valid representation of units according to version 2.1 of [The Unified Code for Units of Measure](https://unitsofmeasure.org/ucum.html).\nIt is RECOMMENDED that non-standard (non-SI) units are described in the description for the property.',
+        title: 'Unit',
+      }),
+  })
+  .openapi({ required: ['description'], title: 'EntryInfoProperty' })
+  .openapi('EntryInfoProperty')
+
+const EntryInfoResourceSchema = z
+  .object({
+    description: z
+      .string()
+      .openapi({ description: 'Description of the entry.', title: 'Description' }),
+    formats: z
+      .array(z.string())
+      .openapi({
+        description: 'List of output formats available for this type of entry.',
+        title: 'Formats',
+      }),
+    output_fields_by_format: z
+      .record(z.string(), z.array(z.string()))
+      .openapi({
+        description:
+          'Dictionary of available output fields for this entry type, where the keys are the values of the `formats` list and the values are the keys of the `properties` dictionary.',
+        title: 'Output Fields By Format',
+      }),
+    properties: z
+      .record(z.string(), EntryInfoPropertySchema)
+      .openapi({
+        description:
+          'A dictionary describing queryable properties for this entry type, where each key is a property name.',
+        title: 'Properties',
+      }),
+  })
+  .openapi({
+    required: ['formats', 'description', 'properties', 'output_fields_by_format'],
+    title: 'EntryInfoResource',
+  })
+  .openapi('EntryInfoResource')
+
+const ResourceSchema = z
+  .object({
+    attributes: AttributesSchema.exactOptional().openapi({
+      description: 'an attributes object representing some of the resource’s data.',
+      title: 'Attributes',
+    }),
+    id: z.string().openapi({ description: 'Resource ID', title: 'Id' }),
+    links: ResourceLinksSchema.exactOptional().openapi({
+      description: 'a links object containing links related to the resource.',
+      title: 'Links',
+    }),
+    meta: MetaSchema.exactOptional().openapi({
+      description:
+        'a meta object containing non-standard meta-information about a resource that can not be represented as an attribute or relationship.',
+      title: 'Meta',
+    }),
+    relationships: RelationshipsSchema.exactOptional().openapi({
+      description:
+        '[Relationships object](https://jsonapi.org/format/1.0/#document-resource-object-relationships)\ndescribing relationships between the resource and other JSON API resources.',
+      title: 'Relationships',
+    }),
+    type: z.string().openapi({ description: 'Resource type', title: 'Type' }),
+  })
+  .openapi({
+    description: 'Resource objects appear in a JSON API document to represent resources.',
+    required: ['id', 'type'],
+    title: 'Resource',
+  })
+  .openapi('Resource')
+
+const EntryInfoResponseSchema = z
+  .object({
+    data: EntryInfoResourceSchema.openapi({
+      description: 'OPTIMADE information for an entry endpoint',
+      title: 'Data',
+    }),
+    errors: z
+      .array(ErrorSchema)
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional()
+      .openapi({ description: 'A list of unique errors', title: 'Errors' }),
+    included: z
+      .array(ResourceSchema)
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional()
+      .openapi({ description: 'A list of unique included resources', title: 'Included' }),
+    jsonapi: JsonApiSchema.exactOptional().openapi({
+      description: 'Information about the JSON API used',
+      title: 'Jsonapi',
+    }),
+    links: ToplevelLinksSchema.exactOptional().openapi({
+      description: 'Links associated with the primary data or errors',
+      title: 'Links',
+    }),
+    meta: ResponseMetaSchema.openapi({
+      description: 'A meta object containing non-standard information',
+      title: 'Meta',
+    }),
+  })
+  .openapi({
+    description: 'errors are not allowed',
+    required: ['data', 'meta'],
+    title: 'EntryInfoResponse',
+  })
+  .openapi('EntryInfoResponse')
+
+const OptimadeErrorSchema = z
+  .object({
+    code: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'an application-specific error code, expressed as a string value.',
+        title: 'Code',
+      }),
+    detail: z
+      .string()
+      .openapi({
+        description: 'A human-readable explanation specific to this occurrence of the problem.',
+        title: 'Detail',
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A unique identifier for this particular occurrence of the problem.',
+        title: 'Id',
+      }),
+    links: ErrorLinksSchema.exactOptional().openapi({
+      description: 'A links object storing about',
+      title: 'Links',
+    }),
+    meta: MetaSchema.exactOptional().openapi({
+      description: 'a meta object containing non-standard meta-information about the error.',
+      title: 'Meta',
+    }),
+    source: ErrorSourceSchema.exactOptional().openapi({
+      description: 'An object containing references to the source of the error',
+      title: 'Source',
+    }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'the HTTP status code applicable to this problem, expressed as a string value.',
+        title: 'Status',
+      }),
+    title: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A short, human-readable summary of the problem. It **SHOULD NOT** change from occurrence to occurrence of the problem, except for purposes of localization.',
+        title: 'Title',
+      }),
+  })
+  .openapi({ description: 'detail MUST be present', required: ['detail'], title: 'OptimadeError' })
+  .openapi('OptimadeError')
+
+const ErrorResponseSchema = z
   .object({
     data: z
-      .union([z.array(StructureResourceSchema), z.array(z.object({}))])
+      .union([ResourceSchema, z.array(ResourceSchema)])
+      .exactOptional()
+      .openapi({ description: 'Outputted Data', title: 'Data' }),
+    errors: z
+      .array(OptimadeErrorSchema)
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .openapi({
+        description:
+          'A list of OPTIMADE-specific JSON API error objects, where the field detail MUST be present.',
+        title: 'Errors',
+      }),
+    included: z
+      .array(ResourceSchema)
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional()
+      .openapi({ description: 'A list of unique included resources', title: 'Included' }),
+    jsonapi: JsonApiSchema.exactOptional().openapi({
+      description: 'Information about the JSON API used',
+      title: 'Jsonapi',
+    }),
+    links: ToplevelLinksSchema.exactOptional().openapi({
+      description: 'Links associated with the primary data or errors',
+      title: 'Links',
+    }),
+    meta: ResponseMetaSchema.openapi({
+      description: 'A meta object containing non-standard information',
+      title: 'Meta',
+    }),
+  })
+  .openapi({
+    description: 'errors MUST be present and data MUST be skipped',
+    required: ['meta', 'errors'],
+    title: 'ErrorResponse',
+  })
+  .openapi('ErrorResponse')
+
+const InfoResponseSchema = z
+  .object({
+    data: BaseInfoResourceSchema.openapi({
+      description: 'The implementations /info data',
+      title: 'Data',
+    }),
+    errors: z
+      .array(ErrorSchema)
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional()
+      .openapi({ description: 'A list of unique errors', title: 'Errors' }),
+    included: z
+      .array(ResourceSchema)
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional()
+      .openapi({ description: 'A list of unique included resources', title: 'Included' }),
+    jsonapi: JsonApiSchema.exactOptional().openapi({
+      description: 'Information about the JSON API used',
+      title: 'Jsonapi',
+    }),
+    links: ToplevelLinksSchema.exactOptional().openapi({
+      description: 'Links associated with the primary data or errors',
+      title: 'Links',
+    }),
+    meta: ResponseMetaSchema.openapi({
+      description: 'A meta object containing non-standard information',
+      title: 'Meta',
+    }),
+  })
+  .openapi({
+    description: 'errors are not allowed',
+    required: ['data', 'meta'],
+    title: 'InfoResponse',
+  })
+  .openapi('InfoResponse')
+
+const LinksResponseSchema: z.ZodType<LinksResponseType> = z
+  .object({
+    data: z
+      .union([z.array(LinksResourceSchema), z.array(z.looseObject({}))])
+      .openapi({ description: 'List of unique OPTIMADE links resource objects', title: 'Data' }),
+    errors: z
+      .array(ErrorSchema)
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional()
+      .openapi({ description: 'A list of unique errors', title: 'Errors' }),
+    included: z
+      .union([z.array(EntryResourceSchema), z.array(z.looseObject({}))])
+      .exactOptional()
+      .openapi({ title: 'Included' }),
+    jsonapi: JsonApiSchema.exactOptional().openapi({
+      description: 'Information about the JSON API used',
+      title: 'Jsonapi',
+    }),
+    links: ToplevelLinksSchema.exactOptional().openapi({
+      description: 'Links associated with the primary data or errors',
+      title: 'Links',
+    }),
+    meta: ResponseMetaSchema.openapi({
+      description: 'A meta object containing non-standard information',
+      title: 'Meta',
+    }),
+  })
+  .openapi({
+    description: 'errors are not allowed',
+    required: ['data', 'meta'],
+    title: 'LinksResponse',
+  })
+  .openapi('LinksResponse')
+
+const ReferenceResponseManySchema: z.ZodType<ReferenceResponseManyType> = z
+  .object({
+    data: z
+      .union([z.array(ReferenceResourceSchema), z.array(z.looseObject({}))])
+      .openapi({
+        description: 'List of unique OPTIMADE references entry resource objects',
+        title: 'Data',
+      }),
+    errors: z
+      .array(ErrorSchema)
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional()
+      .openapi({ description: 'A list of unique errors', title: 'Errors' }),
+    included: z
+      .union([z.array(EntryResourceSchema), z.array(z.looseObject({}))])
+      .exactOptional()
+      .openapi({ title: 'Included' }),
+    jsonapi: JsonApiSchema.exactOptional().openapi({
+      description: 'Information about the JSON API used',
+      title: 'Jsonapi',
+    }),
+    links: ToplevelLinksSchema.exactOptional().openapi({
+      description: 'Links associated with the primary data or errors',
+      title: 'Links',
+    }),
+    meta: ResponseMetaSchema.openapi({
+      description: 'A meta object containing non-standard information',
+      title: 'Meta',
+    }),
+  })
+  .openapi({
+    description: 'errors are not allowed',
+    required: ['data', 'meta'],
+    title: 'ReferenceResponseMany',
+  })
+  .openapi('ReferenceResponseMany')
+
+const ReferenceResponseOneSchema: z.ZodType<ReferenceResponseOneType> = z
+  .object({
+    data: z
+      .union([ReferenceResourceSchema, z.looseObject({})])
+      .openapi({ description: 'A single references entry resource', title: 'Data' }),
+    errors: z
+      .array(ErrorSchema)
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional()
+      .openapi({ description: 'A list of unique errors', title: 'Errors' }),
+    included: z
+      .union([z.array(EntryResourceSchema), z.array(z.looseObject({}))])
+      .exactOptional()
+      .openapi({ title: 'Included' }),
+    jsonapi: JsonApiSchema.exactOptional().openapi({
+      description: 'Information about the JSON API used',
+      title: 'Jsonapi',
+    }),
+    links: ToplevelLinksSchema.exactOptional().openapi({
+      description: 'Links associated with the primary data or errors',
+      title: 'Links',
+    }),
+    meta: ResponseMetaSchema.openapi({
+      description: 'A meta object containing non-standard information',
+      title: 'Meta',
+    }),
+  })
+  .openapi({
+    description: 'errors are not allowed',
+    required: ['data', 'meta'],
+    title: 'ReferenceResponseOne',
+  })
+  .openapi('ReferenceResponseOne')
+
+const StructureResponseManySchema: z.ZodType<StructureResponseManyType> = z
+  .object({
+    data: z
+      .union([z.array(StructureResourceSchema), z.array(z.looseObject({}))])
       .openapi({
         description: 'List of unique OPTIMADE structures entry resource objects',
         title: 'Data',
@@ -1931,7 +1976,7 @@ const StructureResponseManySchema = z
       .exactOptional()
       .openapi({ description: 'A list of unique errors', title: 'Errors' }),
     included: z
-      .union([z.array(EntryResourceSchema), z.array(z.object({}))])
+      .union([z.array(EntryResourceSchema), z.array(z.looseObject({}))])
       .exactOptional()
       .openapi({ title: 'Included' }),
     jsonapi: JsonApiSchema.exactOptional().openapi({
@@ -1954,10 +1999,10 @@ const StructureResponseManySchema = z
   })
   .openapi('StructureResponseMany')
 
-const StructureResponseOneSchema = z
+const StructureResponseOneSchema: z.ZodType<StructureResponseOneType> = z
   .object({
     data: z
-      .union([StructureResourceSchema, z.object({})])
+      .union([StructureResourceSchema, z.looseObject({})])
       .openapi({ description: 'A single structures entry resource', title: 'Data' }),
     errors: z
       .array(ErrorSchema)
@@ -1972,7 +2017,7 @@ const StructureResponseOneSchema = z
       .exactOptional()
       .openapi({ description: 'A list of unique errors', title: 'Errors' }),
     included: z
-      .union([z.array(EntryResourceSchema), z.array(z.object({}))])
+      .union([z.array(EntryResourceSchema), z.array(z.looseObject({}))])
       .exactOptional()
       .openapi({ title: 'Included' }),
     jsonapi: JsonApiSchema.exactOptional().openapi({

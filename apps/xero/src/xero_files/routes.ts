@@ -981,7 +981,7 @@ export const getAssociationsCountRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({})
+            .looseObject({})
             .openapi({
               example:
                 '{ "19d4fc59-e799-410f-912b-03d4ab294d73": 2, "82195976-5175-45d4-926e-807ff10892e7": 1, "a8547af2-2900-4879-98b8-f1a780c78feb": 0}',

@@ -32,8 +32,8 @@ const SearchOperatorIsNotSchema = z
   .openapi({ required: ['value'] })
   .openapi('SearchOperatorIsNot')
 
-const SearchOperatorNumericNullableIntegerSchema = z
-  .xor([
+const SearchOperatorNumericNullableIntegerSchema = (() => {
+  const Schema = z.xor([
     SearchOperatorGreaterThanSchema,
     SearchOperatorLessThanSchema,
     SearchOperatorIsNullTSchema,
@@ -41,6 +41,24 @@ const SearchOperatorNumericNullableIntegerSchema = z
     SearchOperatorIsSchema,
     SearchOperatorIsNotSchema,
   ])
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const val = ctx.value
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'operator')) {
+          ctx.issues.push({ ...{ code: 'custom' }, input: val })
+        }
+        if (Object.hasOwn(val, 'operator')) {
+          const Schema = z.string()
+          if (!Schema.safeParse(Reflect.get(val, 'operator')).success) {
+            ctx.issues.push({ ...{ code: 'custom' }, input: val })
+          }
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     discriminator: {
       propertyName: 'operator',
@@ -122,6 +140,7 @@ type SearchConditionAnyOfSeriesType = { anyOf: z.infer<typeof SearchConditionSer
 
 const SearchOperatorEqualityAuthorMatchSchema = z
   .xor([SearchOperatorIsSchema, SearchOperatorIsNotSchema])
+  .and(z.object({ operator: z.string() }).openapi({ required: ['operator'] }))
   .openapi({
     discriminator: {
       propertyName: 'operator',
@@ -150,6 +169,7 @@ const SearchConditionAllOfBookSchema: z.ZodType<SearchConditionAllOfBookType> = 
 
 const SearchOperatorEqualityStringSchema = z
   .xor([SearchOperatorIsSchema, SearchOperatorIsNotSchema])
+  .and(z.object({ operator: z.string() }).openapi({ required: ['operator'] }))
   .openapi({
     discriminator: {
       propertyName: 'operator',
@@ -197,8 +217,26 @@ const SearchOperatorIsFalseSchema = z
   .openapi({ required: ['operator'] })
   .openapi('SearchOperatorIsFalse')
 
-const SearchOperatorBooleanSchema = z
-  .xor([SearchOperatorIsTrueSchema, SearchOperatorIsFalseSchema])
+const SearchOperatorBooleanSchema = (() => {
+  const Schema = z.xor([SearchOperatorIsTrueSchema, SearchOperatorIsFalseSchema])
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const val = ctx.value
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'operator')) {
+          ctx.issues.push({ ...{ code: 'custom' }, input: val })
+        }
+        if (Object.hasOwn(val, 'operator')) {
+          const Schema = z.string()
+          if (!Schema.safeParse(Reflect.get(val, 'operator')).success) {
+            ctx.issues.push({ ...{ code: 'custom' }, input: val })
+          }
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     discriminator: {
       propertyName: 'operator',
@@ -266,6 +304,7 @@ const SearchOperatorStringSchema = z
     SearchOperatorIsSchema,
     SearchOperatorIsNotSchema,
   ])
+  .and(z.object({ operator: z.string() }).openapi({ required: ['operator'] }))
   .openapi({
     discriminator: {
       propertyName: 'operator',
@@ -321,8 +360,8 @@ const SearchOperatorIsNotNullSchema = z
   .openapi({ required: ['operator'] })
   .openapi('SearchOperatorIsNotNull')
 
-const SearchOperatorDateSchema = z
-  .xor([
+const SearchOperatorDateSchema = (() => {
+  const Schema = z.xor([
     SearchOperatorBeforeSchema,
     SearchOperatorAfterSchema,
     SearchOperatorIsInTheLastSchema,
@@ -330,6 +369,24 @@ const SearchOperatorDateSchema = z
     SearchOperatorIsNullSchema,
     SearchOperatorIsNotNullSchema,
   ])
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const val = ctx.value
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'operator')) {
+          ctx.issues.push({ ...{ code: 'custom' }, input: val })
+        }
+        if (Object.hasOwn(val, 'operator')) {
+          const Schema = z.string()
+          if (!Schema.safeParse(Reflect.get(val, 'operator')).success) {
+            ctx.issues.push({ ...{ code: 'custom' }, input: val })
+          }
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     discriminator: {
       propertyName: 'operator',
@@ -353,13 +410,31 @@ const SearchConditionReleaseDateSchema: z.ZodType<SearchConditionReleaseDateType
   .openapi({ required: ['releaseDate'] })
   .openapi('SearchConditionReleaseDate')
 
-const SearchOperatorEqualityNullableStringSchema = z
-  .xor([
+const SearchOperatorEqualityNullableStringSchema = (() => {
+  const Schema = z.xor([
     SearchOperatorIsSchema,
     SearchOperatorIsNotSchema,
     SearchOperatorIsNullTSchema,
     SearchOperatorIsNotNullTSchema,
   ])
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const val = ctx.value
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'operator')) {
+          ctx.issues.push({ ...{ code: 'custom' }, input: val })
+        }
+        if (Object.hasOwn(val, 'operator')) {
+          const Schema = z.string()
+          if (!Schema.safeParse(Reflect.get(val, 'operator')).success) {
+            ctx.issues.push({ ...{ code: 'custom' }, input: val })
+          }
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     discriminator: {
       propertyName: 'operator',
@@ -388,6 +463,7 @@ const SearchOperatorNumericTFloatSchema = z
     SearchOperatorIsSchema,
     SearchOperatorIsNotSchema,
   ])
+  .and(z.object({ operator: z.string() }).openapi({ required: ['operator'] }))
   .openapi({
     discriminator: {
       propertyName: 'operator',
@@ -413,6 +489,7 @@ const SearchConditionNumberSortSchema: z.ZodType<SearchConditionNumberSortType> 
 
 const SearchOperatorEqualityReadStatusSchema = z
   .xor([SearchOperatorIsSchema, SearchOperatorIsNotSchema])
+  .and(z.object({ operator: z.string() }).openapi({ required: ['operator'] }))
   .openapi({
     discriminator: {
       propertyName: 'operator',
@@ -436,6 +513,7 @@ const SearchConditionReadStatusSchema: z.ZodType<SearchConditionReadStatusType> 
 
 const SearchOperatorEqualityStatusSchema = z
   .xor([SearchOperatorIsSchema, SearchOperatorIsNotSchema])
+  .and(z.object({ operator: z.string() }).openapi({ required: ['operator'] }))
   .openapi({
     discriminator: {
       propertyName: 'operator',
@@ -459,6 +537,7 @@ const SearchConditionMediaStatusSchema: z.ZodType<SearchConditionMediaStatusType
 
 const SearchOperatorEqualityMediaProfileSchema = z
   .xor([SearchOperatorIsSchema, SearchOperatorIsNotSchema])
+  .and(z.object({ operator: z.string() }).openapi({ required: ['operator'] }))
   .openapi({
     discriminator: {
       propertyName: 'operator',
@@ -487,6 +566,7 @@ const SearchConditionAuthorSchema: z.ZodType<SearchConditionAuthorType> = z
 
 const SearchOperatorEqualityNotableEntityMatchSchema = z
   .xor([SearchOperatorIsSchema, SearchOperatorIsNotSchema])
+  .and(z.object({ operator: z.string() }).openapi({ required: ['operator'] }))
   .openapi({
     discriminator: {
       propertyName: 'operator',
@@ -510,6 +590,7 @@ const SearchConditionNotableEntitySchema: z.ZodType<SearchConditionNotableEntity
 
 const SearchOperatorEqualityPosterMatchSchema = z
   .xor([SearchOperatorIsSchema, SearchOperatorIsNotSchema])
+  .and(z.object({ operator: z.string() }).openapi({ required: ['operator'] }))
   .openapi({
     discriminator: {
       propertyName: 'operator',

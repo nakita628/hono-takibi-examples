@@ -24,23 +24,19 @@ const CertificateValidationRecordStatusSchema = z
 
 const CertificateValidationRecordSchema = z
   .object({
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The certificate CNAME record name.' }),
-    ).exactOptional(),
-    Type: StringSchema.and(
-      z.any().openapi({ description: 'The record type, always <code>CNAME</code>.' }),
-    ).exactOptional(),
-    Value: StringSchema.and(
-      z.any().openapi({ description: 'The certificate CNAME record value.' }),
-    ).exactOptional(),
-    Status: CertificateValidationRecordStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The current state of the certificate CNAME record validation. It should change to <code>SUCCESS</code> after App Runner completes validation with your DNS.',
-        }),
-    ).exactOptional(),
+    Name: StringSchema.exactOptional().openapi({
+      description: 'The certificate CNAME record name.',
+    }),
+    Type: StringSchema.exactOptional().openapi({
+      description: 'The record type, always <code>CNAME</code>.',
+    }),
+    Value: StringSchema.exactOptional().openapi({
+      description: 'The certificate CNAME record value.',
+    }),
+    Status: CertificateValidationRecordStatusSchema.exactOptional().openapi({
+      description:
+        'The current state of the certificate CNAME record validation. It should change to <code>SUCCESS</code> after App Runner completes validation with your DNS.',
+    }),
   })
   .openapi({
     description:
@@ -67,32 +63,20 @@ const CustomDomainAssociationStatusSchema = z
 
 const CustomDomainSchema = z
   .object({
-    DomainName: DomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An associated custom domain endpoint. It can be a root domain (for example, <code>example.com</code>), a subdomain (for example, <code>login.example.com</code> or <code>admin.login.example.com</code>), or a wildcard (for example, <code>*.example.com</code>).',
-        }),
-    ),
-    EnableWWWSubdomain: NullableBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When <code>true</code>, the subdomain <code>www.<i>DomainName</i> </code> is associated with the App Runner service in addition to the base domain.',
-        }),
-    ),
-    CertificateValidationRecords: CertificateValidationRecordListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "A list of certificate CNAME records that's used for this domain name.",
-        }),
-    ).exactOptional(),
-    Status: CustomDomainAssociationStatusSchema.and(
-      z.any().openapi({ description: 'The current state of the domain name association.' }),
-    ),
+    DomainName: DomainNameSchema.openapi({
+      description:
+        'An associated custom domain endpoint. It can be a root domain (for example, <code>example.com</code>), a subdomain (for example, <code>login.example.com</code> or <code>admin.login.example.com</code>), or a wildcard (for example, <code>*.example.com</code>).',
+    }),
+    EnableWWWSubdomain: NullableBooleanSchema.openapi({
+      description:
+        'When <code>true</code>, the subdomain <code>www.<i>DomainName</i> </code> is associated with the App Runner service in addition to the base domain.',
+    }),
+    CertificateValidationRecords: CertificateValidationRecordListSchema.exactOptional().openapi({
+      description: "A list of certificate CNAME records that's used for this domain name.",
+    }),
+    Status: CustomDomainAssociationStatusSchema.openapi({
+      description: 'The current state of the domain name association.',
+    }),
   })
   .openapi({
     required: ['DomainName', 'EnableWWWSubdomain', 'Status'],
@@ -102,29 +86,17 @@ const CustomDomainSchema = z
 
 const VpcDNSTargetSchema = z
   .object({
-    VpcIngressConnectionArn: AppRunnerResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the VPC Ingress Connection that is associated with your service.',
-        }),
-    ).exactOptional(),
-    VpcId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the Amazon VPC that is associated with the custom domain name of the target DNS.',
-        }),
-    ).exactOptional(),
-    DomainName: DomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The domain name of your target DNS that is associated with the Amazon VPC.',
-        }),
-    ).exactOptional(),
+    VpcIngressConnectionArn: AppRunnerResourceArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the VPC Ingress Connection that is associated with your service.',
+    }),
+    VpcId: StringSchema.exactOptional().openapi({
+      description:
+        'The ID of the Amazon VPC that is associated with the custom domain name of the target DNS.',
+    }),
+    DomainName: DomainNameSchema.exactOptional().openapi({
+      description: 'The domain name of your target DNS that is associated with the Amazon VPC.',
+    }),
   })
   .openapi({
     description: 'DNS Target record for a custom domain of this Amazon VPC.',
@@ -136,60 +108,38 @@ const VpcDNSTargetListSchema = z.array(VpcDNSTargetSchema).openapi('VpcDNSTarget
 
 const AssociateCustomDomainResponseSchema = z
   .object({
-    DNSTarget: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The App Runner subdomain of the App Runner service. The custom domain name is mapped to this target name.',
-        }),
-    ),
-    ServiceArn: AppRunnerResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the App Runner service with which a custom domain name is associated.',
-        }),
-    ),
-    CustomDomain: CustomDomainSchema.and(
-      z.any().openapi({ description: "A description of the domain name that's being associated." }),
-    ),
-    VpcDNSTargets: VpcDNSTargetListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'DNS Target records for the custom domains of this Amazon VPC. ' }),
-    ),
+    DNSTarget: StringSchema.openapi({
+      description:
+        'The App Runner subdomain of the App Runner service. The custom domain name is mapped to this target name.',
+    }),
+    ServiceArn: AppRunnerResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the App Runner service with which a custom domain name is associated.',
+    }),
+    CustomDomain: CustomDomainSchema.openapi({
+      description: "A description of the domain name that's being associated.",
+    }),
+    VpcDNSTargets: VpcDNSTargetListSchema.openapi({
+      description: 'DNS Target records for the custom domains of this Amazon VPC. ',
+    }),
   })
   .openapi({ required: ['DNSTarget', 'ServiceArn', 'CustomDomain', 'VpcDNSTargets'] })
   .openapi('AssociateCustomDomainResponse')
 
 const AssociateCustomDomainRequestSchema = z
   .object({
-    ServiceArn: AppRunnerResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the App Runner service that you want to associate a custom domain name with.',
-        }),
-    ),
-    DomainName: DomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A custom domain endpoint to associate. Specify a root domain (for example, <code>example.com</code>), a subdomain (for example, <code>login.example.com</code> or <code>admin.login.example.com</code>), or a wildcard (for example, <code>*.example.com</code>).',
-        }),
-    ),
-    EnableWWWSubdomain: NullableBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Set to <code>true</code> to associate the subdomain <code>www.<i>DomainName</i> </code> with the App Runner service in addition to the base domain.</p> <p>Default: <code>true</code> </p>',
-        }),
-    ).exactOptional(),
+    ServiceArn: AppRunnerResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the App Runner service that you want to associate a custom domain name with.',
+    }),
+    DomainName: DomainNameSchema.openapi({
+      description:
+        'A custom domain endpoint to associate. Specify a root domain (for example, <code>example.com</code>), a subdomain (for example, <code>login.example.com</code> or <code>admin.login.example.com</code>), or a wildcard (for example, <code>*.example.com</code>).',
+    }),
+    EnableWWWSubdomain: NullableBooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Set to <code>true</code> to associate the subdomain <code>www.<i>DomainName</i> </code> with the App Runner service in addition to the base domain.</p> <p>Default: <code>true</code> </p>',
+    }),
   })
   .openapi({ required: ['ServiceArn', 'DomainName'], title: 'AssociateCustomDomainRequest' })
   .openapi('AssociateCustomDomainRequest')
@@ -219,85 +169,45 @@ const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
 
 const AutoScalingConfigurationSchema = z
   .object({
-    AutoScalingConfigurationArn: AppRunnerResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of this auto scaling configuration.',
-        }),
-    ).exactOptional(),
-    AutoScalingConfigurationName: AutoScalingConfigurationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The customer-provided auto scaling configuration name. It can be used in multiple revisions of a configuration.',
-        }),
-    ).exactOptional(),
-    AutoScalingConfigurationRevision: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The revision of this auto scaling configuration. It\'s unique among all the active configurations (<code>"Status": "ACTIVE"</code>) that share the same <code>AutoScalingConfigurationName</code>.',
-        }),
-    ).exactOptional(),
-    Latest: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "It's set to <code>true</code> for the configuration with the highest <code>Revision</code> among all configurations that share the same <code>AutoScalingConfigurationName</code>. It's set to <code>false</code> otherwise.",
-        }),
-    ).exactOptional(),
-    Status: AutoScalingConfigurationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The current state of the auto scaling configuration. If the status of a configuration revision is <code>INACTIVE</code>, it was deleted and can't be used. Inactive configuration revisions are permanently removed some time after they are deleted.",
-        }),
-    ).exactOptional(),
-    MaxConcurrency: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of concurrent requests that an instance processes. If the number of concurrent requests exceeds this limit, App Runner scales the service up.',
-        }),
-    ).exactOptional(),
-    MinSize: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The minimum number of instances that App Runner provisions for a service. The service always has at least <code>MinSize</code> provisioned instances. Some of them actively serve traffic. The rest of them (provisioned and inactive instances) are a cost-effective compute capacity reserve and are ready to be quickly activated. You pay for memory usage of all the provisioned instances. You pay for CPU usage of only the active subset.</p> <p>App Runner temporarily doubles the number of provisioned instances during deployments, to maintain the same capacity for both old and new code.</p>',
-        }),
-    ).exactOptional(),
-    MaxSize: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of instances that a service scales up to. At most <code>MaxSize</code> instances actively serve traffic for your service.',
-        }),
-    ).exactOptional(),
-    CreatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The time when the auto scaling configuration was created. It's in Unix time stamp format.",
-        }),
-    ).exactOptional(),
-    DeletedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The time when the auto scaling configuration was deleted. It's in Unix time stamp format.",
-        }),
-    ).exactOptional(),
+    AutoScalingConfigurationArn: AppRunnerResourceArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of this auto scaling configuration.',
+    }),
+    AutoScalingConfigurationName: AutoScalingConfigurationNameSchema.exactOptional().openapi({
+      description:
+        'The customer-provided auto scaling configuration name. It can be used in multiple revisions of a configuration.',
+    }),
+    AutoScalingConfigurationRevision: IntegerSchema.exactOptional().openapi({
+      description:
+        'The revision of this auto scaling configuration. It\'s unique among all the active configurations (<code>"Status": "ACTIVE"</code>) that share the same <code>AutoScalingConfigurationName</code>.',
+    }),
+    Latest: BooleanSchema.exactOptional().openapi({
+      description:
+        "It's set to <code>true</code> for the configuration with the highest <code>Revision</code> among all configurations that share the same <code>AutoScalingConfigurationName</code>. It's set to <code>false</code> otherwise.",
+    }),
+    Status: AutoScalingConfigurationStatusSchema.exactOptional().openapi({
+      description:
+        "The current state of the auto scaling configuration. If the status of a configuration revision is <code>INACTIVE</code>, it was deleted and can't be used. Inactive configuration revisions are permanently removed some time after they are deleted.",
+    }),
+    MaxConcurrency: IntegerSchema.exactOptional().openapi({
+      description:
+        'The maximum number of concurrent requests that an instance processes. If the number of concurrent requests exceeds this limit, App Runner scales the service up.',
+    }),
+    MinSize: IntegerSchema.exactOptional().openapi({
+      description:
+        '<p>The minimum number of instances that App Runner provisions for a service. The service always has at least <code>MinSize</code> provisioned instances. Some of them actively serve traffic. The rest of them (provisioned and inactive instances) are a cost-effective compute capacity reserve and are ready to be quickly activated. You pay for memory usage of all the provisioned instances. You pay for CPU usage of only the active subset.</p> <p>App Runner temporarily doubles the number of provisioned instances during deployments, to maintain the same capacity for both old and new code.</p>',
+    }),
+    MaxSize: IntegerSchema.exactOptional().openapi({
+      description:
+        'The maximum number of instances that a service scales up to. At most <code>MaxSize</code> instances actively serve traffic for your service.',
+    }),
+    CreatedAt: TimestampSchema.exactOptional().openapi({
+      description:
+        "The time when the auto scaling configuration was created. It's in Unix time stamp format.",
+    }),
+    DeletedAt: TimestampSchema.exactOptional().openapi({
+      description:
+        "The time when the auto scaling configuration was deleted. It's in Unix time stamp format.",
+    }),
   })
   .openapi({
     description:
@@ -308,14 +218,10 @@ const AutoScalingConfigurationSchema = z
 
 const CreateAutoScalingConfigurationResponseSchema = z
   .object({
-    AutoScalingConfiguration: AutoScalingConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A description of the App Runner auto scaling configuration that's created by this request.",
-        }),
-    ),
+    AutoScalingConfiguration: AutoScalingConfigurationSchema.openapi({
+      description:
+        "A description of the App Runner auto scaling configuration that's created by this request.",
+    }),
   })
   .openapi({ required: ['AutoScalingConfiguration'] })
   .openapi('CreateAutoScalingConfigurationResponse')
@@ -337,10 +243,8 @@ const TagValueSchema = z.string().regex(/.*/).min(0).max(256).openapi('TagValue'
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(z.any().openapi({ description: 'The key of the tag.' })).exactOptional(),
-    Value: TagValueSchema.and(
-      z.any().openapi({ description: 'The value of the tag.' }),
-    ).exactOptional(),
+    Key: TagKeySchema.exactOptional().openapi({ description: 'The key of the tag.' }),
+    Value: TagValueSchema.exactOptional().openapi({ description: 'The value of the tag.' }),
   })
   .openapi({
     description:
@@ -353,46 +257,26 @@ const TagListSchema = z.array(TagSchema).openapi('TagList')
 
 const CreateAutoScalingConfigurationRequestSchema = z
   .object({
-    AutoScalingConfigurationName: AutoScalingConfigurationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A name for the auto scaling configuration. When you use it for the first time in an Amazon Web Services Region, App Runner creates revision number <code>1</code> of this name. When you use the same name in subsequent calls, App Runner creates incremental revisions of the configuration.</p> <note> <p>The name <code>DefaultConfiguration</code> is reserved (it's the configuration that App Runner uses if you don't provide a custome one). You can't use it to create a new auto scaling configuration, and you can't create a revision of it.</p> <p>When you want to use your own auto scaling configuration for your App Runner service, <i>create a configuration with a different name</i>, and then provide it when you create or update your service.</p> </note>",
-        }),
-    ),
-    MaxConcurrency: ASConfigMaxConcurrencySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of concurrent requests that you want an instance to process. If the number of concurrent requests exceeds this limit, App Runner scales up your service.</p> <p>Default: <code>100</code> </p>',
-        }),
-    ).exactOptional(),
-    MinSize: ASConfigMinSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The minimum number of instances that App Runner provisions for your service. The service always has at least <code>MinSize</code> provisioned instances. Some of them actively serve traffic. The rest of them (provisioned and inactive instances) are a cost-effective compute capacity reserve and are ready to be quickly activated. You pay for memory usage of all the provisioned instances. You pay for CPU usage of only the active subset.</p> <p>App Runner temporarily doubles the number of provisioned instances during deployments, to maintain the same capacity for both old and new code.</p> <p>Default: <code>1</code> </p>',
-        }),
-    ).exactOptional(),
-    MaxSize: ASConfigMaxSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of instances that your service scales up to. At most <code>MaxSize</code> instances actively serve traffic for your service.</p> <p>Default: <code>25</code> </p>',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of metadata items that you can associate with your auto scaling configuration resource. A tag is a key-value pair.',
-        }),
-    ).exactOptional(),
+    AutoScalingConfigurationName: AutoScalingConfigurationNameSchema.openapi({
+      description:
+        "<p>A name for the auto scaling configuration. When you use it for the first time in an Amazon Web Services Region, App Runner creates revision number <code>1</code> of this name. When you use the same name in subsequent calls, App Runner creates incremental revisions of the configuration.</p> <note> <p>The name <code>DefaultConfiguration</code> is reserved (it's the configuration that App Runner uses if you don't provide a custome one). You can't use it to create a new auto scaling configuration, and you can't create a revision of it.</p> <p>When you want to use your own auto scaling configuration for your App Runner service, <i>create a configuration with a different name</i>, and then provide it when you create or update your service.</p> </note>",
+    }),
+    MaxConcurrency: ASConfigMaxConcurrencySchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of concurrent requests that you want an instance to process. If the number of concurrent requests exceeds this limit, App Runner scales up your service.</p> <p>Default: <code>100</code> </p>',
+    }),
+    MinSize: ASConfigMinSizeSchema.exactOptional().openapi({
+      description:
+        '<p>The minimum number of instances that App Runner provisions for your service. The service always has at least <code>MinSize</code> provisioned instances. Some of them actively serve traffic. The rest of them (provisioned and inactive instances) are a cost-effective compute capacity reserve and are ready to be quickly activated. You pay for memory usage of all the provisioned instances. You pay for CPU usage of only the active subset.</p> <p>App Runner temporarily doubles the number of provisioned instances during deployments, to maintain the same capacity for both old and new code.</p> <p>Default: <code>1</code> </p>',
+    }),
+    MaxSize: ASConfigMaxSizeSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of instances that your service scales up to. At most <code>MaxSize</code> instances actively serve traffic for your service.</p> <p>Default: <code>25</code> </p>',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'A list of metadata items that you can associate with your auto scaling configuration resource. A tag is a key-value pair.',
+    }),
   })
   .openapi({
     required: ['AutoScalingConfigurationName'],
@@ -417,68 +301,46 @@ const ConnectionStatusSchema = z
 
 const ConnectionSchema = z
   .object({
-    ConnectionName: ConnectionNameSchema.and(
-      z.any().openapi({ description: 'The customer-provided connection name.' }),
-    ).exactOptional(),
-    ConnectionArn: AppRunnerResourceArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of this connection.' }),
-    ).exactOptional(),
-    ProviderType: ProviderTypeSchema.and(
-      z.any().openapi({ description: 'The source repository provider.' }),
-    ).exactOptional(),
-    Status: ConnectionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The current state of the App Runner connection. When the state is <code>AVAILABLE</code>, you can use the connection to create an App Runner service.',
-        }),
-    ).exactOptional(),
-    CreatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The App Runner connection creation time, expressed as a Unix time stamp.',
-        }),
-    ).exactOptional(),
+    ConnectionName: ConnectionNameSchema.exactOptional().openapi({
+      description: 'The customer-provided connection name.',
+    }),
+    ConnectionArn: AppRunnerResourceArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of this connection.',
+    }),
+    ProviderType: ProviderTypeSchema.exactOptional().openapi({
+      description: 'The source repository provider.',
+    }),
+    Status: ConnectionStatusSchema.exactOptional().openapi({
+      description:
+        'The current state of the App Runner connection. When the state is <code>AVAILABLE</code>, you can use the connection to create an App Runner service.',
+    }),
+    CreatedAt: TimestampSchema.exactOptional().openapi({
+      description: 'The App Runner connection creation time, expressed as a Unix time stamp.',
+    }),
   })
   .openapi({ description: 'Describes an App Runner connection resource.', required: [] })
   .openapi('Connection')
 
 const CreateConnectionResponseSchema = z
   .object({
-    Connection: ConnectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "A description of the App Runner connection that's created by this request.",
-        }),
-    ),
+    Connection: ConnectionSchema.openapi({
+      description: "A description of the App Runner connection that's created by this request.",
+    }),
   })
   .openapi({ required: ['Connection'] })
   .openapi('CreateConnectionResponse')
 
 const CreateConnectionRequestSchema = z
   .object({
-    ConnectionName: ConnectionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A name for the new connection. It must be unique across all App Runner connections for the Amazon Web Services account in the Amazon Web Services Region.',
-        }),
-    ),
-    ProviderType: ProviderTypeSchema.and(
-      z.any().openapi({ description: 'The source repository provider.' }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of metadata items that you can associate with your connection resource. A tag is a key-value pair.',
-        }),
-    ).exactOptional(),
+    ConnectionName: ConnectionNameSchema.openapi({
+      description:
+        'A name for the new connection. It must be unique across all App Runner connections for the Amazon Web Services account in the Amazon Web Services Region.',
+    }),
+    ProviderType: ProviderTypeSchema.openapi({ description: 'The source repository provider.' }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'A list of metadata items that you can associate with your connection resource. A tag is a key-value pair.',
+    }),
   })
   .openapi({ required: ['ConnectionName', 'ProviderType'], title: 'CreateConnectionRequest' })
   .openapi('CreateConnectionRequest')
@@ -494,13 +356,9 @@ const TracingVendorSchema = z.literal('AWSXRAY').openapi('TracingVendor')
 
 const TraceConfigurationSchema = z
   .object({
-    Vendor: TracingVendorSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The implementation provider chosen for tracing App Runner services.',
-        }),
-    ),
+    Vendor: TracingVendorSchema.openapi({
+      description: 'The implementation provider chosen for tracing App Runner services.',
+    }),
   })
   .openapi({
     required: ['Vendor'],
@@ -515,69 +373,37 @@ const ObservabilityConfigurationStatusSchema = z
 
 const ObservabilityConfigurationSchema = z
   .object({
-    ObservabilityConfigurationArn: AppRunnerResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of this observability configuration.',
-        }),
-    ).exactOptional(),
-    ObservabilityConfigurationName: ObservabilityConfigurationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The customer-provided observability configuration name. It can be used in multiple revisions of a configuration.',
-        }),
-    ).exactOptional(),
-    TraceConfiguration: TraceConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The configuration of the tracing feature within this observability configuration. If not specified, tracing isn't enabled.",
-        }),
-    ).exactOptional(),
-    ObservabilityConfigurationRevision: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The revision of this observability configuration. It\'s unique among all the active configurations (<code>"Status": "ACTIVE"</code>) that share the same <code>ObservabilityConfigurationName</code>.',
-        }),
-    ).exactOptional(),
-    Latest: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "It's set to <code>true</code> for the configuration with the highest <code>Revision</code> among all configurations that share the same <code>ObservabilityConfigurationName</code>. It's set to <code>false</code> otherwise.",
-        }),
-    ).exactOptional(),
-    Status: ObservabilityConfigurationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The current state of the observability configuration. If the status of a configuration revision is <code>INACTIVE</code>, it was deleted and can't be used. Inactive configuration revisions are permanently removed some time after they are deleted.",
-        }),
-    ).exactOptional(),
-    CreatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The time when the observability configuration was created. It's in Unix time stamp format.",
-        }),
-    ).exactOptional(),
-    DeletedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The time when the observability configuration was deleted. It's in Unix time stamp format.",
-        }),
-    ).exactOptional(),
+    ObservabilityConfigurationArn: AppRunnerResourceArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of this observability configuration.',
+    }),
+    ObservabilityConfigurationName: ObservabilityConfigurationNameSchema.exactOptional().openapi({
+      description:
+        'The customer-provided observability configuration name. It can be used in multiple revisions of a configuration.',
+    }),
+    TraceConfiguration: TraceConfigurationSchema.exactOptional().openapi({
+      description:
+        "The configuration of the tracing feature within this observability configuration. If not specified, tracing isn't enabled.",
+    }),
+    ObservabilityConfigurationRevision: IntegerSchema.exactOptional().openapi({
+      description:
+        'The revision of this observability configuration. It\'s unique among all the active configurations (<code>"Status": "ACTIVE"</code>) that share the same <code>ObservabilityConfigurationName</code>.',
+    }),
+    Latest: BooleanSchema.exactOptional().openapi({
+      description:
+        "It's set to <code>true</code> for the configuration with the highest <code>Revision</code> among all configurations that share the same <code>ObservabilityConfigurationName</code>. It's set to <code>false</code> otherwise.",
+    }),
+    Status: ObservabilityConfigurationStatusSchema.exactOptional().openapi({
+      description:
+        "The current state of the observability configuration. If the status of a configuration revision is <code>INACTIVE</code>, it was deleted and can't be used. Inactive configuration revisions are permanently removed some time after they are deleted.",
+    }),
+    CreatedAt: TimestampSchema.exactOptional().openapi({
+      description:
+        "The time when the observability configuration was created. It's in Unix time stamp format.",
+    }),
+    DeletedAt: TimestampSchema.exactOptional().openapi({
+      description:
+        "The time when the observability configuration was deleted. It's in Unix time stamp format.",
+    }),
   })
   .openapi({
     description:
@@ -588,44 +414,28 @@ const ObservabilityConfigurationSchema = z
 
 const CreateObservabilityConfigurationResponseSchema = z
   .object({
-    ObservabilityConfiguration: ObservabilityConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A description of the App Runner observability configuration that's created by this request.",
-        }),
-    ),
+    ObservabilityConfiguration: ObservabilityConfigurationSchema.openapi({
+      description:
+        "A description of the App Runner observability configuration that's created by this request.",
+    }),
   })
   .openapi({ required: ['ObservabilityConfiguration'] })
   .openapi('CreateObservabilityConfigurationResponse')
 
 const CreateObservabilityConfigurationRequestSchema = z
   .object({
-    ObservabilityConfigurationName: ObservabilityConfigurationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A name for the observability configuration. When you use it for the first time in an Amazon Web Services Region, App Runner creates revision number <code>1</code> of this name. When you use the same name in subsequent calls, App Runner creates incremental revisions of the configuration.</p> <note> <p>The name <code>DefaultConfiguration</code> is reserved. You can't use it to create a new observability configuration, and you can't create a revision of it.</p> <p>When you want to use your own observability configuration for your App Runner service, <i>create a configuration with a different name</i>, and then provide it when you create or update your service.</p> </note>",
-        }),
-    ),
-    TraceConfiguration: TraceConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The configuration of the tracing feature within this observability configuration. If you don't specify it, App Runner doesn't enable tracing.",
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of metadata items that you can associate with your observability configuration resource. A tag is a key-value pair.',
-        }),
-    ).exactOptional(),
+    ObservabilityConfigurationName: ObservabilityConfigurationNameSchema.openapi({
+      description:
+        "<p>A name for the observability configuration. When you use it for the first time in an Amazon Web Services Region, App Runner creates revision number <code>1</code> of this name. When you use the same name in subsequent calls, App Runner creates incremental revisions of the configuration.</p> <note> <p>The name <code>DefaultConfiguration</code> is reserved. You can't use it to create a new observability configuration, and you can't create a revision of it.</p> <p>When you want to use your own observability configuration for your App Runner service, <i>create a configuration with a different name</i>, and then provide it when you create or update your service.</p> </note>",
+    }),
+    TraceConfiguration: TraceConfigurationSchema.exactOptional().openapi({
+      description:
+        "The configuration of the tracing feature within this observability configuration. If you don't specify it, App Runner doesn't enable tracing.",
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'A list of metadata items that you can associate with your observability configuration resource. A tag is a key-value pair.',
+    }),
   })
   .openapi({
     required: ['ObservabilityConfigurationName'],
@@ -654,22 +464,14 @@ const SourceCodeVersionTypeSchema = z.literal('BRANCH').openapi('SourceCodeVersi
 
 const SourceCodeVersionSchema = z
   .object({
-    Type: SourceCodeVersionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of version identifier.</p> <p>For a git-based repository, branches represent versions.</p>',
-        }),
-    ),
-    Value: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A source code version.</p> <p>For a git-based repository, a branch name maps to a specific version. App Runner uses the most recent commit to the branch.</p>',
-        }),
-    ),
+    Type: SourceCodeVersionTypeSchema.openapi({
+      description:
+        '<p>The type of version identifier.</p> <p>For a git-based repository, branches represent versions.</p>',
+    }),
+    Value: StringSchema.openapi({
+      description:
+        '<p>A source code version.</p> <p>For a git-based repository, a branch name maps to a specific version. App Runner uses the most recent commit to the branch.</p>',
+    }),
   })
   .openapi({
     required: ['Type', 'Value'],
@@ -728,44 +530,28 @@ const RuntimeEnvironmentSecretsSchema = z
 
 const CodeConfigurationValuesSchema = z
   .object({
-    Runtime: RuntimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A runtime environment type for building and running an App Runner service. It represents a programming language runtime.',
-        }),
-    ),
-    BuildCommand: BuildCommandSchema.and(
-      z.any().openapi({ description: 'The command App Runner runs to build your application.' }),
-    ).exactOptional(),
-    StartCommand: StartCommandSchema.and(
-      z.any().openapi({ description: 'The command App Runner runs to start your application.' }),
-    ).exactOptional(),
-    Port: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The port that your application listens to in the container.</p> <p>Default: <code>8080</code> </p>',
-        }),
-    ).exactOptional(),
-    RuntimeEnvironmentVariables: RuntimeEnvironmentVariablesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The environment variables that are available to your running App Runner service. An array of key-value pairs.',
-        }),
-    ).exactOptional(),
-    RuntimeEnvironmentSecrets: RuntimeEnvironmentSecretsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>An array of key-value pairs representing the secrets and parameters that get referenced to your service as an environment variable. The supported values are either the full Amazon Resource Name (ARN) of the Secrets Manager secret or the full ARN of the parameter in the Amazon Web Services Systems Manager Parameter Store.</p> <note> <ul> <li> <p> If the Amazon Web Services Systems Manager Parameter Store parameter exists in the same Amazon Web Services Region as the service that you're launching, you can use either the full ARN or name of the secret. If the parameter exists in a different Region, then the full ARN must be specified. </p> </li> <li> <p> Currently, cross account referencing of Amazon Web Services Systems Manager Parameter Store parameter is not supported. </p> </li> </ul> </note>",
-        }),
-    ).exactOptional(),
+    Runtime: RuntimeSchema.openapi({
+      description:
+        'A runtime environment type for building and running an App Runner service. It represents a programming language runtime.',
+    }),
+    BuildCommand: BuildCommandSchema.exactOptional().openapi({
+      description: 'The command App Runner runs to build your application.',
+    }),
+    StartCommand: StartCommandSchema.exactOptional().openapi({
+      description: 'The command App Runner runs to start your application.',
+    }),
+    Port: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The port that your application listens to in the container.</p> <p>Default: <code>8080</code> </p>',
+    }),
+    RuntimeEnvironmentVariables: RuntimeEnvironmentVariablesSchema.exactOptional().openapi({
+      description:
+        'The environment variables that are available to your running App Runner service. An array of key-value pairs.',
+    }),
+    RuntimeEnvironmentSecrets: RuntimeEnvironmentSecretsSchema.exactOptional().openapi({
+      description:
+        "<p>An array of key-value pairs representing the secrets and parameters that get referenced to your service as an environment variable. The supported values are either the full Amazon Resource Name (ARN) of the Secrets Manager secret or the full ARN of the parameter in the Amazon Web Services Systems Manager Parameter Store.</p> <note> <ul> <li> <p> If the Amazon Web Services Systems Manager Parameter Store parameter exists in the same Amazon Web Services Region as the service that you're launching, you can use either the full ARN or name of the secret. If the parameter exists in a different Region, then the full ARN must be specified. </p> </li> <li> <p> Currently, cross account referencing of Amazon Web Services Systems Manager Parameter Store parameter is not supported. </p> </li> </ul> </note>",
+    }),
   })
   .openapi({
     required: ['Runtime'],
@@ -776,22 +562,14 @@ const CodeConfigurationValuesSchema = z
 
 const CodeConfigurationSchema = z
   .object({
-    ConfigurationSource: ConfigurationSourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The source of the App Runner configuration. Values are interpreted as follows:</p> <ul> <li> <p> <code>REPOSITORY</code> – App Runner reads configuration values from the <code>apprunner.yaml</code> file in the source code repository and ignores <code>CodeConfigurationValues</code>.</p> </li> <li> <p> <code>API</code> – App Runner uses configuration values provided in <code>CodeConfigurationValues</code> and ignores the <code>apprunner.yaml</code> file in the source code repository.</p> </li> </ul>',
-        }),
-    ),
-    CodeConfigurationValues: CodeConfigurationValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The basic configuration for building and running the App Runner service. Use it to quickly launch an App Runner service without providing a <code>apprunner.yaml</code> file in the source code repository (or ignoring the file if it exists).',
-        }),
-    ).exactOptional(),
+    ConfigurationSource: ConfigurationSourceSchema.openapi({
+      description:
+        '<p>The source of the App Runner configuration. Values are interpreted as follows:</p> <ul> <li> <p> <code>REPOSITORY</code> – App Runner reads configuration values from the <code>apprunner.yaml</code> file in the source code repository and ignores <code>CodeConfigurationValues</code>.</p> </li> <li> <p> <code>API</code> – App Runner uses configuration values provided in <code>CodeConfigurationValues</code> and ignores the <code>apprunner.yaml</code> file in the source code repository.</p> </li> </ul>',
+    }),
+    CodeConfigurationValues: CodeConfigurationValuesSchema.exactOptional().openapi({
+      description:
+        'The basic configuration for building and running the App Runner service. Use it to quickly launch an App Runner service without providing a <code>apprunner.yaml</code> file in the source code repository (or ignoring the file if it exists).',
+    }),
   })
   .openapi({
     required: ['ConfigurationSource'],
@@ -802,26 +580,16 @@ const CodeConfigurationSchema = z
 
 const CodeRepositorySchema = z
   .object({
-    RepositoryUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The location of the repository that contains the source code.' }),
-    ),
-    SourceCodeVersion: SourceCodeVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The version that should be used within the source code repository.',
-        }),
-    ),
-    CodeConfiguration: CodeConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Configuration for building and running the service from a source code repository.</p> <note> <p> <code>CodeConfiguration</code> is required only for <code>CreateService</code> request.</p> </note>',
-        }),
-    ).exactOptional(),
+    RepositoryUrl: StringSchema.openapi({
+      description: 'The location of the repository that contains the source code.',
+    }),
+    SourceCodeVersion: SourceCodeVersionSchema.openapi({
+      description: 'The version that should be used within the source code repository.',
+    }),
+    CodeConfiguration: CodeConfigurationSchema.exactOptional().openapi({
+      description:
+        '<p>Configuration for building and running the service from a source code repository.</p> <note> <p> <code>CodeConfiguration</code> is required only for <code>CreateService</code> request.</p> </note>',
+    }),
   })
   .openapi({
     required: ['RepositoryUrl', 'SourceCodeVersion'],
@@ -840,38 +608,22 @@ const ImageIdentifierSchema = z
 
 const ImageConfigurationSchema = z
   .object({
-    RuntimeEnvironmentVariables: RuntimeEnvironmentVariablesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Environment variables that are available to your running App Runner service. An array of key-value pairs.',
-        }),
-    ).exactOptional(),
-    StartCommand: StartCommandSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional command that App Runner runs to start the application in the source image. If specified, this command overrides the Docker image’s default start command.',
-        }),
-    ).exactOptional(),
-    Port: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The port that your application listens to in the container.</p> <p>Default: <code>8080</code> </p>',
-        }),
-    ).exactOptional(),
-    RuntimeEnvironmentSecrets: RuntimeEnvironmentSecretsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>An array of key-value pairs representing the secrets and parameters that get referenced to your service as an environment variable. The supported values are either the full Amazon Resource Name (ARN) of the Secrets Manager secret or the full ARN of the parameter in the Amazon Web Services Systems Manager Parameter Store.</p> <note> <ul> <li> <p> If the Amazon Web Services Systems Manager Parameter Store parameter exists in the same Amazon Web Services Region as the service that you're launching, you can use either the full ARN or name of the secret. If the parameter exists in a different Region, then the full ARN must be specified. </p> </li> <li> <p> Currently, cross account referencing of Amazon Web Services Systems Manager Parameter Store parameter is not supported. </p> </li> </ul> </note>",
-        }),
-    ).exactOptional(),
+    RuntimeEnvironmentVariables: RuntimeEnvironmentVariablesSchema.exactOptional().openapi({
+      description:
+        'Environment variables that are available to your running App Runner service. An array of key-value pairs.',
+    }),
+    StartCommand: StartCommandSchema.exactOptional().openapi({
+      description:
+        'An optional command that App Runner runs to start the application in the source image. If specified, this command overrides the Docker image’s default start command.',
+    }),
+    Port: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The port that your application listens to in the container.</p> <p>Default: <code>8080</code> </p>',
+    }),
+    RuntimeEnvironmentSecrets: RuntimeEnvironmentSecretsSchema.exactOptional().openapi({
+      description:
+        "<p>An array of key-value pairs representing the secrets and parameters that get referenced to your service as an environment variable. The supported values are either the full Amazon Resource Name (ARN) of the Secrets Manager secret or the full ARN of the parameter in the Amazon Web Services Systems Manager Parameter Store.</p> <note> <ul> <li> <p> If the Amazon Web Services Systems Manager Parameter Store parameter exists in the same Amazon Web Services Region as the service that you're launching, you can use either the full ARN or name of the secret. If the parameter exists in a different Region, then the full ARN must be specified. </p> </li> <li> <p> Currently, cross account referencing of Amazon Web Services Systems Manager Parameter Store parameter is not supported. </p> </li> </ul> </note>",
+    }),
   })
   .openapi({
     description:
@@ -884,25 +636,17 @@ const ImageRepositoryTypeSchema = z.enum(['ECR', 'ECR_PUBLIC']).openapi('ImageRe
 
 const ImageRepositorySchema = z
   .object({
-    ImageIdentifier: ImageIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier of an image.</p> <p>For an image in Amazon Elastic Container Registry (Amazon ECR), this is an image name. For the image name format, see <a href="https://docs.aws.amazon.com/AmazonECR/latest/userguide/docker-pull-ecr-image.html">Pulling an image</a> in the <i>Amazon ECR User Guide</i>.</p>',
-        }),
-    ),
-    ImageConfiguration: ImageConfigurationSchema.and(
-      z.any().openapi({ description: 'Configuration for running the identified image.' }),
-    ).exactOptional(),
-    ImageRepositoryType: ImageRepositoryTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of the image repository. This reflects the repository provider and whether the repository is private or public.',
-        }),
-    ),
+    ImageIdentifier: ImageIdentifierSchema.openapi({
+      description:
+        '<p>The identifier of an image.</p> <p>For an image in Amazon Elastic Container Registry (Amazon ECR), this is an image name. For the image name format, see <a href="https://docs.aws.amazon.com/AmazonECR/latest/userguide/docker-pull-ecr-image.html">Pulling an image</a> in the <i>Amazon ECR User Guide</i>.</p>',
+    }),
+    ImageConfiguration: ImageConfigurationSchema.exactOptional().openapi({
+      description: 'Configuration for running the identified image.',
+    }),
+    ImageRepositoryType: ImageRepositoryTypeSchema.openapi({
+      description:
+        'The type of the image repository. This reflects the repository provider and whether the repository is private or public.',
+    }),
   })
   .openapi({
     required: ['ImageIdentifier', 'ImageRepositoryType'],
@@ -921,22 +665,14 @@ const RoleArnSchema = z
 
 const AuthenticationConfigurationSchema = z
   .object({
-    ConnectionArn: AppRunnerResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The Amazon Resource Name (ARN) of the App Runner connection that enables the App Runner service to connect to a source repository. It's required for GitHub code repositories.",
-        }),
-    ).exactOptional(),
-    AccessRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The Amazon Resource Name (ARN) of the IAM role that grants the App Runner service access to a source repository. It's required for ECR image repositories (but not for ECR Public repositories).",
-        }),
-    ).exactOptional(),
+    ConnectionArn: AppRunnerResourceArnSchema.exactOptional().openapi({
+      description:
+        "The Amazon Resource Name (ARN) of the App Runner connection that enables the App Runner service to connect to a source repository. It's required for GitHub code repositories.",
+    }),
+    AccessRoleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        "The Amazon Resource Name (ARN) of the IAM role that grants the App Runner service access to a source repository. It's required for ECR image repositories (but not for ECR Public repositories).",
+    }),
   })
   .openapi({
     description:
@@ -947,38 +683,22 @@ const AuthenticationConfigurationSchema = z
 
 const SourceConfigurationSchema = z
   .object({
-    CodeRepository: CodeRepositorySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The description of a source code repository.</p> <p>You must provide either this member or <code>ImageRepository</code> (but not both).</p>',
-        }),
-    ).exactOptional(),
-    ImageRepository: ImageRepositorySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The description of a source image repository.</p> <p>You must provide either this member or <code>CodeRepository</code> (but not both).</p>',
-        }),
-    ).exactOptional(),
-    AutoDeploymentsEnabled: NullableBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>If <code>true</code>, continuous integration from the source repository is enabled for the App Runner service. Each repository change (including any source code commit or new image version) starts a deployment.</p> <p>Default: App Runner sets to <code>false</code> for a source image that uses an ECR Public repository or an ECR repository that's in an Amazon Web Services account other than the one that the service is in. App Runner sets to <code>true</code> in all other cases (which currently include a source code repository or a source image using a same-account ECR repository).</p>",
-        }),
-    ).exactOptional(),
-    AuthenticationConfiguration: AuthenticationConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes the resources that are needed to authenticate access to some source repositories.',
-        }),
-    ).exactOptional(),
+    CodeRepository: CodeRepositorySchema.exactOptional().openapi({
+      description:
+        '<p>The description of a source code repository.</p> <p>You must provide either this member or <code>ImageRepository</code> (but not both).</p>',
+    }),
+    ImageRepository: ImageRepositorySchema.exactOptional().openapi({
+      description:
+        '<p>The description of a source image repository.</p> <p>You must provide either this member or <code>CodeRepository</code> (but not both).</p>',
+    }),
+    AutoDeploymentsEnabled: NullableBooleanSchema.exactOptional().openapi({
+      description:
+        "<p>If <code>true</code>, continuous integration from the source repository is enabled for the App Runner service. Each repository change (including any source code commit or new image version) starts a deployment.</p> <p>Default: App Runner sets to <code>false</code> for a source image that uses an ECR Public repository or an ECR repository that's in an Amazon Web Services account other than the one that the service is in. App Runner sets to <code>true</code> in all other cases (which currently include a source code repository or a source image using a same-account ECR repository).</p>",
+    }),
+    AuthenticationConfiguration: AuthenticationConfigurationSchema.exactOptional().openapi({
+      description:
+        'Describes the resources that are needed to authenticate access to some source repositories.',
+    }),
   })
   .openapi({
     description:
@@ -1003,30 +723,18 @@ const MemorySchema = z
 
 const InstanceConfigurationSchema = z
   .object({
-    Cpu: CpuSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of CPU units reserved for each instance of your App Runner service.</p> <p>Default: <code>1 vCPU</code> </p>',
-        }),
-    ).exactOptional(),
-    Memory: MemorySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The amount of memory, in MB or GB, reserved for each instance of your App Runner service.</p> <p>Default: <code>2 GB</code> </p>',
-        }),
-    ).exactOptional(),
-    InstanceRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of an IAM role that provides permissions to your App Runner service. These are permissions that your code needs when it calls any Amazon Web Services APIs.',
-        }),
-    ).exactOptional(),
+    Cpu: CpuSchema.exactOptional().openapi({
+      description:
+        '<p>The number of CPU units reserved for each instance of your App Runner service.</p> <p>Default: <code>1 vCPU</code> </p>',
+    }),
+    Memory: MemorySchema.exactOptional().openapi({
+      description:
+        '<p>The amount of memory, in MB or GB, reserved for each instance of your App Runner service.</p> <p>Default: <code>2 GB</code> </p>',
+    }),
+    InstanceRoleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of an IAM role that provides permissions to your App Runner service. These are permissions that your code needs when it calls any Amazon Web Services APIs.',
+    }),
   })
   .openapi({
     description:
@@ -1046,9 +754,9 @@ const KmsKeyArnSchema = z
 
 const EncryptionConfigurationSchema = z
   .object({
-    KmsKey: KmsKeyArnSchema.and(
-      z.any().openapi({ description: "The ARN of the KMS key that's used for encryption." }),
-    ),
+    KmsKey: KmsKeyArnSchema.openapi({
+      description: "The ARN of the KMS key that's used for encryption.",
+    }),
   })
   .openapi({
     required: ['KmsKey'],
@@ -1079,54 +787,30 @@ const HealthCheckUnhealthyThresholdSchema = z
 
 const HealthCheckConfigurationSchema = z
   .object({
-    Protocol: HealthCheckProtocolSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The IP protocol that App Runner uses to perform health checks for your service.</p> <p>If you set <code>Protocol</code> to <code>HTTP</code>, App Runner sends health check requests to the HTTP path specified by <code>Path</code>.</p> <p>Default: <code>TCP</code> </p>',
-        }),
-    ).exactOptional(),
-    Path: HealthCheckPathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The URL that health check requests are sent to.</p> <p> <code>Path</code> is only applicable when you set <code>Protocol</code> to <code>HTTP</code>.</p> <p>Default: <code>"/"</code> </p>',
-        }),
-    ).exactOptional(),
-    Interval: HealthCheckIntervalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The time interval, in seconds, between health checks.</p> <p>Default: <code>5</code> </p>',
-        }),
-    ).exactOptional(),
-    Timeout: HealthCheckTimeoutSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The time, in seconds, to wait for a health check response before deciding it failed.</p> <p>Default: <code>2</code> </p>',
-        }),
-    ).exactOptional(),
-    HealthyThreshold: HealthCheckHealthyThresholdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of consecutive checks that must succeed before App Runner decides that the service is healthy.</p> <p>Default: <code>1</code> </p>',
-        }),
-    ).exactOptional(),
-    UnhealthyThreshold: HealthCheckUnhealthyThresholdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of consecutive checks that must fail before App Runner decides that the service is unhealthy.</p> <p>Default: <code>5</code> </p>',
-        }),
-    ).exactOptional(),
+    Protocol: HealthCheckProtocolSchema.exactOptional().openapi({
+      description:
+        '<p>The IP protocol that App Runner uses to perform health checks for your service.</p> <p>If you set <code>Protocol</code> to <code>HTTP</code>, App Runner sends health check requests to the HTTP path specified by <code>Path</code>.</p> <p>Default: <code>TCP</code> </p>',
+    }),
+    Path: HealthCheckPathSchema.exactOptional().openapi({
+      description:
+        '<p>The URL that health check requests are sent to.</p> <p> <code>Path</code> is only applicable when you set <code>Protocol</code> to <code>HTTP</code>.</p> <p>Default: <code>"/"</code> </p>',
+    }),
+    Interval: HealthCheckIntervalSchema.exactOptional().openapi({
+      description:
+        '<p>The time interval, in seconds, between health checks.</p> <p>Default: <code>5</code> </p>',
+    }),
+    Timeout: HealthCheckTimeoutSchema.exactOptional().openapi({
+      description:
+        '<p>The time, in seconds, to wait for a health check response before deciding it failed.</p> <p>Default: <code>2</code> </p>',
+    }),
+    HealthyThreshold: HealthCheckHealthyThresholdSchema.exactOptional().openapi({
+      description:
+        '<p>The number of consecutive checks that must succeed before App Runner decides that the service is healthy.</p> <p>Default: <code>1</code> </p>',
+    }),
+    UnhealthyThreshold: HealthCheckUnhealthyThresholdSchema.exactOptional().openapi({
+      description:
+        '<p>The number of consecutive checks that must fail before App Runner decides that the service is unhealthy.</p> <p>Default: <code>5</code> </p>',
+    }),
   })
   .openapi({
     description:
@@ -1137,29 +821,17 @@ const HealthCheckConfigurationSchema = z
 
 const AutoScalingConfigurationSummarySchema = z
   .object({
-    AutoScalingConfigurationArn: AppRunnerResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of this auto scaling configuration.',
-        }),
-    ).exactOptional(),
-    AutoScalingConfigurationName: AutoScalingConfigurationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The customer-provided auto scaling configuration name. It can be used in multiple revisions of a configuration.',
-        }),
-    ).exactOptional(),
-    AutoScalingConfigurationRevision: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The revision of this auto scaling configuration. It\'s unique among all the active configurations (<code>"Status": "ACTIVE"</code>) with the same <code>AutoScalingConfigurationName</code>.',
-        }),
-    ).exactOptional(),
+    AutoScalingConfigurationArn: AppRunnerResourceArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of this auto scaling configuration.',
+    }),
+    AutoScalingConfigurationName: AutoScalingConfigurationNameSchema.exactOptional().openapi({
+      description:
+        'The customer-provided auto scaling configuration name. It can be used in multiple revisions of a configuration.',
+    }),
+    AutoScalingConfigurationRevision: IntegerSchema.exactOptional().openapi({
+      description:
+        'The revision of this auto scaling configuration. It\'s unique among all the active configurations (<code>"Status": "ACTIVE"</code>) with the same <code>AutoScalingConfigurationName</code>.',
+    }),
   })
   .openapi({
     description:
@@ -1172,22 +844,14 @@ const EgressTypeSchema = z.enum(['DEFAULT', 'VPC']).openapi('EgressType')
 
 const EgressConfigurationSchema = z
   .object({
-    EgressType: EgressTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of egress configuration.</p> <p>Set to <code>DEFAULT</code> for access to resources hosted on public networks.</p> <p>Set to <code>VPC</code> to associate your service to a custom VPC specified by <code>VpcConnectorArn</code>.</p>',
-        }),
-    ).exactOptional(),
-    VpcConnectorArn: AppRunnerResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the App Runner VPC connector that you want to associate with your App Runner service. Only valid when <code>EgressType = VPC</code>.',
-        }),
-    ).exactOptional(),
+    EgressType: EgressTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The type of egress configuration.</p> <p>Set to <code>DEFAULT</code> for access to resources hosted on public networks.</p> <p>Set to <code>VPC</code> to associate your service to a custom VPC specified by <code>VpcConnectorArn</code>.</p>',
+    }),
+    VpcConnectorArn: AppRunnerResourceArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the App Runner VPC connector that you want to associate with your App Runner service. Only valid when <code>EgressType = VPC</code>.',
+    }),
   })
   .openapi({
     description:
@@ -1198,14 +862,10 @@ const EgressConfigurationSchema = z
 
 const IngressConfigurationSchema = z
   .object({
-    IsPubliclyAccessible: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether your App Runner service is publicly accessible. To make the service publicly accessible set it to <code>True</code>. To make the service privately accessible, from only within an Amazon VPC set it to <code>False</code>. ',
-        }),
-    ).exactOptional(),
+    IsPubliclyAccessible: BooleanSchema.exactOptional().openapi({
+      description:
+        'Specifies whether your App Runner service is publicly accessible. To make the service publicly accessible set it to <code>True</code>. To make the service privately accessible, from only within an Amazon VPC set it to <code>False</code>. ',
+    }),
   })
   .openapi({
     description: 'Network configuration settings for inbound network traffic.',
@@ -1215,16 +875,12 @@ const IngressConfigurationSchema = z
 
 const NetworkConfigurationSchema = z
   .object({
-    EgressConfiguration: EgressConfigurationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Network configuration settings for outbound message traffic.' }),
-    ).exactOptional(),
-    IngressConfiguration: IngressConfigurationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Network configuration settings for inbound message traffic.' }),
-    ).exactOptional(),
+    EgressConfiguration: EgressConfigurationSchema.exactOptional().openapi({
+      description: 'Network configuration settings for outbound message traffic.',
+    }),
+    IngressConfiguration: IngressConfigurationSchema.exactOptional().openapi({
+      description: 'Network configuration settings for inbound message traffic.',
+    }),
   })
   .openapi({
     description:
@@ -1235,22 +891,14 @@ const NetworkConfigurationSchema = z
 
 const ServiceObservabilityConfigurationSchema = z
   .object({
-    ObservabilityEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When <code>true</code>, an observability configuration resource is associated with the service, and an <code>ObservabilityConfigurationArn</code> is specified.',
-        }),
-    ),
-    ObservabilityConfigurationArn: AppRunnerResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the observability configuration that is associated with the service. Specified only when <code>ObservabilityEnabled</code> is <code>true</code>.</p> <p>Specify an ARN with a name and a revision number to associate that revision. For example: <code>arn:aws:apprunner:us-east-1:123456789012:observabilityconfiguration/xray-tracing/3</code> </p> <p>Specify just the name to associate the latest revision. For example: <code>arn:aws:apprunner:us-east-1:123456789012:observabilityconfiguration/xray-tracing</code> </p>',
-        }),
-    ).exactOptional(),
+    ObservabilityEnabled: BooleanSchema.openapi({
+      description:
+        'When <code>true</code>, an observability configuration resource is associated with the service, and an <code>ObservabilityConfigurationArn</code> is specified.',
+    }),
+    ObservabilityConfigurationArn: AppRunnerResourceArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the observability configuration that is associated with the service. Specified only when <code>ObservabilityEnabled</code> is <code>true</code>.</p> <p>Specify an ARN with a name and a revision number to associate that revision. For example: <code>arn:aws:apprunner:us-east-1:123456789012:observabilityconfiguration/xray-tracing/3</code> </p> <p>Specify just the name to associate the latest revision. For example: <code>arn:aws:apprunner:us-east-1:123456789012:observabilityconfiguration/xray-tracing</code> </p>',
+    }),
   })
   .openapi({
     required: ['ObservabilityEnabled'],
@@ -1261,110 +909,60 @@ const ServiceObservabilityConfigurationSchema = z
 
 const ServiceSchema = z
   .object({
-    ServiceName: ServiceNameSchema.and(
-      z.any().openapi({ description: 'The customer-provided service name.' }),
-    ),
-    ServiceId: ServiceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An ID that App Runner generated for this service. It's unique within the Amazon Web Services Region.",
-        }),
-    ),
-    ServiceArn: AppRunnerResourceArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of this service.' }),
-    ),
-    ServiceUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A subdomain URL that App Runner generated for this service. You can use this URL to access your service web application.',
-        }),
-    ).exactOptional(),
-    CreatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The time when the App Runner service was created. It's in the Unix time stamp format.",
-        }),
-    ),
-    UpdatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The time when the App Runner service was last updated at. It's in the Unix time stamp format.",
-        }),
-    ),
-    DeletedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The time when the App Runner service was deleted. It's in the Unix time stamp format.",
-        }),
-    ).exactOptional(),
-    Status: ServiceStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The current state of the App Runner service. These particular values mean the following.</p> <ul> <li> <p> <code>CREATE_FAILED</code> – The service failed to create. To troubleshoot this failure, read the failure events and logs, change any parameters that need to be fixed, and retry the call to create the service.</p> <p>The failed service isn't usable, and still counts towards your service quota. When you're done analyzing the failure, delete the service.</p> </li> <li> <p> <code>DELETE_FAILED</code> – The service failed to delete and can't be successfully recovered. Retry the service deletion call to ensure that all related resources are removed.</p> </li> </ul>",
-        }),
-    ),
-    SourceConfiguration: SourceConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The source deployed to the App Runner service. It can be a code or an image repository.',
-        }),
-    ),
-    InstanceConfiguration: InstanceConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The runtime configuration of instances (scaling units) of this service.',
-        }),
-    ),
-    EncryptionConfiguration: EncryptionConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The encryption key that App Runner uses to encrypt the service logs and the copy of the source repository that App Runner maintains for the service. It can be either a customer-provided encryption key or an Amazon Web Services managed key.',
-        }),
-    ).exactOptional(),
-    HealthCheckConfiguration: HealthCheckConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The settings for the health check that App Runner performs to monitor the health of this service.',
-        }),
-    ).exactOptional(),
-    AutoScalingConfigurationSummary: AutoScalingConfigurationSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Summary information for the App Runner automatic scaling configuration resource that's associated with this service.",
-        }),
-    ),
-    NetworkConfiguration: NetworkConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configuration settings related to network traffic of the web application that this service runs.',
-        }),
-    ),
-    ObservabilityConfiguration: ServiceObservabilityConfigurationSchema.and(
-      z.any().openapi({ description: 'The observability configuration of this service.' }),
-    ).exactOptional(),
+    ServiceName: ServiceNameSchema.openapi({ description: 'The customer-provided service name.' }),
+    ServiceId: ServiceIdSchema.openapi({
+      description:
+        "An ID that App Runner generated for this service. It's unique within the Amazon Web Services Region.",
+    }),
+    ServiceArn: AppRunnerResourceArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of this service.',
+    }),
+    ServiceUrl: StringSchema.exactOptional().openapi({
+      description:
+        'A subdomain URL that App Runner generated for this service. You can use this URL to access your service web application.',
+    }),
+    CreatedAt: TimestampSchema.openapi({
+      description:
+        "The time when the App Runner service was created. It's in the Unix time stamp format.",
+    }),
+    UpdatedAt: TimestampSchema.openapi({
+      description:
+        "The time when the App Runner service was last updated at. It's in the Unix time stamp format.",
+    }),
+    DeletedAt: TimestampSchema.exactOptional().openapi({
+      description:
+        "The time when the App Runner service was deleted. It's in the Unix time stamp format.",
+    }),
+    Status: ServiceStatusSchema.openapi({
+      description:
+        "<p>The current state of the App Runner service. These particular values mean the following.</p> <ul> <li> <p> <code>CREATE_FAILED</code> – The service failed to create. To troubleshoot this failure, read the failure events and logs, change any parameters that need to be fixed, and retry the call to create the service.</p> <p>The failed service isn't usable, and still counts towards your service quota. When you're done analyzing the failure, delete the service.</p> </li> <li> <p> <code>DELETE_FAILED</code> – The service failed to delete and can't be successfully recovered. Retry the service deletion call to ensure that all related resources are removed.</p> </li> </ul>",
+    }),
+    SourceConfiguration: SourceConfigurationSchema.openapi({
+      description:
+        'The source deployed to the App Runner service. It can be a code or an image repository.',
+    }),
+    InstanceConfiguration: InstanceConfigurationSchema.openapi({
+      description: 'The runtime configuration of instances (scaling units) of this service.',
+    }),
+    EncryptionConfiguration: EncryptionConfigurationSchema.exactOptional().openapi({
+      description:
+        'The encryption key that App Runner uses to encrypt the service logs and the copy of the source repository that App Runner maintains for the service. It can be either a customer-provided encryption key or an Amazon Web Services managed key.',
+    }),
+    HealthCheckConfiguration: HealthCheckConfigurationSchema.exactOptional().openapi({
+      description:
+        'The settings for the health check that App Runner performs to monitor the health of this service.',
+    }),
+    AutoScalingConfigurationSummary: AutoScalingConfigurationSummarySchema.openapi({
+      description:
+        "Summary information for the App Runner automatic scaling configuration resource that's associated with this service.",
+    }),
+    NetworkConfiguration: NetworkConfigurationSchema.openapi({
+      description:
+        'Configuration settings related to network traffic of the web application that this service runs.',
+    }),
+    ObservabilityConfiguration: ServiceObservabilityConfigurationSchema.exactOptional().openapi({
+      description: 'The observability configuration of this service.',
+    }),
   })
   .openapi({
     required: [
@@ -1392,93 +990,53 @@ const UUIDSchema = z
 
 const CreateServiceResponseSchema = z
   .object({
-    Service: ServiceSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "A description of the App Runner service that's created by this request.",
-        }),
-    ),
-    OperationId: UUIDSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique ID of the asynchronous operation that this request started. You can use it combined with the <a href="https://docs.aws.amazon.com/apprunner/latest/api/API_ListOperations.html">ListOperations</a> call to track the operation\'s progress.',
-        }),
-    ),
+    Service: ServiceSchema.openapi({
+      description: "A description of the App Runner service that's created by this request.",
+    }),
+    OperationId: UUIDSchema.openapi({
+      description:
+        'The unique ID of the asynchronous operation that this request started. You can use it combined with the <a href="https://docs.aws.amazon.com/apprunner/latest/api/API_ListOperations.html">ListOperations</a> call to track the operation\'s progress.',
+    }),
   })
   .openapi({ required: ['Service', 'OperationId'] })
   .openapi('CreateServiceResponse')
 
 const CreateServiceRequestSchema = z
   .object({
-    ServiceName: ServiceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A name for the App Runner service. It must be unique across all the running App Runner services in your Amazon Web Services account in the Amazon Web Services Region.',
-        }),
-    ),
-    SourceConfiguration: SourceConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The source to deploy to the App Runner service. It can be a code or an image repository.',
-        }),
-    ),
-    InstanceConfiguration: InstanceConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The runtime configuration of instances (scaling units) of your service.',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional list of metadata items that you can associate with the App Runner service resource. A tag is a key-value pair.',
-        }),
-    ).exactOptional(),
-    EncryptionConfiguration: EncryptionConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional custom encryption key that App Runner uses to encrypt the copy of your source repository that it maintains and your service logs. By default, App Runner uses an Amazon Web Services managed key.',
-        }),
-    ).exactOptional(),
-    HealthCheckConfiguration: HealthCheckConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The settings for the health check that App Runner performs to monitor the health of the App Runner service.',
-        }),
-    ).exactOptional(),
-    AutoScalingConfigurationArn: AppRunnerResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of an App Runner automatic scaling configuration resource that you want to associate with your service. If not provided, App Runner associates the latest revision of a default auto scaling configuration.</p> <p>Specify an ARN with a name and a revision number to associate that revision. For example: <code>arn:aws:apprunner:us-east-1:123456789012:autoscalingconfiguration/high-availability/3</code> </p> <p>Specify just the name to associate the latest revision. For example: <code>arn:aws:apprunner:us-east-1:123456789012:autoscalingconfiguration/high-availability</code> </p>',
-        }),
-    ).exactOptional(),
-    NetworkConfiguration: NetworkConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configuration settings related to network traffic of the web application that the App Runner service runs.',
-        }),
-    ).exactOptional(),
-    ObservabilityConfiguration: ServiceObservabilityConfigurationSchema.and(
-      z.any().openapi({ description: 'The observability configuration of your service.' }),
-    ).exactOptional(),
+    ServiceName: ServiceNameSchema.openapi({
+      description:
+        'A name for the App Runner service. It must be unique across all the running App Runner services in your Amazon Web Services account in the Amazon Web Services Region.',
+    }),
+    SourceConfiguration: SourceConfigurationSchema.openapi({
+      description:
+        'The source to deploy to the App Runner service. It can be a code or an image repository.',
+    }),
+    InstanceConfiguration: InstanceConfigurationSchema.exactOptional().openapi({
+      description: 'The runtime configuration of instances (scaling units) of your service.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'An optional list of metadata items that you can associate with the App Runner service resource. A tag is a key-value pair.',
+    }),
+    EncryptionConfiguration: EncryptionConfigurationSchema.exactOptional().openapi({
+      description:
+        'An optional custom encryption key that App Runner uses to encrypt the copy of your source repository that it maintains and your service logs. By default, App Runner uses an Amazon Web Services managed key.',
+    }),
+    HealthCheckConfiguration: HealthCheckConfigurationSchema.exactOptional().openapi({
+      description:
+        'The settings for the health check that App Runner performs to monitor the health of the App Runner service.',
+    }),
+    AutoScalingConfigurationArn: AppRunnerResourceArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of an App Runner automatic scaling configuration resource that you want to associate with your service. If not provided, App Runner associates the latest revision of a default auto scaling configuration.</p> <p>Specify an ARN with a name and a revision number to associate that revision. For example: <code>arn:aws:apprunner:us-east-1:123456789012:autoscalingconfiguration/high-availability/3</code> </p> <p>Specify just the name to associate the latest revision. For example: <code>arn:aws:apprunner:us-east-1:123456789012:autoscalingconfiguration/high-availability</code> </p>',
+    }),
+    NetworkConfiguration: NetworkConfigurationSchema.exactOptional().openapi({
+      description:
+        'Configuration settings related to network traffic of the web application that the App Runner service runs.',
+    }),
+    ObservabilityConfiguration: ServiceObservabilityConfigurationSchema.exactOptional().openapi({
+      description: 'The observability configuration of your service.',
+    }),
   })
   .openapi({ required: ['ServiceName', 'SourceConfiguration'], title: 'CreateServiceRequest' })
   .openapi('CreateServiceRequest')
@@ -1496,60 +1054,34 @@ const VpcConnectorStatusSchema = z.enum(['ACTIVE', 'INACTIVE']).openapi('VpcConn
 
 const VpcConnectorSchema = z
   .object({
-    VpcConnectorName: VpcConnectorNameSchema.and(
-      z.any().openapi({ description: 'The customer-provided VPC connector name.' }),
-    ).exactOptional(),
-    VpcConnectorArn: AppRunnerResourceArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of this VPC connector.' }),
-    ).exactOptional(),
-    VpcConnectorRevision: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The revision of this VPC connector. It\'s unique among all the active connectors (<code>"Status": "ACTIVE"</code>) that share the same <code>Name</code>.</p> <note> <p>At this time, App Runner supports only one revision per name.</p> </note>',
-        }),
-    ).exactOptional(),
-    Subnets: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of IDs of subnets that App Runner uses for your service. All IDs are of subnets of a single Amazon VPC.',
-        }),
-    ).exactOptional(),
-    SecurityGroups: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of IDs of security groups that App Runner uses for access to Amazon Web Services resources under the specified subnets. If not specified, App Runner uses the default security group of the Amazon VPC. The default security group allows all outbound traffic.',
-        }),
-    ).exactOptional(),
-    Status: VpcConnectorStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The current state of the VPC connector. If the status of a connector revision is <code>INACTIVE</code>, it was deleted and can't be used. Inactive connector revisions are permanently removed some time after they are deleted.",
-        }),
-    ).exactOptional(),
-    CreatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The time when the VPC connector was created. It's in Unix time stamp format.",
-        }),
-    ).exactOptional(),
-    DeletedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The time when the VPC connector was deleted. It's in Unix time stamp format.",
-        }),
-    ).exactOptional(),
+    VpcConnectorName: VpcConnectorNameSchema.exactOptional().openapi({
+      description: 'The customer-provided VPC connector name.',
+    }),
+    VpcConnectorArn: AppRunnerResourceArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of this VPC connector.',
+    }),
+    VpcConnectorRevision: IntegerSchema.exactOptional().openapi({
+      description:
+        '<p>The revision of this VPC connector. It\'s unique among all the active connectors (<code>"Status": "ACTIVE"</code>) that share the same <code>Name</code>.</p> <note> <p>At this time, App Runner supports only one revision per name.</p> </note>',
+    }),
+    Subnets: StringListSchema.exactOptional().openapi({
+      description:
+        'A list of IDs of subnets that App Runner uses for your service. All IDs are of subnets of a single Amazon VPC.',
+    }),
+    SecurityGroups: StringListSchema.exactOptional().openapi({
+      description:
+        'A list of IDs of security groups that App Runner uses for access to Amazon Web Services resources under the specified subnets. If not specified, App Runner uses the default security group of the Amazon VPC. The default security group allows all outbound traffic.',
+    }),
+    Status: VpcConnectorStatusSchema.exactOptional().openapi({
+      description:
+        "The current state of the VPC connector. If the status of a connector revision is <code>INACTIVE</code>, it was deleted and can't be used. Inactive connector revisions are permanently removed some time after they are deleted.",
+    }),
+    CreatedAt: TimestampSchema.exactOptional().openapi({
+      description: "The time when the VPC connector was created. It's in Unix time stamp format.",
+    }),
+    DeletedAt: TimestampSchema.exactOptional().openapi({
+      description: "The time when the VPC connector was deleted. It's in Unix time stamp format.",
+    }),
   })
   .openapi({
     description:
@@ -1560,47 +1092,30 @@ const VpcConnectorSchema = z
 
 const CreateVpcConnectorResponseSchema = z
   .object({
-    VpcConnector: VpcConnectorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A description of the App Runner VPC connector that's created by this request.",
-        }),
-    ),
+    VpcConnector: VpcConnectorSchema.openapi({
+      description: "A description of the App Runner VPC connector that's created by this request.",
+    }),
   })
   .openapi({ required: ['VpcConnector'] })
   .openapi('CreateVpcConnectorResponse')
 
 const CreateVpcConnectorRequestSchema = z
   .object({
-    VpcConnectorName: VpcConnectorNameSchema.and(
-      z.any().openapi({ description: 'A name for the VPC connector.' }),
-    ),
-    Subnets: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of IDs of subnets that App Runner should use when it associates your service with a custom Amazon VPC. Specify IDs of subnets of a single Amazon VPC. App Runner determines the Amazon VPC from the subnets you specify.</p> <note> <p> App Runner currently only provides support for IPv4. </p> </note>',
-        }),
-    ),
-    SecurityGroups: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of IDs of security groups that App Runner should use for access to Amazon Web Services resources under the specified subnets. If not specified, App Runner uses the default security group of the Amazon VPC. The default security group allows all outbound traffic.',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of metadata items that you can associate with your VPC connector resource. A tag is a key-value pair.',
-        }),
-    ).exactOptional(),
+    VpcConnectorName: VpcConnectorNameSchema.openapi({
+      description: 'A name for the VPC connector.',
+    }),
+    Subnets: StringListSchema.openapi({
+      description:
+        '<p>A list of IDs of subnets that App Runner should use when it associates your service with a custom Amazon VPC. Specify IDs of subnets of a single Amazon VPC. App Runner determines the Amazon VPC from the subnets you specify.</p> <note> <p> App Runner currently only provides support for IPv4. </p> </note>',
+    }),
+    SecurityGroups: StringListSchema.exactOptional().openapi({
+      description:
+        'A list of IDs of security groups that App Runner should use for access to Amazon Web Services resources under the specified subnets. If not specified, App Runner uses the default security group of the Amazon VPC. The default security group allows all outbound traffic.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'A list of metadata items that you can associate with your VPC connector resource. A tag is a key-value pair.',
+    }),
   })
   .openapi({ required: ['VpcConnectorName', 'Subnets'], title: 'CreateVpcConnectorRequest' })
   .openapi('CreateVpcConnectorRequest')
@@ -1633,16 +1148,12 @@ const CustomerAccountIdSchema = z
 
 const IngressVpcConfigurationSchema = z
   .object({
-    VpcId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the VPC that is used for the VPC endpoint.' }),
-    ).exactOptional(),
-    VpcEndpointId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the VPC endpoint that your App Runner service connects to. ',
-        }),
-    ).exactOptional(),
+    VpcId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the VPC that is used for the VPC endpoint.',
+    }),
+    VpcEndpointId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the VPC endpoint that your App Runner service connects to. ',
+    }),
   })
   .openapi({
     description:
@@ -1653,68 +1164,38 @@ const IngressVpcConfigurationSchema = z
 
 const VpcIngressConnectionSchema = z
   .object({
-    VpcIngressConnectionArn: AppRunnerResourceArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the VPC Ingress Connection. ' }),
-    ).exactOptional(),
-    VpcIngressConnectionName: VpcIngressConnectionNameSchema.and(
-      z.any().openapi({ description: 'The customer-provided VPC Ingress Connection name.' }),
-    ).exactOptional(),
-    ServiceArn: AppRunnerResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the service associated with the VPC Ingress Connection. ',
-        }),
-    ).exactOptional(),
-    Status: VpcIngressConnectionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The current status of the VPC Ingress Connection. The VPC Ingress Connection displays one of the following statuses: <code>AVAILABLE</code>, <code>PENDING_CREATION</code>, <code>PENDING_UPDATE</code>, <code>PENDING_DELETION</code>,<code>FAILED_CREATION</code>, <code>FAILED_UPDATE</code>, <code>FAILED_DELETION</code>, and <code>DELETED</code>.. ',
-        }),
-    ).exactOptional(),
-    AccountId: CustomerAccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Account Id you use to create the VPC Ingress Connection resource.',
-        }),
-    ).exactOptional(),
-    DomainName: DomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The domain name associated with the VPC Ingress Connection resource.',
-        }),
-    ).exactOptional(),
-    IngressVpcConfiguration: IngressVpcConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifications for the customer’s VPC and related PrivateLink VPC endpoint that are used to associate with the VPC Ingress Connection resource.',
-        }),
-    ).exactOptional(),
-    CreatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The time when the VPC Ingress Connection was created. It's in the Unix time stamp format.</p> <ul> <li> <p> Type: Timestamp </p> </li> <li> <p> Required: Yes </p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    DeletedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The time when the App Runner service was deleted. It's in the Unix time stamp format.</p> <ul> <li> <p> Type: Timestamp </p> </li> <li> <p> Required: No </p> </li> </ul>",
-        }),
-    ).exactOptional(),
+    VpcIngressConnectionArn: AppRunnerResourceArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the VPC Ingress Connection. ',
+    }),
+    VpcIngressConnectionName: VpcIngressConnectionNameSchema.exactOptional().openapi({
+      description: 'The customer-provided VPC Ingress Connection name.',
+    }),
+    ServiceArn: AppRunnerResourceArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the service associated with the VPC Ingress Connection. ',
+    }),
+    Status: VpcIngressConnectionStatusSchema.exactOptional().openapi({
+      description:
+        'The current status of the VPC Ingress Connection. The VPC Ingress Connection displays one of the following statuses: <code>AVAILABLE</code>, <code>PENDING_CREATION</code>, <code>PENDING_UPDATE</code>, <code>PENDING_DELETION</code>,<code>FAILED_CREATION</code>, <code>FAILED_UPDATE</code>, <code>FAILED_DELETION</code>, and <code>DELETED</code>.. ',
+    }),
+    AccountId: CustomerAccountIdSchema.exactOptional().openapi({
+      description: 'The Account Id you use to create the VPC Ingress Connection resource.',
+    }),
+    DomainName: DomainNameSchema.exactOptional().openapi({
+      description: 'The domain name associated with the VPC Ingress Connection resource.',
+    }),
+    IngressVpcConfiguration: IngressVpcConfigurationSchema.exactOptional().openapi({
+      description:
+        'Specifications for the customer’s VPC and related PrivateLink VPC endpoint that are used to associate with the VPC Ingress Connection resource.',
+    }),
+    CreatedAt: TimestampSchema.exactOptional().openapi({
+      description:
+        "<p>The time when the VPC Ingress Connection was created. It's in the Unix time stamp format.</p> <ul> <li> <p> Type: Timestamp </p> </li> <li> <p> Required: Yes </p> </li> </ul>",
+    }),
+    DeletedAt: TimestampSchema.exactOptional().openapi({
+      description:
+        "<p>The time when the App Runner service was deleted. It's in the Unix time stamp format.</p> <ul> <li> <p> Type: Timestamp </p> </li> <li> <p> Required: No </p> </li> </ul>",
+    }),
   })
   .openapi({
     description:
@@ -1725,52 +1206,32 @@ const VpcIngressConnectionSchema = z
 
 const CreateVpcIngressConnectionResponseSchema = z
   .object({
-    VpcIngressConnection: VpcIngressConnectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A description of the App Runner VPC Ingress Connection resource that's created by this request. ",
-        }),
-    ),
+    VpcIngressConnection: VpcIngressConnectionSchema.openapi({
+      description:
+        "A description of the App Runner VPC Ingress Connection resource that's created by this request. ",
+    }),
   })
   .openapi({ required: ['VpcIngressConnection'] })
   .openapi('CreateVpcIngressConnectionResponse')
 
 const CreateVpcIngressConnectionRequestSchema = z
   .object({
-    ServiceArn: AppRunnerResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) for this App Runner service that is used to create the VPC Ingress Connection resource.',
-        }),
-    ),
-    VpcIngressConnectionName: VpcIngressConnectionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A name for the VPC Ingress Connection resource. It must be unique across all the active VPC Ingress Connections in your Amazon Web Services account in the Amazon Web Services Region. ',
-        }),
-    ),
-    IngressVpcConfiguration: IngressVpcConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifications for the customer’s Amazon VPC and the related Amazon Web Services PrivateLink VPC endpoint that are used to create the VPC Ingress Connection resource.',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional list of metadata items that you can associate with the VPC Ingress Connection resource. A tag is a key-value pair.',
-        }),
-    ).exactOptional(),
+    ServiceArn: AppRunnerResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) for this App Runner service that is used to create the VPC Ingress Connection resource.',
+    }),
+    VpcIngressConnectionName: VpcIngressConnectionNameSchema.openapi({
+      description:
+        'A name for the VPC Ingress Connection resource. It must be unique across all the active VPC Ingress Connections in your Amazon Web Services account in the Amazon Web Services Region. ',
+    }),
+    IngressVpcConfiguration: IngressVpcConfigurationSchema.openapi({
+      description:
+        'Specifications for the customer’s Amazon VPC and the related Amazon Web Services PrivateLink VPC endpoint that are used to create the VPC Ingress Connection resource.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'An optional list of metadata items that you can associate with the VPC Ingress Connection resource. A tag is a key-value pair.',
+    }),
   })
   .openapi({
     required: ['ServiceArn', 'VpcIngressConnectionName', 'IngressVpcConfiguration'],
@@ -1780,28 +1241,20 @@ const CreateVpcIngressConnectionRequestSchema = z
 
 const DeleteAutoScalingConfigurationResponseSchema = z
   .object({
-    AutoScalingConfiguration: AutoScalingConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A description of the App Runner auto scaling configuration that this request just deleted.',
-        }),
-    ),
+    AutoScalingConfiguration: AutoScalingConfigurationSchema.openapi({
+      description:
+        'A description of the App Runner auto scaling configuration that this request just deleted.',
+    }),
   })
   .openapi({ required: ['AutoScalingConfiguration'] })
   .openapi('DeleteAutoScalingConfigurationResponse')
 
 const DeleteAutoScalingConfigurationRequestSchema = z
   .object({
-    AutoScalingConfigurationArn: AppRunnerResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The Amazon Resource Name (ARN) of the App Runner auto scaling configuration that you want to delete.</p> <p>The ARN can be a full auto scaling configuration ARN, or a partial ARN ending with either <code>.../<i>name</i> </code> or <code>.../<i>name</i>/<i>revision</i> </code>. If a revision isn't specified, the latest active revision is deleted.</p>",
-        }),
-    ),
+    AutoScalingConfigurationArn: AppRunnerResourceArnSchema.openapi({
+      description:
+        "<p>The Amazon Resource Name (ARN) of the App Runner auto scaling configuration that you want to delete.</p> <p>The ARN can be a full auto scaling configuration ARN, or a partial ARN ending with either <code>.../<i>name</i> </code> or <code>.../<i>name</i>/<i>revision</i> </code>. If a revision isn't specified, the latest active revision is deleted.</p>",
+    }),
   })
   .openapi({
     required: ['AutoScalingConfigurationArn'],
@@ -1813,55 +1266,39 @@ const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundExcepti
 
 const DeleteConnectionResponseSchema = z
   .object({
-    Connection: ConnectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A description of the App Runner connection that this request just deleted.',
-        }),
-    ).exactOptional(),
+    Connection: ConnectionSchema.exactOptional().openapi({
+      description: 'A description of the App Runner connection that this request just deleted.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteConnectionResponse')
 
 const DeleteConnectionRequestSchema = z
   .object({
-    ConnectionArn: AppRunnerResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the App Runner connection that you want to delete.',
-        }),
-    ),
+    ConnectionArn: AppRunnerResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the App Runner connection that you want to delete.',
+    }),
   })
   .openapi({ required: ['ConnectionArn'], title: 'DeleteConnectionRequest' })
   .openapi('DeleteConnectionRequest')
 
 const DeleteObservabilityConfigurationResponseSchema = z
   .object({
-    ObservabilityConfiguration: ObservabilityConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A description of the App Runner observability configuration that this request just deleted.',
-        }),
-    ),
+    ObservabilityConfiguration: ObservabilityConfigurationSchema.openapi({
+      description:
+        'A description of the App Runner observability configuration that this request just deleted.',
+    }),
   })
   .openapi({ required: ['ObservabilityConfiguration'] })
   .openapi('DeleteObservabilityConfigurationResponse')
 
 const DeleteObservabilityConfigurationRequestSchema = z
   .object({
-    ObservabilityConfigurationArn: AppRunnerResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The Amazon Resource Name (ARN) of the App Runner observability configuration that you want to delete.</p> <p>The ARN can be a full observability configuration ARN, or a partial ARN ending with either <code>.../<i>name</i> </code> or <code>.../<i>name</i>/<i>revision</i> </code>. If a revision isn't specified, the latest active revision is deleted.</p>",
-        }),
-    ),
+    ObservabilityConfigurationArn: AppRunnerResourceArnSchema.openapi({
+      description:
+        "<p>The Amazon Resource Name (ARN) of the App Runner observability configuration that you want to delete.</p> <p>The ARN can be a full observability configuration ARN, or a partial ARN ending with either <code>.../<i>name</i> </code> or <code>.../<i>name</i>/<i>revision</i> </code>. If a revision isn't specified, the latest active revision is deleted.</p>",
+    }),
   })
   .openapi({
     required: ['ObservabilityConfigurationArn'],
@@ -1871,119 +1308,82 @@ const DeleteObservabilityConfigurationRequestSchema = z
 
 const DeleteServiceResponseSchema = z
   .object({
-    Service: ServiceSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A description of the App Runner service that this request just deleted.',
-        }),
-    ),
-    OperationId: UUIDSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The unique ID of the asynchronous operation that this request started. You can use it combined with the <a>ListOperations</a> call to track the operation's progress.",
-        }),
-    ),
+    Service: ServiceSchema.openapi({
+      description: 'A description of the App Runner service that this request just deleted.',
+    }),
+    OperationId: UUIDSchema.openapi({
+      description:
+        "The unique ID of the asynchronous operation that this request started. You can use it combined with the <a>ListOperations</a> call to track the operation's progress.",
+    }),
   })
   .openapi({ required: ['Service', 'OperationId'] })
   .openapi('DeleteServiceResponse')
 
 const DeleteServiceRequestSchema = z
   .object({
-    ServiceArn: AppRunnerResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the App Runner service that you want to delete.',
-        }),
-    ),
+    ServiceArn: AppRunnerResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the App Runner service that you want to delete.',
+    }),
   })
   .openapi({ required: ['ServiceArn'], title: 'DeleteServiceRequest' })
   .openapi('DeleteServiceRequest')
 
 const DeleteVpcConnectorResponseSchema = z
   .object({
-    VpcConnector: VpcConnectorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A description of the App Runner VPC connector that this request just deleted.',
-        }),
-    ),
+    VpcConnector: VpcConnectorSchema.openapi({
+      description: 'A description of the App Runner VPC connector that this request just deleted.',
+    }),
   })
   .openapi({ required: ['VpcConnector'] })
   .openapi('DeleteVpcConnectorResponse')
 
 const DeleteVpcConnectorRequestSchema = z
   .object({
-    VpcConnectorArn: AppRunnerResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the App Runner VPC connector that you want to delete.</p> <p>The ARN must be a full VPC connector ARN.</p>',
-        }),
-    ),
+    VpcConnectorArn: AppRunnerResourceArnSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the App Runner VPC connector that you want to delete.</p> <p>The ARN must be a full VPC connector ARN.</p>',
+    }),
   })
   .openapi({ required: ['VpcConnectorArn'], title: 'DeleteVpcConnectorRequest' })
   .openapi('DeleteVpcConnectorRequest')
 
 const DeleteVpcIngressConnectionResponseSchema = z
   .object({
-    VpcIngressConnection: VpcIngressConnectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A description of the App Runner VPC Ingress Connection that this request just deleted.',
-        }),
-    ),
+    VpcIngressConnection: VpcIngressConnectionSchema.openapi({
+      description:
+        'A description of the App Runner VPC Ingress Connection that this request just deleted.',
+    }),
   })
   .openapi({ required: ['VpcIngressConnection'] })
   .openapi('DeleteVpcIngressConnectionResponse')
 
 const DeleteVpcIngressConnectionRequestSchema = z
   .object({
-    VpcIngressConnectionArn: AppRunnerResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the App Runner VPC Ingress Connection that you want to delete.',
-        }),
-    ),
+    VpcIngressConnectionArn: AppRunnerResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the App Runner VPC Ingress Connection that you want to delete.',
+    }),
   })
   .openapi({ required: ['VpcIngressConnectionArn'], title: 'DeleteVpcIngressConnectionRequest' })
   .openapi('DeleteVpcIngressConnectionRequest')
 
 const DescribeAutoScalingConfigurationResponseSchema = z
   .object({
-    AutoScalingConfiguration: AutoScalingConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A full description of the App Runner auto scaling configuration that you specified in this request.',
-        }),
-    ),
+    AutoScalingConfiguration: AutoScalingConfigurationSchema.openapi({
+      description:
+        'A full description of the App Runner auto scaling configuration that you specified in this request.',
+    }),
   })
   .openapi({ required: ['AutoScalingConfiguration'] })
   .openapi('DescribeAutoScalingConfigurationResponse')
 
 const DescribeAutoScalingConfigurationRequestSchema = z
   .object({
-    AutoScalingConfigurationArn: AppRunnerResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The Amazon Resource Name (ARN) of the App Runner auto scaling configuration that you want a description for.</p> <p>The ARN can be a full auto scaling configuration ARN, or a partial ARN ending with either <code>.../<i>name</i> </code> or <code>.../<i>name</i>/<i>revision</i> </code>. If a revision isn't specified, the latest active revision is described.</p>",
-        }),
-    ),
+    AutoScalingConfigurationArn: AppRunnerResourceArnSchema.openapi({
+      description:
+        "<p>The Amazon Resource Name (ARN) of the App Runner auto scaling configuration that you want a description for.</p> <p>The ARN can be a full auto scaling configuration ARN, or a partial ARN ending with either <code>.../<i>name</i> </code> or <code>.../<i>name</i>/<i>revision</i> </code>. If a revision isn't specified, the latest active revision is described.</p>",
+    }),
   })
   .openapi({
     required: ['AutoScalingConfigurationArn'],
@@ -1995,43 +1395,25 @@ const CustomDomainListSchema = z.array(CustomDomainSchema).openapi('CustomDomain
 
 const DescribeCustomDomainsResponseSchema = z
   .object({
-    DNSTarget: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The App Runner subdomain of the App Runner service. The associated custom domain names are mapped to this target name.',
-        }),
-    ),
-    ServiceArn: AppRunnerResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the App Runner service whose associated custom domain names you want to describe.',
-        }),
-    ),
-    CustomDomains: CustomDomainListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of descriptions of custom domain names that are associated with the service. In a paginated request, the request returns up to <code>MaxResults</code> records per call.',
-        }),
-    ),
-    VpcDNSTargets: VpcDNSTargetListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'DNS Target records for the custom domains of this Amazon VPC. ' }),
-    ),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The token that you can pass in a subsequent request to get the next result page. It's returned in a paginated request.",
-        }),
-    ).exactOptional(),
+    DNSTarget: StringSchema.openapi({
+      description:
+        'The App Runner subdomain of the App Runner service. The associated custom domain names are mapped to this target name.',
+    }),
+    ServiceArn: AppRunnerResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the App Runner service whose associated custom domain names you want to describe.',
+    }),
+    CustomDomains: CustomDomainListSchema.openapi({
+      description:
+        'A list of descriptions of custom domain names that are associated with the service. In a paginated request, the request returns up to <code>MaxResults</code> records per call.',
+    }),
+    VpcDNSTargets: VpcDNSTargetListSchema.openapi({
+      description: 'DNS Target records for the custom domains of this Amazon VPC. ',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        "The token that you can pass in a subsequent request to get the next result page. It's returned in a paginated request.",
+    }),
   })
   .openapi({ required: ['DNSTarget', 'ServiceArn', 'CustomDomains', 'VpcDNSTargets'] })
   .openapi('DescribeCustomDomainsResponse')
@@ -2044,58 +1426,38 @@ const DescribeCustomDomainsMaxResultsSchema = z
 
 const DescribeCustomDomainsRequestSchema = z
   .object({
-    ServiceArn: AppRunnerResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the App Runner service that you want associated custom domain names to be described for.',
-        }),
-    ),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A token from a previous result page. It's used for a paginated request. The request retrieves the next result page. All other parameter values must be identical to the ones that are specified in the initial request.</p> <p>If you don't specify <code>NextToken</code>, the request retrieves the first result page.</p>",
-        }),
-    ).exactOptional(),
-    MaxResults: DescribeCustomDomainsMaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The maximum number of results that each response (result page) can include. It's used for a paginated request.</p> <p>If you don't specify <code>MaxResults</code>, the request retrieves all available results in a single response.</p>",
-        }),
-    ).exactOptional(),
+    ServiceArn: AppRunnerResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the App Runner service that you want associated custom domain names to be described for.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        "<p>A token from a previous result page. It's used for a paginated request. The request retrieves the next result page. All other parameter values must be identical to the ones that are specified in the initial request.</p> <p>If you don't specify <code>NextToken</code>, the request retrieves the first result page.</p>",
+    }),
+    MaxResults: DescribeCustomDomainsMaxResultsSchema.exactOptional().openapi({
+      description:
+        "<p>The maximum number of results that each response (result page) can include. It's used for a paginated request.</p> <p>If you don't specify <code>MaxResults</code>, the request retrieves all available results in a single response.</p>",
+    }),
   })
   .openapi({ required: ['ServiceArn'], title: 'DescribeCustomDomainsRequest' })
   .openapi('DescribeCustomDomainsRequest')
 
 const DescribeObservabilityConfigurationResponseSchema = z
   .object({
-    ObservabilityConfiguration: ObservabilityConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A full description of the App Runner observability configuration that you specified in this request.',
-        }),
-    ),
+    ObservabilityConfiguration: ObservabilityConfigurationSchema.openapi({
+      description:
+        'A full description of the App Runner observability configuration that you specified in this request.',
+    }),
   })
   .openapi({ required: ['ObservabilityConfiguration'] })
   .openapi('DescribeObservabilityConfigurationResponse')
 
 const DescribeObservabilityConfigurationRequestSchema = z
   .object({
-    ObservabilityConfigurationArn: AppRunnerResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The Amazon Resource Name (ARN) of the App Runner observability configuration that you want a description for.</p> <p>The ARN can be a full observability configuration ARN, or a partial ARN ending with either <code>.../<i>name</i> </code> or <code>.../<i>name</i>/<i>revision</i> </code>. If a revision isn't specified, the latest active revision is described.</p>",
-        }),
-    ),
+    ObservabilityConfigurationArn: AppRunnerResourceArnSchema.openapi({
+      description:
+        "<p>The Amazon Resource Name (ARN) of the App Runner observability configuration that you want a description for.</p> <p>The ARN can be a full observability configuration ARN, or a partial ARN ending with either <code>.../<i>name</i> </code> or <code>.../<i>name</i>/<i>revision</i> </code>. If a revision isn't specified, the latest active revision is described.</p>",
+    }),
   })
   .openapi({
     required: ['ObservabilityConfigurationArn'],
@@ -2105,137 +1467,93 @@ const DescribeObservabilityConfigurationRequestSchema = z
 
 const DescribeServiceResponseSchema = z
   .object({
-    Service: ServiceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A full description of the App Runner service that you specified in this request.',
-        }),
-    ),
+    Service: ServiceSchema.openapi({
+      description:
+        'A full description of the App Runner service that you specified in this request.',
+    }),
   })
   .openapi({ required: ['Service'] })
   .openapi('DescribeServiceResponse')
 
 const DescribeServiceRequestSchema = z
   .object({
-    ServiceArn: AppRunnerResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the App Runner service that you want a description for.',
-        }),
-    ),
+    ServiceArn: AppRunnerResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the App Runner service that you want a description for.',
+    }),
   })
   .openapi({ required: ['ServiceArn'], title: 'DescribeServiceRequest' })
   .openapi('DescribeServiceRequest')
 
 const DescribeVpcConnectorResponseSchema = z
   .object({
-    VpcConnector: VpcConnectorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A description of the App Runner VPC connector that you specified in this request.',
-        }),
-    ),
+    VpcConnector: VpcConnectorSchema.openapi({
+      description:
+        'A description of the App Runner VPC connector that you specified in this request.',
+    }),
   })
   .openapi({ required: ['VpcConnector'] })
   .openapi('DescribeVpcConnectorResponse')
 
 const DescribeVpcConnectorRequestSchema = z
   .object({
-    VpcConnectorArn: AppRunnerResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the App Runner VPC connector that you want a description for.</p> <p>The ARN must be a full VPC connector ARN.</p>',
-        }),
-    ),
+    VpcConnectorArn: AppRunnerResourceArnSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the App Runner VPC connector that you want a description for.</p> <p>The ARN must be a full VPC connector ARN.</p>',
+    }),
   })
   .openapi({ required: ['VpcConnectorArn'], title: 'DescribeVpcConnectorRequest' })
   .openapi('DescribeVpcConnectorRequest')
 
 const DescribeVpcIngressConnectionResponseSchema = z
   .object({
-    VpcIngressConnection: VpcIngressConnectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A description of the App Runner VPC Ingress Connection that you specified in this request.',
-        }),
-    ),
+    VpcIngressConnection: VpcIngressConnectionSchema.openapi({
+      description:
+        'A description of the App Runner VPC Ingress Connection that you specified in this request.',
+    }),
   })
   .openapi({ required: ['VpcIngressConnection'] })
   .openapi('DescribeVpcIngressConnectionResponse')
 
 const DescribeVpcIngressConnectionRequestSchema = z
   .object({
-    VpcIngressConnectionArn: AppRunnerResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the App Runner VPC Ingress Connection that you want a description for.',
-        }),
-    ),
+    VpcIngressConnectionArn: AppRunnerResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the App Runner VPC Ingress Connection that you want a description for.',
+    }),
   })
   .openapi({ required: ['VpcIngressConnectionArn'], title: 'DescribeVpcIngressConnectionRequest' })
   .openapi('DescribeVpcIngressConnectionRequest')
 
 const DisassociateCustomDomainResponseSchema = z
   .object({
-    DNSTarget: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The App Runner subdomain of the App Runner service. The disassociated custom domain name was mapped to this target name.',
-        }),
-    ),
-    ServiceArn: AppRunnerResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the App Runner service that a custom domain name is disassociated from.',
-        }),
-    ),
-    CustomDomain: CustomDomainSchema.and(
-      z
-        .any()
-        .openapi({ description: "A description of the domain name that's being disassociated." }),
-    ),
-    VpcDNSTargets: VpcDNSTargetListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'DNS Target records for the custom domains of this Amazon VPC. ' }),
-    ),
+    DNSTarget: StringSchema.openapi({
+      description:
+        'The App Runner subdomain of the App Runner service. The disassociated custom domain name was mapped to this target name.',
+    }),
+    ServiceArn: AppRunnerResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the App Runner service that a custom domain name is disassociated from.',
+    }),
+    CustomDomain: CustomDomainSchema.openapi({
+      description: "A description of the domain name that's being disassociated.",
+    }),
+    VpcDNSTargets: VpcDNSTargetListSchema.openapi({
+      description: 'DNS Target records for the custom domains of this Amazon VPC. ',
+    }),
   })
   .openapi({ required: ['DNSTarget', 'ServiceArn', 'CustomDomain', 'VpcDNSTargets'] })
   .openapi('DisassociateCustomDomainResponse')
 
 const DisassociateCustomDomainRequestSchema = z
   .object({
-    ServiceArn: AppRunnerResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the App Runner service that you want to disassociate a custom domain name from.',
-        }),
-    ),
-    DomainName: DomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The domain name that you want to disassociate from the App Runner service.',
-        }),
-    ),
+    ServiceArn: AppRunnerResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the App Runner service that you want to disassociate a custom domain name from.',
+    }),
+    DomainName: DomainNameSchema.openapi({
+      description: 'The domain name that you want to disassociate from the App Runner service.',
+    }),
   })
   .openapi({ required: ['ServiceArn', 'DomainName'], title: 'DisassociateCustomDomainRequest' })
   .openapi('DisassociateCustomDomainRequest')
@@ -2248,22 +1566,14 @@ const NextTokenSchema = z.string().regex(/.*/).min(1).max(1024).openapi('NextTok
 
 const ListAutoScalingConfigurationsResponseSchema = z
   .object({
-    AutoScalingConfigurationSummaryList: AutoScalingConfigurationSummaryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of summary information records for auto scaling configurations. In a paginated request, the request returns up to <code>MaxResults</code> records for each call.',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The token that you can pass in a subsequent request to get the next result page. It's returned in a paginated request.",
-        }),
-    ).exactOptional(),
+    AutoScalingConfigurationSummaryList: AutoScalingConfigurationSummaryListSchema.openapi({
+      description:
+        'A list of summary information records for auto scaling configurations. In a paginated request, the request returns up to <code>MaxResults</code> records for each call.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "The token that you can pass in a subsequent request to get the next result page. It's returned in a paginated request.",
+    }),
   })
   .openapi({ required: ['AutoScalingConfigurationSummaryList'] })
   .openapi('ListAutoScalingConfigurationsResponse')
@@ -2272,68 +1582,44 @@ const MaxResultsSchema = z.int().min(1).max(100).openapi('MaxResults')
 
 const ListAutoScalingConfigurationsRequestSchema = z
   .object({
-    AutoScalingConfigurationName: AutoScalingConfigurationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the App Runner auto scaling configuration that you want to list. If specified, App Runner lists revisions that share this name. If not specified, App Runner returns revisions of all active configurations.',
-        }),
-    ).exactOptional(),
-    LatestOnly: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Set to <code>true</code> to list only the latest revision for each requested configuration name.</p> <p>Set to <code>false</code> to list all revisions for each requested configuration name.</p> <p>Default: <code>true</code> </p>',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The maximum number of results to include in each response (result page). It's used for a paginated request.</p> <p>If you don't specify <code>MaxResults</code>, the request retrieves all available results in a single response.</p>",
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A token from a previous result page. It's used for a paginated request. The request retrieves the next result page. All other parameter values must be identical to the ones that are specified in the initial request.</p> <p>If you don't specify <code>NextToken</code>, the request retrieves the first result page.</p>",
-        }),
-    ).exactOptional(),
+    AutoScalingConfigurationName: AutoScalingConfigurationNameSchema.exactOptional().openapi({
+      description:
+        'The name of the App Runner auto scaling configuration that you want to list. If specified, App Runner lists revisions that share this name. If not specified, App Runner returns revisions of all active configurations.',
+    }),
+    LatestOnly: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Set to <code>true</code> to list only the latest revision for each requested configuration name.</p> <p>Set to <code>false</code> to list all revisions for each requested configuration name.</p> <p>Default: <code>true</code> </p>',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        "<p>The maximum number of results to include in each response (result page). It's used for a paginated request.</p> <p>If you don't specify <code>MaxResults</code>, the request retrieves all available results in a single response.</p>",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "<p>A token from a previous result page. It's used for a paginated request. The request retrieves the next result page. All other parameter values must be identical to the ones that are specified in the initial request.</p> <p>If you don't specify <code>NextToken</code>, the request retrieves the first result page.</p>",
+    }),
   })
   .openapi({ title: 'ListAutoScalingConfigurationsRequest', required: [] })
   .openapi('ListAutoScalingConfigurationsRequest')
 
 const ConnectionSummarySchema = z
   .object({
-    ConnectionName: ConnectionNameSchema.and(
-      z.any().openapi({ description: 'The customer-provided connection name.' }),
-    ).exactOptional(),
-    ConnectionArn: AppRunnerResourceArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of this connection.' }),
-    ).exactOptional(),
-    ProviderType: ProviderTypeSchema.and(
-      z.any().openapi({ description: 'The source repository provider.' }),
-    ).exactOptional(),
-    Status: ConnectionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The current state of the App Runner connection. When the state is <code>AVAILABLE</code>, you can use the connection to create an App Runner service.',
-        }),
-    ).exactOptional(),
-    CreatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The App Runner connection creation time, expressed as a Unix time stamp.',
-        }),
-    ).exactOptional(),
+    ConnectionName: ConnectionNameSchema.exactOptional().openapi({
+      description: 'The customer-provided connection name.',
+    }),
+    ConnectionArn: AppRunnerResourceArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of this connection.',
+    }),
+    ProviderType: ProviderTypeSchema.exactOptional().openapi({
+      description: 'The source repository provider.',
+    }),
+    Status: ConnectionStatusSchema.exactOptional().openapi({
+      description:
+        'The current state of the App Runner connection. When the state is <code>AVAILABLE</code>, you can use the connection to create an App Runner service.',
+    }),
+    CreatedAt: TimestampSchema.exactOptional().openapi({
+      description: 'The App Runner connection creation time, expressed as a Unix time stamp.',
+    }),
   })
   .openapi({
     description: 'Provides summary information about an App Runner connection resource.',
@@ -2347,81 +1633,49 @@ const ConnectionSummaryListSchema = z
 
 const ListConnectionsResponseSchema = z
   .object({
-    ConnectionSummaryList: ConnectionSummaryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of summary information records for connections. In a paginated request, the request returns up to <code>MaxResults</code> records for each call.',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token that you can pass in a subsequent request to get the next result page. Returned in a paginated request.',
-        }),
-    ).exactOptional(),
+    ConnectionSummaryList: ConnectionSummaryListSchema.openapi({
+      description:
+        'A list of summary information records for connections. In a paginated request, the request returns up to <code>MaxResults</code> records for each call.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token that you can pass in a subsequent request to get the next result page. Returned in a paginated request.',
+    }),
   })
   .openapi({ required: ['ConnectionSummaryList'] })
   .openapi('ListConnectionsResponse')
 
 const ListConnectionsRequestSchema = z
   .object({
-    ConnectionName: ConnectionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If specified, only this connection is returned. If not specified, the result isn't filtered by name.",
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The maximum number of results to include in each response (result page). Used for a paginated request.</p> <p>If you don't specify <code>MaxResults</code>, the request retrieves all available results in a single response.</p>",
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A token from a previous result page. Used for a paginated request. The request retrieves the next result page. All other parameter values must be identical to the ones specified in the initial request.</p> <p>If you don't specify <code>NextToken</code>, the request retrieves the first result page.</p>",
-        }),
-    ).exactOptional(),
+    ConnectionName: ConnectionNameSchema.exactOptional().openapi({
+      description:
+        "If specified, only this connection is returned. If not specified, the result isn't filtered by name.",
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        "<p>The maximum number of results to include in each response (result page). Used for a paginated request.</p> <p>If you don't specify <code>MaxResults</code>, the request retrieves all available results in a single response.</p>",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "<p>A token from a previous result page. Used for a paginated request. The request retrieves the next result page. All other parameter values must be identical to the ones specified in the initial request.</p> <p>If you don't specify <code>NextToken</code>, the request retrieves the first result page.</p>",
+    }),
   })
   .openapi({ title: 'ListConnectionsRequest', required: [] })
   .openapi('ListConnectionsRequest')
 
 const ObservabilityConfigurationSummarySchema = z
   .object({
-    ObservabilityConfigurationArn: AppRunnerResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of this observability configuration.',
-        }),
-    ).exactOptional(),
-    ObservabilityConfigurationName: ObservabilityConfigurationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The customer-provided observability configuration name. It can be used in multiple revisions of a configuration.',
-        }),
-    ).exactOptional(),
-    ObservabilityConfigurationRevision: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The revision of this observability configuration. It\'s unique among all the active configurations (<code>"Status": "ACTIVE"</code>) that share the same <code>ObservabilityConfigurationName</code>.',
-        }),
-    ).exactOptional(),
+    ObservabilityConfigurationArn: AppRunnerResourceArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of this observability configuration.',
+    }),
+    ObservabilityConfigurationName: ObservabilityConfigurationNameSchema.exactOptional().openapi({
+      description:
+        'The customer-provided observability configuration name. It can be used in multiple revisions of a configuration.',
+    }),
+    ObservabilityConfigurationRevision: IntegerSchema.exactOptional().openapi({
+      description:
+        'The revision of this observability configuration. It\'s unique among all the active configurations (<code>"Status": "ACTIVE"</code>) that share the same <code>ObservabilityConfigurationName</code>.',
+    }),
   })
   .openapi({
     description:
@@ -2436,60 +1690,36 @@ const ObservabilityConfigurationSummaryListSchema = z
 
 const ListObservabilityConfigurationsResponseSchema = z
   .object({
-    ObservabilityConfigurationSummaryList: ObservabilityConfigurationSummaryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of summary information records for observability configurations. In a paginated request, the request returns up to <code>MaxResults</code> records for each call.',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The token that you can pass in a subsequent request to get the next result page. It's returned in a paginated request.",
-        }),
-    ).exactOptional(),
+    ObservabilityConfigurationSummaryList: ObservabilityConfigurationSummaryListSchema.openapi({
+      description:
+        'A list of summary information records for observability configurations. In a paginated request, the request returns up to <code>MaxResults</code> records for each call.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "The token that you can pass in a subsequent request to get the next result page. It's returned in a paginated request.",
+    }),
   })
   .openapi({ required: ['ObservabilityConfigurationSummaryList'] })
   .openapi('ListObservabilityConfigurationsResponse')
 
 const ListObservabilityConfigurationsRequestSchema = z
   .object({
-    ObservabilityConfigurationName: ObservabilityConfigurationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the App Runner observability configuration that you want to list. If specified, App Runner lists revisions that share this name. If not specified, App Runner returns revisions of all active configurations.',
-        }),
-    ).exactOptional(),
-    LatestOnly: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Set to <code>true</code> to list only the latest revision for each requested configuration name.</p> <p>Set to <code>false</code> to list all revisions for each requested configuration name.</p> <p>Default: <code>true</code> </p>',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The maximum number of results to include in each response (result page). It's used for a paginated request.</p> <p>If you don't specify <code>MaxResults</code>, the request retrieves all available results in a single response.</p>",
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A token from a previous result page. It's used for a paginated request. The request retrieves the next result page. All other parameter values must be identical to the ones that are specified in the initial request.</p> <p>If you don't specify <code>NextToken</code>, the request retrieves the first result page.</p>",
-        }),
-    ).exactOptional(),
+    ObservabilityConfigurationName: ObservabilityConfigurationNameSchema.exactOptional().openapi({
+      description:
+        'The name of the App Runner observability configuration that you want to list. If specified, App Runner lists revisions that share this name. If not specified, App Runner returns revisions of all active configurations.',
+    }),
+    LatestOnly: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Set to <code>true</code> to list only the latest revision for each requested configuration name.</p> <p>Set to <code>false</code> to list all revisions for each requested configuration name.</p> <p>Default: <code>true</code> </p>',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        "<p>The maximum number of results to include in each response (result page). It's used for a paginated request.</p> <p>If you don't specify <code>MaxResults</code>, the request retrieves all available results in a single response.</p>",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "<p>A token from a previous result page. It's used for a paginated request. The request retrieves the next result page. All other parameter values must be identical to the ones that are specified in the initial request.</p> <p>If you don't specify <code>NextToken</code>, the request retrieves the first result page.</p>",
+    }),
   })
   .openapi({ title: 'ListObservabilityConfigurationsRequest', required: [] })
   .openapi('ListObservabilityConfigurationsRequest')
@@ -2519,54 +1749,30 @@ const OperationStatusSchema = z
 
 const OperationSummarySchema = z
   .object({
-    Id: UUIDSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A unique ID of this operation. It's unique in the scope of the App Runner service.",
-        }),
-    ).exactOptional(),
-    Type: OperationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of operation. It indicates a specific action that occured.',
-        }),
-    ).exactOptional(),
-    Status: OperationStatusSchema.and(
-      z.any().openapi({ description: 'The current state of the operation.' }),
-    ).exactOptional(),
-    TargetArn: AppRunnerResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the resource that the operation acted on (for example, an App Runner service).',
-        }),
-    ).exactOptional(),
-    StartedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The time when the operation started. It's in the Unix time stamp format.",
-        }),
-    ).exactOptional(),
-    EndedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The time when the operation ended. It's in the Unix time stamp format.",
-        }),
-    ).exactOptional(),
-    UpdatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The time when the operation was last updated. It's in the Unix time stamp format.",
-        }),
-    ).exactOptional(),
+    Id: UUIDSchema.exactOptional().openapi({
+      description:
+        "A unique ID of this operation. It's unique in the scope of the App Runner service.",
+    }),
+    Type: OperationTypeSchema.exactOptional().openapi({
+      description: 'The type of operation. It indicates a specific action that occured.',
+    }),
+    Status: OperationStatusSchema.exactOptional().openapi({
+      description: 'The current state of the operation.',
+    }),
+    TargetArn: AppRunnerResourceArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the resource that the operation acted on (for example, an App Runner service).',
+    }),
+    StartedAt: TimestampSchema.exactOptional().openapi({
+      description: "The time when the operation started. It's in the Unix time stamp format.",
+    }),
+    EndedAt: TimestampSchema.exactOptional().openapi({
+      description: "The time when the operation ended. It's in the Unix time stamp format.",
+    }),
+    UpdatedAt: TimestampSchema.exactOptional().openapi({
+      description:
+        "The time when the operation was last updated. It's in the Unix time stamp format.",
+    }),
   })
   .openapi({
     description:
@@ -2579,22 +1785,14 @@ const OperationSummaryListSchema = z.array(OperationSummarySchema).openapi('Oper
 
 const ListOperationsResponseSchema = z
   .object({
-    OperationSummaryList: OperationSummaryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of operation summary information records. In a paginated request, the request returns up to <code>MaxResults</code> records for each call.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The token that you can pass in a subsequent request to get the next result page. It's returned in a paginated request.",
-        }),
-    ).exactOptional(),
+    OperationSummaryList: OperationSummaryListSchema.exactOptional().openapi({
+      description:
+        'A list of operation summary information records. In a paginated request, the request returns up to <code>MaxResults</code> records for each call.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        "The token that you can pass in a subsequent request to get the next result page. It's returned in a paginated request.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListOperationsResponse')
@@ -2603,82 +1801,50 @@ const ListOperationsMaxResultsSchema = z.int().min(1).max(20).openapi('ListOpera
 
 const ListOperationsRequestSchema = z
   .object({
-    ServiceArn: AppRunnerResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the App Runner service that you want a list of operations for.',
-        }),
-    ),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A token from a previous result page. It's used for a paginated request. The request retrieves the next result page. All other parameter values must be identical to the ones specified in the initial request.</p> <p>If you don't specify <code>NextToken</code>, the request retrieves the first result page.</p>",
-        }),
-    ).exactOptional(),
-    MaxResults: ListOperationsMaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The maximum number of results to include in each response (result page). It's used for a paginated request.</p> <p>If you don't specify <code>MaxResults</code>, the request retrieves all available results in a single response.</p>",
-        }),
-    ).exactOptional(),
+    ServiceArn: AppRunnerResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the App Runner service that you want a list of operations for.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        "<p>A token from a previous result page. It's used for a paginated request. The request retrieves the next result page. All other parameter values must be identical to the ones specified in the initial request.</p> <p>If you don't specify <code>NextToken</code>, the request retrieves the first result page.</p>",
+    }),
+    MaxResults: ListOperationsMaxResultsSchema.exactOptional().openapi({
+      description:
+        "<p>The maximum number of results to include in each response (result page). It's used for a paginated request.</p> <p>If you don't specify <code>MaxResults</code>, the request retrieves all available results in a single response.</p>",
+    }),
   })
   .openapi({ required: ['ServiceArn'], title: 'ListOperationsRequest' })
   .openapi('ListOperationsRequest')
 
 const ServiceSummarySchema = z
   .object({
-    ServiceName: ServiceNameSchema.and(
-      z.any().openapi({ description: 'The customer-provided service name.' }),
-    ).exactOptional(),
-    ServiceId: ServiceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An ID that App Runner generated for this service. It's unique within the Amazon Web Services Region.",
-        }),
-    ).exactOptional(),
-    ServiceArn: AppRunnerResourceArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of this service.' }),
-    ).exactOptional(),
-    ServiceUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A subdomain URL that App Runner generated for this service. You can use this URL to access your service web application.',
-        }),
-    ).exactOptional(),
-    CreatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The time when the App Runner service was created. It's in the Unix time stamp format.",
-        }),
-    ).exactOptional(),
-    UpdatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The time when the App Runner service was last updated. It's in theUnix time stamp format.",
-        }),
-    ).exactOptional(),
-    Status: ServiceStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The current state of the App Runner service. These particular values mean the following.</p> <ul> <li> <p> <code>CREATE_FAILED</code> – The service failed to create. Read the failure events and logs, change any parameters that need to be fixed, and retry the call to create the service.</p> <p>The failed service isn't usable, and still counts towards your service quota. When you're done analyzing the failure, delete the service.</p> </li> <li> <p> <code>DELETE_FAILED</code> – The service failed to delete and can't be successfully recovered. Retry the service deletion call to ensure that all related resources are removed.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
+    ServiceName: ServiceNameSchema.exactOptional().openapi({
+      description: 'The customer-provided service name.',
+    }),
+    ServiceId: ServiceIdSchema.exactOptional().openapi({
+      description:
+        "An ID that App Runner generated for this service. It's unique within the Amazon Web Services Region.",
+    }),
+    ServiceArn: AppRunnerResourceArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of this service.',
+    }),
+    ServiceUrl: StringSchema.exactOptional().openapi({
+      description:
+        'A subdomain URL that App Runner generated for this service. You can use this URL to access your service web application.',
+    }),
+    CreatedAt: TimestampSchema.exactOptional().openapi({
+      description:
+        "The time when the App Runner service was created. It's in the Unix time stamp format.",
+    }),
+    UpdatedAt: TimestampSchema.exactOptional().openapi({
+      description:
+        "The time when the App Runner service was last updated. It's in theUnix time stamp format.",
+    }),
+    Status: ServiceStatusSchema.exactOptional().openapi({
+      description:
+        "<p>The current state of the App Runner service. These particular values mean the following.</p> <ul> <li> <p> <code>CREATE_FAILED</code> – The service failed to create. Read the failure events and logs, change any parameters that need to be fixed, and retry the call to create the service.</p> <p>The failed service isn't usable, and still counts towards your service quota. When you're done analyzing the failure, delete the service.</p> </li> <li> <p> <code>DELETE_FAILED</code> – The service failed to delete and can't be successfully recovered. Retry the service deletion call to ensure that all related resources are removed.</p> </li> </ul>",
+    }),
   })
   .openapi({
     description:
@@ -2691,22 +1857,14 @@ const ServiceSummaryListSchema = z.array(ServiceSummarySchema).openapi('ServiceS
 
 const ListServicesResponseSchema = z
   .object({
-    ServiceSummaryList: ServiceSummaryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of service summary information records. In a paginated request, the request returns up to <code>MaxResults</code> records for each call.',
-        }),
-    ),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The token that you can pass in a subsequent request to get the next result page. It's returned in a paginated request.",
-        }),
-    ).exactOptional(),
+    ServiceSummaryList: ServiceSummaryListSchema.openapi({
+      description:
+        'A list of service summary information records. In a paginated request, the request returns up to <code>MaxResults</code> records for each call.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        "The token that you can pass in a subsequent request to get the next result page. It's returned in a paginated request.",
+    }),
   })
   .openapi({ required: ['ServiceSummaryList'] })
   .openapi('ListServicesResponse')
@@ -2715,49 +1873,33 @@ const ServiceMaxResultsSchema = z.int().min(1).max(20).openapi('ServiceMaxResult
 
 const ListServicesRequestSchema = z
   .object({
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A token from a previous result page. Used for a paginated request. The request retrieves the next result page. All other parameter values must be identical to the ones specified in the initial request.</p> <p>If you don't specify <code>NextToken</code>, the request retrieves the first result page.</p>",
-        }),
-    ).exactOptional(),
-    MaxResults: ServiceMaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The maximum number of results to include in each response (result page). It's used for a paginated request.</p> <p>If you don't specify <code>MaxResults</code>, the request retrieves all available results in a single response.</p>",
-        }),
-    ).exactOptional(),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        "<p>A token from a previous result page. Used for a paginated request. The request retrieves the next result page. All other parameter values must be identical to the ones specified in the initial request.</p> <p>If you don't specify <code>NextToken</code>, the request retrieves the first result page.</p>",
+    }),
+    MaxResults: ServiceMaxResultsSchema.exactOptional().openapi({
+      description:
+        "<p>The maximum number of results to include in each response (result page). It's used for a paginated request.</p> <p>If you don't specify <code>MaxResults</code>, the request retrieves all available results in a single response.</p>",
+    }),
   })
   .openapi({ title: 'ListServicesRequest', required: [] })
   .openapi('ListServicesRequest')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of the tag key-value pairs that are associated with the resource.',
-        }),
-    ).exactOptional(),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'A list of the tag key-value pairs that are associated with the resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
 
 const ListTagsForResourceRequestSchema = z
   .object({
-    ResourceArn: AppRunnerResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the resource that a tag list is requested for.</p> <p>It must be the ARN of an App Runner resource.</p>',
-        }),
-    ),
+    ResourceArn: AppRunnerResourceArnSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the resource that a tag list is requested for.</p> <p>It must be the ARN of an App Runner resource.</p>',
+    }),
   })
   .openapi({ required: ['ResourceArn'], title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
@@ -2766,63 +1908,41 @@ const VpcConnectorsSchema = z.array(VpcConnectorSchema).openapi('VpcConnectors')
 
 const ListVpcConnectorsResponseSchema = z
   .object({
-    VpcConnectors: VpcConnectorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of information records for VPC connectors. In a paginated request, the request returns up to <code>MaxResults</code> records for each call.',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The token that you can pass in a subsequent request to get the next result page. It's returned in a paginated request.",
-        }),
-    ).exactOptional(),
+    VpcConnectors: VpcConnectorsSchema.openapi({
+      description:
+        'A list of information records for VPC connectors. In a paginated request, the request returns up to <code>MaxResults</code> records for each call.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "The token that you can pass in a subsequent request to get the next result page. It's returned in a paginated request.",
+    }),
   })
   .openapi({ required: ['VpcConnectors'] })
   .openapi('ListVpcConnectorsResponse')
 
 const ListVpcConnectorsRequestSchema = z
   .object({
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The maximum number of results to include in each response (result page). It's used for a paginated request.</p> <p>If you don't specify <code>MaxResults</code>, the request retrieves all available results in a single response.</p>",
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A token from a previous result page. It's used for a paginated request. The request retrieves the next result page. All other parameter values must be identical to the ones that are specified in the initial request.</p> <p>If you don't specify <code>NextToken</code>, the request retrieves the first result page.</p>",
-        }),
-    ).exactOptional(),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        "<p>The maximum number of results to include in each response (result page). It's used for a paginated request.</p> <p>If you don't specify <code>MaxResults</code>, the request retrieves all available results in a single response.</p>",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "<p>A token from a previous result page. It's used for a paginated request. The request retrieves the next result page. All other parameter values must be identical to the ones that are specified in the initial request.</p> <p>If you don't specify <code>NextToken</code>, the request retrieves the first result page.</p>",
+    }),
   })
   .openapi({ title: 'ListVpcConnectorsRequest', required: [] })
   .openapi('ListVpcConnectorsRequest')
 
 const VpcIngressConnectionSummarySchema = z
   .object({
-    VpcIngressConnectionArn: AppRunnerResourceArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the VPC Ingress Connection. ' }),
-    ).exactOptional(),
-    ServiceArn: AppRunnerResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the service associated with the VPC Ingress Connection. ',
-        }),
-    ).exactOptional(),
+    VpcIngressConnectionArn: AppRunnerResourceArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the VPC Ingress Connection. ',
+    }),
+    ServiceArn: AppRunnerResourceArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the service associated with the VPC Ingress Connection. ',
+    }),
   })
   .openapi({
     description:
@@ -2837,36 +1957,26 @@ const VpcIngressConnectionSummaryListSchema = z
 
 const ListVpcIngressConnectionsResponseSchema = z
   .object({
-    VpcIngressConnectionSummaryList: VpcIngressConnectionSummaryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of summary information records for VPC Ingress Connections. In a paginated request, the request returns up to <code>MaxResults</code> records for each call.',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The token that you can pass in a subsequent request to get the next result page. It's returned in a paginated request.",
-        }),
-    ).exactOptional(),
+    VpcIngressConnectionSummaryList: VpcIngressConnectionSummaryListSchema.openapi({
+      description:
+        'A list of summary information records for VPC Ingress Connections. In a paginated request, the request returns up to <code>MaxResults</code> records for each call.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "The token that you can pass in a subsequent request to get the next result page. It's returned in a paginated request.",
+    }),
   })
   .openapi({ required: ['VpcIngressConnectionSummaryList'] })
   .openapi('ListVpcIngressConnectionsResponse')
 
 const ListVpcIngressConnectionsFilterSchema = z
   .object({
-    ServiceArn: AppRunnerResourceArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of a service to filter by. ' }),
-    ).exactOptional(),
-    VpcEndpointId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of a VPC Endpoint to filter by. ' }),
-    ).exactOptional(),
+    ServiceArn: AppRunnerResourceArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of a service to filter by. ',
+    }),
+    VpcEndpointId: StringSchema.exactOptional().openapi({
+      description: 'The ID of a VPC Endpoint to filter by. ',
+    }),
   })
   .openapi({
     description:
@@ -2877,288 +1987,188 @@ const ListVpcIngressConnectionsFilterSchema = z
 
 const ListVpcIngressConnectionsRequestSchema = z
   .object({
-    Filter: ListVpcIngressConnectionsFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The VPC Ingress Connections to be listed based on either the Service Arn or Vpc Endpoint Id, or both.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The maximum number of results to include in each response (result page). It's used for a paginated request.</p> <p>If you don't specify <code>MaxResults</code>, the request retrieves all available results in a single response.</p>",
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A token from a previous result page. It's used for a paginated request. The request retrieves the next result page. All other parameter values must be identical to the ones that are specified in the initial request.</p> <p>If you don't specify <code>NextToken</code>, the request retrieves the first result page.</p>",
-        }),
-    ).exactOptional(),
+    Filter: ListVpcIngressConnectionsFilterSchema.exactOptional().openapi({
+      description:
+        'The VPC Ingress Connections to be listed based on either the Service Arn or Vpc Endpoint Id, or both.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        "<p>The maximum number of results to include in each response (result page). It's used for a paginated request.</p> <p>If you don't specify <code>MaxResults</code>, the request retrieves all available results in a single response.</p>",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "<p>A token from a previous result page. It's used for a paginated request. The request retrieves the next result page. All other parameter values must be identical to the ones that are specified in the initial request.</p> <p>If you don't specify <code>NextToken</code>, the request retrieves the first result page.</p>",
+    }),
   })
   .openapi({ title: 'ListVpcIngressConnectionsRequest', required: [] })
   .openapi('ListVpcIngressConnectionsRequest')
 
 const PauseServiceResponseSchema = z
   .object({
-    Service: ServiceSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A description of the App Runner service that this request just paused.',
-        }),
-    ),
-    OperationId: UUIDSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The unique ID of the asynchronous operation that this request started. You can use it combined with the <a>ListOperations</a> call to track the operation's progress.",
-        }),
-    ).exactOptional(),
+    Service: ServiceSchema.openapi({
+      description: 'A description of the App Runner service that this request just paused.',
+    }),
+    OperationId: UUIDSchema.exactOptional().openapi({
+      description:
+        "The unique ID of the asynchronous operation that this request started. You can use it combined with the <a>ListOperations</a> call to track the operation's progress.",
+    }),
   })
   .openapi({ required: ['Service'] })
   .openapi('PauseServiceResponse')
 
 const PauseServiceRequestSchema = z
   .object({
-    ServiceArn: AppRunnerResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the App Runner service that you want to pause.',
-        }),
-    ),
+    ServiceArn: AppRunnerResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the App Runner service that you want to pause.',
+    }),
   })
   .openapi({ required: ['ServiceArn'], title: 'PauseServiceRequest' })
   .openapi('PauseServiceRequest')
 
 const ResumeServiceResponseSchema = z
   .object({
-    Service: ServiceSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A description of the App Runner service that this request just resumed.',
-        }),
-    ),
-    OperationId: UUIDSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The unique ID of the asynchronous operation that this request started. You can use it combined with the <a>ListOperations</a> call to track the operation's progress.",
-        }),
-    ).exactOptional(),
+    Service: ServiceSchema.openapi({
+      description: 'A description of the App Runner service that this request just resumed.',
+    }),
+    OperationId: UUIDSchema.exactOptional().openapi({
+      description:
+        "The unique ID of the asynchronous operation that this request started. You can use it combined with the <a>ListOperations</a> call to track the operation's progress.",
+    }),
   })
   .openapi({ required: ['Service'] })
   .openapi('ResumeServiceResponse')
 
 const ResumeServiceRequestSchema = z
   .object({
-    ServiceArn: AppRunnerResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the App Runner service that you want to resume.',
-        }),
-    ),
+    ServiceArn: AppRunnerResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the App Runner service that you want to resume.',
+    }),
   })
   .openapi({ required: ['ServiceArn'], title: 'ResumeServiceRequest' })
   .openapi('ResumeServiceRequest')
 
 const StartDeploymentResponseSchema = z
   .object({
-    OperationId: UUIDSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The unique ID of the asynchronous operation that this request started. You can use it combined with the <a>ListOperations</a> call to track the operation's progress.",
-        }),
-    ),
+    OperationId: UUIDSchema.openapi({
+      description:
+        "The unique ID of the asynchronous operation that this request started. You can use it combined with the <a>ListOperations</a> call to track the operation's progress.",
+    }),
   })
   .openapi({ required: ['OperationId'] })
   .openapi('StartDeploymentResponse')
 
 const StartDeploymentRequestSchema = z
   .object({
-    ServiceArn: AppRunnerResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the App Runner service that you want to manually deploy to.',
-        }),
-    ),
+    ServiceArn: AppRunnerResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the App Runner service that you want to manually deploy to.',
+    }),
   })
   .openapi({ required: ['ServiceArn'], title: 'StartDeploymentRequest' })
   .openapi('StartDeploymentRequest')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
 const TagResourceRequestSchema = z
   .object({
-    ResourceArn: AppRunnerResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the resource that you want to update tags for.</p> <p>It must be the ARN of an App Runner resource.</p>',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tag key-value pairs to add or update. If a key is new to the resource, the tag is added with the provided value. If a key is already associated with the resource, the value of the tag is updated.',
-        }),
-    ),
+    ResourceArn: AppRunnerResourceArnSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the resource that you want to update tags for.</p> <p>It must be the ARN of an App Runner resource.</p>',
+    }),
+    Tags: TagListSchema.openapi({
+      description:
+        'A list of tag key-value pairs to add or update. If a key is new to the resource, the tag is added with the provided value. If a key is already associated with the resource, the value of the tag is updated.',
+    }),
   })
   .openapi({ required: ['ResourceArn', 'Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeyListSchema = z.array(TagKeySchema).openapi('TagKeyList')
 
 const UntagResourceRequestSchema = z
   .object({
-    ResourceArn: AppRunnerResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the resource that you want to remove tags from.</p> <p>It must be the ARN of an App Runner resource.</p>',
-        }),
-    ),
-    TagKeys: TagKeyListSchema.and(
-      z.any().openapi({ description: 'A list of tag keys that you want to remove.' }),
-    ),
+    ResourceArn: AppRunnerResourceArnSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the resource that you want to remove tags from.</p> <p>It must be the ARN of an App Runner resource.</p>',
+    }),
+    TagKeys: TagKeyListSchema.openapi({
+      description: 'A list of tag keys that you want to remove.',
+    }),
   })
   .openapi({ required: ['ResourceArn', 'TagKeys'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateServiceResponseSchema = z
   .object({
-    Service: ServiceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A description of the App Runner service updated by this request. All configuration values in the returned <code>Service</code> structure reflect configuration changes that are being applied by this request.',
-        }),
-    ),
-    OperationId: UUIDSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The unique ID of the asynchronous operation that this request started. You can use it combined with the <a>ListOperations</a> call to track the operation's progress.",
-        }),
-    ),
+    Service: ServiceSchema.openapi({
+      description:
+        'A description of the App Runner service updated by this request. All configuration values in the returned <code>Service</code> structure reflect configuration changes that are being applied by this request.',
+    }),
+    OperationId: UUIDSchema.openapi({
+      description:
+        "The unique ID of the asynchronous operation that this request started. You can use it combined with the <a>ListOperations</a> call to track the operation's progress.",
+    }),
   })
   .openapi({ required: ['Service', 'OperationId'] })
   .openapi('UpdateServiceResponse')
 
 const UpdateServiceRequestSchema = z
   .object({
-    ServiceArn: AppRunnerResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the App Runner service that you want to update.',
-        }),
-    ),
-    SourceConfiguration: SourceConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The source configuration to apply to the App Runner service.</p> <p>You can change the configuration of the code or image repository that the service uses. However, you can't switch from code to image or the other way around. This means that you must provide the same structure member of <code>SourceConfiguration</code> that you originally included when you created the service. Specifically, you can include either <code>CodeRepository</code> or <code>ImageRepository</code>. To update the source configuration, set the values to members of the structure that you include.</p>",
-        }),
-    ).exactOptional(),
-    InstanceConfiguration: InstanceConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The runtime configuration to apply to instances (scaling units) of your service.',
-        }),
-    ).exactOptional(),
-    AutoScalingConfigurationArn: AppRunnerResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of an App Runner automatic scaling configuration resource that you want to associate with the App Runner service.',
-        }),
-    ).exactOptional(),
-    HealthCheckConfiguration: HealthCheckConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The settings for the health check that App Runner performs to monitor the health of the App Runner service.',
-        }),
-    ).exactOptional(),
-    NetworkConfiguration: NetworkConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configuration settings related to network traffic of the web application that the App Runner service runs.',
-        }),
-    ).exactOptional(),
-    ObservabilityConfiguration: ServiceObservabilityConfigurationSchema.and(
-      z.any().openapi({ description: 'The observability configuration of your service.' }),
-    ).exactOptional(),
+    ServiceArn: AppRunnerResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the App Runner service that you want to update.',
+    }),
+    SourceConfiguration: SourceConfigurationSchema.exactOptional().openapi({
+      description:
+        "<p>The source configuration to apply to the App Runner service.</p> <p>You can change the configuration of the code or image repository that the service uses. However, you can't switch from code to image or the other way around. This means that you must provide the same structure member of <code>SourceConfiguration</code> that you originally included when you created the service. Specifically, you can include either <code>CodeRepository</code> or <code>ImageRepository</code>. To update the source configuration, set the values to members of the structure that you include.</p>",
+    }),
+    InstanceConfiguration: InstanceConfigurationSchema.exactOptional().openapi({
+      description:
+        'The runtime configuration to apply to instances (scaling units) of your service.',
+    }),
+    AutoScalingConfigurationArn: AppRunnerResourceArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of an App Runner automatic scaling configuration resource that you want to associate with the App Runner service.',
+    }),
+    HealthCheckConfiguration: HealthCheckConfigurationSchema.exactOptional().openapi({
+      description:
+        'The settings for the health check that App Runner performs to monitor the health of the App Runner service.',
+    }),
+    NetworkConfiguration: NetworkConfigurationSchema.exactOptional().openapi({
+      description:
+        'Configuration settings related to network traffic of the web application that the App Runner service runs.',
+    }),
+    ObservabilityConfiguration: ServiceObservabilityConfigurationSchema.exactOptional().openapi({
+      description: 'The observability configuration of your service.',
+    }),
   })
   .openapi({ required: ['ServiceArn'], title: 'UpdateServiceRequest' })
   .openapi('UpdateServiceRequest')
 
 const UpdateVpcIngressConnectionResponseSchema = z
   .object({
-    VpcIngressConnection: VpcIngressConnectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A description of the App Runner VPC Ingress Connection resource that's updated by this request.",
-        }),
-    ),
+    VpcIngressConnection: VpcIngressConnectionSchema.openapi({
+      description:
+        "A description of the App Runner VPC Ingress Connection resource that's updated by this request.",
+    }),
   })
   .openapi({ required: ['VpcIngressConnection'] })
   .openapi('UpdateVpcIngressConnectionResponse')
 
 const UpdateVpcIngressConnectionRequestSchema = z
   .object({
-    VpcIngressConnectionArn: AppRunnerResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (Arn) for the App Runner VPC Ingress Connection resource that you want to update.',
-        }),
-    ),
-    IngressVpcConfiguration: IngressVpcConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifications for the customer’s Amazon VPC and the related Amazon Web Services PrivateLink VPC endpoint that are used to update the VPC Ingress Connection resource.',
-        }),
-    ),
+    VpcIngressConnectionArn: AppRunnerResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (Arn) for the App Runner VPC Ingress Connection resource that you want to update.',
+    }),
+    IngressVpcConfiguration: IngressVpcConfigurationSchema.openapi({
+      description:
+        'Specifications for the customer’s Amazon VPC and the related Amazon Web Services PrivateLink VPC endpoint that are used to update the VPC Ingress Connection resource.',
+    }),
   })
   .openapi({
     required: ['VpcIngressConnectionArn', 'IngressVpcConfiguration'],

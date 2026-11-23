@@ -3594,6 +3594,13 @@ const IoK8sApiCoreV1ContainerSchema = z
           "envFrom is the list of sources to populate environment variables in the container. The keys defined within a source may consist of any printable ASCII characters except '='. When a key exists in multiple sources, the value associated with the last source will take precedence. Values defined by an Env with a duplicate key will take precedence. Cannot be updated.",
         'x-kubernetes-list-type': 'atomic',
       }),
+    hostCgroupNamespace: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "hostCgroupNamespace specifies whether the container uses the host's cgroup namespace. If true, the container shares the cgroup namespace with the host, so cgroups other than the container's own cgroup are visible to the container. If false, a new cgroup namespace rooted at the container's own cgroup is created for the container. If unset, the container runtime selects the behavior. Must not be set to true when the pod uses user namespaces (spec.hostUsers is false). Must not be set to true with securityContext.cgroupOptions.mountMode set to ReadWrite, unless securityContext.privileged is true. Must not be set when spec.os.name is windows. The runtime handler must support cgroup namespaces, otherwise the container will fail to start. Cannot be updated.",
+      }),
     image: z
       .string()
       .exactOptional()
@@ -3833,6 +3840,10 @@ const IoK8sApiCoreV1EphemeralContainerSchema = z
           "envFrom is the list of sources to populate environment variables in the container. The keys defined within a source may consist of any printable ASCII characters except '='. When a key exists in multiple sources, the value associated with the last source will take precedence. Values defined by an Env with a duplicate key will take precedence. Cannot be updated.",
         'x-kubernetes-list-type': 'atomic',
       }),
+    hostCgroupNamespace: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'hostCgroupNamespace is not allowed for ephemeral containers.' }),
     image: z
       .string()
       .exactOptional()
@@ -5785,6 +5796,7 @@ type IoK8sApiCoreV1PodSpecType = {
   nodeSelector?: { [key: string]: string }
   os?: z.infer<typeof IoK8sApiCoreV1PodOSSchema>
   overhead?: { [key: string]: z.infer<typeof IoK8sApimachineryPkgApiResourceQuantitySchema> }
+  podNetwork?: string
   preemptionPolicy?: string
   priority?: number
   priorityClassName?: string
@@ -5909,7 +5921,7 @@ const IoK8sApiCoreV1PodSpecSchema: z.ZodType<IoK8sApiCoreV1PodSpecType> = z
       .exactOptional()
       .openapi({
         description:
-          "hostNetwork indicates that the pod should use the host's network namespace. When using hostNetwork you should specify ports so the scheduler is aware. When `hostNetwork` is true, specified `hostPort` fields in port definitions must match `containerPort`, and unspecified `hostPort` fields in port definitions are defaulted to match `containerPort`. Default to false.",
+          "hostNetwork indicates that the pod should use the host's network namespace. When using hostNetwork you should specify ports so the scheduler is aware. When `hostNetwork` is true, specified `hostPort` fields in port definitions must match `containerPort`, and unspecified `hostPort` fields in port definitions are defaulted to match `containerPort`. Default to false. When true, podNetwork may not be set: the pod has no network namespace of its own.",
       }),
     hostPID: z
       .boolean()
@@ -5985,6 +5997,13 @@ const IoK8sApiCoreV1PodSpecSchema: z.ZodType<IoK8sApiCoreV1PodSpecType> = z
       .openapi({
         description:
           'overhead represents the resource overhead associated with running a pod for a given RuntimeClass. This field will be autopopulated at admission time by the RuntimeClass admission controller. If the RuntimeClass admission controller is enabled, overhead must not be set in Pod create requests. The RuntimeClass admission controller will reject Pod create requests which have the overhead already set. If RuntimeClass is configured and selected in the PodSpec, Overhead will be set to the value defined in the corresponding RuntimeClass, otherwise it will remain unset and treated as zero. More info: https://git.k8s.io/enhancements/keps/sig-node/688-pod-overhead/README.md',
+      }),
+    podNetwork: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'podNetwork selects whether a non-hostNetwork pod is attached to the pod network. "Default" attaches the pod to the pod network. "Isolated" gives the pod an isolated network namespace with only the loopback interface configured, not attached to the pod network. This field must be unset if hostNetwork is true. For non-hostNetwork pods, this behaves as if it was set to "Default" if it is not set. If a pod is "Isolated", hostPort and network-based probes and lifecycle handlers are not allowed. This field is immutable on Pods.',
       }),
     preemptionPolicy: z
       .string()
@@ -6653,6 +6672,36 @@ const IoK8sApiCoreV1PodExtendedResourceClaimStatusSchema = z
   })
   .openapi('IoK8sApiCoreV1PodExtendedResourceClaimStatus')
 
+const IoK8sApiCoreV1ExtraNodeAllocatableResourceSchema = z
+  .object({
+    containerName: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'containerName is the name of the init or regular container that these resources are added to. An empty name marks the pod entry, whose requests and limits apply to the entire pod.',
+      }),
+    limits: z
+      .record(z.string(), IoK8sApimachineryPkgApiResourceQuantitySchema)
+      .openapi({
+        description:
+          "limits are added to the limits of the pod or container, as described in containerName. The kubelet applies them as follows: - Pod cgroup: the limits of the pod entry are added to the aggregate of the containers' spec\n  limits when they are set, unless the pod level resources (`spec.resources`) set the resource.\n  That value is then used as is and must already include the extra resources.\n- Container cgroup: the limits of the container entry are added to the container's spec limits.\n  For cpu and memory only when the container spec sets a limit; for hugepages also when it does\n  not, unless the pod level resources (`spec.resources`) set a hugepages limit.\n- Ephemeral-storage is not enforced through cgroups. The limits are added to the container's\n  and the pod's limits that kubelet eviction uses, when the spec sets one.",
+      }),
+    requests: z
+      .record(z.string(), IoK8sApimachineryPkgApiResourceQuantitySchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "requests are added to the requests of the pod or container, as described in containerName. A resource that is missing from requests counts as zero; it is not defaulted from limits. The kubelet applies them as follows: - Pod cgroup: the requests of the pod entry are added to the aggregate of the containers'\n  spec requests, unless the pod level resources (`spec.resources`) set the resource. That value\n  is then used as is and must already include the extra resources.\n- Container cgroup: the requests of the container entry are added to the container's spec\n  requests.",
+      }),
+  })
+  .openapi({
+    description:
+      "ExtraNodeAllocatableResource describes node allocatable resources that are added to the resources of a pod or of one of its containers.\n\nA list that is not empty must satisfy:\n  - It has exactly one pod entry (empty containerName).\n  - Each container entry names an init or regular container.\n  - No two entries have the same containerName.\n  - In each entry, requests must not exceed limits for the resources that have both.\n  - The sum of the requests of the regular and sidecar container entries must not exceed the\n    pod entry's requests.\n  - The limits of each regular and sidecar container entry must not exceed the pod entry's limits\n    for the resources that the pod entry limits.\n\nNon-restartable init container entries are not checked against the pod entry, because the spec of the containers that run after them may already cover them.\n\nFor DRA, the scheduler fills the entries from the `nodeAllocatableResources` of the devices allocated to the pod's claims:\n  - Each container entry, summed over the devices that the container uses:\n    `overhead.perContainer` in requests, and `mapping` + `overhead.perPod` +\n    `overhead.perContainer` in limits.\n  - The pod entry: `mapping` + `overhead.perPod`, summed over all devices, plus what the\n    container entries' requests add to the peak of the spec requests and limits.\n\nA container can use all the resources of its devices, while the pod entry caps the extra resources that the containers use together.",
+    required: ['containerName', 'limits'],
+  })
+  .openapi('IoK8sApiCoreV1ExtraNodeAllocatableResource')
+
 const IoK8sApiCoreV1HostIPSchema = z
   .object({
     ip: z
@@ -6665,93 +6714,6 @@ const IoK8sApiCoreV1HostIPSchema = z
     required: ['ip'],
   })
   .openapi('IoK8sApiCoreV1HostIP')
-
-const IoK8sApiCoreV1NodeAllocatableMappedResourcesSchema = z
-  .object({
-    name: z
-      .string()
-      .default('')
-      .openapi({ description: 'name is the name of the resource (e.g., cpu, memory).' }),
-    quantity: IoK8sApimachineryPkgApiResourceQuantitySchema.openapi({
-      description:
-        "quantity is the total node allocatable resource capacity allocated for the claim. This claim's allocated devices is shared by all the containers referencing the claim. Kubelet adds this value to both requests and limits at the pod-level cgroup, and to limits at the container-level cgroup for each container referencing the claim.",
-    }),
-  })
-  .openapi({
-    description:
-      'NodeAllocatableMappedResources describes mapped node allocatable resource allocations.',
-    required: ['name', 'quantity'],
-  })
-  .openapi('IoK8sApiCoreV1NodeAllocatableMappedResources')
-
-const IoK8sApiCoreV1NodeAllocatableOverheadResourcesSchema = z
-  .object({
-    name: z
-      .string()
-      .default('')
-      .openapi({ description: 'name is the name of the resource (e.g., cpu, memory).' }),
-    perContainer: IoK8sApimachineryPkgApiResourceQuantitySchema.exactOptional().openapi({
-      description:
-        "perContainer is the variable overhead quantity applied for each container referencing the claim. The container references are recorded in `nodeAllocatableResourceClaimStatuses.containers`. The total overhead quantity allocated for the claim is computed as: Quantity = PerPod + (PerContainer * NumReferences) Kubelet accounts for this overhead in cgroups: - Pod-level cgroup (requests and limits): Kubelet adds PerPod + (PerContainer * NumReferences). - Container-level cgroup (limits only): Kubelet adds PerPod + PerContainer for each referencing container. This allows any single container to access the pod-level overhead, while the parent cgroup caps the total usage to account for PerPod exactly once. At least one of PerPod or PerContainer must be specified. Specifying neither is an invalid configuration. PerContainer overhead of a claim referenced by a non-restartable init container is counted towards the pod's peak resource calculation (see Pod `spec.initContainers`), not for the pod's entire duration.",
-    }),
-    perPod: IoK8sApimachineryPkgApiResourceQuantitySchema.exactOptional().openapi({
-      description:
-        'perPod is the flat overhead quantity allocated per pod. Adding to each container limit allows individual containers to utilize the overhead, while the parent pod-level cgroup limit caps the total usage at the pod boundary where the overhead is accounted for exactly once. At least one of PerPod or PerContainer must be specified. Specifying neither is an invalid configuration.',
-    }),
-  })
-  .openapi({
-    description:
-      'NodeAllocatableOverheadResources describes auxiliary overhead resource allocations.',
-    required: ['name'],
-  })
-  .openapi('IoK8sApiCoreV1NodeAllocatableOverheadResources')
-
-const IoK8sApiCoreV1NodeAllocatableResourceClaimStatusSchema = z
-  .object({
-    containers: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'containers lists the names of all containers in this pod that reference the claim.',
-        'x-kubernetes-list-type': 'set',
-      }),
-    mapping: z
-      .array(IoK8sApiCoreV1NodeAllocatableMappedResourcesSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "mapping contains allocations through devices mapped in the device spec's `nodeAllocatableResources[...].mapping` field. This is used by kubelet for pod level and container-level cgroup enforcement.",
-        'x-kubernetes-list-map-keys': ['name'],
-        'x-kubernetes-list-type': 'map',
-        'x-kubernetes-patch-merge-key': 'name',
-        'x-kubernetes-patch-strategy': 'merge',
-      }),
-    overhead: z
-      .array(IoK8sApiCoreV1NodeAllocatableOverheadResourcesSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "overhead contains allocations through devices mapped in the device spec's `nodeAllocatableResources[...].overhead` field. This is used by kubelet for pod level and container-level cgroup enforcement.",
-        'x-kubernetes-list-map-keys': ['name'],
-        'x-kubernetes-list-type': 'map',
-        'x-kubernetes-patch-merge-key': 'name',
-        'x-kubernetes-patch-strategy': 'merge',
-      }),
-    resourceClaimName: z
-      .string()
-      .default('')
-      .openapi({
-        description:
-          'resourceClaimName is the resource claim referenced by the pod that resulted in this node allocatable resource allocation.',
-      }),
-  })
-  .openapi({
-    description:
-      'NodeAllocatableResourceClaimStatus describes the status of node allocatable resources allocated via DRA.',
-    required: ['resourceClaimName'],
-  })
-  .openapi('IoK8sApiCoreV1NodeAllocatableResourceClaimStatus')
 
 const IoK8sApiCoreV1PodIPSchema = z
   .object({
@@ -6793,10 +6755,20 @@ const IoK8sApiCoreV1PodVolumeStatusSchema = z
       description:
         "healthStatus contains health reported by the CSI node plugin for this volume on the pod's node. Populated by the kubelet. This is an alpha field and requires enabling the CSIVolumeHealth feature gate.",
     }),
+    hostPhase: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'hostPhase represents the host-level preparation phase of the volume: Pending, HostMounted, Unmounting. Currently populated only for node-local ephemeral volume types supported for dynamic updates (configMap, secret, projected, emptyDir, and image). This is an alpha field and requires enabling the DynamicNodeLocalEphemeralVolumes feature gate.',
+      }),
     name: z
       .string()
       .default('')
-      .openapi({ description: 'name matches an entry in pod.spec.volumes.' }),
+      .openapi({
+        description:
+          'name matches an entry in pod.spec.volumes, or the name of a dynamically removed volume that is still unmounting on the node.',
+      }),
   })
   .openapi({
     description: 'PodVolumeStatus represents the status of an individual volume used by a pod.',
@@ -6811,7 +6783,7 @@ const IoK8sApiCoreV1PodStatusSchema = z
       .exactOptional()
       .openapi({
         description:
-          'AllocatedResources is the total requests allocated for this pod by the node. If pod-level requests are not set, this will be the total requests aggregated across containers in the pod.',
+          'AllocatedResources is the total requests allocated for this pod by the node, including pod.spec.overhead. If pod-level requests are not set, this will be the total requests aggregated across containers in the pod, plus pod.spec.overhead if specified.',
       }),
     conditions: z
       .array(IoK8sApiCoreV1PodConditionSchema)
@@ -6844,6 +6816,15 @@ const IoK8sApiCoreV1PodStatusSchema = z
       IoK8sApiCoreV1PodExtendedResourceClaimStatusSchema.exactOptional().openapi({
         description: 'Status of extended resource claim backed by DRA.',
       }),
+    extraNodeAllocatableResources: z
+      .array(IoK8sApiCoreV1ExtraNodeAllocatableResourceSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'extraNodeAllocatableResources lists node allocatable resources that the pod and its containers use in addition to their spec, for example for the devices allocated to the pod\'s DRA claims. The scheduler sets them before it binds the pod. Allowed are the resources that v1.Node reports in `status.allocatable` that are not extended resources (see https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#extended-resources), such as "cpu", "memory", "ephemeral-storage", and "hugepages-<size>".\n\nThe list has one pod entry, with an empty containerName, and at most one entry for each init or regular container. The pod\'s total footprint is its spec plus the pod entry, so the pod entry must cover what the container entries add to the peak of the spec, across the init, sidecar, and regular containers. For resources that the pod level resources (`spec.resources`) set, that value is the footprint and must already include the extra resources.',
+        'x-kubernetes-list-map-keys': ['containerName'],
+        'x-kubernetes-list-type': 'map',
+      }),
     hostIP: z
       .string()
       .exactOptional()
@@ -6875,17 +6856,6 @@ const IoK8sApiCoreV1PodStatusSchema = z
       .openapi({
         description:
           'A human readable message indicating details about why the pod is in this condition.',
-      }),
-    nodeAllocatableResourceClaimStatuses: z
-      .array(IoK8sApiCoreV1NodeAllocatableResourceClaimStatusSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'NodeAllocatableResourceClaimStatuses contains the status of node-allocatable resources that were allocated for this pod through DRA claims. This includes resources currently reported in v1.Node `status.allocatable` that are not extended resources (see https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#extended-resources). Examples include "cpu", "memory", "ephemeral-storage", and hugepages.',
-        'x-kubernetes-list-map-keys': ['resourceClaimName'],
-        'x-kubernetes-list-type': 'map',
-        'x-kubernetes-patch-merge-key': 'resourceClaimName',
-        'x-kubernetes-patch-strategy': 'merge',
       }),
     nominatedNodeName: z
       .string()
@@ -6969,7 +6939,7 @@ const IoK8sApiCoreV1PodStatusSchema = z
       }),
     resources: IoK8sApiCoreV1ResourceRequirementsSchema.exactOptional().openapi({
       description:
-        'Resources represents the compute resource requests and limits that have been applied at the pod level if pod-level requests or limits are set in PodSpec.Resources',
+        'Resources represents the compute resource requests and limits that have been applied at the pod level if pod-level requests or limits are set in PodSpec.Resources, plus pod.spec.overhead if specified (for limits, only added to non-zero limits; kubelets prior to v1.38 may omit overhead from memory and hugepages requests when set in PodSpec.Resources).',
     }),
     startTime: IoK8sApimachineryPkgApisMetaV1TimeSchema.exactOptional().openapi({
       description:
@@ -6980,7 +6950,7 @@ const IoK8sApiCoreV1PodStatusSchema = z
       .exactOptional()
       .openapi({
         description:
-          'VolumeStatuses contains the status of individual volumes used by this pod. This is an alpha field and requires enabling the CSIVolumeHealth feature gate.',
+          'VolumeStatuses contains the status of individual volumes used by this pod. This is an alpha field and requires enabling the CSIVolumeHealth or DynamicNodeLocalEphemeralVolumes feature gate.',
         'x-kubernetes-list-map-keys': ['name'],
         'x-kubernetes-list-type': 'map',
         'x-kubernetes-patch-merge-key': 'name',
@@ -9267,6 +9237,13 @@ const IoK8sApiCoreV1NodeSystemInfoSchema = z
 
 const IoK8sApiCoreV1NodeRuntimeHandlerFeaturesSchema = z
   .object({
+    cgroupNamespaces: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'cgroupNamespaces is set to true if the runtime handler supports specifying whether to use the host cgroup namespace for privileged and non-privileged containers.',
+      }),
     recursiveReadOnlyMounts: z
       .boolean()
       .exactOptional()

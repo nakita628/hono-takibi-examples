@@ -1,5 +1,50 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const AreaSchema = z
+  .object({
+    AreaId: z.int().exactOptional(),
+    CountryCode: z.string().nullable().exactOptional(),
+    Name: z.string().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Area')
+
+const GameSchema = z
+  .object({
+    BestOf: z.string().nullable().exactOptional(),
+    DateTime: z.string().nullable().exactOptional(),
+    Day: z.string().nullable().exactOptional(),
+    DrawMoneyLine: z.int().nullable().exactOptional(),
+    GameId: z.int().exactOptional(),
+    Group: z.string().nullable().exactOptional(),
+    IsClosed: z.boolean().nullable().exactOptional(),
+    PointSpread: z.number().nullable().exactOptional(),
+    RoundId: z.int().exactOptional(),
+    Season: z.int().exactOptional(),
+    SeasonType: z.int().exactOptional(),
+    Status: z.string().nullable().exactOptional(),
+    TeamAId: z.int().nullable().exactOptional(),
+    TeamAKey: z.string().nullable().exactOptional(),
+    TeamAMoneyLine: z.int().nullable().exactOptional(),
+    TeamAName: z.string().nullable().exactOptional(),
+    TeamAPointSpreadPayout: z.int().nullable().exactOptional(),
+    TeamAScore: z.int().nullable().exactOptional(),
+    TeamBId: z.int().nullable().exactOptional(),
+    TeamBKey: z.string().nullable().exactOptional(),
+    TeamBMoneyLine: z.int().nullable().exactOptional(),
+    TeamBName: z.string().nullable().exactOptional(),
+    TeamBPointSpreadPayout: z.int().nullable().exactOptional(),
+    TeamBScore: z.int().nullable().exactOptional(),
+    Updated: z.string().nullable().exactOptional(),
+    UpdatedUtc: z.string().nullable().exactOptional(),
+    VenueId: z.int().nullable().exactOptional(),
+    VenueType: z.string().nullable().exactOptional(),
+    Week: z.int().nullable().exactOptional(),
+    Winner: z.string().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Game')
+
 const ChampionInfoSchema = z
   .object({
     ChampionId: z.int().exactOptional(),
@@ -181,77 +226,18 @@ const TeamMatchSchema = z
   .openapi({ required: [] })
   .openapi('TeamMatch')
 
-type MatchType = {
-  GameId?: number
-  GameVersion?: string | null
-  MapName?: string | null
-  MatchBans?: z.infer<typeof MatchBanSchema>[]
-  Number?: number
-  PlayerMatches?: z.infer<typeof PlayerMatchSchema>[]
-  TeamMatches?: z.infer<typeof TeamMatchSchema>[]
-  WinningTeamId?: number | null
-}
-
-const AreaSchema = z
+const MatchSchema = z
   .object({
-    AreaId: z.int().exactOptional(),
-    CountryCode: z.string().nullable().exactOptional(),
-    Name: z.string().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Area')
-
-const GameSchema = z
-  .object({
-    BestOf: z.string().nullable().exactOptional(),
-    DateTime: z.string().nullable().exactOptional(),
-    Day: z.string().nullable().exactOptional(),
-    DrawMoneyLine: z.int().nullable().exactOptional(),
     GameId: z.int().exactOptional(),
-    Group: z.string().nullable().exactOptional(),
-    IsClosed: z.boolean().nullable().exactOptional(),
-    PointSpread: z.number().nullable().exactOptional(),
-    RoundId: z.int().exactOptional(),
-    Season: z.int().exactOptional(),
-    SeasonType: z.int().exactOptional(),
-    Status: z.string().nullable().exactOptional(),
-    TeamAId: z.int().nullable().exactOptional(),
-    TeamAKey: z.string().nullable().exactOptional(),
-    TeamAMoneyLine: z.int().nullable().exactOptional(),
-    TeamAName: z.string().nullable().exactOptional(),
-    TeamAPointSpreadPayout: z.int().nullable().exactOptional(),
-    TeamAScore: z.int().nullable().exactOptional(),
-    TeamBId: z.int().nullable().exactOptional(),
-    TeamBKey: z.string().nullable().exactOptional(),
-    TeamBMoneyLine: z.int().nullable().exactOptional(),
-    TeamBName: z.string().nullable().exactOptional(),
-    TeamBPointSpreadPayout: z.int().nullable().exactOptional(),
-    TeamBScore: z.int().nullable().exactOptional(),
-    Updated: z.string().nullable().exactOptional(),
-    UpdatedUtc: z.string().nullable().exactOptional(),
-    VenueId: z.int().nullable().exactOptional(),
-    VenueType: z.string().nullable().exactOptional(),
-    Week: z.int().nullable().exactOptional(),
-    Winner: z.string().nullable().exactOptional(),
+    GameVersion: z.string().nullable().exactOptional(),
+    MapName: z.string().nullable().exactOptional(),
+    MatchBans: z.array(MatchBanSchema).exactOptional(),
+    Number: z.int().exactOptional(),
+    PlayerMatches: z.array(PlayerMatchSchema).exactOptional(),
+    TeamMatches: z.array(TeamMatchSchema).exactOptional(),
+    WinningTeamId: z.int().nullable().exactOptional(),
   })
   .openapi({ required: [] })
-  .openapi('Game')
-
-const MatchSchema: z.ZodType<MatchType> = z
-  .lazy(() =>
-    z
-      .object({
-        GameId: z.int().exactOptional(),
-        GameVersion: z.string().nullable().exactOptional(),
-        MapName: z.string().nullable().exactOptional(),
-        MatchBans: z.array(MatchBanSchema).exactOptional(),
-        Number: z.int().exactOptional(),
-        PlayerMatches: z.array(PlayerMatchSchema).exactOptional(),
-        TeamMatches: z.array(TeamMatchSchema).exactOptional(),
-        WinningTeamId: z.int().nullable().exactOptional(),
-      })
-      .openapi({ required: [] }),
-  )
   .openapi('Match')
 
 const PlayerGameSchema = z

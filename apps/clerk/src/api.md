@@ -80,6 +80,7 @@ The `actor` parameter needs to include at least a "sub" key whose value is the I
 |» user_id|body|string|true|The ID of the user being impersonated.|
 |» actor|body|object|true|The actor payload. It needs to include a sub property which should contain the ID of the actor.<br>This whole payload will be also included in the JWT session token.|
 |» » sub|body|string|true|The ID of the actor.|
+|» » type|body|string|false|Optional actor type. The value `agent` is reserved for agent task sessions and is rejected.|
 |» expires_in_seconds|body|integer|false|Optional parameter to specify the life duration of the actor token in seconds.<br>By default, the duration is 1 hour.|
 |» session_max_duration_in_seconds|body|integer|false|The maximum duration that the session which will be created by the generated actor token should last.<br>By default, the duration of a session created via an actor token, lasts 30 minutes.|
 
@@ -913,6 +914,7 @@ Warning: the endpoint is being deprecated and will be removed in future versions
   {
     "object": "client",
     "id": "string",
+    "revoked_at": 0,
     "session_ids": [
       "string"
     ],
@@ -1093,6 +1095,7 @@ Verifies the client in the provided token
 {
   "object": "client",
   "id": "string",
+  "revoked_at": 0,
   "session_ids": [
     "string"
   ],
@@ -1232,6 +1235,7 @@ Returns the details of a client.
 {
   "object": "client",
   "id": "string",
+  "revoked_at": 0,
   "session_ids": [
     "string"
   ],
@@ -1333,6 +1337,126 @@ Returns the details of a client.
 |---|---|---|---|
 |200|OK|Success|[Client](#schemaclient)|
 |400|Bad Request|Request was not successful|[ClerkErrors](#schemaclerkerrors)|
+|401|Unauthorized|Authentication invalid|[ClerkErrors](#schemaclerkerrors)|
+|404|Not Found|Resource not found|[ClerkErrors](#schemaclerkerrors)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
+</aside>
+
+## Revoke a client
+
+<a id="opIdRevokeClient"></a>
+
+> Code samples
+
+```bash
+curl https://api.clerk.com/v1/clients/string/revoke \
+  -X POST \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`POST /clients/{client_id}/revoke`
+
+Permanently revokes a client in a development or production instance, including its active and pending sessions and its linked development browser tokens. Other clients are unaffected. Repeating the request is safe.
+Returns the client with a non-null revoked_at timestamp and no current sessions. Revoked development browser tokens receive dev_browser_unauthenticated on authenticated Frontend API routes. Previously issued session JWTs remain valid until their expiration.
+To sign in again, the browser must initialize a new client. Unlike Frontend API DELETE /client, this operation requires a backend credential and the target client ID, not the affected browser's cookies.
+
+<h3 id="revoke-a-client-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|client_id|path|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "object": "client",
+  "id": "string",
+  "revoked_at": 0,
+  "session_ids": [
+    "string"
+  ],
+  "sessions": [
+    {
+      "object": "session",
+      "id": "string",
+      "user_id": "string",
+      "client_id": "string",
+      "actor": {},
+      "status": "active",
+      "last_active_organization_id": "string",
+      "last_active_at": 0,
+      "latest_activity": {
+        "object": "string",
+        "id": "string",
+        "device_type": "string",
+        "is_mobile": true,
+        "browser_name": "string",
+        "browser_version": "string",
+        "ip_address": "string",
+        "city": "string",
+        "country": "string"
+      },
+      "expire_at": 0,
+      "abandon_at": 0,
+      "updated_at": 0,
+      "created_at": 0
+    }
+  ],
+  "sign_in_id": "string",
+  "sign_up_id": "string",
+  "last_active_session_id": "string",
+  "last_authentication_strategy": "string",
+  "updated_at": 0,
+  "created_at": 0
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "message": "string",
+      "long_message": "string",
+      "code": "string",
+      "meta": {}
+    }
+  ],
+  "meta": {},
+  "clerk_trace_id": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "message": "string",
+      "long_message": "string",
+      "code": "string",
+      "meta": {}
+    }
+  ],
+  "meta": {},
+  "clerk_trace_id": "string"
+}
+```
+
+<h3 id="revoke-a-client-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Success|[Client-2](#schemaclient-2)|
 |401|Unauthorized|Authentication invalid|[ClerkErrors](#schemaclerkerrors)|
 |404|Not Found|Resource not found|[ClerkErrors](#schemaclerkerrors)|
 
@@ -2672,7 +2796,8 @@ curl https://api.clerk.com/v1/email_addresses/string/attempt_verification \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "verification_id": "string",
-    "code": "string"
+    "code": "string",
+    "honor_lockout": false
   }'
 ```
 
@@ -2695,7 +2820,8 @@ a session; to sign the user in afterwards, mint a sign-in token.
 ```json
 {
   "verification_id": "string",
-  "code": "string"
+  "code": "string",
+  "honor_lockout": false
 }
 ```
 
@@ -2707,6 +2833,7 @@ a session; to sign the user in afterwards, mint a sign-in token.
 |body|body|object|true|none|
 |» verification_id|body|string|true|The ID of the verification to check, such as one returned by prepare_verification|
 |» code|body|string|true|The verification code that was sent to the email address|
+|» honor_lockout|body|boolean|false|When `true`, a wrong code counts toward the user's lockout, and a locked user is rejected with a `user_locked` error before the code is checked.<br>Has no effect on instances with user lockout disabled.<br>To enforce lockout across a password check and a sign-in token, set this parameter on both requests.|
 
 > Example responses
 
@@ -5079,7 +5206,8 @@ curl https://api.clerk.com/v1/invitations \
 
 `GET /invitations`
 
-Returns all non-revoked invitations for your application, sorted by creation date
+Returns non-revoked invitations for your application, sorted by creation date.
+Without `limit`, `offset` or `paginated=true`, returns at most 500 invitations.
 
 <h3 id="list-all-invitations-parameters">Parameters</h3>
 
@@ -5087,6 +5215,7 @@ Returns all non-revoked invitations for your application, sorted by creation dat
 |---|---|---|---|---|
 |status|query|string|false|Filter invitations based on their status|
 |query|query|string|false|Filter invitations based on their `email_address` or `id`|
+|email_address|query|[string]|false|Returns invitations with the specified email addresses.<br>Accepts up to 100 email addresses.|
 |order_by|query|string|false|Allows to return invitations in a particular order.<br>At the moment, you can order the returned invitations either by their `created_at`, `email_address` or `expires_at`.<br>In order to specify the direction, you can use the `+/-` symbols prepended in the property to order by.<br>For example, if you want invitations to be returned in descending order according to their `created_at` property, you can use `-created_at`.<br>If you don't use `+` or `-`, then `+` is implied.<br>Defaults to `-created_at`.|
 |paginated|query|boolean|false|Whether to paginate the results.<br>If true, the results will be paginated.<br>If false, the results will not be paginated.|
 |limit|query|integer|false|Applies a limit to the number of results returned.<br>Can be used for paginating the results together with `offset`.|
@@ -7465,6 +7594,7 @@ Most recent organizations will be returned first.
       "max_allowed_memberships": 0,
       "admin_delete_enabled": true,
       "self_serve_sso_enabled": true,
+      "self_serve_directory_sync_enabled": true,
       "public_metadata": {},
       "private_metadata": {},
       "created_by": "string",
@@ -7627,6 +7757,7 @@ the next time they create a session, presuming they don't explicitly set a diffe
   "max_allowed_memberships": 0,
   "admin_delete_enabled": true,
   "self_serve_sso_enabled": true,
+  "self_serve_directory_sync_enabled": true,
   "public_metadata": {},
   "private_metadata": {},
   "created_by": "string",
@@ -7762,6 +7893,7 @@ Fetches the organization whose ID or slug matches the provided `id_or_slug` URL 
   "max_allowed_memberships": 0,
   "admin_delete_enabled": true,
   "self_serve_sso_enabled": true,
+  "self_serve_directory_sync_enabled": true,
   "public_metadata": {},
   "private_metadata": {},
   "created_by": "string",
@@ -7910,6 +8042,7 @@ curl https://api.clerk.com/v1/organizations/string \
     "max_allowed_memberships": 0,
     "admin_delete_enabled": true,
     "self_serve_sso_enabled": true,
+    "self_serve_directory_sync_enabled": true,
     "created_at": "string",
     "role_set_key": "string",
     "reassignment_mappings": {
@@ -7934,6 +8067,7 @@ Updates an existing organization
   "max_allowed_memberships": 0,
   "admin_delete_enabled": true,
   "self_serve_sso_enabled": true,
+  "self_serve_directory_sync_enabled": true,
   "created_at": "string",
   "role_set_key": "string",
   "reassignment_mappings": {
@@ -7956,6 +8090,7 @@ Updates an existing organization
 |» max_allowed_memberships|body|integer \| null|false|The maximum number of memberships allowed for this organization|
 |» admin_delete_enabled|body|boolean \| null|false|If true, an admin can delete this organization with the Frontend API.|
 |» self_serve_sso_enabled|body|boolean \| null|false|Whether this organization can configure self-serve enterprise SSO.|
+|» self_serve_directory_sync_enabled|body|boolean \| null|false|Whether this organization can configure self-serve Directory Sync (SCIM).|
 |» created_at|body|string \| null|false|A custom date/time denoting _when_ the organization was created, specified in RFC3339 format (e.g. `2012-10-20T07:15:20.902Z`).|
 |» role_set_key|body|string \| null|false|The key of the [role set](https://clerk.com/docs/guides/organizations/control-access/role-sets) to assign to this organization.|
 |» reassignment_mappings|body|object \| null|false|Maps role keys in the organization's current role set to role keys in the new role set. Only applies when `role_set_key` changes the role set.<br>Every role that a member holds and that the new role set does not include must be mapped, otherwise the request fails with a 422.<br>Mapping a role that both role sets include moves its members to the destination role.<br>Memberships are reassigned asynchronously after the response.|
@@ -7979,6 +8114,7 @@ Updates an existing organization
   "max_allowed_memberships": 0,
   "admin_delete_enabled": true,
   "self_serve_sso_enabled": true,
+  "self_serve_directory_sync_enabled": true,
   "public_metadata": {},
   "private_metadata": {},
   "created_by": "string",
@@ -8153,6 +8289,7 @@ intend to overwrite a metadata field wholesale.
   "max_allowed_memberships": 0,
   "admin_delete_enabled": true,
   "self_serve_sso_enabled": true,
+  "self_serve_directory_sync_enabled": true,
   "public_metadata": {},
   "private_metadata": {},
   "created_by": "string",
@@ -8307,6 +8444,7 @@ You can remove metadata keys at any level by setting their value to `null`.
   "max_allowed_memberships": 0,
   "admin_delete_enabled": true,
   "self_serve_sso_enabled": true,
+  "self_serve_directory_sync_enabled": true,
   "public_metadata": {},
   "private_metadata": {},
   "created_by": "string",
@@ -8456,6 +8594,7 @@ file: string
   "max_allowed_memberships": 0,
   "admin_delete_enabled": true,
   "self_serve_sso_enabled": true,
+  "self_serve_directory_sync_enabled": true,
   "public_metadata": {},
   "private_metadata": {},
   "created_by": "string",
@@ -8591,6 +8730,7 @@ Delete the organization's logo.
   "max_allowed_memberships": 0,
   "admin_delete_enabled": true,
   "self_serve_sso_enabled": true,
+  "self_serve_directory_sync_enabled": true,
   "public_metadata": {},
   "private_metadata": {},
   "created_by": "string",
@@ -10209,6 +10349,23 @@ When the organization invitation is accepted, the metadata will be transferred t
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "errors": [
+    {
+      "message": "string",
+      "long_message": "string",
+      "code": "string",
+      "meta": {}
+    }
+  ],
+  "meta": {},
+  "clerk_trace_id": "string"
+}
+```
+
 <h3 id="create-and-send-an-organization-invitation-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
@@ -10219,6 +10376,7 @@ When the organization invitation is accepted, the metadata will be transferred t
 |403|Forbidden|Authorization invalid|[ClerkErrors](#schemaclerkerrors)|
 |404|Not Found|Resource not found|[ClerkErrors](#schemaclerkerrors)|
 |422|Unprocessable Entity|Invalid request parameters|[ClerkErrors](#schemaclerkerrors)|
+|429|Too Many Requests|Too many requests|[ClerkErrors](#schemaclerkerrors)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -10406,6 +10564,23 @@ When the organization invitation is accepted, the metadata will be transferred t
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "errors": [
+    {
+      "message": "string",
+      "long_message": "string",
+      "code": "string",
+      "meta": {}
+    }
+  ],
+  "meta": {},
+  "clerk_trace_id": "string"
+}
+```
+
 <h3 id="bulk-create-and-send-organization-invitations-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
@@ -10415,6 +10590,7 @@ When the organization invitation is accepted, the metadata will be transferred t
 |403|Forbidden|Authorization invalid|[ClerkErrors](#schemaclerkerrors)|
 |404|Not Found|Resource not found|[ClerkErrors](#schemaclerkerrors)|
 |422|Unprocessable Entity|Invalid request parameters|[ClerkErrors](#schemaclerkerrors)|
+|429|Too Many Requests|Too many requests|[ClerkErrors](#schemaclerkerrors)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -10870,6 +11046,7 @@ Retrieves all user memberships for the given organization
         "max_allowed_memberships": 0,
         "admin_delete_enabled": true,
         "self_serve_sso_enabled": true,
+        "self_serve_directory_sync_enabled": true,
         "public_metadata": {},
         "private_metadata": {},
         "created_by": "string",
@@ -11024,6 +11201,7 @@ different organization as active before then.
     "max_allowed_memberships": 0,
     "admin_delete_enabled": true,
     "self_serve_sso_enabled": true,
+    "self_serve_directory_sync_enabled": true,
     "public_metadata": {},
     "private_metadata": {},
     "created_by": "string",
@@ -11184,6 +11362,7 @@ Removes the given membership from the organization
     "max_allowed_memberships": 0,
     "admin_delete_enabled": true,
     "self_serve_sso_enabled": true,
+    "self_serve_directory_sync_enabled": true,
     "public_metadata": {},
     "private_metadata": {},
     "created_by": "string",
@@ -11340,6 +11519,7 @@ Updates the properties of an existing organization membership
     "max_allowed_memberships": 0,
     "admin_delete_enabled": true,
     "self_serve_sso_enabled": true,
+    "self_serve_directory_sync_enabled": true,
     "public_metadata": {},
     "private_metadata": {},
     "created_by": "string",
@@ -11483,6 +11663,7 @@ You can remove metadata keys at any level by setting their value to `null`.
     "max_allowed_memberships": 0,
     "admin_delete_enabled": true,
     "self_serve_sso_enabled": true,
+    "self_serve_directory_sync_enabled": true,
     "public_metadata": {},
     "private_metadata": {},
     "created_by": "string",
@@ -11627,6 +11808,7 @@ Retrieves all organization user memberships for the given instance.
         "max_allowed_memberships": 0,
         "admin_delete_enabled": true,
         "self_serve_sso_enabled": true,
+        "self_serve_directory_sync_enabled": true,
         "public_metadata": {},
         "private_metadata": {},
         "created_by": "string",
@@ -15633,7 +15815,8 @@ curl https://api.clerk.com/v1/phone_numbers/string/attempt_verification \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "verification_id": "string",
-    "code": "string"
+    "code": "string",
+    "honor_lockout": false
   }'
 ```
 
@@ -15664,7 +15847,8 @@ a session; to sign the user in afterwards, mint a sign-in token.
 ```json
 {
   "verification_id": "string",
-  "code": "string"
+  "code": "string",
+  "honor_lockout": false
 }
 ```
 
@@ -15676,6 +15860,7 @@ a session; to sign the user in afterwards, mint a sign-in token.
 |body|body|object|true|none|
 |» verification_id|body|string|true|The ID of the verification to check, such as one returned by prepare_verification|
 |» code|body|string|true|The verification code that was sent to the phone number|
+|» honor_lockout|body|boolean|false|When `true`, a wrong code counts toward the user's lockout, and a locked user is rejected with a `user_locked` error before the code is checked.<br>Has no effect on instances with user lockout disabled.<br>To enforce lockout across a password check and a sign-in token, set this parameter on both requests.|
 
 > Example responses
 
@@ -19206,6 +19391,189 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearerAuth
 </aside>
 
+## Update a session
+
+<a id="opIdUpdateSession"></a>
+
+> Code samples
+
+```bash
+curl https://api.clerk.com/v1/sessions/string \
+  -X PATCH \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "expire_at": "1970-01-01T00:00:00Z"
+  }'
+```
+
+`PATCH /sessions/{session_id}`
+
+Changes when a session expires. Use this to give one session a longer or shorter lifetime than the one configured for your instance, for example to keep a user signed in on a device they chose to remember.
+
+`expire_at` can exceed the instance's session lifetime. The change applies only to this session, so new sign-ins still start from the instance's session lifetime. If `expire_at` is later than the session's `abandon_at`, `abandon_at` moves to the same time. The inactivity timeout, if your instance has one, still applies.
+
+Only active and pending sessions can be updated. Expired, revoked, and other ended sessions can't be revived, and sessions with an actor, such as impersonation and agent sessions, can't be updated. To end a session immediately, revoke it instead.
+
+Take the session ID from the `sid` claim of a verified session token. Never take it from an unverified client request, or a user could change another user's session.
+
+Requires a plan that includes custom session duration.
+
+> Body parameter
+
+```json
+{
+  "expire_at": "1970-01-01T00:00:00Z"
+}
+```
+
+<h3 id="update-a-session-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|session_id|path|string|true|The ID of the session|
+|body|body|object|true|none|
+|» expire_at|body|string(date-time)|true|When the session should expire, as an RFC3339 datetime (for example `2030-10-20T10:00:27.645Z`).<br>Must be at least 5 minutes and at most 10 years from now.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "object": "session",
+  "id": "string",
+  "user_id": "string",
+  "client_id": "string",
+  "actor": {},
+  "status": "active",
+  "last_active_organization_id": "string",
+  "last_active_at": 0,
+  "latest_activity": {
+    "object": "string",
+    "id": "string",
+    "device_type": "string",
+    "is_mobile": true,
+    "browser_name": "string",
+    "browser_version": "string",
+    "ip_address": "string",
+    "city": "string",
+    "country": "string"
+  },
+  "expire_at": 0,
+  "abandon_at": 0,
+  "updated_at": 0,
+  "created_at": 0,
+  "tasks": [
+    {
+      "key": "string"
+    }
+  ]
+}
+```
+
+> 400 Response
+
+```json
+{
+  "errors": [
+    {
+      "message": "string",
+      "long_message": "string",
+      "code": "string",
+      "meta": {}
+    }
+  ],
+  "meta": {},
+  "clerk_trace_id": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "message": "string",
+      "long_message": "string",
+      "code": "string",
+      "meta": {}
+    }
+  ],
+  "meta": {},
+  "clerk_trace_id": "string"
+}
+```
+
+> 402 Response
+
+```json
+{
+  "errors": [
+    {
+      "message": "string",
+      "long_message": "string",
+      "code": "string",
+      "meta": {}
+    }
+  ],
+  "meta": {},
+  "clerk_trace_id": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "message": "string",
+      "long_message": "string",
+      "code": "string",
+      "meta": {}
+    }
+  ],
+  "meta": {},
+  "clerk_trace_id": "string"
+}
+```
+
+> 422 Response
+
+```json
+{
+  "errors": [
+    {
+      "message": "string",
+      "long_message": "string",
+      "code": "string",
+      "meta": {}
+    }
+  ],
+  "meta": {},
+  "clerk_trace_id": "string"
+}
+```
+
+<h3 id="update-a-session-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Success|[Session](#schemasession)|
+|400|Bad Request|Request was not successful|[ClerkErrors](#schemaclerkerrors)|
+|401|Unauthorized|Authentication invalid|[ClerkErrors](#schemaclerkerrors)|
+|402|Payment Required|Payment required|[ClerkErrors](#schemaclerkerrors)|
+|404|Not Found|Resource not found|[ClerkErrors](#schemaclerkerrors)|
+|422|Unprocessable Entity|Invalid request parameters|[ClerkErrors](#schemaclerkerrors)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
+</aside>
+
 ## Refresh a session
 
 <a id="opIdRefreshSession"></a>
@@ -19311,6 +19679,23 @@ are validation errors, which signals the SDKs to fall back to the handshake flow
 }
 ```
 
+> 403 Response
+
+```json
+{
+  "errors": [
+    {
+      "message": "string",
+      "long_message": "string",
+      "code": "string",
+      "meta": {}
+    }
+  ],
+  "meta": {},
+  "clerk_trace_id": "string"
+}
+```
+
 <h3 id="refresh-a-session-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
@@ -19318,6 +19703,7 @@ are validation errors, which signals the SDKs to fall back to the handshake flow
 |200|OK|Success|[SessionRefresh](#schemasessionrefresh)|
 |400|Bad Request|Request was not successful|[ClerkErrors](#schemaclerkerrors)|
 |401|Unauthorized|Authentication invalid|[ClerkErrors](#schemaclerkerrors)|
+|403|Forbidden|Authorization invalid|[ClerkErrors](#schemaclerkerrors)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -19441,8 +19827,12 @@ bearerAuth
 ```bash
 curl https://api.clerk.com/v1/sessions/string/revoke \
   -X POST \
+  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "reset_client_trust": false
+  }'
 ```
 
 `POST /sessions/{session_id}/revoke`
@@ -19450,11 +19840,21 @@ curl https://api.clerk.com/v1/sessions/string/revoke \
 Sets the status of a session as "revoked", which is an unauthenticated state.
 In multi-session mode, a revoked session will still be returned along with its client object, however the user will need to sign in again.
 
+> Body parameter
+
+```json
+{
+  "reset_client_trust": false
+}
+```
+
 <h3 id="revoke-a-session-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |session_id|path|string|true|The ID of the session|
+|body|body|object|false|none|
+|» reset_client_trust|body|boolean|false|When set to `true`, also clears Device Trust for the session's user and client, including when the session is already revoked.<br>Trust belongs to the user and client rather than the session, so this applies to the whole device, including any other session the user has on that client. Other users on the same client are unaffected.<br>For a session a native application received through hosted auth, this also clears the browser client the user signed in on.<br>The next sign-in by this user on the client counts as a new device: it can require a Device Trust challenge and sends the new device email.<br>A value that is not a boolean returns a 422 and does not revoke the session.|
 
 > Example responses
 
@@ -19544,6 +19944,23 @@ In multi-session mode, a revoked session will still be returned along with its c
 }
 ```
 
+> 422 Response
+
+```json
+{
+  "errors": [
+    {
+      "message": "string",
+      "long_message": "string",
+      "code": "string",
+      "meta": {}
+    }
+  ],
+  "meta": {},
+  "clerk_trace_id": "string"
+}
+```
+
 <h3 id="revoke-a-session-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
@@ -19552,6 +19969,7 @@ In multi-session mode, a revoked session will still be returned along with its c
 |400|Bad Request|Request was not successful|[ClerkErrors](#schemaclerkerrors)|
 |401|Unauthorized|Authentication invalid|[ClerkErrors](#schemaclerkerrors)|
 |404|Not Found|Resource not found|[ClerkErrors](#schemaclerkerrors)|
+|422|Unprocessable Entity|Invalid request parameters|[ClerkErrors](#schemaclerkerrors)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -19623,6 +20041,23 @@ Creates a session JSON Web Token (JWT) based on a session.
 }
 ```
 
+> 403 Response
+
+```json
+{
+  "errors": [
+    {
+      "message": "string",
+      "long_message": "string",
+      "code": "string",
+      "meta": {}
+    }
+  ],
+  "meta": {},
+  "clerk_trace_id": "string"
+}
+```
+
 > 404 Response
 
 ```json
@@ -19646,6 +20081,7 @@ Creates a session JSON Web Token (JWT) based on a session.
 |---|---|---|---|
 |200|OK|OK|Inline|
 |401|Unauthorized|Authentication invalid|[ClerkErrors](#schemaclerkerrors)|
+|403|Forbidden|Authorization invalid|[ClerkErrors](#schemaclerkerrors)|
 |404|Not Found|Resource not found|[ClerkErrors](#schemaclerkerrors)|
 
 <h3 id="create-a-session-token-responseschema">Response Schema</h3>
@@ -19734,6 +20170,23 @@ Creates a JSON Web Token (JWT) based on a session and a JWT Template name define
 }
 ```
 
+> 403 Response
+
+```json
+{
+  "errors": [
+    {
+      "message": "string",
+      "long_message": "string",
+      "code": "string",
+      "meta": {}
+    }
+  ],
+  "meta": {},
+  "clerk_trace_id": "string"
+}
+```
+
 > 404 Response
 
 ```json
@@ -19757,6 +20210,7 @@ Creates a JSON Web Token (JWT) based on a session and a JWT Template name define
 |---|---|---|---|
 |200|OK|OK|Inline|
 |401|Unauthorized|Authentication invalid|[ClerkErrors](#schemaclerkerrors)|
+|403|Forbidden|Authorization invalid|[ClerkErrors](#schemaclerkerrors)|
 |404|Not Found|Resource not found|[ClerkErrors](#schemaclerkerrors)|
 
 <h3 id="create-a-session-token-from-a-jwt-template-responseschema">Response Schema</h3>
@@ -23030,7 +23484,8 @@ curl https://api.clerk.com/v1/sign_in_tokens \
     "user_id": "string",
     "org_id": "string",
     "expires_in_seconds": 1,
-    "second_factor_verification": "fresh"
+    "second_factor_verification": "fresh",
+    "honor_lockout": false
   }'
 ```
 
@@ -23047,7 +23502,8 @@ You can optionally supply a different duration in seconds using the `expires_in_
   "user_id": "string",
   "org_id": "string",
   "expires_in_seconds": 1,
-  "second_factor_verification": "fresh"
+  "second_factor_verification": "fresh",
+  "honor_lockout": false
 }
 ```
 
@@ -23060,6 +23516,7 @@ You can optionally supply a different duration in seconds using the `expires_in_
 |» org_id|body|string \| null|false|The ID of the organization to activate when the user signs in.<br>Organizations must be enabled for the instance, and the user must be a member of the organization.|
 |» expires_in_seconds|body|integer \| null|false|Optional parameter to specify the life duration of the sign in token in seconds.<br>By default, the duration is 30 days, or 10 minutes when `second_factor_verification` is set.|
 |» second_factor_verification|body|string \| null|false|Optional parameter that lets a user with a second factor enabled complete the sign in without being prompted for it.<br>When omitted, redeeming the token completes only the first factor, and the user must still complete their second factor.<br>`fresh`: the second factor is treated as verified at sign in. The session token's `fva` claim reports a second factor age of 0.<br>`stale`: the second factor is treated as unverified. The session token's `fva` claim reports the maximum second factor age of 99999, so any reverification that requires a second factor prompts the user to complete one.<br>Has no effect for users without a second factor enabled.<br>A token created with this parameter signs in a user with a second factor enabled without prompting for it, so `expires_in_seconds` defaults to 10 minutes. We recommend keeping it short.|
+|» honor_lockout|body|boolean|false|When `true`, creating the token is rejected with a `user_locked` error if the user is locked, and so is redeeming it. A token rejected on redemption stays pending and can be redeemed once the user is unlocked.<br>Has no effect on instances with user lockout disabled.<br>To enforce lockout across a password check and a sign-in token, set this parameter on both requests.|
 
 #### Enumerated Values
 
@@ -23866,6 +24323,7 @@ times out. Cursor pagination requires the `created_at` ordering, which is the de
           "max_allowed_memberships": 0,
           "admin_delete_enabled": true,
           "self_serve_sso_enabled": true,
+          "self_serve_directory_sync_enabled": true,
           "public_metadata": {},
           "private_metadata": {},
           "created_by": "string",
@@ -23989,7 +24447,41 @@ times out. Cursor pagination requires the `created_at` ordering, which is the de
 }
 ```
 
+> 403 Response
+
+```json
+{
+  "errors": [
+    {
+      "message": "string",
+      "long_message": "string",
+      "code": "string",
+      "meta": {}
+    }
+  ],
+  "meta": {},
+  "clerk_trace_id": "string"
+}
+```
+
 > 422 Response
+
+```json
+{
+  "errors": [
+    {
+      "message": "string",
+      "long_message": "string",
+      "code": "string",
+      "meta": {}
+    }
+  ],
+  "meta": {},
+  "clerk_trace_id": "string"
+}
+```
+
+> 503 Response
 
 ```json
 {
@@ -24013,7 +24505,9 @@ times out. Cursor pagination requires the `created_at` ordering, which is the de
 |200|OK|Success|Inline|
 |400|Bad Request|Request was not successful|[ClerkErrors](#schemaclerkerrors)|
 |401|Unauthorized|Authentication invalid|[ClerkErrors](#schemaclerkerrors)|
+|403|Forbidden|Feature not enabled|[ClerkErrors](#schemaclerkerrors)|
 |422|Unprocessable Entity|Invalid request parameters|[ClerkErrors](#schemaclerkerrors)|
+|503|Service Unavailable|Request was not successful|[ClerkErrors](#schemaclerkerrors)|
 
 <h3 id="list-all-users-responseschema">Response Schema</h3>
 
@@ -24021,6 +24515,7 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|*oneOf*|[[User](#schemauser)]|false|none|none|
 |*anonymous*|[[User](#schemauser)]|false|none|none|
 
 <aside class="warning">
@@ -24467,6 +24962,7 @@ The following rate limit rules apply to this endpoint: 1000 requests per 10 seco
         "max_allowed_memberships": 0,
         "admin_delete_enabled": true,
         "self_serve_sso_enabled": true,
+        "self_serve_directory_sync_enabled": true,
         "public_metadata": {},
         "private_metadata": {},
         "created_by": "string",
@@ -25032,6 +25528,7 @@ Retrieve the details of a user
         "max_allowed_memberships": 0,
         "admin_delete_enabled": true,
         "self_serve_sso_enabled": true,
+        "self_serve_directory_sync_enabled": true,
         "public_metadata": {},
         "private_metadata": {},
         "created_by": "string",
@@ -25691,6 +26188,7 @@ You can also choose to sign the user out of all their active sessions on any dev
         "max_allowed_memberships": 0,
         "admin_delete_enabled": true,
         "self_serve_sso_enabled": true,
+        "self_serve_directory_sync_enabled": true,
         "public_metadata": {},
         "private_metadata": {},
         "created_by": "string",
@@ -25895,7 +26393,7 @@ curl https://api.clerk.com/v1/users/string/ban \
 
 `POST /users/{user_id}/ban`
 
-Marks the given user as banned, which means that all their sessions are revoked and they are not allowed to sign in again.
+Marks the given user as banned, which means that all their sessions and OAuth grants are revoked and they are not allowed to sign in again. Revoked OAuth grants are not restored if the user is unbanned.
 
 <h3 id="ban-a-user-parameters">Parameters</h3>
 
@@ -26174,6 +26672,7 @@ Marks the given user as banned, which means that all their sessions are revoked 
         "max_allowed_memberships": 0,
         "admin_delete_enabled": true,
         "self_serve_sso_enabled": true,
+        "self_serve_directory_sync_enabled": true,
         "public_metadata": {},
         "private_metadata": {},
         "created_by": "string",
@@ -26585,6 +27084,7 @@ Removes the ban mark from the given user.
         "max_allowed_memberships": 0,
         "admin_delete_enabled": true,
         "self_serve_sso_enabled": true,
+        "self_serve_directory_sync_enabled": true,
         "public_metadata": {},
         "private_metadata": {},
         "created_by": "string",
@@ -27014,6 +27514,7 @@ Marks multiple users as banned, which means that all their sessions are revoked 
           "max_allowed_memberships": 0,
           "admin_delete_enabled": true,
           "self_serve_sso_enabled": true,
+          "self_serve_directory_sync_enabled": true,
           "public_metadata": {},
           "private_metadata": {},
           "created_by": "string",
@@ -27470,6 +27971,7 @@ Removes the ban mark from multiple users.
           "max_allowed_memberships": 0,
           "admin_delete_enabled": true,
           "self_serve_sso_enabled": true,
+          "self_serve_directory_sync_enabled": true,
           "public_metadata": {},
           "private_metadata": {},
           "created_by": "string",
@@ -27909,6 +28411,7 @@ Lock duration can be configured in the instance's restrictions settings.
         "max_allowed_memberships": 0,
         "admin_delete_enabled": true,
         "self_serve_sso_enabled": true,
+        "self_serve_directory_sync_enabled": true,
         "public_metadata": {},
         "private_metadata": {},
         "created_by": "string",
@@ -28320,6 +28823,7 @@ Removes the lock from the given user.
         "max_allowed_memberships": 0,
         "admin_delete_enabled": true,
         "self_serve_sso_enabled": true,
+        "self_serve_directory_sync_enabled": true,
         "public_metadata": {},
         "private_metadata": {},
         "created_by": "string",
@@ -28778,6 +29282,7 @@ Some users cannot be merged. The request then fails with a 409 `user_merge_not_a
           "max_allowed_memberships": 0,
           "admin_delete_enabled": true,
           "self_serve_sso_enabled": true,
+          "self_serve_directory_sync_enabled": true,
           "public_metadata": {},
           "private_metadata": {},
           "created_by": "string",
@@ -29130,6 +29635,7 @@ Some users cannot be merged. The request then fails with a 409 `user_merge_not_a
           "max_allowed_memberships": 0,
           "admin_delete_enabled": true,
           "self_serve_sso_enabled": true,
+          "self_serve_directory_sync_enabled": true,
           "public_metadata": {},
           "private_metadata": {},
           "created_by": "string",
@@ -29614,6 +30120,7 @@ file: string
         "max_allowed_memberships": 0,
         "admin_delete_enabled": true,
         "self_serve_sso_enabled": true,
+        "self_serve_directory_sync_enabled": true,
         "public_metadata": {},
         "private_metadata": {},
         "created_by": "string",
@@ -30061,6 +30568,7 @@ Delete a user's profile image
         "max_allowed_memberships": 0,
         "admin_delete_enabled": true,
         "self_serve_sso_enabled": true,
+        "self_serve_directory_sync_enabled": true,
         "public_metadata": {},
         "private_metadata": {},
         "created_by": "string",
@@ -30500,6 +31008,7 @@ explicitly intend to overwrite a metadata field wholesale.
         "max_allowed_memberships": 0,
         "admin_delete_enabled": true,
         "self_serve_sso_enabled": true,
+        "self_serve_directory_sync_enabled": true,
         "public_metadata": {},
         "private_metadata": {},
         "created_by": "string",
@@ -30992,6 +31501,7 @@ You can remove metadata keys at any level by setting their value to `null`.
         "max_allowed_memberships": 0,
         "admin_delete_enabled": true,
         "self_serve_sso_enabled": true,
+        "self_serve_directory_sync_enabled": true,
         "public_metadata": {},
         "private_metadata": {},
         "created_by": "string",
@@ -32255,6 +32765,7 @@ curl https://api.clerk.com/v1/users/string/oauth_access_tokens/string \
 
 Fetch the corresponding OAuth access token for a user that has previously authenticated with a particular OAuth provider.
 For OAuth 2.0, if the access token has expired and we have a corresponding refresh token, the access token will be refreshed transparently the new one will be returned.
+If another request is still refreshing the token, this endpoint may return HTTP 409 with the `resource_locked` error code. Retry the request after a short delay.
 
 <h3 id="retrieve-the-oauth-access-token-of-a-user-parameters">Parameters</h3>
 
@@ -32324,6 +32835,23 @@ For OAuth 2.0, if the access token has expired and we have a corresponding refre
 }
 ```
 
+> 409 Response
+
+```json
+{
+  "errors": [
+    {
+      "message": "string",
+      "long_message": "string",
+      "code": "string",
+      "meta": {}
+    }
+  ],
+  "meta": {},
+  "clerk_trace_id": "string"
+}
+```
+
 > 422 Response
 
 ```json
@@ -32348,6 +32876,7 @@ For OAuth 2.0, if the access token has expired and we have a corresponding refre
 |200|OK|Success|[OAuthAccessToken](#schemaoauthaccesstoken)|
 |400|Bad Request|Request was not successful|[ClerkErrors](#schemaclerkerrors)|
 |404|Not Found|Resource not found|[ClerkErrors](#schemaclerkerrors)|
+|409|Conflict|Conflict|[ClerkErrors](#schemaclerkerrors)|
 |422|Unprocessable Entity|Invalid request parameters|[ClerkErrors](#schemaclerkerrors)|
 
 <aside class="warning">
@@ -32409,6 +32938,7 @@ Retrieve a paginated list of the user's organization memberships
         "max_allowed_memberships": 0,
         "admin_delete_enabled": true,
         "self_serve_sso_enabled": true,
+        "self_serve_directory_sync_enabled": true,
         "public_metadata": {},
         "private_metadata": {},
         "created_by": "string",
@@ -32918,6 +33448,7 @@ If the user does not have a password, the user is returned unchanged and no pass
         "max_allowed_memberships": 0,
         "admin_delete_enabled": true,
         "self_serve_sso_enabled": true,
+        "self_serve_directory_sync_enabled": true,
         "public_metadata": {},
         "private_metadata": {},
         "created_by": "string",
@@ -33120,7 +33651,8 @@ curl https://api.clerk.com/v1/users/string/verify_password \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
-    "password": "string"
+    "password": "string",
+    "honor_lockout": false
   }'
 ```
 
@@ -33133,7 +33665,8 @@ Useful for custom auth flows and re-verification.
 
 ```json
 {
-  "password": "string"
+  "password": "string",
+  "honor_lockout": false
 }
 ```
 
@@ -33144,6 +33677,7 @@ Useful for custom auth flows and re-verification.
 |user_id|path|string|true|The ID of the user for whom to verify the password|
 |body|body|object|false|none|
 |» password|body|string|true|The user password to verify|
+|» honor_lockout|body|boolean|false|When `true`, a wrong password counts toward the user's lockout, and a locked user is rejected with a `user_locked` error before the password is checked.<br>Has no effect on instances with user lockout disabled.<br>To enforce lockout across a password check and a sign-in token, set this parameter on both requests.|
 
 > Example responses
 
@@ -33178,8 +33712,10 @@ Useful for custom auth flows and re-verification.
 |---|---|---|---|
 |200|OK|The provided password was correct.|Inline|
 |400|Bad Request|The user does not have a password set.|None|
+|403|Forbidden|The user is locked. Returned only when `honor_lockout` is `true`.|None|
 |404|Not Found|The user does not exist.|None|
 |422|Unprocessable Entity|The provided password was incorrect.|None|
+|429|Too Many Requests|Another password check for the user is in progress. Nothing was counted and the check can be retried.|None|
 |500|Internal Server Error|Request was not successful|[ClerkErrors](#schemaclerkerrors)|
 
 <h3 id="verify-the-password-of-a-user-responseschema">Response Schema</h3>
@@ -33208,7 +33744,8 @@ curl https://api.clerk.com/v1/users/string/verify_totp \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
-    "code": "string"
+    "code": "string",
+    "honor_lockout": false
   }'
 ```
 
@@ -33223,7 +33760,8 @@ Useful for custom auth flows and re-verification.
 
 ```json
 {
-  "code": "string"
+  "code": "string",
+  "honor_lockout": false
 }
 ```
 
@@ -33234,6 +33772,7 @@ Useful for custom auth flows and re-verification.
 |user_id|path|string|true|The ID of the user for whom to verify the TOTP|
 |body|body|object|false|none|
 |» code|body|string|true|The TOTP or backup code to verify|
+|» honor_lockout|body|boolean|false|When `true`, a wrong code counts toward the user's lockout, and a locked user is rejected with a `user_locked` error before the code is checked.<br>Has no effect on instances with user lockout disabled.<br>To enforce lockout across a password check and a sign-in token, set this parameter on both requests.|
 
 > Example responses
 
@@ -33269,8 +33808,10 @@ Useful for custom auth flows and re-verification.
 |---|---|---|---|
 |200|OK|The provided TOTP or backup code was correct.|Inline|
 |400|Bad Request|The user does not have TOTP configured for their account.|None|
+|403|Forbidden|The user is locked. Returned only when `honor_lockout` is `true`.|None|
 |404|Not Found|The user does not exist.|None|
 |422|Unprocessable Entity|The provided TOTP or backup code was incorrect.|None|
+|429|Too Many Requests|Another code check for the user is in progress. Nothing was counted and the check can be retried.|None|
 |500|Internal Server Error|Request was not successful|[ClerkErrors](#schemaclerkerrors)|
 
 <h3 id="verify-a-totp-or-backup-code-for-a-user-responseschema">Response Schema</h3>
@@ -36331,6 +36872,996 @@ including its verification status, enrollment mode, and associated counts.
 |401|Unauthorized|Authentication invalid|[ClerkErrors](#schemaclerkerrors)|
 |403|Forbidden|Authorization invalid|[ClerkErrors](#schemaclerkerrors)|
 |422|Unprocessable Entity|Invalid request parameters|[ClerkErrors](#schemaclerkerrors)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
+</aside>
+
+<h1 id="clerk-backend-api-logs">Logs</h1>
+
+Logs record events in your application, such as sign-ins, sign-ups, and
+user updates. Use these endpoints to look up and debug specific events,
+by hand or through an agent.
+
+Logs only include requests that reach Clerk. They don't include requests
+blocked before they reach Clerk (for example, by firewall rules, bot
+protection, or rate limits), requests that load Clerk's JavaScript, or
+errors in the browser. An empty result doesn't mean there was no traffic.
+
+Syncing or exporting logs through these endpoints isn't allowed. To copy
+every log into your own systems, use log drains, which deliver logs to a
+storage bucket you own and are part of the
+[Enterprise plan](https://clerk.com/pricing).
+
+Requests to these endpoints are rate limited. A request over a limit gets
+a `429` response with the error code `too_many_requests`. Viewing logs in
+the Clerk Dashboard doesn't count toward the limits.
+
+Results only go back as far as your plan's log retention. See
+[Plans and retention](https://clerk.com/docs/guides/dashboard/logs/overview#plans-and-retention).
+
+## List all logs
+
+<a id="opIdListLogs"></a>
+
+> Code samples
+
+```bash
+curl https://api.clerk.com/v1/logs \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /logs`
+
+Returns a list of logs for the authenticated instance.
+
+Use it to find specific events, such as one user's failed sign-ins or
+every event in a trace. Narrow the search with filters and a time range
+(`event_time_after` and `event_time_before`), and stop paginating once
+you have what you need. Syncing or exporting logs through this endpoint
+isn't allowed; use log drains, part of the Enterprise plan, instead.
+
+Results are paginated with cursors. The `next_page_status` field in the
+cursor object says whether more results exist:
+- `"true"`: more results are available. Pass `starting_after` to get the
+  next page.
+- `"unknown"`: to keep latency predictable, the server read only part of
+  the time range, reported as `searched_from` and `searched_to`. More
+  matches may exist in the rest of the range; pass `starting_after` to
+  keep searching.
+- `"false"`: no more results exist within the requested range.
+
+Results never go back further than the plan's log retention.
+`retention_floor` in the cursor object is the oldest timestamp the plan
+can return. `retention_limit_reached` is `true` when `next_page_status`
+is `"false"` because the search ended at that floor, either because
+`event_time_after` asked for older events or because it was omitted.
+
+<h3 id="list-all-logs-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|limit|query|integer|false|Applies a limit to the number of results returned.<br>Can be used for paginating the results together with `starting_after` or `ending_before`.<br>At most 100 in the grouped view (the default), and up to 500 with `view=flat`.|
+|starting_after|query|string|false|A cursor for pagination. Provide the starting_after cursor from a previous response to fetch the next page.|
+|ending_before|query|string|false|A cursor for pagination. Provide the ending_before cursor from a previous response to fetch the previous page.<br>Only with `view=flat`, since the grouped view only pages forward.|
+|subject|query|string|false|Filter logs by subject: the ID of the resource the event is about,<br>such as a user, an organization, or the instance when nothing more<br>specific applies.|
+|actor|query|string|false|Filter logs by actor: the ID of whoever triggered the event, such as<br>a user, a Clerk Dashboard user, an instance key, or an API key. In<br>an impersonated session, the actor is the impersonated user.|
+|user_id|query|string|false|Filter logs to events involving one user, as either the actor or<br>the subject. Takes the user's ID.<br><br>Returns a 422 if the value is not a user ID (use `identifier` to<br>filter by email address, phone number, username, or web3 wallet) or<br>if `actor`, `subject`, or `identifier` is also set.|
+|identifier|query|string|false|Filter logs to events where the user is the actor or the subject.<br>Takes an identifier associated with a user: an email address, phone<br>number, username, or web3 wallet.<br><br>The value must exactly match an identifier stored on a user; it is<br>not a partial or fuzzy match. Verification status is not considered,<br>so an identifier associated with several users matches events for<br>all of them. If it is associated with no user in the instance, the<br>response is an empty page, not an error.<br><br>Returns a 422 if the value is a user ID (use `user_id` instead) or<br>if `actor`, `subject`, or `user_id` is also set.|
+|trace_id|query|string|false|Filter logs by trace ID (32 hex characters).|
+|type|query|string|false|Filter logs by event type (e.g., `sign_in.completed`). A trailing<br>`*` matches an event-type family by prefix (e.g. `sign_in.*`<br>matches `sign_in.created`, `sign_in.completed`, ...); the wildcard<br>is only allowed as the last character.|
+|client_id|query|string|false|Filter logs by client ID.|
+|session_id|query|string|false|Filter logs to events produced by one session: the session that was<br>authenticated on the request behind the event.<br><br>This is the acting session, not the session an event is about. A<br>sign-in creates a session on a request that had none, so<br>`session.created` carries no `session_id` and names the new session<br>in its payload instead. Use `payload_filter[session_id]` with a<br>`type` to filter on that.<br><br>Events with no authenticated session behind them, such as sign-in,<br>sign-up and verification requests, or anything originating from the<br>Backend API or a background job, carry no `session_id` and never<br>match.|
+|impersonator_user_id|query|string|false|Filter logs by impersonator user ID.|
+|ip_address|query|string|false|Filter logs by the client IP address recorded on the event.|
+|payload_filter|query|object|false|Exact-match filters on event payload fields, keyed by the field's<br>dot-path: `payload_filter[user_id]=user_123` or<br>`payload_filter[captcha_attempt_payload.provider]=turnstile`.<br><br>Requires `type`. Fields are validated against the payload schema of<br>that event type (discoverable via `GET /logs/schemas`); for a<br>trailing-`*` type the valid fields are those common to every<br>matching event type. An unknown field returns a 422 listing the<br>allowed fields.<br><br>One value per field — repeating a field is a 422. Values must parse<br>as the field's type (a non-numeric value against an integer field<br>is a 422) and match exactly; an event whose payload lacks the field<br>never matches. At most 10 filters per request, paths at most 4<br>segments deep, values at most 256 characters.<br><br>Payload filters join the same `filter_match` group as the string<br>filters above.|
+|payload_fields|query|string|false|Comma-separated payload field dot-paths to include per returned<br>log: `payload_fields=user_id,strategy`. Requires `type`, and the<br>fields are validated against that event type's payload schema the<br>same way as `payload_filter` (with the same caps).<br><br>Each returned log gains a `payload` object containing only the<br>requested fields, keyed by their dot-paths, with fields absent<br>from an event's payload omitted. Without this parameter, list<br>responses carry no `payload` key.<br><br>Not allowed together with `filter_match=any`: the fields are<br>validated against `type`'s schema, and with `any` the type filter<br>no longer constrains every returned row.|
+|filter_match|query|string|false|Controls how `subject`, `type`, `actor`, `user_id`, `identifier`,<br>`trace_id`, `client_id`, `session_id`, `impersonator_user_id`,<br>`ip_address`, and `payload_filter` entries<br>are combined: `all` (default) requires every supplied filter to<br>match; `any` returns events that match at least one of the<br>supplied filters. `event_time_after` and `event_time_before` are<br>always ANDed with the (possibly OR-ed) string filter group.|
+|event_time_after|query|integer(int64)|false|Sets a lower time boundary for the query (Unix timestamp in milliseconds).<br>Only events on or after this timestamp are eligible to be returned.<br><br>This parameter constrains the search range but does not guarantee that<br>every matching event within the range is returned in a single response.<br>The server may use an internal time window smaller than the requested range<br>to keep query latency predictable. When this happens, `next_page_status`<br>will be `"unknown"` and a continuation cursor is provided so the caller<br>can paginate through the full range. The window that was actually read<br>is reported as `searched_from` and `searched_to`.|
+|event_time_before|query|integer(int64)|false|Sets an upper time boundary for the query (Unix timestamp in milliseconds).<br>Only events on or before this timestamp are eligible to be returned.<br><br>This parameter constrains the search range but does not guarantee that<br>every matching event within the range is returned in a single response.<br>The server may use an internal time window smaller than the requested range<br>to keep query latency predictable. When this happens, `next_page_status`<br>will be `"unknown"` and a continuation cursor is provided so the caller<br>can paginate through the full range.|
+|end_user_facing_only|query|boolean|false|**Deprecated.** Deprecated. This parameter has no effect.|
+|view|query|string|false|`grouped`, the default, lists each event group (a flow such as a<br>sign-in) as a single item, next to the logs that belong to no<br>group, newest first: a group sorts by when it started, a log by<br>when it happened. Groups and logs are told apart by `object`.<br>`flat` lists every log on its own.<br><br>Parameters that only work in one view are rejected with a 422<br>rather than ignored:<br>- The grouped view only pages forward: `ending_before` is not<br>  allowed, and `starting_after` takes only a cursor from a grouped<br>  page.<br>- The flat list takes only flat cursors.<br>- `group_type` and `status` aren't allowed with `view=flat`.<br>- The grouped view takes a `limit` of at most 100, since each group<br>  brings its first logs along.<br><br>In the grouped view, event filters keep the groups with at least<br>one matching log, each group lists only its matching logs, and time<br>filters pick groups by when they started.|
+|group_type|query|[string]|false|Not allowed with `view=flat`. Group types to keep, e.g. `sign_in`,<br>repeated for several (`group_type=sign_in&group_type=sign_up`).<br>Drops the logs outside any group.|
+|status|query|[string]|false|Not allowed with `view=flat`. Group statuses to keep, e.g. `failed`,<br>repeated for several (`status=failed&status=completed`). Keeps only<br>groups with one of those statuses and drops the logs outside any<br>group. A status is `completed`, `failed` or `abandoned`. A group<br>that is still going has no status and never matches.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|filter_match|all|
+|filter_match|any|
+|view|flat|
+|view|grouped|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": [
+    {
+      "object": "log",
+      "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "event_time": 0,
+      "actor": "string",
+      "actor_type": "dashboard_user",
+      "impersonator": {
+        "user_id": "string"
+      },
+      "subject": "string",
+      "type": "string",
+      "client_id": "string",
+      "source": "string",
+      "session_id": "string",
+      "trace_id": "string",
+      "span_id": "string",
+      "parent_span_id": "string",
+      "event_context": {
+        "environment": {
+          "type": "string",
+          "application": {
+            "id": "string",
+            "name": "string"
+          },
+          "domain": {
+            "id": "string",
+            "name": "string"
+          },
+          "primary_domain": {
+            "id": "string",
+            "name": "string"
+          }
+        },
+        "device": {
+          "ip_address": "string",
+          "user_agent": "string",
+          "browser": {
+            "name": "string",
+            "version": "string"
+          },
+          "device_type": "string",
+          "is_mobile": true,
+          "location": {
+            "city": "string",
+            "country": "string",
+            "country_code": "US"
+          },
+          "clerk_js_version": "string",
+          "is_native": true
+        }
+      },
+      "group_id": "string",
+      "group_type": "string",
+      "group_started_at": 0,
+      "payload": {}
+    }
+  ],
+  "cursor": {
+    "starting_after": "string",
+    "ending_before": "string",
+    "has_next_page": true,
+    "next_page_status": "true",
+    "retention_limit_reached": true,
+    "retention_days": 0,
+    "retention_floor": 0,
+    "searched_from": 0,
+    "searched_to": 0
+  }
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "message": "string",
+      "long_message": "string",
+      "code": "string",
+      "meta": {}
+    }
+  ],
+  "meta": {},
+  "clerk_trace_id": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "errors": [
+    {
+      "message": "string",
+      "long_message": "string",
+      "code": "string",
+      "meta": {}
+    }
+  ],
+  "meta": {},
+  "clerk_trace_id": "string"
+}
+```
+
+> 422 Response
+
+```json
+{
+  "errors": [
+    {
+      "message": "string",
+      "long_message": "string",
+      "code": "string",
+      "meta": {}
+    }
+  ],
+  "meta": {},
+  "clerk_trace_id": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "errors": [
+    {
+      "message": "string",
+      "long_message": "string",
+      "code": "string",
+      "meta": {}
+    }
+  ],
+  "meta": {},
+  "clerk_trace_id": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "errors": [
+    {
+      "message": "string",
+      "long_message": "string",
+      "code": "string",
+      "meta": {}
+    }
+  ],
+  "meta": {},
+  "clerk_trace_id": "string"
+}
+```
+
+<h3 id="list-all-logs-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|A list of log entries with cursor-based pagination.|Inline|
+|401|Unauthorized|Authentication invalid|[ClerkErrors](#schemaclerkerrors)|
+|403|Forbidden|Authorization invalid|[ClerkErrors](#schemaclerkerrors)|
+|422|Unprocessable Entity|Invalid request parameters|[ClerkErrors](#schemaclerkerrors)|
+|429|Too Many Requests|Too many requests|[ClerkErrors](#schemaclerkerrors)|
+|503|Service Unavailable|Application log storage is not configured or is temporarily unavailable.|[ClerkErrors](#schemaclerkerrors)|
+
+<h3 id="list-all-logs-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[[Log](#schemalog) \| [LogGroup](#schemaloggroup)]|true|none|The log entries. In the grouped view (the default), each<br>item is either an event group or a log entry outside any<br>group, told apart by `object`. With `view=flat`, every item<br>is a log entry.|
+|» *oneOf*|[Log](#schemalog)|false|none|A log entry representing a recorded event.|
+|» *oneOf*|[LogGroup](#schemaloggroup)|false|none|An event group in the grouped log list: the events of one flow, such<br>as a sign-in, shown as a single item.|
+|cursor|object|false|none|Cursor information for pagination.|
+|» starting_after|string \| null|false|none|Cursor to fetch the next page of results.|
+|» ending_before|string \| null|false|none|Cursor to fetch the previous page of results.|
+|» has_next_page|boolean|false|none|Deprecated: use next_page_status instead. If true, more results may be fetched using the starting_after cursor. True when next_page_status is "true", or when it is "unknown" and the page returned data.|
+|» next_page_status|string|false|none|Pagination status. "true" means more results exist, "false" means no more results, "unknown" means the query was time-windowed and more results may exist beyond the window.|
+|» retention_limit_reached|boolean|false|none|When true, next_page_status is "false" because event_time_after was clamped to the plan's retention floor. Extending event_time_after further back will not yield additional results.|
+|» retention_days|integer|false|none|The plan's log retention window, in days. Events older than this are not kept and cannot be returned at any page size.|
+|» retention_floor|integer(int64)|false|none|The oldest timestamp this plan can return, in Unix milliseconds: `retention_days` before the time the request was served. `searched_from` is never earlier than this, whatever `event_time_after` asked for.<br><br>Compare your own `event_time_after` against it to tell whether part of the range you asked for is unavailable.|
+|» searched_from|integer(int64)|false|none|Lower bound of the time range this page was actually read from, in Unix milliseconds.<br><br>A request is not served by scanning the whole range you ask for. The endpoint picks a sub-window of it per request and pages through your range one sub-window at a time, which is why `next_page_status` can be `"unknown"` on a page that looks short. `searched_from` and `searched_to` are that sub-window, so you can tell where in your requested range a page sits without decoding the cursor.<br><br>Never earlier than `event_time_after`, or than the plan's retention floor when that is later.|
+|» searched_to|integer(int64)|false|none|Upper bound of the time range this page was actually read from, in Unix milliseconds. See `searched_from`.<br><br>On a first page with no `event_time_before`, this sits a few minutes ahead of the current time on purpose: events can arrive with timestamps marginally ahead of the service clock, and this is the bound the query ran with.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» next_page_status|true|
+|» next_page_status|false|
+|» next_page_status|unknown|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
+</aside>
+
+## Retrieve the payload schema of a log event type
+
+<a id="opIdGetLogSchema"></a>
+
+> Code samples
+
+```bash
+curl 'https://api.clerk.com/v1/logs/schemas?type=sign_in.*' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /logs/schemas`
+
+Returns the payload schema of a log event type: which fields its
+payload carries, addressed by the dot-paths that the `payload_filter`
+and `payload_fields` parameters of the list endpoint accept.
+
+`type` accepts a concrete event type (`sign_in.completed`), a
+trailing-`*` wildcard (`sign_in.*`), or a bare family name (`sign_in`,
+normalized to `sign_in.*` when no concrete type matches — the
+response's `event_type`
+echoes the normalized form). For wildcard lookups the fields are the
+intersection across every matching event type, and `matched_event_types`
+lists what the intersection was computed over; per-type metadata
+(description, severity, docs_group) is present only for concrete types.
+
+<h3 id="retrieve-the-payload-schema-of-a-log-event-type-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|type|query|string|true|The event type to describe: concrete (`sign_in.completed`),<br>trailing-`*` wildcard (`sign_in.*`), or bare family name<br>(`sign_in`). Unknown types return a 422. A bare `*` is not<br>accepted; to list every event type, use `GET /logs/types`.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "object": "log_schema",
+  "event_type": "sign_in.completed",
+  "description": "Sign in was completed",
+  "severity": "success",
+  "docs_group": "Sign-in events",
+  "matched_event_types": [
+    "string"
+  ],
+  "fields": [
+    {
+      "path": "user_id",
+      "type": "string",
+      "optional": true,
+      "enum": [
+        "string"
+      ]
+    }
+  ]
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "message": "string",
+      "long_message": "string",
+      "code": "string",
+      "meta": {}
+    }
+  ],
+  "meta": {},
+  "clerk_trace_id": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "errors": [
+    {
+      "message": "string",
+      "long_message": "string",
+      "code": "string",
+      "meta": {}
+    }
+  ],
+  "meta": {},
+  "clerk_trace_id": "string"
+}
+```
+
+> 422 Response
+
+```json
+{
+  "errors": [
+    {
+      "message": "string",
+      "long_message": "string",
+      "code": "string",
+      "meta": {}
+    }
+  ],
+  "meta": {},
+  "clerk_trace_id": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "errors": [
+    {
+      "message": "string",
+      "long_message": "string",
+      "code": "string",
+      "meta": {}
+    }
+  ],
+  "meta": {},
+  "clerk_trace_id": "string"
+}
+```
+
+<h3 id="retrieve-the-payload-schema-of-a-log-event-type-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The payload schema of a log event type.|[LogSchema](#schemalogschema)|
+|401|Unauthorized|Authentication invalid|[ClerkErrors](#schemaclerkerrors)|
+|403|Forbidden|Authorization invalid|[ClerkErrors](#schemaclerkerrors)|
+|422|Unprocessable Entity|Invalid request parameters|[ClerkErrors](#schemaclerkerrors)|
+|429|Too Many Requests|Too many requests|[ClerkErrors](#schemaclerkerrors)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
+</aside>
+
+## List all log event types
+
+<a id="opIdListLogTypes"></a>
+
+> Code samples
+
+```bash
+curl https://api.clerk.com/v1/logs/types \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /logs/types`
+
+Returns every event type the instance can see in its logs, each with
+its payload schema, sorted by `event_type`. Each entry is the same as
+the response of `GET /logs/schemas` for that type.
+
+Use it to discover the values that the `type` parameter of the list
+endpoint accepts, and the payload fields each one carries. The list is
+not paginated. Event types whose logs are enabled per instance (such as
+`sms.*` and `email.*`) are listed only once enabled.
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "object": "list",
+  "data": [
+    {
+      "object": "log_schema",
+      "event_type": "sign_in.completed",
+      "description": "Sign in was completed",
+      "severity": "success",
+      "docs_group": "Sign-in events",
+      "matched_event_types": [
+        "string"
+      ],
+      "fields": [
+        {
+          "path": "user_id",
+          "type": "string",
+          "optional": true,
+          "enum": [
+            "string"
+          ]
+        }
+      ]
+    }
+  ],
+  "total_count": 0
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "message": "string",
+      "long_message": "string",
+      "code": "string",
+      "meta": {}
+    }
+  ],
+  "meta": {},
+  "clerk_trace_id": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "errors": [
+    {
+      "message": "string",
+      "long_message": "string",
+      "code": "string",
+      "meta": {}
+    }
+  ],
+  "meta": {},
+  "clerk_trace_id": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "errors": [
+    {
+      "message": "string",
+      "long_message": "string",
+      "code": "string",
+      "meta": {}
+    }
+  ],
+  "meta": {},
+  "clerk_trace_id": "string"
+}
+```
+
+<h3 id="list-all-log-event-types-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Every log event type the instance can see, with its payload schema.|[LogSchemaList](#schemalogschemalist)|
+|401|Unauthorized|Authentication invalid|[ClerkErrors](#schemaclerkerrors)|
+|403|Forbidden|Authorization invalid|[ClerkErrors](#schemaclerkerrors)|
+|429|Too Many Requests|Too many requests|[ClerkErrors](#schemaclerkerrors)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
+</aside>
+
+## List an event group's logs
+
+<a id="opIdListLogGroupEvents"></a>
+
+> Code samples
+
+```bash
+curl https://api.clerk.com/v1/logs/groups/string/events \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /logs/groups/{group_id}/events`
+
+Returns the log entries of one event group past the ones a grouped
+page of `GET /logs` includes, oldest first, for loading
+more of a group. Accepts the same event filters as listing logs, so a
+filtered page keeps loading only matching events.
+
+<h3 id="list-an-event-groups-logs-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|group_id|path|string|true|The ID of the event group, e.g. a sign-in ID.|
+|started_at|query|integer(int64)|false|When the group started (Unix timestamp in milliseconds), the<br>`started_at` of the group item. Optional: when omitted, it is<br>looked up from `group_id`, and a group that can't be found or is<br>past the retention window returns a 404.|
+|limit|query|integer|false|Applies a limit to the number of results returned.|
+|starting_after|query|string|false|The group's `events_cursor` from the grouped view, or the<br>`starting_after` cursor this endpoint returned. Only forward<br>pagination is supported.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": [
+    {
+      "object": "log",
+      "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "event_time": 0,
+      "actor": "string",
+      "actor_type": "dashboard_user",
+      "impersonator": {
+        "user_id": "string"
+      },
+      "subject": "string",
+      "type": "string",
+      "client_id": "string",
+      "source": "string",
+      "session_id": "string",
+      "trace_id": "string",
+      "span_id": "string",
+      "parent_span_id": "string",
+      "event_context": {
+        "environment": {
+          "type": "string",
+          "application": {
+            "id": "string",
+            "name": "string"
+          },
+          "domain": {
+            "id": "string",
+            "name": "string"
+          },
+          "primary_domain": {
+            "id": "string",
+            "name": "string"
+          }
+        },
+        "device": {
+          "ip_address": "string",
+          "user_agent": "string",
+          "browser": {
+            "name": "string",
+            "version": "string"
+          },
+          "device_type": "string",
+          "is_mobile": true,
+          "location": {
+            "city": "string",
+            "country": "string",
+            "country_code": "US"
+          },
+          "clerk_js_version": "string",
+          "is_native": true
+        }
+      },
+      "group_id": "string",
+      "group_type": "string",
+      "group_started_at": 0,
+      "payload": {}
+    }
+  ],
+  "cursor": {
+    "starting_after": "string",
+    "ending_before": "string",
+    "has_next_page": true,
+    "next_page_status": "true",
+    "retention_limit_reached": true,
+    "retention_days": 0,
+    "retention_floor": 0,
+    "searched_from": 0,
+    "searched_to": 0
+  }
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "message": "string",
+      "long_message": "string",
+      "code": "string",
+      "meta": {}
+    }
+  ],
+  "meta": {},
+  "clerk_trace_id": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "errors": [
+    {
+      "message": "string",
+      "long_message": "string",
+      "code": "string",
+      "meta": {}
+    }
+  ],
+  "meta": {},
+  "clerk_trace_id": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "message": "string",
+      "long_message": "string",
+      "code": "string",
+      "meta": {}
+    }
+  ],
+  "meta": {},
+  "clerk_trace_id": "string"
+}
+```
+
+> 422 Response
+
+```json
+{
+  "errors": [
+    {
+      "message": "string",
+      "long_message": "string",
+      "code": "string",
+      "meta": {}
+    }
+  ],
+  "meta": {},
+  "clerk_trace_id": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "errors": [
+    {
+      "message": "string",
+      "long_message": "string",
+      "code": "string",
+      "meta": {}
+    }
+  ],
+  "meta": {},
+  "clerk_trace_id": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "errors": [
+    {
+      "message": "string",
+      "long_message": "string",
+      "code": "string",
+      "meta": {}
+    }
+  ],
+  "meta": {},
+  "clerk_trace_id": "string"
+}
+```
+
+<h3 id="list-an-event-groups-logs-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|A list of log entries with cursor-based pagination.|Inline|
+|401|Unauthorized|Authentication invalid|[ClerkErrors](#schemaclerkerrors)|
+|403|Forbidden|Authorization invalid|[ClerkErrors](#schemaclerkerrors)|
+|404|Not Found|Resource not found|[ClerkErrors](#schemaclerkerrors)|
+|422|Unprocessable Entity|Invalid request parameters|[ClerkErrors](#schemaclerkerrors)|
+|429|Too Many Requests|Too many requests|[ClerkErrors](#schemaclerkerrors)|
+|503|Service Unavailable|Application log storage is not configured or is temporarily unavailable.|[ClerkErrors](#schemaclerkerrors)|
+
+<h3 id="list-an-event-groups-logs-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[[Log](#schemalog) \| [LogGroup](#schemaloggroup)]|true|none|The log entries. In the grouped view (the default), each<br>item is either an event group or a log entry outside any<br>group, told apart by `object`. With `view=flat`, every item<br>is a log entry.|
+|» *oneOf*|[Log](#schemalog)|false|none|A log entry representing a recorded event.|
+|» *oneOf*|[LogGroup](#schemaloggroup)|false|none|An event group in the grouped log list: the events of one flow, such<br>as a sign-in, shown as a single item.|
+|cursor|object|false|none|Cursor information for pagination.|
+|» starting_after|string \| null|false|none|Cursor to fetch the next page of results.|
+|» ending_before|string \| null|false|none|Cursor to fetch the previous page of results.|
+|» has_next_page|boolean|false|none|Deprecated: use next_page_status instead. If true, more results may be fetched using the starting_after cursor. True when next_page_status is "true", or when it is "unknown" and the page returned data.|
+|» next_page_status|string|false|none|Pagination status. "true" means more results exist, "false" means no more results, "unknown" means the query was time-windowed and more results may exist beyond the window.|
+|» retention_limit_reached|boolean|false|none|When true, next_page_status is "false" because event_time_after was clamped to the plan's retention floor. Extending event_time_after further back will not yield additional results.|
+|» retention_days|integer|false|none|The plan's log retention window, in days. Events older than this are not kept and cannot be returned at any page size.|
+|» retention_floor|integer(int64)|false|none|The oldest timestamp this plan can return, in Unix milliseconds: `retention_days` before the time the request was served. `searched_from` is never earlier than this, whatever `event_time_after` asked for.<br><br>Compare your own `event_time_after` against it to tell whether part of the range you asked for is unavailable.|
+|» searched_from|integer(int64)|false|none|Lower bound of the time range this page was actually read from, in Unix milliseconds.<br><br>A request is not served by scanning the whole range you ask for. The endpoint picks a sub-window of it per request and pages through your range one sub-window at a time, which is why `next_page_status` can be `"unknown"` on a page that looks short. `searched_from` and `searched_to` are that sub-window, so you can tell where in your requested range a page sits without decoding the cursor.<br><br>Never earlier than `event_time_after`, or than the plan's retention floor when that is later.|
+|» searched_to|integer(int64)|false|none|Upper bound of the time range this page was actually read from, in Unix milliseconds. See `searched_from`.<br><br>On a first page with no `event_time_before`, this sits a few minutes ahead of the current time on purpose: events can arrive with timestamps marginally ahead of the service clock, and this is the bound the query ran with.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» next_page_status|true|
+|» next_page_status|false|
+|» next_page_status|unknown|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
+</aside>
+
+## Retrieve a single log
+
+<a id="opIdGetLog"></a>
+
+> Code samples
+
+```bash
+curl https://api.clerk.com/v1/logs/1776207110588%3A019d8e31-a1bc-7e07-9347-0fd20b25c475 \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /logs/{event_time_and_id}`
+
+Returns a single log entry by its composite key ({event_time_ms}:{event_id}).
+Unlike the list endpoint, this returns the full payload for the event.
+
+<h3 id="retrieve-a-single-log-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|event_time_and_id|path|string|true|Composite identifier in the format `{event_time_ms}:{event_id}`, where<br>`event_time_ms` is the event timestamp as a Unix timestamp in milliseconds<br>and `event_id` is the UUID of the event.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "object": "log",
+  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "event_time": 0,
+  "actor": "string",
+  "actor_type": "dashboard_user",
+  "impersonator": {
+    "user_id": "string"
+  },
+  "subject": "string",
+  "type": "string",
+  "client_id": "string",
+  "source": "string",
+  "session_id": "string",
+  "trace_id": "string",
+  "span_id": "string",
+  "parent_span_id": "string",
+  "event_context": {
+    "environment": {
+      "type": "string",
+      "application": {
+        "id": "string",
+        "name": "string"
+      },
+      "domain": {
+        "id": "string",
+        "name": "string"
+      },
+      "primary_domain": {
+        "id": "string",
+        "name": "string"
+      }
+    },
+    "device": {
+      "ip_address": "string",
+      "user_agent": "string",
+      "browser": {
+        "name": "string",
+        "version": "string"
+      },
+      "device_type": "string",
+      "is_mobile": true,
+      "location": {
+        "city": "string",
+        "country": "string",
+        "country_code": "US"
+      },
+      "clerk_js_version": "string",
+      "is_native": true
+    }
+  },
+  "group_id": "string",
+  "group_type": "string",
+  "group_started_at": 0,
+  "payload": {}
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "message": "string",
+      "long_message": "string",
+      "code": "string",
+      "meta": {}
+    }
+  ],
+  "meta": {},
+  "clerk_trace_id": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "errors": [
+    {
+      "message": "string",
+      "long_message": "string",
+      "code": "string",
+      "meta": {}
+    }
+  ],
+  "meta": {},
+  "clerk_trace_id": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "message": "string",
+      "long_message": "string",
+      "code": "string",
+      "meta": {}
+    }
+  ],
+  "meta": {},
+  "clerk_trace_id": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "errors": [
+    {
+      "message": "string",
+      "long_message": "string",
+      "code": "string",
+      "meta": {}
+    }
+  ],
+  "meta": {},
+  "clerk_trace_id": "string"
+}
+```
+
+<h3 id="retrieve-a-single-log-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|A single log entry with full payload.|[LogWithPayload](#schemalogwithpayload)|
+|401|Unauthorized|Authentication invalid|[ClerkErrors](#schemaclerkerrors)|
+|403|Forbidden|Authorization invalid|[ClerkErrors](#schemaclerkerrors)|
+|404|Not Found|Resource not found|[ClerkErrors](#schemaclerkerrors)|
+|429|Too Many Requests|Too many requests|[ClerkErrors](#schemaclerkerrors)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -40165,8 +41696,8 @@ bearerAuth
 |last_active_organization_id|string \| null|false|none|none|
 |last_active_at|integer|true|none|none|
 |latest_activity|[SessionActivityResponse](#schemasessionactivityresponse)|false|none|none|
-|expire_at|integer(int64)|true|none|Unix timestamp in milliseconds of expiration. Zero means no maximum lifetime.<br>|
-|abandon_at|integer(int64)|true|none|Unix timestamp in milliseconds of abandonment. Zero means no abandonment deadline.<br>|
+|expire_at|integer(int64)|true|none|Unix timestamp in milliseconds of expiration.<br>|
+|abandon_at|integer(int64)|true|none|Unix timestamp in milliseconds of abandonment.<br>|
 |updated_at|integer(int64)|true|none|Unix timestamp of last update.<br>|
 |created_at|integer(int64)|true|none|Unix timestamp of creation.<br>|
 |tasks|[[SessionTask](#schemasessiontask)]|false|none|none|
@@ -40196,6 +41727,7 @@ bearerAuth
 {
   "object": "client",
   "id": "string",
+  "revoked_at": 0,
   "session_ids": [
     "string"
   ],
@@ -40246,6 +41778,7 @@ bearerAuth
 |---|---|---|---|---|
 |object|string|true|none|String representing the object's type. Objects of the same type share the same value.<br>|
 |id|string|true|none|String representing the identifier of the session.<br>|
+|revoked_at|integer(int64) \| null|false|none|Unix timestamp in milliseconds when this client was revoked.|
 |session_ids|[string]|true|none|none|
 |sessions|[[Session](#schemasession)]|true|none|none|
 |sign_in_id|string \| null|true|none|none|
@@ -40315,6 +41848,145 @@ bearerAuth
 |errors|[[ClerkError](#schemaclerkerror)]|true|none|none|
 |meta|object|false|none|none|
 |clerk_trace_id|string|false|none|none|
+
+<h2 id="tocS_Session-2">Session-2</h2>
+<!-- backwards compatibility -->
+<a id="schemasession-2"></a>
+<a id="schema_Session-2"></a>
+<a id="tocSsession-2"></a>
+<a id="tocssession-2"></a>
+
+```json
+{
+  "object": "session",
+  "id": "string",
+  "user_id": "string",
+  "client_id": "string",
+  "actor": {},
+  "status": "active",
+  "last_active_organization_id": "string",
+  "last_active_at": 0,
+  "latest_activity": {
+    "object": "string",
+    "id": "string",
+    "device_type": "string",
+    "is_mobile": true,
+    "browser_name": "string",
+    "browser_version": "string",
+    "ip_address": "string",
+    "city": "string",
+    "country": "string"
+  },
+  "expire_at": 0,
+  "abandon_at": 0,
+  "updated_at": 0,
+  "created_at": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|object|string|true|none|String representing the object's type. Objects of the same type share the same value.<br>|
+|id|string|true|none|none|
+|user_id|string|true|none|none|
+|client_id|string|true|none|none|
+|actor|object \| null|false|none|none|
+|status|string|true|none|none|
+|last_active_organization_id|string \| null|false|none|none|
+|last_active_at|integer|true|none|none|
+|latest_activity|[SessionActivityResponse](#schemasessionactivityresponse)|false|none|none|
+|expire_at|integer(int64)|true|none|Unix timestamp in milliseconds of expiration.<br>|
+|abandon_at|integer(int64)|true|none|Unix timestamp in milliseconds of abandonment.<br>|
+|updated_at|integer(int64)|true|none|Unix timestamp of last update.<br>|
+|created_at|integer(int64)|true|none|Unix timestamp of creation.<br>|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|object|session|
+|status|active|
+|status|revoked|
+|status|ended|
+|status|expired|
+|status|removed|
+|status|abandoned|
+|status|replaced|
+
+<h2 id="tocS_Client-2">Client-2</h2>
+<!-- backwards compatibility -->
+<a id="schemaclient-2"></a>
+<a id="schema_Client-2"></a>
+<a id="tocSclient-2"></a>
+<a id="tocsclient-2"></a>
+
+```json
+{
+  "object": "client",
+  "id": "string",
+  "revoked_at": 0,
+  "session_ids": [
+    "string"
+  ],
+  "sessions": [
+    {
+      "object": "session",
+      "id": "string",
+      "user_id": "string",
+      "client_id": "string",
+      "actor": {},
+      "status": "active",
+      "last_active_organization_id": "string",
+      "last_active_at": 0,
+      "latest_activity": {
+        "object": "string",
+        "id": "string",
+        "device_type": "string",
+        "is_mobile": true,
+        "browser_name": "string",
+        "browser_version": "string",
+        "ip_address": "string",
+        "city": "string",
+        "country": "string"
+      },
+      "expire_at": 0,
+      "abandon_at": 0,
+      "updated_at": 0,
+      "created_at": 0
+    }
+  ],
+  "sign_in_id": "string",
+  "sign_up_id": "string",
+  "last_active_session_id": "string",
+  "last_authentication_strategy": "string",
+  "updated_at": 0,
+  "created_at": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|object|string|true|none|String representing the object's type. Objects of the same type share the same value.<br>|
+|id|string|true|none|String representing the identifier of the session.<br>|
+|revoked_at|integer(int64) \| null|false|none|Unix timestamp in milliseconds when this client was revoked.|
+|session_ids|[string]|true|none|none|
+|sessions|[[Session-2](#schemasession-2)]|true|none|none|
+|sign_in_id|string \| null|true|none|none|
+|sign_up_id|string \| null|true|none|none|
+|last_active_session_id|string \| null|true|none|Last active session_id.<br>|
+|last_authentication_strategy|string \| null|true|none|The authentication strategy that was last used to authenticate the user on this client.<br>|
+|updated_at|integer(int64)|true|none|Unix timestamp of last update.<br>|
+|created_at|integer(int64)|true|none|Unix timestamp of creation.<br>|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|object|client|
 
 <h2 id="tocS_verification_otp">verification_otp</h2>
 <!-- backwards compatibility -->
@@ -41585,6 +43257,7 @@ A reverification scoped to a session. Returned so a resource server can validate
   "max_allowed_memberships": 0,
   "admin_delete_enabled": true,
   "self_serve_sso_enabled": true,
+  "self_serve_directory_sync_enabled": true,
   "public_metadata": {},
   "private_metadata": {},
   "created_by": "string",
@@ -41611,6 +43284,7 @@ A reverification scoped to a session. Returned so a resource server can validate
 |max_allowed_memberships|integer|true|none|none|
 |admin_delete_enabled|boolean|true|none|none|
 |self_serve_sso_enabled|boolean|false|none|Whether this organization can configure self-serve enterprise SSO.<br>|
+|self_serve_directory_sync_enabled|boolean|false|none|Whether this organization can configure self-serve Directory Sync (SCIM).<br>|
 |public_metadata|object|true|none|none|
 |private_metadata|object|false|none|none|
 |created_by|string|false|none|none|
@@ -41695,6 +43369,7 @@ An organization membership with public user data populated
     "max_allowed_memberships": 0,
     "admin_delete_enabled": true,
     "self_serve_sso_enabled": true,
+    "self_serve_directory_sync_enabled": true,
     "public_metadata": {},
     "private_metadata": {},
     "created_by": "string",
@@ -42058,6 +43733,7 @@ Metadata describing a user's linkage to a directory. Included in user responses 
         "max_allowed_memberships": 0,
         "admin_delete_enabled": true,
         "self_serve_sso_enabled": true,
+        "self_serve_directory_sync_enabled": true,
         "public_metadata": {},
         "private_metadata": {},
         "created_by": "string",
@@ -44448,6 +46124,7 @@ Each of the supported hashers expects the incoming digest to be in a particular 
         "max_allowed_memberships": 0,
         "admin_delete_enabled": true,
         "self_serve_sso_enabled": true,
+        "self_serve_directory_sync_enabled": true,
         "public_metadata": {},
         "private_metadata": {},
         "created_by": "string",
@@ -45536,6 +47213,7 @@ Per-instance SMS communication settings, including the SMS country blocklist.
       "max_allowed_memberships": 0,
       "admin_delete_enabled": true,
       "self_serve_sso_enabled": true,
+      "self_serve_directory_sync_enabled": true,
       "public_metadata": {},
       "private_metadata": {},
       "created_by": "string",
@@ -45599,6 +47277,7 @@ Mappings from source role keys to destination role keys for role reassignment
   "max_allowed_memberships": 0,
   "admin_delete_enabled": true,
   "self_serve_sso_enabled": true,
+  "self_serve_directory_sync_enabled": true,
   "public_metadata": {},
   "private_metadata": {},
   "created_by": "string",
@@ -45626,6 +47305,7 @@ Mappings from source role keys to destination role keys for role reassignment
 |max_allowed_memberships|integer|true|none|none|
 |admin_delete_enabled|boolean|true|none|none|
 |self_serve_sso_enabled|boolean|false|none|Whether this organization can configure self-serve enterprise SSO.<br>|
+|self_serve_directory_sync_enabled|boolean|false|none|Whether this organization can configure self-serve Directory Sync (SCIM).<br>|
 |public_metadata|object|true|none|none|
 |private_metadata|object|false|none|none|
 |created_by|string|false|none|none|
@@ -48866,3 +50546,712 @@ A role set defines a collection of roles that can be assigned to organization me
 |---|---|---|---|---|
 |data|[[RoleSet](#schemaroleset)]|true|none|none|
 |total_count|integer(int64)|true|none|Total number of role sets|
+
+<h2 id="tocS_LogApplicationContext">LogApplicationContext</h2>
+<!-- backwards compatibility -->
+<a id="schemalogapplicationcontext"></a>
+<a id="schema_LogApplicationContext"></a>
+<a id="tocSlogapplicationcontext"></a>
+<a id="tocslogapplicationcontext"></a>
+
+```json
+{
+  "id": "string",
+  "name": "string"
+}
+```
+
+Application context information.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string \| null|false|none|The application ID.|
+|name|string \| null|false|none|The application name.|
+
+<h2 id="tocS_LogDomainContext">LogDomainContext</h2>
+<!-- backwards compatibility -->
+<a id="schemalogdomaincontext"></a>
+<a id="schema_LogDomainContext"></a>
+<a id="tocSlogdomaincontext"></a>
+<a id="tocslogdomaincontext"></a>
+
+```json
+{
+  "id": "string",
+  "name": "string"
+}
+```
+
+Domain context information.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string \| null|false|none|The domain ID.|
+|name|string \| null|false|none|The domain name.|
+
+<h2 id="tocS_LogEnvironmentContext">LogEnvironmentContext</h2>
+<!-- backwards compatibility -->
+<a id="schemalogenvironmentcontext"></a>
+<a id="schema_LogEnvironmentContext"></a>
+<a id="tocSlogenvironmentcontext"></a>
+<a id="tocslogenvironmentcontext"></a>
+
+```json
+{
+  "type": "string",
+  "application": {
+    "id": "string",
+    "name": "string"
+  },
+  "domain": {
+    "id": "string",
+    "name": "string"
+  },
+  "primary_domain": {
+    "id": "string",
+    "name": "string"
+  }
+}
+```
+
+Environment context for the log event.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string \| null|false|none|The environment type (e.g., "development", "production").|
+|application|[LogApplicationContext](#schemalogapplicationcontext)|false|none|Application context information.|
+|domain|[LogDomainContext](#schemalogdomaincontext)|false|none|Domain context information.|
+|primary_domain|[LogDomainContext](#schemalogdomaincontext)|false|none|Domain context information.|
+
+<h2 id="tocS_LogBrowserContext">LogBrowserContext</h2>
+<!-- backwards compatibility -->
+<a id="schemalogbrowsercontext"></a>
+<a id="schema_LogBrowserContext"></a>
+<a id="tocSlogbrowsercontext"></a>
+<a id="tocslogbrowsercontext"></a>
+
+```json
+{
+  "name": "string",
+  "version": "string"
+}
+```
+
+Browser information.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string \| null|false|none|The browser name.|
+|version|string \| null|false|none|The browser version.|
+
+<h2 id="tocS_LogLocationContext">LogLocationContext</h2>
+<!-- backwards compatibility -->
+<a id="schemaloglocationcontext"></a>
+<a id="schema_LogLocationContext"></a>
+<a id="tocSloglocationcontext"></a>
+<a id="tocsloglocationcontext"></a>
+
+```json
+{
+  "city": "string",
+  "country": "string",
+  "country_code": "US"
+}
+```
+
+Geographic location information.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|city|string \| null|false|none|The city name.|
+|country|string \| null|false|none|The country, as recorded for the event.|
+|country_code|string|false|none|The ISO 3166-1 alpha-2 code of `country`. Omitted when the<br>country cannot be resolved to a known code.|
+
+<h2 id="tocS_LogDeviceContext">LogDeviceContext</h2>
+<!-- backwards compatibility -->
+<a id="schemalogdevicecontext"></a>
+<a id="schema_LogDeviceContext"></a>
+<a id="tocSlogdevicecontext"></a>
+<a id="tocslogdevicecontext"></a>
+
+```json
+{
+  "ip_address": "string",
+  "user_agent": "string",
+  "browser": {
+    "name": "string",
+    "version": "string"
+  },
+  "device_type": "string",
+  "is_mobile": true,
+  "location": {
+    "city": "string",
+    "country": "string",
+    "country_code": "US"
+  },
+  "clerk_js_version": "string",
+  "is_native": true
+}
+```
+
+Device information for the log event.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|ip_address|string \| null|false|none|The IP address of the client.|
+|user_agent|string \| null|false|none|The user agent string of the client.|
+|browser|[LogBrowserContext](#schemalogbrowsercontext)|false|none|Browser information.|
+|device_type|string \| null|false|none|The type of device (e.g., "desktop", "mobile", "tablet").|
+|is_mobile|boolean \| null|false|none|Whether the device is a mobile device.|
+|location|[LogLocationContext](#schemaloglocationcontext)|false|none|Geographic location information.|
+|clerk_js_version|string \| null|false|none|The version of Clerk.js used by the client.|
+|is_native|boolean \| null|false|none|Whether the client is a native application.|
+
+<h2 id="tocS_LogContext">LogContext</h2>
+<!-- backwards compatibility -->
+<a id="schemalogcontext"></a>
+<a id="schema_LogContext"></a>
+<a id="tocSlogcontext"></a>
+<a id="tocslogcontext"></a>
+
+```json
+{
+  "environment": {
+    "type": "string",
+    "application": {
+      "id": "string",
+      "name": "string"
+    },
+    "domain": {
+      "id": "string",
+      "name": "string"
+    },
+    "primary_domain": {
+      "id": "string",
+      "name": "string"
+    }
+  },
+  "device": {
+    "ip_address": "string",
+    "user_agent": "string",
+    "browser": {
+      "name": "string",
+      "version": "string"
+    },
+    "device_type": "string",
+    "is_mobile": true,
+    "location": {
+      "city": "string",
+      "country": "string",
+      "country_code": "US"
+    },
+    "clerk_js_version": "string",
+    "is_native": true
+  }
+}
+```
+
+Context information about the environment and device where the event occurred.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|environment|[LogEnvironmentContext](#schemalogenvironmentcontext)|false|none|Environment context for the log event.|
+|device|[LogDeviceContext](#schemalogdevicecontext)|false|none|Device information for the log event.|
+
+<h2 id="tocS_Log">Log</h2>
+<!-- backwards compatibility -->
+<a id="schemalog"></a>
+<a id="schema_Log"></a>
+<a id="tocSlog"></a>
+<a id="tocslog"></a>
+
+```json
+{
+  "object": "log",
+  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "event_time": 0,
+  "actor": "string",
+  "actor_type": "dashboard_user",
+  "impersonator": {
+    "user_id": "string"
+  },
+  "subject": "string",
+  "type": "string",
+  "client_id": "string",
+  "source": "string",
+  "session_id": "string",
+  "trace_id": "string",
+  "span_id": "string",
+  "parent_span_id": "string",
+  "event_context": {
+    "environment": {
+      "type": "string",
+      "application": {
+        "id": "string",
+        "name": "string"
+      },
+      "domain": {
+        "id": "string",
+        "name": "string"
+      },
+      "primary_domain": {
+        "id": "string",
+        "name": "string"
+      }
+    },
+    "device": {
+      "ip_address": "string",
+      "user_agent": "string",
+      "browser": {
+        "name": "string",
+        "version": "string"
+      },
+      "device_type": "string",
+      "is_mobile": true,
+      "location": {
+        "city": "string",
+        "country": "string",
+        "country_code": "US"
+      },
+      "clerk_js_version": "string",
+      "is_native": true
+    }
+  },
+  "group_id": "string",
+  "group_type": "string",
+  "group_started_at": 0,
+  "payload": {}
+}
+```
+
+A log entry representing a recorded event.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|object|string|true|none|String representing the object's type. Always "log".|
+|id|string(uuid)|true|none|Unique identifier for the log event.|
+|event_time|integer(int64)|true|none|The timestamp when the event occurred (Unix timestamp in milliseconds).|
+|actor|string|true|none|The ID of whoever triggered the event. `actor_type` says what kind<br>of principal it is: an end user, a Clerk Dashboard user, an<br>instance key, an API key, an integration, or Clerk itself. In an<br>impersonated session, it is the impersonated user and<br>`impersonator` holds whoever started the impersonation.|
+|actor_type|string|false|none|The kind of principal the `actor` identifies, classified when the<br>event was recorded: `user` (an end user of your application),<br>`dashboard_user` (a member of your Clerk Dashboard workspace),<br>`instance_key`, `api_key`, `integration`, or `clerk_system`.|
+|impersonator|object \| null|false|none|The impersonator that performed the action.|
+|subject|string|true|none|The ID of the resource the event is about, such as a user or an<br>organization. A change to a child record, such as an email address<br>or a membership, uses the ID of its parent user or organization.<br>Events that affect several resources use their lowest common<br>parent, and side effects use the primary resource's subject. The<br>instance ID is used when nothing more specific applies.<br>Events in the same flow can have different subjects; use<br>`group_id` to follow a flow.|
+|type|string|true|none|The type of the log event.|
+|client_id|string \| null|false|none|The client ID of the request. Set on FAPI requests, unset on BAPI requests.|
+|source|string \| null|true|none|The source service that generated the event.|
+|session_id|string \| null|false|none|The ID of the session the event occurred in, if any.|
+|trace_id|string|true|none|Trace ID for distributed tracing (32 hex characters).|
+|span_id|string|true|none|Span ID for distributed tracing (16 hex characters).|
+|parent_span_id|string \| null|false|none|Parent span ID for hierarchical tracing.|
+|event_context|[LogContext](#schemalogcontext)|true|none|Context information about the environment and device where the event occurred.|
+|group_id|string \| null|false|none|The ID of the event group (a flow such as a sign-in) the event<br>belongs to, e.g. a sign-in ID. Null for an event outside any group.|
+|group_type|string \| null|false|none|The kind of event group the event belongs to, e.g. `sign_in`. Null for an event outside any group.|
+|group_started_at|integer(int64) \| null|false|none|When the event's group started (Unix timestamp in milliseconds). Null for an event outside any group.|
+|payload|object|false|none|Present only when the request selected payload fields via<br>`payload_fields`. Partial by construction: contains just the<br>requested fields, keyed by their dot-paths, with fields absent<br>from this event's payload omitted (an empty object when the<br>event carries none of them). Use the single-event endpoint for<br>the full payload.|
+
+<h2 id="tocS_LogGroup">LogGroup</h2>
+<!-- backwards compatibility -->
+<a id="schemaloggroup"></a>
+<a id="schema_LogGroup"></a>
+<a id="tocSloggroup"></a>
+<a id="tocsloggroup"></a>
+
+```json
+{
+  "object": "log_group",
+  "group_id": "string",
+  "group_type": "string",
+  "started_at": 0,
+  "event_count": 0,
+  "matched_event_count": 0,
+  "status": "string",
+  "status_label": "string",
+  "subject": "string",
+  "first_event": {
+    "object": "log",
+    "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "event_time": 0,
+    "actor": "string",
+    "actor_type": "dashboard_user",
+    "impersonator": {
+      "user_id": "string"
+    },
+    "subject": "string",
+    "type": "string",
+    "client_id": "string",
+    "source": "string",
+    "session_id": "string",
+    "trace_id": "string",
+    "span_id": "string",
+    "parent_span_id": "string",
+    "event_context": {
+      "environment": {
+        "type": "string",
+        "application": {
+          "id": "string",
+          "name": "string"
+        },
+        "domain": {
+          "id": "string",
+          "name": "string"
+        },
+        "primary_domain": {
+          "id": "string",
+          "name": "string"
+        }
+      },
+      "device": {
+        "ip_address": "string",
+        "user_agent": "string",
+        "browser": {
+          "name": "string",
+          "version": "string"
+        },
+        "device_type": "string",
+        "is_mobile": true,
+        "location": {
+          "city": "string",
+          "country": "string",
+          "country_code": "US"
+        },
+        "clerk_js_version": "string",
+        "is_native": true
+      }
+    },
+    "group_id": "string",
+    "group_type": "string",
+    "group_started_at": 0,
+    "payload": {}
+  },
+  "events": [
+    {
+      "object": "log",
+      "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "event_time": 0,
+      "actor": "string",
+      "actor_type": "dashboard_user",
+      "impersonator": {
+        "user_id": "string"
+      },
+      "subject": "string",
+      "type": "string",
+      "client_id": "string",
+      "source": "string",
+      "session_id": "string",
+      "trace_id": "string",
+      "span_id": "string",
+      "parent_span_id": "string",
+      "event_context": {
+        "environment": {
+          "type": "string",
+          "application": {
+            "id": "string",
+            "name": "string"
+          },
+          "domain": {
+            "id": "string",
+            "name": "string"
+          },
+          "primary_domain": {
+            "id": "string",
+            "name": "string"
+          }
+        },
+        "device": {
+          "ip_address": "string",
+          "user_agent": "string",
+          "browser": {
+            "name": "string",
+            "version": "string"
+          },
+          "device_type": "string",
+          "is_mobile": true,
+          "location": {
+            "city": "string",
+            "country": "string",
+            "country_code": "US"
+          },
+          "clerk_js_version": "string",
+          "is_native": true
+        }
+      },
+      "group_id": "string",
+      "group_type": "string",
+      "group_started_at": 0,
+      "payload": {}
+    }
+  ],
+  "has_more_events": true,
+  "events_cursor": "string"
+}
+```
+
+An event group in the grouped log list: the events of one flow, such
+as a sign-in, shown as a single item.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|object|string|true|none|String representing the object's type. Always "log_group".|
+|group_id|string|true|none|The group's ID, e.g. a sign-in ID.|
+|group_type|string|true|none|The kind of flow the group collects, e.g. `sign_in`.|
+|started_at|integer(int64)|true|none|When the flow started (Unix timestamp in milliseconds). The list sorts groups by it.|
+|event_count|integer(int64)|true|none|The number of events in the group.|
+|matched_event_count|integer(int64)|false|none|How many of the group's events matched the request's event filters. Present only when event filters were applied.|
+|status|string \| null|true|none|How the flow ended: `completed`, `failed`, or `abandoned` when<br>nothing concluded it before its abandon deadline passed (a<br>sign-in or sign-up nobody finished). Null while the flow is still<br>going.|
+|status_label|string \| null|true|none|A display label for `status`. Null when `status` is.|
+|subject|string|true|none|Who the flow is about: the user ID of the latest event in the<br>group whose subject is a user, or, when the flow never<br>identified a user, the first event's subject (usually the<br>instance ID). Unlike `first_event.subject`, it names the user<br>even when the flow started before the user was known.|
+|first_event|object \| null|true|none|The group's first log, even when event filters left it out of<br>`events`, for showing how the flow started (subject, IP,<br>location).|
+|events|[[Log](#schemalog)]|true|none|The group's first events, oldest first. Only events matching the request's event filters when any were applied.|
+|has_more_events|boolean|true|none|Whether the group has more events than `events` holds. Load them from the group events endpoint.|
+|events_cursor|string \| null|true|none|When `has_more_events` is true, the `starting_after` to pass to the group events endpoint to load the rest. Null otherwise.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|object|log_group|
+
+<h2 id="tocS_LogSchemaField">LogSchemaField</h2>
+<!-- backwards compatibility -->
+<a id="schemalogschemafield"></a>
+<a id="schema_LogSchemaField"></a>
+<a id="tocSlogschemafield"></a>
+<a id="tocslogschemafield"></a>
+
+```json
+{
+  "path": "user_id",
+  "type": "string",
+  "optional": true,
+  "enum": [
+    "string"
+  ]
+}
+```
+
+One payload field, addressed by dot-path.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|path|string|true|none|The field's dot-path (nested fields use dots, e.g.<br>`captcha_attempt_payload.provider`) — the exact string<br>`payload_filter` and `payload_fields` accept.|
+|type|string|true|none|The field's data type.|
+|optional|boolean|true|none|Whether the field is optional in the payload. Note that even<br>non-optional fields can be absent from a stored event when they<br>held their zero value at record time.|
+|enum|[string]|false|none|The accepted values, present for enum-backed fields (which have<br>type `string`).|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|string|
+|type|boolean|
+|type|integer|
+|type|number|
+
+<h2 id="tocS_LogSchema">LogSchema</h2>
+<!-- backwards compatibility -->
+<a id="schemalogschema"></a>
+<a id="schema_LogSchema"></a>
+<a id="tocSlogschema"></a>
+<a id="tocslogschema"></a>
+
+```json
+{
+  "object": "log_schema",
+  "event_type": "sign_in.completed",
+  "description": "Sign in was completed",
+  "severity": "success",
+  "docs_group": "Sign-in events",
+  "matched_event_types": [
+    "string"
+  ],
+  "fields": [
+    {
+      "path": "user_id",
+      "type": "string",
+      "optional": true,
+      "enum": [
+        "string"
+      ]
+    }
+  ]
+}
+```
+
+The payload schema of a log event type: the fields its payload
+carries, addressed by the dot-paths that `payload_filter` and
+`payload_fields` accept. Field entries use JSON Schema vocabulary
+(`type` is the data type, `enum` the accepted values); the event
+type identifier lives in `event_type`.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|object|string|true|none|String representing the object's type. Always "log_schema".|
+|event_type|string|true|none|The event type this schema describes: a concrete type<br>(`sign_in.completed`) or a trailing-`*` wildcard (`sign_in.*`).<br>A bare family name in the request (`sign_in`) is normalized to<br>its wildcard form here.|
+|description|string|false|none|Human-readable description of the event type. Present only for<br>concrete types.|
+|severity|string|false|none|Severity of the event type (e.g. `info`, `success`,<br>`warning_external`). Present only for concrete types.|
+|docs_group|string|false|none|The documentation group the event type belongs to. Present only<br>for concrete types.|
+|matched_event_types|[string]|false|none|The concrete event types a wildcard expanded to. Present only<br>for wildcard lookups, whose `fields` are the intersection across<br>these types.|
+|fields|[[LogSchemaField](#schemalogschemafield)]|true|none|none|
+
+<h2 id="tocS_LogSchemaList">LogSchemaList</h2>
+<!-- backwards compatibility -->
+<a id="schemalogschemalist"></a>
+<a id="schema_LogSchemaList"></a>
+<a id="tocSlogschemalist"></a>
+<a id="tocslogschemalist"></a>
+
+```json
+{
+  "object": "list",
+  "data": [
+    {
+      "object": "log_schema",
+      "event_type": "sign_in.completed",
+      "description": "Sign in was completed",
+      "severity": "success",
+      "docs_group": "Sign-in events",
+      "matched_event_types": [
+        "string"
+      ],
+      "fields": [
+        {
+          "path": "user_id",
+          "type": "string",
+          "optional": true,
+          "enum": [
+            "string"
+          ]
+        }
+      ]
+    }
+  ],
+  "total_count": 0
+}
+```
+
+The schema of every log event type the instance can see, sorted by
+`event_type`. Not paginated.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|object|string|true|none|String representing the object's type. Always "list".|
+|data|[[LogSchema](#schemalogschema)]|true|none|One schema per concrete event type, each the same as the<br>response to a lookup by that type.|
+|total_count|integer(int64)|true|none|Total number of event type schemas in the list.|
+
+<h2 id="tocS_LogWithPayload">LogWithPayload</h2>
+<!-- backwards compatibility -->
+<a id="schemalogwithpayload"></a>
+<a id="schema_LogWithPayload"></a>
+<a id="tocSlogwithpayload"></a>
+<a id="tocslogwithpayload"></a>
+
+```json
+{
+  "object": "log",
+  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "event_time": 0,
+  "actor": "string",
+  "actor_type": "dashboard_user",
+  "impersonator": {
+    "user_id": "string"
+  },
+  "subject": "string",
+  "type": "string",
+  "client_id": "string",
+  "source": "string",
+  "session_id": "string",
+  "trace_id": "string",
+  "span_id": "string",
+  "parent_span_id": "string",
+  "event_context": {
+    "environment": {
+      "type": "string",
+      "application": {
+        "id": "string",
+        "name": "string"
+      },
+      "domain": {
+        "id": "string",
+        "name": "string"
+      },
+      "primary_domain": {
+        "id": "string",
+        "name": "string"
+      }
+    },
+    "device": {
+      "ip_address": "string",
+      "user_agent": "string",
+      "browser": {
+        "name": "string",
+        "version": "string"
+      },
+      "device_type": "string",
+      "is_mobile": true,
+      "location": {
+        "city": "string",
+        "country": "string",
+        "country_code": "US"
+      },
+      "clerk_js_version": "string",
+      "is_native": true
+    }
+  },
+  "group_id": "string",
+  "group_type": "string",
+  "group_started_at": 0,
+  "payload": {}
+}
+```
+
+A log entry with the full event payload. Returned by the
+single-event endpoint. List responses use Log, whose payload is
+absent unless specific fields were requested via `payload_fields`.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|object|string|true|none|String representing the object's type. Always "log".|
+|id|string(uuid)|true|none|Unique identifier for the log event.|
+|event_time|integer(int64)|true|none|The timestamp when the event occurred (Unix timestamp in milliseconds).|
+|actor|string|true|none|The ID of whoever triggered the event. `actor_type` says what kind<br>of principal it is: an end user, a Clerk Dashboard user, an<br>instance key, an API key, an integration, or Clerk itself. In an<br>impersonated session, it is the impersonated user and<br>`impersonator` holds whoever started the impersonation.|
+|actor_type|string|false|none|The kind of principal the `actor` identifies, classified when the<br>event was recorded: `user` (an end user of your application),<br>`dashboard_user` (a member of your Clerk Dashboard workspace),<br>`instance_key`, `api_key`, `integration`, or `clerk_system`.|
+|impersonator|object \| null|false|none|The impersonator that performed the action.|
+|subject|string|true|none|The ID of the resource the event is about, such as a user or an<br>organization. A change to a child record, such as an email address<br>or a membership, uses the ID of its parent user or organization.<br>Events that affect several resources use their lowest common<br>parent, and side effects use the primary resource's subject. The<br>instance ID is used when nothing more specific applies.<br>Events in the same flow can have different subjects; use<br>`group_id` to follow a flow.|
+|type|string|true|none|The type of the log event.|
+|client_id|string \| null|false|none|The client ID of the request. Set on FAPI requests, unset on BAPI requests.|
+|source|string \| null|true|none|The source service that generated the event.|
+|session_id|string \| null|false|none|The ID of the session the event occurred in, if any.|
+|trace_id|string|true|none|Trace ID for distributed tracing (32 hex characters).|
+|span_id|string|true|none|Span ID for distributed tracing (16 hex characters).|
+|parent_span_id|string \| null|false|none|Parent span ID for hierarchical tracing.|
+|event_context|[LogContext](#schemalogcontext)|true|none|Context information about the environment and device where the event occurred.|
+|group_id|string \| null|false|none|The ID of the event group (a flow such as a sign-in) the event<br>belongs to, e.g. a sign-in ID. Null for an event outside any group.|
+|group_type|string \| null|false|none|The kind of event group the event belongs to, e.g. `sign_in`. Null for an event outside any group.|
+|group_started_at|integer(int64) \| null|false|none|When the event's group started (Unix timestamp in milliseconds). Null for an event outside any group.|
+|payload|object|true|none|Present only when the request selected payload fields via<br>`payload_fields`. Partial by construction: contains just the<br>requested fields, keyed by their dot-paths, with fields absent<br>from this event's payload omitted (an empty object when the<br>event carries none of them). Use the single-event endpoint for<br>the full payload.|
+|payload|object|true|none|Additional event-specific data.|

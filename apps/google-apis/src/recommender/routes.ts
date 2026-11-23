@@ -131,6 +131,258 @@ const GoogleCloudRecommenderV1beta1ImpactSchema = z
   })
   .openapi('GoogleCloudRecommenderV1beta1Impact')
 
+const GoogleCloudRecommenderV1beta1RecommendationInsightReferenceSchema = z
+  .object({
+    insight: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Insight resource name, e.g. projects/[PROJECT_NUMBER]/locations/[LOCATION]/insightTypes/[INSIGHT_TYPE_ID]/insights/[INSIGHT_ID]',
+      }),
+  })
+  .openapi({ description: 'Reference to an associated insight.', required: [] })
+  .openapi('GoogleCloudRecommenderV1beta1RecommendationInsightReference')
+
+const GoogleCloudRecommenderV1beta1ValueMatcherSchema = z
+  .object({
+    matchesPattern: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'To be used for full regex matching. The regular expression is using the Google RE2 syntax (https://github.com/google/re2/wiki/Syntax), so to be used with RE2::FullMatch',
+      }),
+  })
+  .openapi({
+    description: 'Contains various matching options for values for a GCP resource field.',
+    required: [],
+  })
+  .openapi('GoogleCloudRecommenderV1beta1ValueMatcher')
+
+const GoogleCloudRecommenderV1beta1OperationSchema = z
+  .object({
+    action: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Type of this operation. Contains one of 'add', 'remove', 'replace', 'move', 'copy', 'test' and 'custom' operations. This field is case-insensitive and always populated.",
+      }),
+    path: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Path to the target field being operated on. If the operation is at the resource level, then path should be "/". This field is always populated.',
+      }),
+    pathFilters: z
+      .record(z.string(), z.any())
+      .exactOptional()
+      .openapi({
+        description:
+          'Set of filters to apply if `path` refers to array elements or nested array elements in order to narrow down to a single unique element that is being tested/modified. This is intended to be an exact match per filter. To perform advanced matching, use path_value_matchers. * Example: ``` { "/versions/*/name" : "it-123" "/versions/*/targetSize/percent": 20 } ``` * Example: ``` { "/bindings/*/role": "roles/owner" "/bindings/*/condition" : null } ``` * Example: ``` { "/bindings/*/role": "roles/owner" "/bindings/*/members/*" : ["x@example.com", "y@example.com"] } ``` When both path_filters and path_value_matchers are set, an implicit AND must be performed.',
+      }),
+    pathValueMatchers: z
+      .record(z.string(), GoogleCloudRecommenderV1beta1ValueMatcherSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Similar to path_filters, this contains set of filters to apply if `path` field refers to array elements. This is meant to support value matching beyond exact match. To perform exact match, use path_filters. When both path_filters and path_value_matchers are set, an implicit AND must be performed.',
+      }),
+    resource: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Contains the fully qualified resource name. This field is always populated. ex: //cloudresourcemanager.googleapis.com/projects/foo.',
+      }),
+    resourceType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Type of GCP resource being modified/tested. This field is always populated. Example: cloudresourcemanager.googleapis.com/Project, compute.googleapis.com/Instance',
+      }),
+    sourcePath: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Can be set with action 'copy' or 'move' to indicate the source field within resource or source_resource, ignored if provided for other operation types.",
+      }),
+    sourceResource: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Can be set with action \'copy\' to copy resource configuration across different resources of the same type. Example: A resource clone can be done via action = \'copy\', path = "/", from = "/", source_resource = and resource_name = . This field is empty for all other values of `action`.',
+      }),
+    value: z
+      .any()
+      .exactOptional()
+      .openapi({
+        description:
+          "Value for the `path` field. Will be set for actions:'add'/'replace'. Maybe set for action: 'test'. Either this or `value_matcher` will be set for 'test' operation. An exact match must be performed.",
+      }),
+    valueMatcher: GoogleCloudRecommenderV1beta1ValueMatcherSchema.exactOptional().openapi({
+      description:
+        "Can be set for action 'test' for advanced matching for the value of 'path' field. Either this or `value` will be set for 'test' operation.",
+    }),
+  })
+  .openapi({
+    description:
+      'Contains an operation for a resource loosely based on the JSON-PATCH format with support for: * Custom filters for describing partial array patch. * Extended path values for describing nested arrays. * Custom fields for describing the resource for which the operation is being described. * Allows extension to custom operations not natively supported by RFC6902. See https://tools.ietf.org/html/rfc6902 for details on the original RFC.',
+    required: [],
+  })
+  .openapi('GoogleCloudRecommenderV1beta1Operation')
+
+const GoogleCloudRecommenderV1beta1OperationGroupSchema = z
+  .object({
+    operations: z
+      .array(GoogleCloudRecommenderV1beta1OperationSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'List of operations across one or more resources that belong to this group. Loosely based on RFC6902 and should be performed in the order they appear.',
+      }),
+  })
+  .openapi({
+    description: 'Group of operations that need to be performed atomically.',
+    required: [],
+  })
+  .openapi('GoogleCloudRecommenderV1beta1OperationGroup')
+
+const GoogleCloudRecommenderV1beta1RecommendationContentSchema = z
+  .object({
+    operationGroups: z
+      .array(GoogleCloudRecommenderV1beta1OperationGroupSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Operations to one or more Google Cloud resources grouped in such a way that, all operations within one group are expected to be performed atomically and in an order.',
+      }),
+    overview: z
+      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
+      .exactOptional()
+      .openapi({ description: 'Condensed overview information about the recommendation.' }),
+  })
+  .openapi({
+    description: 'Contains what resources are changing and how they are changing.',
+    required: [],
+  })
+  .openapi('GoogleCloudRecommenderV1beta1RecommendationContent')
+
+const GoogleCloudRecommenderV1beta1RecommendationStateInfoSchema = z
+  .object({
+    state: z
+      .enum(['STATE_UNSPECIFIED', 'ACTIVE', 'CLAIMED', 'SUCCEEDED', 'FAILED', 'DISMISSED'])
+      .exactOptional()
+      .openapi({ description: 'The state of the recommendation, Eg ACTIVE, SUCCEEDED, FAILED.' }),
+    stateMetadata: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description: 'A map of metadata for the state, provided by user or automations systems.',
+      }),
+  })
+  .openapi({ description: 'Information for state. Contains state and metadata.', required: [] })
+  .openapi('GoogleCloudRecommenderV1beta1RecommendationStateInfo')
+
+type GoogleCloudRecommenderV1beta1RecommendationType = {
+  additionalImpact?: z.infer<typeof GoogleCloudRecommenderV1beta1ImpactSchema>[]
+  associatedInsights?: z.infer<
+    typeof GoogleCloudRecommenderV1beta1RecommendationInsightReferenceSchema
+  >[]
+  content?: z.infer<typeof GoogleCloudRecommenderV1beta1RecommendationContentSchema>
+  description?: string
+  etag?: string
+  lastRefreshTime?: string
+  name?: string
+  primaryImpact?: z.infer<typeof GoogleCloudRecommenderV1beta1ImpactSchema>
+  priority?: 'PRIORITY_UNSPECIFIED' | 'P4' | 'P3' | 'P2' | 'P1'
+  recommenderSubtype?: string
+  stateInfo?: z.infer<typeof GoogleCloudRecommenderV1beta1RecommendationStateInfoSchema>
+  xorGroupId?: string
+}
+
+const GoogleCloudRecommenderV1beta1RecommendationSchema: z.ZodType<GoogleCloudRecommenderV1beta1RecommendationType> =
+  z
+    .object({
+      additionalImpact: z
+        .array(GoogleCloudRecommenderV1beta1ImpactSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional set of additional impact that this recommendation may have when trying to optimize for the primary category. These may be positive or negative.',
+        }),
+      associatedInsights: z
+        .array(GoogleCloudRecommenderV1beta1RecommendationInsightReferenceSchema)
+        .exactOptional()
+        .openapi({ description: 'Insights that led to this recommendation.' }),
+      content: GoogleCloudRecommenderV1beta1RecommendationContentSchema.exactOptional().openapi({
+        description: 'Content of the recommendation describing recommended changes to resources.',
+      }),
+      description: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Free-form human readable summary in English. The maximum length is 500 characters.',
+        }),
+      etag: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Fingerprint of the Recommendation. Provides optimistic locking when updating states.',
+        }),
+      lastRefreshTime: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Last time this recommendation was refreshed by the system that created it in the first place.',
+        }),
+      name: z.string().exactOptional().openapi({ description: 'Name of recommendation.' }),
+      primaryImpact: GoogleCloudRecommenderV1beta1ImpactSchema.exactOptional().openapi({
+        description:
+          'The primary impact that this recommendation can have while trying to optimize for one category.',
+      }),
+      priority: z
+        .enum(['PRIORITY_UNSPECIFIED', 'P4', 'P3', 'P2', 'P1'])
+        .exactOptional()
+        .openapi({ description: "Recommendation's priority." }),
+      recommenderSubtype: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Contains an identifier for a subtype of recommendations produced for the same recommender. Subtype is a function of content and impact, meaning a new subtype might be added when significant changes to `content` or `primary_impact.category` are introduced. See the Recommenders section to see a list of subtypes for a given Recommender. Examples: For recommender = "google.iam.policy.Recommender", recommender_subtype can be one of "REMOVE_ROLE"/"REPLACE_ROLE"',
+        }),
+      stateInfo: GoogleCloudRecommenderV1beta1RecommendationStateInfoSchema.exactOptional().openapi(
+        { description: 'Information for state. Contains state and metadata.' },
+      ),
+      xorGroupId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Corresponds to a mutually exclusive group ID within a recommender. A non-empty ID indicates that the recommendation belongs to a mutually exclusive group. This means that only one recommendation within the group is suggested to be applied.',
+        }),
+    })
+    .openapi({
+      description:
+        'A recommendation along with a suggested action. E.g., a rightsizing recommendation for an underutilized VM, IAM role recommendations, etc',
+      required: [],
+    })
+    .openapi('GoogleCloudRecommenderV1beta1Recommendation')
+
+type GoogleCloudRecommenderV1beta1ListRecommendationsResponseType = {
+  nextPageToken?: string
+  recommendations?: z.infer<typeof GoogleCloudRecommenderV1beta1RecommendationSchema>[]
+}
+
 const GoogleCloudRecommenderV1beta1InsightRecommendationReferenceSchema = z
   .object({
     recommendation: z
@@ -321,251 +573,23 @@ const GoogleCloudRecommenderV1beta1ListInsightsResponseSchema = z
   .openapi({ description: 'Response to the `ListInsights` method.', required: [] })
   .openapi('GoogleCloudRecommenderV1beta1ListInsightsResponse')
 
-const GoogleCloudRecommenderV1beta1RecommendationInsightReferenceSchema = z
-  .object({
-    insight: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Insight resource name, e.g. projects/[PROJECT_NUMBER]/locations/[LOCATION]/insightTypes/[INSIGHT_TYPE_ID]/insights/[INSIGHT_ID]',
-      }),
-  })
-  .openapi({ description: 'Reference to an associated insight.', required: [] })
-  .openapi('GoogleCloudRecommenderV1beta1RecommendationInsightReference')
-
-const GoogleCloudRecommenderV1beta1ValueMatcherSchema = z
-  .object({
-    matchesPattern: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'To be used for full regex matching. The regular expression is using the Google RE2 syntax (https://github.com/google/re2/wiki/Syntax), so to be used with RE2::FullMatch',
-      }),
-  })
-  .openapi({
-    description: 'Contains various matching options for values for a GCP resource field.',
-    required: [],
-  })
-  .openapi('GoogleCloudRecommenderV1beta1ValueMatcher')
-
-const GoogleCloudRecommenderV1beta1OperationSchema = z
-  .object({
-    action: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Type of this operation. Contains one of 'add', 'remove', 'replace', 'move', 'copy', 'test' and 'custom' operations. This field is case-insensitive and always populated.",
-      }),
-    path: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Path to the target field being operated on. If the operation is at the resource level, then path should be "/". This field is always populated.',
-      }),
-    pathFilters: z
-      .record(z.string(), z.any())
-      .exactOptional()
-      .openapi({
-        description:
-          'Set of filters to apply if `path` refers to array elements or nested array elements in order to narrow down to a single unique element that is being tested/modified. This is intended to be an exact match per filter. To perform advanced matching, use path_value_matchers. * Example: ``` { "/versions/*/name" : "it-123" "/versions/*/targetSize/percent": 20 } ``` * Example: ``` { "/bindings/*/role": "roles/owner" "/bindings/*/condition" : null } ``` * Example: ``` { "/bindings/*/role": "roles/owner" "/bindings/*/members/*" : ["x@example.com", "y@example.com"] } ``` When both path_filters and path_value_matchers are set, an implicit AND must be performed.',
-      }),
-    pathValueMatchers: z
-      .record(z.string(), GoogleCloudRecommenderV1beta1ValueMatcherSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Similar to path_filters, this contains set of filters to apply if `path` field refers to array elements. This is meant to support value matching beyond exact match. To perform exact match, use path_filters. When both path_filters and path_value_matchers are set, an implicit AND must be performed.',
-      }),
-    resource: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Contains the fully qualified resource name. This field is always populated. ex: //cloudresourcemanager.googleapis.com/projects/foo.',
-      }),
-    resourceType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Type of GCP resource being modified/tested. This field is always populated. Example: cloudresourcemanager.googleapis.com/Project, compute.googleapis.com/Instance',
-      }),
-    sourcePath: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Can be set with action 'copy' or 'move' to indicate the source field within resource or source_resource, ignored if provided for other operation types.",
-      }),
-    sourceResource: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Can be set with action \'copy\' to copy resource configuration across different resources of the same type. Example: A resource clone can be done via action = \'copy\', path = "/", from = "/", source_resource = and resource_name = . This field is empty for all other values of `action`.',
-      }),
-    value: z
-      .any()
-      .exactOptional()
-      .openapi({
-        description:
-          "Value for the `path` field. Will be set for actions:'add'/'replace'. Maybe set for action: 'test'. Either this or `value_matcher` will be set for 'test' operation. An exact match must be performed.",
-      }),
-    valueMatcher: GoogleCloudRecommenderV1beta1ValueMatcherSchema.exactOptional().openapi({
-      description:
-        "Can be set for action 'test' for advanced matching for the value of 'path' field. Either this or `value` will be set for 'test' operation.",
-    }),
-  })
-  .openapi({
-    description:
-      'Contains an operation for a resource loosely based on the JSON-PATCH format with support for: * Custom filters for describing partial array patch. * Extended path values for describing nested arrays. * Custom fields for describing the resource for which the operation is being described. * Allows extension to custom operations not natively supported by RFC6902. See https://tools.ietf.org/html/rfc6902 for details on the original RFC.',
-    required: [],
-  })
-  .openapi('GoogleCloudRecommenderV1beta1Operation')
-
-const GoogleCloudRecommenderV1beta1OperationGroupSchema = z
-  .object({
-    operations: z
-      .array(GoogleCloudRecommenderV1beta1OperationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'List of operations across one or more resources that belong to this group. Loosely based on RFC6902 and should be performed in the order they appear.',
-      }),
-  })
-  .openapi({
-    description: 'Group of operations that need to be performed atomically.',
-    required: [],
-  })
-  .openapi('GoogleCloudRecommenderV1beta1OperationGroup')
-
-const GoogleCloudRecommenderV1beta1RecommendationContentSchema = z
-  .object({
-    operationGroups: z
-      .array(GoogleCloudRecommenderV1beta1OperationGroupSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Operations to one or more Google Cloud resources grouped in such a way that, all operations within one group are expected to be performed atomically and in an order.',
-      }),
-    overview: z
-      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
-      .exactOptional()
-      .openapi({ description: 'Condensed overview information about the recommendation.' }),
-  })
-  .openapi({
-    description: 'Contains what resources are changing and how they are changing.',
-    required: [],
-  })
-  .openapi('GoogleCloudRecommenderV1beta1RecommendationContent')
-
-const GoogleCloudRecommenderV1beta1RecommendationStateInfoSchema = z
-  .object({
-    state: z
-      .enum(['STATE_UNSPECIFIED', 'ACTIVE', 'CLAIMED', 'SUCCEEDED', 'FAILED', 'DISMISSED'])
-      .exactOptional()
-      .openapi({ description: 'The state of the recommendation, Eg ACTIVE, SUCCEEDED, FAILED.' }),
-    stateMetadata: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description: 'A map of metadata for the state, provided by user or automations systems.',
-      }),
-  })
-  .openapi({ description: 'Information for state. Contains state and metadata.', required: [] })
-  .openapi('GoogleCloudRecommenderV1beta1RecommendationStateInfo')
-
-const GoogleCloudRecommenderV1beta1RecommendationSchema = z
-  .object({
-    additionalImpact: z
-      .array(GoogleCloudRecommenderV1beta1ImpactSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional set of additional impact that this recommendation may have when trying to optimize for the primary category. These may be positive or negative.',
-      }),
-    associatedInsights: z
-      .array(GoogleCloudRecommenderV1beta1RecommendationInsightReferenceSchema)
-      .exactOptional()
-      .openapi({ description: 'Insights that led to this recommendation.' }),
-    content: GoogleCloudRecommenderV1beta1RecommendationContentSchema.exactOptional().openapi({
-      description: 'Content of the recommendation describing recommended changes to resources.',
-    }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Free-form human readable summary in English. The maximum length is 500 characters.',
-      }),
-    etag: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Fingerprint of the Recommendation. Provides optimistic locking when updating states.',
-      }),
-    lastRefreshTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Last time this recommendation was refreshed by the system that created it in the first place.',
-      }),
-    name: z.string().exactOptional().openapi({ description: 'Name of recommendation.' }),
-    primaryImpact: GoogleCloudRecommenderV1beta1ImpactSchema.exactOptional().openapi({
-      description:
-        'The primary impact that this recommendation can have while trying to optimize for one category.',
-    }),
-    priority: z
-      .enum(['PRIORITY_UNSPECIFIED', 'P4', 'P3', 'P2', 'P1'])
-      .exactOptional()
-      .openapi({ description: "Recommendation's priority." }),
-    recommenderSubtype: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Contains an identifier for a subtype of recommendations produced for the same recommender. Subtype is a function of content and impact, meaning a new subtype might be added when significant changes to `content` or `primary_impact.category` are introduced. See the Recommenders section to see a list of subtypes for a given Recommender. Examples: For recommender = "google.iam.policy.Recommender", recommender_subtype can be one of "REMOVE_ROLE"/"REPLACE_ROLE"',
-      }),
-    stateInfo: GoogleCloudRecommenderV1beta1RecommendationStateInfoSchema.exactOptional().openapi({
-      description: 'Information for state. Contains state and metadata.',
-    }),
-    xorGroupId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Corresponds to a mutually exclusive group ID within a recommender. A non-empty ID indicates that the recommendation belongs to a mutually exclusive group. This means that only one recommendation within the group is suggested to be applied.',
-      }),
-  })
-  .openapi({
-    description:
-      'A recommendation along with a suggested action. E.g., a rightsizing recommendation for an underutilized VM, IAM role recommendations, etc',
-    required: [],
-  })
-  .openapi('GoogleCloudRecommenderV1beta1Recommendation')
-
-const GoogleCloudRecommenderV1beta1ListRecommendationsResponseSchema = z
-  .object({
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A token that can be used to request the next page of results. This field is empty if there are no additional results.',
-      }),
-    recommendations: z
-      .array(GoogleCloudRecommenderV1beta1RecommendationSchema)
-      .exactOptional()
-      .openapi({ description: 'The set of recommendations for the `parent` resource.' }),
-  })
-  .openapi({ description: 'Response to the `ListRecommendations` method.', required: [] })
-  .openapi('GoogleCloudRecommenderV1beta1ListRecommendationsResponse')
+const GoogleCloudRecommenderV1beta1ListRecommendationsResponseSchema: z.ZodType<GoogleCloudRecommenderV1beta1ListRecommendationsResponseType> =
+  z
+    .object({
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'A token that can be used to request the next page of results. This field is empty if there are no additional results.',
+        }),
+      recommendations: z
+        .array(GoogleCloudRecommenderV1beta1RecommendationSchema)
+        .exactOptional()
+        .openapi({ description: 'The set of recommendations for the `parent` resource.' }),
+    })
+    .openapi({ description: 'Response to the `ListRecommendations` method.', required: [] })
+    .openapi('GoogleCloudRecommenderV1beta1ListRecommendationsResponse')
 
 const GoogleCloudRecommenderV1beta1MarkInsightAcceptedRequestSchema = z
   .object({

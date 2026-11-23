@@ -1,88 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const CatalogServicesConditionSchema = z
-  .strictObject({
-    datacenter: z.string().exactOptional().openapi({ example: 'dc1' }),
-    regexp: z.string().openapi({ example: 'web.*' }),
-    namespace: z.string().exactOptional().openapi({ example: 'default' }),
-    node_meta: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ example: { key: 'value' } }),
-    use_as_module_input: z.boolean().default(true).exactOptional().openapi({ example: false }),
-  })
-  .openapi({ required: ['regexp'] })
-  .openapi('CatalogServicesCondition')
-
-const ServicesConditionSchema = z
-  .strictObject({
-    regexp: z.string().exactOptional().openapi({ example: 'web.*' }),
-    names: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ example: ['web', 'api'] }),
-    filter: z.string().exactOptional().openapi({ example: '\\"test\\" in Service.Tags' }),
-    datacenter: z.string().exactOptional().openapi({ example: 'dc1' }),
-    namespace: z.string().exactOptional().openapi({ example: 'default' }),
-    cts_user_defined_meta: z.record(z.string(), z.string().nullable()).exactOptional(),
-    use_as_module_input: z.boolean().default(true).exactOptional().openapi({ example: false }),
-  })
-  .openapi({ required: [] })
-  .openapi('ServicesCondition')
-
-const ConsulKVConditionSchema = z
-  .strictObject({
-    path: z.string().openapi({ example: 'my-key' }),
-    recurse: z.boolean().default(false).exactOptional().openapi({ example: false }),
-    datacenter: z.string().exactOptional().openapi({ example: 'dc1' }),
-    namespace: z.string().exactOptional().openapi({ example: 'default' }),
-    use_as_module_input: z.boolean().default(true).exactOptional().openapi({ example: false }),
-  })
-  .openapi({ required: ['path'] })
-  .openapi('ConsulKVCondition')
-
-const ScheduleConditionSchema = z
-  .strictObject({ cron: z.string().openapi({ example: '* * * * Mon' }) })
-  .openapi({ required: ['cron'] })
-  .openapi('ScheduleCondition')
-
-type ConditionType = {
-  catalog_services?: z.infer<typeof CatalogServicesConditionSchema>
-  services?: z.infer<typeof ServicesConditionSchema>
-  consul_kv?: z.infer<typeof ConsulKVConditionSchema>
-  schedule?: z.infer<typeof ScheduleConditionSchema>
-}
-
-const ServicesModuleInputSchema = z
-  .strictObject({
-    regexp: z.string().exactOptional().openapi({ example: 'web.*' }),
-    names: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ example: ['web', 'api'] }),
-    filter: z.string().exactOptional().openapi({ example: '\\"test\\" in Service.Tags' }),
-    datacenter: z.string().exactOptional().openapi({ example: 'dc1' }),
-    namespace: z.string().exactOptional().openapi({ example: 'default' }),
-    cts_user_defined_meta: z.record(z.string(), z.string()).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ServicesModuleInput')
-
-const ConsulKVModuleInputSchema = z
-  .strictObject({
-    path: z.string().openapi({ example: 'my-key' }),
-    recurse: z.boolean().default(false).exactOptional().openapi({ example: false }),
-    datacenter: z.string().exactOptional().openapi({ example: 'dc1' }),
-    namespace: z.string().exactOptional().openapi({ example: 'default' }),
-  })
-  .openapi({ required: ['path'] })
-  .openapi('ConsulKVModuleInput')
-
-type ModuleInputType = {
-  services?: z.infer<typeof ServicesModuleInputSchema>
-  consul_kv?: z.infer<typeof ConsulKVModuleInputSchema>
-}
-
 const MemberSchema = z
   .strictObject({
     id: z.string().openapi({ description: 'the id of the CTS instance', example: 'cts-01' }),
@@ -175,36 +92,101 @@ const BufferPeriodSchema = z
   .openapi({ description: 'The buffer period for triggering task execution.', required: [] })
   .openapi('BufferPeriod')
 
-const ConditionSchema: z.ZodType<ConditionType> = z
-  .lazy(() =>
-    z
-      .strictObject({
-        catalog_services: CatalogServicesConditionSchema.exactOptional(),
-        services: ServicesConditionSchema.exactOptional(),
-        consul_kv: ConsulKVConditionSchema.exactOptional(),
-        schedule: ScheduleConditionSchema.exactOptional(),
-      })
-      .openapi({
-        description:
-          'The condition on which to trigger the task to execute. If the task has the deprecated services field configured as a module input, it is represented here as condition.services.',
-        required: [],
-      }),
-  )
+const CatalogServicesConditionSchema = z
+  .strictObject({
+    datacenter: z.string().exactOptional().openapi({ example: 'dc1' }),
+    regexp: z.string().openapi({ example: 'web.*' }),
+    namespace: z.string().exactOptional().openapi({ example: 'default' }),
+    node_meta: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ example: { key: 'value' } }),
+    use_as_module_input: z.boolean().default(true).exactOptional().openapi({ example: false }),
+  })
+  .openapi({ required: ['regexp'] })
+  .openapi('CatalogServicesCondition')
+
+const ServicesConditionSchema = z
+  .strictObject({
+    regexp: z.string().exactOptional().openapi({ example: 'web.*' }),
+    names: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ example: ['web', 'api'] }),
+    filter: z.string().exactOptional().openapi({ example: '\\"test\\" in Service.Tags' }),
+    datacenter: z.string().exactOptional().openapi({ example: 'dc1' }),
+    namespace: z.string().exactOptional().openapi({ example: 'default' }),
+    cts_user_defined_meta: z.record(z.string(), z.string().nullable()).exactOptional(),
+    use_as_module_input: z.boolean().default(true).exactOptional().openapi({ example: false }),
+  })
+  .openapi({ required: [] })
+  .openapi('ServicesCondition')
+
+const ConsulKVConditionSchema = z
+  .strictObject({
+    path: z.string().openapi({ example: 'my-key' }),
+    recurse: z.boolean().default(false).exactOptional().openapi({ example: false }),
+    datacenter: z.string().exactOptional().openapi({ example: 'dc1' }),
+    namespace: z.string().exactOptional().openapi({ example: 'default' }),
+    use_as_module_input: z.boolean().default(true).exactOptional().openapi({ example: false }),
+  })
+  .openapi({ required: ['path'] })
+  .openapi('ConsulKVCondition')
+
+const ScheduleConditionSchema = z
+  .strictObject({ cron: z.string().openapi({ example: '* * * * Mon' }) })
+  .openapi({ required: ['cron'] })
+  .openapi('ScheduleCondition')
+
+const ConditionSchema = z
+  .strictObject({
+    catalog_services: CatalogServicesConditionSchema.exactOptional(),
+    services: ServicesConditionSchema.exactOptional(),
+    consul_kv: ConsulKVConditionSchema.exactOptional(),
+    schedule: ScheduleConditionSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'The condition on which to trigger the task to execute. If the task has the deprecated services field configured as a module input, it is represented here as condition.services.',
+    required: [],
+  })
   .openapi('Condition')
 
-const ModuleInputSchema: z.ZodType<ModuleInputType> = z
-  .lazy(() =>
-    z
-      .strictObject({
-        services: ServicesModuleInputSchema.exactOptional(),
-        consul_kv: ConsulKVModuleInputSchema.exactOptional(),
-      })
-      .openapi({
-        description:
-          'The additional module input(s) that the tasks provides to the Terraform module on execution. If the task has the deprecated services field configured as a module input, it is represented here as module_input.services.',
-        required: [],
-      }),
-  )
+const ServicesModuleInputSchema = z
+  .strictObject({
+    regexp: z.string().exactOptional().openapi({ example: 'web.*' }),
+    names: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ example: ['web', 'api'] }),
+    filter: z.string().exactOptional().openapi({ example: '\\"test\\" in Service.Tags' }),
+    datacenter: z.string().exactOptional().openapi({ example: 'dc1' }),
+    namespace: z.string().exactOptional().openapi({ example: 'default' }),
+    cts_user_defined_meta: z.record(z.string(), z.string()).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ServicesModuleInput')
+
+const ConsulKVModuleInputSchema = z
+  .strictObject({
+    path: z.string().openapi({ example: 'my-key' }),
+    recurse: z.boolean().default(false).exactOptional().openapi({ example: false }),
+    datacenter: z.string().exactOptional().openapi({ example: 'dc1' }),
+    namespace: z.string().exactOptional().openapi({ example: 'default' }),
+  })
+  .openapi({ required: ['path'] })
+  .openapi('ConsulKVModuleInput')
+
+const ModuleInputSchema = z
+  .strictObject({
+    services: ServicesModuleInputSchema.exactOptional(),
+    consul_kv: ConsulKVModuleInputSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'The additional module input(s) that the tasks provides to the Terraform module on execution. If the task has the deprecated services field configured as a module input, it is represented here as module_input.services.',
+    required: [],
+  })
   .openapi('ModuleInput')
 
 const TerraformCloudWorkspaceSchema = z

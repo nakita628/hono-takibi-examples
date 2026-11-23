@@ -16,6 +16,45 @@ Base URLs:
 * API Key (frigateUserAuth)
     - Parameter Name: **frigate_token**, in: cookie. Any authenticated session (role 'viewer' or higher), established via the JWT cookie issued by POST /login, or via proxy auth headers when Frigate runs behind an authenticating reverse proxy.
 
+<h1 id="api-analytics">Analytics</h1>
+
+## Get Analytics Preview
+
+<a id="opIdget_analytics_preview_analytics_preview_get"></a>
+
+> Code samples
+
+```bash
+curl http://localhost:5000/api/analytics/preview \
+  -H 'Accept: application/json' \
+  -H "Cookie: frigate_token=${API_KEY}"
+```
+
+`GET /analytics/preview`
+
+**Access:** Admin role required.
+
+Get the analytics report Frigate would send next, without sending it.
+
+> Example responses
+
+> 200 Response
+
+```json
+null
+```
+
+<h3 id="get-analytics-preview-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful Response|Inline|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+frigateAdminAuth
+</aside>
+
 <h1 id="api-auth">Auth</h1>
 
 ## First Time Login
@@ -6012,6 +6051,44 @@ To perform this operation, you must be authenticated by means of one of the foll
 frigateUserAuth
 </aside>
 
+## Validate Plus Key
+
+<a id="opIdvalidate_plus_key_plus_validate_post"></a>
+
+> Code samples
+
+```bash
+curl http://localhost:5000/api/plus/validate \
+  -X POST \
+  -H 'Accept: application/json' \
+  -H "Cookie: frigate_token=${API_KEY}"
+```
+
+`POST /plus/validate`
+
+**Access:** Admin role required.
+
+Validate the configured Frigate+ API key with the Frigate+ server.
+
+> Example responses
+
+> 200 Response
+
+```json
+null
+```
+
+<h3 id="validate-plus-key-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful Response|Inline|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+frigateAdminAuth
+</aside>
+
 ## Get Recognized License Plates
 
 <a id="opIdget_recognized_license_plates_recognized_license_plates_get"></a>
@@ -10718,6 +10795,8 @@ curl http://localhost:5000/api/string \
 `GET /{camera_name}`
 
 **Access:** Authenticated user with access to the referenced camera.
+
+An MJPEG stream of the camera's latest processed frame, intended for debugging only. Every frame of every open stream is color converted, annotated, resized, and JPEG encoded in Frigate's main process, which adds load to the system and can slow down Frigate's processing. It is strictly not recommended to view this stream continuously, such as on a dashboard. For live viewing, use a go2rtc restream instead. The frame rate and resolution can be raised with the fps and height parameters, for example ?fps=10&height=1080, at the cost of additional load.
 
 <h3 id="mjpeg-feed-parameters">Parameters</h3>
 

@@ -24,17 +24,13 @@ const StreamARNSchema = z
 
 const AddTagsToStreamInputSchema = z
   .object({
-    StreamName: StreamNameSchema.and(
-      z.any().openapi({ description: 'The name of the stream.' }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A set of up to 10 key-value pairs to use to create the tags.' }),
-    ),
-    StreamARN: StreamARNSchema.and(
-      z.any().openapi({ description: 'The ARN of the stream.' }),
-    ).exactOptional(),
+    StreamName: StreamNameSchema.exactOptional().openapi({
+      description: 'The name of the stream.',
+    }),
+    Tags: TagMapSchema.openapi({
+      description: 'A set of up to 10 key-value pairs to use to create the tags.',
+    }),
+    StreamARN: StreamARNSchema.exactOptional().openapi({ description: 'The ARN of the stream.' }),
   })
   .openapi({
     required: ['Tags'],
@@ -59,14 +55,10 @@ const StreamModeSchema = z.enum(['PROVISIONED', 'ON_DEMAND']).openapi('StreamMod
 
 const StreamModeDetailsSchema = z
   .object({
-    StreamMode: StreamModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies the capacity mode to which you want to set your data stream. Currently, in Kinesis Data Streams, you can choose between an <b>on-demand</b> capacity mode and a <b>provisioned</b> capacity mode for your data streams. ',
-        }),
-    ),
+    StreamMode: StreamModeSchema.openapi({
+      description:
+        ' Specifies the capacity mode to which you want to set your data stream. Currently, in Kinesis Data Streams, you can choose between an <b>on-demand</b> capacity mode and a <b>provisioned</b> capacity mode for your data streams. ',
+    }),
   })
   .openapi({
     required: ['StreamMode'],
@@ -77,30 +69,18 @@ const StreamModeDetailsSchema = z
 
 const CreateStreamInputSchema = z
   .object({
-    StreamName: StreamNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A name to identify the stream. The stream name is scoped to the Amazon Web Services account used by the application that creates the stream. It is also scoped by Amazon Web Services Region. That is, two streams in two different Amazon Web Services accounts can have the same name. Two streams in the same Amazon Web Services account but in two different Regions can also have the same name.',
-        }),
-    ),
-    ShardCount: PositiveIntegerObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of shards that the stream will use. The throughput of the stream is a function of the number of shards; more shards are required for greater provisioned throughput.',
-        }),
-    ).exactOptional(),
-    StreamModeDetails: StreamModeDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Indicates the capacity mode of the data stream. Currently, in Kinesis Data Streams, you can choose between an <b>on-demand</b> capacity mode and a <b>provisioned</b> capacity mode for your data streams.',
-        }),
-    ).exactOptional(),
+    StreamName: StreamNameSchema.openapi({
+      description:
+        'A name to identify the stream. The stream name is scoped to the Amazon Web Services account used by the application that creates the stream. It is also scoped by Amazon Web Services Region. That is, two streams in two different Amazon Web Services accounts can have the same name. Two streams in the same Amazon Web Services account but in two different Regions can also have the same name.',
+    }),
+    ShardCount: PositiveIntegerObjectSchema.exactOptional().openapi({
+      description:
+        'The number of shards that the stream will use. The throughput of the stream is a function of the number of shards; more shards are required for greater provisioned throughput.',
+    }),
+    StreamModeDetails: StreamModeDetailsSchema.exactOptional().openapi({
+      description:
+        ' Indicates the capacity mode of the data stream. Currently, in Kinesis Data Streams, you can choose between an <b>on-demand</b> capacity mode and a <b>provisioned</b> capacity mode for your data streams.',
+    }),
   })
   .openapi({
     required: ['StreamName'],
@@ -113,20 +93,14 @@ const RetentionPeriodHoursSchema = z.int().openapi('RetentionPeriodHours')
 
 const DecreaseStreamRetentionPeriodInputSchema = z
   .object({
-    StreamName: StreamNameSchema.and(
-      z.any().openapi({ description: 'The name of the stream to modify.' }),
-    ).exactOptional(),
-    RetentionPeriodHours: RetentionPeriodHoursSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The new retention period of the stream, in hours. Must be less than the current retention period.',
-        }),
-    ),
-    StreamARN: StreamARNSchema.and(
-      z.any().openapi({ description: 'The ARN of the stream.' }),
-    ).exactOptional(),
+    StreamName: StreamNameSchema.exactOptional().openapi({
+      description: 'The name of the stream to modify.',
+    }),
+    RetentionPeriodHours: RetentionPeriodHoursSchema.openapi({
+      description:
+        'The new retention period of the stream, in hours. Must be less than the current retention period.',
+    }),
+    StreamARN: StreamARNSchema.exactOptional().openapi({ description: 'The ARN of the stream.' }),
   })
   .openapi({
     required: ['RetentionPeriodHours'],
@@ -139,20 +113,14 @@ const BooleanObjectSchema = z.boolean().openapi('BooleanObject')
 
 const DeleteStreamInputSchema = z
   .object({
-    StreamName: StreamNameSchema.and(
-      z.any().openapi({ description: 'The name of the stream to delete.' }),
-    ).exactOptional(),
-    EnforceConsumerDeletion: BooleanObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If this parameter is unset (<code>null</code>) or if you set it to <code>false</code>, and the stream has registered consumers, the call to <code>DeleteStream</code> fails with a <code>ResourceInUseException</code>. ',
-        }),
-    ).exactOptional(),
-    StreamARN: StreamARNSchema.and(
-      z.any().openapi({ description: 'The ARN of the stream.' }),
-    ).exactOptional(),
+    StreamName: StreamNameSchema.exactOptional().openapi({
+      description: 'The name of the stream to delete.',
+    }),
+    EnforceConsumerDeletion: BooleanObjectSchema.exactOptional().openapi({
+      description:
+        'If this parameter is unset (<code>null</code>) or if you set it to <code>false</code>, and the stream has registered consumers, the call to <code>DeleteStream</code> fails with a <code>ResourceInUseException</code>. ',
+    }),
+    StreamARN: StreamARNSchema.exactOptional().openapi({ description: 'The ARN of the stream.' }),
   })
   .openapi({
     title: 'DeleteStreamInput',
@@ -179,25 +147,17 @@ const ConsumerARNSchema = z
 
 const DeregisterStreamConsumerInputSchema = z
   .object({
-    StreamARN: StreamARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the Kinesis data stream that the consumer is registered with. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#arn-syntax-kinesis-streams">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a>.',
-        }),
-    ).exactOptional(),
-    ConsumerName: ConsumerNameSchema.and(
-      z.any().openapi({ description: 'The name that you gave to the consumer.' }),
-    ).exactOptional(),
-    ConsumerARN: ConsumerARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The ARN returned by Kinesis Data Streams when you registered the consumer. If you don't know the ARN of the consumer that you want to deregister, you can use the ListStreamConsumers operation to get a list of the descriptions of all the consumers that are currently registered with a given data stream. The description of a consumer contains its ARN.",
-        }),
-    ).exactOptional(),
+    StreamARN: StreamARNSchema.exactOptional().openapi({
+      description:
+        'The ARN of the Kinesis data stream that the consumer is registered with. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#arn-syntax-kinesis-streams">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a>.',
+    }),
+    ConsumerName: ConsumerNameSchema.exactOptional().openapi({
+      description: 'The name that you gave to the consumer.',
+    }),
+    ConsumerARN: ConsumerARNSchema.exactOptional().openapi({
+      description:
+        "The ARN returned by Kinesis Data Streams when you registered the consumer. If you don't know the ARN of the consumer that you want to deregister, you can use the ListStreamConsumers operation to get a list of the descriptions of all the consumers that are currently registered with a given data stream. The description of a consumer contains its ARN.",
+    }),
   })
   .openapi({ title: 'DeregisterStreamConsumerInput', required: [] })
   .openapi('DeregisterStreamConsumerInput')
@@ -218,26 +178,14 @@ const OnDemandStreamCountLimitObjectSchema = z
 
 const DescribeLimitsOutputSchema = z
   .object({
-    ShardLimit: ShardCountObjectSchema.and(
-      z.any().openapi({ description: 'The maximum number of shards.' }),
-    ),
-    OpenShardCount: ShardCountObjectSchema.and(
-      z.any().openapi({ description: 'The number of open shards.' }),
-    ),
-    OnDemandStreamCount: OnDemandStreamCountObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Indicates the number of data streams with the on-demand capacity mode.',
-        }),
-    ),
-    OnDemandStreamCountLimit: OnDemandStreamCountLimitObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The maximum number of data streams with the on-demand capacity mode. ',
-        }),
-    ),
+    ShardLimit: ShardCountObjectSchema.openapi({ description: 'The maximum number of shards.' }),
+    OpenShardCount: ShardCountObjectSchema.openapi({ description: 'The number of open shards.' }),
+    OnDemandStreamCount: OnDemandStreamCountObjectSchema.openapi({
+      description: ' Indicates the number of data streams with the on-demand capacity mode.',
+    }),
+    OnDemandStreamCountLimit: OnDemandStreamCountLimitObjectSchema.openapi({
+      description: ' The maximum number of data streams with the on-demand capacity mode. ',
+    }),
   })
   .openapi({
     required: ['ShardLimit', 'OpenShardCount', 'OnDemandStreamCount', 'OnDemandStreamCountLimit'],
@@ -245,7 +193,7 @@ const DescribeLimitsOutputSchema = z
   .openapi('DescribeLimitsOutput')
 
 const DescribeLimitsInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeLimitsInput' })
   .openapi('DescribeLimitsInput')
 
@@ -267,12 +215,12 @@ const HashKeySchema = z
 
 const HashKeyRangeSchema = z
   .object({
-    StartingHashKey: HashKeySchema.and(
-      z.any().openapi({ description: 'The starting hash key of the hash key range.' }),
-    ),
-    EndingHashKey: HashKeySchema.and(
-      z.any().openapi({ description: 'The ending hash key of the hash key range.' }),
-    ),
+    StartingHashKey: HashKeySchema.openapi({
+      description: 'The starting hash key of the hash key range.',
+    }),
+    EndingHashKey: HashKeySchema.openapi({
+      description: 'The ending hash key of the hash key range.',
+    }),
   })
   .openapi({
     required: ['StartingHashKey', 'EndingHashKey'],
@@ -288,17 +236,13 @@ const SequenceNumberSchema = z
 
 const SequenceNumberRangeSchema = z
   .object({
-    StartingSequenceNumber: SequenceNumberSchema.and(
-      z.any().openapi({ description: 'The starting sequence number for the range.' }),
-    ),
-    EndingSequenceNumber: SequenceNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ending sequence number for the range. Shards that are in the OPEN state have an ending sequence number of <code>null</code>.',
-        }),
-    ).exactOptional(),
+    StartingSequenceNumber: SequenceNumberSchema.openapi({
+      description: 'The starting sequence number for the range.',
+    }),
+    EndingSequenceNumber: SequenceNumberSchema.exactOptional().openapi({
+      description:
+        'The ending sequence number for the range. Shards that are in the OPEN state have an ending sequence number of <code>null</code>.',
+    }),
   })
   .openapi({
     required: ['StartingSequenceNumber'],
@@ -308,26 +252,22 @@ const SequenceNumberRangeSchema = z
 
 const ShardSchema = z
   .object({
-    ShardId: ShardIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier of the shard within the stream.' }),
-    ),
-    ParentShardId: ShardIdSchema.and(
-      z.any().openapi({ description: "The shard ID of the shard's parent." }),
-    ).exactOptional(),
-    AdjacentParentShardId: ShardIdSchema.and(
-      z.any().openapi({ description: "The shard ID of the shard adjacent to the shard's parent." }),
-    ).exactOptional(),
-    HashKeyRange: HashKeyRangeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The range of possible hash key values for the shard, which is a set of ordered contiguous positive integers.',
-        }),
-    ),
-    SequenceNumberRange: SequenceNumberRangeSchema.and(
-      z.any().openapi({ description: 'The range of possible sequence numbers for the shard.' }),
-    ),
+    ShardId: ShardIdSchema.openapi({
+      description: 'The unique identifier of the shard within the stream.',
+    }),
+    ParentShardId: ShardIdSchema.exactOptional().openapi({
+      description: "The shard ID of the shard's parent.",
+    }),
+    AdjacentParentShardId: ShardIdSchema.exactOptional().openapi({
+      description: "The shard ID of the shard adjacent to the shard's parent.",
+    }),
+    HashKeyRange: HashKeyRangeSchema.openapi({
+      description:
+        'The range of possible hash key values for the shard, which is a set of ordered contiguous positive integers.',
+    }),
+    SequenceNumberRange: SequenceNumberRangeSchema.openapi({
+      description: 'The range of possible sequence numbers for the shard.',
+    }),
   })
   .openapi({
     required: ['ShardId', 'HashKeyRange', 'SequenceNumberRange'],
@@ -356,14 +296,10 @@ const MetricsNameListSchema = z.array(MetricsNameSchema).min(1).max(7).openapi('
 
 const EnhancedMetricsSchema = z
   .object({
-    ShardLevelMetrics: MetricsNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>List of shard-level metrics.</p> <p>The following are the valid shard-level metrics. The value "<code>ALL</code>" enhances every metric.</p> <ul> <li> <p> <code>IncomingBytes</code> </p> </li> <li> <p> <code>IncomingRecords</code> </p> </li> <li> <p> <code>OutgoingBytes</code> </p> </li> <li> <p> <code>OutgoingRecords</code> </p> </li> <li> <p> <code>WriteProvisionedThroughputExceeded</code> </p> </li> <li> <p> <code>ReadProvisionedThroughputExceeded</code> </p> </li> <li> <p> <code>IteratorAgeMilliseconds</code> </p> </li> <li> <p> <code>ALL</code> </p> </li> </ul> <p>For more information, see <a href="https://docs.aws.amazon.com/kinesis/latest/dev/monitoring-with-cloudwatch.html">Monitoring the Amazon Kinesis Data Streams Service with Amazon CloudWatch</a> in the <i>Amazon Kinesis Data Streams Developer Guide</i>.</p>',
-        }),
-    ).exactOptional(),
+    ShardLevelMetrics: MetricsNameListSchema.exactOptional().openapi({
+      description:
+        '<p>List of shard-level metrics.</p> <p>The following are the valid shard-level metrics. The value "<code>ALL</code>" enhances every metric.</p> <ul> <li> <p> <code>IncomingBytes</code> </p> </li> <li> <p> <code>IncomingRecords</code> </p> </li> <li> <p> <code>OutgoingBytes</code> </p> </li> <li> <p> <code>OutgoingRecords</code> </p> </li> <li> <p> <code>WriteProvisionedThroughputExceeded</code> </p> </li> <li> <p> <code>ReadProvisionedThroughputExceeded</code> </p> </li> <li> <p> <code>IteratorAgeMilliseconds</code> </p> </li> <li> <p> <code>ALL</code> </p> </li> </ul> <p>For more information, see <a href="https://docs.aws.amazon.com/kinesis/latest/dev/monitoring-with-cloudwatch.html">Monitoring the Amazon Kinesis Data Streams Service with Amazon CloudWatch</a> in the <i>Amazon Kinesis Data Streams Developer Guide</i>.</p>',
+    }),
   })
   .openapi({ description: 'Represents enhanced metrics types.', required: [] })
   .openapi('EnhancedMetrics')
@@ -378,75 +314,43 @@ const KeyIdSchema = z.string().min(1).max(2048).openapi('KeyId')
 
 const StreamDescriptionSchema = z
   .object({
-    StreamName: StreamNameSchema.and(
-      z.any().openapi({ description: 'The name of the stream being described.' }),
-    ),
-    StreamARN: StreamARNSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) for the stream being described.' }),
-    ),
-    StreamStatus: StreamStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The current status of the stream being described. The stream status is one of the following states:</p> <ul> <li> <p> <code>CREATING</code> - The stream is being created. Kinesis Data Streams immediately returns and sets <code>StreamStatus</code> to <code>CREATING</code>.</p> </li> <li> <p> <code>DELETING</code> - The stream is being deleted. The specified stream is in the <code>DELETING</code> state until Kinesis Data Streams completes the deletion.</p> </li> <li> <p> <code>ACTIVE</code> - The stream exists and is ready for read and write operations or deletion. You should perform read and write operations only on an <code>ACTIVE</code> stream.</p> </li> <li> <p> <code>UPDATING</code> - Shards in the stream are being merged or split. Read and write operations continue to work while the stream is in the <code>UPDATING</code> state.</p> </li> </ul>',
-        }),
-    ),
-    StreamModeDetails: StreamModeDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies the capacity mode to which you want to set your data stream. Currently, in Kinesis Data Streams, you can choose between an <b>on-demand</b> capacity mode and a <b>provisioned</b> capacity mode for your data streams. ',
-        }),
-    ).exactOptional(),
-    Shards: ShardListSchema.and(
-      z.any().openapi({ description: 'The shards that comprise the stream.' }),
-    ),
-    HasMoreShards: BooleanObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If set to <code>true</code>, more shards in the stream are available to describe.',
-        }),
-    ),
-    RetentionPeriodHours: RetentionPeriodHoursSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The current retention period, in hours. Minimum value of 24. Maximum value of 168.',
-        }),
-    ),
-    StreamCreationTimestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The approximate time that the stream was created.' }),
-    ),
-    EnhancedMonitoring: EnhancedMonitoringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Represents the current enhanced monitoring settings of the stream.',
-        }),
-    ),
-    EncryptionType: EncryptionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The server-side encryption type used on the stream. This parameter can be one of the following values:</p> <ul> <li> <p> <code>NONE</code>: Do not encrypt the records in the stream.</p> </li> <li> <p> <code>KMS</code>: Use server-side encryption on the records in the stream using a customer-managed Amazon Web Services KMS key.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    KeyId: KeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The GUID for the customer-managed Amazon Web Services KMS key to use for encryption. This value can be a globally unique identifier, a fully specified ARN to either an alias or a key, or an alias name prefixed by "alias/".You can also use a master key owned by Kinesis Data Streams by specifying the alias <code>aws/kinesis</code>.</p> <ul> <li> <p>Key ARN example: <code>arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012</code> </p> </li> <li> <p>Alias ARN example: <code>arn:aws:kms:us-east-1:123456789012:alias/MyAliasName</code> </p> </li> <li> <p>Globally unique key ID example: <code>12345678-1234-1234-1234-123456789012</code> </p> </li> <li> <p>Alias name example: <code>alias/MyAliasName</code> </p> </li> <li> <p>Master key owned by Kinesis Data Streams: <code>alias/aws/kinesis</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    StreamName: StreamNameSchema.openapi({
+      description: 'The name of the stream being described.',
+    }),
+    StreamARN: StreamARNSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) for the stream being described.',
+    }),
+    StreamStatus: StreamStatusSchema.openapi({
+      description:
+        '<p>The current status of the stream being described. The stream status is one of the following states:</p> <ul> <li> <p> <code>CREATING</code> - The stream is being created. Kinesis Data Streams immediately returns and sets <code>StreamStatus</code> to <code>CREATING</code>.</p> </li> <li> <p> <code>DELETING</code> - The stream is being deleted. The specified stream is in the <code>DELETING</code> state until Kinesis Data Streams completes the deletion.</p> </li> <li> <p> <code>ACTIVE</code> - The stream exists and is ready for read and write operations or deletion. You should perform read and write operations only on an <code>ACTIVE</code> stream.</p> </li> <li> <p> <code>UPDATING</code> - Shards in the stream are being merged or split. Read and write operations continue to work while the stream is in the <code>UPDATING</code> state.</p> </li> </ul>',
+    }),
+    StreamModeDetails: StreamModeDetailsSchema.exactOptional().openapi({
+      description:
+        ' Specifies the capacity mode to which you want to set your data stream. Currently, in Kinesis Data Streams, you can choose between an <b>on-demand</b> capacity mode and a <b>provisioned</b> capacity mode for your data streams. ',
+    }),
+    Shards: ShardListSchema.openapi({ description: 'The shards that comprise the stream.' }),
+    HasMoreShards: BooleanObjectSchema.openapi({
+      description:
+        'If set to <code>true</code>, more shards in the stream are available to describe.',
+    }),
+    RetentionPeriodHours: RetentionPeriodHoursSchema.openapi({
+      description:
+        'The current retention period, in hours. Minimum value of 24. Maximum value of 168.',
+    }),
+    StreamCreationTimestamp: TimestampSchema.openapi({
+      description: 'The approximate time that the stream was created.',
+    }),
+    EnhancedMonitoring: EnhancedMonitoringListSchema.openapi({
+      description: 'Represents the current enhanced monitoring settings of the stream.',
+    }),
+    EncryptionType: EncryptionTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The server-side encryption type used on the stream. This parameter can be one of the following values:</p> <ul> <li> <p> <code>NONE</code>: Do not encrypt the records in the stream.</p> </li> <li> <p> <code>KMS</code>: Use server-side encryption on the records in the stream using a customer-managed Amazon Web Services KMS key.</p> </li> </ul>',
+    }),
+    KeyId: KeyIdSchema.exactOptional().openapi({
+      description:
+        '<p>The GUID for the customer-managed Amazon Web Services KMS key to use for encryption. This value can be a globally unique identifier, a fully specified ARN to either an alias or a key, or an alias name prefixed by "alias/".You can also use a master key owned by Kinesis Data Streams by specifying the alias <code>aws/kinesis</code>.</p> <ul> <li> <p>Key ARN example: <code>arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012</code> </p> </li> <li> <p>Alias ARN example: <code>arn:aws:kms:us-east-1:123456789012:alias/MyAliasName</code> </p> </li> <li> <p>Globally unique key ID example: <code>12345678-1234-1234-1234-123456789012</code> </p> </li> <li> <p>Alias name example: <code>alias/MyAliasName</code> </p> </li> <li> <p>Master key owned by Kinesis Data Streams: <code>alias/aws/kinesis</code> </p> </li> </ul>',
+    }),
   })
   .openapi({
     required: [
@@ -465,14 +369,10 @@ const StreamDescriptionSchema = z
 
 const DescribeStreamOutputSchema = z
   .object({
-    StreamDescription: StreamDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The current status of the stream, the stream Amazon Resource Name (ARN), an array of shard objects that comprise the stream, and whether there are more shards available.',
-        }),
-    ),
+    StreamDescription: StreamDescriptionSchema.openapi({
+      description:
+        'The current status of the stream, the stream Amazon Resource Name (ARN), an array of shard objects that comprise the stream, and whether there are more shards available.',
+    }),
   })
   .openapi({
     required: ['StreamDescription'],
@@ -484,28 +384,18 @@ const DescribeStreamInputLimitSchema = z.int().min(1).max(10000).openapi('Descri
 
 const DescribeStreamInputSchema = z
   .object({
-    StreamName: StreamNameSchema.and(
-      z.any().openapi({ description: 'The name of the stream to describe.' }),
-    ).exactOptional(),
-    Limit: DescribeStreamInputLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of shards to return in a single call. The default value is 100. If you specify a value greater than 100, at most 100 results are returned.',
-        }),
-    ).exactOptional(),
-    ExclusiveStartShardId: ShardIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The shard ID of the shard to start with.</p> <p>Specify this parameter to indicate that you want to describe the stream starting with the shard whose ID immediately follows <code>ExclusiveStartShardId</code>.</p> <p>If you don't specify this parameter, the default behavior for <code>DescribeStream</code> is to describe the stream starting with the first shard in the stream.</p>",
-        }),
-    ).exactOptional(),
-    StreamARN: StreamARNSchema.and(
-      z.any().openapi({ description: 'The ARN of the stream.' }),
-    ).exactOptional(),
+    StreamName: StreamNameSchema.exactOptional().openapi({
+      description: 'The name of the stream to describe.',
+    }),
+    Limit: DescribeStreamInputLimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of shards to return in a single call. The default value is 100. If you specify a value greater than 100, at most 100 results are returned.',
+    }),
+    ExclusiveStartShardId: ShardIdSchema.exactOptional().openapi({
+      description:
+        "<p>The shard ID of the shard to start with.</p> <p>Specify this parameter to indicate that you want to describe the stream starting with the shard whose ID immediately follows <code>ExclusiveStartShardId</code>.</p> <p>If you don't specify this parameter, the default behavior for <code>DescribeStream</code> is to describe the stream starting with the first shard in the stream.</p>",
+    }),
+    StreamARN: StreamARNSchema.exactOptional().openapi({ description: 'The ARN of the stream.' }),
   })
   .openapi({
     title: 'DescribeStreamInput',
@@ -518,36 +408,22 @@ const ConsumerStatusSchema = z.enum(['CREATING', 'DELETING', 'ACTIVE']).openapi(
 
 const ConsumerDescriptionSchema = z
   .object({
-    ConsumerName: ConsumerNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the consumer is something you choose when you register the consumer.',
-        }),
-    ),
-    ConsumerARN: ConsumerARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>When you register a consumer, Kinesis Data Streams generates an ARN for it. You need this ARN to be able to call <a>SubscribeToShard</a>.</p> <p>If you delete a consumer and then create a new one with the same name, it won't have the same ARN. That's because consumer ARNs contain the creation timestamp. This is important to keep in mind if you have IAM policies that reference consumer ARNs.</p>",
-        }),
-    ),
-    ConsumerStatus: ConsumerStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A consumer can't read data while in the <code>CREATING</code> or <code>DELETING</code> states.",
-        }),
-    ),
-    ConsumerCreationTimestamp: TimestampSchema.and(z.any().openapi({ description: '<p/>' })),
-    StreamARN: StreamARNSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the stream with which you registered the consumer.' }),
-    ),
+    ConsumerName: ConsumerNameSchema.openapi({
+      description:
+        'The name of the consumer is something you choose when you register the consumer.',
+    }),
+    ConsumerARN: ConsumerARNSchema.openapi({
+      description:
+        "<p>When you register a consumer, Kinesis Data Streams generates an ARN for it. You need this ARN to be able to call <a>SubscribeToShard</a>.</p> <p>If you delete a consumer and then create a new one with the same name, it won't have the same ARN. That's because consumer ARNs contain the creation timestamp. This is important to keep in mind if you have IAM policies that reference consumer ARNs.</p>",
+    }),
+    ConsumerStatus: ConsumerStatusSchema.openapi({
+      description:
+        "A consumer can't read data while in the <code>CREATING</code> or <code>DELETING</code> states.",
+    }),
+    ConsumerCreationTimestamp: TimestampSchema.openapi({ description: '<p/>' }),
+    StreamARN: StreamARNSchema.openapi({
+      description: 'The ARN of the stream with which you registered the consumer.',
+    }),
   })
   .openapi({
     required: [
@@ -564,33 +440,25 @@ const ConsumerDescriptionSchema = z
 
 const DescribeStreamConsumerOutputSchema = z
   .object({
-    ConsumerDescription: ConsumerDescriptionSchema.and(
-      z.any().openapi({ description: 'An object that represents the details of the consumer.' }),
-    ),
+    ConsumerDescription: ConsumerDescriptionSchema.openapi({
+      description: 'An object that represents the details of the consumer.',
+    }),
   })
   .openapi({ required: ['ConsumerDescription'] })
   .openapi('DescribeStreamConsumerOutput')
 
 const DescribeStreamConsumerInputSchema = z
   .object({
-    StreamARN: StreamARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the Kinesis data stream that the consumer is registered with. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#arn-syntax-kinesis-streams">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a>.',
-        }),
-    ).exactOptional(),
-    ConsumerName: ConsumerNameSchema.and(
-      z.any().openapi({ description: 'The name that you gave to the consumer.' }),
-    ).exactOptional(),
-    ConsumerARN: ConsumerARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN returned by Kinesis Data Streams when you registered the consumer.',
-        }),
-    ).exactOptional(),
+    StreamARN: StreamARNSchema.exactOptional().openapi({
+      description:
+        'The ARN of the Kinesis data stream that the consumer is registered with. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#arn-syntax-kinesis-streams">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a>.',
+    }),
+    ConsumerName: ConsumerNameSchema.exactOptional().openapi({
+      description: 'The name that you gave to the consumer.',
+    }),
+    ConsumerARN: ConsumerARNSchema.exactOptional().openapi({
+      description: 'The ARN returned by Kinesis Data Streams when you registered the consumer.',
+    }),
   })
   .openapi({ title: 'DescribeStreamConsumerInput', required: [] })
   .openapi('DescribeStreamConsumerInput')
@@ -599,69 +467,43 @@ const ConsumerCountObjectSchema = z.int().min(0).max(1000000).openapi('ConsumerC
 
 const StreamDescriptionSummarySchema = z
   .object({
-    StreamName: StreamNameSchema.and(
-      z.any().openapi({ description: 'The name of the stream being described.' }),
-    ),
-    StreamARN: StreamARNSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) for the stream being described.' }),
-    ),
-    StreamStatus: StreamStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The current status of the stream being described. The stream status is one of the following states:</p> <ul> <li> <p> <code>CREATING</code> - The stream is being created. Kinesis Data Streams immediately returns and sets <code>StreamStatus</code> to <code>CREATING</code>.</p> </li> <li> <p> <code>DELETING</code> - The stream is being deleted. The specified stream is in the <code>DELETING</code> state until Kinesis Data Streams completes the deletion.</p> </li> <li> <p> <code>ACTIVE</code> - The stream exists and is ready for read and write operations or deletion. You should perform read and write operations only on an <code>ACTIVE</code> stream.</p> </li> <li> <p> <code>UPDATING</code> - Shards in the stream are being merged or split. Read and write operations continue to work while the stream is in the <code>UPDATING</code> state.</p> </li> </ul>',
-        }),
-    ),
-    StreamModeDetails: StreamModeDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies the capacity mode to which you want to set your data stream. Currently, in Kinesis Data Streams, you can choose between an <b>on-demand</b> ycapacity mode and a <b>provisioned</b> capacity mode for your data streams. ',
-        }),
-    ).exactOptional(),
-    RetentionPeriodHours: RetentionPeriodHoursSchema.and(
-      z.any().openapi({ description: 'The current retention period, in hours.' }),
-    ),
-    StreamCreationTimestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The approximate time that the stream was created.' }),
-    ),
-    EnhancedMonitoring: EnhancedMonitoringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Represents the current enhanced monitoring settings of the stream.',
-        }),
-    ),
-    EncryptionType: EncryptionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The encryption type used. This value is one of the following:</p> <ul> <li> <p> <code>KMS</code> </p> </li> <li> <p> <code>NONE</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    KeyId: KeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The GUID for the customer-managed Amazon Web Services KMS key to use for encryption. This value can be a globally unique identifier, a fully specified ARN to either an alias or a key, or an alias name prefixed by "alias/".You can also use a master key owned by Kinesis Data Streams by specifying the alias <code>aws/kinesis</code>.</p> <ul> <li> <p>Key ARN example: <code>arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012</code> </p> </li> <li> <p>Alias ARN example: <code> arn:aws:kms:us-east-1:123456789012:alias/MyAliasName</code> </p> </li> <li> <p>Globally unique key ID example: <code>12345678-1234-1234-1234-123456789012</code> </p> </li> <li> <p>Alias name example: <code>alias/MyAliasName</code> </p> </li> <li> <p>Master key owned by Kinesis Data Streams: <code>alias/aws/kinesis</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    OpenShardCount: ShardCountObjectSchema.and(
-      z.any().openapi({ description: 'The number of open shards in the stream.' }),
-    ),
-    ConsumerCount: ConsumerCountObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of enhanced fan-out consumers registered with the stream.',
-        }),
-    ).exactOptional(),
+    StreamName: StreamNameSchema.openapi({
+      description: 'The name of the stream being described.',
+    }),
+    StreamARN: StreamARNSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) for the stream being described.',
+    }),
+    StreamStatus: StreamStatusSchema.openapi({
+      description:
+        '<p>The current status of the stream being described. The stream status is one of the following states:</p> <ul> <li> <p> <code>CREATING</code> - The stream is being created. Kinesis Data Streams immediately returns and sets <code>StreamStatus</code> to <code>CREATING</code>.</p> </li> <li> <p> <code>DELETING</code> - The stream is being deleted. The specified stream is in the <code>DELETING</code> state until Kinesis Data Streams completes the deletion.</p> </li> <li> <p> <code>ACTIVE</code> - The stream exists and is ready for read and write operations or deletion. You should perform read and write operations only on an <code>ACTIVE</code> stream.</p> </li> <li> <p> <code>UPDATING</code> - Shards in the stream are being merged or split. Read and write operations continue to work while the stream is in the <code>UPDATING</code> state.</p> </li> </ul>',
+    }),
+    StreamModeDetails: StreamModeDetailsSchema.exactOptional().openapi({
+      description:
+        ' Specifies the capacity mode to which you want to set your data stream. Currently, in Kinesis Data Streams, you can choose between an <b>on-demand</b> ycapacity mode and a <b>provisioned</b> capacity mode for your data streams. ',
+    }),
+    RetentionPeriodHours: RetentionPeriodHoursSchema.openapi({
+      description: 'The current retention period, in hours.',
+    }),
+    StreamCreationTimestamp: TimestampSchema.openapi({
+      description: 'The approximate time that the stream was created.',
+    }),
+    EnhancedMonitoring: EnhancedMonitoringListSchema.openapi({
+      description: 'Represents the current enhanced monitoring settings of the stream.',
+    }),
+    EncryptionType: EncryptionTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The encryption type used. This value is one of the following:</p> <ul> <li> <p> <code>KMS</code> </p> </li> <li> <p> <code>NONE</code> </p> </li> </ul>',
+    }),
+    KeyId: KeyIdSchema.exactOptional().openapi({
+      description:
+        '<p>The GUID for the customer-managed Amazon Web Services KMS key to use for encryption. This value can be a globally unique identifier, a fully specified ARN to either an alias or a key, or an alias name prefixed by "alias/".You can also use a master key owned by Kinesis Data Streams by specifying the alias <code>aws/kinesis</code>.</p> <ul> <li> <p>Key ARN example: <code>arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012</code> </p> </li> <li> <p>Alias ARN example: <code> arn:aws:kms:us-east-1:123456789012:alias/MyAliasName</code> </p> </li> <li> <p>Globally unique key ID example: <code>12345678-1234-1234-1234-123456789012</code> </p> </li> <li> <p>Alias name example: <code>alias/MyAliasName</code> </p> </li> <li> <p>Master key owned by Kinesis Data Streams: <code>alias/aws/kinesis</code> </p> </li> </ul>',
+    }),
+    OpenShardCount: ShardCountObjectSchema.openapi({
+      description: 'The number of open shards in the stream.',
+    }),
+    ConsumerCount: ConsumerCountObjectSchema.exactOptional().openapi({
+      description: 'The number of enhanced fan-out consumers registered with the stream.',
+    }),
   })
   .openapi({
     required: [
@@ -679,53 +521,37 @@ const StreamDescriptionSummarySchema = z
 
 const DescribeStreamSummaryOutputSchema = z
   .object({
-    StreamDescriptionSummary: StreamDescriptionSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A <a>StreamDescriptionSummary</a> containing information about the stream.',
-        }),
-    ),
+    StreamDescriptionSummary: StreamDescriptionSummarySchema.openapi({
+      description: 'A <a>StreamDescriptionSummary</a> containing information about the stream.',
+    }),
   })
   .openapi({ required: ['StreamDescriptionSummary'] })
   .openapi('DescribeStreamSummaryOutput')
 
 const DescribeStreamSummaryInputSchema = z
   .object({
-    StreamName: StreamNameSchema.and(
-      z.any().openapi({ description: 'The name of the stream to describe.' }),
-    ).exactOptional(),
-    StreamARN: StreamARNSchema.and(
-      z.any().openapi({ description: 'The ARN of the stream.' }),
-    ).exactOptional(),
+    StreamName: StreamNameSchema.exactOptional().openapi({
+      description: 'The name of the stream to describe.',
+    }),
+    StreamARN: StreamARNSchema.exactOptional().openapi({ description: 'The ARN of the stream.' }),
   })
   .openapi({ title: 'DescribeStreamSummaryInput', required: [] })
   .openapi('DescribeStreamSummaryInput')
 
 const EnhancedMonitoringOutputSchema = z
   .object({
-    StreamName: StreamNameSchema.and(
-      z.any().openapi({ description: 'The name of the Kinesis data stream.' }),
-    ).exactOptional(),
-    CurrentShardLevelMetrics: MetricsNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Represents the current state of the metrics that are in the enhanced state before the operation.',
-        }),
-    ).exactOptional(),
-    DesiredShardLevelMetrics: MetricsNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Represents the list of all the metrics that would be in the enhanced state after the operation.',
-        }),
-    ).exactOptional(),
-    StreamARN: StreamARNSchema.and(
-      z.any().openapi({ description: 'The ARN of the stream.' }),
-    ).exactOptional(),
+    StreamName: StreamNameSchema.exactOptional().openapi({
+      description: 'The name of the Kinesis data stream.',
+    }),
+    CurrentShardLevelMetrics: MetricsNameListSchema.exactOptional().openapi({
+      description:
+        'Represents the current state of the metrics that are in the enhanced state before the operation.',
+    }),
+    DesiredShardLevelMetrics: MetricsNameListSchema.exactOptional().openapi({
+      description:
+        'Represents the list of all the metrics that would be in the enhanced state after the operation.',
+    }),
+    StreamARN: StreamARNSchema.exactOptional().openapi({ description: 'The ARN of the stream.' }),
   })
   .openapi({
     description:
@@ -736,25 +562,14 @@ const EnhancedMonitoringOutputSchema = z
 
 const DisableEnhancedMonitoringInputSchema = z
   .object({
-    StreamName: StreamNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Kinesis data stream for which to disable enhanced monitoring.',
-        }),
-    ).exactOptional(),
-    ShardLevelMetrics: MetricsNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>List of shard-level metrics to disable.</p> <p>The following are the valid shard-level metrics. The value "<code>ALL</code>" disables every metric.</p> <ul> <li> <p> <code>IncomingBytes</code> </p> </li> <li> <p> <code>IncomingRecords</code> </p> </li> <li> <p> <code>OutgoingBytes</code> </p> </li> <li> <p> <code>OutgoingRecords</code> </p> </li> <li> <p> <code>WriteProvisionedThroughputExceeded</code> </p> </li> <li> <p> <code>ReadProvisionedThroughputExceeded</code> </p> </li> <li> <p> <code>IteratorAgeMilliseconds</code> </p> </li> <li> <p> <code>ALL</code> </p> </li> </ul> <p>For more information, see <a href="https://docs.aws.amazon.com/kinesis/latest/dev/monitoring-with-cloudwatch.html">Monitoring the Amazon Kinesis Data Streams Service with Amazon CloudWatch</a> in the <i>Amazon Kinesis Data Streams Developer Guide</i>.</p>',
-        }),
-    ),
-    StreamARN: StreamARNSchema.and(
-      z.any().openapi({ description: 'The ARN of the stream.' }),
-    ).exactOptional(),
+    StreamName: StreamNameSchema.exactOptional().openapi({
+      description: 'The name of the Kinesis data stream for which to disable enhanced monitoring.',
+    }),
+    ShardLevelMetrics: MetricsNameListSchema.openapi({
+      description:
+        '<p>List of shard-level metrics to disable.</p> <p>The following are the valid shard-level metrics. The value "<code>ALL</code>" disables every metric.</p> <ul> <li> <p> <code>IncomingBytes</code> </p> </li> <li> <p> <code>IncomingRecords</code> </p> </li> <li> <p> <code>OutgoingBytes</code> </p> </li> <li> <p> <code>OutgoingRecords</code> </p> </li> <li> <p> <code>WriteProvisionedThroughputExceeded</code> </p> </li> <li> <p> <code>ReadProvisionedThroughputExceeded</code> </p> </li> <li> <p> <code>IteratorAgeMilliseconds</code> </p> </li> <li> <p> <code>ALL</code> </p> </li> </ul> <p>For more information, see <a href="https://docs.aws.amazon.com/kinesis/latest/dev/monitoring-with-cloudwatch.html">Monitoring the Amazon Kinesis Data Streams Service with Amazon CloudWatch</a> in the <i>Amazon Kinesis Data Streams Developer Guide</i>.</p>',
+    }),
+    StreamARN: StreamARNSchema.exactOptional().openapi({ description: 'The ARN of the stream.' }),
   })
   .openapi({
     required: ['ShardLevelMetrics'],
@@ -765,24 +580,14 @@ const DisableEnhancedMonitoringInputSchema = z
 
 const EnableEnhancedMonitoringInputSchema = z
   .object({
-    StreamName: StreamNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the stream for which to enable enhanced monitoring.',
-        }),
-    ).exactOptional(),
-    ShardLevelMetrics: MetricsNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>List of shard-level metrics to enable.</p> <p>The following are the valid shard-level metrics. The value "<code>ALL</code>" enables every metric.</p> <ul> <li> <p> <code>IncomingBytes</code> </p> </li> <li> <p> <code>IncomingRecords</code> </p> </li> <li> <p> <code>OutgoingBytes</code> </p> </li> <li> <p> <code>OutgoingRecords</code> </p> </li> <li> <p> <code>WriteProvisionedThroughputExceeded</code> </p> </li> <li> <p> <code>ReadProvisionedThroughputExceeded</code> </p> </li> <li> <p> <code>IteratorAgeMilliseconds</code> </p> </li> <li> <p> <code>ALL</code> </p> </li> </ul> <p>For more information, see <a href="https://docs.aws.amazon.com/kinesis/latest/dev/monitoring-with-cloudwatch.html">Monitoring the Amazon Kinesis Data Streams Service with Amazon CloudWatch</a> in the <i>Amazon Kinesis Data Streams Developer Guide</i>.</p>',
-        }),
-    ),
-    StreamARN: StreamARNSchema.and(
-      z.any().openapi({ description: 'The ARN of the stream.' }),
-    ).exactOptional(),
+    StreamName: StreamNameSchema.exactOptional().openapi({
+      description: 'The name of the stream for which to enable enhanced monitoring.',
+    }),
+    ShardLevelMetrics: MetricsNameListSchema.openapi({
+      description:
+        '<p>List of shard-level metrics to enable.</p> <p>The following are the valid shard-level metrics. The value "<code>ALL</code>" enables every metric.</p> <ul> <li> <p> <code>IncomingBytes</code> </p> </li> <li> <p> <code>IncomingRecords</code> </p> </li> <li> <p> <code>OutgoingBytes</code> </p> </li> <li> <p> <code>OutgoingRecords</code> </p> </li> <li> <p> <code>WriteProvisionedThroughputExceeded</code> </p> </li> <li> <p> <code>ReadProvisionedThroughputExceeded</code> </p> </li> <li> <p> <code>IteratorAgeMilliseconds</code> </p> </li> <li> <p> <code>ALL</code> </p> </li> </ul> <p>For more information, see <a href="https://docs.aws.amazon.com/kinesis/latest/dev/monitoring-with-cloudwatch.html">Monitoring the Amazon Kinesis Data Streams Service with Amazon CloudWatch</a> in the <i>Amazon Kinesis Data Streams Developer Guide</i>.</p>',
+    }),
+    StreamARN: StreamARNSchema.exactOptional().openapi({ description: 'The ARN of the stream.' }),
   })
   .openapi({
     required: ['ShardLevelMetrics'],
@@ -797,39 +602,23 @@ const PartitionKeySchema = z.string().min(1).max(256).openapi('PartitionKey')
 
 const RecordSchema = z
   .object({
-    SequenceNumber: SequenceNumberSchema.and(
-      z.any().openapi({ description: 'The unique identifier of the record within its shard.' }),
-    ),
-    ApproximateArrivalTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The approximate time that the record was inserted into the stream.',
-        }),
-    ).exactOptional(),
-    Data: DataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The data blob. The data in the blob is both opaque and immutable to Kinesis Data Streams, which does not inspect, interpret, or change the data in the blob in any way. When the data blob (the payload before base64-encoding) is added to the partition key size, the total size must not exceed the maximum record size (1 MiB).',
-        }),
-    ),
-    PartitionKey: PartitionKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Identifies which shard in the stream the data record is assigned to.',
-        }),
-    ),
-    EncryptionType: EncryptionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The encryption type used on the record. This parameter can be one of the following values:</p> <ul> <li> <p> <code>NONE</code>: Do not encrypt the records in the stream.</p> </li> <li> <p> <code>KMS</code>: Use server-side encryption on the records in the stream using a customer-managed Amazon Web Services KMS key.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    SequenceNumber: SequenceNumberSchema.openapi({
+      description: 'The unique identifier of the record within its shard.',
+    }),
+    ApproximateArrivalTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The approximate time that the record was inserted into the stream.',
+    }),
+    Data: DataSchema.openapi({
+      description:
+        'The data blob. The data in the blob is both opaque and immutable to Kinesis Data Streams, which does not inspect, interpret, or change the data in the blob in any way. When the data blob (the payload before base64-encoding) is added to the partition key size, the total size must not exceed the maximum record size (1 MiB).',
+    }),
+    PartitionKey: PartitionKeySchema.openapi({
+      description: 'Identifies which shard in the stream the data record is assigned to.',
+    }),
+    EncryptionType: EncryptionTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The encryption type used on the record. This parameter can be one of the following values:</p> <ul> <li> <p> <code>NONE</code>: Do not encrypt the records in the stream.</p> </li> <li> <p> <code>KMS</code>: Use server-side encryption on the records in the stream using a customer-managed Amazon Web Services KMS key.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['SequenceNumber', 'Data', 'PartitionKey'],
@@ -848,18 +637,12 @@ const ShardIdListSchema = z.array(ShardIdSchema).openapi('ShardIdList')
 
 const ChildShardSchema = z
   .object({
-    ShardId: ShardIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The shard ID of the existing child shard of the current shard.' }),
-    ),
-    ParentShards: ShardIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The current shard that is the parent of the existing child shard.',
-        }),
-    ),
+    ShardId: ShardIdSchema.openapi({
+      description: 'The shard ID of the existing child shard of the current shard.',
+    }),
+    ParentShards: ShardIdListSchema.openapi({
+      description: 'The current shard that is the parent of the existing child shard.',
+    }),
     HashKeyRange: HashKeyRangeSchema,
   })
   .openapi({
@@ -873,33 +656,21 @@ const ChildShardListSchema = z.array(ChildShardSchema).openapi('ChildShardList')
 
 const GetRecordsOutputSchema = z
   .object({
-    Records: RecordListSchema.and(
-      z.any().openapi({ description: 'The data records retrieved from the shard.' }),
-    ),
-    NextShardIterator: ShardIteratorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The next position in the shard from which to start sequentially reading data records. If set to <code>null</code>, the shard has been closed and the requested iterator does not return any more data. ',
-        }),
-    ).exactOptional(),
-    MillisBehindLatest: MillisBehindLatestSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of milliseconds the <a>GetRecords</a> response is from the tip of the stream, indicating how far behind current time the consumer is. A value of zero indicates that record processing is caught up, and there are no new records to process at this moment.',
-        }),
-    ).exactOptional(),
-    ChildShards: ChildShardListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The list of the current shard's child shards, returned in the <code>GetRecords</code> API's response only when the end of the current shard is reached.",
-        }),
-    ).exactOptional(),
+    Records: RecordListSchema.openapi({
+      description: 'The data records retrieved from the shard.',
+    }),
+    NextShardIterator: ShardIteratorSchema.exactOptional().openapi({
+      description:
+        'The next position in the shard from which to start sequentially reading data records. If set to <code>null</code>, the shard has been closed and the requested iterator does not return any more data. ',
+    }),
+    MillisBehindLatest: MillisBehindLatestSchema.exactOptional().openapi({
+      description:
+        'The number of milliseconds the <a>GetRecords</a> response is from the tip of the stream, indicating how far behind current time the consumer is. A value of zero indicates that record processing is caught up, and there are no new records to process at this moment.',
+    }),
+    ChildShards: ChildShardListSchema.exactOptional().openapi({
+      description:
+        "The list of the current shard's child shards, returned in the <code>GetRecords</code> API's response only when the end of the current shard is reached.",
+    }),
   })
   .openapi({ required: ['Records'], description: 'Represents the output for <a>GetRecords</a>.' })
   .openapi('GetRecordsOutput')
@@ -908,25 +679,15 @@ const GetRecordsInputLimitSchema = z.int().min(1).max(10000).openapi('GetRecords
 
 const GetRecordsInputSchema = z
   .object({
-    ShardIterator: ShardIteratorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The position in the shard from which you want to start sequentially reading data records. A shard iterator specifies this position using the sequence number of a data record in the shard.',
-        }),
-    ),
-    Limit: GetRecordsInputLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of records to return. Specify a value of up to 10,000. If you specify a value that is greater than 10,000, <a>GetRecords</a> throws <code>InvalidArgumentException</code>. The default value is 10,000.',
-        }),
-    ).exactOptional(),
-    StreamARN: StreamARNSchema.and(
-      z.any().openapi({ description: 'The ARN of the stream.' }),
-    ).exactOptional(),
+    ShardIterator: ShardIteratorSchema.openapi({
+      description:
+        'The position in the shard from which you want to start sequentially reading data records. A shard iterator specifies this position using the sequence number of a data record in the shard.',
+    }),
+    Limit: GetRecordsInputLimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of records to return. Specify a value of up to 10,000. If you specify a value that is greater than 10,000, <a>GetRecords</a> throws <code>InvalidArgumentException</code>. The default value is 10,000.',
+    }),
+    StreamARN: StreamARNSchema.exactOptional().openapi({ description: 'The ARN of the stream.' }),
   })
   .openapi({
     required: ['ShardIterator'],
@@ -955,14 +716,10 @@ const KMSThrottlingExceptionSchema = z.any().openapi('KMSThrottlingException')
 
 const GetShardIteratorOutputSchema = z
   .object({
-    ShardIterator: ShardIteratorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The position in the shard from which to start reading data records sequentially. A shard iterator specifies this position using the sequence number of a data record in a shard.',
-        }),
-    ).exactOptional(),
+    ShardIterator: ShardIteratorSchema.exactOptional().openapi({
+      description:
+        'The position in the shard from which to start reading data records sequentially. A shard iterator specifies this position using the sequence number of a data record in a shard.',
+    }),
   })
   .openapi({
     description: 'Represents the output for <code>GetShardIterator</code>.',
@@ -976,43 +733,25 @@ const ShardIteratorTypeSchema = z
 
 const GetShardIteratorInputSchema = z
   .object({
-    StreamName: StreamNameSchema.and(
-      z.any().openapi({ description: 'The name of the Amazon Kinesis data stream.' }),
-    ).exactOptional(),
-    ShardId: ShardIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The shard ID of the Kinesis Data Streams shard to get the iterator for.',
-        }),
-    ),
-    ShardIteratorType: ShardIteratorTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Determines how the shard iterator is used to start reading data records from the shard.</p> <p>The following are the valid Amazon Kinesis shard iterator types:</p> <ul> <li> <p>AT_SEQUENCE_NUMBER - Start reading from the position denoted by a specific sequence number, provided in the value <code>StartingSequenceNumber</code>.</p> </li> <li> <p>AFTER_SEQUENCE_NUMBER - Start reading right after the position denoted by a specific sequence number, provided in the value <code>StartingSequenceNumber</code>.</p> </li> <li> <p>AT_TIMESTAMP - Start reading from the position denoted by a specific time stamp, provided in the value <code>Timestamp</code>.</p> </li> <li> <p>TRIM_HORIZON - Start reading at the last untrimmed record in the shard in the system, which is the oldest data record in the shard.</p> </li> <li> <p>LATEST - Start reading just after the most recent record in the shard, so that you always read the most recent data in the shard.</p> </li> </ul>',
-        }),
-    ),
-    StartingSequenceNumber: SequenceNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The sequence number of the data record in the shard from which to start reading. Used with shard iterator type AT_SEQUENCE_NUMBER and AFTER_SEQUENCE_NUMBER.',
-        }),
-    ).exactOptional(),
-    Timestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time stamp of the data record from which to start reading. Used with shard iterator type AT_TIMESTAMP. A time stamp is the Unix epoch date with precision in milliseconds. For example, <code>2016-04-04T19:58:46.480-00:00</code> or <code>1459799926.480</code>. If a record with this exact time stamp does not exist, the iterator returned is for the next (later) record. If the time stamp is older than the current trim horizon, the iterator returned is for the oldest untrimmed data record (TRIM_HORIZON).',
-        }),
-    ).exactOptional(),
-    StreamARN: StreamARNSchema.and(
-      z.any().openapi({ description: 'The ARN of the stream.' }),
-    ).exactOptional(),
+    StreamName: StreamNameSchema.exactOptional().openapi({
+      description: 'The name of the Amazon Kinesis data stream.',
+    }),
+    ShardId: ShardIdSchema.openapi({
+      description: 'The shard ID of the Kinesis Data Streams shard to get the iterator for.',
+    }),
+    ShardIteratorType: ShardIteratorTypeSchema.openapi({
+      description:
+        '<p>Determines how the shard iterator is used to start reading data records from the shard.</p> <p>The following are the valid Amazon Kinesis shard iterator types:</p> <ul> <li> <p>AT_SEQUENCE_NUMBER - Start reading from the position denoted by a specific sequence number, provided in the value <code>StartingSequenceNumber</code>.</p> </li> <li> <p>AFTER_SEQUENCE_NUMBER - Start reading right after the position denoted by a specific sequence number, provided in the value <code>StartingSequenceNumber</code>.</p> </li> <li> <p>AT_TIMESTAMP - Start reading from the position denoted by a specific time stamp, provided in the value <code>Timestamp</code>.</p> </li> <li> <p>TRIM_HORIZON - Start reading at the last untrimmed record in the shard in the system, which is the oldest data record in the shard.</p> </li> <li> <p>LATEST - Start reading just after the most recent record in the shard, so that you always read the most recent data in the shard.</p> </li> </ul>',
+    }),
+    StartingSequenceNumber: SequenceNumberSchema.exactOptional().openapi({
+      description:
+        'The sequence number of the data record in the shard from which to start reading. Used with shard iterator type AT_SEQUENCE_NUMBER and AFTER_SEQUENCE_NUMBER.',
+    }),
+    Timestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        'The time stamp of the data record from which to start reading. Used with shard iterator type AT_TIMESTAMP. A time stamp is the Unix epoch date with precision in milliseconds. For example, <code>2016-04-04T19:58:46.480-00:00</code> or <code>1459799926.480</code>. If a record with this exact time stamp does not exist, the iterator returned is for the next (later) record. If the time stamp is older than the current trim horizon, the iterator returned is for the oldest untrimmed data record (TRIM_HORIZON).',
+    }),
+    StreamARN: StreamARNSchema.exactOptional().openapi({ description: 'The ARN of the stream.' }),
   })
   .openapi({
     required: ['ShardId', 'ShardIteratorType'],
@@ -1023,20 +762,14 @@ const GetShardIteratorInputSchema = z
 
 const IncreaseStreamRetentionPeriodInputSchema = z
   .object({
-    StreamName: StreamNameSchema.and(
-      z.any().openapi({ description: 'The name of the stream to modify.' }),
-    ).exactOptional(),
-    RetentionPeriodHours: RetentionPeriodHoursSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The new retention period of the stream, in hours. Must be more than the current retention period.',
-        }),
-    ),
-    StreamARN: StreamARNSchema.and(
-      z.any().openapi({ description: 'The ARN of the stream.' }),
-    ).exactOptional(),
+    StreamName: StreamNameSchema.exactOptional().openapi({
+      description: 'The name of the stream to modify.',
+    }),
+    RetentionPeriodHours: RetentionPeriodHoursSchema.openapi({
+      description:
+        'The new retention period of the stream, in hours. Must be more than the current retention period.',
+    }),
+    StreamARN: StreamARNSchema.exactOptional().openapi({ description: 'The ARN of the stream.' }),
   })
   .openapi({
     required: ['RetentionPeriodHours'],
@@ -1049,22 +782,14 @@ const NextTokenSchema = z.string().min(1).max(1048576).openapi('NextToken')
 
 const ListShardsOutputSchema = z
   .object({
-    Shards: ShardListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An array of JSON objects. Each object represents one shard and specifies the IDs of the shard, the shard's parent, and the shard that's adjacent to the shard's parent. Each object also contains the starting and ending hash keys and the starting and ending sequence numbers for the shard.",
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>When the number of shards in the data stream is greater than the default value for the <code>MaxResults</code> parameter, or if you explicitly specify a value for <code>MaxResults</code> that is less than the number of shards in the data stream, the response includes a pagination token named <code>NextToken</code>. You can specify this <code>NextToken</code> value in a subsequent call to <code>ListShards</code> to list the next set of shards. For more information about the use of this pagination token when calling the <code>ListShards</code> operation, see <a>ListShardsInput$NextToken</a>.</p> <important> <p>Tokens expire after 300 seconds. When you obtain a value for <code>NextToken</code> in the response to a call to <code>ListShards</code>, you have 300 seconds to use that value. If you specify an expired token in a call to <code>ListShards</code>, you get <code>ExpiredNextTokenException</code>.</p> </important>',
-        }),
-    ).exactOptional(),
+    Shards: ShardListSchema.exactOptional().openapi({
+      description:
+        "An array of JSON objects. Each object represents one shard and specifies the IDs of the shard, the shard's parent, and the shard that's adjacent to the shard's parent. Each object also contains the starting and ending hash keys and the starting and ending sequence numbers for the shard.",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        '<p>When the number of shards in the data stream is greater than the default value for the <code>MaxResults</code> parameter, or if you explicitly specify a value for <code>MaxResults</code> that is less than the number of shards in the data stream, the response includes a pagination token named <code>NextToken</code>. You can specify this <code>NextToken</code> value in a subsequent call to <code>ListShards</code> to list the next set of shards. For more information about the use of this pagination token when calling the <code>ListShards</code> operation, see <a>ListShardsInput$NextToken</a>.</p> <important> <p>Tokens expire after 300 seconds. When you obtain a value for <code>NextToken</code> in the response to a call to <code>ListShards</code>, you have 300 seconds to use that value. If you specify an expired token in a call to <code>ListShards</code>, you get <code>ExpiredNextTokenException</code>.</p> </important>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListShardsOutput')
@@ -1084,30 +809,18 @@ const ShardFilterTypeSchema = z
 
 const ShardFilterSchema = z
   .object({
-    Type: ShardFilterTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The shard type specified in the <code>ShardFilter</code> parameter. This is a required property of the <code>ShardFilter</code> parameter.</p> <p>You can specify the following valid values: </p> <ul> <li> <p> <code>AFTER_SHARD_ID</code> - the response includes all the shards, starting with the shard whose ID immediately follows the <code>ShardId</code> that you provided. </p> </li> <li> <p> <code>AT_TRIM_HORIZON</code> - the response includes all the shards that were open at <code>TRIM_HORIZON</code>.</p> </li> <li> <p> <code>FROM_TRIM_HORIZON</code> - (default), the response includes all the shards within the retention period of the data stream (trim to tip).</p> </li> <li> <p> <code>AT_LATEST</code> - the response includes only the currently open shards of the data stream.</p> </li> <li> <p> <code>AT_TIMESTAMP</code> - the response includes all shards whose start timestamp is less than or equal to the given timestamp and end timestamp is greater than or equal to the given timestamp or still open. </p> </li> <li> <p> <code>FROM_TIMESTAMP</code> - the response incldues all closed shards whose end timestamp is greater than or equal to the given timestamp and also all open shards. Corrected to <code>TRIM_HORIZON</code> of the data stream if <code>FROM_TIMESTAMP</code> is less than the <code>TRIM_HORIZON</code> value.</p> </li> </ul>',
-        }),
-    ),
-    ShardId: ShardIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The exclusive start <code>shardID</code> speified in the <code>ShardFilter</code> parameter. This property can only be used if the <code>AFTER_SHARD_ID</code> shard type is specified.',
-        }),
-    ).exactOptional(),
-    Timestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamps specified in the <code>ShardFilter</code> parameter. A timestamp is a Unix epoch date with precision in milliseconds. For example, 2016-04-04T19:58:46.480-00:00 or 1459799926.480. This property can only be used if <code>FROM_TIMESTAMP</code> or <code>AT_TIMESTAMP</code> shard types are specified.',
-        }),
-    ).exactOptional(),
+    Type: ShardFilterTypeSchema.openapi({
+      description:
+        '<p>The shard type specified in the <code>ShardFilter</code> parameter. This is a required property of the <code>ShardFilter</code> parameter.</p> <p>You can specify the following valid values: </p> <ul> <li> <p> <code>AFTER_SHARD_ID</code> - the response includes all the shards, starting with the shard whose ID immediately follows the <code>ShardId</code> that you provided. </p> </li> <li> <p> <code>AT_TRIM_HORIZON</code> - the response includes all the shards that were open at <code>TRIM_HORIZON</code>.</p> </li> <li> <p> <code>FROM_TRIM_HORIZON</code> - (default), the response includes all the shards within the retention period of the data stream (trim to tip).</p> </li> <li> <p> <code>AT_LATEST</code> - the response includes only the currently open shards of the data stream.</p> </li> <li> <p> <code>AT_TIMESTAMP</code> - the response includes all shards whose start timestamp is less than or equal to the given timestamp and end timestamp is greater than or equal to the given timestamp or still open. </p> </li> <li> <p> <code>FROM_TIMESTAMP</code> - the response incldues all closed shards whose end timestamp is greater than or equal to the given timestamp and also all open shards. Corrected to <code>TRIM_HORIZON</code> of the data stream if <code>FROM_TIMESTAMP</code> is less than the <code>TRIM_HORIZON</code> value.</p> </li> </ul>',
+    }),
+    ShardId: ShardIdSchema.exactOptional().openapi({
+      description:
+        'The exclusive start <code>shardID</code> speified in the <code>ShardFilter</code> parameter. This property can only be used if the <code>AFTER_SHARD_ID</code> shard type is specified.',
+    }),
+    Timestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        'The timestamps specified in the <code>ShardFilter</code> parameter. A timestamp is a Unix epoch date with precision in milliseconds. For example, 2016-04-04T19:58:46.480-00:00 or 1459799926.480. This property can only be used if <code>FROM_TIMESTAMP</code> or <code>AT_TIMESTAMP</code> shard types are specified.',
+    }),
   })
   .openapi({
     required: ['Type'],
@@ -1118,57 +831,31 @@ const ShardFilterSchema = z
 
 const ListShardsInputSchema = z
   .object({
-    StreamName: StreamNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the data stream whose shards you want to list. </p> <p>You cannot specify this parameter if you specify the <code>NextToken</code> parameter.</p>',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>When the number of shards in the data stream is greater than the default value for the <code>MaxResults</code> parameter, or if you explicitly specify a value for <code>MaxResults</code> that is less than the number of shards in the data stream, the response includes a pagination token named <code>NextToken</code>. You can specify this <code>NextToken</code> value in a subsequent call to <code>ListShards</code> to list the next set of shards.</p> <p>Don't specify <code>StreamName</code> or <code>StreamCreationTimestamp</code> if you specify <code>NextToken</code> because the latter unambiguously identifies the stream.</p> <p>You can optionally specify a value for the <code>MaxResults</code> parameter when you specify <code>NextToken</code>. If you specify a <code>MaxResults</code> value that is less than the number of shards that the operation returns if you don't specify <code>MaxResults</code>, the response will contain a new <code>NextToken</code> value. You can use the new <code>NextToken</code> value in a subsequent call to the <code>ListShards</code> operation.</p> <important> <p>Tokens expire after 300 seconds. When you obtain a value for <code>NextToken</code> in the response to a call to <code>ListShards</code>, you have 300 seconds to use that value. If you specify an expired token in a call to <code>ListShards</code>, you get <code>ExpiredNextTokenException</code>.</p> </important>",
-        }),
-    ).exactOptional(),
-    ExclusiveStartShardId: ShardIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Specify this parameter to indicate that you want to list the shards starting with the shard whose ID immediately follows <code>ExclusiveStartShardId</code>.</p> <p>If you don't specify this parameter, the default behavior is for <code>ListShards</code> to list the shards starting with the first one in the stream.</p> <p>You cannot specify this parameter if you specify <code>NextToken</code>.</p>",
-        }),
-    ).exactOptional(),
-    MaxResults: ListShardsInputLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of shards to return in a single call to <code>ListShards</code>. The maximum number of shards to return in a single call. The default value is 1000. If you specify a value greater than 1000, at most 1000 results are returned. </p> <p>When the number of shards to be listed is greater than the value of <code>MaxResults</code>, the response contains a <code>NextToken</code> value that you can use in a subsequent call to <code>ListShards</code> to list the next set of shards.</p>',
-        }),
-    ).exactOptional(),
-    StreamCreationTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specify this input parameter to distinguish data streams that have the same name. For example, if you create a data stream and then delete it, and you later create another data stream with the same name, you can use this input parameter to specify which of the two streams you want to list the shards for.</p> <p>You cannot specify this parameter if you specify the <code>NextToken</code> parameter.</p>',
-        }),
-    ).exactOptional(),
-    ShardFilter: ShardFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Enables you to filter out the response of the <code>ListShards</code> API. You can only specify one filter at a time. </p> <p>If you use the <code>ShardFilter</code> parameter when invoking the ListShards API, the <code>Type</code> is the required property and must be specified. If you specify the <code>AT_TRIM_HORIZON</code>, <code>FROM_TRIM_HORIZON</code>, or <code>AT_LATEST</code> types, you do not need to specify either the <code>ShardId</code> or the <code>Timestamp</code> optional properties. </p> <p>If you specify the <code>AFTER_SHARD_ID</code> type, you must also provide the value for the optional <code>ShardId</code> property. The <code>ShardId</code> property is identical in fuctionality to the <code>ExclusiveStartShardId</code> parameter of the <code>ListShards</code> API. When <code>ShardId</code> property is specified, the response includes the shards starting with the shard whose ID immediately follows the <code>ShardId</code> that you provided. </p> <p>If you specify the <code>AT_TIMESTAMP</code> or <code>FROM_TIMESTAMP_ID</code> type, you must also provide the value for the optional <code>Timestamp</code> property. If you specify the AT_TIMESTAMP type, then all shards that were open at the provided timestamp are returned. If you specify the FROM_TIMESTAMP type, then all shards starting from the provided timestamp to TIP are returned. </p>',
-        }),
-    ).exactOptional(),
-    StreamARN: StreamARNSchema.and(
-      z.any().openapi({ description: 'The ARN of the stream.' }),
-    ).exactOptional(),
+    StreamName: StreamNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the data stream whose shards you want to list. </p> <p>You cannot specify this parameter if you specify the <code>NextToken</code> parameter.</p>',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "<p>When the number of shards in the data stream is greater than the default value for the <code>MaxResults</code> parameter, or if you explicitly specify a value for <code>MaxResults</code> that is less than the number of shards in the data stream, the response includes a pagination token named <code>NextToken</code>. You can specify this <code>NextToken</code> value in a subsequent call to <code>ListShards</code> to list the next set of shards.</p> <p>Don't specify <code>StreamName</code> or <code>StreamCreationTimestamp</code> if you specify <code>NextToken</code> because the latter unambiguously identifies the stream.</p> <p>You can optionally specify a value for the <code>MaxResults</code> parameter when you specify <code>NextToken</code>. If you specify a <code>MaxResults</code> value that is less than the number of shards that the operation returns if you don't specify <code>MaxResults</code>, the response will contain a new <code>NextToken</code> value. You can use the new <code>NextToken</code> value in a subsequent call to the <code>ListShards</code> operation.</p> <important> <p>Tokens expire after 300 seconds. When you obtain a value for <code>NextToken</code> in the response to a call to <code>ListShards</code>, you have 300 seconds to use that value. If you specify an expired token in a call to <code>ListShards</code>, you get <code>ExpiredNextTokenException</code>.</p> </important>",
+    }),
+    ExclusiveStartShardId: ShardIdSchema.exactOptional().openapi({
+      description:
+        "<p>Specify this parameter to indicate that you want to list the shards starting with the shard whose ID immediately follows <code>ExclusiveStartShardId</code>.</p> <p>If you don't specify this parameter, the default behavior is for <code>ListShards</code> to list the shards starting with the first one in the stream.</p> <p>You cannot specify this parameter if you specify <code>NextToken</code>.</p>",
+    }),
+    MaxResults: ListShardsInputLimitSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of shards to return in a single call to <code>ListShards</code>. The maximum number of shards to return in a single call. The default value is 1000. If you specify a value greater than 1000, at most 1000 results are returned. </p> <p>When the number of shards to be listed is greater than the value of <code>MaxResults</code>, the response contains a <code>NextToken</code> value that you can use in a subsequent call to <code>ListShards</code> to list the next set of shards.</p>',
+    }),
+    StreamCreationTimestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        '<p>Specify this input parameter to distinguish data streams that have the same name. For example, if you create a data stream and then delete it, and you later create another data stream with the same name, you can use this input parameter to specify which of the two streams you want to list the shards for.</p> <p>You cannot specify this parameter if you specify the <code>NextToken</code> parameter.</p>',
+    }),
+    ShardFilter: ShardFilterSchema.exactOptional().openapi({
+      description:
+        '<p>Enables you to filter out the response of the <code>ListShards</code> API. You can only specify one filter at a time. </p> <p>If you use the <code>ShardFilter</code> parameter when invoking the ListShards API, the <code>Type</code> is the required property and must be specified. If you specify the <code>AT_TRIM_HORIZON</code>, <code>FROM_TRIM_HORIZON</code>, or <code>AT_LATEST</code> types, you do not need to specify either the <code>ShardId</code> or the <code>Timestamp</code> optional properties. </p> <p>If you specify the <code>AFTER_SHARD_ID</code> type, you must also provide the value for the optional <code>ShardId</code> property. The <code>ShardId</code> property is identical in fuctionality to the <code>ExclusiveStartShardId</code> parameter of the <code>ListShards</code> API. When <code>ShardId</code> property is specified, the response includes the shards starting with the shard whose ID immediately follows the <code>ShardId</code> that you provided. </p> <p>If you specify the <code>AT_TIMESTAMP</code> or <code>FROM_TIMESTAMP_ID</code> type, you must also provide the value for the optional <code>Timestamp</code> property. If you specify the AT_TIMESTAMP type, then all shards that were open at the provided timestamp are returned. If you specify the FROM_TIMESTAMP type, then all shards starting from the provided timestamp to TIP are returned. </p>',
+    }),
+    StreamARN: StreamARNSchema.exactOptional().openapi({ description: 'The ARN of the stream.' }),
   })
   .openapi({ title: 'ListShardsInput', required: [] })
   .openapi('ListShardsInput')
@@ -1177,31 +864,19 @@ const ExpiredNextTokenExceptionSchema = z.any().openapi('ExpiredNextTokenExcepti
 
 const ConsumerSchema = z
   .object({
-    ConsumerName: ConsumerNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the consumer is something you choose when you register the consumer.',
-        }),
-    ),
-    ConsumerARN: ConsumerARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>When you register a consumer, Kinesis Data Streams generates an ARN for it. You need this ARN to be able to call <a>SubscribeToShard</a>.</p> <p>If you delete a consumer and then create a new one with the same name, it won't have the same ARN. That's because consumer ARNs contain the creation timestamp. This is important to keep in mind if you have IAM policies that reference consumer ARNs.</p>",
-        }),
-    ),
-    ConsumerStatus: ConsumerStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A consumer can't read data while in the <code>CREATING</code> or <code>DELETING</code> states.",
-        }),
-    ),
-    ConsumerCreationTimestamp: TimestampSchema.and(z.any().openapi({ description: '<p/>' })),
+    ConsumerName: ConsumerNameSchema.openapi({
+      description:
+        'The name of the consumer is something you choose when you register the consumer.',
+    }),
+    ConsumerARN: ConsumerARNSchema.openapi({
+      description:
+        "<p>When you register a consumer, Kinesis Data Streams generates an ARN for it. You need this ARN to be able to call <a>SubscribeToShard</a>.</p> <p>If you delete a consumer and then create a new one with the same name, it won't have the same ARN. That's because consumer ARNs contain the creation timestamp. This is important to keep in mind if you have IAM policies that reference consumer ARNs.</p>",
+    }),
+    ConsumerStatus: ConsumerStatusSchema.openapi({
+      description:
+        "A consumer can't read data while in the <code>CREATING</code> or <code>DELETING</code> states.",
+    }),
+    ConsumerCreationTimestamp: TimestampSchema.openapi({ description: '<p/>' }),
   })
   .openapi({
     required: ['ConsumerName', 'ConsumerARN', 'ConsumerStatus', 'ConsumerCreationTimestamp'],
@@ -1214,21 +889,13 @@ const ConsumerListSchema = z.array(ConsumerSchema).openapi('ConsumerList')
 
 const ListStreamConsumersOutputSchema = z
   .object({
-    Consumers: ConsumerListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array of JSON objects. Each object represents one registered consumer.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>When the number of consumers that are registered with the data stream is greater than the default value for the <code>MaxResults</code> parameter, or if you explicitly specify a value for <code>MaxResults</code> that is less than the number of registered consumers, the response includes a pagination token named <code>NextToken</code>. You can specify this <code>NextToken</code> value in a subsequent call to <code>ListStreamConsumers</code> to list the next set of registered consumers. For more information about the use of this pagination token when calling the <code>ListStreamConsumers</code> operation, see <a>ListStreamConsumersInput$NextToken</a>.</p> <important> <p>Tokens expire after 300 seconds. When you obtain a value for <code>NextToken</code> in the response to a call to <code>ListStreamConsumers</code>, you have 300 seconds to use that value. If you specify an expired token in a call to <code>ListStreamConsumers</code>, you get <code>ExpiredNextTokenException</code>.</p> </important>',
-        }),
-    ).exactOptional(),
+    Consumers: ConsumerListSchema.exactOptional().openapi({
+      description: 'An array of JSON objects. Each object represents one registered consumer.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        '<p>When the number of consumers that are registered with the data stream is greater than the default value for the <code>MaxResults</code> parameter, or if you explicitly specify a value for <code>MaxResults</code> that is less than the number of registered consumers, the response includes a pagination token named <code>NextToken</code>. You can specify this <code>NextToken</code> value in a subsequent call to <code>ListStreamConsumers</code> to list the next set of registered consumers. For more information about the use of this pagination token when calling the <code>ListStreamConsumers</code> operation, see <a>ListStreamConsumersInput$NextToken</a>.</p> <important> <p>Tokens expire after 300 seconds. When you obtain a value for <code>NextToken</code> in the response to a call to <code>ListStreamConsumers</code>, you have 300 seconds to use that value. If you specify an expired token in a call to <code>ListStreamConsumers</code>, you get <code>ExpiredNextTokenException</code>.</p> </important>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListStreamConsumersOutput')
@@ -1241,38 +908,22 @@ const ListStreamConsumersInputLimitSchema = z
 
 const ListStreamConsumersInputSchema = z
   .object({
-    StreamARN: StreamARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the Kinesis data stream for which you want to list the registered consumers. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#arn-syntax-kinesis-streams">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a>.',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>When the number of consumers that are registered with the data stream is greater than the default value for the <code>MaxResults</code> parameter, or if you explicitly specify a value for <code>MaxResults</code> that is less than the number of consumers that are registered with the data stream, the response includes a pagination token named <code>NextToken</code>. You can specify this <code>NextToken</code> value in a subsequent call to <code>ListStreamConsumers</code> to list the next set of registered consumers.</p> <p>Don't specify <code>StreamName</code> or <code>StreamCreationTimestamp</code> if you specify <code>NextToken</code> because the latter unambiguously identifies the stream.</p> <p>You can optionally specify a value for the <code>MaxResults</code> parameter when you specify <code>NextToken</code>. If you specify a <code>MaxResults</code> value that is less than the number of consumers that the operation returns if you don't specify <code>MaxResults</code>, the response will contain a new <code>NextToken</code> value. You can use the new <code>NextToken</code> value in a subsequent call to the <code>ListStreamConsumers</code> operation to list the next set of consumers.</p> <important> <p>Tokens expire after 300 seconds. When you obtain a value for <code>NextToken</code> in the response to a call to <code>ListStreamConsumers</code>, you have 300 seconds to use that value. If you specify an expired token in a call to <code>ListStreamConsumers</code>, you get <code>ExpiredNextTokenException</code>.</p> </important>",
-        }),
-    ).exactOptional(),
-    MaxResults: ListStreamConsumersInputLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of consumers that you want a single call of <code>ListStreamConsumers</code> to return. The default value is 100. If you specify a value greater than 100, at most 100 results are returned. ',
-        }),
-    ).exactOptional(),
-    StreamCreationTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Specify this input parameter to distinguish data streams that have the same name. For example, if you create a data stream and then delete it, and you later create another data stream with the same name, you can use this input parameter to specify which of the two streams you want to list the consumers for. </p> <p>You can't specify this parameter if you specify the NextToken parameter. </p>",
-        }),
-    ).exactOptional(),
+    StreamARN: StreamARNSchema.openapi({
+      description:
+        'The ARN of the Kinesis data stream for which you want to list the registered consumers. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#arn-syntax-kinesis-streams">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a>.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "<p>When the number of consumers that are registered with the data stream is greater than the default value for the <code>MaxResults</code> parameter, or if you explicitly specify a value for <code>MaxResults</code> that is less than the number of consumers that are registered with the data stream, the response includes a pagination token named <code>NextToken</code>. You can specify this <code>NextToken</code> value in a subsequent call to <code>ListStreamConsumers</code> to list the next set of registered consumers.</p> <p>Don't specify <code>StreamName</code> or <code>StreamCreationTimestamp</code> if you specify <code>NextToken</code> because the latter unambiguously identifies the stream.</p> <p>You can optionally specify a value for the <code>MaxResults</code> parameter when you specify <code>NextToken</code>. If you specify a <code>MaxResults</code> value that is less than the number of consumers that the operation returns if you don't specify <code>MaxResults</code>, the response will contain a new <code>NextToken</code> value. You can use the new <code>NextToken</code> value in a subsequent call to the <code>ListStreamConsumers</code> operation to list the next set of consumers.</p> <important> <p>Tokens expire after 300 seconds. When you obtain a value for <code>NextToken</code> in the response to a call to <code>ListStreamConsumers</code>, you have 300 seconds to use that value. If you specify an expired token in a call to <code>ListStreamConsumers</code>, you get <code>ExpiredNextTokenException</code>.</p> </important>",
+    }),
+    MaxResults: ListStreamConsumersInputLimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of consumers that you want a single call of <code>ListStreamConsumers</code> to return. The default value is 100. If you specify a value greater than 100, at most 100 results are returned. ',
+    }),
+    StreamCreationTimestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        "<p>Specify this input parameter to distinguish data streams that have the same name. For example, if you create a data stream and then delete it, and you later create another data stream with the same name, you can use this input parameter to specify which of the two streams you want to list the consumers for. </p> <p>You can't specify this parameter if you specify the NextToken parameter. </p>",
+    }),
   })
   .openapi({ required: ['StreamARN'], title: 'ListStreamConsumersInput' })
   .openapi('ListStreamConsumersInput')
@@ -1281,15 +932,13 @@ const StreamNameListSchema = z.array(StreamNameSchema).openapi('StreamNameList')
 
 const StreamSummarySchema = z
   .object({
-    StreamName: StreamNameSchema.and(z.any().openapi({ description: 'The name of a stream.' })),
-    StreamARN: StreamARNSchema.and(z.any().openapi({ description: 'The ARN of the stream.' })),
-    StreamStatus: StreamStatusSchema.and(
-      z.any().openapi({ description: 'The status of the stream.' }),
-    ),
+    StreamName: StreamNameSchema.openapi({ description: 'The name of a stream.' }),
+    StreamARN: StreamARNSchema.openapi({ description: 'The ARN of the stream.' }),
+    StreamStatus: StreamStatusSchema.openapi({ description: 'The status of the stream.' }),
     StreamModeDetails: StreamModeDetailsSchema.exactOptional(),
-    StreamCreationTimestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The timestamp at which the stream was created.' }),
-    ).exactOptional(),
+    StreamCreationTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp at which the stream was created.',
+    }),
   })
   .openapi({
     required: ['StreamName', 'StreamARN', 'StreamStatus'],
@@ -1301,25 +950,15 @@ const StreamSummaryListSchema = z.array(StreamSummarySchema).openapi('StreamSumm
 
 const ListStreamsOutputSchema = z
   .object({
-    StreamNames: StreamNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The names of the streams that are associated with the Amazon Web Services account making the <code>ListStreams</code> request.',
-        }),
-    ),
-    HasMoreStreams: BooleanObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'If set to <code>true</code>, there are more streams available to list.',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(z.any().openapi({ description: '<p/>' })).exactOptional(),
-    StreamSummaries: StreamSummaryListSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
+    StreamNames: StreamNameListSchema.openapi({
+      description:
+        'The names of the streams that are associated with the Amazon Web Services account making the <code>ListStreams</code> request.',
+    }),
+    HasMoreStreams: BooleanObjectSchema.openapi({
+      description: 'If set to <code>true</code>, there are more streams available to list.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({ description: '<p/>' }),
+    StreamSummaries: StreamSummaryListSchema.exactOptional().openapi({ description: '<p/>' }),
   })
   .openapi({
     required: ['StreamNames', 'HasMoreStreams'],
@@ -1331,18 +970,14 @@ const ListStreamsInputLimitSchema = z.int().min(1).max(10000).openapi('ListStrea
 
 const ListStreamsInputSchema = z
   .object({
-    Limit: ListStreamsInputLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of streams to list. The default value is 100. If you specify a value greater than 100, at most 100 results are returned.',
-        }),
-    ).exactOptional(),
-    ExclusiveStartStreamName: StreamNameSchema.and(
-      z.any().openapi({ description: 'The name of the stream to start the list with.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(z.any().openapi({ description: '<p/>' })).exactOptional(),
+    Limit: ListStreamsInputLimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of streams to list. The default value is 100. If you specify a value greater than 100, at most 100 results are returned.',
+    }),
+    ExclusiveStartStreamName: StreamNameSchema.exactOptional().openapi({
+      description: 'The name of the stream to start the list with.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({ description: '<p/>' }),
   })
   .openapi({
     title: 'ListStreamsInput',
@@ -1355,22 +990,14 @@ const TagKeySchema = z.string().min(1).max(128).openapi('TagKey')
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the tag. Maximum length: 128 characters. Valid characters: Unicode letters, digits, white space, _ . / = + - % @',
-        }),
-    ),
-    Value: TagValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional string, typically used to describe or define the tag. Maximum length: 256 characters. Valid characters: Unicode letters, digits, white space, _ . / = + - % @',
-        }),
-    ).exactOptional(),
+    Key: TagKeySchema.openapi({
+      description:
+        'A unique identifier for the tag. Maximum length: 128 characters. Valid characters: Unicode letters, digits, white space, _ . / = + - % @',
+    }),
+    Value: TagValueSchema.exactOptional().openapi({
+      description:
+        'An optional string, typically used to describe or define the tag. Maximum length: 256 characters. Valid characters: Unicode letters, digits, white space, _ . / = + - % @',
+    }),
   })
   .openapi({
     required: ['Key'],
@@ -1382,22 +1009,14 @@ const TagListSchema = z.array(TagSchema).min(0).max(200).openapi('TagList')
 
 const ListTagsForStreamOutputSchema = z
   .object({
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tags associated with <code>StreamName</code>, starting with the first tag after <code>ExclusiveStartTagKey</code> and up to the specified <code>Limit</code>. ',
-        }),
-    ),
-    HasMoreTags: BooleanObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If set to <code>true</code>, more tags are available. To request additional tags, set <code>ExclusiveStartTagKey</code> to the key of the last tag returned.',
-        }),
-    ),
+    Tags: TagListSchema.openapi({
+      description:
+        'A list of tags associated with <code>StreamName</code>, starting with the first tag after <code>ExclusiveStartTagKey</code> and up to the specified <code>Limit</code>. ',
+    }),
+    HasMoreTags: BooleanObjectSchema.openapi({
+      description:
+        'If set to <code>true</code>, more tags are available. To request additional tags, set <code>ExclusiveStartTagKey</code> to the key of the last tag returned.',
+    }),
   })
   .openapi({
     required: ['Tags', 'HasMoreTags'],
@@ -1413,28 +1032,18 @@ const ListTagsForStreamInputLimitSchema = z
 
 const ListTagsForStreamInputSchema = z
   .object({
-    StreamName: StreamNameSchema.and(
-      z.any().openapi({ description: 'The name of the stream.' }),
-    ).exactOptional(),
-    ExclusiveStartTagKey: TagKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The key to use as the starting point for the list of tags. If this parameter is set, <code>ListTagsForStream</code> gets all tags that occur after <code>ExclusiveStartTagKey</code>. ',
-        }),
-    ).exactOptional(),
-    Limit: ListTagsForStreamInputLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of tags to return. If this number is less than the total number of tags associated with the stream, <code>HasMoreTags</code> is set to <code>true</code>. To list additional tags, set <code>ExclusiveStartTagKey</code> to the last key in the response.',
-        }),
-    ).exactOptional(),
-    StreamARN: StreamARNSchema.and(
-      z.any().openapi({ description: 'The ARN of the stream.' }),
-    ).exactOptional(),
+    StreamName: StreamNameSchema.exactOptional().openapi({
+      description: 'The name of the stream.',
+    }),
+    ExclusiveStartTagKey: TagKeySchema.exactOptional().openapi({
+      description:
+        'The key to use as the starting point for the list of tags. If this parameter is set, <code>ListTagsForStream</code> gets all tags that occur after <code>ExclusiveStartTagKey</code>. ',
+    }),
+    Limit: ListTagsForStreamInputLimitSchema.exactOptional().openapi({
+      description:
+        'The number of tags to return. If this number is less than the total number of tags associated with the stream, <code>HasMoreTags</code> is set to <code>true</code>. To list additional tags, set <code>ExclusiveStartTagKey</code> to the last key in the response.',
+    }),
+    StreamARN: StreamARNSchema.exactOptional().openapi({ description: 'The ARN of the stream.' }),
   })
   .openapi({
     title: 'ListTagsForStreamInput',
@@ -1445,23 +1054,16 @@ const ListTagsForStreamInputSchema = z
 
 const MergeShardsInputSchema = z
   .object({
-    StreamName: StreamNameSchema.and(
-      z.any().openapi({ description: 'The name of the stream for the merge.' }),
-    ).exactOptional(),
-    ShardToMerge: ShardIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The shard ID of the shard to combine with the adjacent shard for the merge.',
-        }),
-    ),
-    AdjacentShardToMerge: ShardIdSchema.and(
-      z.any().openapi({ description: 'The shard ID of the adjacent shard for the merge.' }),
-    ),
-    StreamARN: StreamARNSchema.and(
-      z.any().openapi({ description: 'The ARN of the stream.' }),
-    ).exactOptional(),
+    StreamName: StreamNameSchema.exactOptional().openapi({
+      description: 'The name of the stream for the merge.',
+    }),
+    ShardToMerge: ShardIdSchema.openapi({
+      description: 'The shard ID of the shard to combine with the adjacent shard for the merge.',
+    }),
+    AdjacentShardToMerge: ShardIdSchema.openapi({
+      description: 'The shard ID of the adjacent shard for the merge.',
+    }),
+    StreamARN: StreamARNSchema.exactOptional().openapi({ description: 'The ARN of the stream.' }),
   })
   .openapi({
     required: ['ShardToMerge', 'AdjacentShardToMerge'],
@@ -1474,27 +1076,17 @@ const ValidationExceptionSchema = z.any().openapi('ValidationException')
 
 const PutRecordOutputSchema = z
   .object({
-    ShardId: ShardIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The shard ID of the shard where the data record was placed.' }),
-    ),
-    SequenceNumber: SequenceNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The sequence number identifier that was assigned to the put data record. The sequence number for the record is unique across all records in the stream. A sequence number is the identifier associated with every record put into the stream.',
-        }),
-    ),
-    EncryptionType: EncryptionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The encryption type to use on the record. This parameter can be one of the following values:</p> <ul> <li> <p> <code>NONE</code>: Do not encrypt the records in the stream.</p> </li> <li> <p> <code>KMS</code>: Use server-side encryption on the records in the stream using a customer-managed Amazon Web Services KMS key.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    ShardId: ShardIdSchema.openapi({
+      description: 'The shard ID of the shard where the data record was placed.',
+    }),
+    SequenceNumber: SequenceNumberSchema.openapi({
+      description:
+        'The sequence number identifier that was assigned to the put data record. The sequence number for the record is unique across all records in the stream. A sequence number is the identifier associated with every record put into the stream.',
+    }),
+    EncryptionType: EncryptionTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The encryption type to use on the record. This parameter can be one of the following values:</p> <ul> <li> <p> <code>NONE</code>: Do not encrypt the records in the stream.</p> </li> <li> <p> <code>KMS</code>: Use server-side encryption on the records in the stream using a customer-managed Amazon Web Services KMS key.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['ShardId', 'SequenceNumber'],
@@ -1504,44 +1096,26 @@ const PutRecordOutputSchema = z
 
 const PutRecordInputSchema = z
   .object({
-    StreamName: StreamNameSchema.and(
-      z.any().openapi({ description: 'The name of the stream to put the data record into.' }),
-    ).exactOptional(),
-    Data: DataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The data blob to put into the record, which is base64-encoded when the blob is serialized. When the data blob (the payload before base64-encoding) is added to the partition key size, the total size must not exceed the maximum record size (1 MiB).',
-        }),
-    ),
-    PartitionKey: PartitionKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Determines which shard in the stream the data record is assigned to. Partition keys are Unicode strings with a maximum length limit of 256 characters for each key. Amazon Kinesis Data Streams uses the partition key as input to a hash function that maps the partition key and associated data to a specific shard. Specifically, an MD5 hash function is used to map partition keys to 128-bit integer values and to map associated data records to shards. As a result of this hashing mechanism, all data records with the same partition key map to the same shard within the stream.',
-        }),
-    ),
-    ExplicitHashKey: HashKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The hash value used to explicitly determine the shard the data record is assigned to by overriding the partition key hash.',
-        }),
-    ).exactOptional(),
-    SequenceNumberForOrdering: SequenceNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Guarantees strictly increasing sequence numbers, for puts from the same client and to the same partition key. Usage: set the <code>SequenceNumberForOrdering</code> of record <i>n</i> to the sequence number of record <i>n-1</i> (as returned in the result when putting record <i>n-1</i>). If this parameter is not set, records are coarsely ordered based on arrival time.',
-        }),
-    ).exactOptional(),
-    StreamARN: StreamARNSchema.and(
-      z.any().openapi({ description: 'The ARN of the stream.' }),
-    ).exactOptional(),
+    StreamName: StreamNameSchema.exactOptional().openapi({
+      description: 'The name of the stream to put the data record into.',
+    }),
+    Data: DataSchema.openapi({
+      description:
+        'The data blob to put into the record, which is base64-encoded when the blob is serialized. When the data blob (the payload before base64-encoding) is added to the partition key size, the total size must not exceed the maximum record size (1 MiB).',
+    }),
+    PartitionKey: PartitionKeySchema.openapi({
+      description:
+        'Determines which shard in the stream the data record is assigned to. Partition keys are Unicode strings with a maximum length limit of 256 characters for each key. Amazon Kinesis Data Streams uses the partition key as input to a hash function that maps the partition key and associated data to a specific shard. Specifically, an MD5 hash function is used to map partition keys to 128-bit integer values and to map associated data records to shards. As a result of this hashing mechanism, all data records with the same partition key map to the same shard within the stream.',
+    }),
+    ExplicitHashKey: HashKeySchema.exactOptional().openapi({
+      description:
+        'The hash value used to explicitly determine the shard the data record is assigned to by overriding the partition key hash.',
+    }),
+    SequenceNumberForOrdering: SequenceNumberSchema.exactOptional().openapi({
+      description:
+        'Guarantees strictly increasing sequence numbers, for puts from the same client and to the same partition key. Usage: set the <code>SequenceNumberForOrdering</code> of record <i>n</i> to the sequence number of record <i>n-1</i> (as returned in the result when putting record <i>n-1</i>). If this parameter is not set, records are coarsely ordered based on arrival time.',
+    }),
+    StreamARN: StreamARNSchema.exactOptional().openapi({ description: 'The ARN of the stream.' }),
   })
   .openapi({
     required: ['Data', 'PartitionKey'],
@@ -1556,28 +1130,20 @@ const ErrorMessageSchema = z.string().openapi('ErrorMessage')
 
 const PutRecordsResultEntrySchema = z
   .object({
-    SequenceNumber: SequenceNumberSchema.and(
-      z.any().openapi({ description: 'The sequence number for an individual record result.' }),
-    ).exactOptional(),
-    ShardId: ShardIdSchema.and(
-      z.any().openapi({ description: 'The shard ID for an individual record result.' }),
-    ).exactOptional(),
-    ErrorCode: ErrorCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The error code for an individual record result. <code>ErrorCodes</code> can be either <code>ProvisionedThroughputExceededException</code> or <code>InternalFailure</code>.',
-        }),
-    ).exactOptional(),
-    ErrorMessage: ErrorMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The error message for an individual record result. An <code>ErrorCode</code> value of <code>ProvisionedThroughputExceededException</code> has an error message that includes the account ID, stream name, and shard ID. An <code>ErrorCode</code> value of <code>InternalFailure</code> has the error message <code>"Internal Service Failure"</code>.',
-        }),
-    ).exactOptional(),
+    SequenceNumber: SequenceNumberSchema.exactOptional().openapi({
+      description: 'The sequence number for an individual record result.',
+    }),
+    ShardId: ShardIdSchema.exactOptional().openapi({
+      description: 'The shard ID for an individual record result.',
+    }),
+    ErrorCode: ErrorCodeSchema.exactOptional().openapi({
+      description:
+        'The error code for an individual record result. <code>ErrorCodes</code> can be either <code>ProvisionedThroughputExceededException</code> or <code>InternalFailure</code>.',
+    }),
+    ErrorMessage: ErrorMessageSchema.exactOptional().openapi({
+      description:
+        'The error message for an individual record result. An <code>ErrorCode</code> value of <code>ProvisionedThroughputExceededException</code> has an error message that includes the account ID, stream name, and shard ID. An <code>ErrorCode</code> value of <code>InternalFailure</code> has the error message <code>"Internal Service Failure"</code>.',
+    }),
   })
   .openapi({
     description:
@@ -1594,60 +1160,36 @@ const PutRecordsResultEntryListSchema = z
 
 const PutRecordsOutputSchema = z
   .object({
-    FailedRecordCount: PositiveIntegerObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of unsuccessfully processed records in a <code>PutRecords</code> request.',
-        }),
-    ).exactOptional(),
-    Records: PutRecordsResultEntryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of successfully and unsuccessfully processed record results. A record that is successfully added to a stream includes <code>SequenceNumber</code> and <code>ShardId</code> in the result. A record that fails to be added to a stream includes <code>ErrorCode</code> and <code>ErrorMessage</code> in the result.',
-        }),
-    ),
-    EncryptionType: EncryptionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The encryption type used on the records. This parameter can be one of the following values:</p> <ul> <li> <p> <code>NONE</code>: Do not encrypt the records.</p> </li> <li> <p> <code>KMS</code>: Use server-side encryption on the records using a customer-managed Amazon Web Services KMS key.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    FailedRecordCount: PositiveIntegerObjectSchema.exactOptional().openapi({
+      description:
+        'The number of unsuccessfully processed records in a <code>PutRecords</code> request.',
+    }),
+    Records: PutRecordsResultEntryListSchema.openapi({
+      description:
+        'An array of successfully and unsuccessfully processed record results. A record that is successfully added to a stream includes <code>SequenceNumber</code> and <code>ShardId</code> in the result. A record that fails to be added to a stream includes <code>ErrorCode</code> and <code>ErrorMessage</code> in the result.',
+    }),
+    EncryptionType: EncryptionTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The encryption type used on the records. This parameter can be one of the following values:</p> <ul> <li> <p> <code>NONE</code>: Do not encrypt the records.</p> </li> <li> <p> <code>KMS</code>: Use server-side encryption on the records using a customer-managed Amazon Web Services KMS key.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['Records'], description: ' <code>PutRecords</code> results.' })
   .openapi('PutRecordsOutput')
 
 const PutRecordsRequestEntrySchema = z
   .object({
-    Data: DataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The data blob to put into the record, which is base64-encoded when the blob is serialized. When the data blob (the payload before base64-encoding) is added to the partition key size, the total size must not exceed the maximum record size (1 MiB).',
-        }),
-    ),
-    ExplicitHashKey: HashKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The hash value used to determine explicitly the shard that the data record is assigned to by overriding the partition key hash.',
-        }),
-    ).exactOptional(),
-    PartitionKey: PartitionKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Determines which shard in the stream the data record is assigned to. Partition keys are Unicode strings with a maximum length limit of 256 characters for each key. Amazon Kinesis Data Streams uses the partition key as input to a hash function that maps the partition key and associated data to a specific shard. Specifically, an MD5 hash function is used to map partition keys to 128-bit integer values and to map associated data records to shards. As a result of this hashing mechanism, all data records with the same partition key map to the same shard within the stream.',
-        }),
-    ),
+    Data: DataSchema.openapi({
+      description:
+        'The data blob to put into the record, which is base64-encoded when the blob is serialized. When the data blob (the payload before base64-encoding) is added to the partition key size, the total size must not exceed the maximum record size (1 MiB).',
+    }),
+    ExplicitHashKey: HashKeySchema.exactOptional().openapi({
+      description:
+        'The hash value used to determine explicitly the shard that the data record is assigned to by overriding the partition key hash.',
+    }),
+    PartitionKey: PartitionKeySchema.openapi({
+      description:
+        'Determines which shard in the stream the data record is assigned to. Partition keys are Unicode strings with a maximum length limit of 256 characters for each key. Amazon Kinesis Data Streams uses the partition key as input to a hash function that maps the partition key and associated data to a specific shard. Specifically, an MD5 hash function is used to map partition keys to 128-bit integer values and to map associated data records to shards. As a result of this hashing mechanism, all data records with the same partition key map to the same shard within the stream.',
+    }),
   })
   .openapi({
     required: ['Data', 'PartitionKey'],
@@ -1663,15 +1205,13 @@ const PutRecordsRequestEntryListSchema = z
 
 const PutRecordsInputSchema = z
   .object({
-    Records: PutRecordsRequestEntryListSchema.and(
-      z.any().openapi({ description: 'The records associated with the request.' }),
-    ),
-    StreamName: StreamNameSchema.and(
-      z.any().openapi({ description: 'The stream name associated with the request.' }),
-    ).exactOptional(),
-    StreamARN: StreamARNSchema.and(
-      z.any().openapi({ description: 'The ARN of the stream.' }),
-    ).exactOptional(),
+    Records: PutRecordsRequestEntryListSchema.openapi({
+      description: 'The records associated with the request.',
+    }),
+    StreamName: StreamNameSchema.exactOptional().openapi({
+      description: 'The stream name associated with the request.',
+    }),
+    StreamARN: StreamARNSchema.exactOptional().openapi({ description: 'The ARN of the stream.' }),
   })
   .openapi({
     required: ['Records'],
@@ -1682,36 +1222,24 @@ const PutRecordsInputSchema = z
 
 const RegisterStreamConsumerOutputSchema = z
   .object({
-    Consumer: ConsumerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that represents the details of the consumer you registered. When you register a consumer, it gets an ARN that is generated by Kinesis Data Streams.',
-        }),
-    ),
+    Consumer: ConsumerSchema.openapi({
+      description:
+        'An object that represents the details of the consumer you registered. When you register a consumer, it gets an ARN that is generated by Kinesis Data Streams.',
+    }),
   })
   .openapi({ required: ['Consumer'] })
   .openapi('RegisterStreamConsumerOutput')
 
 const RegisterStreamConsumerInputSchema = z
   .object({
-    StreamARN: StreamARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the Kinesis data stream that you want to register the consumer with. For more info, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#arn-syntax-kinesis-streams">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a>.',
-        }),
-    ),
-    ConsumerName: ConsumerNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "For a given Kinesis data stream, each consumer must have a unique name. However, consumer names don't have to be unique across data streams.",
-        }),
-    ),
+    StreamARN: StreamARNSchema.openapi({
+      description:
+        'The ARN of the Kinesis data stream that you want to register the consumer with. For more info, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#arn-syntax-kinesis-streams">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a>.',
+    }),
+    ConsumerName: ConsumerNameSchema.openapi({
+      description:
+        "For a given Kinesis data stream, each consumer must have a unique name. However, consumer names don't have to be unique across data streams.",
+    }),
   })
   .openapi({ required: ['StreamARN', 'ConsumerName'], title: 'RegisterStreamConsumerInput' })
   .openapi('RegisterStreamConsumerInput')
@@ -1720,19 +1248,13 @@ const TagKeyListSchema = z.array(TagKeySchema).min(1).max(50).openapi('TagKeyLis
 
 const RemoveTagsFromStreamInputSchema = z
   .object({
-    StreamName: StreamNameSchema.and(
-      z.any().openapi({ description: 'The name of the stream.' }),
-    ).exactOptional(),
-    TagKeys: TagKeyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of tag keys. Each corresponding tag is removed from the stream.',
-        }),
-    ),
-    StreamARN: StreamARNSchema.and(
-      z.any().openapi({ description: 'The ARN of the stream.' }),
-    ).exactOptional(),
+    StreamName: StreamNameSchema.exactOptional().openapi({
+      description: 'The name of the stream.',
+    }),
+    TagKeys: TagKeyListSchema.openapi({
+      description: 'A list of tag keys. Each corresponding tag is removed from the stream.',
+    }),
+    StreamARN: StreamARNSchema.exactOptional().openapi({ description: 'The ARN of the stream.' }),
   })
   .openapi({
     required: ['TagKeys'],
@@ -1743,23 +1265,15 @@ const RemoveTagsFromStreamInputSchema = z
 
 const SplitShardInputSchema = z
   .object({
-    StreamName: StreamNameSchema.and(
-      z.any().openapi({ description: 'The name of the stream for the shard split.' }),
-    ).exactOptional(),
-    ShardToSplit: ShardIdSchema.and(
-      z.any().openapi({ description: 'The shard ID of the shard to split.' }),
-    ),
-    NewStartingHashKey: HashKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A hash key value for the starting hash key of one of the child shards created by the split. The hash key range for a given shard constitutes a set of ordered contiguous positive integers. The value for <code>NewStartingHashKey</code> must be in the range of hash keys being mapped into the shard. The <code>NewStartingHashKey</code> hash key value and all higher hash key values in hash key range are distributed to one of the child shards. All the lower hash key values in the range are distributed to the other child shard.',
-        }),
-    ),
-    StreamARN: StreamARNSchema.and(
-      z.any().openapi({ description: 'The ARN of the stream.' }),
-    ).exactOptional(),
+    StreamName: StreamNameSchema.exactOptional().openapi({
+      description: 'The name of the stream for the shard split.',
+    }),
+    ShardToSplit: ShardIdSchema.openapi({ description: 'The shard ID of the shard to split.' }),
+    NewStartingHashKey: HashKeySchema.openapi({
+      description:
+        'A hash key value for the starting hash key of one of the child shards created by the split. The hash key range for a given shard constitutes a set of ordered contiguous positive integers. The value for <code>NewStartingHashKey</code> must be in the range of hash keys being mapped into the shard. The <code>NewStartingHashKey</code> hash key value and all higher hash key values in hash key range are distributed to one of the child shards. All the lower hash key values in the range are distributed to the other child shard.',
+    }),
+    StreamARN: StreamARNSchema.exactOptional().openapi({ description: 'The ARN of the stream.' }),
   })
   .openapi({
     required: ['ShardToSplit', 'NewStartingHashKey'],
@@ -1770,74 +1284,50 @@ const SplitShardInputSchema = z
 
 const StartStreamEncryptionInputSchema = z
   .object({
-    StreamName: StreamNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the stream for which to start encrypting records.' }),
-    ).exactOptional(),
-    EncryptionType: EncryptionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The encryption type to use. The only valid value is <code>KMS</code>.',
-        }),
-    ),
-    KeyId: KeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The GUID for the customer-managed Amazon Web Services KMS key to use for encryption. This value can be a globally unique identifier, a fully specified Amazon Resource Name (ARN) to either an alias or a key, or an alias name prefixed by "alias/".You can also use a master key owned by Kinesis Data Streams by specifying the alias <code>aws/kinesis</code>.</p> <ul> <li> <p>Key ARN example: <code>arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012</code> </p> </li> <li> <p>Alias ARN example: <code>arn:aws:kms:us-east-1:123456789012:alias/MyAliasName</code> </p> </li> <li> <p>Globally unique key ID example: <code>12345678-1234-1234-1234-123456789012</code> </p> </li> <li> <p>Alias name example: <code>alias/MyAliasName</code> </p> </li> <li> <p>Master key owned by Kinesis Data Streams: <code>alias/aws/kinesis</code> </p> </li> </ul>',
-        }),
-    ),
-    StreamARN: StreamARNSchema.and(
-      z.any().openapi({ description: 'The ARN of the stream.' }),
-    ).exactOptional(),
+    StreamName: StreamNameSchema.exactOptional().openapi({
+      description: 'The name of the stream for which to start encrypting records.',
+    }),
+    EncryptionType: EncryptionTypeSchema.openapi({
+      description: 'The encryption type to use. The only valid value is <code>KMS</code>.',
+    }),
+    KeyId: KeyIdSchema.openapi({
+      description:
+        '<p>The GUID for the customer-managed Amazon Web Services KMS key to use for encryption. This value can be a globally unique identifier, a fully specified Amazon Resource Name (ARN) to either an alias or a key, or an alias name prefixed by "alias/".You can also use a master key owned by Kinesis Data Streams by specifying the alias <code>aws/kinesis</code>.</p> <ul> <li> <p>Key ARN example: <code>arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012</code> </p> </li> <li> <p>Alias ARN example: <code>arn:aws:kms:us-east-1:123456789012:alias/MyAliasName</code> </p> </li> <li> <p>Globally unique key ID example: <code>12345678-1234-1234-1234-123456789012</code> </p> </li> <li> <p>Alias name example: <code>alias/MyAliasName</code> </p> </li> <li> <p>Master key owned by Kinesis Data Streams: <code>alias/aws/kinesis</code> </p> </li> </ul>',
+    }),
+    StreamARN: StreamARNSchema.exactOptional().openapi({ description: 'The ARN of the stream.' }),
   })
   .openapi({ required: ['EncryptionType', 'KeyId'], title: 'StartStreamEncryptionInput' })
   .openapi('StartStreamEncryptionInput')
 
 const StopStreamEncryptionInputSchema = z
   .object({
-    StreamName: StreamNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the stream on which to stop encrypting records.' }),
-    ).exactOptional(),
-    EncryptionType: EncryptionTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The encryption type. The only valid value is <code>KMS</code>.' }),
-    ),
-    KeyId: KeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The GUID for the customer-managed Amazon Web Services KMS key to use for encryption. This value can be a globally unique identifier, a fully specified Amazon Resource Name (ARN) to either an alias or a key, or an alias name prefixed by "alias/".You can also use a master key owned by Kinesis Data Streams by specifying the alias <code>aws/kinesis</code>.</p> <ul> <li> <p>Key ARN example: <code>arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012</code> </p> </li> <li> <p>Alias ARN example: <code>arn:aws:kms:us-east-1:123456789012:alias/MyAliasName</code> </p> </li> <li> <p>Globally unique key ID example: <code>12345678-1234-1234-1234-123456789012</code> </p> </li> <li> <p>Alias name example: <code>alias/MyAliasName</code> </p> </li> <li> <p>Master key owned by Kinesis Data Streams: <code>alias/aws/kinesis</code> </p> </li> </ul>',
-        }),
-    ),
-    StreamARN: StreamARNSchema.and(
-      z.any().openapi({ description: 'The ARN of the stream.' }),
-    ).exactOptional(),
+    StreamName: StreamNameSchema.exactOptional().openapi({
+      description: 'The name of the stream on which to stop encrypting records.',
+    }),
+    EncryptionType: EncryptionTypeSchema.openapi({
+      description: 'The encryption type. The only valid value is <code>KMS</code>.',
+    }),
+    KeyId: KeyIdSchema.openapi({
+      description:
+        '<p>The GUID for the customer-managed Amazon Web Services KMS key to use for encryption. This value can be a globally unique identifier, a fully specified Amazon Resource Name (ARN) to either an alias or a key, or an alias name prefixed by "alias/".You can also use a master key owned by Kinesis Data Streams by specifying the alias <code>aws/kinesis</code>.</p> <ul> <li> <p>Key ARN example: <code>arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012</code> </p> </li> <li> <p>Alias ARN example: <code>arn:aws:kms:us-east-1:123456789012:alias/MyAliasName</code> </p> </li> <li> <p>Globally unique key ID example: <code>12345678-1234-1234-1234-123456789012</code> </p> </li> <li> <p>Alias name example: <code>alias/MyAliasName</code> </p> </li> <li> <p>Master key owned by Kinesis Data Streams: <code>alias/aws/kinesis</code> </p> </li> </ul>',
+    }),
+    StreamARN: StreamARNSchema.exactOptional().openapi({ description: 'The ARN of the stream.' }),
   })
   .openapi({ required: ['EncryptionType', 'KeyId'], title: 'StopStreamEncryptionInput' })
   .openapi('StopStreamEncryptionInput')
 
 const UpdateShardCountOutputSchema = z
   .object({
-    StreamName: StreamNameSchema.and(
-      z.any().openapi({ description: 'The name of the stream.' }),
-    ).exactOptional(),
-    CurrentShardCount: PositiveIntegerObjectSchema.and(
-      z.any().openapi({ description: 'The current number of shards.' }),
-    ).exactOptional(),
-    TargetShardCount: PositiveIntegerObjectSchema.and(
-      z.any().openapi({ description: 'The updated number of shards.' }),
-    ).exactOptional(),
-    StreamARN: StreamARNSchema.and(
-      z.any().openapi({ description: 'The ARN of the stream.' }),
-    ).exactOptional(),
+    StreamName: StreamNameSchema.exactOptional().openapi({
+      description: 'The name of the stream.',
+    }),
+    CurrentShardCount: PositiveIntegerObjectSchema.exactOptional().openapi({
+      description: 'The current number of shards.',
+    }),
+    TargetShardCount: PositiveIntegerObjectSchema.exactOptional().openapi({
+      description: 'The updated number of shards.',
+    }),
+    StreamARN: StreamARNSchema.exactOptional().openapi({ description: 'The ARN of the stream.' }),
   })
   .openapi({ required: [] })
   .openapi('UpdateShardCountOutput')
@@ -1846,49 +1336,30 @@ const ScalingTypeSchema = z.literal('UNIFORM_SCALING').openapi('ScalingType')
 
 const UpdateShardCountInputSchema = z
   .object({
-    StreamName: StreamNameSchema.and(
-      z.any().openapi({ description: 'The name of the stream.' }),
-    ).exactOptional(),
-    TargetShardCount: PositiveIntegerObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The new number of shards. This value has the following default limits. By default, you cannot do the following: </p> <ul> <li> <p>Set this value to more than double your current shard count for a stream.</p> </li> <li> <p>Set this value below half your current shard count for a stream.</p> </li> <li> <p>Set this value to more than 10000 shards in a stream (the default limit for shard count per stream is 10000 per account per region), unless you request a limit increase.</p> </li> <li> <p>Scale a stream with more than 10000 shards down unless you set this value to less than 10000 shards.</p> </li> </ul>',
-        }),
-    ),
-    ScalingType: ScalingTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The scaling type. Uniform scaling creates shards of equal size.',
-        }),
-    ),
-    StreamARN: StreamARNSchema.and(
-      z.any().openapi({ description: 'The ARN of the stream.' }),
-    ).exactOptional(),
+    StreamName: StreamNameSchema.exactOptional().openapi({
+      description: 'The name of the stream.',
+    }),
+    TargetShardCount: PositiveIntegerObjectSchema.openapi({
+      description:
+        '<p>The new number of shards. This value has the following default limits. By default, you cannot do the following: </p> <ul> <li> <p>Set this value to more than double your current shard count for a stream.</p> </li> <li> <p>Set this value below half your current shard count for a stream.</p> </li> <li> <p>Set this value to more than 10000 shards in a stream (the default limit for shard count per stream is 10000 per account per region), unless you request a limit increase.</p> </li> <li> <p>Scale a stream with more than 10000 shards down unless you set this value to less than 10000 shards.</p> </li> </ul>',
+    }),
+    ScalingType: ScalingTypeSchema.openapi({
+      description: 'The scaling type. Uniform scaling creates shards of equal size.',
+    }),
+    StreamARN: StreamARNSchema.exactOptional().openapi({ description: 'The ARN of the stream.' }),
   })
   .openapi({ required: ['TargetShardCount', 'ScalingType'], title: 'UpdateShardCountInput' })
   .openapi('UpdateShardCountInput')
 
 const UpdateStreamModeInputSchema = z
   .object({
-    StreamARN: StreamARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies the ARN of the data stream whose capacity mode you want to update. ',
-        }),
-    ),
-    StreamModeDetails: StreamModeDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies the capacity mode to which you want to set your data stream. Currently, in Kinesis Data Streams, you can choose between an <b>on-demand</b> capacity mode and a <b>provisioned</b> capacity mode for your data streams. ',
-        }),
-    ),
+    StreamARN: StreamARNSchema.openapi({
+      description: ' Specifies the ARN of the data stream whose capacity mode you want to update. ',
+    }),
+    StreamModeDetails: StreamModeDetailsSchema.openapi({
+      description:
+        ' Specifies the capacity mode to which you want to set your data stream. Currently, in Kinesis Data Streams, you can choose between an <b>on-demand</b> capacity mode and a <b>provisioned</b> capacity mode for your data streams. ',
+    }),
   })
   .openapi({ required: ['StreamARN', 'StreamModeDetails'], title: 'UpdateStreamModeInput' })
   .openapi('UpdateStreamModeInput')

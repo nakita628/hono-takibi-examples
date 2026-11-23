@@ -1,62 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const GoogleCloudRunV2BinaryAuthorizationSchema = z
-  .object({
-    breakglassJustification: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'If present, indicates to use Breakglass using this justification. If use_default is False, then it must be empty. For more information on breakglass, see https://cloud.google.com/binary-authorization/docs/using-breakglass',
-      }),
-    useDefault: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "If True, indicates to use the default project's binary authorization policy. If False, binary authorization will be disabled.",
-      }),
-  })
-  .openapi({ description: 'Settings for Binary Authorization feature.', required: [] })
-  .openapi('GoogleCloudRunV2BinaryAuthorization')
-
-const GoogleCloudRunV2CancelExecutionRequestSchema = z
-  .object({
-    etag: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A system-generated fingerprint for this version of the resource. This may be used to detect modification conflict during updates.',
-      }),
-    validateOnly: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates that the request should be validated without actually cancelling any resources.',
-      }),
-  })
-  .openapi({ description: 'Request message for deleting an Execution.', required: [] })
-  .openapi('GoogleCloudRunV2CancelExecutionRequest')
-
-const GoogleCloudRunV2CloudSqlInstanceSchema = z
-  .object({
-    instances: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'The Cloud SQL instance connection names, as can be found in https://console.cloud.google.com/sql/instances. Visit https://cloud.google.com/sql/docs/mysql/connect-run for more information on how to connect Cloud SQL and Cloud Run. Format: {project}:{location}:{instance}',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents a set of Cloud SQL instances. Each one will be available under /cloudsql/[instance]. Visit https://cloud.google.com/sql/docs/mysql/connect-run for more information on how to connect Cloud SQL and Cloud Run.',
-    required: [],
-  })
-  .openapi('GoogleCloudRunV2CloudSqlInstance')
-
 const GoogleCloudRunV2ConditionSchema = z
   .object({
     executionReason: z
@@ -474,35 +417,22 @@ const GoogleCloudRunV2ContainerSchema = z
   })
   .openapi('GoogleCloudRunV2Container')
 
-const GoogleCloudRunV2ContainerOverrideSchema = z
+const GoogleCloudRunV2CloudSqlInstanceSchema = z
   .object({
-    args: z
+    instances: z
       .array(z.string())
       .exactOptional()
       .openapi({
         description:
-          'Optional. Arguments to the entrypoint. Will replace existing args for override.',
+          'The Cloud SQL instance connection names, as can be found in https://console.cloud.google.com/sql/instances. Visit https://cloud.google.com/sql/docs/mysql/connect-run for more information on how to connect Cloud SQL and Cloud Run. Format: {project}:{location}:{instance}',
       }),
-    clearArgs: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Optional. True if the intention is to clear out existing args list.',
-      }),
-    env: z
-      .array(GoogleCloudRunV2EnvVarSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'List of environment variables to set in the container. Will be merged with existing env for override.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the container specified as a DNS_LABEL.' }),
   })
-  .openapi({ description: 'Per-container override specification.', required: [] })
-  .openapi('GoogleCloudRunV2ContainerOverride')
+  .openapi({
+    description:
+      'Represents a set of Cloud SQL instances. Each one will be available under /cloudsql/[instance]. Visit https://cloud.google.com/sql/docs/mysql/connect-run for more information on how to connect Cloud SQL and Cloud Run.',
+    required: [],
+  })
+  .openapi('GoogleCloudRunV2CloudSqlInstance')
 
 const GoogleCloudRunV2EmptyDirVolumeSourceSchema = z
   .object({
@@ -753,7 +683,169 @@ const GoogleCloudRunV2TaskTemplateSchema = z
   })
   .openapi('GoogleCloudRunV2TaskTemplate')
 
-const GoogleCloudRunV2ExecutionSchema = z
+type GoogleCloudRunV2ExecutionType = {
+  annotations?: { [key: string]: string }
+  cancelledCount?: number
+  completionTime?: string
+  conditions?: z.infer<typeof GoogleCloudRunV2ConditionSchema>[]
+  createTime?: string
+  deleteTime?: string
+  etag?: string
+  expireTime?: string
+  failedCount?: number
+  generation?: string
+  job?: string
+  labels?: { [key: string]: string }
+  launchStage?:
+    | 'LAUNCH_STAGE_UNSPECIFIED'
+    | 'UNIMPLEMENTED'
+    | 'PRELAUNCH'
+    | 'EARLY_ACCESS'
+    | 'ALPHA'
+    | 'BETA'
+    | 'GA'
+    | 'DEPRECATED'
+  logUri?: string
+  name?: string
+  observedGeneration?: string
+  parallelism?: number
+  reconciling?: boolean
+  retriedCount?: number
+  runningCount?: number
+  satisfiesPzs?: boolean
+  startTime?: string
+  succeededCount?: number
+  taskCount?: number
+  template?: z.infer<typeof GoogleCloudRunV2TaskTemplateSchema>
+  uid?: string
+  updateTime?: string
+}
+
+type GoogleCloudRunV2ExecutionTemplateType = {
+  annotations?: { [key: string]: string }
+  labels?: { [key: string]: string }
+  parallelism?: number
+  taskCount?: number
+  template?: z.infer<typeof GoogleCloudRunV2TaskTemplateSchema>
+}
+
+const GoogleCloudRunV2BinaryAuthorizationSchema = z
+  .object({
+    breakglassJustification: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'If present, indicates to use Breakglass using this justification. If use_default is False, then it must be empty. For more information on breakglass, see https://cloud.google.com/binary-authorization/docs/using-breakglass',
+      }),
+    useDefault: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "If True, indicates to use the default project's binary authorization policy. If False, binary authorization will be disabled.",
+      }),
+  })
+  .openapi({ description: 'Settings for Binary Authorization feature.', required: [] })
+  .openapi('GoogleCloudRunV2BinaryAuthorization')
+
+const GoogleCloudRunV2ExecutionReferenceSchema = z
+  .object({
+    completionTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Creation timestamp of the execution.' }),
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Creation timestamp of the execution.' }),
+    name: z.string().exactOptional().openapi({ description: 'Name of the execution.' }),
+  })
+  .openapi({
+    description:
+      'Reference to an Execution. Use /Executions.GetExecution with the given name to get full execution including the latest status.',
+    required: [],
+  })
+  .openapi('GoogleCloudRunV2ExecutionReference')
+
+const GoogleCloudRunV2ExecutionTemplateSchema: z.ZodType<GoogleCloudRunV2ExecutionTemplateType> = z
+  .object({
+    annotations: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "Unstructured key value map that may be set by external tools to store and arbitrary metadata. They are not queryable and should be preserved when modifying objects. Cloud Run API v2 does not support annotations with `run.googleapis.com`, `cloud.googleapis.com`, `serving.knative.dev`, or `autoscaling.knative.dev` namespaces, and they will be rejected. All system annotations in v1 now have a corresponding field in v2 ExecutionTemplate. This field follows Kubernetes annotations' namespacing, limits, and rules.",
+      }),
+    labels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "Unstructured key value map that can be used to organize and categorize objects. User-provided labels are shared with Google's billing system, so they can be used to filter, or break down billing charges by team, component, environment, state, etc. For more information, visit https://cloud.google.com/resource-manager/docs/creating-managing-labels or https://cloud.google.com/run/docs/configuring/labels. Cloud Run API v2 does not support labels with `run.googleapis.com`, `cloud.googleapis.com`, `serving.knative.dev`, or `autoscaling.knative.dev` namespaces, and they will be rejected. All system labels in v1 now have a corresponding field in v2 ExecutionTemplate.",
+      }),
+    parallelism: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the maximum desired number of tasks the execution should run at given time. Must be <= task_count. When the job is run, if this field is 0 or unset, the maximum possible value will be used for that execution. The actual number of tasks running in steady state will be less than this number when there are fewer tasks waiting to be completed remaining, i.e. when the work left to do is less than max parallelism.',
+      }),
+    taskCount: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the desired number of tasks the execution should run. Setting to 1 means that parallelism is limited to 1 and the success of that task signals the success of the execution. Defaults to 1.',
+      }),
+    template: GoogleCloudRunV2TaskTemplateSchema.exactOptional().openapi({
+      description:
+        'Required. Describes the task(s) that will be created when executing an execution.',
+    }),
+  })
+  .openapi({
+    description:
+      'ExecutionTemplate describes the data an execution should have when created from a template.',
+    required: [],
+  })
+  .openapi('GoogleCloudRunV2ExecutionTemplate')
+
+type GoogleCloudRunV2JobType = {
+  annotations?: { [key: string]: string }
+  binaryAuthorization?: z.infer<typeof GoogleCloudRunV2BinaryAuthorizationSchema>
+  client?: string
+  clientVersion?: string
+  conditions?: z.infer<typeof GoogleCloudRunV2ConditionSchema>[]
+  createTime?: string
+  creator?: string
+  deleteTime?: string
+  etag?: string
+  executionCount?: number
+  expireTime?: string
+  generation?: string
+  labels?: { [key: string]: string }
+  lastModifier?: string
+  latestCreatedExecution?: z.infer<typeof GoogleCloudRunV2ExecutionReferenceSchema>
+  launchStage?:
+    | 'LAUNCH_STAGE_UNSPECIFIED'
+    | 'UNIMPLEMENTED'
+    | 'PRELAUNCH'
+    | 'EARLY_ACCESS'
+    | 'ALPHA'
+    | 'BETA'
+    | 'GA'
+    | 'DEPRECATED'
+  name?: string
+  observedGeneration?: string
+  reconciling?: boolean
+  satisfiesPzs?: boolean
+  template?: z.infer<typeof GoogleCloudRunV2ExecutionTemplateSchema>
+  terminalCondition?: z.infer<typeof GoogleCloudRunV2ConditionSchema>
+  uid?: string
+  updateTime?: string
+}
+
+const GoogleCloudRunV2ExecutionSchema: z.ZodType<GoogleCloudRunV2ExecutionType> = z
   .object({
     annotations: z
       .record(z.string(), z.string())
@@ -962,68 +1054,12 @@ const GoogleCloudRunV2ExecutionSchema = z
   })
   .openapi('GoogleCloudRunV2Execution')
 
-const GoogleCloudRunV2ExecutionReferenceSchema = z
-  .object({
-    completionTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Creation timestamp of the execution.' }),
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Creation timestamp of the execution.' }),
-    name: z.string().exactOptional().openapi({ description: 'Name of the execution.' }),
-  })
-  .openapi({
-    description:
-      'Reference to an Execution. Use /Executions.GetExecution with the given name to get full execution including the latest status.',
-    required: [],
-  })
-  .openapi('GoogleCloudRunV2ExecutionReference')
+type GoogleCloudRunV2ListExecutionsResponseType = {
+  executions?: z.infer<typeof GoogleCloudRunV2ExecutionSchema>[]
+  nextPageToken?: string
+}
 
-const GoogleCloudRunV2ExecutionTemplateSchema = z
-  .object({
-    annotations: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          "Unstructured key value map that may be set by external tools to store and arbitrary metadata. They are not queryable and should be preserved when modifying objects. Cloud Run API v2 does not support annotations with `run.googleapis.com`, `cloud.googleapis.com`, `serving.knative.dev`, or `autoscaling.knative.dev` namespaces, and they will be rejected. All system annotations in v1 now have a corresponding field in v2 ExecutionTemplate. This field follows Kubernetes annotations' namespacing, limits, and rules.",
-      }),
-    labels: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          "Unstructured key value map that can be used to organize and categorize objects. User-provided labels are shared with Google's billing system, so they can be used to filter, or break down billing charges by team, component, environment, state, etc. For more information, visit https://cloud.google.com/resource-manager/docs/creating-managing-labels or https://cloud.google.com/run/docs/configuring/labels. Cloud Run API v2 does not support labels with `run.googleapis.com`, `cloud.googleapis.com`, `serving.knative.dev`, or `autoscaling.knative.dev` namespaces, and they will be rejected. All system labels in v1 now have a corresponding field in v2 ExecutionTemplate.",
-      }),
-    parallelism: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies the maximum desired number of tasks the execution should run at given time. Must be <= task_count. When the job is run, if this field is 0 or unset, the maximum possible value will be used for that execution. The actual number of tasks running in steady state will be less than this number when there are fewer tasks waiting to be completed remaining, i.e. when the work left to do is less than max parallelism.',
-      }),
-    taskCount: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies the desired number of tasks the execution should run. Setting to 1 means that parallelism is limited to 1 and the success of that task signals the success of the execution. Defaults to 1.',
-      }),
-    template: GoogleCloudRunV2TaskTemplateSchema.exactOptional().openapi({
-      description:
-        'Required. Describes the task(s) that will be created when executing an execution.',
-    }),
-  })
-  .openapi({
-    description:
-      'ExecutionTemplate describes the data an execution should have when created from a template.',
-    required: [],
-  })
-  .openapi('GoogleCloudRunV2ExecutionTemplate')
-
-const GoogleCloudRunV2JobSchema = z
+const GoogleCloudRunV2JobSchema: z.ZodType<GoogleCloudRunV2JobType> = z
   .object({
     annotations: z
       .record(z.string(), z.string())
@@ -1186,39 +1222,10 @@ const GoogleCloudRunV2JobSchema = z
   })
   .openapi('GoogleCloudRunV2Job')
 
-const GoogleCloudRunV2ListExecutionsResponseSchema = z
-  .object({
-    executions: z
-      .array(GoogleCloudRunV2ExecutionSchema)
-      .exactOptional()
-      .openapi({ description: 'The resulting list of Executions.' }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A token indicating there are more items than page_size. Use it in the next ListExecutions request to continue.',
-      }),
-  })
-  .openapi({ description: 'Response message containing a list of Executions.', required: [] })
-  .openapi('GoogleCloudRunV2ListExecutionsResponse')
-
-const GoogleCloudRunV2ListJobsResponseSchema = z
-  .object({
-    jobs: z
-      .array(GoogleCloudRunV2JobSchema)
-      .exactOptional()
-      .openapi({ description: 'The resulting list of Jobs.' }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A token indicating there are more items than page_size. Use it in the next ListJobs request to continue.',
-      }),
-  })
-  .openapi({ description: 'Response message containing a list of Jobs.', required: [] })
-  .openapi('GoogleCloudRunV2ListJobsResponse')
+type GoogleCloudRunV2ListJobsResponseType = {
+  jobs?: z.infer<typeof GoogleCloudRunV2JobSchema>[]
+  nextPageToken?: string
+}
 
 const GoogleCloudRunV2RevisionScalingSchema = z
   .object({
@@ -1452,22 +1459,10 @@ const GoogleCloudRunV2RevisionSchema = z
   })
   .openapi('GoogleCloudRunV2Revision')
 
-const GoogleCloudRunV2ListRevisionsResponseSchema = z
-  .object({
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A token indicating there are more items than page_size. Use it in the next ListRevisions request to continue.',
-      }),
-    revisions: z
-      .array(GoogleCloudRunV2RevisionSchema)
-      .exactOptional()
-      .openapi({ description: 'The resulting list of Revisions.' }),
-  })
-  .openapi({ description: 'Response message containing a list of Revisions.', required: [] })
-  .openapi('GoogleCloudRunV2ListRevisionsResponse')
+type GoogleCloudRunV2ListRevisionsResponseType = {
+  nextPageToken?: string
+  revisions?: z.infer<typeof GoogleCloudRunV2RevisionSchema>[]
+}
 
 const GoogleCloudRunV2ServiceScalingSchema = z
   .object({
@@ -1645,7 +1640,54 @@ const GoogleCloudRunV2TrafficTargetStatusSchema = z
   })
   .openapi('GoogleCloudRunV2TrafficTargetStatus')
 
-const GoogleCloudRunV2ServiceSchema = z
+type GoogleCloudRunV2ServiceType = {
+  annotations?: { [key: string]: string }
+  binaryAuthorization?: z.infer<typeof GoogleCloudRunV2BinaryAuthorizationSchema>
+  client?: string
+  clientVersion?: string
+  conditions?: z.infer<typeof GoogleCloudRunV2ConditionSchema>[]
+  createTime?: string
+  creator?: string
+  customAudiences?: string[]
+  defaultUriDisabled?: boolean
+  deleteTime?: string
+  description?: string
+  etag?: string
+  expireTime?: string
+  generation?: string
+  ingress?:
+    | 'INGRESS_TRAFFIC_UNSPECIFIED'
+    | 'INGRESS_TRAFFIC_ALL'
+    | 'INGRESS_TRAFFIC_INTERNAL_ONLY'
+    | 'INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCER'
+  labels?: { [key: string]: string }
+  lastModifier?: string
+  latestCreatedRevision?: string
+  latestReadyRevision?: string
+  launchStage?:
+    | 'LAUNCH_STAGE_UNSPECIFIED'
+    | 'UNIMPLEMENTED'
+    | 'PRELAUNCH'
+    | 'EARLY_ACCESS'
+    | 'ALPHA'
+    | 'BETA'
+    | 'GA'
+    | 'DEPRECATED'
+  name?: string
+  observedGeneration?: string
+  reconciling?: boolean
+  satisfiesPzs?: boolean
+  scaling?: z.infer<typeof GoogleCloudRunV2ServiceScalingSchema>
+  template?: z.infer<typeof GoogleCloudRunV2RevisionTemplateSchema>
+  terminalCondition?: z.infer<typeof GoogleCloudRunV2ConditionSchema>
+  traffic?: z.infer<typeof GoogleCloudRunV2TrafficTargetSchema>[]
+  trafficStatuses?: z.infer<typeof GoogleCloudRunV2TrafficTargetStatusSchema>[]
+  uid?: string
+  updateTime?: string
+  uri?: string
+}
+
+const GoogleCloudRunV2ServiceSchema: z.ZodType<GoogleCloudRunV2ServiceType> = z
   .object({
     annotations: z
       .record(z.string(), z.string())
@@ -1870,22 +1912,10 @@ const GoogleCloudRunV2ServiceSchema = z
   })
   .openapi('GoogleCloudRunV2Service')
 
-const GoogleCloudRunV2ListServicesResponseSchema = z
-  .object({
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A token indicating there are more items than page_size. Use it in the next ListServices request to continue.',
-      }),
-    services: z
-      .array(GoogleCloudRunV2ServiceSchema)
-      .exactOptional()
-      .openapi({ description: 'The resulting list of Services.' }),
-  })
-  .openapi({ description: 'Response message containing a list of Services.', required: [] })
-  .openapi('GoogleCloudRunV2ListServicesResponse')
+type GoogleCloudRunV2ListServicesResponseType = {
+  nextPageToken?: string
+  services?: z.infer<typeof GoogleCloudRunV2ServiceSchema>[]
+}
 
 const GoogleRpcStatusSchema = z
   .object({
@@ -2164,22 +2194,40 @@ const GoogleCloudRunV2TaskSchema = z
   })
   .openapi('GoogleCloudRunV2Task')
 
-const GoogleCloudRunV2ListTasksResponseSchema = z
+type GoogleCloudRunV2ListTasksResponseType = {
+  nextPageToken?: string
+  tasks?: z.infer<typeof GoogleCloudRunV2TaskSchema>[]
+}
+
+const GoogleCloudRunV2ContainerOverrideSchema = z
   .object({
-    nextPageToken: z
-      .string()
+    args: z
+      .array(z.string())
       .exactOptional()
       .openapi({
         description:
-          'A token indicating there are more items than page_size. Use it in the next ListTasks request to continue.',
+          'Optional. Arguments to the entrypoint. Will replace existing args for override.',
       }),
-    tasks: z
-      .array(GoogleCloudRunV2TaskSchema)
+    clearArgs: z
+      .boolean()
       .exactOptional()
-      .openapi({ description: 'The resulting list of Tasks.' }),
+      .openapi({
+        description: 'Optional. True if the intention is to clear out existing args list.',
+      }),
+    env: z
+      .array(GoogleCloudRunV2EnvVarSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'List of environment variables to set in the container. Will be merged with existing env for override.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the container specified as a DNS_LABEL.' }),
   })
-  .openapi({ description: 'Response message containing a list of Tasks.', required: [] })
-  .openapi('GoogleCloudRunV2ListTasksResponse')
+  .openapi({ description: 'Per-container override specification.', required: [] })
+  .openapi('GoogleCloudRunV2ContainerOverride')
 
 const GoogleCloudRunV2OverridesSchema = z
   .object({
@@ -2208,7 +2256,121 @@ const GoogleCloudRunV2OverridesSchema = z
   })
   .openapi('GoogleCloudRunV2Overrides')
 
-const GoogleCloudRunV2RunJobRequestSchema = z
+type GoogleCloudRunV2RunJobRequestType = {
+  etag?: string
+  overrides?: z.infer<typeof GoogleCloudRunV2OverridesSchema>
+  validateOnly?: boolean
+}
+
+const GoogleCloudRunV2CancelExecutionRequestSchema = z
+  .object({
+    etag: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A system-generated fingerprint for this version of the resource. This may be used to detect modification conflict during updates.',
+      }),
+    validateOnly: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates that the request should be validated without actually cancelling any resources.',
+      }),
+  })
+  .openapi({ description: 'Request message for deleting an Execution.', required: [] })
+  .openapi('GoogleCloudRunV2CancelExecutionRequest')
+
+const GoogleCloudRunV2ListExecutionsResponseSchema: z.ZodType<GoogleCloudRunV2ListExecutionsResponseType> =
+  z
+    .object({
+      executions: z
+        .array(GoogleCloudRunV2ExecutionSchema)
+        .exactOptional()
+        .openapi({ description: 'The resulting list of Executions.' }),
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'A token indicating there are more items than page_size. Use it in the next ListExecutions request to continue.',
+        }),
+    })
+    .openapi({ description: 'Response message containing a list of Executions.', required: [] })
+    .openapi('GoogleCloudRunV2ListExecutionsResponse')
+
+const GoogleCloudRunV2ListJobsResponseSchema: z.ZodType<GoogleCloudRunV2ListJobsResponseType> = z
+  .object({
+    jobs: z
+      .array(GoogleCloudRunV2JobSchema)
+      .exactOptional()
+      .openapi({ description: 'The resulting list of Jobs.' }),
+    nextPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A token indicating there are more items than page_size. Use it in the next ListJobs request to continue.',
+      }),
+  })
+  .openapi({ description: 'Response message containing a list of Jobs.', required: [] })
+  .openapi('GoogleCloudRunV2ListJobsResponse')
+
+const GoogleCloudRunV2ListRevisionsResponseSchema: z.ZodType<GoogleCloudRunV2ListRevisionsResponseType> =
+  z
+    .object({
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'A token indicating there are more items than page_size. Use it in the next ListRevisions request to continue.',
+        }),
+      revisions: z
+        .array(GoogleCloudRunV2RevisionSchema)
+        .exactOptional()
+        .openapi({ description: 'The resulting list of Revisions.' }),
+    })
+    .openapi({ description: 'Response message containing a list of Revisions.', required: [] })
+    .openapi('GoogleCloudRunV2ListRevisionsResponse')
+
+const GoogleCloudRunV2ListServicesResponseSchema: z.ZodType<GoogleCloudRunV2ListServicesResponseType> =
+  z
+    .object({
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'A token indicating there are more items than page_size. Use it in the next ListServices request to continue.',
+        }),
+      services: z
+        .array(GoogleCloudRunV2ServiceSchema)
+        .exactOptional()
+        .openapi({ description: 'The resulting list of Services.' }),
+    })
+    .openapi({ description: 'Response message containing a list of Services.', required: [] })
+    .openapi('GoogleCloudRunV2ListServicesResponse')
+
+const GoogleCloudRunV2ListTasksResponseSchema: z.ZodType<GoogleCloudRunV2ListTasksResponseType> = z
+  .object({
+    nextPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A token indicating there are more items than page_size. Use it in the next ListTasks request to continue.',
+      }),
+    tasks: z
+      .array(GoogleCloudRunV2TaskSchema)
+      .exactOptional()
+      .openapi({ description: 'The resulting list of Tasks.' }),
+  })
+  .openapi({ description: 'Response message containing a list of Tasks.', required: [] })
+  .openapi('GoogleCloudRunV2ListTasksResponse')
+
+const GoogleCloudRunV2RunJobRequestSchema: z.ZodType<GoogleCloudRunV2RunJobRequestType> = z
   .object({
     etag: z
       .string()
@@ -2498,7 +2660,7 @@ const GoogleLongrunningWaitOperationRequestSchema = z
   .openapi('GoogleLongrunningWaitOperationRequest')
 
 const GoogleProtobufEmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',

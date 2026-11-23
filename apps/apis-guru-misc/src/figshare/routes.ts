@@ -238,7 +238,7 @@ const AccountCreateSchema = z
   .openapi('AccountCreate')
 
 const AccountGroupRolesSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     example: { '2': [{ category: 'group', id: 7, name: 'User' }] },
     'x-tag': 'institutions',
@@ -246,7 +246,7 @@ const AccountGroupRolesSchema = z
   .openapi('AccountGroupRoles')
 
 const AccountGroupRolesCreateSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ example: { '2': [2, 7], '3': [7, 9] }, 'x-tag': 'institutions' })
   .openapi('AccountGroupRolesCreate')
 
@@ -1216,7 +1216,7 @@ const FundingCreateSchema = z
 const ArticleCreateSchema = z
   .object({
     authors: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .default([])
       .exactOptional()
       .openapi({
@@ -1254,7 +1254,7 @@ const ArticleCreateSchema = z
         example: ['300204', '400207'],
       }),
     custom_fields: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'List of key, values pairs to be associated with the article',
@@ -1415,7 +1415,7 @@ const ArticleEmbargoSchema = z
       .string()
       .nullable()
       .openapi({ description: 'Date when embargo lifts', example: '2018-05-22T04:04:04' }),
-    embargo_options: z.array(z.object({})).openapi({
+    embargo_options: z.array(z.looseObject({})).openapi({
       description:
         'List of embargo permissions that are associated with the article. If the type is logged_in and the group_ids list is empty, then the whole institution can see the article; if there are multiple group_ids, then only users that are under those groups can see the article.',
       example: [
@@ -1453,7 +1453,7 @@ const ArticleEmbargoUpdaterSchema = z
         example: '2018-05-22T04:04:04',
       }),
     embargo_options: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .exactOptional()
       .openapi({
         description:
@@ -1492,7 +1492,7 @@ const ArticleHandleSchema = z
 const ArticleProjectCreateSchema = z
   .object({
     authors: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .default([])
       .exactOptional()
       .openapi({
@@ -1530,7 +1530,7 @@ const ArticleProjectCreateSchema = z
         example: ['300204', '400207'],
       }),
     custom_fields: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'List of key, values pairs to be associated with the article',
@@ -1847,7 +1847,7 @@ const ArticleSearchSchema = CommonSearchSchema.and(
 const ArticleUpdateSchema = z
   .object({
     authors: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .default([])
       .exactOptional()
       .openapi({
@@ -1885,7 +1885,7 @@ const ArticleUpdateSchema = z
         example: ['300204', '400207'],
       }),
     custom_fields: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'List of key, values pairs to be associated with the article',
@@ -2225,7 +2225,7 @@ const AuthorCompleteSchema = AuthorSchema.and(
 const AuthorsCreatorSchema = z
   .object({
     authors: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .openapi({
         description:
           'List of authors to be associated with the article. The list can contain the following fields: id, name, first_name, last_name, email, orcid_id. If an id is supplied, it will take priority and everything else will be ignored. No more than 10 authors. For adding more authors use the specific authors endpoint.',
@@ -2750,7 +2750,7 @@ const CollectionCreateSchema = z
         example: [2000001, 2000005],
       }),
     authors: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .default([])
       .exactOptional()
       .openapi({
@@ -2789,7 +2789,7 @@ const CollectionCreateSchema = z
         example: ['300204', '400207'],
       }),
     custom_fields: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'List of key, values pairs to be associated with the collection',
@@ -3010,7 +3010,7 @@ const CollectionUpdateSchema = z
         example: [2000001, 2000005],
       }),
     authors: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .default([])
       .exactOptional()
       .openapi({
@@ -3049,7 +3049,7 @@ const CollectionUpdateSchema = z
         example: ['300204', '400207'],
       }),
     custom_fields: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'List of key, values pairs to be associated with the collection',
@@ -4444,7 +4444,7 @@ const ProjectCompletePrivateSchema = ProjectPrivateSchema.and(
 const ProjectCreateSchema = z
   .object({
     custom_fields: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'List of key, values pairs to be associated with the project',
@@ -4577,7 +4577,7 @@ const ProjectNotePrivateSchema = ProjectNoteSchema.and(
 const ProjectUpdateSchema = z
   .object({
     custom_fields: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'List of key, values pairs to be associated with the project',
@@ -5132,6 +5132,7 @@ export const getAccountArticlesRoute = createRoute({
             required: false,
             schema: { default: 10, format: 'int64', maximum: 1000, minimum: 1, type: 'integer' },
           },
+          default: 10,
         }),
       limit: z
         .preprocess((val) => {
@@ -5383,16 +5384,13 @@ export const putAccountArticlesArticleIdRoute = createRoute({
       description: 'Reset Content',
       content: { 'application/json': { schema: LocationWarningsUpdateSchema } },
       headers: z.object({
-        Location: {
-          description: 'Location of newly created article',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Location of newly created article',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Location of newly created article',
+            param: { required: false },
+          }),
       }),
     },
     403: {
@@ -5523,13 +5521,10 @@ export const putAccountArticlesArticleIdAuthorsRoute = createRoute({
     205: {
       description: 'Reset Content',
       headers: z.object({
-        Location: {
-          description: 'Location of list of authors',
-          schema: z
-            .url()
-            .exactOptional()
-            .openapi({ description: 'Location of list of authors', param: { required: false } }),
-        },
+        Location: z
+          .url()
+          .exactOptional()
+          .openapi({ description: 'Location of list of authors', param: { required: false } }),
       }),
     },
     400: {
@@ -5580,13 +5575,10 @@ export const postAccountArticlesArticleIdAuthorsRoute = createRoute({
     205: {
       description: 'Reset Content',
       headers: z.object({
-        Location: {
-          description: 'Location of list of authors',
-          schema: z
-            .url()
-            .exactOptional()
-            .openapi({ description: 'Location of list of authors', param: { required: false } }),
-        },
+        Location: z
+          .url()
+          .exactOptional()
+          .openapi({ description: 'Location of list of authors', param: { required: false } }),
       }),
     },
     400: { description: 'Bad Request' },
@@ -6059,13 +6051,10 @@ export const putAccountArticlesArticleIdEmbargoRoute = createRoute({
     205: {
       description: 'Reset Content',
       headers: z.object({
-        Location: {
-          description: 'Location of embargo',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'Location of embargo', param: { required: false } }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Location of embargo', param: { required: false } }),
       }),
     },
     400: { description: 'Bad Request' },
@@ -6198,13 +6187,10 @@ export const postAccountArticlesArticleIdFilesRoute = createRoute({
       description: 'Created',
       content: { 'application/json': { schema: LocationSchema } },
       headers: z.object({
-        Location: {
-          description: 'Location of new file',
-          schema: z
-            .url()
-            .exactOptional()
-            .openapi({ description: 'Location of new file', param: { required: false } }),
-        },
+        Location: z
+          .url()
+          .exactOptional()
+          .openapi({ description: 'Location of new file', param: { required: false } }),
       }),
     },
     400: { description: 'Bad Request' },
@@ -6474,13 +6460,10 @@ export const postAccountArticlesArticleIdPrivateLinksRoute = createRoute({
       description: 'Created',
       content: { 'application/json': { schema: PrivateLinkResponseSchema } },
       headers: z.object({
-        Location: {
-          description: 'Location of private link',
-          schema: z
-            .url()
-            .exactOptional()
-            .openapi({ description: 'Location of private link', param: { required: false } }),
-        },
+        Location: z
+          .url()
+          .exactOptional()
+          .openapi({ description: 'Location of private link', param: { required: false } }),
       }),
     },
     400: { description: 'Bad Request' },
@@ -6539,13 +6522,10 @@ export const putAccountArticlesArticleIdPrivateLinksLinkIdRoute = createRoute({
     205: {
       description: 'Reset Content',
       headers: z.object({
-        Location: {
-          description: 'Location of private link',
-          schema: z
-            .url()
-            .exactOptional()
-            .openapi({ description: 'Location of private link', param: { required: false } }),
-        },
+        Location: z
+          .url()
+          .exactOptional()
+          .openapi({ description: 'Location of private link', param: { required: false } }),
       }),
     },
     400: { description: 'Bad Request' },
@@ -6646,16 +6626,13 @@ export const postAccountArticlesArticleIdPublishRoute = createRoute({
       description: 'Created',
       content: { 'application/json': { schema: LocationSchema } },
       headers: z.object({
-        Location: {
-          description: 'Location of newly published article',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Location of newly published article',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Location of newly published article',
+            param: { required: false },
+          }),
       }),
     },
     400: { description: 'Bad Request' },
@@ -6785,16 +6762,13 @@ export const postAccountArticlesArticleIdResourceRoute = createRoute({
       description: 'Reset Content',
       content: { 'application/json': { schema: LocationSchema } },
       headers: z.object({
-        Location: {
-          description: 'Location for account article details',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Location for account article details',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Location for account article details',
+            param: { required: false },
+          }),
       }),
     },
     400: { description: 'Bad Request' },
@@ -6860,16 +6834,13 @@ export const putAccountArticlesArticleIdVersionsVersionIdIndexRoute = createRout
       description: 'Reset Content',
       content: { 'application/json': { schema: LocationWarningsUpdateSchema } },
       headers: z.object({
-        Location: {
-          description: 'Location of newly created article',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Location of newly created article',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Location of newly created article',
+            param: { required: false },
+          }),
       }),
     },
     403: {
@@ -6937,16 +6908,13 @@ export const putAccountArticlesArticleIdVersionsVersionIdUpdateThumbRoute = crea
     205: {
       description: 'Reset Content',
       headers: z.object({
-        Location: {
-          description: 'Location for article version details',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Location for article version details',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Location for article version details',
+            param: { required: false },
+          }),
       }),
     },
     403: {
@@ -7098,6 +7066,7 @@ export const getAccountCollectionsRoute = createRoute({
             required: false,
             schema: { default: 10, format: 'int64', maximum: 1000, minimum: 1, type: 'integer' },
           },
+          default: 10,
         }),
       limit: z
         .preprocess((val) => {
@@ -7318,13 +7287,10 @@ export const putAccountCollectionsCollectionIdRoute = createRoute({
       description: 'Reset Content',
       content: { 'application/json': { schema: LocationWarningsUpdateSchema } },
       headers: z.object({
-        Location: {
-          description: 'Location of collection',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'Location of collection', param: { required: false } }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Location of collection', param: { required: false } }),
       }),
     },
     400: { description: 'Bad Request' },
@@ -7443,6 +7409,7 @@ export const getAccountCollectionsCollectionIdArticlesRoute = createRoute({
             required: false,
             schema: { default: 10, format: 'int64', maximum: 1000, minimum: 1, type: 'integer' },
           },
+          default: 10,
         }),
       limit: z
         .preprocess((val) => {
@@ -7537,13 +7504,10 @@ export const putAccountCollectionsCollectionIdArticlesRoute = createRoute({
     205: {
       description: 'Reset Content',
       headers: z.object({
-        Location: {
-          description: 'Location of list of articles',
-          schema: z
-            .url()
-            .exactOptional()
-            .openapi({ description: 'Location of list of articles', param: { required: false } }),
-        },
+        Location: z
+          .url()
+          .exactOptional()
+          .openapi({ description: 'Location of list of articles', param: { required: false } }),
       }),
     },
     400: { description: 'Bad Request' },
@@ -7596,13 +7560,10 @@ export const postAccountCollectionsCollectionIdArticlesRoute = createRoute({
       description: 'Reset Content',
       content: { 'application/json': { schema: LocationSchema } },
       headers: z.object({
-        Location: {
-          description: 'Location of new articles',
-          schema: z
-            .url()
-            .exactOptional()
-            .openapi({ description: 'Location of new articles', param: { required: false } }),
-        },
+        Location: z
+          .url()
+          .exactOptional()
+          .openapi({ description: 'Location of new articles', param: { required: false } }),
       }),
     },
     400: { description: 'Bad Request' },
@@ -7751,13 +7712,10 @@ export const putAccountCollectionsCollectionIdAuthorsRoute = createRoute({
     205: {
       description: 'Reset Content',
       headers: z.object({
-        Location: {
-          description: 'Location of list of authors',
-          schema: z
-            .url()
-            .exactOptional()
-            .openapi({ description: 'Location of list of authors', param: { required: false } }),
-        },
+        Location: z
+          .url()
+          .exactOptional()
+          .openapi({ description: 'Location of list of authors', param: { required: false } }),
       }),
     },
     400: { description: 'Bad Request' },
@@ -7806,13 +7764,10 @@ export const postAccountCollectionsCollectionIdAuthorsRoute = createRoute({
       description: 'Reset Content',
       content: { 'application/json': { schema: LocationSchema } },
       headers: z.object({
-        Location: {
-          description: 'Location of list of authors',
-          schema: z
-            .url()
-            .exactOptional()
-            .openapi({ description: 'Location of list of authors', param: { required: false } }),
-        },
+        Location: z
+          .url()
+          .exactOptional()
+          .openapi({ description: 'Location of list of authors', param: { required: false } }),
       }),
     },
     400: { description: 'Bad Request' },
@@ -7961,13 +7916,10 @@ export const putAccountCollectionsCollectionIdCategoriesRoute = createRoute({
     205: {
       description: 'Reset Content',
       headers: z.object({
-        Location: {
-          description: 'Location of list of categories',
-          schema: z
-            .url()
-            .exactOptional()
-            .openapi({ description: 'Location of list of categories', param: { required: false } }),
-        },
+        Location: z
+          .url()
+          .exactOptional()
+          .openapi({ description: 'Location of list of categories', param: { required: false } }),
       }),
     },
     400: { description: 'Bad Request' },
@@ -8016,13 +7968,10 @@ export const postAccountCollectionsCollectionIdCategoriesRoute = createRoute({
       description: 'Reset Content',
       content: { 'application/json': { schema: LocationSchema } },
       headers: z.object({
-        Location: {
-          description: 'Location of list of categories',
-          schema: z
-            .url()
-            .exactOptional()
-            .openapi({ description: 'Location of list of categories', param: { required: false } }),
-        },
+        Location: z
+          .url()
+          .exactOptional()
+          .openapi({ description: 'Location of list of categories', param: { required: false } }),
       }),
     },
     400: { description: 'Bad Request' },
@@ -8171,13 +8120,10 @@ export const postAccountCollectionsCollectionIdPrivateLinksRoute = createRoute({
       description: 'Created',
       content: { 'application/json': { schema: PrivateLinkResponseSchema } },
       headers: z.object({
-        Location: {
-          description: 'Location of private link',
-          schema: z
-            .url()
-            .exactOptional()
-            .openapi({ description: 'Location of private link', param: { required: false } }),
-        },
+        Location: z
+          .url()
+          .exactOptional()
+          .openapi({ description: 'Location of private link', param: { required: false } }),
       }),
     },
     400: { description: 'Bad Request' },
@@ -8235,13 +8181,10 @@ export const putAccountCollectionsCollectionIdPrivateLinksLinkIdRoute = createRo
     205: {
       description: 'Reset Content',
       headers: z.object({
-        Location: {
-          description: 'Location of new private link',
-          schema: z
-            .url()
-            .exactOptional()
-            .openapi({ description: 'Location of new private link', param: { required: false } }),
-        },
+        Location: z
+          .url()
+          .exactOptional()
+          .openapi({ description: 'Location of new private link', param: { required: false } }),
       }),
     },
     400: { description: 'Bad Request' },
@@ -8342,13 +8285,10 @@ export const postAccountCollectionsCollectionIdPublishRoute = createRoute({
       description: 'Created',
       content: { 'application/json': { schema: LocationSchema } },
       headers: z.object({
-        Location: {
-          description: 'Location of collection',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'Location of collection', param: { required: false } }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Location of collection', param: { required: false } }),
       }),
     },
     400: { description: 'Bad Request' },
@@ -8475,16 +8415,13 @@ export const postAccountCollectionsCollectionIdResourceRoute = createRoute({
       description: 'Reset Content',
       content: { 'application/json': { schema: LocationSchema } },
       headers: z.object({
-        Location: {
-          description: 'Location for account collection details',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Location for account collection details',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Location for account collection details',
+            param: { required: false },
+          }),
       }),
     },
     403: {
@@ -8593,6 +8530,7 @@ export const getAccountInstitutionAccountsRoute = createRoute({
             required: false,
             schema: { default: 10, format: 'int64', maximum: 1000, minimum: 1, type: 'integer' },
           },
+          default: 10,
         }),
       limit: z
         .preprocess((val) => {
@@ -8819,16 +8757,13 @@ export const putAccountInstitutionAccountsAccountIdRoute = createRoute({
     205: {
       description: 'Reset Content',
       headers: z.object({
-        Location: {
-          description: 'Location of newly created article',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Location of newly created article',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Location of newly created article',
+            param: { required: false },
+          }),
       }),
     },
     400: { description: 'Bad Request' },
@@ -8887,6 +8822,7 @@ export const getAccountInstitutionArticlesRoute = createRoute({
             required: false,
             schema: { default: 10, format: 'int64', maximum: 1000, minimum: 1, type: 'integer' },
           },
+          default: 10,
         }),
       limit: z
         .preprocess((val) => {
@@ -9143,7 +9079,7 @@ export const postAccountInstitutionCustomFieldsCustomFieldIdItemsUploadRoute = c
       description: 'OK',
       content: {
         'application/json': {
-          schema: z.object({}).openapi({ example: { code: 200, message: 'OK' } }),
+          schema: z.looseObject({}).openapi({ example: { code: 200, message: 'OK' } }),
         },
       },
     },
@@ -9828,6 +9764,7 @@ export const getAccountProjectsRoute = createRoute({
             required: false,
             schema: { default: 10, format: 'int64', maximum: 1000, minimum: 1, type: 'integer' },
           },
+          default: 10,
         }),
       limit: z
         .preprocess((val) => {
@@ -10068,13 +10005,10 @@ export const putAccountProjectsProjectIdRoute = createRoute({
     205: {
       description: 'Reset Content',
       headers: z.object({
-        Location: {
-          description: 'Location of project',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'Location of project', param: { required: false } }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Location of project', param: { required: false } }),
       }),
     },
     403: {
@@ -10192,6 +10126,7 @@ export const getAccountProjectsProjectIdArticlesRoute = createRoute({
             required: false,
             schema: { default: 10, format: 'int64', maximum: 1000, minimum: 1, type: 'integer' },
           },
+          default: 10,
         }),
       limit: z
         .preprocess((val) => {
@@ -10312,6 +10247,7 @@ export const postAccountProjectsProjectIdArticlesRoute = createRoute({
             required: false,
             schema: { default: 10, format: 'int64', maximum: 1000, minimum: 1, type: 'integer' },
           },
+          default: 10,
         }),
       limit: z
         .preprocess((val) => {
@@ -10362,13 +10298,10 @@ export const postAccountProjectsProjectIdArticlesRoute = createRoute({
       description: 'Created',
       content: { 'application/json': { schema: LocationWarningsSchema } },
       headers: z.object({
-        Location: {
-          description: 'Location of article',
-          schema: z
-            .url()
-            .exactOptional()
-            .openapi({ description: 'Location of article', param: { required: false } }),
-        },
+        Location: z
+          .url()
+          .exactOptional()
+          .openapi({ description: 'Location of article', param: { required: false } }),
       }),
     },
     400: { description: 'Bad Request' },
@@ -10896,6 +10829,7 @@ export const getAccountProjectsProjectIdNotesRoute = createRoute({
             required: false,
             schema: { default: 10, format: 'int64', maximum: 1000, minimum: 1, type: 'integer' },
           },
+          default: 10,
         }),
       limit: z
         .preprocess((val) => {
@@ -10986,13 +10920,10 @@ export const postAccountProjectsProjectIdNotesRoute = createRoute({
       description: 'Created',
       content: { 'application/json': { schema: LocationSchema } },
       headers: z.object({
-        Location: {
-          description: 'Location note',
-          schema: z
-            .url()
-            .exactOptional()
-            .openapi({ description: 'Location note', param: { required: false } }),
-        },
+        Location: z
+          .url()
+          .exactOptional()
+          .openapi({ description: 'Location note', param: { required: false } }),
       }),
     },
     400: { description: 'Bad Request' },
@@ -11115,13 +11046,10 @@ export const putAccountProjectsProjectIdNotesNoteIdRoute = createRoute({
     205: {
       description: 'Reset Content',
       headers: z.object({
-        Location: {
-          description: 'Location note',
-          schema: z
-            .url()
-            .exactOptional()
-            .openapi({ description: 'Location note', param: { required: false } }),
-        },
+        Location: z
+          .url()
+          .exactOptional()
+          .openapi({ description: 'Location note', param: { required: false } }),
       }),
     },
     400: { description: 'Bad Request' },
@@ -11292,6 +11220,7 @@ export const getArticlesRoute = createRoute({
             required: false,
             schema: { default: 10, format: 'int64', maximum: 1000, minimum: 1, type: 'integer' },
           },
+          default: 10,
         }),
       limit: z
         .preprocess((val) => {
@@ -11483,17 +11412,14 @@ export const getArticlesRoute = createRoute({
       description: 'OK. An array of articles',
       content: { 'application/json': { schema: z.array(ArticleSchema) } },
       headers: z.object({
-        'X-Cursor': {
-          description: 'Unique hash used for bypassing the item retrieval limit of 9,000 entities.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Unique hash used for bypassing the item retrieval limit of 9,000 entities.',
-              param: { required: false },
-            }),
-        },
+        'X-Cursor': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Unique hash used for bypassing the item retrieval limit of 9,000 entities.',
+            param: { required: false },
+          }),
       }),
     },
     400: { description: 'Bad Request' },
@@ -11539,17 +11465,14 @@ export const postArticlesSearchRoute = createRoute({
       description: 'OK. An array of articles',
       content: { 'application/json': { schema: z.array(ArticleWithProjectSchema) } },
       headers: z.object({
-        'X-Cursor': {
-          description: 'Unique hash used for bypassing the item retrieval limit of 9,000 entities.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Unique hash used for bypassing the item retrieval limit of 9,000 entities.',
-              param: { required: false },
-            }),
-        },
+        'X-Cursor': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Unique hash used for bypassing the item retrieval limit of 9,000 entities.',
+            param: { required: false },
+          }),
       }),
     },
     400: { description: 'Bad Request' },
@@ -11988,6 +11911,7 @@ export const getCollectionsRoute = createRoute({
             required: false,
             schema: { default: 10, format: 'int64', maximum: 1000, minimum: 1, type: 'integer' },
           },
+          default: 10,
         }),
       limit: z
         .preprocess((val) => {
@@ -12160,17 +12084,14 @@ export const getCollectionsRoute = createRoute({
       description: 'OK. An array of collections',
       content: { 'application/json': { schema: z.array(CollectionSchema) } },
       headers: z.object({
-        'X-Cursor': {
-          description: 'Unique hash used for bypassing the item retrieval limit of 9,000 entities.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Unique hash used for bypassing the item retrieval limit of 9,000 entities.',
-              param: { required: false },
-            }),
-        },
+        'X-Cursor': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Unique hash used for bypassing the item retrieval limit of 9,000 entities.',
+            param: { required: false },
+          }),
       }),
     },
     400: { description: 'Bad Request' },
@@ -12213,17 +12134,14 @@ export const postCollectionsSearchRoute = createRoute({
       description: 'OK. An array of collections',
       content: { 'application/json': { schema: z.array(CollectionSchema) } },
       headers: z.object({
-        'X-Cursor': {
-          description: 'Unique hash used for bypassing the item retrieval limit of 9,000 entities.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Unique hash used for bypassing the item retrieval limit of 9,000 entities.',
-              param: { required: false },
-            }),
-        },
+        'X-Cursor': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Unique hash used for bypassing the item retrieval limit of 9,000 entities.',
+            param: { required: false },
+          }),
       }),
     },
     400: { description: 'Bad Request' },
@@ -12337,6 +12255,7 @@ export const getCollectionsCollectionIdArticlesRoute = createRoute({
             required: false,
             schema: { default: 10, format: 'int64', maximum: 1000, minimum: 1, type: 'integer' },
           },
+          default: 10,
         }),
       limit: z
         .preprocess((val) => {
@@ -12627,6 +12546,7 @@ export const getItemTypesRoute = createRoute({
             required: false,
             schema: { default: 0, format: 'int64', minimum: 0, type: 'integer' },
           },
+          default: 0,
         }),
     }),
   },
@@ -12723,6 +12643,7 @@ export const getProjectsRoute = createRoute({
             required: false,
             schema: { default: 10, format: 'int64', maximum: 1000, minimum: 1, type: 'integer' },
           },
+          default: 10,
         }),
       limit: z
         .preprocess((val) => {
@@ -12846,17 +12767,14 @@ export const getProjectsRoute = createRoute({
       description: 'OK. An array of projects',
       content: { 'application/json': { schema: z.array(ProjectSchema) } },
       headers: z.object({
-        'X-Cursor': {
-          description: 'Unique hash used for bypassing the item retrieval limit of 9,000 entities.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Unique hash used for bypassing the item retrieval limit of 9,000 entities.',
-              param: { required: false },
-            }),
-        },
+        'X-Cursor': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Unique hash used for bypassing the item retrieval limit of 9,000 entities.',
+            param: { required: false },
+          }),
       }),
     },
     400: { description: 'Bad Request' },
@@ -12896,17 +12814,14 @@ export const postProjectsSearchRoute = createRoute({
       description: 'OK. An array of projects',
       content: { 'application/json': { schema: z.array(ProjectSchema) } },
       headers: z.object({
-        'X-Cursor': {
-          description: 'Unique hash used for bypassing the item retrieval limit of 9,000 entities.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Unique hash used for bypassing the item retrieval limit of 9,000 entities.',
-              param: { required: false },
-            }),
-        },
+        'X-Cursor': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Unique hash used for bypassing the item retrieval limit of 9,000 entities.',
+            param: { required: false },
+          }),
       }),
     },
     400: { description: 'Bad Request' },

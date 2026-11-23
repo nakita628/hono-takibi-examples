@@ -35,133 +35,6 @@ const AptRepositorySchema = z
   })
   .openapi('AptRepository')
 
-const AptSettingsSchema = z
-  .object({
-    excludes: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'List of packages to exclude from update. These packages will be excluded',
-      }),
-    exclusivePackages: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'An exclusive list of packages to be updated. These are the only packages that will be updated. If these packages are not installed, they will be ignored. This field cannot be specified with any other patch configuration fields.',
-      }),
-    type: z
-      .enum(['TYPE_UNSPECIFIED', 'DIST', 'UPGRADE'])
-      .exactOptional()
-      .openapi({
-        description:
-          'By changing the type to DIST, the patching is performed using `apt-get dist-upgrade` instead.',
-      }),
-  })
-  .openapi({
-    description:
-      'Apt patching is completed by executing `apt-get update && apt-get upgrade`. Additional options can be set to control how this is executed.',
-    required: [],
-  })
-  .openapi('AptSettings')
-
-const AssignmentGroupLabelSchema = z
-  .object({
-    labels: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Google Compute Engine instance labels that must be present for an instance to be included in this assignment group.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents a group of VM intances that can be identified as having all these labels, for example "env=prod and app=web".',
-    required: [],
-  })
-  .openapi('AssignmentGroupLabel')
-
-const AssignmentOsTypeSchema = z
-  .object({
-    osArchitecture: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Targets VM instances with OS Inventory enabled and having the following OS architecture.',
-      }),
-    osShortName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Targets VM instances with OS Inventory enabled and having the following OS short name, for example "debian" or "windows".',
-      }),
-    osVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Targets VM instances with OS Inventory enabled and having the following following OS version.',
-      }),
-  })
-  .openapi({
-    description: 'Defines the criteria for selecting VM Instances by OS type.',
-    required: [],
-  })
-  .openapi('AssignmentOsType')
-
-const AssignmentSchema = z
-  .object({
-    groupLabels: z
-      .array(AssignmentGroupLabelSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Targets instances matching at least one of these label sets. This allows an assignment to target disparate groups, for example "env=prod or env=staging".',
-      }),
-    instanceNamePrefixes: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Targets VM instances whose name starts with one of these prefixes. Like labels, this is another way to group VM instances when targeting configs, for example prefix="prod-". Only supported for project-level policies.',
-      }),
-    instances: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Targets any of the instances specified. Instances are specified by their URI in the form `zones/[ZONE]/instances/[INSTANCE_NAME]`. Instance targeting is uncommon and is supported to facilitate the management of changes by the instance or to target specific VM instances for development and testing. Only supported for project-level policies and must reference instances within this project.',
-      }),
-    osTypes: z
-      .array(AssignmentOsTypeSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Targets VM instances matching at least one of the following OS types. VM instances must match all supplied criteria for a given OsType to be included.',
-      }),
-    zones: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Targets instances in any of these zones. Leave empty to target instances in any zone. Zonal targeting is uncommon and is supported to facilitate the management of changes by zone.',
-      }),
-  })
-  .openapi({
-    description:
-      'An assignment represents the group or groups of VM instances that the policy applies to. If an assignment is empty, it applies to all VM instances. Otherwise, the targeted VM instances must meet all the criteria specified. So if both labels and zones are specified, the policy applies to VM instances with those labels and in those zones.',
-    required: [],
-  })
-  .openapi('Assignment')
-
-const CancelPatchJobRequestSchema = z
-  .object({})
-  .openapi({ description: 'Message for canceling a patch job.' })
-  .openapi('CancelPatchJobRequest')
-
 const GooRepositorySchema = z
   .object({
     name: z
@@ -623,7 +496,206 @@ const EffectiveGuestPolicySourcedSoftwareRecipeSchema = z
   .openapi({ description: 'A guest policy recipe including its source.', required: [] })
   .openapi('EffectiveGuestPolicySourcedSoftwareRecipe')
 
-const EffectiveGuestPolicySchema = z
+type EffectiveGuestPolicyType = {
+  packageRepositories?: z.infer<typeof EffectiveGuestPolicySourcedPackageRepositorySchema>[]
+  packages?: z.infer<typeof EffectiveGuestPolicySourcedPackageSchema>[]
+  softwareRecipes?: z.infer<typeof EffectiveGuestPolicySourcedSoftwareRecipeSchema>[]
+}
+
+const AssignmentGroupLabelSchema = z
+  .object({
+    labels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Google Compute Engine instance labels that must be present for an instance to be included in this assignment group.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents a group of VM intances that can be identified as having all these labels, for example "env=prod and app=web".',
+    required: [],
+  })
+  .openapi('AssignmentGroupLabel')
+
+const AssignmentOsTypeSchema = z
+  .object({
+    osArchitecture: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Targets VM instances with OS Inventory enabled and having the following OS architecture.',
+      }),
+    osShortName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Targets VM instances with OS Inventory enabled and having the following OS short name, for example "debian" or "windows".',
+      }),
+    osVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Targets VM instances with OS Inventory enabled and having the following following OS version.',
+      }),
+  })
+  .openapi({
+    description: 'Defines the criteria for selecting VM Instances by OS type.',
+    required: [],
+  })
+  .openapi('AssignmentOsType')
+
+const AssignmentSchema = z
+  .object({
+    groupLabels: z
+      .array(AssignmentGroupLabelSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Targets instances matching at least one of these label sets. This allows an assignment to target disparate groups, for example "env=prod or env=staging".',
+      }),
+    instanceNamePrefixes: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Targets VM instances whose name starts with one of these prefixes. Like labels, this is another way to group VM instances when targeting configs, for example prefix="prod-". Only supported for project-level policies.',
+      }),
+    instances: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Targets any of the instances specified. Instances are specified by their URI in the form `zones/[ZONE]/instances/[INSTANCE_NAME]`. Instance targeting is uncommon and is supported to facilitate the management of changes by the instance or to target specific VM instances for development and testing. Only supported for project-level policies and must reference instances within this project.',
+      }),
+    osTypes: z
+      .array(AssignmentOsTypeSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Targets VM instances matching at least one of the following OS types. VM instances must match all supplied criteria for a given OsType to be included.',
+      }),
+    zones: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Targets instances in any of these zones. Leave empty to target instances in any zone. Zonal targeting is uncommon and is supported to facilitate the management of changes by zone.',
+      }),
+  })
+  .openapi({
+    description:
+      'An assignment represents the group or groups of VM instances that the policy applies to. If an assignment is empty, it applies to all VM instances. Otherwise, the targeted VM instances must meet all the criteria specified. So if both labels and zones are specified, the policy applies to VM instances with those labels and in those zones.',
+    required: [],
+  })
+  .openapi('Assignment')
+
+const GuestPolicySchema = z
+  .object({
+    assignment: AssignmentSchema.exactOptional().openapi({
+      description:
+        'Required. Specifies the VM instances that are assigned to this policy. This allows you to target sets or groups of VM instances by different parameters such as labels, names, OS, or zones. If left empty, all VM instances underneath this policy are targeted. At the same level in the resource hierarchy (that is within a project), the service prevents the creation of multiple policies that conflict with each other. For more information, see how the service [handles assignment conflicts](/compute/docs/os-config-management/create-guest-policy#handle-conflicts).',
+    }),
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Time this guest policy was created.', readOnly: true }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Description of the guest policy. Length of the description is limited to 1024 characters.',
+      }),
+    etag: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The etag for this guest policy. If this is provided on update, it must match the server's etag.",
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Unique name of the resource in this project using one of the following forms: `projects/{project_number}/guestPolicies/{guest_policy_id}`.',
+      }),
+    packageRepositories: z
+      .array(PackageRepositorySchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of package repositories to configure on the VM instance. This is done before any other configs are applied so they can use these repos. Package repositories are only configured if the corresponding package manager(s) are available.',
+      }),
+    packages: z
+      .array(PackageSchema)
+      .exactOptional()
+      .openapi({ description: 'The software packages to be managed by this policy.' }),
+    recipes: z
+      .array(SoftwareRecipeSchema)
+      .exactOptional()
+      .openapi({ description: 'A list of Recipes to install on the VM instance.' }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Last time this guest policy was updated.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      'An OS Config resource representing a guest configuration policy. These policies represent the desired state for VM instance guest environments including packages to install or remove, package repository configurations, and software to install.',
+    required: [],
+  })
+  .openapi('GuestPolicy')
+
+type ListGuestPoliciesResponseType = {
+  guestPolicies?: z.infer<typeof GuestPolicySchema>[]
+  nextPageToken?: string
+}
+
+const AptSettingsSchema = z
+  .object({
+    excludes: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'List of packages to exclude from update. These packages will be excluded',
+      }),
+    exclusivePackages: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'An exclusive list of packages to be updated. These are the only packages that will be updated. If these packages are not installed, they will be ignored. This field cannot be specified with any other patch configuration fields.',
+      }),
+    type: z
+      .enum(['TYPE_UNSPECIFIED', 'DIST', 'UPGRADE'])
+      .exactOptional()
+      .openapi({
+        description:
+          'By changing the type to DIST, the patching is performed using `apt-get dist-upgrade` instead.',
+      }),
+  })
+  .openapi({
+    description:
+      'Apt patching is completed by executing `apt-get update && apt-get upgrade`. Additional options can be set to control how this is executed.',
+    required: [],
+  })
+  .openapi('AptSettings')
+
+const CancelPatchJobRequestSchema = z
+  .looseObject({})
+  .openapi({ description: 'Message for canceling a patch job.' })
+  .openapi('CancelPatchJobRequest')
+
+const EffectiveGuestPolicySchema: z.ZodType<EffectiveGuestPolicyType> = z
   .object({
     packageRepositories: z
       .array(EffectiveGuestPolicySourcedPackageRepositorySchema)
@@ -647,7 +719,7 @@ const EffectiveGuestPolicySchema = z
   .openapi('EffectiveGuestPolicy')
 
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
@@ -777,7 +849,7 @@ const PatchInstanceFilterSchema = z
   .openapi('PatchInstanceFilter')
 
 const GooSettingsSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Googet patching is performed by running `googet update`.' })
   .openapi('GooSettings')
 
@@ -1050,68 +1122,7 @@ const GoogleCloudOsconfigV1OSPolicyAssignmentOperationMetadataSchema = z
   })
   .openapi('GoogleCloudOsconfigV1OSPolicyAssignmentOperationMetadata')
 
-const GuestPolicySchema = z
-  .object({
-    assignment: AssignmentSchema.exactOptional().openapi({
-      description:
-        'Required. Specifies the VM instances that are assigned to this policy. This allows you to target sets or groups of VM instances by different parameters such as labels, names, OS, or zones. If left empty, all VM instances underneath this policy are targeted. At the same level in the resource hierarchy (that is within a project), the service prevents the creation of multiple policies that conflict with each other. For more information, see how the service [handles assignment conflicts](/compute/docs/os-config-management/create-guest-policy#handle-conflicts).',
-    }),
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Time this guest policy was created.', readOnly: true }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Description of the guest policy. Length of the description is limited to 1024 characters.',
-      }),
-    etag: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The etag for this guest policy. If this is provided on update, it must match the server's etag.",
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Unique name of the resource in this project using one of the following forms: `projects/{project_number}/guestPolicies/{guest_policy_id}`.',
-      }),
-    packageRepositories: z
-      .array(PackageRepositorySchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of package repositories to configure on the VM instance. This is done before any other configs are applied so they can use these repos. Package repositories are only configured if the corresponding package manager(s) are available.',
-      }),
-    packages: z
-      .array(PackageSchema)
-      .exactOptional()
-      .openapi({ description: 'The software packages to be managed by this policy.' }),
-    recipes: z
-      .array(SoftwareRecipeSchema)
-      .exactOptional()
-      .openapi({ description: 'A list of Recipes to install on the VM instance.' }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Last time this guest policy was updated.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      'An OS Config resource representing a guest configuration policy. These policies represent the desired state for VM instance guest environments including packages to install or remove, package repository configurations, and software to install.',
-    required: [],
-  })
-  .openapi('GuestPolicy')
-
-const ListGuestPoliciesResponseSchema = z
+const ListGuestPoliciesResponseSchema: z.ZodType<ListGuestPoliciesResponseType> = z
   .object({
     guestPolicies: z
       .array(GuestPolicySchema)
@@ -1730,12 +1741,12 @@ const OSPolicyAssignmentOperationMetadataSchema = z
   .openapi('OSPolicyAssignmentOperationMetadata')
 
 const PausePatchDeploymentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'A request message for pausing a patch deployment.' })
   .openapi('PausePatchDeploymentRequest')
 
 const ResumePatchDeploymentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'A request message for resuming a patch deployment.' })
   .openapi('ResumePatchDeploymentRequest')
 

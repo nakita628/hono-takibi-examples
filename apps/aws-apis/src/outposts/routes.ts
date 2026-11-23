@@ -1,6 +1,6 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const CancelOrderOutputSchema = z.object({}).openapi('CancelOrderOutput')
+const CancelOrderOutputSchema = z.looseObject({}).openapi('CancelOrderOutput')
 
 const ValidationExceptionSchema = z.any().openapi('ValidationException')
 
@@ -80,12 +80,12 @@ const ShipmentCarrierSchema = z.enum(['DHL', 'DBS', 'FEDEX', 'UPS']).openapi('Sh
 
 const ShipmentInformationSchema = z
   .object({
-    ShipmentTrackingNumber: TrackingIdSchema.and(
-      z.any().openapi({ description: ' The tracking number of the shipment. ' }),
-    ).exactOptional(),
-    ShipmentCarrier: ShipmentCarrierSchema.and(
-      z.any().openapi({ description: ' The carrier of the shipment. ' }),
-    ).exactOptional(),
+    ShipmentTrackingNumber: TrackingIdSchema.exactOptional().openapi({
+      description: ' The tracking number of the shipment. ',
+    }),
+    ShipmentCarrier: ShipmentCarrierSchema.exactOptional().openapi({
+      description: ' The carrier of the shipment. ',
+    }),
   })
   .openapi({ description: ' Information about a line item shipment. ', required: [] })
   .openapi('ShipmentInformation')
@@ -107,12 +107,10 @@ const MacAddressListSchema = z.array(MacAddressSchema).openapi('MacAddressList')
 
 const LineItemAssetInformationSchema = z
   .object({
-    AssetId: AssetIdSchema.and(
-      z.any().openapi({ description: ' The ID of the asset. ' }),
-    ).exactOptional(),
-    MacAddressList: MacAddressListSchema.and(
-      z.any().openapi({ description: ' The MAC addresses of the asset. ' }),
-    ).exactOptional(),
+    AssetId: AssetIdSchema.exactOptional().openapi({ description: ' The ID of the asset. ' }),
+    MacAddressList: MacAddressListSchema.exactOptional().openapi({
+      description: ' The MAC addresses of the asset. ',
+    }),
   })
   .openapi({ description: ' Information about a line item asset. ', required: [] })
   .openapi('LineItemAssetInformation')
@@ -123,30 +121,30 @@ const LineItemAssetInformationListSchema = z
 
 const LineItemSchema = z
   .object({
-    CatalogItemId: SkuCodeSchema.and(
-      z.any().openapi({ description: ' The ID of the catalog item. ' }),
-    ).exactOptional(),
-    LineItemId: LineItemIdSchema.and(
-      z.any().openapi({ description: 'The ID of the line item.' }),
-    ).exactOptional(),
-    Quantity: LineItemQuantitySchema.and(
-      z.any().openapi({ description: 'The quantity of the line item.' }),
-    ).exactOptional(),
-    Status: LineItemStatusSchema.and(
-      z.any().openapi({ description: 'The status of the line item.' }),
-    ).exactOptional(),
-    ShipmentInformation: ShipmentInformationSchema.and(
-      z.any().openapi({ description: ' Information about a line item shipment. ' }),
-    ).exactOptional(),
-    AssetInformationList: LineItemAssetInformationListSchema.and(
-      z.any().openapi({ description: ' Information about assets. ' }),
-    ).exactOptional(),
-    PreviousLineItemId: LineItemIdSchema.and(
-      z.any().openapi({ description: 'The ID of the previous line item.' }),
-    ).exactOptional(),
-    PreviousOrderId: OrderIdSchema.and(
-      z.any().openapi({ description: 'The ID of the previous order.' }),
-    ).exactOptional(),
+    CatalogItemId: SkuCodeSchema.exactOptional().openapi({
+      description: ' The ID of the catalog item. ',
+    }),
+    LineItemId: LineItemIdSchema.exactOptional().openapi({
+      description: 'The ID of the line item.',
+    }),
+    Quantity: LineItemQuantitySchema.exactOptional().openapi({
+      description: 'The quantity of the line item.',
+    }),
+    Status: LineItemStatusSchema.exactOptional().openapi({
+      description: 'The status of the line item.',
+    }),
+    ShipmentInformation: ShipmentInformationSchema.exactOptional().openapi({
+      description: ' Information about a line item shipment. ',
+    }),
+    AssetInformationList: LineItemAssetInformationListSchema.exactOptional().openapi({
+      description: ' Information about assets. ',
+    }),
+    PreviousLineItemId: LineItemIdSchema.exactOptional().openapi({
+      description: 'The ID of the previous line item.',
+    }),
+    PreviousOrderId: OrderIdSchema.exactOptional().openapi({
+      description: 'The ID of the previous order.',
+    }),
   })
   .openapi({ description: 'Information about a line item.', required: [] })
   .openapi('LineItem')
@@ -165,59 +163,47 @@ const OrderTypeSchema = z.enum(['OUTPOST', 'REPLACEMENT']).openapi('OrderType')
 
 const OrderSchema = z
   .object({
-    OutpostId: OutpostIdOnlySchema.and(
-      z.any().openapi({ description: ' The ID of the Outpost in the order. ' }),
-    ).exactOptional(),
-    OrderId: OrderIdSchema.and(
-      z.any().openapi({ description: 'The ID of the order.' }),
-    ).exactOptional(),
-    Status: OrderStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the order.</p> <ul> <li> <p> <code>PREPARING</code> - Order is received and being prepared.</p> </li> <li> <p> <code>IN_PROGRESS</code> - Order is either being built, shipped, or installed. To get more details, see the line item status.</p> </li> <li> <p> <code>COMPLETED</code> - Order is complete.</p> </li> <li> <p> <code>CANCELLED</code> - Order is cancelled.</p> </li> <li> <p> <code>ERROR</code> - Customer should contact support.</p> </li> </ul> <note> <p>The following status are deprecated: <code>RECEIVED</code>, <code>PENDING</code>, <code>PROCESSING</code>, <code>INSTALLING</code>, and <code>FULFILLED</code>. </p> </note>',
-        }),
-    ).exactOptional(),
-    LineItems: LineItemListDefinitionSchema.and(
-      z.any().openapi({ description: 'The line items for the order' }),
-    ).exactOptional(),
-    PaymentOption: PaymentOptionSchema.and(
-      z.any().openapi({ description: 'The payment option for the order.' }),
-    ).exactOptional(),
-    OrderSubmissionDate: ISO8601TimestampSchema.and(
-      z.any().openapi({ description: 'The submission date for the order.' }),
-    ).exactOptional(),
-    OrderFulfilledDate: ISO8601TimestampSchema.and(
-      z.any().openapi({ description: 'The fulfillment date of the order.' }),
-    ).exactOptional(),
-    PaymentTerm: PaymentTermSchema.and(
-      z.any().openapi({ description: 'The payment term.' }),
-    ).exactOptional(),
-    OrderType: OrderTypeSchema.and(
-      z.any().openapi({ description: 'The type of order.' }),
-    ).exactOptional(),
+    OutpostId: OutpostIdOnlySchema.exactOptional().openapi({
+      description: ' The ID of the Outpost in the order. ',
+    }),
+    OrderId: OrderIdSchema.exactOptional().openapi({ description: 'The ID of the order.' }),
+    Status: OrderStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the order.</p> <ul> <li> <p> <code>PREPARING</code> - Order is received and being prepared.</p> </li> <li> <p> <code>IN_PROGRESS</code> - Order is either being built, shipped, or installed. To get more details, see the line item status.</p> </li> <li> <p> <code>COMPLETED</code> - Order is complete.</p> </li> <li> <p> <code>CANCELLED</code> - Order is cancelled.</p> </li> <li> <p> <code>ERROR</code> - Customer should contact support.</p> </li> </ul> <note> <p>The following status are deprecated: <code>RECEIVED</code>, <code>PENDING</code>, <code>PROCESSING</code>, <code>INSTALLING</code>, and <code>FULFILLED</code>. </p> </note>',
+    }),
+    LineItems: LineItemListDefinitionSchema.exactOptional().openapi({
+      description: 'The line items for the order',
+    }),
+    PaymentOption: PaymentOptionSchema.exactOptional().openapi({
+      description: 'The payment option for the order.',
+    }),
+    OrderSubmissionDate: ISO8601TimestampSchema.exactOptional().openapi({
+      description: 'The submission date for the order.',
+    }),
+    OrderFulfilledDate: ISO8601TimestampSchema.exactOptional().openapi({
+      description: 'The fulfillment date of the order.',
+    }),
+    PaymentTerm: PaymentTermSchema.exactOptional().openapi({ description: 'The payment term.' }),
+    OrderType: OrderTypeSchema.exactOptional().openapi({ description: 'The type of order.' }),
   })
   .openapi({ description: 'Information about an order.', required: [] })
   .openapi('Order')
 
 const CreateOrderOutputSchema = z
   .object({
-    Order: OrderSchema.and(
-      z.any().openapi({ description: 'Information about this order.' }),
-    ).exactOptional(),
+    Order: OrderSchema.exactOptional().openapi({ description: 'Information about this order.' }),
   })
   .openapi({ required: [] })
   .openapi('CreateOrderOutput')
 
 const LineItemRequestSchema = z
   .object({
-    CatalogItemId: SkuCodeSchema.and(
-      z.any().openapi({ description: 'The ID of the catalog item.' }),
-    ).exactOptional(),
-    Quantity: LineItemQuantitySchema.and(
-      z.any().openapi({ description: 'The quantity of a line item request.' }),
-    ).exactOptional(),
+    CatalogItemId: SkuCodeSchema.exactOptional().openapi({
+      description: 'The ID of the catalog item.',
+    }),
+    Quantity: LineItemQuantitySchema.exactOptional().openapi({
+      description: 'The quantity of a line item request.',
+    }),
   })
   .openapi({ description: 'Information about a line item request.', required: [] })
   .openapi('LineItemRequest')
@@ -318,9 +304,7 @@ const SupportedHardwareTypeSchema = z.enum(['RACK', 'SERVER']).openapi('Supporte
 
 const OutpostSchema = z
   .object({
-    OutpostId: OutpostIdSchema.and(
-      z.any().openapi({ description: ' The ID of the Outpost. ' }),
-    ).exactOptional(),
+    OutpostId: OutpostIdSchema.exactOptional().openapi({ description: ' The ID of the Outpost. ' }),
     OwnerId: OwnerIdSchema.exactOptional(),
     OutpostArn: OutpostArnSchema.exactOptional(),
     SiteId: SiteIdSchema.exactOptional(),
@@ -329,11 +313,11 @@ const OutpostSchema = z
     LifeCycleStatus: LifeCycleStatusSchema.exactOptional(),
     AvailabilityZone: AvailabilityZoneSchema.exactOptional(),
     AvailabilityZoneId: AvailabilityZoneIdSchema.exactOptional(),
-    Tags: TagMapSchema.and(z.any().openapi({ description: 'The Outpost tags.' })).exactOptional(),
+    Tags: TagMapSchema.exactOptional().openapi({ description: 'The Outpost tags.' }),
     SiteArn: SiteArnSchema.exactOptional(),
-    SupportedHardwareType: SupportedHardwareTypeSchema.and(
-      z.any().openapi({ description: ' The hardware type. ' }),
-    ).exactOptional(),
+    SupportedHardwareType: SupportedHardwareTypeSchema.exactOptional().openapi({
+      description: ' The hardware type. ',
+    }),
   })
   .openapi({ description: 'Information about an Outpost.', required: [] })
   .openapi('Outpost')
@@ -452,53 +436,35 @@ const MaximumSupportedWeightLbsSchema = z
 
 const RackPhysicalPropertiesSchema = z
   .object({
-    PowerDrawKva: PowerDrawKvaSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The power draw available at the hardware placement position for the rack. ',
-        }),
-    ).exactOptional(),
-    PowerPhase: PowerPhaseSchema.and(
-      z.any().openapi({ description: 'The power option that you can provide for hardware.' }),
-    ).exactOptional(),
-    PowerConnector: PowerConnectorSchema.and(
-      z.any().openapi({ description: 'The power connector for the hardware. ' }),
-    ).exactOptional(),
-    PowerFeedDrop: PowerFeedDropSchema.and(
-      z.any().openapi({ description: 'The position of the power feed.' }),
-    ).exactOptional(),
-    UplinkGbps: UplinkGbpsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The uplink speed the rack supports for the connection to the Region. ',
-        }),
-    ).exactOptional(),
-    UplinkCount: UplinkCountSchema.and(
-      z.any().openapi({ description: 'The number of uplinks each Outpost network device.' }),
-    ).exactOptional(),
-    FiberOpticCableType: FiberOpticCableTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The type of fiber used to attach the Outpost to the network. ' }),
-    ).exactOptional(),
-    OpticalStandard: OpticalStandardSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of optical standard used to attach the Outpost to the network. This field is dependent on uplink speed, fiber type, and distance to the upstream device. For more information about networking requirements for racks, see <a href="https://docs.aws.amazon.com/outposts/latest/userguide/outposts-requirements.html#facility-networking">Network</a> in the Amazon Web Services Outposts User Guide. ',
-        }),
-    ).exactOptional(),
-    MaximumSupportedWeightLbs: MaximumSupportedWeightLbsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum rack weight that this site can support. <code>NO_LIMIT</code> is over 2000 lbs (907 kg). ',
-        }),
-    ).exactOptional(),
+    PowerDrawKva: PowerDrawKvaSchema.exactOptional().openapi({
+      description: 'The power draw available at the hardware placement position for the rack. ',
+    }),
+    PowerPhase: PowerPhaseSchema.exactOptional().openapi({
+      description: 'The power option that you can provide for hardware.',
+    }),
+    PowerConnector: PowerConnectorSchema.exactOptional().openapi({
+      description: 'The power connector for the hardware. ',
+    }),
+    PowerFeedDrop: PowerFeedDropSchema.exactOptional().openapi({
+      description: 'The position of the power feed.',
+    }),
+    UplinkGbps: UplinkGbpsSchema.exactOptional().openapi({
+      description: 'The uplink speed the rack supports for the connection to the Region. ',
+    }),
+    UplinkCount: UplinkCountSchema.exactOptional().openapi({
+      description: 'The number of uplinks each Outpost network device.',
+    }),
+    FiberOpticCableType: FiberOpticCableTypeSchema.exactOptional().openapi({
+      description: 'The type of fiber used to attach the Outpost to the network. ',
+    }),
+    OpticalStandard: OpticalStandardSchema.exactOptional().openapi({
+      description:
+        'The type of optical standard used to attach the Outpost to the network. This field is dependent on uplink speed, fiber type, and distance to the upstream device. For more information about networking requirements for racks, see <a href="https://docs.aws.amazon.com/outposts/latest/userguide/outposts-requirements.html#facility-networking">Network</a> in the Amazon Web Services Outposts User Guide. ',
+    }),
+    MaximumSupportedWeightLbs: MaximumSupportedWeightLbsSchema.exactOptional().openapi({
+      description:
+        'The maximum rack weight that this site can support. <code>NO_LIMIT</code> is over 2000 lbs (907 kg). ',
+    }),
   })
   .openapi({
     description:
@@ -513,37 +479,23 @@ const SiteSchema = z
     AccountId: AccountIdSchema.exactOptional(),
     Name: SiteNameSchema.exactOptional(),
     Description: SiteDescriptionSchema.exactOptional(),
-    Tags: TagMapSchema.and(z.any().openapi({ description: 'The site tags.' })).exactOptional(),
+    Tags: TagMapSchema.exactOptional().openapi({ description: 'The site tags.' }),
     SiteArn: SiteArnSchema.exactOptional(),
-    Notes: SiteNotesSchema.and(
-      z.any().openapi({ description: ' Notes about a site. ' }),
-    ).exactOptional(),
-    OperatingAddressCountryCode: CountryCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The ISO-3166 two-letter country code where the hardware is installed and powered on. ',
-        }),
-    ).exactOptional(),
-    OperatingAddressStateOrRegion: StateOrRegionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' State or region where the hardware is installed and powered on. ',
-        }),
-    ).exactOptional(),
-    OperatingAddressCity: CitySchema.and(
-      z.any().openapi({ description: ' City where the hardware is installed and powered on. ' }),
-    ).exactOptional(),
-    RackPhysicalProperties: RackPhysicalPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Information about the physical and logistical details for a rack at the site. ',
-        }),
-    ).exactOptional(),
+    Notes: SiteNotesSchema.exactOptional().openapi({ description: ' Notes about a site. ' }),
+    OperatingAddressCountryCode: CountryCodeSchema.exactOptional().openapi({
+      description:
+        ' The ISO-3166 two-letter country code where the hardware is installed and powered on. ',
+    }),
+    OperatingAddressStateOrRegion: StateOrRegionSchema.exactOptional().openapi({
+      description: ' State or region where the hardware is installed and powered on. ',
+    }),
+    OperatingAddressCity: CitySchema.exactOptional().openapi({
+      description: ' City where the hardware is installed and powered on. ',
+    }),
+    RackPhysicalProperties: RackPhysicalPropertiesSchema.exactOptional().openapi({
+      description:
+        ' Information about the physical and logistical details for a rack at the site. ',
+    }),
   })
   .openapi({ description: 'Information about a site.', required: [] })
   .openapi('Site')
@@ -609,9 +561,9 @@ const MunicipalitySchema = z
   .max(180)
   .openapi('Municipality')
 
-const DeleteOutpostOutputSchema = z.object({}).openapi('DeleteOutpostOutput')
+const DeleteOutpostOutputSchema = z.looseObject({}).openapi('DeleteOutpostOutput')
 
-const DeleteSiteOutputSchema = z.object({}).openapi('DeleteSiteOutput')
+const DeleteSiteOutputSchema = z.looseObject({}).openapi('DeleteSiteOutput')
 
 const CatalogItemStatusSchema = z.enum(['AVAILABLE', 'DISCONTINUED']).openapi('CatalogItemStatus')
 
@@ -628,15 +580,15 @@ const QuantitySchema = z.string().openapi('Quantity')
 
 const EC2CapacitySchema = z
   .object({
-    Family: FamilySchema.and(
-      z.any().openapi({ description: ' The family of the EC2 capacity. ' }),
-    ).exactOptional(),
-    MaxSize: MaxSizeSchema.and(
-      z.any().openapi({ description: ' The maximum size of the EC2 capacity. ' }),
-    ).exactOptional(),
-    Quantity: QuantitySchema.and(
-      z.any().openapi({ description: ' The quantity of the EC2 capacity. ' }),
-    ).exactOptional(),
+    Family: FamilySchema.exactOptional().openapi({
+      description: ' The family of the EC2 capacity. ',
+    }),
+    MaxSize: MaxSizeSchema.exactOptional().openapi({
+      description: ' The maximum size of the EC2 capacity. ',
+    }),
+    Quantity: QuantitySchema.exactOptional().openapi({
+      description: ' The quantity of the EC2 capacity. ',
+    }),
   })
   .openapi({ description: ' Information about EC2 capacity. ', required: [] })
   .openapi('EC2Capacity')
@@ -663,41 +615,37 @@ const SupportedStorageListSchema = z
 
 const CatalogItemSchema = z
   .object({
-    CatalogItemId: SkuCodeSchema.and(
-      z.any().openapi({ description: ' The ID of the catalog item. ' }),
-    ).exactOptional(),
-    ItemStatus: CatalogItemStatusSchema.and(
-      z.any().openapi({ description: ' The status of a catalog item. ' }),
-    ).exactOptional(),
-    EC2Capacities: EC2CapacityListDefinitionSchema.and(
-      z.any().openapi({ description: ' Information about the EC2 capacity of an item. ' }),
-    ).exactOptional(),
-    PowerKva: CatalogItemPowerKvaSchema.and(
-      z.any().openapi({ description: ' Information about the power draw of an item. ' }),
-    ).exactOptional(),
-    WeightLbs: CatalogItemWeightLbsSchema.and(
-      z.any().openapi({ description: ' The weight of the item in pounds. ' }),
-    ).exactOptional(),
-    SupportedUplinkGbps: SupportedUplinkGbpsListDefinitionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The uplink speed this catalog item requires for the connection to the Region. ',
-        }),
-    ).exactOptional(),
-    SupportedStorage: SupportedStorageListSchema.and(
-      z.any().openapi({ description: ' The supported storage options for the catalog item. ' }),
-    ).exactOptional(),
+    CatalogItemId: SkuCodeSchema.exactOptional().openapi({
+      description: ' The ID of the catalog item. ',
+    }),
+    ItemStatus: CatalogItemStatusSchema.exactOptional().openapi({
+      description: ' The status of a catalog item. ',
+    }),
+    EC2Capacities: EC2CapacityListDefinitionSchema.exactOptional().openapi({
+      description: ' Information about the EC2 capacity of an item. ',
+    }),
+    PowerKva: CatalogItemPowerKvaSchema.exactOptional().openapi({
+      description: ' Information about the power draw of an item. ',
+    }),
+    WeightLbs: CatalogItemWeightLbsSchema.exactOptional().openapi({
+      description: ' The weight of the item in pounds. ',
+    }),
+    SupportedUplinkGbps: SupportedUplinkGbpsListDefinitionSchema.exactOptional().openapi({
+      description:
+        ' The uplink speed this catalog item requires for the connection to the Region. ',
+    }),
+    SupportedStorage: SupportedStorageListSchema.exactOptional().openapi({
+      description: ' The supported storage options for the catalog item. ',
+    }),
   })
   .openapi({ description: ' Information about a catalog item. ', required: [] })
   .openapi('CatalogItem')
 
 const GetCatalogItemOutputSchema = z
   .object({
-    CatalogItem: CatalogItemSchema.and(
-      z.any().openapi({ description: 'Information about this catalog item.' }),
-    ).exactOptional(),
+    CatalogItem: CatalogItemSchema.exactOptional().openapi({
+      description: 'Information about this catalog item.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetCatalogItemOutput')
@@ -733,36 +681,36 @@ const CIDRListSchema = z.array(CIDRSchema).openapi('CIDRList')
 
 const ConnectionDetailsSchema = z
   .object({
-    ClientPublicKey: WireGuardPublicKeySchema.and(
-      z.any().openapi({ description: ' The public key of the client. ' }),
-    ).exactOptional(),
-    ServerPublicKey: WireGuardPublicKeySchema.and(
-      z.any().openapi({ description: ' The public key of the server. ' }),
-    ).exactOptional(),
-    ServerEndpoint: ServerEndpointSchema.and(
-      z.any().openapi({ description: ' The endpoint for the server. ' }),
-    ).exactOptional(),
-    ClientTunnelAddress: CIDRSchema.and(
-      z.any().openapi({ description: ' The client tunnel address. ' }),
-    ).exactOptional(),
-    ServerTunnelAddress: CIDRSchema.and(
-      z.any().openapi({ description: ' The server tunnel address. ' }),
-    ).exactOptional(),
-    AllowedIps: CIDRListSchema.and(
-      z.any().openapi({ description: ' The allowed IP addresses. ' }),
-    ).exactOptional(),
+    ClientPublicKey: WireGuardPublicKeySchema.exactOptional().openapi({
+      description: ' The public key of the client. ',
+    }),
+    ServerPublicKey: WireGuardPublicKeySchema.exactOptional().openapi({
+      description: ' The public key of the server. ',
+    }),
+    ServerEndpoint: ServerEndpointSchema.exactOptional().openapi({
+      description: ' The endpoint for the server. ',
+    }),
+    ClientTunnelAddress: CIDRSchema.exactOptional().openapi({
+      description: ' The client tunnel address. ',
+    }),
+    ServerTunnelAddress: CIDRSchema.exactOptional().openapi({
+      description: ' The server tunnel address. ',
+    }),
+    AllowedIps: CIDRListSchema.exactOptional().openapi({
+      description: ' The allowed IP addresses. ',
+    }),
   })
   .openapi({ description: ' Information about a connection. ', required: [] })
   .openapi('ConnectionDetails')
 
 const GetConnectionResponseSchema = z
   .object({
-    ConnectionId: ConnectionIdSchema.and(
-      z.any().openapi({ description: ' The ID of the connection. ' }),
-    ).exactOptional(),
-    ConnectionDetails: ConnectionDetailsSchema.and(
-      z.any().openapi({ description: ' Information about the connection. ' }),
-    ).exactOptional(),
+    ConnectionId: ConnectionIdSchema.exactOptional().openapi({
+      description: ' The ID of the connection. ',
+    }),
+    ConnectionDetails: ConnectionDetailsSchema.exactOptional().openapi({
+      description: ' Information about the connection. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetConnectionResponse')
@@ -804,9 +752,7 @@ const GetOutpostInstanceTypesOutputSchema = z
   .object({
     InstanceTypes: InstanceTypeListDefinitionSchema.exactOptional(),
     NextToken: TokenSchema.exactOptional(),
-    OutpostId: OutpostIdSchema.and(
-      z.any().openapi({ description: ' The ID of the Outpost. ' }),
-    ).exactOptional(),
+    OutpostId: OutpostIdSchema.exactOptional().openapi({ description: ' The ID of the Outpost. ' }),
     OutpostArn: OutpostArnSchema.exactOptional(),
   })
   .openapi({ required: [] })
@@ -821,37 +767,31 @@ const AddressTypeSchema = z.enum(['SHIPPING_ADDRESS', 'OPERATING_ADDRESS']).open
 
 const AddressSchema = z
   .object({
-    ContactName: ContactNameSchema.and(
-      z.any().openapi({ description: 'The name of the contact.' }),
-    ).exactOptional(),
-    ContactPhoneNumber: ContactPhoneNumberSchema.and(
-      z.any().openapi({ description: 'The phone number of the contact.' }),
-    ).exactOptional(),
-    AddressLine1: AddressLine1Schema.and(
-      z.any().openapi({ description: 'The first line of the address.' }),
-    ),
-    AddressLine2: AddressLine2Schema.and(
-      z.any().openapi({ description: 'The second line of the address.' }),
-    ).exactOptional(),
-    AddressLine3: AddressLine3Schema.and(
-      z.any().openapi({ description: 'The third line of the address.' }),
-    ).exactOptional(),
-    City: CitySchema.and(z.any().openapi({ description: 'The city for the address.' })),
-    StateOrRegion: StateOrRegionSchema.and(
-      z.any().openapi({ description: 'The state for the address.' }),
-    ),
-    DistrictOrCounty: DistrictOrCountySchema.and(
-      z.any().openapi({ description: 'The district or county for the address.' }),
-    ).exactOptional(),
-    PostalCode: PostalCodeSchema.and(
-      z.any().openapi({ description: 'The postal code for the address.' }),
-    ),
-    CountryCode: CountryCodeSchema.and(
-      z.any().openapi({ description: 'The ISO-3166 two-letter country code for the address.' }),
-    ),
-    Municipality: MunicipalitySchema.and(
-      z.any().openapi({ description: 'The municipality for the address.' }),
-    ).exactOptional(),
+    ContactName: ContactNameSchema.exactOptional().openapi({
+      description: 'The name of the contact.',
+    }),
+    ContactPhoneNumber: ContactPhoneNumberSchema.exactOptional().openapi({
+      description: 'The phone number of the contact.',
+    }),
+    AddressLine1: AddressLine1Schema.openapi({ description: 'The first line of the address.' }),
+    AddressLine2: AddressLine2Schema.exactOptional().openapi({
+      description: 'The second line of the address.',
+    }),
+    AddressLine3: AddressLine3Schema.exactOptional().openapi({
+      description: 'The third line of the address.',
+    }),
+    City: CitySchema.openapi({ description: 'The city for the address.' }),
+    StateOrRegion: StateOrRegionSchema.openapi({ description: 'The state for the address.' }),
+    DistrictOrCounty: DistrictOrCountySchema.exactOptional().openapi({
+      description: 'The district or county for the address.',
+    }),
+    PostalCode: PostalCodeSchema.openapi({ description: 'The postal code for the address.' }),
+    CountryCode: CountryCodeSchema.openapi({
+      description: 'The ISO-3166 two-letter country code for the address.',
+    }),
+    Municipality: MunicipalitySchema.exactOptional().openapi({
+      description: 'The municipality for the address.',
+    }),
   })
   .openapi({
     required: ['AddressLine1', 'City', 'StateOrRegion', 'PostalCode', 'CountryCode'],
@@ -862,12 +802,12 @@ const AddressSchema = z
 const GetSiteAddressOutputSchema = z
   .object({
     SiteId: SiteIdSchema.exactOptional(),
-    AddressType: AddressTypeSchema.and(
-      z.any().openapi({ description: 'The type of the address you receive. ' }),
-    ).exactOptional(),
-    Address: AddressSchema.and(
-      z.any().openapi({ description: ' Information about the address. ' }),
-    ).exactOptional(),
+    AddressType: AddressTypeSchema.exactOptional().openapi({
+      description: 'The type of the address you receive. ',
+    }),
+    Address: AddressSchema.exactOptional().openapi({
+      description: ' Information about the address. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetSiteAddressOutput')
@@ -894,17 +834,13 @@ const ComputeAssetStateSchema = z
 
 const ComputeAttributesSchema = z
   .object({
-    HostId: HostIdSchema.and(
-      z.any().openapi({ description: ' The host ID of the Dedicated Host on the asset. ' }),
-    ).exactOptional(),
-    State: ComputeAssetStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The state.</p> <ul> <li> <p>ACTIVE - The asset is available and can provide capacity for new compute resources.</p> </li> <li> <p>ISOLATED - The asset is undergoing maintenance and can't provide capacity for new compute resources. Existing compute resources on the asset are not affected.</p> </li> <li> <p>RETIRING - The underlying hardware for the asset is degraded. Capacity for new compute resources is reduced. Amazon Web Services sends notifications for resources that must be stopped before the asset can be replaced.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
+    HostId: HostIdSchema.exactOptional().openapi({
+      description: ' The host ID of the Dedicated Host on the asset. ',
+    }),
+    State: ComputeAssetStateSchema.exactOptional().openapi({
+      description:
+        "<p>The state.</p> <ul> <li> <p>ACTIVE - The asset is available and can provide capacity for new compute resources.</p> </li> <li> <p>ISOLATED - The asset is undergoing maintenance and can't provide capacity for new compute resources. Existing compute resources on the asset are not affected.</p> </li> <li> <p>RETIRING - The underlying hardware for the asset is degraded. Capacity for new compute resources is reduced. Amazon Web Services sends notifications for resources that must be stopped before the asset can be replaced.</p> </li> </ul>",
+    }),
   })
   .openapi({ description: ' Information about compute hardware assets. ', required: [] })
   .openapi('ComputeAttributes')
@@ -913,11 +849,9 @@ const RackElevationSchema = z.float32().min(0).max(99).openapi('RackElevation')
 
 const AssetLocationSchema = z
   .object({
-    RackElevation: RackElevationSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The position of an asset in a rack measured in rack units. ' }),
-    ).exactOptional(),
+    RackElevation: RackElevationSchema.exactOptional().openapi({
+      description: ' The position of an asset in a rack measured in rack units. ',
+    }),
   })
   .openapi({
     description: ' Information about the position of the asset in a rack. ',
@@ -927,21 +861,15 @@ const AssetLocationSchema = z
 
 const AssetInfoSchema = z
   .object({
-    AssetId: AssetIdSchema.and(
-      z.any().openapi({ description: ' The ID of the asset. ' }),
-    ).exactOptional(),
-    RackId: RackIdSchema.and(
-      z.any().openapi({ description: ' The rack ID of the asset. ' }),
-    ).exactOptional(),
-    AssetType: AssetTypeSchema.and(
-      z.any().openapi({ description: ' The type of the asset. ' }),
-    ).exactOptional(),
-    ComputeAttributes: ComputeAttributesSchema.and(
-      z.any().openapi({ description: ' Information about compute hardware assets. ' }),
-    ).exactOptional(),
-    AssetLocation: AssetLocationSchema.and(
-      z.any().openapi({ description: ' The position of an asset in a rack. ' }),
-    ).exactOptional(),
+    AssetId: AssetIdSchema.exactOptional().openapi({ description: ' The ID of the asset. ' }),
+    RackId: RackIdSchema.exactOptional().openapi({ description: ' The rack ID of the asset. ' }),
+    AssetType: AssetTypeSchema.exactOptional().openapi({ description: ' The type of the asset. ' }),
+    ComputeAttributes: ComputeAttributesSchema.exactOptional().openapi({
+      description: ' Information about compute hardware assets. ',
+    }),
+    AssetLocation: AssetLocationSchema.exactOptional().openapi({
+      description: ' The position of an asset in a rack. ',
+    }),
   })
   .openapi({ description: ' Information about hardware assets. ', required: [] })
   .openapi('AssetInfo')
@@ -950,9 +878,9 @@ const AssetListDefinitionSchema = z.array(AssetInfoSchema).openapi('AssetListDef
 
 const ListAssetsOutputSchema = z
   .object({
-    Assets: AssetListDefinitionSchema.and(
-      z.any().openapi({ description: 'Information about the hardware assets.' }),
-    ).exactOptional(),
+    Assets: AssetListDefinitionSchema.exactOptional().openapi({
+      description: 'Information about the hardware assets.',
+    }),
     NextToken: TokenSchema.exactOptional(),
   })
   .openapi({ required: [] })
@@ -966,9 +894,9 @@ const CatalogItemListDefinitionSchema = z
 
 const ListCatalogItemsOutputSchema = z
   .object({
-    CatalogItems: CatalogItemListDefinitionSchema.and(
-      z.any().openapi({ description: 'Information about the catalog items.' }),
-    ).exactOptional(),
+    CatalogItems: CatalogItemListDefinitionSchema.exactOptional().openapi({
+      description: 'Information about the catalog items.',
+    }),
     NextToken: TokenSchema.exactOptional(),
   })
   .openapi({ required: [] })
@@ -982,32 +910,24 @@ const LineItemStatusCountsSchema = z
 
 const OrderSummarySchema = z
   .object({
-    OutpostId: OutpostIdOnlySchema.and(
-      z.any().openapi({ description: ' The ID of the Outpost. ' }),
-    ).exactOptional(),
-    OrderId: OrderIdSchema.and(
-      z.any().openapi({ description: ' The ID of the order. ' }),
-    ).exactOptional(),
-    OrderType: OrderTypeSchema.and(
-      z.any().openapi({ description: 'The type of order.' }),
-    ).exactOptional(),
-    Status: OrderStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the order.</p> <ul> <li> <p> <code>PREPARING</code> - Order is received and is being prepared.</p> </li> <li> <p> <code>IN_PROGRESS</code> - Order is either being built, shipped, or installed. For more information, see the <code>LineItem</code> status.</p> </li> <li> <p> <code>COMPLETED</code> - Order is complete.</p> </li> <li> <p> <code>CANCELLED</code> - Order is cancelled.</p> </li> <li> <p> <code>ERROR</code> - Customer should contact support.</p> </li> </ul> <note> <p>The following statuses are deprecated: <code>RECEIVED</code>, <code>PENDING</code>, <code>PROCESSING</code>, <code>INSTALLING</code>, and <code>FULFILLED</code>. </p> </note>',
-        }),
-    ).exactOptional(),
-    LineItemCountsByStatus: LineItemStatusCountsSchema.and(
-      z.any().openapi({ description: ' The status of all line items in the order. ' }),
-    ).exactOptional(),
-    OrderSubmissionDate: ISO8601TimestampSchema.and(
-      z.any().openapi({ description: ' The submission date for the order. ' }),
-    ).exactOptional(),
-    OrderFulfilledDate: ISO8601TimestampSchema.and(
-      z.any().openapi({ description: ' The fulfilment date for the order. ' }),
-    ).exactOptional(),
+    OutpostId: OutpostIdOnlySchema.exactOptional().openapi({
+      description: ' The ID of the Outpost. ',
+    }),
+    OrderId: OrderIdSchema.exactOptional().openapi({ description: ' The ID of the order. ' }),
+    OrderType: OrderTypeSchema.exactOptional().openapi({ description: 'The type of order.' }),
+    Status: OrderStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the order.</p> <ul> <li> <p> <code>PREPARING</code> - Order is received and is being prepared.</p> </li> <li> <p> <code>IN_PROGRESS</code> - Order is either being built, shipped, or installed. For more information, see the <code>LineItem</code> status.</p> </li> <li> <p> <code>COMPLETED</code> - Order is complete.</p> </li> <li> <p> <code>CANCELLED</code> - Order is cancelled.</p> </li> <li> <p> <code>ERROR</code> - Customer should contact support.</p> </li> </ul> <note> <p>The following statuses are deprecated: <code>RECEIVED</code>, <code>PENDING</code>, <code>PROCESSING</code>, <code>INSTALLING</code>, and <code>FULFILLED</code>. </p> </note>',
+    }),
+    LineItemCountsByStatus: LineItemStatusCountsSchema.exactOptional().openapi({
+      description: ' The status of all line items in the order. ',
+    }),
+    OrderSubmissionDate: ISO8601TimestampSchema.exactOptional().openapi({
+      description: ' The submission date for the order. ',
+    }),
+    OrderFulfilledDate: ISO8601TimestampSchema.exactOptional().openapi({
+      description: ' The fulfilment date for the order. ',
+    }),
   })
   .openapi({ description: ' A summary of line items in your order. ', required: [] })
   .openapi('OrderSummary')
@@ -1018,9 +938,9 @@ const OrderSummaryListDefinitionSchema = z
 
 const ListOrdersOutputSchema = z
   .object({
-    Orders: OrderSummaryListDefinitionSchema.and(
-      z.any().openapi({ description: ' Information about the orders. ' }),
-    ).exactOptional(),
+    Orders: OrderSummaryListDefinitionSchema.exactOptional().openapi({
+      description: ' Information about the orders. ',
+    }),
     NextToken: TokenSchema.exactOptional(),
   })
   .openapi({ required: [] })
@@ -1053,9 +973,7 @@ const ListSitesOutputSchema = z
   .openapi('ListSitesOutput')
 
 const ListTagsForResourceResponseSchema = z
-  .object({
-    Tags: TagMapSchema.and(z.any().openapi({ description: 'The resource tags.' })).exactOptional(),
-  })
+  .object({ Tags: TagMapSchema.exactOptional().openapi({ description: 'The resource tags.' }) })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
 
@@ -1068,19 +986,19 @@ const UnderlayIpAddressSchema = z
 
 const StartConnectionResponseSchema = z
   .object({
-    ConnectionId: ConnectionIdSchema.and(
-      z.any().openapi({ description: ' The ID of the connection. ' }),
-    ).exactOptional(),
-    UnderlayIpAddress: UnderlayIpAddressSchema.and(
-      z.any().openapi({ description: ' The underlay IP address. ' }),
-    ).exactOptional(),
+    ConnectionId: ConnectionIdSchema.exactOptional().openapi({
+      description: ' The ID of the connection. ',
+    }),
+    UnderlayIpAddress: UnderlayIpAddressSchema.exactOptional().openapi({
+      description: ' The underlay IP address. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartConnectionResponse')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeySchema = z
   .string()
@@ -1101,12 +1019,12 @@ const UpdateSiteOutputSchema = z
 
 const UpdateSiteAddressOutputSchema = z
   .object({
-    AddressType: AddressTypeSchema.and(
-      z.any().openapi({ description: ' The type of the address. ' }),
-    ).exactOptional(),
-    Address: AddressSchema.and(
-      z.any().openapi({ description: ' Information about an address. ' }),
-    ).exactOptional(),
+    AddressType: AddressTypeSchema.exactOptional().openapi({
+      description: ' The type of the address. ',
+    }),
+    Address: AddressSchema.exactOptional().openapi({
+      description: ' Information about an address. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateSiteAddressOutput')
@@ -1135,7 +1053,7 @@ const AvailabilityZoneListSchema = z
   .openapi('AvailabilityZoneList')
 
 const CancelOrderInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'CancelOrderInput' })
   .openapi('CancelOrderInput')
 
@@ -1160,18 +1078,14 @@ const LineItemRequestListDefinitionSchema = z
 
 const CreateOrderInputSchema = z
   .object({
-    OutpostIdentifier: OutpostIdentifierSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The ID or the Amazon Resource Name (ARN) of the Outpost. ' }),
-    ),
-    LineItems: LineItemRequestListDefinitionSchema.and(
-      z.any().openapi({ description: 'The line items that make up the order.' }),
-    ),
-    PaymentOption: PaymentOptionSchema.and(z.any().openapi({ description: 'The payment option.' })),
-    PaymentTerm: PaymentTermSchema.and(
-      z.any().openapi({ description: 'The payment terms.' }),
-    ).exactOptional(),
+    OutpostIdentifier: OutpostIdentifierSchema.openapi({
+      description: ' The ID or the Amazon Resource Name (ARN) of the Outpost. ',
+    }),
+    LineItems: LineItemRequestListDefinitionSchema.openapi({
+      description: 'The line items that make up the order.',
+    }),
+    PaymentOption: PaymentOptionSchema.openapi({ description: 'The payment option.' }),
+    PaymentTerm: PaymentTermSchema.exactOptional().openapi({ description: 'The payment terms.' }),
   })
   .openapi({
     required: ['OutpostIdentifier', 'LineItems', 'PaymentOption'],
@@ -1183,17 +1097,17 @@ const CreateOutpostInputSchema = z
   .object({
     Name: OutpostNameSchema,
     Description: OutpostDescriptionSchema.exactOptional(),
-    SiteId: SiteIdSchema.and(
-      z.any().openapi({ description: ' The ID or the Amazon Resource Name (ARN) of the site. ' }),
-    ),
+    SiteId: SiteIdSchema.openapi({
+      description: ' The ID or the Amazon Resource Name (ARN) of the site. ',
+    }),
     AvailabilityZone: AvailabilityZoneSchema.exactOptional(),
     AvailabilityZoneId: AvailabilityZoneIdSchema.exactOptional(),
-    Tags: TagMapSchema.and(
-      z.any().openapi({ description: 'The tags to apply to the Outpost.' }),
-    ).exactOptional(),
-    SupportedHardwareType: SupportedHardwareTypeSchema.and(
-      z.any().openapi({ description: ' The type of hardware for this Outpost. ' }),
-    ).exactOptional(),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags to apply to the Outpost.',
+    }),
+    SupportedHardwareType: SupportedHardwareTypeSchema.exactOptional().openapi({
+      description: ' The type of hardware for this Outpost. ',
+    }),
   })
   .openapi({ required: ['Name', 'SiteId'], title: 'CreateOutpostInput' })
   .openapi('CreateOutpostInput')
@@ -1202,52 +1116,34 @@ const CreateSiteInputSchema = z
   .object({
     Name: SiteNameSchema,
     Description: SiteDescriptionSchema.exactOptional(),
-    Notes: SiteNotesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Additional information that you provide about site access requirements, electrician scheduling, personal protective equipment, or regulation of equipment materials that could affect your installation process. ',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z.any().openapi({ description: ' The tags to apply to a site. ' }),
-    ).exactOptional(),
-    OperatingAddress: AddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The location to install and power on the hardware. This address might be different from the shipping address. ',
-        }),
-    ).exactOptional(),
-    ShippingAddress: AddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The location to ship the hardware. This address might be different from the operating address. ',
-        }),
-    ).exactOptional(),
-    RackPhysicalProperties: RackPhysicalPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Information about the physical and logistical details for the rack at this site. For more information about hardware requirements for racks, see <a href="https://docs.aws.amazon.com/outposts/latest/userguide/outposts-requirements.html#checklist">Network readiness checklist</a> in the Amazon Web Services Outposts User Guide. ',
-        }),
-    ).exactOptional(),
+    Notes: SiteNotesSchema.exactOptional().openapi({
+      description:
+        'Additional information that you provide about site access requirements, electrician scheduling, personal protective equipment, or regulation of equipment materials that could affect your installation process. ',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({ description: ' The tags to apply to a site. ' }),
+    OperatingAddress: AddressSchema.exactOptional().openapi({
+      description:
+        ' The location to install and power on the hardware. This address might be different from the shipping address. ',
+    }),
+    ShippingAddress: AddressSchema.exactOptional().openapi({
+      description:
+        ' The location to ship the hardware. This address might be different from the operating address. ',
+    }),
+    RackPhysicalProperties: RackPhysicalPropertiesSchema.exactOptional().openapi({
+      description:
+        ' Information about the physical and logistical details for the rack at this site. For more information about hardware requirements for racks, see <a href="https://docs.aws.amazon.com/outposts/latest/userguide/outposts-requirements.html#checklist">Network readiness checklist</a> in the Amazon Web Services Outposts User Guide. ',
+    }),
   })
   .openapi({ required: ['Name'], title: 'CreateSiteInput' })
   .openapi('CreateSiteInput')
 
 const DeleteOutpostInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteOutpostInput' })
   .openapi('DeleteOutpostInput')
 
 const DeleteSiteInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteSiteInput' })
   .openapi('DeleteSiteInput')
 
@@ -1261,22 +1157,22 @@ const DeviceSerialNumberSchema = z
 const EC2FamilyListSchema = z.array(FamilySchema).openapi('EC2FamilyList')
 
 const GetCatalogItemInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetCatalogItemInput' })
   .openapi('GetCatalogItemInput')
 
 const GetConnectionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetConnectionRequest' })
   .openapi('GetConnectionRequest')
 
 const GetOrderInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetOrderInput' })
   .openapi('GetOrderInput')
 
 const GetOutpostInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetOutpostInput' })
   .openapi('GetOutpostInput')
 
@@ -1288,16 +1184,19 @@ const MaxResults1000Schema = z
   .openapi('MaxResults1000')
 
 const GetOutpostInstanceTypesInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetOutpostInstanceTypesInput' })
   .openapi('GetOutpostInstanceTypesInput')
 
 const GetSiteAddressInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetSiteAddressInput' })
   .openapi('GetSiteAddressInput')
 
-const GetSiteInputSchema = z.object({}).openapi({ title: 'GetSiteInput' }).openapi('GetSiteInput')
+const GetSiteInputSchema = z
+  .looseObject({})
+  .openapi({ title: 'GetSiteInput' })
+  .openapi('GetSiteInput')
 
 const HostIdListSchema = z.array(HostIdSchema).openapi('HostIdList')
 
@@ -1310,34 +1209,34 @@ const LifeCycleStatusListSchema = z
 const StatusListSchema = z.array(AssetStateSchema).min(1).max(2).openapi('StatusList')
 
 const ListAssetsInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListAssetsInput' })
   .openapi('ListAssetsInput')
 
 const ListCatalogItemsInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListCatalogItemsInput' })
   .openapi('ListCatalogItemsInput')
 
 const ListOrdersInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListOrdersInput' })
   .openapi('ListOrdersInput')
 
 const ListOutpostsInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListOutpostsInput' })
   .openapi('ListOutpostsInput')
 
 const StateOrRegionListSchema = z.array(StateOrRegionSchema).openapi('StateOrRegionList')
 
 const ListSitesInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListSitesInput' })
   .openapi('ListSitesInput')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
@@ -1349,20 +1248,16 @@ const NetworkInterfaceDeviceIndexSchema = z
 
 const StartConnectionRequestSchema = z
   .object({
-    DeviceSerialNumber: DeviceSerialNumberSchema.and(
-      z.any().openapi({ description: ' The serial number of the dongle. ' }),
-    ),
-    AssetId: AssetIdSchema.and(z.any().openapi({ description: ' The ID of the Outpost server. ' })),
-    ClientPublicKey: WireGuardPublicKeySchema.and(
-      z.any().openapi({ description: ' The public key of the client. ' }),
-    ),
-    NetworkInterfaceDeviceIndex: NetworkInterfaceDeviceIndexSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The device index of the network interface on the Outpost server. ',
-        }),
-    ),
+    DeviceSerialNumber: DeviceSerialNumberSchema.openapi({
+      description: ' The serial number of the dongle. ',
+    }),
+    AssetId: AssetIdSchema.openapi({ description: ' The ID of the Outpost server. ' }),
+    ClientPublicKey: WireGuardPublicKeySchema.openapi({
+      description: ' The public key of the client. ',
+    }),
+    NetworkInterfaceDeviceIndex: NetworkInterfaceDeviceIndexSchema.openapi({
+      description: ' The device index of the network interface on the Outpost server. ',
+    }),
   })
   .openapi({
     required: ['DeviceSerialNumber', 'AssetId', 'ClientPublicKey', 'NetworkInterfaceDeviceIndex'],
@@ -1373,14 +1268,12 @@ const StartConnectionRequestSchema = z
 const TagKeyListSchema = z.array(TagKeySchema).min(1).max(50).openapi('TagKeyList')
 
 const TagResourceRequestSchema = z
-  .object({
-    Tags: TagMapSchema.and(z.any().openapi({ description: 'The tags to add to the resource.' })),
-  })
+  .object({ Tags: TagMapSchema.openapi({ description: 'The tags to add to the resource.' }) })
   .openapi({ required: ['Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
@@ -1388,19 +1281,17 @@ const UpdateOutpostInputSchema = z
   .object({
     Name: OutpostNameSchema.exactOptional(),
     Description: OutpostDescriptionSchema.exactOptional(),
-    SupportedHardwareType: SupportedHardwareTypeSchema.and(
-      z.any().openapi({ description: ' The type of hardware for this Outpost. ' }),
-    ).exactOptional(),
+    SupportedHardwareType: SupportedHardwareTypeSchema.exactOptional().openapi({
+      description: ' The type of hardware for this Outpost. ',
+    }),
   })
   .openapi({ title: 'UpdateOutpostInput', required: [] })
   .openapi('UpdateOutpostInput')
 
 const UpdateSiteAddressInputSchema = z
   .object({
-    AddressType: AddressTypeSchema.and(
-      z.any().openapi({ description: ' The type of the address. ' }),
-    ),
-    Address: AddressSchema.and(z.any().openapi({ description: ' The address for the site. ' })),
+    AddressType: AddressTypeSchema.openapi({ description: ' The type of the address. ' }),
+    Address: AddressSchema.openapi({ description: ' The address for the site. ' }),
   })
   .openapi({ required: ['AddressType', 'Address'], title: 'UpdateSiteAddressInput' })
   .openapi('UpdateSiteAddressInput')
@@ -1409,86 +1300,46 @@ const UpdateSiteInputSchema = z
   .object({
     Name: SiteNameSchema.exactOptional(),
     Description: SiteDescriptionSchema.exactOptional(),
-    Notes: SiteNotesSchema.and(
-      z.any().openapi({ description: 'Notes about a site.' }),
-    ).exactOptional(),
+    Notes: SiteNotesSchema.exactOptional().openapi({ description: 'Notes about a site.' }),
   })
   .openapi({ title: 'UpdateSiteInput', required: [] })
   .openapi('UpdateSiteInput')
 
 const UpdateSiteRackPhysicalPropertiesInputSchema = z
   .object({
-    PowerDrawKva: PowerDrawKvaSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The power draw, in kVA, available at the hardware placement position for the rack.',
-        }),
-    ).exactOptional(),
-    PowerPhase: PowerPhaseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The power option that you can provide for hardware. </p> <ul> <li> <p>Single-phase AC feed: 200 V to 277 V, 50 Hz or 60 Hz</p> </li> <li> <p>Three-phase AC feed: 346 V to 480 V, 50 Hz or 60 Hz</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    PowerConnector: PowerConnectorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The power connector that Amazon Web Services should plan to provide for connections to the hardware. Note the correlation between <code>PowerPhase</code> and <code>PowerConnector</code>. </p> <ul> <li> <p>Single-phase AC feed</p> <ul> <li> <p> <b>L6-30P</b> – (common in US); 30A; single phase</p> </li> <li> <p> <b>IEC309 (blue)</b> – P+N+E, 6hr; 32 A; single phase</p> </li> </ul> </li> <li> <p>Three-phase AC feed</p> <ul> <li> <p> <b>AH530P7W (red)</b> – 3P+N+E, 7hr; 30A; three phase</p> </li> <li> <p> <b>AH532P6W (red)</b> – 3P+N+E, 6hr; 32A; three phase</p> </li> </ul> </li> </ul>',
-        }),
-    ).exactOptional(),
-    PowerFeedDrop: PowerFeedDropSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates whether the power feed comes above or below the rack. ',
-        }),
-    ).exactOptional(),
-    UplinkGbps: UplinkGbpsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The uplink speed the rack should support for the connection to the Region. ',
-        }),
-    ).exactOptional(),
-    UplinkCount: UplinkCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Racks come with two Outpost network devices. Depending on the supported uplink speed at the site, the Outpost network devices provide a variable number of uplinks. Specify the number of uplinks for each Outpost network device that you intend to use to connect the rack to your network. Note the correlation between <code>UplinkGbps</code> and <code>UplinkCount</code>. </p> <ul> <li> <p>1Gbps - Uplinks available: 1, 2, 4, 6, 8</p> </li> <li> <p>10Gbps - Uplinks available: 1, 2, 4, 8, 12, 16</p> </li> <li> <p>40 and 100 Gbps- Uplinks available: 1, 2, 4</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    FiberOpticCableType: FiberOpticCableTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of fiber that you will use to attach the Outpost to your network. ',
-        }),
-    ).exactOptional(),
-    OpticalStandard: OpticalStandardSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of optical standard that you will use to attach the Outpost to your network. This field is dependent on uplink speed, fiber type, and distance to the upstream device. For more information about networking requirements for racks, see <a href="https://docs.aws.amazon.com/outposts/latest/userguide/outposts-requirements.html#facility-networking">Network</a> in the Amazon Web Services Outposts User Guide. </p> <ul> <li> <p> <code>OPTIC_10GBASE_SR</code>: 10GBASE-SR</p> </li> <li> <p> <code>OPTIC_10GBASE_IR</code>: 10GBASE-IR</p> </li> <li> <p> <code>OPTIC_10GBASE_LR</code>: 10GBASE-LR</p> </li> <li> <p> <code>OPTIC_40GBASE_SR</code>: 40GBASE-SR</p> </li> <li> <p> <code>OPTIC_40GBASE_ESR</code>: 40GBASE-ESR</p> </li> <li> <p> <code>OPTIC_40GBASE_IR4_LR4L</code>: 40GBASE-IR (LR4L)</p> </li> <li> <p> <code>OPTIC_40GBASE_LR4</code>: 40GBASE-LR4</p> </li> <li> <p> <code>OPTIC_100GBASE_SR4</code>: 100GBASE-SR4</p> </li> <li> <p> <code>OPTIC_100GBASE_CWDM4</code>: 100GBASE-CWDM4</p> </li> <li> <p> <code>OPTIC_100GBASE_LR4</code>: 100GBASE-LR4</p> </li> <li> <p> <code>OPTIC_100G_PSM4_MSA</code>: 100G PSM4 MSA</p> </li> <li> <p> <code>OPTIC_1000BASE_LX</code>: 1000Base-LX</p> </li> <li> <p> <code>OPTIC_1000BASE_SX</code> : 1000Base-SX</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    MaximumSupportedWeightLbs: MaximumSupportedWeightLbsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum rack weight that this site can support. <code>NO_LIMIT</code> is over 2000lbs. ',
-        }),
-    ).exactOptional(),
+    PowerDrawKva: PowerDrawKvaSchema.exactOptional().openapi({
+      description:
+        'The power draw, in kVA, available at the hardware placement position for the rack.',
+    }),
+    PowerPhase: PowerPhaseSchema.exactOptional().openapi({
+      description:
+        '<p>The power option that you can provide for hardware. </p> <ul> <li> <p>Single-phase AC feed: 200 V to 277 V, 50 Hz or 60 Hz</p> </li> <li> <p>Three-phase AC feed: 346 V to 480 V, 50 Hz or 60 Hz</p> </li> </ul>',
+    }),
+    PowerConnector: PowerConnectorSchema.exactOptional().openapi({
+      description:
+        '<p>The power connector that Amazon Web Services should plan to provide for connections to the hardware. Note the correlation between <code>PowerPhase</code> and <code>PowerConnector</code>. </p> <ul> <li> <p>Single-phase AC feed</p> <ul> <li> <p> <b>L6-30P</b> – (common in US); 30A; single phase</p> </li> <li> <p> <b>IEC309 (blue)</b> – P+N+E, 6hr; 32 A; single phase</p> </li> </ul> </li> <li> <p>Three-phase AC feed</p> <ul> <li> <p> <b>AH530P7W (red)</b> – 3P+N+E, 7hr; 30A; three phase</p> </li> <li> <p> <b>AH532P6W (red)</b> – 3P+N+E, 6hr; 32A; three phase</p> </li> </ul> </li> </ul>',
+    }),
+    PowerFeedDrop: PowerFeedDropSchema.exactOptional().openapi({
+      description: 'Indicates whether the power feed comes above or below the rack. ',
+    }),
+    UplinkGbps: UplinkGbpsSchema.exactOptional().openapi({
+      description: 'The uplink speed the rack should support for the connection to the Region. ',
+    }),
+    UplinkCount: UplinkCountSchema.exactOptional().openapi({
+      description:
+        '<p>Racks come with two Outpost network devices. Depending on the supported uplink speed at the site, the Outpost network devices provide a variable number of uplinks. Specify the number of uplinks for each Outpost network device that you intend to use to connect the rack to your network. Note the correlation between <code>UplinkGbps</code> and <code>UplinkCount</code>. </p> <ul> <li> <p>1Gbps - Uplinks available: 1, 2, 4, 6, 8</p> </li> <li> <p>10Gbps - Uplinks available: 1, 2, 4, 8, 12, 16</p> </li> <li> <p>40 and 100 Gbps- Uplinks available: 1, 2, 4</p> </li> </ul>',
+    }),
+    FiberOpticCableType: FiberOpticCableTypeSchema.exactOptional().openapi({
+      description: 'The type of fiber that you will use to attach the Outpost to your network. ',
+    }),
+    OpticalStandard: OpticalStandardSchema.exactOptional().openapi({
+      description:
+        '<p>The type of optical standard that you will use to attach the Outpost to your network. This field is dependent on uplink speed, fiber type, and distance to the upstream device. For more information about networking requirements for racks, see <a href="https://docs.aws.amazon.com/outposts/latest/userguide/outposts-requirements.html#facility-networking">Network</a> in the Amazon Web Services Outposts User Guide. </p> <ul> <li> <p> <code>OPTIC_10GBASE_SR</code>: 10GBASE-SR</p> </li> <li> <p> <code>OPTIC_10GBASE_IR</code>: 10GBASE-IR</p> </li> <li> <p> <code>OPTIC_10GBASE_LR</code>: 10GBASE-LR</p> </li> <li> <p> <code>OPTIC_40GBASE_SR</code>: 40GBASE-SR</p> </li> <li> <p> <code>OPTIC_40GBASE_ESR</code>: 40GBASE-ESR</p> </li> <li> <p> <code>OPTIC_40GBASE_IR4_LR4L</code>: 40GBASE-IR (LR4L)</p> </li> <li> <p> <code>OPTIC_40GBASE_LR4</code>: 40GBASE-LR4</p> </li> <li> <p> <code>OPTIC_100GBASE_SR4</code>: 100GBASE-SR4</p> </li> <li> <p> <code>OPTIC_100GBASE_CWDM4</code>: 100GBASE-CWDM4</p> </li> <li> <p> <code>OPTIC_100GBASE_LR4</code>: 100GBASE-LR4</p> </li> <li> <p> <code>OPTIC_100G_PSM4_MSA</code>: 100G PSM4 MSA</p> </li> <li> <p> <code>OPTIC_1000BASE_LX</code>: 1000Base-LX</p> </li> <li> <p> <code>OPTIC_1000BASE_SX</code> : 1000Base-SX</p> </li> </ul>',
+    }),
+    MaximumSupportedWeightLbs: MaximumSupportedWeightLbsSchema.exactOptional().openapi({
+      description:
+        'The maximum rack weight that this site can support. <code>NO_LIMIT</code> is over 2000lbs. ',
+    }),
   })
   .openapi({ title: 'UpdateSiteRackPhysicalPropertiesInput', required: [] })
   .openapi('UpdateSiteRackPhysicalPropertiesInput')
@@ -2138,150 +1989,114 @@ export const postSitesRoute = createRoute({
                 .openapi({ description: ' The tags to apply to a site. ' }),
               OperatingAddress: z
                 .object({
-                  ContactName: ContactNameSchema.and(
-                    z.any().openapi({ description: 'The name of the contact.' }),
-                  ).exactOptional(),
-                  ContactPhoneNumber: ContactPhoneNumberSchema.and(
-                    z.any().openapi({ description: 'The phone number of the contact.' }),
-                  ).exactOptional(),
-                  AddressLine1: AddressLine1Schema.and(
-                    z.any().openapi({ description: 'The first line of the address.' }),
-                  ).exactOptional(),
-                  AddressLine2: AddressLine2Schema.and(
-                    z.any().openapi({ description: 'The second line of the address.' }),
-                  ).exactOptional(),
-                  AddressLine3: AddressLine3Schema.and(
-                    z.any().openapi({ description: 'The third line of the address.' }),
-                  ).exactOptional(),
-                  City: CitySchema.and(
-                    z.any().openapi({ description: 'The city for the address.' }),
-                  ).exactOptional(),
-                  StateOrRegion: StateOrRegionSchema.and(
-                    z.any().openapi({ description: 'The state for the address.' }),
-                  ).exactOptional(),
-                  DistrictOrCounty: DistrictOrCountySchema.and(
-                    z.any().openapi({ description: 'The district or county for the address.' }),
-                  ).exactOptional(),
-                  PostalCode: PostalCodeSchema.and(
-                    z.any().openapi({ description: 'The postal code for the address.' }),
-                  ).exactOptional(),
-                  CountryCode: CountryCodeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The ISO-3166 two-letter country code for the address.',
-                      }),
-                  ).exactOptional(),
-                  Municipality: MunicipalitySchema.and(
-                    z.any().openapi({ description: 'The municipality for the address.' }),
-                  ).exactOptional(),
+                  ContactName: ContactNameSchema.exactOptional().openapi({
+                    description: 'The name of the contact.',
+                  }),
+                  ContactPhoneNumber: ContactPhoneNumberSchema.exactOptional().openapi({
+                    description: 'The phone number of the contact.',
+                  }),
+                  AddressLine1: AddressLine1Schema.exactOptional().openapi({
+                    description: 'The first line of the address.',
+                  }),
+                  AddressLine2: AddressLine2Schema.exactOptional().openapi({
+                    description: 'The second line of the address.',
+                  }),
+                  AddressLine3: AddressLine3Schema.exactOptional().openapi({
+                    description: 'The third line of the address.',
+                  }),
+                  City: CitySchema.exactOptional().openapi({
+                    description: 'The city for the address.',
+                  }),
+                  StateOrRegion: StateOrRegionSchema.exactOptional().openapi({
+                    description: 'The state for the address.',
+                  }),
+                  DistrictOrCounty: DistrictOrCountySchema.exactOptional().openapi({
+                    description: 'The district or county for the address.',
+                  }),
+                  PostalCode: PostalCodeSchema.exactOptional().openapi({
+                    description: 'The postal code for the address.',
+                  }),
+                  CountryCode: CountryCodeSchema.exactOptional().openapi({
+                    description: 'The ISO-3166 two-letter country code for the address.',
+                  }),
+                  Municipality: MunicipalitySchema.exactOptional().openapi({
+                    description: 'The municipality for the address.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: ' Information about an address. ', required: [] }),
               ShippingAddress: z
                 .object({
-                  ContactName: ContactNameSchema.and(
-                    z.any().openapi({ description: 'The name of the contact.' }),
-                  ).exactOptional(),
-                  ContactPhoneNumber: ContactPhoneNumberSchema.and(
-                    z.any().openapi({ description: 'The phone number of the contact.' }),
-                  ).exactOptional(),
-                  AddressLine1: AddressLine1Schema.and(
-                    z.any().openapi({ description: 'The first line of the address.' }),
-                  ).exactOptional(),
-                  AddressLine2: AddressLine2Schema.and(
-                    z.any().openapi({ description: 'The second line of the address.' }),
-                  ).exactOptional(),
-                  AddressLine3: AddressLine3Schema.and(
-                    z.any().openapi({ description: 'The third line of the address.' }),
-                  ).exactOptional(),
-                  City: CitySchema.and(
-                    z.any().openapi({ description: 'The city for the address.' }),
-                  ).exactOptional(),
-                  StateOrRegion: StateOrRegionSchema.and(
-                    z.any().openapi({ description: 'The state for the address.' }),
-                  ).exactOptional(),
-                  DistrictOrCounty: DistrictOrCountySchema.and(
-                    z.any().openapi({ description: 'The district or county for the address.' }),
-                  ).exactOptional(),
-                  PostalCode: PostalCodeSchema.and(
-                    z.any().openapi({ description: 'The postal code for the address.' }),
-                  ).exactOptional(),
-                  CountryCode: CountryCodeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The ISO-3166 two-letter country code for the address.',
-                      }),
-                  ).exactOptional(),
-                  Municipality: MunicipalitySchema.and(
-                    z.any().openapi({ description: 'The municipality for the address.' }),
-                  ).exactOptional(),
+                  ContactName: ContactNameSchema.exactOptional().openapi({
+                    description: 'The name of the contact.',
+                  }),
+                  ContactPhoneNumber: ContactPhoneNumberSchema.exactOptional().openapi({
+                    description: 'The phone number of the contact.',
+                  }),
+                  AddressLine1: AddressLine1Schema.exactOptional().openapi({
+                    description: 'The first line of the address.',
+                  }),
+                  AddressLine2: AddressLine2Schema.exactOptional().openapi({
+                    description: 'The second line of the address.',
+                  }),
+                  AddressLine3: AddressLine3Schema.exactOptional().openapi({
+                    description: 'The third line of the address.',
+                  }),
+                  City: CitySchema.exactOptional().openapi({
+                    description: 'The city for the address.',
+                  }),
+                  StateOrRegion: StateOrRegionSchema.exactOptional().openapi({
+                    description: 'The state for the address.',
+                  }),
+                  DistrictOrCounty: DistrictOrCountySchema.exactOptional().openapi({
+                    description: 'The district or county for the address.',
+                  }),
+                  PostalCode: PostalCodeSchema.exactOptional().openapi({
+                    description: 'The postal code for the address.',
+                  }),
+                  CountryCode: CountryCodeSchema.exactOptional().openapi({
+                    description: 'The ISO-3166 two-letter country code for the address.',
+                  }),
+                  Municipality: MunicipalitySchema.exactOptional().openapi({
+                    description: 'The municipality for the address.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: ' Information about an address. ', required: [] }),
               RackPhysicalProperties: z
                 .object({
-                  PowerDrawKva: PowerDrawKvaSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The power draw available at the hardware placement position for the rack. ',
-                      }),
-                  ).exactOptional(),
-                  PowerPhase: PowerPhaseSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The power option that you can provide for hardware.',
-                      }),
-                  ).exactOptional(),
-                  PowerConnector: PowerConnectorSchema.and(
-                    z.any().openapi({ description: 'The power connector for the hardware. ' }),
-                  ).exactOptional(),
-                  PowerFeedDrop: PowerFeedDropSchema.and(
-                    z.any().openapi({ description: 'The position of the power feed.' }),
-                  ).exactOptional(),
-                  UplinkGbps: UplinkGbpsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The uplink speed the rack supports for the connection to the Region. ',
-                      }),
-                  ).exactOptional(),
-                  UplinkCount: UplinkCountSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The number of uplinks each Outpost network device.',
-                      }),
-                  ).exactOptional(),
-                  FiberOpticCableType: FiberOpticCableTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The type of fiber used to attach the Outpost to the network. ',
-                      }),
-                  ).exactOptional(),
-                  OpticalStandard: OpticalStandardSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The type of optical standard used to attach the Outpost to the network. This field is dependent on uplink speed, fiber type, and distance to the upstream device. For more information about networking requirements for racks, see <a href="https://docs.aws.amazon.com/outposts/latest/userguide/outposts-requirements.html#facility-networking">Network</a> in the Amazon Web Services Outposts User Guide. ',
-                      }),
-                  ).exactOptional(),
-                  MaximumSupportedWeightLbs: MaximumSupportedWeightLbsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The maximum rack weight that this site can support. <code>NO_LIMIT</code> is over 2000 lbs (907 kg). ',
-                      }),
-                  ).exactOptional(),
+                  PowerDrawKva: PowerDrawKvaSchema.exactOptional().openapi({
+                    description:
+                      'The power draw available at the hardware placement position for the rack. ',
+                  }),
+                  PowerPhase: PowerPhaseSchema.exactOptional().openapi({
+                    description: 'The power option that you can provide for hardware.',
+                  }),
+                  PowerConnector: PowerConnectorSchema.exactOptional().openapi({
+                    description: 'The power connector for the hardware. ',
+                  }),
+                  PowerFeedDrop: PowerFeedDropSchema.exactOptional().openapi({
+                    description: 'The position of the power feed.',
+                  }),
+                  UplinkGbps: UplinkGbpsSchema.exactOptional().openapi({
+                    description:
+                      'The uplink speed the rack supports for the connection to the Region. ',
+                  }),
+                  UplinkCount: UplinkCountSchema.exactOptional().openapi({
+                    description: 'The number of uplinks each Outpost network device.',
+                  }),
+                  FiberOpticCableType: FiberOpticCableTypeSchema.exactOptional().openapi({
+                    description: 'The type of fiber used to attach the Outpost to the network. ',
+                  }),
+                  OpticalStandard: OpticalStandardSchema.exactOptional().openapi({
+                    description:
+                      'The type of optical standard used to attach the Outpost to the network. This field is dependent on uplink speed, fiber type, and distance to the upstream device. For more information about networking requirements for racks, see <a href="https://docs.aws.amazon.com/outposts/latest/userguide/outposts-requirements.html#facility-networking">Network</a> in the Amazon Web Services Outposts User Guide. ',
+                  }),
+                  MaximumSupportedWeightLbs:
+                    MaximumSupportedWeightLbsSchema.exactOptional().openapi({
+                      description:
+                        'The maximum rack weight that this site can support. <code>NO_LIMIT</code> is over 2000 lbs (907 kg). ',
+                    }),
                 })
                 .exactOptional()
                 .openapi({
@@ -3858,43 +3673,39 @@ export const putSitesSiteIdAddressRoute = createRoute({
                 .openapi({ description: ' The type of the address. ' }),
               Address: z
                 .object({
-                  ContactName: ContactNameSchema.and(
-                    z.any().openapi({ description: 'The name of the contact.' }),
-                  ).exactOptional(),
-                  ContactPhoneNumber: ContactPhoneNumberSchema.and(
-                    z.any().openapi({ description: 'The phone number of the contact.' }),
-                  ).exactOptional(),
-                  AddressLine1: AddressLine1Schema.and(
-                    z.any().openapi({ description: 'The first line of the address.' }),
-                  ).exactOptional(),
-                  AddressLine2: AddressLine2Schema.and(
-                    z.any().openapi({ description: 'The second line of the address.' }),
-                  ).exactOptional(),
-                  AddressLine3: AddressLine3Schema.and(
-                    z.any().openapi({ description: 'The third line of the address.' }),
-                  ).exactOptional(),
-                  City: CitySchema.and(
-                    z.any().openapi({ description: 'The city for the address.' }),
-                  ).exactOptional(),
-                  StateOrRegion: StateOrRegionSchema.and(
-                    z.any().openapi({ description: 'The state for the address.' }),
-                  ).exactOptional(),
-                  DistrictOrCounty: DistrictOrCountySchema.and(
-                    z.any().openapi({ description: 'The district or county for the address.' }),
-                  ).exactOptional(),
-                  PostalCode: PostalCodeSchema.and(
-                    z.any().openapi({ description: 'The postal code for the address.' }),
-                  ).exactOptional(),
-                  CountryCode: CountryCodeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The ISO-3166 two-letter country code for the address.',
-                      }),
-                  ).exactOptional(),
-                  Municipality: MunicipalitySchema.and(
-                    z.any().openapi({ description: 'The municipality for the address.' }),
-                  ).exactOptional(),
+                  ContactName: ContactNameSchema.exactOptional().openapi({
+                    description: 'The name of the contact.',
+                  }),
+                  ContactPhoneNumber: ContactPhoneNumberSchema.exactOptional().openapi({
+                    description: 'The phone number of the contact.',
+                  }),
+                  AddressLine1: AddressLine1Schema.exactOptional().openapi({
+                    description: 'The first line of the address.',
+                  }),
+                  AddressLine2: AddressLine2Schema.exactOptional().openapi({
+                    description: 'The second line of the address.',
+                  }),
+                  AddressLine3: AddressLine3Schema.exactOptional().openapi({
+                    description: 'The third line of the address.',
+                  }),
+                  City: CitySchema.exactOptional().openapi({
+                    description: 'The city for the address.',
+                  }),
+                  StateOrRegion: StateOrRegionSchema.exactOptional().openapi({
+                    description: 'The state for the address.',
+                  }),
+                  DistrictOrCounty: DistrictOrCountySchema.exactOptional().openapi({
+                    description: 'The district or county for the address.',
+                  }),
+                  PostalCode: PostalCodeSchema.exactOptional().openapi({
+                    description: 'The postal code for the address.',
+                  }),
+                  CountryCode: CountryCodeSchema.exactOptional().openapi({
+                    description: 'The ISO-3166 two-letter country code for the address.',
+                  }),
+                  Municipality: MunicipalitySchema.exactOptional().openapi({
+                    description: 'The municipality for the address.',
+                  }),
                 })
                 .openapi({ description: ' Information about an address. ', required: [] }),
             })

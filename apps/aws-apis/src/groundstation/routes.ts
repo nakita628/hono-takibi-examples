@@ -7,339 +7,37 @@ const UuidSchema = z
   .max(128)
   .openapi('Uuid')
 
-const ContactIdResponseSchema = z
-  .object({
-    contactId: UuidSchema.and(
-      z.any().openapi({ description: 'UUID of a contact.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: '<p/>', required: [] })
-  .openapi('ContactIdResponse')
-
-const InvalidParameterExceptionSchema = z.any().openapi('InvalidParameterException')
-
-const DependencyExceptionSchema = z.any().openapi('DependencyException')
-
-const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundException')
-
-const ConfigArnSchema = z.string().openapi('ConfigArn')
+const ContactStatusSchema = z
+  .enum([
+    'AVAILABLE',
+    'AWS_CANCELLED',
+    'AWS_FAILED',
+    'CANCELLED',
+    'CANCELLING',
+    'COMPLETED',
+    'FAILED',
+    'FAILED_TO_SCHEDULE',
+    'PASS',
+    'POSTPASS',
+    'PREPASS',
+    'SCHEDULED',
+    'SCHEDULING',
+  ])
+  .openapi('ContactStatus')
 
 const StringSchema = z.string().openapi('String')
 
-const ConfigCapabilityTypeSchema = z
-  .enum([
-    'antenna-downlink',
-    'antenna-downlink-demod-decode',
-    'antenna-uplink',
-    'dataflow-endpoint',
-    'tracking',
-    'uplink-echo',
-    's3-recording',
-  ])
-  .openapi('ConfigCapabilityType')
-
-const ConfigIdResponseSchema = z
+const AntennaDemodDecodeDetailsSchema = z
   .object({
-    configArn: ConfigArnSchema.and(
-      z.any().openapi({ description: 'ARN of a <code>Config</code>.' }),
-    ).exactOptional(),
-    configId: StringSchema.and(
-      z.any().openapi({ description: 'UUID of a <code>Config</code>.' }),
-    ).exactOptional(),
-    configType: ConfigCapabilityTypeSchema.and(
-      z.any().openapi({ description: 'Type of a <code>Config</code>.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: '<p/>', required: [] })
-  .openapi('ConfigIdResponse')
-
-const BandwidthUnitsSchema = z.enum(['GHz', 'MHz', 'kHz']).openapi('BandwidthUnits')
-
-const DoubleSchema = z.float64().openapi('Double')
-
-const FrequencyBandwidthSchema = z
-  .object({
-    units: BandwidthUnitsSchema.and(z.any().openapi({ description: 'Frequency bandwidth units.' })),
-    value: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Frequency bandwidth value. AWS Ground Station currently has the following bandwidth limitations:</p> <ul> <li> <p>For <code>AntennaDownlinkDemodDecodeconfig</code>, valid values are between 125 kHz to 650 MHz.</p> </li> <li> <p>For <code>AntennaDownlinkconfig</code>, valid values are between 10 kHz to 54 MHz.</p> </li> <li> <p>For <code>AntennaUplinkConfig</code>, valid values are between 10 kHz to 54 MHz.</p> </li> </ul>',
-        }),
-    ),
+    outputNode: StringSchema.exactOptional().openapi({
+      description: 'Name of an antenna demod decode output node used in a contact.',
+    }),
   })
   .openapi({
-    required: ['units', 'value'],
-    description: 'Object that describes the frequency bandwidth. ',
+    description: 'Details about an antenna demod decode <code>Config</code> used in a contact.',
+    required: [],
   })
-  .openapi('FrequencyBandwidth')
-
-const FrequencyUnitsSchema = z.enum(['GHz', 'MHz', 'kHz']).openapi('FrequencyUnits')
-
-const FrequencySchema = z
-  .object({
-    units: FrequencyUnitsSchema.and(z.any().openapi({ description: 'Frequency units.' })),
-    value: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Frequency value. Valid values are between 2200 to 2300 MHz and 7750 to 8400 MHz for downlink and 2025 to 2120 MHz for uplink.',
-        }),
-    ),
-  })
-  .openapi({ required: ['units', 'value'], description: 'Object that describes the frequency.' })
-  .openapi('Frequency')
-
-const PolarizationSchema = z.enum(['LEFT_HAND', 'NONE', 'RIGHT_HAND']).openapi('Polarization')
-
-const SpectrumConfigSchema = z
-  .object({
-    bandwidth: FrequencyBandwidthSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Bandwidth of a spectral <code>Config</code>. AWS Ground Station currently has the following bandwidth limitations:</p> <ul> <li> <p>For <code>AntennaDownlinkDemodDecodeconfig</code>, valid values are between 125 kHz to 650 MHz.</p> </li> <li> <p>For <code>AntennaDownlinkconfig</code> valid values are between 10 kHz to 54 MHz.</p> </li> <li> <p>For <code>AntennaUplinkConfig</code>, valid values are between 10 kHz to 54 MHz.</p> </li> </ul>',
-        }),
-    ),
-    centerFrequency: FrequencySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Center frequency of a spectral <code>Config</code>. Valid values are between 2200 to 2300 MHz and 7750 to 8400 MHz for downlink and 2025 to 2120 MHz for uplink.',
-        }),
-    ),
-    polarization: PolarizationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Polarization of a spectral <code>Config</code>. Capturing both <code>"RIGHT_HAND"</code> and <code>"LEFT_HAND"</code> polarization requires two separate configs.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['bandwidth', 'centerFrequency'],
-    description: 'Object that describes a spectral <code>Config</code>.',
-  })
-  .openapi('SpectrumConfig')
-
-const AntennaDownlinkConfigSchema = z
-  .object({
-    spectrumConfig: SpectrumConfigSchema.and(
-      z.any().openapi({ description: 'Object that describes a spectral <code>Config</code>.' }),
-    ),
-  })
-  .openapi({
-    required: ['spectrumConfig'],
-    description:
-      'Information about how AWS Ground Station should configure an antenna for downlink during a contact.',
-  })
-  .openapi('AntennaDownlinkConfig')
-
-const JsonStringSchema = z
-  .string()
-  .regex(/^[{}\[\]:.,"0-9A-z\-_\s]{2,8192}$/)
-  .min(2)
-  .max(8192)
-  .openapi('JsonString')
-
-const DecodeConfigSchema = z
-  .object({
-    unvalidatedJSON: JsonStringSchema.and(
-      z.any().openapi({ description: 'Unvalidated JSON of a decode <code>Config</code>.' }),
-    ),
-  })
-  .openapi({
-    required: ['unvalidatedJSON'],
-    description: 'Information about the decode <code>Config</code>.',
-  })
-  .openapi('DecodeConfig')
-
-const DemodulationConfigSchema = z
-  .object({
-    unvalidatedJSON: JsonStringSchema.and(
-      z.any().openapi({ description: 'Unvalidated JSON of a demodulation <code>Config</code>.' }),
-    ),
-  })
-  .openapi({
-    required: ['unvalidatedJSON'],
-    description: 'Information about the demodulation <code>Config</code>.',
-  })
-  .openapi('DemodulationConfig')
-
-const AntennaDownlinkDemodDecodeConfigSchema = z
-  .object({
-    decodeConfig: DecodeConfigSchema.and(
-      z.any().openapi({ description: 'Information about the decode <code>Config</code>.' }),
-    ),
-    demodulationConfig: DemodulationConfigSchema.and(
-      z.any().openapi({ description: 'Information about the demodulation <code>Config</code>.' }),
-    ),
-    spectrumConfig: SpectrumConfigSchema.and(
-      z.any().openapi({ description: 'Information about the spectral <code>Config</code>.' }),
-    ),
-  })
-  .openapi({
-    required: ['decodeConfig', 'demodulationConfig', 'spectrumConfig'],
-    description:
-      'Information about how AWS Ground Station should conﬁgure an antenna for downlink demod decode during a contact.',
-  })
-  .openapi('AntennaDownlinkDemodDecodeConfig')
-
-const UplinkSpectrumConfigSchema = z
-  .object({
-    centerFrequency: FrequencySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Center frequency of an uplink spectral <code>Config</code>. Valid values are between 2025 to 2120 MHz.',
-        }),
-    ),
-    polarization: PolarizationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Polarization of an uplink spectral <code>Config</code>. Capturing both <code>"RIGHT_HAND"</code> and <code>"LEFT_HAND"</code> polarization requires two separate configs.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['centerFrequency'],
-    description: 'Information about the uplink spectral <code>Config</code>.',
-  })
-  .openapi('UplinkSpectrumConfig')
-
-const EirpUnitsSchema = z.literal('dBW').openapi('EirpUnits')
-
-const EirpSchema = z
-  .object({
-    units: EirpUnitsSchema.and(z.any().openapi({ description: 'Units of an EIRP.' })),
-    value: DoubleSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Value of an EIRP. Valid values are between 20.0 to 50.0 dBW.' }),
-    ),
-  })
-  .openapi({ required: ['units', 'value'], description: 'Object that represents EIRP.' })
-  .openapi('Eirp')
-
-const BooleanSchema = z.boolean().openapi('Boolean')
-
-const AntennaUplinkConfigSchema = z
-  .object({
-    spectrumConfig: UplinkSpectrumConfigSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Information about the uplink spectral <code>Config</code>.' }),
-    ),
-    targetEirp: EirpSchema.and(z.any().openapi({ description: 'EIRP of the target.' })),
-    transmitDisabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether or not uplink transmit is disabled.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['spectrumConfig', 'targetEirp'],
-    description: 'Information about the uplink <code>Config</code> of an antenna.',
-  })
-  .openapi('AntennaUplinkConfig')
-
-const DataflowEndpointConfigSchema = z
-  .object({
-    dataflowEndpointName: StringSchema.and(
-      z.any().openapi({ description: 'Name of a dataflow endpoint.' }),
-    ),
-    dataflowEndpointRegion: StringSchema.and(
-      z.any().openapi({ description: 'Region of a dataflow endpoint.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['dataflowEndpointName'],
-    description: 'Information about the dataflow endpoint <code>Config</code>.',
-  })
-  .openapi('DataflowEndpointConfig')
-
-const BucketArnSchema = z.string().openapi('BucketArn')
-
-const S3KeyPrefixSchema = z
-  .string()
-  .regex(
-    /^([a-zA-Z0-9_\-=\/]|\{satellite_id\}|\{config\-name}|\{s3\-config-id}|\{year\}|\{month\}|\{day\}){1,900}$/,
-  )
-  .min(1)
-  .max(900)
-  .openapi('S3KeyPrefix')
-
-const RoleArnSchema = z.string().openapi('RoleArn')
-
-const S3RecordingConfigSchema = z
-  .object({
-    bucketArn: BucketArnSchema.and(
-      z.any().openapi({ description: 'ARN of the bucket to record to.' }),
-    ),
-    prefix: S3KeyPrefixSchema.and(
-      z.any().openapi({ description: 'S3 Key prefix to prefice data files.' }),
-    ).exactOptional(),
-    roleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'ARN of the role Ground Station assumes to write data to the bucket.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['bucketArn', 'roleArn'],
-    description: 'Information about an S3 recording <code>Config</code>.',
-  })
-  .openapi('S3RecordingConfig')
-
-const CriticalitySchema = z.enum(['PREFERRED', 'REMOVED', 'REQUIRED']).openapi('Criticality')
-
-const TrackingConfigSchema = z
-  .object({
-    autotrack: CriticalitySchema.and(
-      z.any().openapi({ description: 'Current setting for autotrack.' }),
-    ),
-  })
-  .openapi({
-    required: ['autotrack'],
-    description:
-      'Object that determines whether tracking should be used during a contact executed with this <code>Config</code> in the mission profile.',
-  })
-  .openapi('TrackingConfig')
-
-const UplinkEchoConfigSchema = z
-  .object({
-    antennaUplinkConfigArn: ConfigArnSchema.and(
-      z.any().openapi({ description: 'ARN of an uplink <code>Config</code>.' }),
-    ),
-    enabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether or not an uplink <code>Config</code> is enabled.' }),
-    ),
-  })
-  .openapi({
-    required: ['antennaUplinkConfigArn', 'enabled'],
-    description:
-      '<p>Information about an uplink echo <code>Config</code>.</p> <p>Parameters from the <code>AntennaUplinkConfig</code>, corresponding to the specified <code>AntennaUplinkConfigArn</code>, are used when this <code>UplinkEchoConfig</code> is used in a contact.</p>',
-  })
-  .openapi('UplinkEchoConfig')
-
-const ResourceLimitExceededExceptionSchema = z.any().openapi('ResourceLimitExceededException')
-
-const DataflowEndpointGroupIdResponseSchema = z
-  .object({
-    dataflowEndpointGroupId: UuidSchema.and(
-      z.any().openapi({ description: 'UUID of a dataflow endpoint group.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: '<p/>', required: [] })
-  .openapi('DataflowEndpointGroupIdResponse')
+  .openapi('AntennaDemodDecodeDetails')
 
 const AgentStatusSchema = z.enum(['SUCCESS', 'FAILED', 'ACTIVE', 'INACTIVE']).openapi('AgentStatus')
 
@@ -349,22 +47,18 @@ const IntegerSchema = z.int().openapi('Integer')
 
 const SocketAddressSchema = z
   .object({
-    name: StringSchema.and(z.any().openapi({ description: 'Name of a socket address.' })),
-    port: IntegerSchema.and(z.any().openapi({ description: 'Port of a socket address.' })),
+    name: StringSchema.openapi({ description: 'Name of a socket address.' }),
+    port: IntegerSchema.openapi({ description: 'Port of a socket address.' }),
   })
   .openapi({ required: ['name', 'port'], description: 'Information about the socket address.' })
   .openapi('SocketAddress')
 
 const ConnectionDetailsSchema = z
   .object({
-    mtu: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Maximum transmission unit (MTU) size in bytes of a dataflow endpoint.',
-        }),
-    ).exactOptional(),
-    socketAddress: SocketAddressSchema.and(z.any().openapi({ description: 'A socket address.' })),
+    mtu: IntegerSchema.exactOptional().openapi({
+      description: 'Maximum transmission unit (MTU) size in bytes of a dataflow endpoint.',
+    }),
+    socketAddress: SocketAddressSchema.openapi({ description: 'A socket address.' }),
   })
   .openapi({
     required: ['socketAddress'],
@@ -387,8 +81,8 @@ const IpV4AddressSchema = z
 
 const IntegerRangeSchema = z
   .object({
-    maximum: IntegerSchema.and(z.any().openapi({ description: 'A maximum value.' })),
-    minimum: IntegerSchema.and(z.any().openapi({ description: 'A minimum value.' })),
+    maximum: IntegerSchema.openapi({ description: 'A maximum value.' }),
+    minimum: IntegerSchema.openapi({ description: 'A minimum value.' }),
   })
   .openapi({
     required: ['maximum', 'minimum'],
@@ -398,26 +92,18 @@ const IntegerRangeSchema = z
 
 const RangedSocketAddressSchema = z
   .object({
-    name: IpV4AddressSchema.and(z.any().openapi({ description: 'IPv4 socket address.' })),
-    portRange: IntegerRangeSchema.and(
-      z.any().openapi({ description: 'Port range of a socket address.' }),
-    ),
+    name: IpV4AddressSchema.openapi({ description: 'IPv4 socket address.' }),
+    portRange: IntegerRangeSchema.openapi({ description: 'Port range of a socket address.' }),
   })
   .openapi({ required: ['name', 'portRange'], description: 'A socket address with a port range.' })
   .openapi('RangedSocketAddress')
 
 const RangedConnectionDetailsSchema = z
   .object({
-    mtu: RangedConnectionDetailsMtuIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Maximum transmission unit (MTU) size in bytes of a dataflow endpoint.',
-        }),
-    ).exactOptional(),
-    socketAddress: RangedSocketAddressSchema.and(
-      z.any().openapi({ description: 'A ranged socket address.' }),
-    ),
+    mtu: RangedConnectionDetailsMtuIntegerSchema.exactOptional().openapi({
+      description: 'Maximum transmission unit (MTU) size in bytes of a dataflow endpoint.',
+    }),
+    socketAddress: RangedSocketAddressSchema.openapi({ description: 'A ranged socket address.' }),
   })
   .openapi({
     required: ['socketAddress'],
@@ -434,26 +120,22 @@ const SafeNameSchema = z
 
 const AwsGroundStationAgentEndpointSchema = z
   .object({
-    agentStatus: AgentStatusSchema.and(
-      z.any().openapi({ description: 'The status of AgentEndpoint.' }),
-    ).exactOptional(),
-    auditResults: AuditResultsSchema.and(
-      z.any().openapi({ description: 'The results of the audit.' }),
-    ).exactOptional(),
-    egressAddress: ConnectionDetailsSchema.and(
-      z.any().openapi({ description: 'The egress address of AgentEndpoint.' }),
-    ),
-    ingressAddress: RangedConnectionDetailsSchema.and(
-      z.any().openapi({ description: 'The ingress address of AgentEndpoint.' }),
-    ),
-    name: SafeNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Name string associated with AgentEndpoint. Used as a human-readable identifier for AgentEndpoint.',
-        }),
-    ),
+    agentStatus: AgentStatusSchema.exactOptional().openapi({
+      description: 'The status of AgentEndpoint.',
+    }),
+    auditResults: AuditResultsSchema.exactOptional().openapi({
+      description: 'The results of the audit.',
+    }),
+    egressAddress: ConnectionDetailsSchema.openapi({
+      description: 'The egress address of AgentEndpoint.',
+    }),
+    ingressAddress: RangedConnectionDetailsSchema.openapi({
+      description: 'The ingress address of AgentEndpoint.',
+    }),
+    name: SafeNameSchema.openapi({
+      description:
+        'Name string associated with AgentEndpoint. Used as a human-readable identifier for AgentEndpoint.',
+    }),
   })
   .openapi({
     required: ['egressAddress', 'ingressAddress', 'name'],
@@ -473,22 +155,16 @@ const EndpointStatusSchema = z
 
 const DataflowEndpointSchema = z
   .object({
-    address: SocketAddressSchema.and(
-      z.any().openapi({ description: 'Socket address of a dataflow endpoint.' }),
-    ).exactOptional(),
-    mtu: DataflowEndpointMtuIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Maximum transmission unit (MTU) size in bytes of a dataflow endpoint.',
-        }),
-    ).exactOptional(),
-    name: SafeNameSchema.and(
-      z.any().openapi({ description: 'Name of a dataflow endpoint.' }),
-    ).exactOptional(),
-    status: EndpointStatusSchema.and(
-      z.any().openapi({ description: 'Status of a dataflow endpoint.' }),
-    ).exactOptional(),
+    address: SocketAddressSchema.exactOptional().openapi({
+      description: 'Socket address of a dataflow endpoint.',
+    }),
+    mtu: DataflowEndpointMtuIntegerSchema.exactOptional().openapi({
+      description: 'Maximum transmission unit (MTU) size in bytes of a dataflow endpoint.',
+    }),
+    name: SafeNameSchema.exactOptional().openapi({ description: 'Name of a dataflow endpoint.' }),
+    status: EndpointStatusSchema.exactOptional().openapi({
+      description: 'Status of a dataflow endpoint.',
+    }),
   })
   .openapi({ description: 'Information about a dataflow endpoint.', required: [] })
   .openapi('DataflowEndpoint')
@@ -513,34 +189,24 @@ const CapabilityHealthReasonListSchema = z
 
 const CapabilityHealthSchema = z.enum(['UNHEALTHY', 'HEALTHY']).openapi('CapabilityHealth')
 
+const RoleArnSchema = z.string().openapi('RoleArn')
+
 const SecurityGroupIdListSchema = z.array(StringSchema).openapi('SecurityGroupIdList')
 
 const SubnetListSchema = z.array(StringSchema).openapi('SubnetList')
 
 const SecurityDetailsSchema = z
   .object({
-    roleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'ARN to a role needed for connecting streams to your instances. ',
-        }),
-    ),
-    securityGroupIds: SecurityGroupIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The security groups to attach to the elastic network interfaces.',
-        }),
-    ),
-    subnetIds: SubnetListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of subnets where AWS Ground Station places elastic network interfaces to send streams to your instances.',
-        }),
-    ),
+    roleArn: RoleArnSchema.openapi({
+      description: 'ARN to a role needed for connecting streams to your instances. ',
+    }),
+    securityGroupIds: SecurityGroupIdListSchema.openapi({
+      description: 'The security groups to attach to the elastic network interfaces.',
+    }),
+    subnetIds: SubnetListSchema.openapi({
+      description:
+        'A list of subnets where AWS Ground Station places elastic network interfaces to send streams to your instances.',
+    }),
   })
   .openapi({
     required: ['roleArn', 'securityGroupIds', 'subnetIds'],
@@ -550,45 +216,443 @@ const SecurityDetailsSchema = z
 
 const EndpointDetailsSchema = z
   .object({
-    awsGroundStationAgentEndpoint: AwsGroundStationAgentEndpointSchema.and(
-      z.any().openapi({ description: 'An agent endpoint.' }),
-    ).exactOptional(),
-    endpoint: DataflowEndpointSchema.and(
-      z.any().openapi({ description: 'A dataflow endpoint.' }),
-    ).exactOptional(),
-    healthReasons: CapabilityHealthReasonListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Health reasons for a dataflow endpoint. This field is ignored when calling <code>CreateDataflowEndpointGroup</code>.',
-        }),
-    ).exactOptional(),
-    healthStatus: CapabilityHealthSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A dataflow endpoint health status. This field is ignored when calling <code>CreateDataflowEndpointGroup</code>.',
-        }),
-    ).exactOptional(),
-    securityDetails: SecurityDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Endpoint security details including a list of subnets, a list of security groups and a role to connect streams to instances.',
-        }),
-    ).exactOptional(),
+    awsGroundStationAgentEndpoint: AwsGroundStationAgentEndpointSchema.exactOptional().openapi({
+      description: 'An agent endpoint.',
+    }),
+    endpoint: DataflowEndpointSchema.exactOptional().openapi({
+      description: 'A dataflow endpoint.',
+    }),
+    healthReasons: CapabilityHealthReasonListSchema.exactOptional().openapi({
+      description:
+        'Health reasons for a dataflow endpoint. This field is ignored when calling <code>CreateDataflowEndpointGroup</code>.',
+    }),
+    healthStatus: CapabilityHealthSchema.exactOptional().openapi({
+      description:
+        'A dataflow endpoint health status. This field is ignored when calling <code>CreateDataflowEndpointGroup</code>.',
+    }),
+    securityDetails: SecurityDetailsSchema.exactOptional().openapi({
+      description:
+        'Endpoint security details including a list of subnets, a list of security groups and a role to connect streams to instances.',
+    }),
   })
   .openapi({ description: 'Information about the endpoint details.', required: [] })
   .openapi('EndpointDetails')
 
+const BucketArnSchema = z.string().openapi('BucketArn')
+
+const S3RecordingDetailsSchema = z
+  .object({
+    bucketArn: BucketArnSchema.exactOptional().openapi({ description: 'ARN of the bucket used.' }),
+    keyTemplate: StringSchema.exactOptional().openapi({
+      description: 'Key template used for the S3 Recording Configuration',
+    }),
+  })
+  .openapi({
+    description: 'Details about an S3 recording <code>Config</code> used in a contact.',
+    required: [],
+  })
+  .openapi('S3RecordingDetails')
+
+const ConfigDetailsSchema = z
+  .object({
+    antennaDemodDecodeDetails: AntennaDemodDecodeDetailsSchema.exactOptional().openapi({
+      description: 'Details for antenna demod decode <code>Config</code> in a contact.',
+    }),
+    endpointDetails: EndpointDetailsSchema.exactOptional(),
+    s3RecordingDetails: S3RecordingDetailsSchema.exactOptional().openapi({
+      description: 'Details for an S3 recording <code>Config</code> in a contact.',
+    }),
+  })
+  .openapi({
+    description: 'Details for certain <code>Config</code> object types in a contact.',
+    required: [],
+  })
+  .openapi('ConfigDetails')
+
+const ConfigCapabilityTypeSchema = z
+  .enum([
+    'antenna-downlink',
+    'antenna-downlink-demod-decode',
+    'antenna-uplink',
+    'dataflow-endpoint',
+    'tracking',
+    'uplink-echo',
+    's3-recording',
+  ])
+  .openapi('ConfigCapabilityType')
+
+const DestinationSchema = z
+  .object({
+    configDetails: ConfigDetailsSchema.exactOptional().openapi({
+      description:
+        'Additional details for a <code>Config</code>, if type is dataflow endpoint or antenna demod decode.',
+    }),
+    configId: UuidSchema.exactOptional().openapi({ description: 'UUID of a <code>Config</code>.' }),
+    configType: ConfigCapabilityTypeSchema.exactOptional().openapi({
+      description: 'Type of a <code>Config</code>.',
+    }),
+    dataflowDestinationRegion: StringSchema.exactOptional().openapi({
+      description: 'Region of a dataflow destination.',
+    }),
+  })
+  .openapi({ description: 'Dataflow details for the destination side.', required: [] })
+  .openapi('Destination')
+
+const SourceSchema = z
+  .object({
+    configDetails: ConfigDetailsSchema.exactOptional().openapi({
+      description:
+        'Additional details for a <code>Config</code>, if type is <code>dataflow-endpoint</code> or <code>antenna-downlink-demod-decode</code> ',
+    }),
+    configId: StringSchema.exactOptional().openapi({
+      description: 'UUID of a <code>Config</code>.',
+    }),
+    configType: ConfigCapabilityTypeSchema.exactOptional().openapi({
+      description: 'Type of a <code>Config</code>.',
+    }),
+    dataflowSourceRegion: StringSchema.exactOptional().openapi({
+      description: 'Region of a dataflow source.',
+    }),
+  })
+  .openapi({ description: 'Dataflow details for the source side.', required: [] })
+  .openapi('Source')
+
+type DataflowDetailType = {
+  destination?: z.infer<typeof DestinationSchema>
+  errorMessage?: z.infer<typeof StringSchema> & unknown
+  source?: z.infer<typeof SourceSchema>
+}
+
+const DataflowDetailSchema: z.ZodType<DataflowDetailType> = z
+  .object({
+    destination: DestinationSchema.exactOptional(),
+    errorMessage: StringSchema.exactOptional().openapi({
+      description: 'Error message for a dataflow.',
+    }),
+    source: SourceSchema.exactOptional(),
+  })
+  .openapi({ description: 'Information about a dataflow edge used in a contact.', required: [] })
+  .openapi('DataflowDetail')
+
+type DataflowListType = z.infer<typeof DataflowDetailSchema>[]
+
+const DataflowListSchema: z.ZodType<DataflowListType> = z
+  .array(DataflowDetailSchema)
+  .openapi('DataflowList')
+
+const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
+
+const AngleUnitsSchema = z.enum(['DEGREE_ANGLE', 'RADIAN']).openapi('AngleUnits')
+
+const DoubleSchema = z.float64().openapi('Double')
+
+const ElevationSchema = z
+  .object({
+    unit: AngleUnitsSchema.openapi({ description: 'Elevation angle units.' }),
+    value: DoubleSchema.openapi({ description: 'Elevation angle value.' }),
+  })
+  .openapi({
+    required: ['unit', 'value'],
+    description: 'Elevation angle of the satellite in the sky during a contact.',
+  })
+  .openapi('Elevation')
+
+const MissionProfileArnSchema = z.string().openapi('MissionProfileArn')
+
+const SatelliteArnSchema = z.string().openapi('SatelliteArn')
+
+const TagsMapSchema = z.record(z.string(), StringSchema).openapi('TagsMap')
+
+type DescribeContactResponseType = {
+  contactId?: z.infer<typeof UuidSchema> & unknown
+  contactStatus?: z.infer<typeof ContactStatusSchema> & unknown
+  dataflowList?: z.infer<typeof DataflowListSchema> & unknown
+  endTime?: z.infer<typeof TimestampSchema> & unknown
+  errorMessage?: z.infer<typeof StringSchema> & unknown
+  groundStation?: z.infer<typeof StringSchema> & unknown
+  maximumElevation?: z.infer<typeof ElevationSchema> & unknown
+  missionProfileArn?: z.infer<typeof MissionProfileArnSchema> & unknown
+  postPassEndTime?: z.infer<typeof TimestampSchema> & unknown
+  prePassStartTime?: z.infer<typeof TimestampSchema> & unknown
+  region?: z.infer<typeof StringSchema> & unknown
+  satelliteArn?: z.infer<typeof SatelliteArnSchema> & unknown
+  startTime?: z.infer<typeof TimestampSchema> & unknown
+  tags?: z.infer<typeof TagsMapSchema> & unknown
+}
+
+const ContactIdResponseSchema = z
+  .object({ contactId: UuidSchema.exactOptional().openapi({ description: 'UUID of a contact.' }) })
+  .openapi({ description: '<p/>', required: [] })
+  .openapi('ContactIdResponse')
+
+const InvalidParameterExceptionSchema = z.any().openapi('InvalidParameterException')
+
+const DependencyExceptionSchema = z.any().openapi('DependencyException')
+
+const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundException')
+
+const ConfigArnSchema = z.string().openapi('ConfigArn')
+
+const ConfigIdResponseSchema = z
+  .object({
+    configArn: ConfigArnSchema.exactOptional().openapi({
+      description: 'ARN of a <code>Config</code>.',
+    }),
+    configId: StringSchema.exactOptional().openapi({
+      description: 'UUID of a <code>Config</code>.',
+    }),
+    configType: ConfigCapabilityTypeSchema.exactOptional().openapi({
+      description: 'Type of a <code>Config</code>.',
+    }),
+  })
+  .openapi({ description: '<p/>', required: [] })
+  .openapi('ConfigIdResponse')
+
+const BandwidthUnitsSchema = z.enum(['GHz', 'MHz', 'kHz']).openapi('BandwidthUnits')
+
+const FrequencyBandwidthSchema = z
+  .object({
+    units: BandwidthUnitsSchema.openapi({ description: 'Frequency bandwidth units.' }),
+    value: DoubleSchema.openapi({
+      description:
+        '<p>Frequency bandwidth value. AWS Ground Station currently has the following bandwidth limitations:</p> <ul> <li> <p>For <code>AntennaDownlinkDemodDecodeconfig</code>, valid values are between 125 kHz to 650 MHz.</p> </li> <li> <p>For <code>AntennaDownlinkconfig</code>, valid values are between 10 kHz to 54 MHz.</p> </li> <li> <p>For <code>AntennaUplinkConfig</code>, valid values are between 10 kHz to 54 MHz.</p> </li> </ul>',
+    }),
+  })
+  .openapi({
+    required: ['units', 'value'],
+    description: 'Object that describes the frequency bandwidth. ',
+  })
+  .openapi('FrequencyBandwidth')
+
+const FrequencyUnitsSchema = z.enum(['GHz', 'MHz', 'kHz']).openapi('FrequencyUnits')
+
+const FrequencySchema = z
+  .object({
+    units: FrequencyUnitsSchema.openapi({ description: 'Frequency units.' }),
+    value: DoubleSchema.openapi({
+      description:
+        'Frequency value. Valid values are between 2200 to 2300 MHz and 7750 to 8400 MHz for downlink and 2025 to 2120 MHz for uplink.',
+    }),
+  })
+  .openapi({ required: ['units', 'value'], description: 'Object that describes the frequency.' })
+  .openapi('Frequency')
+
+const PolarizationSchema = z.enum(['LEFT_HAND', 'NONE', 'RIGHT_HAND']).openapi('Polarization')
+
+const SpectrumConfigSchema = z
+  .object({
+    bandwidth: FrequencyBandwidthSchema.openapi({
+      description:
+        '<p>Bandwidth of a spectral <code>Config</code>. AWS Ground Station currently has the following bandwidth limitations:</p> <ul> <li> <p>For <code>AntennaDownlinkDemodDecodeconfig</code>, valid values are between 125 kHz to 650 MHz.</p> </li> <li> <p>For <code>AntennaDownlinkconfig</code> valid values are between 10 kHz to 54 MHz.</p> </li> <li> <p>For <code>AntennaUplinkConfig</code>, valid values are between 10 kHz to 54 MHz.</p> </li> </ul>',
+    }),
+    centerFrequency: FrequencySchema.openapi({
+      description:
+        'Center frequency of a spectral <code>Config</code>. Valid values are between 2200 to 2300 MHz and 7750 to 8400 MHz for downlink and 2025 to 2120 MHz for uplink.',
+    }),
+    polarization: PolarizationSchema.exactOptional().openapi({
+      description:
+        'Polarization of a spectral <code>Config</code>. Capturing both <code>"RIGHT_HAND"</code> and <code>"LEFT_HAND"</code> polarization requires two separate configs.',
+    }),
+  })
+  .openapi({
+    required: ['bandwidth', 'centerFrequency'],
+    description: 'Object that describes a spectral <code>Config</code>.',
+  })
+  .openapi('SpectrumConfig')
+
+const AntennaDownlinkConfigSchema = z
+  .object({
+    spectrumConfig: SpectrumConfigSchema.openapi({
+      description: 'Object that describes a spectral <code>Config</code>.',
+    }),
+  })
+  .openapi({
+    required: ['spectrumConfig'],
+    description:
+      'Information about how AWS Ground Station should configure an antenna for downlink during a contact.',
+  })
+  .openapi('AntennaDownlinkConfig')
+
+const JsonStringSchema = z
+  .string()
+  .regex(/^[{}\[\]:.,"0-9A-z\-_\s]{2,8192}$/)
+  .min(2)
+  .max(8192)
+  .openapi('JsonString')
+
+const DecodeConfigSchema = z
+  .object({
+    unvalidatedJSON: JsonStringSchema.openapi({
+      description: 'Unvalidated JSON of a decode <code>Config</code>.',
+    }),
+  })
+  .openapi({
+    required: ['unvalidatedJSON'],
+    description: 'Information about the decode <code>Config</code>.',
+  })
+  .openapi('DecodeConfig')
+
+const DemodulationConfigSchema = z
+  .object({
+    unvalidatedJSON: JsonStringSchema.openapi({
+      description: 'Unvalidated JSON of a demodulation <code>Config</code>.',
+    }),
+  })
+  .openapi({
+    required: ['unvalidatedJSON'],
+    description: 'Information about the demodulation <code>Config</code>.',
+  })
+  .openapi('DemodulationConfig')
+
+const AntennaDownlinkDemodDecodeConfigSchema = z
+  .object({
+    decodeConfig: DecodeConfigSchema.openapi({
+      description: 'Information about the decode <code>Config</code>.',
+    }),
+    demodulationConfig: DemodulationConfigSchema.openapi({
+      description: 'Information about the demodulation <code>Config</code>.',
+    }),
+    spectrumConfig: SpectrumConfigSchema.openapi({
+      description: 'Information about the spectral <code>Config</code>.',
+    }),
+  })
+  .openapi({
+    required: ['decodeConfig', 'demodulationConfig', 'spectrumConfig'],
+    description:
+      'Information about how AWS Ground Station should conﬁgure an antenna for downlink demod decode during a contact.',
+  })
+  .openapi('AntennaDownlinkDemodDecodeConfig')
+
+const UplinkSpectrumConfigSchema = z
+  .object({
+    centerFrequency: FrequencySchema.openapi({
+      description:
+        'Center frequency of an uplink spectral <code>Config</code>. Valid values are between 2025 to 2120 MHz.',
+    }),
+    polarization: PolarizationSchema.exactOptional().openapi({
+      description:
+        'Polarization of an uplink spectral <code>Config</code>. Capturing both <code>"RIGHT_HAND"</code> and <code>"LEFT_HAND"</code> polarization requires two separate configs.',
+    }),
+  })
+  .openapi({
+    required: ['centerFrequency'],
+    description: 'Information about the uplink spectral <code>Config</code>.',
+  })
+  .openapi('UplinkSpectrumConfig')
+
+const EirpUnitsSchema = z.literal('dBW').openapi('EirpUnits')
+
+const EirpSchema = z
+  .object({
+    units: EirpUnitsSchema.openapi({ description: 'Units of an EIRP.' }),
+    value: DoubleSchema.openapi({
+      description: 'Value of an EIRP. Valid values are between 20.0 to 50.0 dBW.',
+    }),
+  })
+  .openapi({ required: ['units', 'value'], description: 'Object that represents EIRP.' })
+  .openapi('Eirp')
+
+const BooleanSchema = z.boolean().openapi('Boolean')
+
+const AntennaUplinkConfigSchema = z
+  .object({
+    spectrumConfig: UplinkSpectrumConfigSchema.openapi({
+      description: 'Information about the uplink spectral <code>Config</code>.',
+    }),
+    targetEirp: EirpSchema.openapi({ description: 'EIRP of the target.' }),
+    transmitDisabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether or not uplink transmit is disabled.',
+    }),
+  })
+  .openapi({
+    required: ['spectrumConfig', 'targetEirp'],
+    description: 'Information about the uplink <code>Config</code> of an antenna.',
+  })
+  .openapi('AntennaUplinkConfig')
+
+const DataflowEndpointConfigSchema = z
+  .object({
+    dataflowEndpointName: StringSchema.openapi({ description: 'Name of a dataflow endpoint.' }),
+    dataflowEndpointRegion: StringSchema.exactOptional().openapi({
+      description: 'Region of a dataflow endpoint.',
+    }),
+  })
+  .openapi({
+    required: ['dataflowEndpointName'],
+    description: 'Information about the dataflow endpoint <code>Config</code>.',
+  })
+  .openapi('DataflowEndpointConfig')
+
+const S3KeyPrefixSchema = z
+  .string()
+  .regex(
+    /^([a-zA-Z0-9_\-=\/]|\{satellite_id\}|\{config\-name}|\{s3\-config-id}|\{year\}|\{month\}|\{day\}){1,900}$/,
+  )
+  .min(1)
+  .max(900)
+  .openapi('S3KeyPrefix')
+
+const S3RecordingConfigSchema = z
+  .object({
+    bucketArn: BucketArnSchema.openapi({ description: 'ARN of the bucket to record to.' }),
+    prefix: S3KeyPrefixSchema.exactOptional().openapi({
+      description: 'S3 Key prefix to prefice data files.',
+    }),
+    roleArn: RoleArnSchema.openapi({
+      description: 'ARN of the role Ground Station assumes to write data to the bucket.',
+    }),
+  })
+  .openapi({
+    required: ['bucketArn', 'roleArn'],
+    description: 'Information about an S3 recording <code>Config</code>.',
+  })
+  .openapi('S3RecordingConfig')
+
+const CriticalitySchema = z.enum(['PREFERRED', 'REMOVED', 'REQUIRED']).openapi('Criticality')
+
+const TrackingConfigSchema = z
+  .object({
+    autotrack: CriticalitySchema.openapi({ description: 'Current setting for autotrack.' }),
+  })
+  .openapi({
+    required: ['autotrack'],
+    description:
+      'Object that determines whether tracking should be used during a contact executed with this <code>Config</code> in the mission profile.',
+  })
+  .openapi('TrackingConfig')
+
+const UplinkEchoConfigSchema = z
+  .object({
+    antennaUplinkConfigArn: ConfigArnSchema.openapi({
+      description: 'ARN of an uplink <code>Config</code>.',
+    }),
+    enabled: BooleanSchema.openapi({
+      description: 'Whether or not an uplink <code>Config</code> is enabled.',
+    }),
+  })
+  .openapi({
+    required: ['antennaUplinkConfigArn', 'enabled'],
+    description:
+      '<p>Information about an uplink echo <code>Config</code>.</p> <p>Parameters from the <code>AntennaUplinkConfig</code>, corresponding to the specified <code>AntennaUplinkConfigArn</code>, are used when this <code>UplinkEchoConfig</code> is used in a contact.</p>',
+  })
+  .openapi('UplinkEchoConfig')
+
+const ResourceLimitExceededExceptionSchema = z.any().openapi('ResourceLimitExceededException')
+
+const DataflowEndpointGroupIdResponseSchema = z
+  .object({
+    dataflowEndpointGroupId: UuidSchema.exactOptional().openapi({
+      description: 'UUID of a dataflow endpoint group.',
+    }),
+  })
+  .openapi({ description: '<p/>', required: [] })
+  .openapi('DataflowEndpointGroupIdResponse')
+
 const EphemerisIdResponseSchema = z
   .object({
-    ephemerisId: UuidSchema.and(
-      z.any().openapi({ description: 'The AWS Ground Station ephemeris ID.' }),
-    ).exactOptional(),
+    ephemerisId: UuidSchema.exactOptional().openapi({
+      description: 'The AWS Ground Station ephemeris ID.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('EphemerisIdResponse')
@@ -622,36 +686,28 @@ const S3VersionIdSchema = z
 
 const S3ObjectSchema = z
   .object({
-    bucket: S3BucketNameSchema.and(
-      z.any().openapi({ description: 'An Amazon S3 Bucket name.' }),
-    ).exactOptional(),
-    key: S3ObjectKeySchema.and(
-      z.any().openapi({ description: 'An Amazon S3 key for the ephemeris.' }),
-    ).exactOptional(),
-    version: S3VersionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'For versioned S3 objects, the version to use for the ephemeris.',
-        }),
-    ).exactOptional(),
+    bucket: S3BucketNameSchema.exactOptional().openapi({
+      description: 'An Amazon S3 Bucket name.',
+    }),
+    key: S3ObjectKeySchema.exactOptional().openapi({
+      description: 'An Amazon S3 key for the ephemeris.',
+    }),
+    version: S3VersionIdSchema.exactOptional().openapi({
+      description: 'For versioned S3 objects, the version to use for the ephemeris.',
+    }),
   })
   .openapi({ description: 'Object stored in S3 containing ephemeris data.', required: [] })
   .openapi('S3Object')
 
 const OEMEphemerisSchema = z
   .object({
-    oemData: UnboundedStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The data for an OEM ephemeris, supplied directly in the request rather than through an S3 object.',
-        }),
-    ).exactOptional(),
-    s3Object: S3ObjectSchema.and(
-      z.any().openapi({ description: 'Identifies the S3 object to be used as the ephemeris.' }),
-    ).exactOptional(),
+    oemData: UnboundedStringSchema.exactOptional().openapi({
+      description:
+        'The data for an OEM ephemeris, supplied directly in the request rather than through an S3 object.',
+    }),
+    s3Object: S3ObjectSchema.exactOptional().openapi({
+      description: 'Identifies the S3 object to be used as the ephemeris.',
+    }),
   })
   .openapi({ description: 'Ephemeris data in Orbit Ephemeris Message (OEM) format.', required: [] })
   .openapi('OEMEphemeris')
@@ -672,16 +728,12 @@ const TleLineTwoSchema = z
   .length(69)
   .openapi('TleLineTwo')
 
-const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
-
 const TimeRangeSchema = z
   .object({
-    endTime: TimestampSchema.and(
-      z.any().openapi({ description: 'Time in UTC at which the time range ends.' }),
-    ),
-    startTime: TimestampSchema.and(
-      z.any().openapi({ description: 'Time in UTC at which the time range starts.' }),
-    ),
+    endTime: TimestampSchema.openapi({ description: 'Time in UTC at which the time range ends.' }),
+    startTime: TimestampSchema.openapi({
+      description: 'Time in UTC at which the time range starts.',
+    }),
   })
   .openapi({
     required: ['endTime', 'startTime'],
@@ -691,19 +743,15 @@ const TimeRangeSchema = z
 
 const TLEDataSchema = z
   .object({
-    tleLine1: TleLineOneSchema.and(
-      z.any().openapi({ description: 'First line of two-line element set (TLE) data.' }),
-    ),
-    tleLine2: TleLineTwoSchema.and(
-      z.any().openapi({ description: 'Second line of two-line element set (TLE) data.' }),
-    ),
-    validTimeRange: TimeRangeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The valid time range for the TLE. Gaps or overlap are not permitted.',
-        }),
-    ),
+    tleLine1: TleLineOneSchema.openapi({
+      description: 'First line of two-line element set (TLE) data.',
+    }),
+    tleLine2: TleLineTwoSchema.openapi({
+      description: 'Second line of two-line element set (TLE) data.',
+    }),
+    validTimeRange: TimeRangeSchema.openapi({
+      description: 'The valid time range for the TLE. Gaps or overlap are not permitted.',
+    }),
   })
   .openapi({
     required: ['tleLine1', 'tleLine2', 'validTimeRange'],
@@ -715,26 +763,22 @@ const TLEDataListSchema = z.array(TLEDataSchema).min(1).max(500).openapi('TLEDat
 
 const TLEEphemerisSchema = z
   .object({
-    s3Object: S3ObjectSchema.and(
-      z.any().openapi({ description: 'Identifies the S3 object to be used as the ephemeris.' }),
-    ).exactOptional(),
-    tleData: TLEDataListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The data for a TLE ephemeris, supplied directly in the request rather than through an S3 object.',
-        }),
-    ).exactOptional(),
+    s3Object: S3ObjectSchema.exactOptional().openapi({
+      description: 'Identifies the S3 object to be used as the ephemeris.',
+    }),
+    tleData: TLEDataListSchema.exactOptional().openapi({
+      description:
+        'The data for a TLE ephemeris, supplied directly in the request rather than through an S3 object.',
+    }),
   })
   .openapi({ description: 'Two-line element set (TLE) ephemeris.', required: [] })
   .openapi('TLEEphemeris')
 
 const MissionProfileIdResponseSchema = z
   .object({
-    missionProfileId: UuidSchema.and(
-      z.any().openapi({ description: 'UUID of a mission profile.' }),
-    ).exactOptional(),
+    missionProfileId: UuidSchema.exactOptional().openapi({
+      description: 'UUID of a mission profile.',
+    }),
   })
   .openapi({ description: '<p/>', required: [] })
   .openapi('MissionProfileIdResponse')
@@ -752,211 +796,46 @@ const KeyAliasArnSchema = z
 
 const KeyArnSchema = z.string().openapi('KeyArn')
 
-const ContactStatusSchema = z
-  .enum([
-    'AVAILABLE',
-    'AWS_CANCELLED',
-    'AWS_FAILED',
-    'CANCELLED',
-    'CANCELLING',
-    'COMPLETED',
-    'FAILED',
-    'FAILED_TO_SCHEDULE',
-    'PASS',
-    'POSTPASS',
-    'PREPASS',
-    'SCHEDULED',
-    'SCHEDULING',
-  ])
-  .openapi('ContactStatus')
-
-const AntennaDemodDecodeDetailsSchema = z
+const DescribeContactResponseSchema: z.ZodType<DescribeContactResponseType> = z
   .object({
-    outputNode: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Name of an antenna demod decode output node used in a contact.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Details about an antenna demod decode <code>Config</code> used in a contact.',
-    required: [],
-  })
-  .openapi('AntennaDemodDecodeDetails')
-
-const S3RecordingDetailsSchema = z
-  .object({
-    bucketArn: BucketArnSchema.and(
-      z.any().openapi({ description: 'ARN of the bucket used.' }),
-    ).exactOptional(),
-    keyTemplate: StringSchema.and(
-      z.any().openapi({ description: 'Key template used for the S3 Recording Configuration' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Details about an S3 recording <code>Config</code> used in a contact.',
-    required: [],
-  })
-  .openapi('S3RecordingDetails')
-
-const ConfigDetailsSchema = z
-  .object({
-    antennaDemodDecodeDetails: AntennaDemodDecodeDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Details for antenna demod decode <code>Config</code> in a contact.',
-        }),
-    ).exactOptional(),
-    endpointDetails: EndpointDetailsSchema.exactOptional(),
-    s3RecordingDetails: S3RecordingDetailsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Details for an S3 recording <code>Config</code> in a contact.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Details for certain <code>Config</code> object types in a contact.',
-    required: [],
-  })
-  .openapi('ConfigDetails')
-
-const DestinationSchema = z
-  .object({
-    configDetails: ConfigDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Additional details for a <code>Config</code>, if type is dataflow endpoint or antenna demod decode.',
-        }),
-    ).exactOptional(),
-    configId: UuidSchema.and(
-      z.any().openapi({ description: 'UUID of a <code>Config</code>.' }),
-    ).exactOptional(),
-    configType: ConfigCapabilityTypeSchema.and(
-      z.any().openapi({ description: 'Type of a <code>Config</code>.' }),
-    ).exactOptional(),
-    dataflowDestinationRegion: StringSchema.and(
-      z.any().openapi({ description: 'Region of a dataflow destination.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Dataflow details for the destination side.', required: [] })
-  .openapi('Destination')
-
-const SourceSchema = z
-  .object({
-    configDetails: ConfigDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Additional details for a <code>Config</code>, if type is <code>dataflow-endpoint</code> or <code>antenna-downlink-demod-decode</code> ',
-        }),
-    ).exactOptional(),
-    configId: StringSchema.and(
-      z.any().openapi({ description: 'UUID of a <code>Config</code>.' }),
-    ).exactOptional(),
-    configType: ConfigCapabilityTypeSchema.and(
-      z.any().openapi({ description: 'Type of a <code>Config</code>.' }),
-    ).exactOptional(),
-    dataflowSourceRegion: StringSchema.and(
-      z.any().openapi({ description: 'Region of a dataflow source.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Dataflow details for the source side.', required: [] })
-  .openapi('Source')
-
-const DataflowDetailSchema = z
-  .object({
-    destination: DestinationSchema.exactOptional(),
-    errorMessage: StringSchema.and(
-      z.any().openapi({ description: 'Error message for a dataflow.' }),
-    ).exactOptional(),
-    source: SourceSchema.exactOptional(),
-  })
-  .openapi({ description: 'Information about a dataflow edge used in a contact.', required: [] })
-  .openapi('DataflowDetail')
-
-const DataflowListSchema = z.array(DataflowDetailSchema).openapi('DataflowList')
-
-const AngleUnitsSchema = z.enum(['DEGREE_ANGLE', 'RADIAN']).openapi('AngleUnits')
-
-const ElevationSchema = z
-  .object({
-    unit: AngleUnitsSchema.and(z.any().openapi({ description: 'Elevation angle units.' })),
-    value: DoubleSchema.and(z.any().openapi({ description: 'Elevation angle value.' })),
-  })
-  .openapi({
-    required: ['unit', 'value'],
-    description: 'Elevation angle of the satellite in the sky during a contact.',
-  })
-  .openapi('Elevation')
-
-const MissionProfileArnSchema = z.string().openapi('MissionProfileArn')
-
-const SatelliteArnSchema = z.string().openapi('SatelliteArn')
-
-const TagsMapSchema = z.record(z.string(), StringSchema).openapi('TagsMap')
-
-const DescribeContactResponseSchema = z
-  .object({
-    contactId: UuidSchema.and(
-      z.any().openapi({ description: 'UUID of a contact.' }),
-    ).exactOptional(),
-    contactStatus: ContactStatusSchema.and(
-      z.any().openapi({ description: 'Status of a contact.' }),
-    ).exactOptional(),
-    dataflowList: DataflowListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'List describing source and destination details for each dataflow edge.',
-        }),
-    ).exactOptional(),
-    endTime: TimestampSchema.and(
-      z.any().openapi({ description: 'End time of a contact in UTC.' }),
-    ).exactOptional(),
-    errorMessage: StringSchema.and(
-      z.any().openapi({ description: 'Error message for a contact.' }),
-    ).exactOptional(),
-    groundStation: StringSchema.and(
-      z.any().openapi({ description: 'Ground station for a contact.' }),
-    ).exactOptional(),
-    maximumElevation: ElevationSchema.and(
-      z.any().openapi({ description: 'Maximum elevation angle of a contact.' }),
-    ).exactOptional(),
-    missionProfileArn: MissionProfileArnSchema.and(
-      z.any().openapi({ description: 'ARN of a mission profile.' }),
-    ).exactOptional(),
-    postPassEndTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amount of time after a contact ends that you’d like to receive a CloudWatch event indicating the pass has finished.',
-        }),
-    ).exactOptional(),
-    prePassStartTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amount of time prior to contact start you’d like to receive a CloudWatch event indicating an upcoming pass.',
-        }),
-    ).exactOptional(),
-    region: StringSchema.and(
-      z.any().openapi({ description: 'Region of a contact.' }),
-    ).exactOptional(),
-    satelliteArn: SatelliteArnSchema.and(
-      z.any().openapi({ description: 'ARN of a satellite.' }),
-    ).exactOptional(),
-    startTime: TimestampSchema.and(
-      z.any().openapi({ description: 'Start time of a contact in UTC.' }),
-    ).exactOptional(),
-    tags: TagsMapSchema.and(
-      z.any().openapi({ description: 'Tags assigned to a contact.' }),
-    ).exactOptional(),
+    contactId: UuidSchema.exactOptional().openapi({ description: 'UUID of a contact.' }),
+    contactStatus: ContactStatusSchema.exactOptional().openapi({
+      description: 'Status of a contact.',
+    }),
+    dataflowList: DataflowListSchema.exactOptional().openapi({
+      description: 'List describing source and destination details for each dataflow edge.',
+    }),
+    endTime: TimestampSchema.exactOptional().openapi({
+      description: 'End time of a contact in UTC.',
+    }),
+    errorMessage: StringSchema.exactOptional().openapi({
+      description: 'Error message for a contact.',
+    }),
+    groundStation: StringSchema.exactOptional().openapi({
+      description: 'Ground station for a contact.',
+    }),
+    maximumElevation: ElevationSchema.exactOptional().openapi({
+      description: 'Maximum elevation angle of a contact.',
+    }),
+    missionProfileArn: MissionProfileArnSchema.exactOptional().openapi({
+      description: 'ARN of a mission profile.',
+    }),
+    postPassEndTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'Amount of time after a contact ends that you’d like to receive a CloudWatch event indicating the pass has finished.',
+    }),
+    prePassStartTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'Amount of time prior to contact start you’d like to receive a CloudWatch event indicating an upcoming pass.',
+    }),
+    region: StringSchema.exactOptional().openapi({ description: 'Region of a contact.' }),
+    satelliteArn: SatelliteArnSchema.exactOptional().openapi({
+      description: 'ARN of a satellite.',
+    }),
+    startTime: TimestampSchema.exactOptional().openapi({
+      description: 'Start time of a contact in UTC.',
+    }),
+    tags: TagsMapSchema.exactOptional().openapi({ description: 'Tags assigned to a contact.' }),
   })
   .openapi({ description: '<p/>', required: [] })
   .openapi('DescribeContactResponse')
@@ -979,12 +858,12 @@ const EphemerisStatusSchema = z
 
 const EphemerisDescriptionSchema = z
   .object({
-    ephemerisData: UnboundedStringSchema.and(
-      z.any().openapi({ description: 'Supplied ephemeris data.' }),
-    ).exactOptional(),
-    sourceS3Object: S3ObjectSchema.and(
-      z.any().openapi({ description: 'Source S3 object used for the ephemeris.' }),
-    ).exactOptional(),
+    ephemerisData: UnboundedStringSchema.exactOptional().openapi({
+      description: 'Supplied ephemeris data.',
+    }),
+    sourceS3Object: S3ObjectSchema.exactOptional().openapi({
+      description: 'Source S3 object used for the ephemeris.',
+    }),
   })
   .openapi({ description: 'Description of ephemeris.', required: [] })
   .openapi('EphemerisDescription')
@@ -999,117 +878,80 @@ const EphemerisTypeDescriptionSchema = z
 
 const DescribeEphemerisResponseSchema = z
   .object({
-    creationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time the ephemeris was uploaded in UTC.' }),
-    ).exactOptional(),
-    enabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether or not the ephemeris is enabled.' }),
-    ).exactOptional(),
-    ephemerisId: UuidSchema.and(
-      z.any().openapi({ description: 'The AWS Ground Station ephemeris ID.' }),
-    ).exactOptional(),
-    invalidReason: EphemerisInvalidReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Reason that an ephemeris failed validation. Only provided for ephemerides with <code>INVALID</code> status.',
-        }),
-    ).exactOptional(),
-    name: SafeNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A name string associated with the ephemeris. Used as a human-readable identifier for the ephemeris.',
-        }),
-    ).exactOptional(),
-    priority: EphemerisPrioritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Customer-provided priority score to establish the order in which overlapping ephemerides should be used.</p> <p>The default for customer-provided ephemeris priority is 1, and higher numbers take precedence.</p> <p>Priority must be 1 or greater</p>',
-        }),
-    ).exactOptional(),
-    satelliteId: UuidSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The AWS Ground Station satellite ID associated with ephemeris.' }),
-    ).exactOptional(),
-    status: EphemerisStatusSchema.and(
-      z.any().openapi({ description: 'The status of the ephemeris.' }),
-    ).exactOptional(),
-    suppliedData: EphemerisTypeDescriptionSchema.and(
-      z.any().openapi({ description: 'Supplied ephemeris data.' }),
-    ).exactOptional(),
-    tags: TagsMapSchema.and(
-      z.any().openapi({ description: 'Tags assigned to an ephemeris.' }),
-    ).exactOptional(),
+    creationTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time the ephemeris was uploaded in UTC.',
+    }),
+    enabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether or not the ephemeris is enabled.',
+    }),
+    ephemerisId: UuidSchema.exactOptional().openapi({
+      description: 'The AWS Ground Station ephemeris ID.',
+    }),
+    invalidReason: EphemerisInvalidReasonSchema.exactOptional().openapi({
+      description:
+        'Reason that an ephemeris failed validation. Only provided for ephemerides with <code>INVALID</code> status.',
+    }),
+    name: SafeNameSchema.exactOptional().openapi({
+      description:
+        'A name string associated with the ephemeris. Used as a human-readable identifier for the ephemeris.',
+    }),
+    priority: EphemerisPrioritySchema.exactOptional().openapi({
+      description:
+        '<p>Customer-provided priority score to establish the order in which overlapping ephemerides should be used.</p> <p>The default for customer-provided ephemeris priority is 1, and higher numbers take precedence.</p> <p>Priority must be 1 or greater</p>',
+    }),
+    satelliteId: UuidSchema.exactOptional().openapi({
+      description: 'The AWS Ground Station satellite ID associated with ephemeris.',
+    }),
+    status: EphemerisStatusSchema.exactOptional().openapi({
+      description: 'The status of the ephemeris.',
+    }),
+    suppliedData: EphemerisTypeDescriptionSchema.exactOptional().openapi({
+      description: 'Supplied ephemeris data.',
+    }),
+    tags: TagsMapSchema.exactOptional().openapi({ description: 'Tags assigned to an ephemeris.' }),
   })
   .openapi({ required: [] })
   .openapi('DescribeEphemerisResponse')
 
 const GetAgentConfigurationResponseSchema = z
   .object({
-    agentId: UuidSchema.and(z.any().openapi({ description: 'UUID of agent.' })).exactOptional(),
-    taskingDocument: StringSchema.and(
-      z.any().openapi({ description: 'Tasking document for agent.' }),
-    ).exactOptional(),
+    agentId: UuidSchema.exactOptional().openapi({ description: 'UUID of agent.' }),
+    taskingDocument: StringSchema.exactOptional().openapi({
+      description: 'Tasking document for agent.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetAgentConfigurationResponse')
 
 const ConfigTypeDataSchema = z
   .object({
-    antennaDownlinkConfig: AntennaDownlinkConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about how AWS Ground Station should configure an antenna for downlink during a contact.',
-        }),
-    ).exactOptional(),
-    antennaDownlinkDemodDecodeConfig: AntennaDownlinkDemodDecodeConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about how AWS Ground Station should conﬁgure an antenna for downlink demod decode during a contact.',
-        }),
-    ).exactOptional(),
-    antennaUplinkConfig: AntennaUplinkConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about how AWS Ground Station should conﬁgure an antenna for uplink during a contact.',
-        }),
-    ).exactOptional(),
-    dataflowEndpointConfig: DataflowEndpointConfigSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Information about the dataflow endpoint <code>Config</code>.' }),
-    ).exactOptional(),
-    s3RecordingConfig: S3RecordingConfigSchema.and(
-      z.any().openapi({ description: 'Information about an S3 recording <code>Config</code>.' }),
-    ).exactOptional(),
-    trackingConfig: TrackingConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Object that determines whether tracking should be used during a contact executed with this <code>Config</code> in the mission profile. ',
-        }),
-    ).exactOptional(),
-    uplinkEchoConfig: UplinkEchoConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Information about an uplink echo <code>Config</code>.</p> <p>Parameters from the <code>AntennaUplinkConfig</code>, corresponding to the specified <code>AntennaUplinkConfigArn</code>, are used when this <code>UplinkEchoConfig</code> is used in a contact.</p>',
-        }),
-    ).exactOptional(),
+    antennaDownlinkConfig: AntennaDownlinkConfigSchema.exactOptional().openapi({
+      description:
+        'Information about how AWS Ground Station should configure an antenna for downlink during a contact.',
+    }),
+    antennaDownlinkDemodDecodeConfig:
+      AntennaDownlinkDemodDecodeConfigSchema.exactOptional().openapi({
+        description:
+          'Information about how AWS Ground Station should conﬁgure an antenna for downlink demod decode during a contact.',
+      }),
+    antennaUplinkConfig: AntennaUplinkConfigSchema.exactOptional().openapi({
+      description:
+        'Information about how AWS Ground Station should conﬁgure an antenna for uplink during a contact.',
+    }),
+    dataflowEndpointConfig: DataflowEndpointConfigSchema.exactOptional().openapi({
+      description: 'Information about the dataflow endpoint <code>Config</code>.',
+    }),
+    s3RecordingConfig: S3RecordingConfigSchema.exactOptional().openapi({
+      description: 'Information about an S3 recording <code>Config</code>.',
+    }),
+    trackingConfig: TrackingConfigSchema.exactOptional().openapi({
+      description:
+        'Object that determines whether tracking should be used during a contact executed with this <code>Config</code> in the mission profile. ',
+    }),
+    uplinkEchoConfig: UplinkEchoConfigSchema.exactOptional().openapi({
+      description:
+        '<p>Information about an uplink echo <code>Config</code>.</p> <p>Parameters from the <code>AntennaUplinkConfig</code>, corresponding to the specified <code>AntennaUplinkConfigArn</code>, are used when this <code>UplinkEchoConfig</code> is used in a contact.</p>',
+    }),
   })
   .openapi({
     description:
@@ -1120,20 +962,18 @@ const ConfigTypeDataSchema = z
 
 const GetConfigResponseSchema = z
   .object({
-    configArn: ConfigArnSchema.and(
-      z.any().openapi({ description: 'ARN of a <code>Config</code> ' }),
-    ),
-    configData: ConfigTypeDataSchema.and(
-      z.any().openapi({ description: 'Data elements in a <code>Config</code>.' }),
-    ),
-    configId: StringSchema.and(z.any().openapi({ description: 'UUID of a <code>Config</code>.' })),
-    configType: ConfigCapabilityTypeSchema.and(
-      z.any().openapi({ description: 'Type of a <code>Config</code>.' }),
-    ).exactOptional(),
-    name: StringSchema.and(z.any().openapi({ description: 'Name of a <code>Config</code>.' })),
-    tags: TagsMapSchema.and(
-      z.any().openapi({ description: 'Tags assigned to a <code>Config</code>.' }),
-    ).exactOptional(),
+    configArn: ConfigArnSchema.openapi({ description: 'ARN of a <code>Config</code> ' }),
+    configData: ConfigTypeDataSchema.openapi({
+      description: 'Data elements in a <code>Config</code>.',
+    }),
+    configId: StringSchema.openapi({ description: 'UUID of a <code>Config</code>.' }),
+    configType: ConfigCapabilityTypeSchema.exactOptional().openapi({
+      description: 'Type of a <code>Config</code>.',
+    }),
+    name: StringSchema.openapi({ description: 'Name of a <code>Config</code>.' }),
+    tags: TagsMapSchema.exactOptional().openapi({
+      description: 'Tags assigned to a <code>Config</code>.',
+    }),
   })
   .openapi({ required: ['configArn', 'configData', 'configId', 'name'], description: '<p/>' })
   .openapi('GetConfigResponse')
@@ -1154,80 +994,53 @@ const EndpointDetailsListSchema = z
 
 const GetDataflowEndpointGroupResponseSchema = z
   .object({
-    contactPostPassDurationSeconds: DataflowEndpointGroupDurationInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amount of time, in seconds, after a contact ends that the Ground Station Dataflow Endpoint Group will be in a <code>POSTPASS</code> state. A Ground Station Dataflow Endpoint Group State Change event will be emitted when the Dataflow Endpoint Group enters and exits the <code>POSTPASS</code> state.',
-        }),
-    ).exactOptional(),
-    contactPrePassDurationSeconds: DataflowEndpointGroupDurationInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amount of time, in seconds, before a contact starts that the Ground Station Dataflow Endpoint Group will be in a <code>PREPASS</code> state. A Ground Station Dataflow Endpoint Group State Change event will be emitted when the Dataflow Endpoint Group enters and exits the <code>PREPASS</code> state.',
-        }),
-    ).exactOptional(),
-    dataflowEndpointGroupArn: DataflowEndpointGroupArnSchema.and(
-      z.any().openapi({ description: 'ARN of a dataflow endpoint group.' }),
-    ).exactOptional(),
-    dataflowEndpointGroupId: UuidSchema.and(
-      z.any().openapi({ description: 'UUID of a dataflow endpoint group.' }),
-    ).exactOptional(),
-    endpointsDetails: EndpointDetailsListSchema.and(
-      z.any().openapi({ description: 'Details of a dataflow endpoint.' }),
-    ).exactOptional(),
-    tags: TagsMapSchema.and(
-      z.any().openapi({ description: 'Tags assigned to a dataflow endpoint group.' }),
-    ).exactOptional(),
+    contactPostPassDurationSeconds:
+      DataflowEndpointGroupDurationInSecondsSchema.exactOptional().openapi({
+        description:
+          'Amount of time, in seconds, after a contact ends that the Ground Station Dataflow Endpoint Group will be in a <code>POSTPASS</code> state. A Ground Station Dataflow Endpoint Group State Change event will be emitted when the Dataflow Endpoint Group enters and exits the <code>POSTPASS</code> state.',
+      }),
+    contactPrePassDurationSeconds:
+      DataflowEndpointGroupDurationInSecondsSchema.exactOptional().openapi({
+        description:
+          'Amount of time, in seconds, before a contact starts that the Ground Station Dataflow Endpoint Group will be in a <code>PREPASS</code> state. A Ground Station Dataflow Endpoint Group State Change event will be emitted when the Dataflow Endpoint Group enters and exits the <code>PREPASS</code> state.',
+      }),
+    dataflowEndpointGroupArn: DataflowEndpointGroupArnSchema.exactOptional().openapi({
+      description: 'ARN of a dataflow endpoint group.',
+    }),
+    dataflowEndpointGroupId: UuidSchema.exactOptional().openapi({
+      description: 'UUID of a dataflow endpoint group.',
+    }),
+    endpointsDetails: EndpointDetailsListSchema.exactOptional().openapi({
+      description: 'Details of a dataflow endpoint.',
+    }),
+    tags: TagsMapSchema.exactOptional().openapi({
+      description: 'Tags assigned to a dataflow endpoint group.',
+    }),
   })
   .openapi({ description: '<p/>', required: [] })
   .openapi('GetDataflowEndpointGroupResponse')
 
 const GetMinuteUsageResponseSchema = z
   .object({
-    estimatedMinutesRemaining: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Estimated number of minutes remaining for an account, specific to the month being requested.',
-        }),
-    ).exactOptional(),
-    isReservedMinutesCustomer: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Returns whether or not an account has signed up for the reserved minutes pricing plan, specific to the month being requested.',
-        }),
-    ).exactOptional(),
-    totalReservedMinuteAllocation: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Total number of reserved minutes allocated, specific to the month being requested.',
-        }),
-    ).exactOptional(),
-    totalScheduledMinutes: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Total scheduled minutes for an account, specific to the month being requested.',
-        }),
-    ).exactOptional(),
-    upcomingMinutesScheduled: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Upcoming minutes scheduled for an account, specific to the month being requested.',
-        }),
-    ).exactOptional(),
+    estimatedMinutesRemaining: IntegerSchema.exactOptional().openapi({
+      description:
+        'Estimated number of minutes remaining for an account, specific to the month being requested.',
+    }),
+    isReservedMinutesCustomer: BooleanSchema.exactOptional().openapi({
+      description:
+        'Returns whether or not an account has signed up for the reserved minutes pricing plan, specific to the month being requested.',
+    }),
+    totalReservedMinuteAllocation: IntegerSchema.exactOptional().openapi({
+      description:
+        'Total number of reserved minutes allocated, specific to the month being requested.',
+    }),
+    totalScheduledMinutes: IntegerSchema.exactOptional().openapi({
+      description: 'Total scheduled minutes for an account, specific to the month being requested.',
+    }),
+    upcomingMinutesScheduled: IntegerSchema.exactOptional().openapi({
+      description:
+        'Upcoming minutes scheduled for an account, specific to the month being requested.',
+    }),
   })
   .openapi({ description: '<p/>', required: [] })
   .openapi('GetMinuteUsageResponse')
@@ -1255,72 +1068,52 @@ const AWSRegionSchema = z
 
 const KmsKeySchema = z
   .object({
-    kmsAliasArn: KeyAliasArnSchema.and(
-      z.any().openapi({ description: 'KMS Alias Arn.' }),
-    ).exactOptional(),
-    kmsKeyArn: KeyArnSchema.and(z.any().openapi({ description: 'KMS Key Arn.' })).exactOptional(),
+    kmsAliasArn: KeyAliasArnSchema.exactOptional().openapi({ description: 'KMS Alias Arn.' }),
+    kmsKeyArn: KeyArnSchema.exactOptional().openapi({ description: 'KMS Key Arn.' }),
   })
   .openapi({ description: 'AWS Key Management Service (KMS) Key.', required: [] })
   .openapi('KmsKey')
 
 const GetMissionProfileResponseSchema = z
   .object({
-    contactPostPassDurationSeconds: DurationInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amount of time after a contact ends that you’d like to receive a CloudWatch event indicating the pass has finished.',
-        }),
-    ).exactOptional(),
-    contactPrePassDurationSeconds: DurationInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amount of time prior to contact start you’d like to receive a CloudWatch event indicating an upcoming pass.',
-        }),
-    ).exactOptional(),
-    dataflowEdges: DataflowEdgeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of lists of ARNs. Each list of ARNs is an edge, with a <i>from</i> <code>Config</code> and a <i>to</i> <code>Config</code>.',
-        }),
-    ).exactOptional(),
-    minimumViableContactDurationSeconds: PositiveDurationInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Smallest amount of time in seconds that you’d like to see for an available contact. AWS Ground Station will not present you with contacts shorter than this duration.',
-        }),
-    ).exactOptional(),
-    missionProfileArn: MissionProfileArnSchema.and(
-      z.any().openapi({ description: 'ARN of a mission profile.' }),
-    ).exactOptional(),
-    missionProfileId: UuidSchema.and(
-      z.any().openapi({ description: 'UUID of a mission profile.' }),
-    ).exactOptional(),
-    name: SafeNameSchema.and(
-      z.any().openapi({ description: 'Name of a mission profile.' }),
-    ).exactOptional(),
-    region: AWSRegionSchema.and(
-      z.any().openapi({ description: 'Region of a mission profile.' }),
-    ).exactOptional(),
-    streamsKmsKey: KmsKeySchema.and(
-      z.any().openapi({ description: 'KMS key to use for encrypting streams.' }),
-    ).exactOptional(),
-    streamsKmsRole: RoleArnSchema.and(
-      z.any().openapi({ description: 'Role to use for encrypting streams with KMS key.' }),
-    ).exactOptional(),
-    tags: TagsMapSchema.and(
-      z.any().openapi({ description: 'Tags assigned to a mission profile.' }),
-    ).exactOptional(),
-    trackingConfigArn: ConfigArnSchema.and(
-      z.any().openapi({ description: 'ARN of a tracking <code>Config</code>.' }),
-    ).exactOptional(),
+    contactPostPassDurationSeconds: DurationInSecondsSchema.exactOptional().openapi({
+      description:
+        'Amount of time after a contact ends that you’d like to receive a CloudWatch event indicating the pass has finished.',
+    }),
+    contactPrePassDurationSeconds: DurationInSecondsSchema.exactOptional().openapi({
+      description:
+        'Amount of time prior to contact start you’d like to receive a CloudWatch event indicating an upcoming pass.',
+    }),
+    dataflowEdges: DataflowEdgeListSchema.exactOptional().openapi({
+      description:
+        'A list of lists of ARNs. Each list of ARNs is an edge, with a <i>from</i> <code>Config</code> and a <i>to</i> <code>Config</code>.',
+    }),
+    minimumViableContactDurationSeconds: PositiveDurationInSecondsSchema.exactOptional().openapi({
+      description:
+        'Smallest amount of time in seconds that you’d like to see for an available contact. AWS Ground Station will not present you with contacts shorter than this duration.',
+    }),
+    missionProfileArn: MissionProfileArnSchema.exactOptional().openapi({
+      description: 'ARN of a mission profile.',
+    }),
+    missionProfileId: UuidSchema.exactOptional().openapi({
+      description: 'UUID of a mission profile.',
+    }),
+    name: SafeNameSchema.exactOptional().openapi({ description: 'Name of a mission profile.' }),
+    region: AWSRegionSchema.exactOptional().openapi({
+      description: 'Region of a mission profile.',
+    }),
+    streamsKmsKey: KmsKeySchema.exactOptional().openapi({
+      description: 'KMS key to use for encrypting streams.',
+    }),
+    streamsKmsRole: RoleArnSchema.exactOptional().openapi({
+      description: 'Role to use for encrypting streams with KMS key.',
+    }),
+    tags: TagsMapSchema.exactOptional().openapi({
+      description: 'Tags assigned to a mission profile.',
+    }),
+    trackingConfigArn: ConfigArnSchema.exactOptional().openapi({
+      description: 'ARN of a tracking <code>Config</code>.',
+    }),
   })
   .openapi({ description: '<p/>', required: [] })
   .openapi('GetMissionProfileResponse')
@@ -1331,37 +1124,21 @@ const EphemerisSourceSchema = z
 
 const EphemerisMetaDataSchema = z
   .object({
-    ephemerisId: UuidSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>UUID of a customer-provided ephemeris.</p> <p>This field is not populated for default ephemerides from Space Track.</p>',
-        }),
-    ).exactOptional(),
-    epoch: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The epoch of a default, ephemeris from Space Track in UTC.</p> <p>This field is not populated for customer-provided ephemerides.</p>',
-        }),
-    ).exactOptional(),
-    name: SafeNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A name string associated with the ephemeris. Used as a human-readable identifier for the ephemeris.</p> <p>A name is only returned for customer-provider ephemerides that have a name associated.</p>',
-        }),
-    ).exactOptional(),
-    source: EphemerisSourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The <code>EphemerisSource</code> that generated a given ephemeris.',
-        }),
-    ),
+    ephemerisId: UuidSchema.exactOptional().openapi({
+      description:
+        '<p>UUID of a customer-provided ephemeris.</p> <p>This field is not populated for default ephemerides from Space Track.</p>',
+    }),
+    epoch: TimestampSchema.exactOptional().openapi({
+      description:
+        '<p>The epoch of a default, ephemeris from Space Track in UTC.</p> <p>This field is not populated for customer-provided ephemerides.</p>',
+    }),
+    name: SafeNameSchema.exactOptional().openapi({
+      description:
+        '<p>A name string associated with the ephemeris. Used as a human-readable identifier for the ephemeris.</p> <p>A name is only returned for customer-provider ephemerides that have a name associated.</p>',
+    }),
+    source: EphemerisSourceSchema.openapi({
+      description: 'The <code>EphemerisSource</code> that generated a given ephemeris.',
+    }),
   })
   .openapi({ required: ['source'], description: 'Metadata describing a particular ephemeris.' })
   .openapi('EphemerisMetaData')
@@ -1383,48 +1160,35 @@ const NoradSatelliteIDSchema = z.int().min(0).max(99999).openapi('NoradSatellite
 
 const GetSatelliteResponseSchema = z
   .object({
-    currentEphemeris: EphemerisMetaDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The current ephemeris being used to compute the trajectory of the satellite.',
-        }),
-    ).exactOptional(),
-    groundStations: GroundStationIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of ground stations to which the satellite is on-boarded.',
-        }),
-    ).exactOptional(),
-    noradSatelliteID: NoradSatelliteIDSchema.and(
-      z.any().openapi({ description: 'NORAD satellite ID number.' }),
-    ).exactOptional(),
-    satelliteArn: SatelliteArnSchema.and(
-      z.any().openapi({ description: 'ARN of a satellite.' }),
-    ).exactOptional(),
-    satelliteId: UuidSchema.and(
-      z.any().openapi({ description: 'UUID of a satellite.' }),
-    ).exactOptional(),
+    currentEphemeris: EphemerisMetaDataSchema.exactOptional().openapi({
+      description: 'The current ephemeris being used to compute the trajectory of the satellite.',
+    }),
+    groundStations: GroundStationIdListSchema.exactOptional().openapi({
+      description: 'A list of ground stations to which the satellite is on-boarded.',
+    }),
+    noradSatelliteID: NoradSatelliteIDSchema.exactOptional().openapi({
+      description: 'NORAD satellite ID number.',
+    }),
+    satelliteArn: SatelliteArnSchema.exactOptional().openapi({
+      description: 'ARN of a satellite.',
+    }),
+    satelliteId: UuidSchema.exactOptional().openapi({ description: 'UUID of a satellite.' }),
   })
   .openapi({ description: '<p/>', required: [] })
   .openapi('GetSatelliteResponse')
 
 const ConfigListItemSchema = z
   .object({
-    configArn: ConfigArnSchema.and(
-      z.any().openapi({ description: 'ARN of a <code>Config</code>.' }),
-    ).exactOptional(),
-    configId: StringSchema.and(
-      z.any().openapi({ description: 'UUID of a <code>Config</code>.' }),
-    ).exactOptional(),
-    configType: ConfigCapabilityTypeSchema.and(
-      z.any().openapi({ description: 'Type of a <code>Config</code>.' }),
-    ).exactOptional(),
-    name: StringSchema.and(
-      z.any().openapi({ description: 'Name of a <code>Config</code>.' }),
-    ).exactOptional(),
+    configArn: ConfigArnSchema.exactOptional().openapi({
+      description: 'ARN of a <code>Config</code>.',
+    }),
+    configId: StringSchema.exactOptional().openapi({
+      description: 'UUID of a <code>Config</code>.',
+    }),
+    configType: ConfigCapabilityTypeSchema.exactOptional().openapi({
+      description: 'Type of a <code>Config</code>.',
+    }),
+    name: StringSchema.exactOptional().openapi({ description: 'Name of a <code>Config</code>.' }),
   })
   .openapi({ description: 'An item in a list of <code>Config</code> objects.', required: [] })
   .openapi('ConfigListItem')
@@ -1440,72 +1204,54 @@ const PaginationTokenSchema = z
 
 const ListConfigsResponseSchema = z
   .object({
-    configList: ConfigListSchema.and(
-      z.any().openapi({ description: 'List of <code>Config</code> items.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Next token returned in the response of a previous <code>ListConfigs</code> call. Used to get the next page of results.',
-        }),
-    ).exactOptional(),
+    configList: ConfigListSchema.exactOptional().openapi({
+      description: 'List of <code>Config</code> items.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'Next token returned in the response of a previous <code>ListConfigs</code> call. Used to get the next page of results.',
+    }),
   })
   .openapi({ description: '<p/>', required: [] })
   .openapi('ListConfigsResponse')
 
 const ContactDataSchema = z
   .object({
-    contactId: UuidSchema.and(
-      z.any().openapi({ description: 'UUID of a contact.' }),
-    ).exactOptional(),
-    contactStatus: ContactStatusSchema.and(
-      z.any().openapi({ description: 'Status of a contact.' }),
-    ).exactOptional(),
-    endTime: TimestampSchema.and(
-      z.any().openapi({ description: 'End time of a contact in UTC.' }),
-    ).exactOptional(),
-    errorMessage: StringSchema.and(
-      z.any().openapi({ description: 'Error message of a contact.' }),
-    ).exactOptional(),
-    groundStation: StringSchema.and(
-      z.any().openapi({ description: 'Name of a ground station.' }),
-    ).exactOptional(),
-    maximumElevation: ElevationSchema.and(
-      z.any().openapi({ description: 'Maximum elevation angle of a contact.' }),
-    ).exactOptional(),
-    missionProfileArn: MissionProfileArnSchema.and(
-      z.any().openapi({ description: 'ARN of a mission profile.' }),
-    ).exactOptional(),
-    postPassEndTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amount of time after a contact ends that you’d like to receive a CloudWatch event indicating the pass has finished.',
-        }),
-    ).exactOptional(),
-    prePassStartTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amount of time prior to contact start you’d like to receive a CloudWatch event indicating an upcoming pass.',
-        }),
-    ).exactOptional(),
-    region: StringSchema.and(
-      z.any().openapi({ description: 'Region of a contact.' }),
-    ).exactOptional(),
-    satelliteArn: SatelliteArnSchema.and(
-      z.any().openapi({ description: 'ARN of a satellite.' }),
-    ).exactOptional(),
-    startTime: TimestampSchema.and(
-      z.any().openapi({ description: 'Start time of a contact in UTC.' }),
-    ).exactOptional(),
-    tags: TagsMapSchema.and(
-      z.any().openapi({ description: 'Tags assigned to a contact.' }),
-    ).exactOptional(),
+    contactId: UuidSchema.exactOptional().openapi({ description: 'UUID of a contact.' }),
+    contactStatus: ContactStatusSchema.exactOptional().openapi({
+      description: 'Status of a contact.',
+    }),
+    endTime: TimestampSchema.exactOptional().openapi({
+      description: 'End time of a contact in UTC.',
+    }),
+    errorMessage: StringSchema.exactOptional().openapi({
+      description: 'Error message of a contact.',
+    }),
+    groundStation: StringSchema.exactOptional().openapi({
+      description: 'Name of a ground station.',
+    }),
+    maximumElevation: ElevationSchema.exactOptional().openapi({
+      description: 'Maximum elevation angle of a contact.',
+    }),
+    missionProfileArn: MissionProfileArnSchema.exactOptional().openapi({
+      description: 'ARN of a mission profile.',
+    }),
+    postPassEndTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'Amount of time after a contact ends that you’d like to receive a CloudWatch event indicating the pass has finished.',
+    }),
+    prePassStartTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'Amount of time prior to contact start you’d like to receive a CloudWatch event indicating an upcoming pass.',
+    }),
+    region: StringSchema.exactOptional().openapi({ description: 'Region of a contact.' }),
+    satelliteArn: SatelliteArnSchema.exactOptional().openapi({
+      description: 'ARN of a satellite.',
+    }),
+    startTime: TimestampSchema.exactOptional().openapi({
+      description: 'Start time of a contact in UTC.',
+    }),
+    tags: TagsMapSchema.exactOptional().openapi({ description: 'Tags assigned to a contact.' }),
   })
   .openapi({ description: 'Data describing a contact.', required: [] })
   .openapi('ContactData')
@@ -1514,29 +1260,23 @@ const ContactListSchema = z.array(ContactDataSchema).openapi('ContactList')
 
 const ListContactsResponseSchema = z
   .object({
-    contactList: ContactListSchema.and(
-      z.any().openapi({ description: 'List of contacts.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Next token returned in the response of a previous <code>ListContacts</code> call. Used to get the next page of results.',
-        }),
-    ).exactOptional(),
+    contactList: ContactListSchema.exactOptional().openapi({ description: 'List of contacts.' }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'Next token returned in the response of a previous <code>ListContacts</code> call. Used to get the next page of results.',
+    }),
   })
   .openapi({ description: '<p/>', required: [] })
   .openapi('ListContactsResponse')
 
 const DataflowEndpointListItemSchema = z
   .object({
-    dataflowEndpointGroupArn: DataflowEndpointGroupArnSchema.and(
-      z.any().openapi({ description: 'ARN of a dataflow endpoint group.' }),
-    ).exactOptional(),
-    dataflowEndpointGroupId: UuidSchema.and(
-      z.any().openapi({ description: 'UUID of a dataflow endpoint group.' }),
-    ).exactOptional(),
+    dataflowEndpointGroupArn: DataflowEndpointGroupArnSchema.exactOptional().openapi({
+      description: 'ARN of a dataflow endpoint group.',
+    }),
+    dataflowEndpointGroupId: UuidSchema.exactOptional().openapi({
+      description: 'UUID of a dataflow endpoint group.',
+    }),
   })
   .openapi({ description: 'Item in a list of <code>DataflowEndpoint</code> groups.', required: [] })
   .openapi('DataflowEndpointListItem')
@@ -1547,54 +1287,42 @@ const DataflowEndpointGroupListSchema = z
 
 const ListDataflowEndpointGroupsResponseSchema = z
   .object({
-    dataflowEndpointGroupList: DataflowEndpointGroupListSchema.and(
-      z.any().openapi({ description: 'A list of dataflow endpoint groups.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Next token returned in the response of a previous <code>ListDataflowEndpointGroups</code> call. Used to get the next page of results.',
-        }),
-    ).exactOptional(),
+    dataflowEndpointGroupList: DataflowEndpointGroupListSchema.exactOptional().openapi({
+      description: 'A list of dataflow endpoint groups.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'Next token returned in the response of a previous <code>ListDataflowEndpointGroups</code> call. Used to get the next page of results.',
+    }),
   })
   .openapi({ description: '<p/>', required: [] })
   .openapi('ListDataflowEndpointGroupsResponse')
 
 const EphemerisItemSchema = z
   .object({
-    creationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time the ephemeris was uploaded in UTC.' }),
-    ).exactOptional(),
-    enabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether or not the ephemeris is enabled.' }),
-    ).exactOptional(),
-    ephemerisId: UuidSchema.and(
-      z.any().openapi({ description: 'The AWS Ground Station ephemeris ID.' }),
-    ).exactOptional(),
-    name: SafeNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A name string associated with the ephemeris. Used as a human-readable identifier for the ephemeris.',
-        }),
-    ).exactOptional(),
-    priority: EphemerisPrioritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Customer-provided priority score to establish the order in which overlapping ephemerides should be used.</p> <p>The default for customer-provided ephemeris priority is 1, and higher numbers take precedence.</p> <p>Priority must be 1 or greater</p>',
-        }),
-    ).exactOptional(),
-    sourceS3Object: S3ObjectSchema.and(
-      z.any().openapi({ description: 'Source S3 object used for the ephemeris.' }),
-    ).exactOptional(),
-    status: EphemerisStatusSchema.and(
-      z.any().openapi({ description: 'The status of the ephemeris.' }),
-    ).exactOptional(),
+    creationTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time the ephemeris was uploaded in UTC.',
+    }),
+    enabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether or not the ephemeris is enabled.',
+    }),
+    ephemerisId: UuidSchema.exactOptional().openapi({
+      description: 'The AWS Ground Station ephemeris ID.',
+    }),
+    name: SafeNameSchema.exactOptional().openapi({
+      description:
+        'A name string associated with the ephemeris. Used as a human-readable identifier for the ephemeris.',
+    }),
+    priority: EphemerisPrioritySchema.exactOptional().openapi({
+      description:
+        '<p>Customer-provided priority score to establish the order in which overlapping ephemerides should be used.</p> <p>The default for customer-provided ephemeris priority is 1, and higher numbers take precedence.</p> <p>Priority must be 1 or greater</p>',
+    }),
+    sourceS3Object: S3ObjectSchema.exactOptional().openapi({
+      description: 'Source S3 object used for the ephemeris.',
+    }),
+    status: EphemerisStatusSchema.exactOptional().openapi({
+      description: 'The status of the ephemeris.',
+    }),
   })
   .openapi({ description: 'Ephemeris item.', required: [] })
   .openapi('EphemerisItem')
@@ -1607,27 +1335,23 @@ const EphemeridesListSchema = z
 
 const ListEphemeridesResponseSchema = z
   .object({
-    ephemerides: EphemeridesListSchema.and(
-      z.any().openapi({ description: 'List of ephemerides.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z.any().openapi({ description: 'Pagination token.' }),
-    ).exactOptional(),
+    ephemerides: EphemeridesListSchema.exactOptional().openapi({
+      description: 'List of ephemerides.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({ description: 'Pagination token.' }),
   })
   .openapi({ required: [] })
   .openapi('ListEphemeridesResponse')
 
 const GroundStationDataSchema = z
   .object({
-    groundStationId: GroundStationNameSchema.and(
-      z.any().openapi({ description: 'UUID of a ground station.' }),
-    ).exactOptional(),
-    groundStationName: GroundStationNameSchema.and(
-      z.any().openapi({ description: 'Name of a ground station.' }),
-    ).exactOptional(),
-    region: AWSRegionSchema.and(
-      z.any().openapi({ description: 'Ground station Region.' }),
-    ).exactOptional(),
+    groundStationId: GroundStationNameSchema.exactOptional().openapi({
+      description: 'UUID of a ground station.',
+    }),
+    groundStationName: GroundStationNameSchema.exactOptional().openapi({
+      description: 'Name of a ground station.',
+    }),
+    region: AWSRegionSchema.exactOptional().openapi({ description: 'Ground station Region.' }),
   })
   .openapi({ description: 'Information about the ground station data.', required: [] })
   .openapi('GroundStationData')
@@ -1636,35 +1360,29 @@ const GroundStationListSchema = z.array(GroundStationDataSchema).openapi('Ground
 
 const ListGroundStationsResponseSchema = z
   .object({
-    groundStationList: GroundStationListSchema.and(
-      z.any().openapi({ description: 'List of ground stations.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Next token that can be supplied in the next call to get the next page of ground stations.',
-        }),
-    ).exactOptional(),
+    groundStationList: GroundStationListSchema.exactOptional().openapi({
+      description: 'List of ground stations.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'Next token that can be supplied in the next call to get the next page of ground stations.',
+    }),
   })
   .openapi({ description: '<p/>', required: [] })
   .openapi('ListGroundStationsResponse')
 
 const MissionProfileListItemSchema = z
   .object({
-    missionProfileArn: MissionProfileArnSchema.and(
-      z.any().openapi({ description: 'ARN of a mission profile.' }),
-    ).exactOptional(),
-    missionProfileId: UuidSchema.and(
-      z.any().openapi({ description: 'UUID of a mission profile.' }),
-    ).exactOptional(),
-    name: SafeNameSchema.and(
-      z.any().openapi({ description: 'Name of a mission profile.' }),
-    ).exactOptional(),
-    region: AWSRegionSchema.and(
-      z.any().openapi({ description: 'Region of a mission profile.' }),
-    ).exactOptional(),
+    missionProfileArn: MissionProfileArnSchema.exactOptional().openapi({
+      description: 'ARN of a mission profile.',
+    }),
+    missionProfileId: UuidSchema.exactOptional().openapi({
+      description: 'UUID of a mission profile.',
+    }),
+    name: SafeNameSchema.exactOptional().openapi({ description: 'Name of a mission profile.' }),
+    region: AWSRegionSchema.exactOptional().openapi({
+      description: 'Region of a mission profile.',
+    }),
   })
   .openapi({ description: 'Item in a list of mission profiles.', required: [] })
   .openapi('MissionProfileListItem')
@@ -1673,47 +1391,32 @@ const MissionProfileListSchema = z.array(MissionProfileListItemSchema).openapi('
 
 const ListMissionProfilesResponseSchema = z
   .object({
-    missionProfileList: MissionProfileListSchema.and(
-      z.any().openapi({ description: 'List of mission profiles.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Next token returned in the response of a previous <code>ListMissionProfiles</code> call. Used to get the next page of results.',
-        }),
-    ).exactOptional(),
+    missionProfileList: MissionProfileListSchema.exactOptional().openapi({
+      description: 'List of mission profiles.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'Next token returned in the response of a previous <code>ListMissionProfiles</code> call. Used to get the next page of results.',
+    }),
   })
   .openapi({ description: '<p/>', required: [] })
   .openapi('ListMissionProfilesResponse')
 
 const SatelliteListItemSchema = z
   .object({
-    currentEphemeris: EphemerisMetaDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The current ephemeris being used to compute the trajectory of the satellite.',
-        }),
-    ).exactOptional(),
-    groundStations: GroundStationIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of ground stations to which the satellite is on-boarded.',
-        }),
-    ).exactOptional(),
-    noradSatelliteID: NoradSatelliteIDSchema.and(
-      z.any().openapi({ description: 'NORAD satellite ID number.' }),
-    ).exactOptional(),
-    satelliteArn: SatelliteArnSchema.and(
-      z.any().openapi({ description: 'ARN of a satellite.' }),
-    ).exactOptional(),
-    satelliteId: UuidSchema.and(
-      z.any().openapi({ description: 'UUID of a satellite.' }),
-    ).exactOptional(),
+    currentEphemeris: EphemerisMetaDataSchema.exactOptional().openapi({
+      description: 'The current ephemeris being used to compute the trajectory of the satellite.',
+    }),
+    groundStations: GroundStationIdListSchema.exactOptional().openapi({
+      description: 'A list of ground stations to which the satellite is on-boarded.',
+    }),
+    noradSatelliteID: NoradSatelliteIDSchema.exactOptional().openapi({
+      description: 'NORAD satellite ID number.',
+    }),
+    satelliteArn: SatelliteArnSchema.exactOptional().openapi({
+      description: 'ARN of a satellite.',
+    }),
+    satelliteId: UuidSchema.exactOptional().openapi({ description: 'UUID of a satellite.' }),
   })
   .openapi({ description: 'Item in a list of satellites.', required: [] })
   .openapi('SatelliteListItem')
@@ -1722,35 +1425,25 @@ const SatelliteListSchema = z.array(SatelliteListItemSchema).openapi('SatelliteL
 
 const ListSatellitesResponseSchema = z
   .object({
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Next token that can be supplied in the next call to get the next page of satellites.',
-        }),
-    ).exactOptional(),
-    satellites: SatelliteListSchema.and(
-      z.any().openapi({ description: 'List of satellites.' }),
-    ).exactOptional(),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'Next token that can be supplied in the next call to get the next page of satellites.',
+    }),
+    satellites: SatelliteListSchema.exactOptional().openapi({ description: 'List of satellites.' }),
   })
   .openapi({ description: '<p/>', required: [] })
   .openapi('ListSatellitesResponse')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    tags: TagsMapSchema.and(
-      z.any().openapi({ description: 'Tags assigned to a resource.' }),
-    ).exactOptional(),
+    tags: TagsMapSchema.exactOptional().openapi({ description: 'Tags assigned to a resource.' }),
   })
   .openapi({ description: '<p/>', required: [] })
   .openapi('ListTagsForResourceResponse')
 
 const RegisterAgentResponseSchema = z
   .object({
-    agentId: UuidSchema.and(
-      z.any().openapi({ description: 'UUID of registered agent.' }),
-    ).exactOptional(),
+    agentId: UuidSchema.exactOptional().openapi({ description: 'UUID of registered agent.' }),
   })
   .openapi({ required: [] })
   .openapi('RegisterAgentResponse')
@@ -1777,10 +1470,8 @@ const VersionStringListSchema = z
 
 const ComponentVersionSchema = z
   .object({
-    componentType: ComponentTypeStringSchema.and(
-      z.any().openapi({ description: 'Component type.' }),
-    ),
-    versions: VersionStringListSchema.and(z.any().openapi({ description: 'List of versions.' })),
+    componentType: ComponentTypeStringSchema.openapi({ description: 'Component type.' }),
+    versions: VersionStringListSchema.openapi({ description: 'List of versions.' }),
   })
   .openapi({
     required: ['componentType', 'versions'],
@@ -1819,17 +1510,17 @@ const CapabilityArnListSchema = z
 const IpAddressListSchema = z.array(IpV4AddressSchema).min(1).max(20).openapi('IpAddressList')
 
 const TagResourceResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '<p/>' })
   .openapi('TagResourceResponse')
 
 const UntagResourceResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '<p/>' })
   .openapi('UntagResourceResponse')
 
 const UpdateAgentStatusResponseSchema = z
-  .object({ agentId: UuidSchema.and(z.any().openapi({ description: 'UUID of updated agent.' })) })
+  .object({ agentId: UuidSchema.openapi({ description: 'UUID of updated agent.' }) })
   .openapi({ required: ['agentId'] })
   .openapi('UpdateAgentStatusResponse')
 
@@ -1839,25 +1530,17 @@ const LongSchema = z.int().openapi('Long')
 
 const ComponentStatusDataSchema = z
   .object({
-    bytesReceived: LongSchema.and(
-      z.any().openapi({ description: 'Bytes received by the component.' }),
-    ).exactOptional(),
-    bytesSent: LongSchema.and(
-      z.any().openapi({ description: 'Bytes sent by the component.' }),
-    ).exactOptional(),
-    capabilityArn: CapabilityArnSchema.and(
-      z.any().openapi({ description: 'Capability ARN of the component.' }),
-    ),
-    componentType: ComponentTypeStringSchema.and(
-      z.any().openapi({ description: 'The Component type.' }),
-    ),
-    dataflowId: UuidSchema.and(
-      z.any().openapi({ description: 'Dataflow UUID associated with the component.' }),
-    ),
-    packetsDropped: LongSchema.and(
-      z.any().openapi({ description: 'Packets dropped by component.' }),
-    ).exactOptional(),
-    status: AgentStatusSchema.and(z.any().openapi({ description: 'Component status.' })),
+    bytesReceived: LongSchema.exactOptional().openapi({
+      description: 'Bytes received by the component.',
+    }),
+    bytesSent: LongSchema.exactOptional().openapi({ description: 'Bytes sent by the component.' }),
+    capabilityArn: CapabilityArnSchema.openapi({ description: 'Capability ARN of the component.' }),
+    componentType: ComponentTypeStringSchema.openapi({ description: 'The Component type.' }),
+    dataflowId: UuidSchema.openapi({ description: 'Dataflow UUID associated with the component.' }),
+    packetsDropped: LongSchema.exactOptional().openapi({
+      description: 'Packets dropped by component.',
+    }),
+    status: AgentStatusSchema.openapi({ description: 'Component status.' }),
   })
   .openapi({
     required: ['capabilityArn', 'componentType', 'dataflowId', 'status'],
@@ -1867,29 +1550,23 @@ const ComponentStatusDataSchema = z
 
 const AgentDetailsSchema = z
   .object({
-    agentCpuCores: AgentCpuCoresListSchema.and(
-      z.any().openapi({ description: 'List of CPU cores reserved for the agent.' }),
-    ).exactOptional(),
-    agentVersion: VersionStringSchema.and(
-      z.any().openapi({ description: 'Current agent version.' }),
-    ),
-    componentVersions: ComponentVersionListSchema.and(
-      z.any().openapi({ description: 'List of versions being used by agent components.' }),
-    ),
-    instanceId: InstanceIdSchema.and(
-      z.any().openapi({ description: 'ID of EC2 instance agent is running on.' }),
-    ),
-    instanceType: InstanceTypeSchema.and(
-      z.any().openapi({ description: 'Type of EC2 instance agent is running on.' }),
-    ),
-    reservedCpuCores: AgentCpuCoresListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<note> <p>This field should not be used. Use agentCpuCores instead.</p> </note> <p>List of CPU cores reserved for processes other than the agent running on the EC2 instance.</p>',
-        }),
-    ).exactOptional(),
+    agentCpuCores: AgentCpuCoresListSchema.exactOptional().openapi({
+      description: 'List of CPU cores reserved for the agent.',
+    }),
+    agentVersion: VersionStringSchema.openapi({ description: 'Current agent version.' }),
+    componentVersions: ComponentVersionListSchema.openapi({
+      description: 'List of versions being used by agent components.',
+    }),
+    instanceId: InstanceIdSchema.openapi({
+      description: 'ID of EC2 instance agent is running on.',
+    }),
+    instanceType: InstanceTypeSchema.openapi({
+      description: 'Type of EC2 instance agent is running on.',
+    }),
+    reservedCpuCores: AgentCpuCoresListSchema.exactOptional().openapi({
+      description:
+        '<note> <p>This field should not be used. Use agentCpuCores instead.</p> </note> <p>List of CPU cores reserved for processes other than the agent running on the EC2 instance.</p>',
+    }),
   })
   .openapi({
     required: ['agentVersion', 'componentVersions', 'instanceId', 'instanceType'],
@@ -1899,10 +1576,10 @@ const AgentDetailsSchema = z
 
 const AggregateStatusSchema = z
   .object({
-    signatureMap: SignatureMapSchema.and(
-      z.any().openapi({ description: 'Sparse map of failure signatures.' }),
-    ).exactOptional(),
-    status: AgentStatusSchema.and(z.any().openapi({ description: 'Aggregate status.' })),
+    signatureMap: SignatureMapSchema.exactOptional().openapi({
+      description: 'Sparse map of failure signatures.',
+    }),
+    status: AgentStatusSchema.openapi({ description: 'Aggregate status.' }),
   })
   .openapi({ required: ['status'], description: 'Aggregate status of Agent components.' })
   .openapi('AggregateStatus')
@@ -1915,7 +1592,7 @@ const AnyArnSchema = z
   .openapi('AnyArn')
 
 const CancelContactRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'CancelContactRequest', description: '<p/>' })
   .openapi('CancelContactRequest')
 
@@ -1927,45 +1604,35 @@ const ComponentStatusListSchema = z
 
 const CreateConfigRequestSchema = z
   .object({
-    configData: ConfigTypeDataSchema.and(
-      z.any().openapi({ description: 'Parameters of a <code>Config</code>.' }),
-    ),
-    name: SafeNameSchema.and(z.any().openapi({ description: 'Name of a <code>Config</code>.' })),
-    tags: TagsMapSchema.and(
-      z.any().openapi({ description: 'Tags assigned to a <code>Config</code>.' }),
-    ).exactOptional(),
+    configData: ConfigTypeDataSchema.openapi({
+      description: 'Parameters of a <code>Config</code>.',
+    }),
+    name: SafeNameSchema.openapi({ description: 'Name of a <code>Config</code>.' }),
+    tags: TagsMapSchema.exactOptional().openapi({
+      description: 'Tags assigned to a <code>Config</code>.',
+    }),
   })
   .openapi({ required: ['configData', 'name'], title: 'CreateConfigRequest', description: '<p/>' })
   .openapi('CreateConfigRequest')
 
 const CreateDataflowEndpointGroupRequestSchema = z
   .object({
-    contactPostPassDurationSeconds: DataflowEndpointGroupDurationInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amount of time, in seconds, after a contact ends that the Ground Station Dataflow Endpoint Group will be in a <code>POSTPASS</code> state. A Ground Station Dataflow Endpoint Group State Change event will be emitted when the Dataflow Endpoint Group enters and exits the <code>POSTPASS</code> state.',
-        }),
-    ).exactOptional(),
-    contactPrePassDurationSeconds: DataflowEndpointGroupDurationInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amount of time, in seconds, before a contact starts that the Ground Station Dataflow Endpoint Group will be in a <code>PREPASS</code> state. A Ground Station Dataflow Endpoint Group State Change event will be emitted when the Dataflow Endpoint Group enters and exits the <code>PREPASS</code> state.',
-        }),
-    ).exactOptional(),
-    endpointDetails: EndpointDetailsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Endpoint details of each endpoint in the dataflow endpoint group.',
-        }),
-    ),
-    tags: TagsMapSchema.and(
-      z.any().openapi({ description: 'Tags of a dataflow endpoint group.' }),
-    ).exactOptional(),
+    contactPostPassDurationSeconds:
+      DataflowEndpointGroupDurationInSecondsSchema.exactOptional().openapi({
+        description:
+          'Amount of time, in seconds, after a contact ends that the Ground Station Dataflow Endpoint Group will be in a <code>POSTPASS</code> state. A Ground Station Dataflow Endpoint Group State Change event will be emitted when the Dataflow Endpoint Group enters and exits the <code>POSTPASS</code> state.',
+      }),
+    contactPrePassDurationSeconds:
+      DataflowEndpointGroupDurationInSecondsSchema.exactOptional().openapi({
+        description:
+          'Amount of time, in seconds, before a contact starts that the Ground Station Dataflow Endpoint Group will be in a <code>PREPASS</code> state. A Ground Station Dataflow Endpoint Group State Change event will be emitted when the Dataflow Endpoint Group enters and exits the <code>PREPASS</code> state.',
+      }),
+    endpointDetails: EndpointDetailsListSchema.openapi({
+      description: 'Endpoint details of each endpoint in the dataflow endpoint group.',
+    }),
+    tags: TagsMapSchema.exactOptional().openapi({
+      description: 'Tags of a dataflow endpoint group.',
+    }),
   })
   .openapi({
     required: ['endpointDetails'],
@@ -1987,105 +1654,65 @@ const CustomerEphemerisPrioritySchema = z
 
 const CreateEphemerisRequestSchema = z
   .object({
-    enabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Whether to set the ephemeris status to <code>ENABLED</code> after validation.</p> <p>Setting this to false will set the ephemeris status to <code>DISABLED</code> after validation.</p>',
-        }),
-    ).exactOptional(),
-    ephemeris: EphemerisDataSchema.and(
-      z.any().openapi({ description: 'Ephemeris data.' }),
-    ).exactOptional(),
-    expirationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An overall expiration time for the ephemeris in UTC, after which it will become <code>EXPIRED</code>.',
-        }),
-    ).exactOptional(),
-    kmsKeyArn: KeyArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of a KMS key used to encrypt the ephemeris in Ground Station.',
-        }),
-    ).exactOptional(),
-    name: SafeNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A name string associated with the ephemeris. Used as a human-readable identifier for the ephemeris.',
-        }),
-    ),
-    priority: CustomerEphemerisPrioritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Customer-provided priority score to establish the order in which overlapping ephemerides should be used.</p> <p>The default for customer-provided ephemeris priority is 1, and higher numbers take precedence.</p> <p>Priority must be 1 or greater</p>',
-        }),
-    ).exactOptional(),
-    satelliteId: UuidSchema.and(
-      z.any().openapi({ description: 'AWS Ground Station satellite ID for this ephemeris.' }),
-    ),
-    tags: TagsMapSchema.and(
-      z.any().openapi({ description: 'Tags assigned to an ephemeris.' }),
-    ).exactOptional(),
+    enabled: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Whether to set the ephemeris status to <code>ENABLED</code> after validation.</p> <p>Setting this to false will set the ephemeris status to <code>DISABLED</code> after validation.</p>',
+    }),
+    ephemeris: EphemerisDataSchema.exactOptional().openapi({ description: 'Ephemeris data.' }),
+    expirationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'An overall expiration time for the ephemeris in UTC, after which it will become <code>EXPIRED</code>.',
+    }),
+    kmsKeyArn: KeyArnSchema.exactOptional().openapi({
+      description: 'The ARN of a KMS key used to encrypt the ephemeris in Ground Station.',
+    }),
+    name: SafeNameSchema.openapi({
+      description:
+        'A name string associated with the ephemeris. Used as a human-readable identifier for the ephemeris.',
+    }),
+    priority: CustomerEphemerisPrioritySchema.exactOptional().openapi({
+      description:
+        '<p>Customer-provided priority score to establish the order in which overlapping ephemerides should be used.</p> <p>The default for customer-provided ephemeris priority is 1, and higher numbers take precedence.</p> <p>Priority must be 1 or greater</p>',
+    }),
+    satelliteId: UuidSchema.openapi({
+      description: 'AWS Ground Station satellite ID for this ephemeris.',
+    }),
+    tags: TagsMapSchema.exactOptional().openapi({ description: 'Tags assigned to an ephemeris.' }),
   })
   .openapi({ required: ['name', 'satelliteId'], title: 'CreateEphemerisRequest' })
   .openapi('CreateEphemerisRequest')
 
 const CreateMissionProfileRequestSchema = z
   .object({
-    contactPostPassDurationSeconds: DurationInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amount of time after a contact ends that you’d like to receive a CloudWatch event indicating the pass has finished.',
-        }),
-    ).exactOptional(),
-    contactPrePassDurationSeconds: DurationInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amount of time prior to contact start you’d like to receive a CloudWatch event indicating an upcoming pass.',
-        }),
-    ).exactOptional(),
-    dataflowEdges: DataflowEdgeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of lists of ARNs. Each list of ARNs is an edge, with a <i>from</i> <code>Config</code> and a <i>to</i> <code>Config</code>.',
-        }),
-    ),
-    minimumViableContactDurationSeconds: PositiveDurationInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Smallest amount of time in seconds that you’d like to see for an available contact. AWS Ground Station will not present you with contacts shorter than this duration.',
-        }),
-    ),
-    name: SafeNameSchema.and(z.any().openapi({ description: 'Name of a mission profile.' })),
-    streamsKmsKey: KmsKeySchema.and(
-      z.any().openapi({ description: 'KMS key to use for encrypting streams.' }),
-    ).exactOptional(),
-    streamsKmsRole: RoleArnSchema.and(
-      z.any().openapi({ description: 'Role to use for encrypting streams with KMS key.' }),
-    ).exactOptional(),
-    tags: TagsMapSchema.and(
-      z.any().openapi({ description: 'Tags assigned to a mission profile.' }),
-    ).exactOptional(),
-    trackingConfigArn: ConfigArnSchema.and(
-      z.any().openapi({ description: 'ARN of a tracking <code>Config</code>.' }),
-    ),
+    contactPostPassDurationSeconds: DurationInSecondsSchema.exactOptional().openapi({
+      description:
+        'Amount of time after a contact ends that you’d like to receive a CloudWatch event indicating the pass has finished.',
+    }),
+    contactPrePassDurationSeconds: DurationInSecondsSchema.exactOptional().openapi({
+      description:
+        'Amount of time prior to contact start you’d like to receive a CloudWatch event indicating an upcoming pass.',
+    }),
+    dataflowEdges: DataflowEdgeListSchema.openapi({
+      description:
+        'A list of lists of ARNs. Each list of ARNs is an edge, with a <i>from</i> <code>Config</code> and a <i>to</i> <code>Config</code>.',
+    }),
+    minimumViableContactDurationSeconds: PositiveDurationInSecondsSchema.openapi({
+      description:
+        'Smallest amount of time in seconds that you’d like to see for an available contact. AWS Ground Station will not present you with contacts shorter than this duration.',
+    }),
+    name: SafeNameSchema.openapi({ description: 'Name of a mission profile.' }),
+    streamsKmsKey: KmsKeySchema.exactOptional().openapi({
+      description: 'KMS key to use for encrypting streams.',
+    }),
+    streamsKmsRole: RoleArnSchema.exactOptional().openapi({
+      description: 'Role to use for encrypting streams with KMS key.',
+    }),
+    tags: TagsMapSchema.exactOptional().openapi({
+      description: 'Tags assigned to a mission profile.',
+    }),
+    trackingConfigArn: ConfigArnSchema.openapi({
+      description: 'ARN of a tracking <code>Config</code>.',
+    }),
   })
   .openapi({
     required: ['dataflowEdges', 'minimumViableContactDurationSeconds', 'name', 'trackingConfigArn'],
@@ -2095,46 +1722,46 @@ const CreateMissionProfileRequestSchema = z
   .openapi('CreateMissionProfileRequest')
 
 const DeleteConfigRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteConfigRequest', description: '<p/>' })
   .openapi('DeleteConfigRequest')
 
 const DeleteDataflowEndpointGroupRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteDataflowEndpointGroupRequest', description: '<p/>' })
   .openapi('DeleteDataflowEndpointGroupRequest')
 
 const DeleteEphemerisRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteEphemerisRequest' })
   .openapi('DeleteEphemerisRequest')
 
 const DeleteMissionProfileRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteMissionProfileRequest', description: '<p/>' })
   .openapi('DeleteMissionProfileRequest')
 
 const DescribeContactRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeContactRequest', description: '<p/>' })
   .openapi('DescribeContactRequest')
 
 const DescribeEphemerisRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeEphemerisRequest' })
   .openapi('DescribeEphemerisRequest')
 
 const DiscoveryDataSchema = z
   .object({
-    capabilityArns: CapabilityArnListSchema.and(
-      z.any().openapi({ description: 'List of capabilities to associate with agent.' }),
-    ),
-    privateIpAddresses: IpAddressListSchema.and(
-      z.any().openapi({ description: 'List of private IP addresses to associate with agent.' }),
-    ),
-    publicIpAddresses: IpAddressListSchema.and(
-      z.any().openapi({ description: 'List of public IP addresses to associate with agent.' }),
-    ),
+    capabilityArns: CapabilityArnListSchema.openapi({
+      description: 'List of capabilities to associate with agent.',
+    }),
+    privateIpAddresses: IpAddressListSchema.openapi({
+      description: 'List of private IP addresses to associate with agent.',
+    }),
+    publicIpAddresses: IpAddressListSchema.openapi({
+      description: 'List of public IP addresses to associate with agent.',
+    }),
   })
   .openapi({
     required: ['capabilityArns', 'privateIpAddresses', 'publicIpAddresses'],
@@ -2149,17 +1776,17 @@ const EphemerisStatusListSchema = z
   .openapi('EphemerisStatusList')
 
 const GetAgentConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetAgentConfigurationRequest' })
   .openapi('GetAgentConfigurationRequest')
 
 const GetConfigRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetConfigRequest', description: '<p/>' })
   .openapi('GetConfigRequest')
 
 const GetDataflowEndpointGroupRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetDataflowEndpointGroupRequest', description: '<p/>' })
   .openapi('GetDataflowEndpointGroupRequest')
 
@@ -2169,30 +1796,26 @@ const YearSchema = z.int().min(2018).max(3000).openapi('Year')
 
 const GetMinuteUsageRequestSchema = z
   .object({
-    month: MonthSchema.and(
-      z.any().openapi({ description: 'The month being requested, with a value of 1-12.' }),
-    ),
-    year: YearSchema.and(
-      z.any().openapi({ description: 'The year being requested, in the format of YYYY.' }),
-    ),
+    month: MonthSchema.openapi({ description: 'The month being requested, with a value of 1-12.' }),
+    year: YearSchema.openapi({ description: 'The year being requested, in the format of YYYY.' }),
   })
   .openapi({ required: ['month', 'year'], title: 'GetMinuteUsageRequest', description: '<p/>' })
   .openapi('GetMinuteUsageRequest')
 
 const GetMissionProfileRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetMissionProfileRequest', description: '<p/>' })
   .openapi('GetMissionProfileRequest')
 
 const GetSatelliteRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetSatelliteRequest', description: '<p/>' })
   .openapi('GetSatelliteRequest')
 
 const PaginationMaxResultsSchema = z.int().min(0).max(100).openapi('PaginationMaxResults')
 
 const ListConfigsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListConfigsRequest', description: '<p/>' })
   .openapi('ListConfigsRequest')
 
@@ -2200,33 +1823,25 @@ const StatusListSchema = z.array(ContactStatusSchema).min(0).max(500).openapi('S
 
 const ListContactsRequestSchema = z
   .object({
-    endTime: TimestampSchema.and(z.any().openapi({ description: 'End time of a contact in UTC.' })),
-    groundStation: GroundStationNameSchema.and(
-      z.any().openapi({ description: 'Name of a ground station.' }),
-    ).exactOptional(),
-    maxResults: PaginationMaxResultsSchema.and(
-      z.any().openapi({ description: 'Maximum number of contacts returned.' }),
-    ).exactOptional(),
-    missionProfileArn: MissionProfileArnSchema.and(
-      z.any().openapi({ description: 'ARN of a mission profile.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Next token returned in the request of a previous <code>ListContacts</code> call. Used to get the next page of results.',
-        }),
-    ).exactOptional(),
-    satelliteArn: SatelliteArnSchema.and(
-      z.any().openapi({ description: 'ARN of a satellite.' }),
-    ).exactOptional(),
-    startTime: TimestampSchema.and(
-      z.any().openapi({ description: 'Start time of a contact in UTC.' }),
-    ),
-    statusList: StatusListSchema.and(
-      z.any().openapi({ description: 'Status of a contact reservation.' }),
-    ),
+    endTime: TimestampSchema.openapi({ description: 'End time of a contact in UTC.' }),
+    groundStation: GroundStationNameSchema.exactOptional().openapi({
+      description: 'Name of a ground station.',
+    }),
+    maxResults: PaginationMaxResultsSchema.exactOptional().openapi({
+      description: 'Maximum number of contacts returned.',
+    }),
+    missionProfileArn: MissionProfileArnSchema.exactOptional().openapi({
+      description: 'ARN of a mission profile.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'Next token returned in the request of a previous <code>ListContacts</code> call. Used to get the next page of results.',
+    }),
+    satelliteArn: SatelliteArnSchema.exactOptional().openapi({
+      description: 'ARN of a satellite.',
+    }),
+    startTime: TimestampSchema.openapi({ description: 'Start time of a contact in UTC.' }),
+    statusList: StatusListSchema.openapi({ description: 'Status of a contact reservation.' }),
   })
   .openapi({
     required: ['endTime', 'startTime', 'statusList'],
@@ -2236,92 +1851,72 @@ const ListContactsRequestSchema = z
   .openapi('ListContactsRequest')
 
 const ListDataflowEndpointGroupsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListDataflowEndpointGroupsRequest', description: '<p/>' })
   .openapi('ListDataflowEndpointGroupsRequest')
 
 const ListEphemeridesRequestSchema = z
   .object({
-    endTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The end time to list in UTC. The operation will return an ephemeris if its expiration time is within the time range defined by the <code>startTime</code> and <code>endTime</code>.',
-        }),
-    ),
-    satelliteId: UuidSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The AWS Ground Station satellite ID to list ephemeris for.' }),
-    ),
-    startTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The start time to list in UTC. The operation will return an ephemeris if its expiration time is within the time range defined by the <code>startTime</code> and <code>endTime</code>.',
-        }),
-    ),
-    statusList: EphemerisStatusListSchema.and(
-      z.any().openapi({ description: 'The list of ephemeris status to return.' }),
-    ).exactOptional(),
+    endTime: TimestampSchema.openapi({
+      description:
+        'The end time to list in UTC. The operation will return an ephemeris if its expiration time is within the time range defined by the <code>startTime</code> and <code>endTime</code>.',
+    }),
+    satelliteId: UuidSchema.openapi({
+      description: 'The AWS Ground Station satellite ID to list ephemeris for.',
+    }),
+    startTime: TimestampSchema.openapi({
+      description:
+        'The start time to list in UTC. The operation will return an ephemeris if its expiration time is within the time range defined by the <code>startTime</code> and <code>endTime</code>.',
+    }),
+    statusList: EphemerisStatusListSchema.exactOptional().openapi({
+      description: 'The list of ephemeris status to return.',
+    }),
   })
   .openapi({ required: ['endTime', 'satelliteId', 'startTime'], title: 'ListEphemeridesRequest' })
   .openapi('ListEphemeridesRequest')
 
 const ListGroundStationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListGroundStationsRequest', description: '<p/>' })
   .openapi('ListGroundStationsRequest')
 
 const ListMissionProfilesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListMissionProfilesRequest', description: '<p/>' })
   .openapi('ListMissionProfilesRequest')
 
 const ListSatellitesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListSatellitesRequest', description: '<p/>' })
   .openapi('ListSatellitesRequest')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest', description: '<p/>' })
   .openapi('ListTagsForResourceRequest')
 
 const RegisterAgentRequestSchema = z
   .object({
-    agentDetails: AgentDetailsSchema.and(
-      z.any().openapi({ description: 'Detailed information about the agent being registered.' }),
-    ),
-    discoveryData: DiscoveryDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Data for associating an agent with the capabilities it is managing.',
-        }),
-    ),
+    agentDetails: AgentDetailsSchema.openapi({
+      description: 'Detailed information about the agent being registered.',
+    }),
+    discoveryData: DiscoveryDataSchema.openapi({
+      description: 'Data for associating an agent with the capabilities it is managing.',
+    }),
   })
   .openapi({ required: ['agentDetails', 'discoveryData'], title: 'RegisterAgentRequest' })
   .openapi('RegisterAgentRequest')
 
 const ReserveContactRequestSchema = z
   .object({
-    endTime: TimestampSchema.and(z.any().openapi({ description: 'End time of a contact in UTC.' })),
-    groundStation: GroundStationNameSchema.and(
-      z.any().openapi({ description: 'Name of a ground station.' }),
-    ),
-    missionProfileArn: MissionProfileArnSchema.and(
-      z.any().openapi({ description: 'ARN of a mission profile.' }),
-    ),
-    satelliteArn: SatelliteArnSchema.and(z.any().openapi({ description: 'ARN of a satellite' })),
-    startTime: TimestampSchema.and(
-      z.any().openapi({ description: 'Start time of a contact in UTC.' }),
-    ),
-    tags: TagsMapSchema.and(
-      z.any().openapi({ description: 'Tags assigned to a contact.' }),
-    ).exactOptional(),
+    endTime: TimestampSchema.openapi({ description: 'End time of a contact in UTC.' }),
+    groundStation: GroundStationNameSchema.openapi({ description: 'Name of a ground station.' }),
+    missionProfileArn: MissionProfileArnSchema.openapi({
+      description: 'ARN of a mission profile.',
+    }),
+    satelliteArn: SatelliteArnSchema.openapi({ description: 'ARN of a satellite' }),
+    startTime: TimestampSchema.openapi({ description: 'Start time of a contact in UTC.' }),
+    tags: TagsMapSchema.exactOptional().openapi({ description: 'Tags assigned to a contact.' }),
   })
   .openapi({
     required: ['endTime', 'groundStation', 'missionProfileArn', 'satelliteArn', 'startTime'],
@@ -2333,26 +1928,22 @@ const ReserveContactRequestSchema = z
 const TagKeysSchema = z.array(UnboundedStringSchema).min(0).max(500).openapi('TagKeys')
 
 const TagResourceRequestSchema = z
-  .object({
-    tags: TagsMapSchema.and(z.any().openapi({ description: 'Tags assigned to a resource.' })),
-  })
+  .object({ tags: TagsMapSchema.openapi({ description: 'Tags assigned to a resource.' }) })
   .openapi({ required: ['tags'], title: 'TagResourceRequest', description: '<p/>' })
   .openapi('TagResourceRequest')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest', description: '<p/>' })
   .openapi('UntagResourceRequest')
 
 const UpdateAgentStatusRequestSchema = z
   .object({
-    aggregateStatus: AggregateStatusSchema.and(
-      z.any().openapi({ description: 'Aggregate status for agent.' }),
-    ),
-    componentStatuses: ComponentStatusListSchema.and(
-      z.any().openapi({ description: 'List of component statuses for agent.' }),
-    ),
-    taskId: UuidSchema.and(z.any().openapi({ description: 'GUID of agent task.' })),
+    aggregateStatus: AggregateStatusSchema.openapi({ description: 'Aggregate status for agent.' }),
+    componentStatuses: ComponentStatusListSchema.openapi({
+      description: 'List of component statuses for agent.',
+    }),
+    taskId: UuidSchema.openapi({ description: 'GUID of agent task.' }),
   })
   .openapi({
     required: ['aggregateStatus', 'componentStatuses', 'taskId'],
@@ -2362,90 +1953,60 @@ const UpdateAgentStatusRequestSchema = z
 
 const UpdateConfigRequestSchema = z
   .object({
-    configData: ConfigTypeDataSchema.and(
-      z.any().openapi({ description: 'Parameters of a <code>Config</code>.' }),
-    ),
-    name: SafeNameSchema.and(z.any().openapi({ description: 'Name of a <code>Config</code>.' })),
+    configData: ConfigTypeDataSchema.openapi({
+      description: 'Parameters of a <code>Config</code>.',
+    }),
+    name: SafeNameSchema.openapi({ description: 'Name of a <code>Config</code>.' }),
   })
   .openapi({ required: ['configData', 'name'], title: 'UpdateConfigRequest', description: '<p/>' })
   .openapi('UpdateConfigRequest')
 
 const UpdateEphemerisRequestSchema = z
   .object({
-    enabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether the ephemeris is enabled or not. Changing this value will not require the ephemeris to be re-validated.',
-        }),
-    ),
-    name: SafeNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A name string associated with the ephemeris. Used as a human-readable identifier for the ephemeris.',
-        }),
-    ).exactOptional(),
-    priority: EphemerisPrioritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Customer-provided priority score to establish the order in which overlapping ephemerides should be used.</p> <p>The default for customer-provided ephemeris priority is 1, and higher numbers take precedence.</p> <p>Priority must be 1 or greater</p>',
-        }),
-    ).exactOptional(),
+    enabled: BooleanSchema.openapi({
+      description:
+        'Whether the ephemeris is enabled or not. Changing this value will not require the ephemeris to be re-validated.',
+    }),
+    name: SafeNameSchema.exactOptional().openapi({
+      description:
+        'A name string associated with the ephemeris. Used as a human-readable identifier for the ephemeris.',
+    }),
+    priority: EphemerisPrioritySchema.exactOptional().openapi({
+      description:
+        '<p>Customer-provided priority score to establish the order in which overlapping ephemerides should be used.</p> <p>The default for customer-provided ephemeris priority is 1, and higher numbers take precedence.</p> <p>Priority must be 1 or greater</p>',
+    }),
   })
   .openapi({ required: ['enabled'], title: 'UpdateEphemerisRequest' })
   .openapi('UpdateEphemerisRequest')
 
 const UpdateMissionProfileRequestSchema = z
   .object({
-    contactPostPassDurationSeconds: DurationInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amount of time after a contact ends that you’d like to receive a CloudWatch event indicating the pass has finished.',
-        }),
-    ).exactOptional(),
-    contactPrePassDurationSeconds: DurationInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amount of time after a contact ends that you’d like to receive a CloudWatch event indicating the pass has finished.',
-        }),
-    ).exactOptional(),
-    dataflowEdges: DataflowEdgeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of lists of ARNs. Each list of ARNs is an edge, with a <i>from</i> <code>Config</code> and a <i>to</i> <code>Config</code>.',
-        }),
-    ).exactOptional(),
-    minimumViableContactDurationSeconds: PositiveDurationInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Smallest amount of time in seconds that you’d like to see for an available contact. AWS Ground Station will not present you with contacts shorter than this duration.',
-        }),
-    ).exactOptional(),
-    name: SafeNameSchema.and(
-      z.any().openapi({ description: 'Name of a mission profile.' }),
-    ).exactOptional(),
-    streamsKmsKey: KmsKeySchema.and(
-      z.any().openapi({ description: 'KMS key to use for encrypting streams.' }),
-    ).exactOptional(),
-    streamsKmsRole: RoleArnSchema.and(
-      z.any().openapi({ description: 'Role to use for encrypting streams with KMS key.' }),
-    ).exactOptional(),
-    trackingConfigArn: ConfigArnSchema.and(
-      z.any().openapi({ description: 'ARN of a tracking <code>Config</code>.' }),
-    ).exactOptional(),
+    contactPostPassDurationSeconds: DurationInSecondsSchema.exactOptional().openapi({
+      description:
+        'Amount of time after a contact ends that you’d like to receive a CloudWatch event indicating the pass has finished.',
+    }),
+    contactPrePassDurationSeconds: DurationInSecondsSchema.exactOptional().openapi({
+      description:
+        'Amount of time after a contact ends that you’d like to receive a CloudWatch event indicating the pass has finished.',
+    }),
+    dataflowEdges: DataflowEdgeListSchema.exactOptional().openapi({
+      description:
+        'A list of lists of ARNs. Each list of ARNs is an edge, with a <i>from</i> <code>Config</code> and a <i>to</i> <code>Config</code>.',
+    }),
+    minimumViableContactDurationSeconds: PositiveDurationInSecondsSchema.exactOptional().openapi({
+      description:
+        'Smallest amount of time in seconds that you’d like to see for an available contact. AWS Ground Station will not present you with contacts shorter than this duration.',
+    }),
+    name: SafeNameSchema.exactOptional().openapi({ description: 'Name of a mission profile.' }),
+    streamsKmsKey: KmsKeySchema.exactOptional().openapi({
+      description: 'KMS key to use for encrypting streams.',
+    }),
+    streamsKmsRole: RoleArnSchema.exactOptional().openapi({
+      description: 'Role to use for encrypting streams with KMS key.',
+    }),
+    trackingConfigArn: ConfigArnSchema.exactOptional().openapi({
+      description: 'ARN of a tracking <code>Config</code>.',
+    }),
   })
   .openapi({ title: 'UpdateMissionProfileRequest', description: '<p/>', required: [] })
   .openapi('UpdateMissionProfileRequest')
@@ -2738,60 +2299,33 @@ export const postConfigRoute = createRoute({
             .object({
               configData: z
                 .object({
-                  antennaDownlinkConfig: AntennaDownlinkConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Information about how AWS Ground Station should configure an antenna for downlink during a contact.',
-                      }),
-                  ).exactOptional(),
-                  antennaDownlinkDemodDecodeConfig: AntennaDownlinkDemodDecodeConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Information about how AWS Ground Station should conﬁgure an antenna for downlink demod decode during a contact.',
-                      }),
-                  ).exactOptional(),
-                  antennaUplinkConfig: AntennaUplinkConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Information about how AWS Ground Station should conﬁgure an antenna for uplink during a contact.',
-                      }),
-                  ).exactOptional(),
-                  dataflowEndpointConfig: DataflowEndpointConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'Information about the dataflow endpoint <code>Config</code>.',
-                      }),
-                  ).exactOptional(),
-                  s3RecordingConfig: S3RecordingConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'Information about an S3 recording <code>Config</code>.',
-                      }),
-                  ).exactOptional(),
-                  trackingConfig: TrackingConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Object that determines whether tracking should be used during a contact executed with this <code>Config</code> in the mission profile. ',
-                      }),
-                  ).exactOptional(),
-                  uplinkEchoConfig: UplinkEchoConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>Information about an uplink echo <code>Config</code>.</p> <p>Parameters from the <code>AntennaUplinkConfig</code>, corresponding to the specified <code>AntennaUplinkConfigArn</code>, are used when this <code>UplinkEchoConfig</code> is used in a contact.</p>',
-                      }),
-                  ).exactOptional(),
+                  antennaDownlinkConfig: AntennaDownlinkConfigSchema.exactOptional().openapi({
+                    description:
+                      'Information about how AWS Ground Station should configure an antenna for downlink during a contact.',
+                  }),
+                  antennaDownlinkDemodDecodeConfig:
+                    AntennaDownlinkDemodDecodeConfigSchema.exactOptional().openapi({
+                      description:
+                        'Information about how AWS Ground Station should conﬁgure an antenna for downlink demod decode during a contact.',
+                    }),
+                  antennaUplinkConfig: AntennaUplinkConfigSchema.exactOptional().openapi({
+                    description:
+                      'Information about how AWS Ground Station should conﬁgure an antenna for uplink during a contact.',
+                  }),
+                  dataflowEndpointConfig: DataflowEndpointConfigSchema.exactOptional().openapi({
+                    description: 'Information about the dataflow endpoint <code>Config</code>.',
+                  }),
+                  s3RecordingConfig: S3RecordingConfigSchema.exactOptional().openapi({
+                    description: 'Information about an S3 recording <code>Config</code>.',
+                  }),
+                  trackingConfig: TrackingConfigSchema.exactOptional().openapi({
+                    description:
+                      'Object that determines whether tracking should be used during a contact executed with this <code>Config</code> in the mission profile. ',
+                  }),
+                  uplinkEchoConfig: UplinkEchoConfigSchema.exactOptional().openapi({
+                    description:
+                      '<p>Information about an uplink echo <code>Config</code>.</p> <p>Parameters from the <code>AntennaUplinkConfig</code>, corresponding to the specified <code>AntennaUplinkConfigArn</code>, are used when this <code>UplinkEchoConfig</code> is used in a contact.</p>',
+                  }),
                 })
                 .openapi({
                   description:
@@ -3240,12 +2774,10 @@ export const postMissionprofileRoute = createRoute({
                 .openapi({ description: 'Name of a mission profile.' }),
               streamsKmsKey: z
                 .object({
-                  kmsAliasArn: KeyAliasArnSchema.and(
-                    z.any().openapi({ description: 'KMS Alias Arn.' }),
-                  ).exactOptional(),
-                  kmsKeyArn: KeyArnSchema.and(
-                    z.any().openapi({ description: 'KMS Key Arn.' }),
-                  ).exactOptional(),
+                  kmsAliasArn: KeyAliasArnSchema.exactOptional().openapi({
+                    description: 'KMS Alias Arn.',
+                  }),
+                  kmsKeyArn: KeyArnSchema.exactOptional().openapi({ description: 'KMS Key Arn.' }),
                 })
                 .exactOptional()
                 .openapi({ description: 'AWS Key Management Service (KMS) Key.', required: [] }),
@@ -3456,60 +2988,33 @@ export const putConfigConfigTypeConfigIdRoute = createRoute({
             .object({
               configData: z
                 .object({
-                  antennaDownlinkConfig: AntennaDownlinkConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Information about how AWS Ground Station should configure an antenna for downlink during a contact.',
-                      }),
-                  ).exactOptional(),
-                  antennaDownlinkDemodDecodeConfig: AntennaDownlinkDemodDecodeConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Information about how AWS Ground Station should conﬁgure an antenna for downlink demod decode during a contact.',
-                      }),
-                  ).exactOptional(),
-                  antennaUplinkConfig: AntennaUplinkConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Information about how AWS Ground Station should conﬁgure an antenna for uplink during a contact.',
-                      }),
-                  ).exactOptional(),
-                  dataflowEndpointConfig: DataflowEndpointConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'Information about the dataflow endpoint <code>Config</code>.',
-                      }),
-                  ).exactOptional(),
-                  s3RecordingConfig: S3RecordingConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'Information about an S3 recording <code>Config</code>.',
-                      }),
-                  ).exactOptional(),
-                  trackingConfig: TrackingConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Object that determines whether tracking should be used during a contact executed with this <code>Config</code> in the mission profile. ',
-                      }),
-                  ).exactOptional(),
-                  uplinkEchoConfig: UplinkEchoConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>Information about an uplink echo <code>Config</code>.</p> <p>Parameters from the <code>AntennaUplinkConfig</code>, corresponding to the specified <code>AntennaUplinkConfigArn</code>, are used when this <code>UplinkEchoConfig</code> is used in a contact.</p>',
-                      }),
-                  ).exactOptional(),
+                  antennaDownlinkConfig: AntennaDownlinkConfigSchema.exactOptional().openapi({
+                    description:
+                      'Information about how AWS Ground Station should configure an antenna for downlink during a contact.',
+                  }),
+                  antennaDownlinkDemodDecodeConfig:
+                    AntennaDownlinkDemodDecodeConfigSchema.exactOptional().openapi({
+                      description:
+                        'Information about how AWS Ground Station should conﬁgure an antenna for downlink demod decode during a contact.',
+                    }),
+                  antennaUplinkConfig: AntennaUplinkConfigSchema.exactOptional().openapi({
+                    description:
+                      'Information about how AWS Ground Station should conﬁgure an antenna for uplink during a contact.',
+                  }),
+                  dataflowEndpointConfig: DataflowEndpointConfigSchema.exactOptional().openapi({
+                    description: 'Information about the dataflow endpoint <code>Config</code>.',
+                  }),
+                  s3RecordingConfig: S3RecordingConfigSchema.exactOptional().openapi({
+                    description: 'Information about an S3 recording <code>Config</code>.',
+                  }),
+                  trackingConfig: TrackingConfigSchema.exactOptional().openapi({
+                    description:
+                      'Object that determines whether tracking should be used during a contact executed with this <code>Config</code> in the mission profile. ',
+                  }),
+                  uplinkEchoConfig: UplinkEchoConfigSchema.exactOptional().openapi({
+                    description:
+                      '<p>Information about an uplink echo <code>Config</code>.</p> <p>Parameters from the <code>AntennaUplinkConfig</code>, corresponding to the specified <code>AntennaUplinkConfigArn</code>, are used when this <code>UplinkEchoConfig</code> is used in a contact.</p>',
+                  }),
                 })
                 .openapi({
                   description:
@@ -4101,12 +3606,10 @@ export const putMissionprofileMissionProfileIdRoute = createRoute({
                 .openapi({ description: 'Name of a mission profile.' }),
               streamsKmsKey: z
                 .object({
-                  kmsAliasArn: KeyAliasArnSchema.and(
-                    z.any().openapi({ description: 'KMS Alias Arn.' }),
-                  ).exactOptional(),
-                  kmsKeyArn: KeyArnSchema.and(
-                    z.any().openapi({ description: 'KMS Key Arn.' }),
-                  ).exactOptional(),
+                  kmsAliasArn: KeyAliasArnSchema.exactOptional().openapi({
+                    description: 'KMS Alias Arn.',
+                  }),
+                  kmsKeyArn: KeyArnSchema.exactOptional().openapi({ description: 'KMS Key Arn.' }),
                 })
                 .exactOptional()
                 .openapi({ description: 'AWS Key Management Service (KMS) Key.', required: [] }),
@@ -4934,54 +4437,38 @@ export const postAgentRoute = createRoute({
             .object({
               agentDetails: z
                 .object({
-                  agentCpuCores: AgentCpuCoresListSchema.and(
-                    z.any().openapi({ description: 'List of CPU cores reserved for the agent.' }),
-                  ).exactOptional(),
-                  agentVersion: VersionStringSchema.and(
-                    z.any().openapi({ description: 'Current agent version.' }),
-                  ).exactOptional(),
-                  componentVersions: ComponentVersionListSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'List of versions being used by agent components.' }),
-                  ).exactOptional(),
-                  instanceId: InstanceIdSchema.and(
-                    z.any().openapi({ description: 'ID of EC2 instance agent is running on.' }),
-                  ).exactOptional(),
-                  instanceType: InstanceTypeSchema.and(
-                    z.any().openapi({ description: 'Type of EC2 instance agent is running on.' }),
-                  ).exactOptional(),
-                  reservedCpuCores: AgentCpuCoresListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<note> <p>This field should not be used. Use agentCpuCores instead.</p> </note> <p>List of CPU cores reserved for processes other than the agent running on the EC2 instance.</p>',
-                      }),
-                  ).exactOptional(),
+                  agentCpuCores: AgentCpuCoresListSchema.exactOptional().openapi({
+                    description: 'List of CPU cores reserved for the agent.',
+                  }),
+                  agentVersion: VersionStringSchema.exactOptional().openapi({
+                    description: 'Current agent version.',
+                  }),
+                  componentVersions: ComponentVersionListSchema.exactOptional().openapi({
+                    description: 'List of versions being used by agent components.',
+                  }),
+                  instanceId: InstanceIdSchema.exactOptional().openapi({
+                    description: 'ID of EC2 instance agent is running on.',
+                  }),
+                  instanceType: InstanceTypeSchema.exactOptional().openapi({
+                    description: 'Type of EC2 instance agent is running on.',
+                  }),
+                  reservedCpuCores: AgentCpuCoresListSchema.exactOptional().openapi({
+                    description:
+                      '<note> <p>This field should not be used. Use agentCpuCores instead.</p> </note> <p>List of CPU cores reserved for processes other than the agent running on the EC2 instance.</p>',
+                  }),
                 })
                 .openapi({ description: 'Detailed information about the agent.', required: [] }),
               discoveryData: z
                 .object({
-                  capabilityArns: CapabilityArnListSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'List of capabilities to associate with agent.' }),
-                  ).exactOptional(),
-                  privateIpAddresses: IpAddressListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'List of private IP addresses to associate with agent.',
-                      }),
-                  ).exactOptional(),
-                  publicIpAddresses: IpAddressListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'List of public IP addresses to associate with agent.',
-                      }),
-                  ).exactOptional(),
+                  capabilityArns: CapabilityArnListSchema.exactOptional().openapi({
+                    description: 'List of capabilities to associate with agent.',
+                  }),
+                  privateIpAddresses: IpAddressListSchema.exactOptional().openapi({
+                    description: 'List of private IP addresses to associate with agent.',
+                  }),
+                  publicIpAddresses: IpAddressListSchema.exactOptional().openapi({
+                    description: 'List of public IP addresses to associate with agent.',
+                  }),
                 })
                 .openapi({ description: 'Data for agent discovery.', required: [] }),
             })
@@ -5206,12 +4693,12 @@ export const putAgentAgentIdRoute = createRoute({
             .object({
               aggregateStatus: z
                 .object({
-                  signatureMap: SignatureMapSchema.and(
-                    z.any().openapi({ description: 'Sparse map of failure signatures.' }),
-                  ).exactOptional(),
-                  status: AgentStatusSchema.and(
-                    z.any().openapi({ description: 'Aggregate status.' }),
-                  ).exactOptional(),
+                  signatureMap: SignatureMapSchema.exactOptional().openapi({
+                    description: 'Sparse map of failure signatures.',
+                  }),
+                  status: AgentStatusSchema.exactOptional().openapi({
+                    description: 'Aggregate status.',
+                  }),
                 })
                 .openapi({ description: 'Aggregate status of Agent components.', required: [] }),
               componentStatuses: z

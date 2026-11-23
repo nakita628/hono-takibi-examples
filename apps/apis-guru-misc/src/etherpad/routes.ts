@@ -37,7 +37,7 @@ const ApiErrorResponse = {
       schema: z
         .object({
           code: z.int().exactOptional().openapi({ example: 1 }),
-          data: z.object({}).exactOptional().openapi({ example: null }),
+          data: z.looseObject({}).exactOptional().openapi({ example: null }),
           message: z.string().exactOptional().openapi({ example: 'error message' }),
         })
         .openapi({ required: [] }),
@@ -52,7 +52,7 @@ const InternalErrorResponse = {
       schema: z
         .object({
           code: z.int().exactOptional().openapi({ example: 2 }),
-          data: z.object({}).exactOptional().openapi({ example: null }),
+          data: z.looseObject({}).exactOptional().openapi({ example: null }),
           message: z.string().exactOptional().openapi({ example: 'internal error' }),
         })
         .openapi({ required: [] }),
@@ -67,7 +67,7 @@ const NotFoundResponse = {
       schema: z
         .object({
           code: z.int().exactOptional().openapi({ example: 3 }),
-          data: z.object({}).exactOptional().openapi({ example: null }),
+          data: z.looseObject({}).exactOptional().openapi({ example: null }),
           message: z.string().exactOptional().openapi({ example: 'no such function' }),
         })
         .openapi({ required: [] }),
@@ -82,7 +82,7 @@ const SuccessResponse = {
       schema: z
         .object({
           code: z.int().exactOptional().openapi({ example: 0 }),
-          data: z.object({}).exactOptional().openapi({ example: null }),
+          data: z.looseObject({}).exactOptional().openapi({ example: null }),
           message: z.string().exactOptional().openapi({ example: 'ok' }),
         })
         .openapi({ required: [] }),
@@ -97,7 +97,7 @@ const UnauthorizedResponse = {
       schema: z
         .object({
           code: z.int().exactOptional().openapi({ example: 4 }),
-          data: z.object({}).exactOptional().openapi({ example: null }),
+          data: z.looseObject({}).exactOptional().openapi({ example: null }),
           message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
         })
         .openapi({ required: [] }),
@@ -282,7 +282,7 @@ export const getAppendChatMessageRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -296,7 +296,7 @@ export const getAppendChatMessageRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -310,7 +310,7 @@ export const getAppendChatMessageRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -324,7 +324,7 @@ export const getAppendChatMessageRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -376,7 +376,7 @@ export const postAppendChatMessageRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -390,7 +390,7 @@ export const postAppendChatMessageRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -404,7 +404,7 @@ export const postAppendChatMessageRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -418,7 +418,7 @@ export const postAppendChatMessageRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -456,7 +456,7 @@ export const getAppendTextRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -470,7 +470,7 @@ export const getAppendTextRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -484,7 +484,7 @@ export const getAppendTextRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -498,7 +498,7 @@ export const getAppendTextRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -536,7 +536,7 @@ export const postAppendTextRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -550,7 +550,7 @@ export const postAppendTextRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -564,7 +564,7 @@ export const postAppendTextRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -578,7 +578,7 @@ export const postAppendTextRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -602,7 +602,7 @@ export const getCheckTokenRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -616,7 +616,7 @@ export const getCheckTokenRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -630,7 +630,7 @@ export const getCheckTokenRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -644,7 +644,7 @@ export const getCheckTokenRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -668,7 +668,7 @@ export const postCheckTokenRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -682,7 +682,7 @@ export const postCheckTokenRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -696,7 +696,7 @@ export const postCheckTokenRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -710,7 +710,7 @@ export const postCheckTokenRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -759,7 +759,7 @@ export const getCopyPadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -773,7 +773,7 @@ export const getCopyPadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -787,7 +787,7 @@ export const getCopyPadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -801,7 +801,7 @@ export const getCopyPadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -850,7 +850,7 @@ export const postCopyPadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -864,7 +864,7 @@ export const postCopyPadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -878,7 +878,7 @@ export const postCopyPadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -892,7 +892,7 @@ export const postCopyPadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -941,7 +941,7 @@ export const getCopyPadWithoutHistoryRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -955,7 +955,7 @@ export const getCopyPadWithoutHistoryRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -969,7 +969,7 @@ export const getCopyPadWithoutHistoryRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -983,7 +983,7 @@ export const getCopyPadWithoutHistoryRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -1032,7 +1032,7 @@ export const postCopyPadWithoutHistoryRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -1046,7 +1046,7 @@ export const postCopyPadWithoutHistoryRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -1060,7 +1060,7 @@ export const postCopyPadWithoutHistoryRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -1074,7 +1074,7 @@ export const postCopyPadWithoutHistoryRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -1125,7 +1125,7 @@ export const getCreateAuthorRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -1139,7 +1139,7 @@ export const getCreateAuthorRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -1153,7 +1153,7 @@ export const getCreateAuthorRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -1204,7 +1204,7 @@ export const postCreateAuthorRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -1218,7 +1218,7 @@ export const postCreateAuthorRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -1232,7 +1232,7 @@ export const postCreateAuthorRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -1289,7 +1289,7 @@ export const getCreateAuthorIfNotExistsForRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -1303,7 +1303,7 @@ export const getCreateAuthorIfNotExistsForRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -1317,7 +1317,7 @@ export const getCreateAuthorIfNotExistsForRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -1374,7 +1374,7 @@ export const postCreateAuthorIfNotExistsForRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -1388,7 +1388,7 @@ export const postCreateAuthorIfNotExistsForRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -1402,7 +1402,7 @@ export const postCreateAuthorIfNotExistsForRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -1447,7 +1447,7 @@ export const getCreateDiffHTMLRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional(),
+              data: z.looseObject({}).exactOptional(),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -1461,7 +1461,7 @@ export const getCreateDiffHTMLRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -1475,7 +1475,7 @@ export const getCreateDiffHTMLRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -1489,7 +1489,7 @@ export const getCreateDiffHTMLRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -1534,7 +1534,7 @@ export const postCreateDiffHTMLRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional(),
+              data: z.looseObject({}).exactOptional(),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -1548,7 +1548,7 @@ export const postCreateDiffHTMLRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -1562,7 +1562,7 @@ export const postCreateDiffHTMLRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -1576,7 +1576,7 @@ export const postCreateDiffHTMLRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -1617,7 +1617,7 @@ export const getCreateGroupRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -1631,7 +1631,7 @@ export const getCreateGroupRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -1645,7 +1645,7 @@ export const getCreateGroupRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -1686,7 +1686,7 @@ export const postCreateGroupRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -1700,7 +1700,7 @@ export const postCreateGroupRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -1714,7 +1714,7 @@ export const postCreateGroupRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -1765,7 +1765,7 @@ export const getCreateGroupIfNotExistsForRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -1779,7 +1779,7 @@ export const getCreateGroupIfNotExistsForRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -1793,7 +1793,7 @@ export const getCreateGroupIfNotExistsForRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -1844,7 +1844,7 @@ export const postCreateGroupIfNotExistsForRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -1858,7 +1858,7 @@ export const postCreateGroupIfNotExistsForRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -1872,7 +1872,7 @@ export const postCreateGroupIfNotExistsForRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -1918,7 +1918,7 @@ export const getCreateGroupPadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -1932,7 +1932,7 @@ export const getCreateGroupPadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -1946,7 +1946,7 @@ export const getCreateGroupPadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -1960,7 +1960,7 @@ export const getCreateGroupPadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -2006,7 +2006,7 @@ export const postCreateGroupPadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -2020,7 +2020,7 @@ export const postCreateGroupPadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -2034,7 +2034,7 @@ export const postCreateGroupPadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -2048,7 +2048,7 @@ export const postCreateGroupPadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -2089,7 +2089,7 @@ export const getCreatePadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -2103,7 +2103,7 @@ export const getCreatePadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -2117,7 +2117,7 @@ export const getCreatePadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -2131,7 +2131,7 @@ export const getCreatePadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -2172,7 +2172,7 @@ export const postCreatePadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -2186,7 +2186,7 @@ export const postCreatePadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -2200,7 +2200,7 @@ export const postCreatePadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -2214,7 +2214,7 @@ export const postCreatePadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -2277,7 +2277,7 @@ export const getCreateSessionRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -2291,7 +2291,7 @@ export const getCreateSessionRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -2305,7 +2305,7 @@ export const getCreateSessionRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -2368,7 +2368,7 @@ export const postCreateSessionRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -2382,7 +2382,7 @@ export const postCreateSessionRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -2396,7 +2396,7 @@ export const postCreateSessionRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -2430,7 +2430,7 @@ export const getDeleteGroupRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -2444,7 +2444,7 @@ export const getDeleteGroupRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -2458,7 +2458,7 @@ export const getDeleteGroupRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -2472,7 +2472,7 @@ export const getDeleteGroupRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -2506,7 +2506,7 @@ export const postDeleteGroupRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -2520,7 +2520,7 @@ export const postDeleteGroupRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -2534,7 +2534,7 @@ export const postDeleteGroupRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -2548,7 +2548,7 @@ export const postDeleteGroupRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -2582,7 +2582,7 @@ export const getDeletePadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -2596,7 +2596,7 @@ export const getDeletePadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -2610,7 +2610,7 @@ export const getDeletePadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -2624,7 +2624,7 @@ export const getDeletePadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -2658,7 +2658,7 @@ export const postDeletePadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -2672,7 +2672,7 @@ export const postDeletePadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -2686,7 +2686,7 @@ export const postDeletePadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -2700,7 +2700,7 @@ export const postDeletePadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -2734,7 +2734,7 @@ export const getDeleteSessionRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -2748,7 +2748,7 @@ export const getDeleteSessionRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -2762,7 +2762,7 @@ export const getDeleteSessionRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -2776,7 +2776,7 @@ export const getDeleteSessionRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -2810,7 +2810,7 @@ export const postDeleteSessionRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -2824,7 +2824,7 @@ export const postDeleteSessionRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -2838,7 +2838,7 @@ export const postDeleteSessionRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -2852,7 +2852,7 @@ export const postDeleteSessionRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -2884,7 +2884,7 @@ export const getGetAttributePoolRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -2898,7 +2898,7 @@ export const getGetAttributePoolRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -2912,7 +2912,7 @@ export const getGetAttributePoolRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -2926,7 +2926,7 @@ export const getGetAttributePoolRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -2958,7 +2958,7 @@ export const postGetAttributePoolRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -2972,7 +2972,7 @@ export const postGetAttributePoolRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -2986,7 +2986,7 @@ export const postGetAttributePoolRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -3000,7 +3000,7 @@ export const postGetAttributePoolRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -3061,7 +3061,7 @@ export const getGetAuthorNameRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -3075,7 +3075,7 @@ export const getGetAuthorNameRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -3089,7 +3089,7 @@ export const getGetAuthorNameRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -3150,7 +3150,7 @@ export const postGetAuthorNameRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -3164,7 +3164,7 @@ export const postGetAuthorNameRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -3178,7 +3178,7 @@ export const postGetAuthorNameRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -3239,7 +3239,7 @@ export const getGetChatHeadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -3253,7 +3253,7 @@ export const getGetChatHeadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -3267,7 +3267,7 @@ export const getGetChatHeadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -3328,7 +3328,7 @@ export const postGetChatHeadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -3342,7 +3342,7 @@ export const postGetChatHeadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -3356,7 +3356,7 @@ export const postGetChatHeadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -3432,7 +3432,7 @@ export const getGetChatHistoryRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -3446,7 +3446,7 @@ export const getGetChatHistoryRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -3460,7 +3460,7 @@ export const getGetChatHistoryRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -3536,7 +3536,7 @@ export const postGetChatHistoryRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -3550,7 +3550,7 @@ export const postGetChatHistoryRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -3564,7 +3564,7 @@ export const postGetChatHistoryRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -3621,7 +3621,7 @@ export const getGetHTMLRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -3635,7 +3635,7 @@ export const getGetHTMLRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -3649,7 +3649,7 @@ export const getGetHTMLRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -3706,7 +3706,7 @@ export const postGetHTMLRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -3720,7 +3720,7 @@ export const postGetHTMLRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -3734,7 +3734,7 @@ export const postGetHTMLRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -3785,7 +3785,7 @@ export const getGetLastEditedRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -3799,7 +3799,7 @@ export const getGetLastEditedRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -3813,7 +3813,7 @@ export const getGetLastEditedRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -3864,7 +3864,7 @@ export const postGetLastEditedRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -3878,7 +3878,7 @@ export const postGetLastEditedRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -3892,7 +3892,7 @@ export const postGetLastEditedRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -3924,7 +3924,7 @@ export const getGetPadIDRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -3938,7 +3938,7 @@ export const getGetPadIDRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -3952,7 +3952,7 @@ export const getGetPadIDRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -3966,7 +3966,7 @@ export const getGetPadIDRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -3998,7 +3998,7 @@ export const postGetPadIDRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -4012,7 +4012,7 @@ export const postGetPadIDRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -4026,7 +4026,7 @@ export const postGetPadIDRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -4040,7 +4040,7 @@ export const postGetPadIDRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -4091,7 +4091,7 @@ export const getGetPublicStatusRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -4105,7 +4105,7 @@ export const getGetPublicStatusRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -4119,7 +4119,7 @@ export const getGetPublicStatusRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -4170,7 +4170,7 @@ export const postGetPublicStatusRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -4184,7 +4184,7 @@ export const postGetPublicStatusRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -4198,7 +4198,7 @@ export const postGetPublicStatusRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -4249,7 +4249,7 @@ export const getGetReadOnlyIDRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -4263,7 +4263,7 @@ export const getGetReadOnlyIDRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -4277,7 +4277,7 @@ export const getGetReadOnlyIDRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -4328,7 +4328,7 @@ export const postGetReadOnlyIDRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -4342,7 +4342,7 @@ export const postGetReadOnlyIDRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -4356,7 +4356,7 @@ export const postGetReadOnlyIDRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -4394,7 +4394,7 @@ export const getGetRevisionChangesetRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -4408,7 +4408,7 @@ export const getGetRevisionChangesetRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -4422,7 +4422,7 @@ export const getGetRevisionChangesetRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -4436,7 +4436,7 @@ export const getGetRevisionChangesetRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -4474,7 +4474,7 @@ export const postGetRevisionChangesetRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -4488,7 +4488,7 @@ export const postGetRevisionChangesetRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -4502,7 +4502,7 @@ export const postGetRevisionChangesetRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -4516,7 +4516,7 @@ export const postGetRevisionChangesetRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -4567,7 +4567,7 @@ export const getGetRevisionsCountRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -4581,7 +4581,7 @@ export const getGetRevisionsCountRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -4595,7 +4595,7 @@ export const getGetRevisionsCountRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -4646,7 +4646,7 @@ export const postGetRevisionsCountRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -4660,7 +4660,7 @@ export const postGetRevisionsCountRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -4674,7 +4674,7 @@ export const postGetRevisionsCountRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -4706,7 +4706,7 @@ export const getGetSavedRevisionsCountRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -4720,7 +4720,7 @@ export const getGetSavedRevisionsCountRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -4734,7 +4734,7 @@ export const getGetSavedRevisionsCountRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -4748,7 +4748,7 @@ export const getGetSavedRevisionsCountRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -4780,7 +4780,7 @@ export const postGetSavedRevisionsCountRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -4794,7 +4794,7 @@ export const postGetSavedRevisionsCountRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -4808,7 +4808,7 @@ export const postGetSavedRevisionsCountRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -4822,7 +4822,7 @@ export const postGetSavedRevisionsCountRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -4883,7 +4883,7 @@ export const getGetSessionInfoRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -4897,7 +4897,7 @@ export const getGetSessionInfoRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -4911,7 +4911,7 @@ export const getGetSessionInfoRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -4972,7 +4972,7 @@ export const postGetSessionInfoRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -4986,7 +4986,7 @@ export const postGetSessionInfoRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -5000,7 +5000,7 @@ export const postGetSessionInfoRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -5022,7 +5022,7 @@ export const getGetStatsRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -5036,7 +5036,7 @@ export const getGetStatsRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -5050,7 +5050,7 @@ export const getGetStatsRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -5064,7 +5064,7 @@ export const getGetStatsRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -5086,7 +5086,7 @@ export const postGetStatsRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -5100,7 +5100,7 @@ export const postGetStatsRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -5114,7 +5114,7 @@ export const postGetStatsRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -5128,7 +5128,7 @@ export const postGetStatsRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -5185,7 +5185,7 @@ export const getGetTextRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -5199,7 +5199,7 @@ export const getGetTextRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -5213,7 +5213,7 @@ export const getGetTextRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -5270,7 +5270,7 @@ export const postGetTextRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -5284,7 +5284,7 @@ export const postGetTextRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -5298,7 +5298,7 @@ export const postGetTextRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -5338,7 +5338,7 @@ export const getListAllGroupsRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -5352,7 +5352,7 @@ export const getListAllGroupsRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -5366,7 +5366,7 @@ export const getListAllGroupsRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -5406,7 +5406,7 @@ export const postListAllGroupsRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -5420,7 +5420,7 @@ export const postListAllGroupsRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -5434,7 +5434,7 @@ export const postListAllGroupsRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -5475,7 +5475,7 @@ export const getListAllPadsRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -5489,7 +5489,7 @@ export const getListAllPadsRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -5503,7 +5503,7 @@ export const getListAllPadsRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -5544,7 +5544,7 @@ export const postListAllPadsRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -5558,7 +5558,7 @@ export const postListAllPadsRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -5572,7 +5572,7 @@ export const postListAllPadsRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -5623,7 +5623,7 @@ export const getListAuthorsOfPadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -5637,7 +5637,7 @@ export const getListAuthorsOfPadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -5651,7 +5651,7 @@ export const getListAuthorsOfPadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -5702,7 +5702,7 @@ export const postListAuthorsOfPadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -5716,7 +5716,7 @@ export const postListAuthorsOfPadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -5730,7 +5730,7 @@ export const postListAuthorsOfPadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -5781,7 +5781,7 @@ export const getListPadsRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -5795,7 +5795,7 @@ export const getListPadsRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -5809,7 +5809,7 @@ export const getListPadsRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -5860,7 +5860,7 @@ export const postListPadsRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -5874,7 +5874,7 @@ export const postListPadsRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -5888,7 +5888,7 @@ export const postListPadsRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -5939,7 +5939,7 @@ export const getListPadsOfAuthorRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -5953,7 +5953,7 @@ export const getListPadsOfAuthorRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -5967,7 +5967,7 @@ export const getListPadsOfAuthorRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -6018,7 +6018,7 @@ export const postListPadsOfAuthorRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -6032,7 +6032,7 @@ export const postListPadsOfAuthorRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -6046,7 +6046,7 @@ export const postListPadsOfAuthorRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -6078,7 +6078,7 @@ export const getListSavedRevisionsRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -6092,7 +6092,7 @@ export const getListSavedRevisionsRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -6106,7 +6106,7 @@ export const getListSavedRevisionsRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -6120,7 +6120,7 @@ export const getListSavedRevisionsRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -6152,7 +6152,7 @@ export const postListSavedRevisionsRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -6166,7 +6166,7 @@ export const postListSavedRevisionsRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -6180,7 +6180,7 @@ export const postListSavedRevisionsRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -6194,7 +6194,7 @@ export const postListSavedRevisionsRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -6258,7 +6258,7 @@ export const getListSessionsOfAuthorRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -6272,7 +6272,7 @@ export const getListSessionsOfAuthorRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -6286,7 +6286,7 @@ export const getListSessionsOfAuthorRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -6350,7 +6350,7 @@ export const postListSessionsOfAuthorRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -6364,7 +6364,7 @@ export const postListSessionsOfAuthorRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -6378,7 +6378,7 @@ export const postListSessionsOfAuthorRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -6441,7 +6441,7 @@ export const getListSessionsOfGroupRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -6455,7 +6455,7 @@ export const getListSessionsOfGroupRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -6469,7 +6469,7 @@ export const getListSessionsOfGroupRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -6532,7 +6532,7 @@ export const postListSessionsOfGroupRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -6546,7 +6546,7 @@ export const postListSessionsOfGroupRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -6560,7 +6560,7 @@ export const postListSessionsOfGroupRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -6609,7 +6609,7 @@ export const getMovePadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -6623,7 +6623,7 @@ export const getMovePadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -6637,7 +6637,7 @@ export const getMovePadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -6651,7 +6651,7 @@ export const getMovePadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -6700,7 +6700,7 @@ export const postMovePadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -6714,7 +6714,7 @@ export const postMovePadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -6728,7 +6728,7 @@ export const postMovePadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -6742,7 +6742,7 @@ export const postMovePadRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -6806,7 +6806,7 @@ export const getPadUsersRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -6820,7 +6820,7 @@ export const getPadUsersRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -6834,7 +6834,7 @@ export const getPadUsersRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -6898,7 +6898,7 @@ export const postPadUsersRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -6912,7 +6912,7 @@ export const postPadUsersRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -6926,7 +6926,7 @@ export const postPadUsersRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -6977,7 +6977,7 @@ export const getPadUsersCountRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -6991,7 +6991,7 @@ export const getPadUsersCountRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -7005,7 +7005,7 @@ export const getPadUsersCountRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -7056,7 +7056,7 @@ export const postPadUsersCountRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -7070,7 +7070,7 @@ export const postPadUsersCountRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -7084,7 +7084,7 @@ export const postPadUsersCountRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -7122,7 +7122,7 @@ export const getRestoreRevisionRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -7136,7 +7136,7 @@ export const getRestoreRevisionRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -7150,7 +7150,7 @@ export const getRestoreRevisionRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -7164,7 +7164,7 @@ export const getRestoreRevisionRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -7202,7 +7202,7 @@ export const postRestoreRevisionRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -7216,7 +7216,7 @@ export const postRestoreRevisionRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -7230,7 +7230,7 @@ export const postRestoreRevisionRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -7244,7 +7244,7 @@ export const postRestoreRevisionRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -7282,7 +7282,7 @@ export const getSaveRevisionRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -7296,7 +7296,7 @@ export const getSaveRevisionRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -7310,7 +7310,7 @@ export const getSaveRevisionRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -7324,7 +7324,7 @@ export const getSaveRevisionRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -7362,7 +7362,7 @@ export const postSaveRevisionRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -7376,7 +7376,7 @@ export const postSaveRevisionRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -7390,7 +7390,7 @@ export const postSaveRevisionRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -7404,7 +7404,7 @@ export const postSaveRevisionRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -7444,7 +7444,7 @@ export const getSendClientsMessageRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -7458,7 +7458,7 @@ export const getSendClientsMessageRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -7472,7 +7472,7 @@ export const getSendClientsMessageRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -7486,7 +7486,7 @@ export const getSendClientsMessageRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -7526,7 +7526,7 @@ export const postSendClientsMessageRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -7540,7 +7540,7 @@ export const postSendClientsMessageRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -7554,7 +7554,7 @@ export const postSendClientsMessageRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -7568,7 +7568,7 @@ export const postSendClientsMessageRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -7608,7 +7608,7 @@ export const getSetHTMLRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -7622,7 +7622,7 @@ export const getSetHTMLRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -7636,7 +7636,7 @@ export const getSetHTMLRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -7650,7 +7650,7 @@ export const getSetHTMLRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -7690,7 +7690,7 @@ export const postSetHTMLRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -7704,7 +7704,7 @@ export const postSetHTMLRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -7718,7 +7718,7 @@ export const postSetHTMLRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -7732,7 +7732,7 @@ export const postSetHTMLRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -7772,7 +7772,7 @@ export const getSetPublicStatusRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -7786,7 +7786,7 @@ export const getSetPublicStatusRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -7800,7 +7800,7 @@ export const getSetPublicStatusRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -7814,7 +7814,7 @@ export const getSetPublicStatusRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -7854,7 +7854,7 @@ export const postSetPublicStatusRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -7868,7 +7868,7 @@ export const postSetPublicStatusRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -7882,7 +7882,7 @@ export const postSetPublicStatusRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -7896,7 +7896,7 @@ export const postSetPublicStatusRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -7936,7 +7936,7 @@ export const getSetTextRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -7950,7 +7950,7 @@ export const getSetTextRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -7964,7 +7964,7 @@ export const getSetTextRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -7978,7 +7978,7 @@ export const getSetTextRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),
@@ -8018,7 +8018,7 @@ export const postSetTextRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 0 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'ok' }),
             })
             .openapi({ required: [] }),
@@ -8032,7 +8032,7 @@ export const postSetTextRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 1 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'error message' }),
             })
             .openapi({ required: [] }),
@@ -8046,7 +8046,7 @@ export const postSetTextRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 4 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'no or wrong API key' }),
             })
             .openapi({ required: [] }),
@@ -8060,7 +8060,7 @@ export const postSetTextRoute = createRoute({
           schema: z
             .object({
               code: z.int().exactOptional().openapi({ example: 2 }),
-              data: z.object({}).exactOptional().openapi({ example: null }),
+              data: z.looseObject({}).exactOptional().openapi({ example: null }),
               message: z.string().exactOptional().openapi({ example: 'internal error' }),
             })
             .openapi({ required: [] }),

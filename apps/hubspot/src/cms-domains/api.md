@@ -27,12 +27,6 @@ Base URLs:
 |cms.knowledge_base.settings.write||
 |content||
 
-* API Key (private_apps)
-    - Parameter Name: **private-app**, in: header.
-
-* API Key (private_apps_legacy)
-    - Parameter Name: **private-app-legacy**, in: header.
-
 <h1 id="domains-basic">Basic</h1>
 
 ## List Domains

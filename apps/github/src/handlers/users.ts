@@ -1,186 +1,79 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  deleteUserBlocksUsernameRoute,
-  deleteUserEmailsRoute,
-  deleteUserFollowingUsernameRoute,
-  deleteUserGpgKeysGpgKeyIdRoute,
-  deleteUserIssueFieldsIssueFieldIdRoute,
-  deleteUserIssueTypesIssueTypeIdRoute,
-  deleteUserKeysKeyIdRoute,
-  deleteUserSocialAccountsRoute,
-  deleteUserSshSigningKeysSshSigningKeyIdRoute,
   deleteUsersUsernameAttestationsAttestationIdRoute,
   deleteUsersUsernameAttestationsDigestSubjectDigestRoute,
-  getUserAccountIdRoute,
-  getUserBlocksRoute,
-  getUserBlocksUsernameRoute,
-  getUserEmailsRoute,
-  getUserFollowersRoute,
-  getUserFollowingRoute,
-  getUserFollowingUsernameRoute,
-  getUserGpgKeysGpgKeyIdRoute,
-  getUserGpgKeysRoute,
-  getUserIssueFieldsRoute,
-  getUserIssueTypesRoute,
-  getUserKeysKeyIdRoute,
-  getUserKeysRoute,
-  getUserPublicEmailsRoute,
-  getUserRoute,
-  getUserSocialAccountsRoute,
+  deleteUsersUsernameCopilotSpacesSpaceNumberCollaboratorsActorTypeActorIdentifierRoute,
+  deleteUsersUsernameCopilotSpacesSpaceNumberResourcesSpaceResourceIdRoute,
+  deleteUsersUsernameCopilotSpacesSpaceNumberRoute,
+  deleteUsersUsernamePackagesPackageTypePackageNameRoute,
+  deleteUsersUsernamePackagesPackageTypePackageNameVersionsPackageVersionIdRoute,
+  deleteUsersUsernameProjectsV2ProjectNumberItemsItemIdRoute,
   getUsersRoute,
-  getUserSshSigningKeysRoute,
-  getUserSshSigningKeysSshSigningKeyIdRoute,
   getUsersUsernameAttestationsSubjectDigestRoute,
+  getUsersUsernameCopilotSpacesRoute,
+  getUsersUsernameCopilotSpacesSpaceNumberCollaboratorsRoute,
+  getUsersUsernameCopilotSpacesSpaceNumberResourcesRoute,
+  getUsersUsernameCopilotSpacesSpaceNumberResourcesSpaceResourceIdRoute,
+  getUsersUsernameCopilotSpacesSpaceNumberRoute,
+  getUsersUsernameDockerConflictsRoute,
+  getUsersUsernameEventsOrgsOrgRoute,
+  getUsersUsernameEventsPublicRoute,
+  getUsersUsernameEventsRoute,
   getUsersUsernameFollowersRoute,
   getUsersUsernameFollowingRoute,
   getUsersUsernameFollowingTargetUserRoute,
+  getUsersUsernameGistsRoute,
   getUsersUsernameGpgKeysRoute,
   getUsersUsernameHovercardRoute,
+  getUsersUsernameInstallationRoute,
   getUsersUsernameKeysRoute,
+  getUsersUsernameOrgsRoute,
+  getUsersUsernamePackagesPackageTypePackageNameRoute,
+  getUsersUsernamePackagesPackageTypePackageNameVersionsPackageVersionIdRoute,
+  getUsersUsernamePackagesPackageTypePackageNameVersionsRoute,
+  getUsersUsernamePackagesRoute,
+  getUsersUsernameProjectsV2ProjectNumberFieldsFieldIdRoute,
+  getUsersUsernameProjectsV2ProjectNumberFieldsRoute,
+  getUsersUsernameProjectsV2ProjectNumberItemsItemIdRoute,
+  getUsersUsernameProjectsV2ProjectNumberItemsRoute,
+  getUsersUsernameProjectsV2ProjectNumberRoute,
+  getUsersUsernameProjectsV2ProjectNumberViewsViewNumberItemsRoute,
+  getUsersUsernameProjectsV2Route,
+  getUsersUsernameReceivedEventsPublicRoute,
+  getUsersUsernameReceivedEventsRoute,
+  getUsersUsernameReposRoute,
   getUsersUsernameRoute,
+  getUsersUsernameSettingsBillingAiCreditUsageRoute,
+  getUsersUsernameSettingsBillingPremiumRequestUsageRoute,
+  getUsersUsernameSettingsBillingUsageRoute,
+  getUsersUsernameSettingsBillingUsageSummaryRoute,
   getUsersUsernameSocialAccountsRoute,
   getUsersUsernameSshSigningKeysRoute,
-  patchUserEmailVisibilityRoute,
-  patchUserIssueFieldsIssueFieldIdRoute,
-  patchUserRoute,
-  postUserEmailsRoute,
-  postUserGpgKeysRoute,
-  postUserIssueFieldsRoute,
-  postUserIssueTypesRoute,
-  postUserKeysRoute,
-  postUserSocialAccountsRoute,
-  postUserSshSigningKeysRoute,
+  getUsersUsernameStarredRoute,
+  getUsersUsernameSubscriptionsRoute,
+  patchUsersUsernameProjectsV2ProjectNumberItemsItemIdRoute,
+  postUsersUserIdProjectsV2ProjectNumberViewsRoute,
   postUsersUsernameAttestationsBulkListRoute,
   postUsersUsernameAttestationsDeleteRequestRoute,
-  putUserBlocksUsernameRoute,
-  putUserFollowingUsernameRoute,
-  putUserIssueTypesIssueTypeIdRoute,
+  postUsersUsernameCopilotSpacesRoute,
+  postUsersUsernameCopilotSpacesSpaceNumberCollaboratorsRoute,
+  postUsersUsernameCopilotSpacesSpaceNumberResourcesRoute,
+  postUsersUsernamePackagesPackageTypePackageNameRestoreRoute,
+  postUsersUsernamePackagesPackageTypePackageNameVersionsPackageVersionIdRestoreRoute,
+  postUsersUsernameProjectsV2ProjectNumberFieldsRoute,
+  postUsersUsernameProjectsV2ProjectNumberItemsRoute,
+  putUsersUsernameCopilotSpacesSpaceNumberCollaboratorsActorTypeActorIdentifierRoute,
+  putUsersUsernameCopilotSpacesSpaceNumberResourcesSpaceResourceIdRoute,
+  putUsersUsernameCopilotSpacesSpaceNumberRoute,
 } from '../routes'
 
 const app = new OpenAPIHono()
 
 export const usersHandler = app
-  .openapi(getUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserBlocksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserBlocksUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUserBlocksUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUserBlocksUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchUserEmailVisibilityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserEmailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserEmailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUserEmailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserFollowersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserFollowingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserFollowingUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUserFollowingUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUserFollowingUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserGpgKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserGpgKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserGpgKeysGpgKeyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUserGpgKeysGpgKeyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserIssueFieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserIssueFieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchUserIssueFieldsIssueFieldIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUserIssueFieldsIssueFieldIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserIssueTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserIssueTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUserIssueTypesIssueTypeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUserIssueTypesIssueTypeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserKeysKeyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUserKeysKeyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserPublicEmailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserSocialAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserSocialAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUserSocialAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserSshSigningKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserSshSigningKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserSshSigningKeysSshSigningKeyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUserSshSigningKeysSshSigningKeyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
   .openapi(getUsersRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUsersUserIdProjectsV2ProjectNumberViewsRoute, (c) => {
     throw new Error('Not implemented')
   })
   .openapi(getUsersUsernameRoute, (c) => {
@@ -201,6 +94,66 @@ export const usersHandler = app
   .openapi(getUsersUsernameAttestationsSubjectDigestRoute, (c) => {
     throw new Error('Not implemented')
   })
+  .openapi(getUsersUsernameCopilotSpacesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUsersUsernameCopilotSpacesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUsersUsernameCopilotSpacesSpaceNumberRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putUsersUsernameCopilotSpacesSpaceNumberRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteUsersUsernameCopilotSpacesSpaceNumberRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUsersUsernameCopilotSpacesSpaceNumberCollaboratorsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUsersUsernameCopilotSpacesSpaceNumberCollaboratorsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    putUsersUsernameCopilotSpacesSpaceNumberCollaboratorsActorTypeActorIdentifierRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    deleteUsersUsernameCopilotSpacesSpaceNumberCollaboratorsActorTypeActorIdentifierRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getUsersUsernameCopilotSpacesSpaceNumberResourcesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUsersUsernameCopilotSpacesSpaceNumberResourcesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUsersUsernameCopilotSpacesSpaceNumberResourcesSpaceResourceIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putUsersUsernameCopilotSpacesSpaceNumberResourcesSpaceResourceIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteUsersUsernameCopilotSpacesSpaceNumberResourcesSpaceResourceIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUsersUsernameDockerConflictsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUsersUsernameEventsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUsersUsernameEventsOrgsOrgRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUsersUsernameEventsPublicRoute, (c) => {
+    throw new Error('Not implemented')
+  })
   .openapi(getUsersUsernameFollowersRoute, (c) => {
     throw new Error('Not implemented')
   })
@@ -210,18 +163,114 @@ export const usersHandler = app
   .openapi(getUsersUsernameFollowingTargetUserRoute, (c) => {
     throw new Error('Not implemented')
   })
+  .openapi(getUsersUsernameGistsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
   .openapi(getUsersUsernameGpgKeysRoute, (c) => {
     throw new Error('Not implemented')
   })
   .openapi(getUsersUsernameHovercardRoute, (c) => {
     throw new Error('Not implemented')
   })
+  .openapi(getUsersUsernameInstallationRoute, (c) => {
+    throw new Error('Not implemented')
+  })
   .openapi(getUsersUsernameKeysRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUsersUsernameOrgsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUsersUsernamePackagesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUsersUsernamePackagesPackageTypePackageNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteUsersUsernamePackagesPackageTypePackageNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUsersUsernamePackagesPackageTypePackageNameRestoreRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUsersUsernamePackagesPackageTypePackageNameVersionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUsersUsernamePackagesPackageTypePackageNameVersionsPackageVersionIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteUsersUsernamePackagesPackageTypePackageNameVersionsPackageVersionIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    postUsersUsernamePackagesPackageTypePackageNameVersionsPackageVersionIdRestoreRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getUsersUsernameProjectsV2Route, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUsersUsernameProjectsV2ProjectNumberRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUsersUsernameProjectsV2ProjectNumberFieldsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUsersUsernameProjectsV2ProjectNumberFieldsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUsersUsernameProjectsV2ProjectNumberFieldsFieldIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUsersUsernameProjectsV2ProjectNumberItemsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postUsersUsernameProjectsV2ProjectNumberItemsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUsersUsernameProjectsV2ProjectNumberItemsItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchUsersUsernameProjectsV2ProjectNumberItemsItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteUsersUsernameProjectsV2ProjectNumberItemsItemIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUsersUsernameProjectsV2ProjectNumberViewsViewNumberItemsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUsersUsernameReceivedEventsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUsersUsernameReceivedEventsPublicRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUsersUsernameReposRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUsersUsernameSettingsBillingAiCreditUsageRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUsersUsernameSettingsBillingPremiumRequestUsageRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUsersUsernameSettingsBillingUsageRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUsersUsernameSettingsBillingUsageSummaryRoute, (c) => {
     throw new Error('Not implemented')
   })
   .openapi(getUsersUsernameSocialAccountsRoute, (c) => {
     throw new Error('Not implemented')
   })
   .openapi(getUsersUsernameSshSigningKeysRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUsersUsernameStarredRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getUsersUsernameSubscriptionsRoute, (c) => {
     throw new Error('Not implemented')
   })

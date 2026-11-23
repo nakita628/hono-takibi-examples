@@ -440,7 +440,7 @@ export const getOcsV2PhpCloudAppsAppRoute = createRoute({
               ocs: z
                 .object({
                   meta: OCSMetaSchema,
-                  data: z.record(z.string(), z.object({}).nullable()),
+                  data: z.record(z.string(), z.looseObject({}).nullable()),
                 })
                 .openapi({ required: ['meta', 'data'] }),
             })
@@ -793,6 +793,7 @@ export const getOcsV2PhpCloudGroupsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 0 },
             required: false,
           },
+          default: 0,
         }),
     }),
     headers: z.object({
@@ -828,12 +829,10 @@ export const getOcsV2PhpCloudGroupsRoute = createRoute({
         },
       },
       headers: z.object({
-        Link: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     401: {
@@ -1259,6 +1258,7 @@ export const getOcsV2PhpCloudUsersRecentRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 0 },
             required: false,
           },
+          default: 0,
         }),
       enabled: z
         .preprocess((val) => (val === 'null' ? null : val), z.stringbool().nullable())
@@ -1318,12 +1318,10 @@ export const getOcsV2PhpCloudUsersRecentRoute = createRoute({
         },
       },
       headers: z.object({
-        Link: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     401: {
@@ -2005,6 +2003,27 @@ export const postOcsV2PhpAppsProvisioningApiApiV1ConfigAppsAppKeyRoute = createR
         },
       },
     },
+    400: {
+      description: 'Value rejected',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              ocs: z
+                .object({
+                  meta: OCSMetaSchema,
+                  data: z
+                    .object({
+                      data: z.object({ message: z.string() }).openapi({ required: ['message'] }),
+                    })
+                    .openapi({ required: ['data'] }),
+                })
+                .openapi({ required: ['meta', 'data'] }),
+            })
+            .openapi({ required: ['ocs'] }),
+        },
+      },
+    },
     401: {
       description: 'Current user is not logged in',
       content: {
@@ -2100,6 +2119,27 @@ export const deleteOcsV2PhpAppsProvisioningApiApiV1ConfigAppsAppKeyRoute = creat
             .object({
               ocs: z
                 .object({ meta: OCSMetaSchema, data: z.any() })
+                .openapi({ required: ['meta', 'data'] }),
+            })
+            .openapi({ required: ['ocs'] }),
+        },
+      },
+    },
+    400: {
+      description: 'Deletion rejected',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              ocs: z
+                .object({
+                  meta: OCSMetaSchema,
+                  data: z
+                    .object({
+                      data: z.object({ message: z.string() }).openapi({ required: ['message'] }),
+                    })
+                    .openapi({ required: ['data'] }),
+                })
                 .openapi({ required: ['meta', 'data'] }),
             })
             .openapi({ required: ['ocs'] }),
@@ -2217,6 +2257,7 @@ export const getOcsV2PhpCloudGroupsDetailsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 0 },
             required: false,
           },
+          default: 0,
         }),
     }),
     headers: z.object({
@@ -2254,12 +2295,10 @@ export const getOcsV2PhpCloudGroupsDetailsRoute = createRoute({
         },
       },
       headers: z.object({
-        Link: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     401: {
@@ -2457,6 +2496,7 @@ export const getOcsV2PhpCloudGroupsGroupIdUsersDetailsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 0 },
             required: false,
           },
+          default: 0,
         }),
       enabled: z
         .preprocess((val) => (val === 'null' ? null : val), z.stringbool().nullable())
@@ -2517,12 +2557,10 @@ export const getOcsV2PhpCloudGroupsGroupIdUsersDetailsRoute = createRoute({
         },
       },
       headers: z.object({
-        Link: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     401: {
@@ -2606,6 +2644,7 @@ export const getOcsV2PhpCloudUsersRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 0 },
             required: false,
           },
+          default: 0,
         }),
     }),
     headers: z.object({
@@ -2641,12 +2680,10 @@ export const getOcsV2PhpCloudUsersRoute = createRoute({
         },
       },
       headers: z.object({
-        Link: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     401: {
@@ -2856,6 +2893,7 @@ export const getOcsV2PhpCloudUsersDetailsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 0 },
             required: false,
           },
+          default: 0,
         }),
       enabled: z
         .preprocess((val) => (val === 'null' ? null : val), z.stringbool().nullable())
@@ -2916,12 +2954,10 @@ export const getOcsV2PhpCloudUsersDetailsRoute = createRoute({
         },
       },
       headers: z.object({
-        Link: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     401: {
@@ -3005,6 +3041,7 @@ export const getOcsV2PhpCloudUsersDisabledRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 0 },
             required: false,
           },
+          default: 0,
         }),
     }),
     headers: z.object({
@@ -3050,12 +3087,10 @@ export const getOcsV2PhpCloudUsersDisabledRoute = createRoute({
         },
       },
       headers: z.object({
-        Link: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     401: {

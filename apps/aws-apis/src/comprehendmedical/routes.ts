@@ -41,17 +41,13 @@ const S3KeySchema = z.string().regex(/.*/).max(1024).openapi('S3Key')
 
 const InputDataConfigSchema = z
   .object({
-    S3Bucket: S3BucketSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The URI of the S3 bucket that contains the input data. The bucket must be in the same region as the API endpoint that you are calling.</p> <p>Each file in the document collection must be less than 40 KB. You can store a maximum of 30 GB in the bucket.</p>',
-        }),
-    ),
-    S3Key: S3KeySchema.and(
-      z.any().openapi({ description: 'The path to the input data files in the S3 bucket.' }),
-    ).exactOptional(),
+    S3Bucket: S3BucketSchema.openapi({
+      description:
+        '<p>The URI of the S3 bucket that contains the input data. The bucket must be in the same region as the API endpoint that you are calling.</p> <p>Each file in the document collection must be less than 40 KB. You can store a maximum of 30 GB in the bucket.</p>',
+    }),
+    S3Key: S3KeySchema.exactOptional().openapi({
+      description: 'The path to the input data files in the S3 bucket.',
+    }),
   })
   .openapi({
     required: ['S3Bucket'],
@@ -62,22 +58,14 @@ const InputDataConfigSchema = z
 
 const OutputDataConfigSchema = z
   .object({
-    S3Bucket: S3BucketSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When you use the <code>OutputDataConfig</code> object with asynchronous operations, you specify the Amazon S3 location where you want to write the output data. The URI must be in the same region as the API endpoint that you are calling. The location is used as the prefix for the actual location of the output.',
-        }),
-    ),
-    S3Key: S3KeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The path to the output data files in the S3 bucket. Comprehend Medical; creates an output directory using the job ID so that the output from one job does not overwrite the output of another.',
-        }),
-    ).exactOptional(),
+    S3Bucket: S3BucketSchema.openapi({
+      description:
+        'When you use the <code>OutputDataConfig</code> object with asynchronous operations, you specify the Amazon S3 location where you want to write the output data. The URI must be in the same region as the API endpoint that you are calling. The location is used as the prefix for the actual location of the output.',
+    }),
+    S3Key: S3KeySchema.exactOptional().openapi({
+      description:
+        'The path to the output data files in the S3 bucket. Comprehend Medical; creates an output directory using the job ID so that the output from one job does not overwrite the output of another.',
+    }),
   })
   .openapi({ required: ['S3Bucket'], description: 'The output properties for a detection job.' })
   .openapi('OutputDataConfig')
@@ -99,116 +87,74 @@ const ModelVersionSchema = z.string().openapi('ModelVersion')
 
 const ComprehendMedicalAsyncJobPropertiesSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z.any().openapi({ description: 'The identifier assigned to the detection job.' }),
-    ).exactOptional(),
-    JobName: JobNameSchema.and(
-      z.any().openapi({ description: 'The name that you assigned to the detection job.' }),
-    ).exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The current status of the detection job. If the status is <code>FAILED</code>, the <code>Message</code> field shows the reason for the failure.',
-        }),
-    ).exactOptional(),
-    Message: AnyLengthStringSchema.and(
-      z.any().openapi({ description: 'A description of the status of a job.' }),
-    ).exactOptional(),
-    SubmitTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time that the detection job was submitted for processing.' }),
-    ).exactOptional(),
-    EndTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time that the detection job completed.' }),
-    ).exactOptional(),
-    ExpirationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that job metadata is deleted from the server. Output files in your S3 bucket will not be deleted. After the metadata is deleted, the job will no longer appear in the results of the <code>ListEntitiesDetectionV2Job</code> or the <code>ListPHIDetectionJobs</code> operation.',
-        }),
-    ).exactOptional(),
-    InputDataConfig: InputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The input data configuration that you supplied when you created the detection job.',
-        }),
-    ).exactOptional(),
-    OutputDataConfig: OutputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The output data configuration that you supplied when you created the detection job.',
-        }),
-    ).exactOptional(),
-    LanguageCode: LanguageCodeSchema.and(
-      z.any().openapi({ description: 'The language code of the input documents.' }),
-    ).exactOptional(),
-    DataAccessRoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) that gives Comprehend Medical; read access to your input data.',
-        }),
-    ).exactOptional(),
-    ManifestFilePath: ManifestFilePathSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The path to the file that describes the results of a batch job.',
-        }),
-    ).exactOptional(),
-    KMSKey: KMSKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The AWS Key Management Service key, if any, used to encrypt the output files. ',
-        }),
-    ).exactOptional(),
-    ModelVersion: ModelVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version of the model used to analyze the documents. The version number looks like X.X.X. You can use this information to track the model used for a particular batch of documents.',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description: 'The identifier assigned to the detection job.',
+    }),
+    JobName: JobNameSchema.exactOptional().openapi({
+      description: 'The name that you assigned to the detection job.',
+    }),
+    JobStatus: JobStatusSchema.exactOptional().openapi({
+      description:
+        'The current status of the detection job. If the status is <code>FAILED</code>, the <code>Message</code> field shows the reason for the failure.',
+    }),
+    Message: AnyLengthStringSchema.exactOptional().openapi({
+      description: 'A description of the status of a job.',
+    }),
+    SubmitTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time that the detection job was submitted for processing.',
+    }),
+    EndTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time that the detection job completed.',
+    }),
+    ExpirationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time that job metadata is deleted from the server. Output files in your S3 bucket will not be deleted. After the metadata is deleted, the job will no longer appear in the results of the <code>ListEntitiesDetectionV2Job</code> or the <code>ListPHIDetectionJobs</code> operation.',
+    }),
+    InputDataConfig: InputDataConfigSchema.exactOptional().openapi({
+      description:
+        'The input data configuration that you supplied when you created the detection job.',
+    }),
+    OutputDataConfig: OutputDataConfigSchema.exactOptional().openapi({
+      description:
+        'The output data configuration that you supplied when you created the detection job.',
+    }),
+    LanguageCode: LanguageCodeSchema.exactOptional().openapi({
+      description: 'The language code of the input documents.',
+    }),
+    DataAccessRoleArn: IamRoleArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) that gives Comprehend Medical; read access to your input data.',
+    }),
+    ManifestFilePath: ManifestFilePathSchema.exactOptional().openapi({
+      description: 'The path to the file that describes the results of a batch job.',
+    }),
+    KMSKey: KMSKeySchema.exactOptional().openapi({
+      description: 'The AWS Key Management Service key, if any, used to encrypt the output files. ',
+    }),
+    ModelVersion: ModelVersionSchema.exactOptional().openapi({
+      description:
+        'The version of the model used to analyze the documents. The version number looks like X.X.X. You can use this information to track the model used for a particular batch of documents.',
+    }),
   })
   .openapi({ description: 'Provides information about a detection job.', required: [] })
   .openapi('ComprehendMedicalAsyncJobProperties')
 
 const DescribeEntitiesDetectionV2JobResponseSchema = z
   .object({
-    ComprehendMedicalAsyncJobProperties: ComprehendMedicalAsyncJobPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that contains the properties associated with a detection job.',
-        }),
-    ).exactOptional(),
+    ComprehendMedicalAsyncJobProperties:
+      ComprehendMedicalAsyncJobPropertiesSchema.exactOptional().openapi({
+        description: 'An object that contains the properties associated with a detection job.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('DescribeEntitiesDetectionV2JobResponse')
 
 const DescribeEntitiesDetectionV2JobRequestSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier that Comprehend Medical; generated for the job. The <code>StartEntitiesDetectionV2Job</code> operation returns this identifier in its response.',
-        }),
-    ),
+    JobId: JobIdSchema.openapi({
+      description:
+        'The identifier that Comprehend Medical; generated for the job. The <code>StartEntitiesDetectionV2Job</code> operation returns this identifier in its response.',
+    }),
   })
   .openapi({ required: ['JobId'], title: 'DescribeEntitiesDetectionV2JobRequest' })
   .openapi('DescribeEntitiesDetectionV2JobRequest')
@@ -223,81 +169,60 @@ const InternalServerExceptionSchema = z.any().openapi('InternalServerException')
 
 const DescribeICD10CMInferenceJobResponseSchema = z
   .object({
-    ComprehendMedicalAsyncJobProperties: ComprehendMedicalAsyncJobPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that contains the properties associated with a detection job.',
-        }),
-    ).exactOptional(),
+    ComprehendMedicalAsyncJobProperties:
+      ComprehendMedicalAsyncJobPropertiesSchema.exactOptional().openapi({
+        description: 'An object that contains the properties associated with a detection job.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('DescribeICD10CMInferenceJobResponse')
 
 const DescribeICD10CMInferenceJobRequestSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier that Amazon Comprehend Medical generated for the job. <code>The StartICD10CMInferenceJob</code> operation returns this identifier in its response.',
-        }),
-    ),
+    JobId: JobIdSchema.openapi({
+      description:
+        'The identifier that Amazon Comprehend Medical generated for the job. <code>The StartICD10CMInferenceJob</code> operation returns this identifier in its response.',
+    }),
   })
   .openapi({ required: ['JobId'], title: 'DescribeICD10CMInferenceJobRequest' })
   .openapi('DescribeICD10CMInferenceJobRequest')
 
 const DescribePHIDetectionJobResponseSchema = z
   .object({
-    ComprehendMedicalAsyncJobProperties: ComprehendMedicalAsyncJobPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that contains the properties associated with a detection job.',
-        }),
-    ).exactOptional(),
+    ComprehendMedicalAsyncJobProperties:
+      ComprehendMedicalAsyncJobPropertiesSchema.exactOptional().openapi({
+        description: 'An object that contains the properties associated with a detection job.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('DescribePHIDetectionJobResponse')
 
 const DescribePHIDetectionJobRequestSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier that Comprehend Medical; generated for the job. The <code>StartPHIDetectionJob</code> operation returns this identifier in its response.',
-        }),
-    ),
+    JobId: JobIdSchema.openapi({
+      description:
+        'The identifier that Comprehend Medical; generated for the job. The <code>StartPHIDetectionJob</code> operation returns this identifier in its response.',
+    }),
   })
   .openapi({ required: ['JobId'], title: 'DescribePHIDetectionJobRequest' })
   .openapi('DescribePHIDetectionJobRequest')
 
 const DescribeRxNormInferenceJobResponseSchema = z
   .object({
-    ComprehendMedicalAsyncJobProperties: ComprehendMedicalAsyncJobPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that contains the properties associated with a detection job.',
-        }),
-    ).exactOptional(),
+    ComprehendMedicalAsyncJobProperties:
+      ComprehendMedicalAsyncJobPropertiesSchema.exactOptional().openapi({
+        description: 'An object that contains the properties associated with a detection job.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('DescribeRxNormInferenceJobResponse')
 
 const DescribeRxNormInferenceJobRequestSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier that Amazon Comprehend Medical generated for the job. The StartRxNormInferenceJob operation returns this identifier in its response.',
-        }),
-    ),
+    JobId: JobIdSchema.openapi({
+      description:
+        'The identifier that Amazon Comprehend Medical generated for the job. The StartRxNormInferenceJob operation returns this identifier in its response.',
+    }),
   })
   .openapi({ required: ['JobId'], title: 'DescribeRxNormInferenceJobRequest' })
   .openapi('DescribeRxNormInferenceJobRequest')
@@ -311,14 +236,10 @@ const DescribeSNOMEDCTInferenceJobResponseSchema = z
 
 const DescribeSNOMEDCTInferenceJobRequestSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The identifier that Amazon Comprehend Medical generated for the job. The StartSNOMEDCTInferenceJob operation returns this identifier in its response. ',
-        }),
-    ),
+    JobId: JobIdSchema.openapi({
+      description:
+        ' The identifier that Amazon Comprehend Medical generated for the job. The StartSNOMEDCTInferenceJob operation returns this identifier in its response. ',
+    }),
   })
   .openapi({ required: ['JobId'], title: 'DescribeSNOMEDCTInferenceJobRequest' })
   .openapi('DescribeSNOMEDCTInferenceJobRequest')
@@ -407,19 +328,13 @@ const AttributeNameSchema = z
 
 const TraitSchema = z
   .object({
-    Name: AttributeNameSchema.and(
-      z
-        .any()
-        .openapi({ description: ' Provides a name or contextual description about the trait. ' }),
-    ).exactOptional(),
-    Score: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The level of confidence that Comprehend Medical; has in the accuracy of this trait.',
-        }),
-    ).exactOptional(),
+    Name: AttributeNameSchema.exactOptional().openapi({
+      description: ' Provides a name or contextual description about the trait. ',
+    }),
+    Score: FloatSchema.exactOptional().openapi({
+      description:
+        ' The level of confidence that Comprehend Medical; has in the accuracy of this trait.',
+    }),
   })
   .openapi({
     description: ' Provides contextual information about the extracted entity. ',
@@ -456,66 +371,40 @@ const RelationshipTypeSchema = z
 
 const AttributeSchema = z
   .object({
-    Type: EntitySubTypeSchema.and(
-      z.any().openapi({ description: ' The type of attribute. ' }),
-    ).exactOptional(),
-    Score: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The level of confidence that Comprehend Medical; has that the segment of text is correctly recognized as an attribute. ',
-        }),
-    ).exactOptional(),
-    RelationshipScore: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The level of confidence that Comprehend Medical; has that this attribute is correctly related to this entity. ',
-        }),
-    ).exactOptional(),
-    RelationshipType: RelationshipTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of relationship between the entity and attribute. Type for the relationship is <code>OVERLAP</code>, indicating that the entity occurred at the same time as the <code>Date_Expression</code>. ',
-        }),
-    ).exactOptional(),
-    Id: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The numeric identifier for this attribute. This is a monotonically increasing id unique within this response rather than a global unique identifier. ',
-        }),
-    ).exactOptional(),
-    BeginOffset: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The 0-based character offset in the input text that shows where the attribute begins. The offset returns the UTF-8 code point in the string. ',
-        }),
-    ).exactOptional(),
-    EndOffset: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The 0-based character offset in the input text that shows where the attribute ends. The offset returns the UTF-8 code point in the string.',
-        }),
-    ).exactOptional(),
-    Text: StringSchema.and(
-      z.any().openapi({ description: ' The segment of input text extracted as this attribute.' }),
-    ).exactOptional(),
-    Category: EntityTypeSchema.and(
-      z.any().openapi({ description: ' The category of attribute. ' }),
-    ).exactOptional(),
-    Traits: TraitListSchema.and(
-      z.any().openapi({ description: ' Contextual information for this attribute. ' }),
-    ).exactOptional(),
+    Type: EntitySubTypeSchema.exactOptional().openapi({ description: ' The type of attribute. ' }),
+    Score: FloatSchema.exactOptional().openapi({
+      description:
+        ' The level of confidence that Comprehend Medical; has that the segment of text is correctly recognized as an attribute. ',
+    }),
+    RelationshipScore: FloatSchema.exactOptional().openapi({
+      description:
+        ' The level of confidence that Comprehend Medical; has that this attribute is correctly related to this entity. ',
+    }),
+    RelationshipType: RelationshipTypeSchema.exactOptional().openapi({
+      description:
+        'The type of relationship between the entity and attribute. Type for the relationship is <code>OVERLAP</code>, indicating that the entity occurred at the same time as the <code>Date_Expression</code>. ',
+    }),
+    Id: IntegerSchema.exactOptional().openapi({
+      description:
+        ' The numeric identifier for this attribute. This is a monotonically increasing id unique within this response rather than a global unique identifier. ',
+    }),
+    BeginOffset: IntegerSchema.exactOptional().openapi({
+      description:
+        ' The 0-based character offset in the input text that shows where the attribute begins. The offset returns the UTF-8 code point in the string. ',
+    }),
+    EndOffset: IntegerSchema.exactOptional().openapi({
+      description:
+        ' The 0-based character offset in the input text that shows where the attribute ends. The offset returns the UTF-8 code point in the string.',
+    }),
+    Text: StringSchema.exactOptional().openapi({
+      description: ' The segment of input text extracted as this attribute.',
+    }),
+    Category: EntityTypeSchema.exactOptional().openapi({
+      description: ' The category of attribute. ',
+    }),
+    Traits: TraitListSchema.exactOptional().openapi({
+      description: ' Contextual information for this attribute. ',
+    }),
   })
   .openapi({
     description:
@@ -528,57 +417,37 @@ const AttributeListSchema = z.array(AttributeSchema).openapi('AttributeList')
 
 const EntitySchema = z
   .object({
-    Id: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The numeric identifier for the entity. This is a monotonically increasing id unique within this response rather than a global unique identifier. ',
-        }),
-    ).exactOptional(),
-    BeginOffset: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The 0-based character offset in the input text that shows where the entity begins. The offset returns the UTF-8 code point in the string. ',
-        }),
-    ).exactOptional(),
-    EndOffset: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The 0-based character offset in the input text that shows where the entity ends. The offset returns the UTF-8 code point in the string. ',
-        }),
-    ).exactOptional(),
-    Score: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The level of confidence that Comprehend Medical; has in the accuracy of the detection.',
-        }),
-    ).exactOptional(),
-    Text: StringSchema.and(
-      z.any().openapi({ description: ' The segment of input text extracted as this entity.' }),
-    ).exactOptional(),
-    Category: EntityTypeSchema.and(
-      z.any().openapi({ description: ' The category of the entity.' }),
-    ).exactOptional(),
-    Type: EntitySubTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Describes the specific type of entity with category of entities.',
-        }),
-    ).exactOptional(),
-    Traits: TraitListSchema.and(
-      z.any().openapi({ description: 'Contextual information for the entity.' }),
-    ).exactOptional(),
-    Attributes: AttributeListSchema.and(
-      z.any().openapi({ description: ' The extracted attributes that relate to this entity.' }),
-    ).exactOptional(),
+    Id: IntegerSchema.exactOptional().openapi({
+      description:
+        ' The numeric identifier for the entity. This is a monotonically increasing id unique within this response rather than a global unique identifier. ',
+    }),
+    BeginOffset: IntegerSchema.exactOptional().openapi({
+      description:
+        ' The 0-based character offset in the input text that shows where the entity begins. The offset returns the UTF-8 code point in the string. ',
+    }),
+    EndOffset: IntegerSchema.exactOptional().openapi({
+      description:
+        ' The 0-based character offset in the input text that shows where the entity ends. The offset returns the UTF-8 code point in the string. ',
+    }),
+    Score: FloatSchema.exactOptional().openapi({
+      description:
+        'The level of confidence that Comprehend Medical; has in the accuracy of the detection.',
+    }),
+    Text: StringSchema.exactOptional().openapi({
+      description: ' The segment of input text extracted as this entity.',
+    }),
+    Category: EntityTypeSchema.exactOptional().openapi({
+      description: ' The category of the entity.',
+    }),
+    Type: EntitySubTypeSchema.exactOptional().openapi({
+      description: ' Describes the specific type of entity with category of entities.',
+    }),
+    Traits: TraitListSchema.exactOptional().openapi({
+      description: 'Contextual information for the entity.',
+    }),
+    Attributes: AttributeListSchema.exactOptional().openapi({
+      description: ' The extracted attributes that relate to this entity.',
+    }),
   })
   .openapi({
     description: ' Provides information about an extracted medical entity.',
@@ -590,22 +459,13 @@ const EntityListSchema = z.array(EntitySchema).openapi('EntityList')
 
 const UnmappedAttributeSchema = z
   .object({
-    Type: EntityTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The type of the unmapped attribute, could be one of the following values: "MEDICATION", "MEDICAL_CONDITION", "ANATOMY", "TEST_AND_TREATMENT_PROCEDURE" or "PROTECTED_HEALTH_INFORMATION". ',
-        }),
-    ).exactOptional(),
-    Attribute: AttributeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The specific attribute that has been extracted but not mapped to an entity. ',
-        }),
-    ).exactOptional(),
+    Type: EntityTypeSchema.exactOptional().openapi({
+      description:
+        ' The type of the unmapped attribute, could be one of the following values: "MEDICATION", "MEDICAL_CONDITION", "ANATOMY", "TEST_AND_TREATMENT_PROCEDURE" or "PROTECTED_HEALTH_INFORMATION". ',
+    }),
+    Attribute: AttributeSchema.exactOptional().openapi({
+      description: ' The specific attribute that has been extracted but not mapped to an entity. ',
+    }),
   })
   .openapi({
     description:
@@ -620,38 +480,22 @@ const UnmappedAttributeListSchema = z
 
 const DetectEntitiesResponseSchema = z
   .object({
-    Entities: EntityListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The collection of medical entities extracted from the input text and their associated information. For each entity, the response provides the entity text, the entity category, where the entity text begins and ends, and the level of confidence that Comprehend Medical; has in the detection and analysis. Attributes and traits of the entity are also returned.',
-        }),
-    ),
-    UnmappedAttributes: UnmappedAttributeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Attributes extracted from the input text that we were unable to relate to an entity.',
-        }),
-    ).exactOptional(),
-    PaginationToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' If the result of the previous request to <code>DetectEntities</code> was truncated, include the <code>PaginationToken</code> to fetch the next page of entities.',
-        }),
-    ).exactOptional(),
-    ModelVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version of the model used to analyze the documents. The version number looks like X.X.X. You can use this information to track the model used for a particular batch of documents.',
-        }),
-    ),
+    Entities: EntityListSchema.openapi({
+      description:
+        ' The collection of medical entities extracted from the input text and their associated information. For each entity, the response provides the entity text, the entity category, where the entity text begins and ends, and the level of confidence that Comprehend Medical; has in the detection and analysis. Attributes and traits of the entity are also returned.',
+    }),
+    UnmappedAttributes: UnmappedAttributeListSchema.exactOptional().openapi({
+      description:
+        ' Attributes extracted from the input text that we were unable to relate to an entity.',
+    }),
+    PaginationToken: StringSchema.exactOptional().openapi({
+      description:
+        ' If the result of the previous request to <code>DetectEntities</code> was truncated, include the <code>PaginationToken</code> to fetch the next page of entities.',
+    }),
+    ModelVersion: StringSchema.openapi({
+      description:
+        'The version of the model used to analyze the documents. The version number looks like X.X.X. You can use this information to track the model used for a particular batch of documents.',
+    }),
   })
   .openapi({ required: ['Entities', 'ModelVersion'] })
   .openapi('DetectEntitiesResponse')
@@ -660,14 +504,10 @@ const BoundedLengthStringSchema = z.string().min(1).max(20000).openapi('BoundedL
 
 const DetectEntitiesRequestSchema = z
   .object({
-    Text: BoundedLengthStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A UTF-8 text string containing the clinical content being examined for entities. Each string must contain fewer than 20,000 bytes of characters.',
-        }),
-    ),
+    Text: BoundedLengthStringSchema.openapi({
+      description:
+        ' A UTF-8 text string containing the clinical content being examined for entities. Each string must contain fewer than 20,000 bytes of characters.',
+    }),
   })
   .openapi({ required: ['Text'], title: 'DetectEntitiesRequest' })
   .openapi('DetectEntitiesRequest')
@@ -680,96 +520,60 @@ const TextSizeLimitExceededExceptionSchema = z.any().openapi('TextSizeLimitExcee
 
 const DetectEntitiesV2ResponseSchema = z
   .object({
-    Entities: EntityListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The collection of medical entities extracted from the input text and their associated information. For each entity, the response provides the entity text, the entity category, where the entity text begins and ends, and the level of confidence in the detection and analysis. Attributes and traits of the entity are also returned.',
-        }),
-    ),
-    UnmappedAttributes: UnmappedAttributeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Attributes extracted from the input text that couldn't be related to an entity.",
-        }),
-    ).exactOptional(),
-    PaginationToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the result to the <code>DetectEntitiesV2</code> operation was truncated, include the <code>PaginationToken</code> to fetch the next page of entities.',
-        }),
-    ).exactOptional(),
-    ModelVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version of the model used to analyze the documents. The version number looks like X.X.X. You can use this information to track the model used for a particular batch of documents.',
-        }),
-    ),
+    Entities: EntityListSchema.openapi({
+      description:
+        'The collection of medical entities extracted from the input text and their associated information. For each entity, the response provides the entity text, the entity category, where the entity text begins and ends, and the level of confidence in the detection and analysis. Attributes and traits of the entity are also returned.',
+    }),
+    UnmappedAttributes: UnmappedAttributeListSchema.exactOptional().openapi({
+      description:
+        "Attributes extracted from the input text that couldn't be related to an entity.",
+    }),
+    PaginationToken: StringSchema.exactOptional().openapi({
+      description:
+        'If the result to the <code>DetectEntitiesV2</code> operation was truncated, include the <code>PaginationToken</code> to fetch the next page of entities.',
+    }),
+    ModelVersion: StringSchema.openapi({
+      description:
+        'The version of the model used to analyze the documents. The version number looks like X.X.X. You can use this information to track the model used for a particular batch of documents.',
+    }),
   })
   .openapi({ required: ['Entities', 'ModelVersion'] })
   .openapi('DetectEntitiesV2Response')
 
 const DetectEntitiesV2RequestSchema = z
   .object({
-    Text: BoundedLengthStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A UTF-8 string containing the clinical content being examined for entities. Each string must contain fewer than 20,000 bytes of characters.',
-        }),
-    ),
+    Text: BoundedLengthStringSchema.openapi({
+      description:
+        'A UTF-8 string containing the clinical content being examined for entities. Each string must contain fewer than 20,000 bytes of characters.',
+    }),
   })
   .openapi({ required: ['Text'], title: 'DetectEntitiesV2Request' })
   .openapi('DetectEntitiesV2Request')
 
 const DetectPHIResponseSchema = z
   .object({
-    Entities: EntityListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The collection of PHI entities extracted from the input text and their associated information. For each entity, the response provides the entity text, the entity category, where the entity text begins and ends, and the level of confidence that Comprehend Medical; has in its detection. ',
-        }),
-    ),
-    PaginationToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' If the result of the previous request to <code>DetectPHI</code> was truncated, include the <code>PaginationToken</code> to fetch the next page of PHI entities. ',
-        }),
-    ).exactOptional(),
-    ModelVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version of the model used to analyze the documents. The version number looks like X.X.X. You can use this information to track the model used for a particular batch of documents.',
-        }),
-    ),
+    Entities: EntityListSchema.openapi({
+      description:
+        ' The collection of PHI entities extracted from the input text and their associated information. For each entity, the response provides the entity text, the entity category, where the entity text begins and ends, and the level of confidence that Comprehend Medical; has in its detection. ',
+    }),
+    PaginationToken: StringSchema.exactOptional().openapi({
+      description:
+        ' If the result of the previous request to <code>DetectPHI</code> was truncated, include the <code>PaginationToken</code> to fetch the next page of PHI entities. ',
+    }),
+    ModelVersion: StringSchema.openapi({
+      description:
+        'The version of the model used to analyze the documents. The version number looks like X.X.X. You can use this information to track the model used for a particular batch of documents.',
+    }),
   })
   .openapi({ required: ['Entities', 'ModelVersion'] })
   .openapi('DetectPHIResponse')
 
 const DetectPHIRequestSchema = z
   .object({
-    Text: BoundedLengthStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A UTF-8 text string containing the clinical content being examined for PHI entities. Each string must contain fewer than 20,000 bytes of characters.',
-        }),
-    ),
+    Text: BoundedLengthStringSchema.openapi({
+      description:
+        ' A UTF-8 text string containing the clinical content being examined for PHI entities. Each string must contain fewer than 20,000 bytes of characters.',
+    }),
   })
   .openapi({ required: ['Text'], title: 'DetectPHIRequest' })
   .openapi('DetectPHIRequest')
@@ -810,19 +614,13 @@ const ICD10CMTraitNameSchema = z
 
 const ICD10CMTraitSchema = z
   .object({
-    Name: ICD10CMTraitNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Provides a name or contextual description about the trait.' }),
-    ).exactOptional(),
-    Score: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The level of confidence that Comprehend Medical; has that the segment of text is correctly recognized as a trait.',
-        }),
-    ).exactOptional(),
+    Name: ICD10CMTraitNameSchema.exactOptional().openapi({
+      description: 'Provides a name or contextual description about the trait.',
+    }),
+    Score: FloatSchema.exactOptional().openapi({
+      description:
+        'The level of confidence that Comprehend Medical; has that the segment of text is correctly recognized as a trait.',
+    }),
   })
   .openapi({
     description:
@@ -839,85 +637,45 @@ const ICD10CMRelationshipTypeSchema = z
 
 const ICD10CMAttributeSchema = z
   .object({
-    Type: ICD10CMAttributeTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of attribute. InferICD10CM detects entities of the type <code>DX_NAME</code>. ',
-        }),
-    ).exactOptional(),
-    Score: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The level of confidence that Amazon Comprehend Medical has that the segment of text is correctly recognized as an attribute.',
-        }),
-    ).exactOptional(),
-    RelationshipScore: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The level of confidence that Amazon Comprehend Medical has that this attribute is correctly related to this entity.',
-        }),
-    ).exactOptional(),
-    Id: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The numeric identifier for this attribute. This is a monotonically increasing id unique within this response rather than a global unique identifier.',
-        }),
-    ).exactOptional(),
-    BeginOffset: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The 0-based character offset in the input text that shows where the attribute begins. The offset returns the UTF-8 code point in the string.',
-        }),
-    ).exactOptional(),
-    EndOffset: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The 0-based character offset in the input text that shows where the attribute ends. The offset returns the UTF-8 code point in the string.',
-        }),
-    ).exactOptional(),
-    Text: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The segment of input text which contains the detected attribute.',
-        }),
-    ).exactOptional(),
-    Traits: ICD10CMTraitListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The contextual information for the attribute. The traits recognized by InferICD10CM are <code>DIAGNOSIS</code>, <code>SIGN</code>, <code>SYMPTOM</code>, and <code>NEGATION</code>.',
-        }),
-    ).exactOptional(),
-    Category: ICD10CMEntityTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The category of attribute. Can be either of <code>DX_NAME</code> or <code>TIME_EXPRESSION</code>.',
-        }),
-    ).exactOptional(),
-    RelationshipType: ICD10CMRelationshipTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of relationship between the entity and attribute. Type for the relationship can be either of <code>OVERLAP</code> or <code>SYSTEM_ORGAN_SITE</code>.',
-        }),
-    ).exactOptional(),
+    Type: ICD10CMAttributeTypeSchema.exactOptional().openapi({
+      description:
+        'The type of attribute. InferICD10CM detects entities of the type <code>DX_NAME</code>. ',
+    }),
+    Score: FloatSchema.exactOptional().openapi({
+      description:
+        'The level of confidence that Amazon Comprehend Medical has that the segment of text is correctly recognized as an attribute.',
+    }),
+    RelationshipScore: FloatSchema.exactOptional().openapi({
+      description:
+        'The level of confidence that Amazon Comprehend Medical has that this attribute is correctly related to this entity.',
+    }),
+    Id: IntegerSchema.exactOptional().openapi({
+      description:
+        'The numeric identifier for this attribute. This is a monotonically increasing id unique within this response rather than a global unique identifier.',
+    }),
+    BeginOffset: IntegerSchema.exactOptional().openapi({
+      description:
+        'The 0-based character offset in the input text that shows where the attribute begins. The offset returns the UTF-8 code point in the string.',
+    }),
+    EndOffset: IntegerSchema.exactOptional().openapi({
+      description:
+        'The 0-based character offset in the input text that shows where the attribute ends. The offset returns the UTF-8 code point in the string.',
+    }),
+    Text: StringSchema.exactOptional().openapi({
+      description: 'The segment of input text which contains the detected attribute.',
+    }),
+    Traits: ICD10CMTraitListSchema.exactOptional().openapi({
+      description:
+        'The contextual information for the attribute. The traits recognized by InferICD10CM are <code>DIAGNOSIS</code>, <code>SIGN</code>, <code>SYMPTOM</code>, and <code>NEGATION</code>.',
+    }),
+    Category: ICD10CMEntityTypeSchema.exactOptional().openapi({
+      description:
+        'The category of attribute. Can be either of <code>DX_NAME</code> or <code>TIME_EXPRESSION</code>.',
+    }),
+    RelationshipType: ICD10CMRelationshipTypeSchema.exactOptional().openapi({
+      description:
+        'The type of relationship between the entity and attribute. Type for the relationship can be either of <code>OVERLAP</code> or <code>SYSTEM_ORGAN_SITE</code>.',
+    }),
   })
   .openapi({
     description:
@@ -930,27 +688,17 @@ const ICD10CMAttributeListSchema = z.array(ICD10CMAttributeSchema).openapi('ICD1
 
 const ICD10CMConceptSchema = z
   .object({
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The long description of the ICD-10-CM code in the ontology.' }),
-    ).exactOptional(),
-    Code: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ICD-10-CM code that identifies the concept found in the knowledge base from the Centers for Disease Control.',
-        }),
-    ).exactOptional(),
-    Score: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The level of confidence that Amazon Comprehend Medical has that the entity is accurately linked to an ICD-10-CM concept.',
-        }),
-    ).exactOptional(),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'The long description of the ICD-10-CM code in the ontology.',
+    }),
+    Code: StringSchema.exactOptional().openapi({
+      description:
+        'The ICD-10-CM code that identifies the concept found in the knowledge base from the Centers for Disease Control.',
+    }),
+    Score: FloatSchema.exactOptional().openapi({
+      description:
+        'The level of confidence that Amazon Comprehend Medical has that the entity is accurately linked to an ICD-10-CM concept.',
+    }),
   })
   .openapi({
     description:
@@ -963,85 +711,45 @@ const ICD10CMConceptListSchema = z.array(ICD10CMConceptSchema).openapi('ICD10CMC
 
 const ICD10CMEntitySchema = z
   .object({
-    Id: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The numeric identifier for the entity. This is a monotonically increasing id unique within this response rather than a global unique identifier.',
-        }),
-    ).exactOptional(),
-    Text: OntologyLinkingBoundedLengthStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The segment of input text that is matched to the detected entity.',
-        }),
-    ).exactOptional(),
-    Category: ICD10CMEntityCategorySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The category of the entity. InferICD10CM detects entities in the <code>MEDICAL_CONDITION</code> category. ',
-        }),
-    ).exactOptional(),
-    Type: ICD10CMEntityTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes the specific type of entity with category of entities. InferICD10CM detects entities of the type <code>DX_NAME</code> and <code>TIME_EXPRESSION</code>.',
-        }),
-    ).exactOptional(),
-    Score: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The level of confidence that Amazon Comprehend Medical has in the accuracy of the detection.',
-        }),
-    ).exactOptional(),
-    BeginOffset: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The 0-based character offset in the input text that shows where the entity begins. The offset returns the UTF-8 code point in the string.',
-        }),
-    ).exactOptional(),
-    EndOffset: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The 0-based character offset in the input text that shows where the entity ends. The offset returns the UTF-8 code point in the string.',
-        }),
-    ).exactOptional(),
-    Attributes: ICD10CMAttributeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The detected attributes that relate to the entity. An extracted segment of the text that is an attribute of an entity, or otherwise related to an entity, such as the nature of a medical condition.',
-        }),
-    ).exactOptional(),
-    Traits: ICD10CMTraitListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides Contextual information for the entity. The traits recognized by InferICD10CM are <code>DIAGNOSIS</code>, <code>SIGN</code>, <code>SYMPTOM</code>, and <code>NEGATION.</code> ',
-        }),
-    ).exactOptional(),
-    ICD10CMConcepts: ICD10CMConceptListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ICD-10-CM concepts that the entity could refer to, along with a score indicating the likelihood of the match.',
-        }),
-    ).exactOptional(),
+    Id: IntegerSchema.exactOptional().openapi({
+      description:
+        'The numeric identifier for the entity. This is a monotonically increasing id unique within this response rather than a global unique identifier.',
+    }),
+    Text: OntologyLinkingBoundedLengthStringSchema.exactOptional().openapi({
+      description: 'The segment of input text that is matched to the detected entity.',
+    }),
+    Category: ICD10CMEntityCategorySchema.exactOptional().openapi({
+      description:
+        ' The category of the entity. InferICD10CM detects entities in the <code>MEDICAL_CONDITION</code> category. ',
+    }),
+    Type: ICD10CMEntityTypeSchema.exactOptional().openapi({
+      description:
+        'Describes the specific type of entity with category of entities. InferICD10CM detects entities of the type <code>DX_NAME</code> and <code>TIME_EXPRESSION</code>.',
+    }),
+    Score: FloatSchema.exactOptional().openapi({
+      description:
+        'The level of confidence that Amazon Comprehend Medical has in the accuracy of the detection.',
+    }),
+    BeginOffset: IntegerSchema.exactOptional().openapi({
+      description:
+        'The 0-based character offset in the input text that shows where the entity begins. The offset returns the UTF-8 code point in the string.',
+    }),
+    EndOffset: IntegerSchema.exactOptional().openapi({
+      description:
+        'The 0-based character offset in the input text that shows where the entity ends. The offset returns the UTF-8 code point in the string.',
+    }),
+    Attributes: ICD10CMAttributeListSchema.exactOptional().openapi({
+      description:
+        'The detected attributes that relate to the entity. An extracted segment of the text that is an attribute of an entity, or otherwise related to an entity, such as the nature of a medical condition.',
+    }),
+    Traits: ICD10CMTraitListSchema.exactOptional().openapi({
+      description:
+        'Provides Contextual information for the entity. The traits recognized by InferICD10CM are <code>DIAGNOSIS</code>, <code>SIGN</code>, <code>SYMPTOM</code>, and <code>NEGATION.</code> ',
+    }),
+    ICD10CMConcepts: ICD10CMConceptListSchema.exactOptional().openapi({
+      description:
+        'The ICD-10-CM concepts that the entity could refer to, along with a score indicating the likelihood of the match.',
+    }),
   })
   .openapi({
     description:
@@ -1054,44 +762,28 @@ const ICD10CMEntityListSchema = z.array(ICD10CMEntitySchema).openapi('ICD10CMEnt
 
 const InferICD10CMResponseSchema = z
   .object({
-    Entities: ICD10CMEntityListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The medical conditions detected in the text linked to ICD-10-CM concepts. If the action is successful, the service sends back an HTTP 200 response, as well as the entities detected.',
-        }),
-    ),
-    PaginationToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the result of the previous request to <code>InferICD10CM</code> was truncated, include the <code>PaginationToken</code> to fetch the next page of medical condition entities. ',
-        }),
-    ).exactOptional(),
-    ModelVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version of the model used to analyze the documents, in the format <i>n</i>.<i>n</i>.<i>n</i> You can use this information to track the model used for a particular batch of documents.',
-        }),
-    ).exactOptional(),
+    Entities: ICD10CMEntityListSchema.openapi({
+      description:
+        'The medical conditions detected in the text linked to ICD-10-CM concepts. If the action is successful, the service sends back an HTTP 200 response, as well as the entities detected.',
+    }),
+    PaginationToken: StringSchema.exactOptional().openapi({
+      description:
+        'If the result of the previous request to <code>InferICD10CM</code> was truncated, include the <code>PaginationToken</code> to fetch the next page of medical condition entities. ',
+    }),
+    ModelVersion: StringSchema.exactOptional().openapi({
+      description:
+        'The version of the model used to analyze the documents, in the format <i>n</i>.<i>n</i>.<i>n</i> You can use this information to track the model used for a particular batch of documents.',
+    }),
   })
   .openapi({ required: ['Entities'] })
   .openapi('InferICD10CMResponse')
 
 const InferICD10CMRequestSchema = z
   .object({
-    Text: OntologyLinkingBoundedLengthStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The input text used for analysis. The input for InferICD10CM is a string from 1 to 10000 characters.',
-        }),
-    ),
+    Text: OntologyLinkingBoundedLengthStringSchema.openapi({
+      description:
+        'The input text used for analysis. The input for InferICD10CM is a string from 1 to 10000 characters.',
+    }),
   })
   .openapi({ required: ['Text'], title: 'InferICD10CMRequest' })
   .openapi('InferICD10CMRequest')
@@ -1108,19 +800,13 @@ const RxNormTraitNameSchema = z.literal('NEGATION').openapi('RxNormTraitName')
 
 const RxNormTraitSchema = z
   .object({
-    Name: RxNormTraitNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Provides a name or contextual description about the trait.' }),
-    ).exactOptional(),
-    Score: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The level of confidence that Amazon Comprehend Medical has in the accuracy of the detected trait.',
-        }),
-    ).exactOptional(),
+    Name: RxNormTraitNameSchema.exactOptional().openapi({
+      description: 'Provides a name or contextual description about the trait.',
+    }),
+    Score: FloatSchema.exactOptional().openapi({
+      description:
+        'The level of confidence that Amazon Comprehend Medical has in the accuracy of the detected trait.',
+    }),
   })
   .openapi({
     description:
@@ -1133,69 +819,37 @@ const RxNormTraitListSchema = z.array(RxNormTraitSchema).openapi('RxNormTraitLis
 
 const RxNormAttributeSchema = z
   .object({
-    Type: RxNormAttributeTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of attribute. The types of attributes recognized by InferRxNorm are <code>BRAND_NAME</code> and <code>GENERIC_NAME</code>.',
-        }),
-    ).exactOptional(),
-    Score: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The level of confidence that Comprehend Medical has that the segment of text is correctly recognized as an attribute.',
-        }),
-    ).exactOptional(),
-    RelationshipScore: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The level of confidence that Amazon Comprehend Medical has that the attribute is accurately linked to an entity.',
-        }),
-    ).exactOptional(),
-    Id: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The numeric identifier for this attribute. This is a monotonically increasing id unique within this response rather than a global unique identifier.',
-        }),
-    ).exactOptional(),
-    BeginOffset: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The 0-based character offset in the input text that shows where the attribute begins. The offset returns the UTF-8 code point in the string.',
-        }),
-    ).exactOptional(),
-    EndOffset: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The 0-based character offset in the input text that shows where the attribute ends. The offset returns the UTF-8 code point in the string.',
-        }),
-    ).exactOptional(),
-    Text: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The segment of input text which corresponds to the detected attribute.',
-        }),
-    ).exactOptional(),
-    Traits: RxNormTraitListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contextual information for the attribute. InferRxNorm recognizes the trait <code>NEGATION</code> for attributes, i.e. that the patient is not taking a specific dose or form of a medication.',
-        }),
-    ).exactOptional(),
+    Type: RxNormAttributeTypeSchema.exactOptional().openapi({
+      description:
+        'The type of attribute. The types of attributes recognized by InferRxNorm are <code>BRAND_NAME</code> and <code>GENERIC_NAME</code>.',
+    }),
+    Score: FloatSchema.exactOptional().openapi({
+      description:
+        'The level of confidence that Comprehend Medical has that the segment of text is correctly recognized as an attribute.',
+    }),
+    RelationshipScore: FloatSchema.exactOptional().openapi({
+      description:
+        'The level of confidence that Amazon Comprehend Medical has that the attribute is accurately linked to an entity.',
+    }),
+    Id: IntegerSchema.exactOptional().openapi({
+      description:
+        'The numeric identifier for this attribute. This is a monotonically increasing id unique within this response rather than a global unique identifier.',
+    }),
+    BeginOffset: IntegerSchema.exactOptional().openapi({
+      description:
+        'The 0-based character offset in the input text that shows where the attribute begins. The offset returns the UTF-8 code point in the string.',
+    }),
+    EndOffset: IntegerSchema.exactOptional().openapi({
+      description:
+        'The 0-based character offset in the input text that shows where the attribute ends. The offset returns the UTF-8 code point in the string.',
+    }),
+    Text: StringSchema.exactOptional().openapi({
+      description: 'The segment of input text which corresponds to the detected attribute.',
+    }),
+    Traits: RxNormTraitListSchema.exactOptional().openapi({
+      description:
+        'Contextual information for the attribute. InferRxNorm recognizes the trait <code>NEGATION</code> for attributes, i.e. that the patient is not taking a specific dose or form of a medication.',
+    }),
   })
   .openapi({
     description:
@@ -1208,20 +862,16 @@ const RxNormAttributeListSchema = z.array(RxNormAttributeSchema).openapi('RxNorm
 
 const RxNormConceptSchema = z
   .object({
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'The description of the RxNorm concept.' }),
-    ).exactOptional(),
-    Code: StringSchema.and(
-      z.any().openapi({ description: 'RxNorm concept ID, also known as the RxCUI.' }),
-    ).exactOptional(),
-    Score: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The level of confidence that Amazon Comprehend Medical has that the entity is accurately linked to the reported RxNorm concept.',
-        }),
-    ).exactOptional(),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'The description of the RxNorm concept.',
+    }),
+    Code: StringSchema.exactOptional().openapi({
+      description: 'RxNorm concept ID, also known as the RxCUI.',
+    }),
+    Score: FloatSchema.exactOptional().openapi({
+      description:
+        'The level of confidence that Amazon Comprehend Medical has that the entity is accurately linked to the reported RxNorm concept.',
+    }),
   })
   .openapi({
     description:
@@ -1234,80 +884,44 @@ const RxNormConceptListSchema = z.array(RxNormConceptSchema).openapi('RxNormConc
 
 const RxNormEntitySchema = z
   .object({
-    Id: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The numeric identifier for the entity. This is a monotonically increasing id unique within this response rather than a global unique identifier.',
-        }),
-    ).exactOptional(),
-    Text: OntologyLinkingBoundedLengthStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The segment of input text extracted from which the entity was detected.',
-        }),
-    ).exactOptional(),
-    Category: RxNormEntityCategorySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The category of the entity. The recognized categories are <code>GENERIC</code> or <code>BRAND_NAME</code>.',
-        }),
-    ).exactOptional(),
-    Type: RxNormEntityTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Describes the specific type of entity. For InferRxNorm, the recognized entity type is <code>MEDICATION</code>.',
-        }),
-    ).exactOptional(),
-    Score: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The level of confidence that Amazon Comprehend Medical has in the accuracy of the detected entity.',
-        }),
-    ).exactOptional(),
-    BeginOffset: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The 0-based character offset in the input text that shows where the entity begins. The offset returns the UTF-8 code point in the string.',
-        }),
-    ).exactOptional(),
-    EndOffset: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The 0-based character offset in the input text that shows where the entity ends. The offset returns the UTF-8 code point in the string.',
-        }),
-    ).exactOptional(),
-    Attributes: RxNormAttributeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The extracted attributes that relate to the entity. The attributes recognized by InferRxNorm are <code>DOSAGE</code>, <code>DURATION</code>, <code>FORM</code>, <code>FREQUENCY</code>, <code>RATE</code>, <code>ROUTE_OR_MODE</code>, and <code>STRENGTH</code>.',
-        }),
-    ).exactOptional(),
-    Traits: RxNormTraitListSchema.and(
-      z.any().openapi({ description: ' Contextual information for the entity.' }),
-    ).exactOptional(),
-    RxNormConcepts: RxNormConceptListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The RxNorm concepts that the entity could refer to, along with a score indicating the likelihood of the match.',
-        }),
-    ).exactOptional(),
+    Id: IntegerSchema.exactOptional().openapi({
+      description:
+        'The numeric identifier for the entity. This is a monotonically increasing id unique within this response rather than a global unique identifier.',
+    }),
+    Text: OntologyLinkingBoundedLengthStringSchema.exactOptional().openapi({
+      description: 'The segment of input text extracted from which the entity was detected.',
+    }),
+    Category: RxNormEntityCategorySchema.exactOptional().openapi({
+      description:
+        'The category of the entity. The recognized categories are <code>GENERIC</code> or <code>BRAND_NAME</code>.',
+    }),
+    Type: RxNormEntityTypeSchema.exactOptional().openapi({
+      description:
+        ' Describes the specific type of entity. For InferRxNorm, the recognized entity type is <code>MEDICATION</code>.',
+    }),
+    Score: FloatSchema.exactOptional().openapi({
+      description:
+        'The level of confidence that Amazon Comprehend Medical has in the accuracy of the detected entity.',
+    }),
+    BeginOffset: IntegerSchema.exactOptional().openapi({
+      description:
+        'The 0-based character offset in the input text that shows where the entity begins. The offset returns the UTF-8 code point in the string.',
+    }),
+    EndOffset: IntegerSchema.exactOptional().openapi({
+      description:
+        'The 0-based character offset in the input text that shows where the entity ends. The offset returns the UTF-8 code point in the string.',
+    }),
+    Attributes: RxNormAttributeListSchema.exactOptional().openapi({
+      description:
+        'The extracted attributes that relate to the entity. The attributes recognized by InferRxNorm are <code>DOSAGE</code>, <code>DURATION</code>, <code>FORM</code>, <code>FREQUENCY</code>, <code>RATE</code>, <code>ROUTE_OR_MODE</code>, and <code>STRENGTH</code>.',
+    }),
+    Traits: RxNormTraitListSchema.exactOptional().openapi({
+      description: ' Contextual information for the entity.',
+    }),
+    RxNormConcepts: RxNormConceptListSchema.exactOptional().openapi({
+      description:
+        ' The RxNorm concepts that the entity could refer to, along with a score indicating the likelihood of the match.',
+    }),
   })
   .openapi({
     description:
@@ -1320,44 +934,28 @@ const RxNormEntityListSchema = z.array(RxNormEntitySchema).openapi('RxNormEntity
 
 const InferRxNormResponseSchema = z
   .object({
-    Entities: RxNormEntityListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The medication entities detected in the text linked to RxNorm concepts. If the action is successful, the service sends back an HTTP 200 response, as well as the entities detected.',
-        }),
-    ),
-    PaginationToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the result of the previous request to <code>InferRxNorm</code> was truncated, include the <code>PaginationToken</code> to fetch the next page of medication entities.',
-        }),
-    ).exactOptional(),
-    ModelVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version of the model used to analyze the documents, in the format <i>n</i>.<i>n</i>.<i>n</i> You can use this information to track the model used for a particular batch of documents.',
-        }),
-    ).exactOptional(),
+    Entities: RxNormEntityListSchema.openapi({
+      description:
+        'The medication entities detected in the text linked to RxNorm concepts. If the action is successful, the service sends back an HTTP 200 response, as well as the entities detected.',
+    }),
+    PaginationToken: StringSchema.exactOptional().openapi({
+      description:
+        'If the result of the previous request to <code>InferRxNorm</code> was truncated, include the <code>PaginationToken</code> to fetch the next page of medication entities.',
+    }),
+    ModelVersion: StringSchema.exactOptional().openapi({
+      description:
+        'The version of the model used to analyze the documents, in the format <i>n</i>.<i>n</i>.<i>n</i> You can use this information to track the model used for a particular batch of documents.',
+    }),
   })
   .openapi({ required: ['Entities'] })
   .openapi('InferRxNormResponse')
 
 const InferRxNormRequestSchema = z
   .object({
-    Text: OntologyLinkingBoundedLengthStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The input text used for analysis. The input for InferRxNorm is a string from 1 to 10000 characters.',
-        }),
-    ),
+    Text: OntologyLinkingBoundedLengthStringSchema.openapi({
+      description:
+        'The input text used for analysis. The input for InferRxNorm is a string from 1 to 10000 characters.',
+    }),
   })
   .openapi({ required: ['Text'], title: 'InferRxNormRequest' })
   .openapi('InferRxNormRequest')
@@ -1394,17 +992,13 @@ const SNOMEDCTTraitNameSchema = z
 
 const SNOMEDCTTraitSchema = z
   .object({
-    Name: SNOMEDCTTraitNameSchema.and(
-      z.any().openapi({ description: ' The name or contextual description of a detected trait. ' }),
-    ).exactOptional(),
-    Score: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The level of confidence that Comprehend Medical has in the accuracy of a detected trait. ',
-        }),
-    ).exactOptional(),
+    Name: SNOMEDCTTraitNameSchema.exactOptional().openapi({
+      description: ' The name or contextual description of a detected trait. ',
+    }),
+    Score: FloatSchema.exactOptional().openapi({
+      description:
+        ' The level of confidence that Comprehend Medical has in the accuracy of a detected trait. ',
+    }),
   })
   .openapi({ description: ' Contextual information for an entity. ', required: [] })
   .openapi('SNOMEDCTTrait')
@@ -1413,20 +1007,16 @@ const SNOMEDCTTraitListSchema = z.array(SNOMEDCTTraitSchema).openapi('SNOMEDCTTr
 
 const SNOMEDCTConceptSchema = z
   .object({
-    Description: StringSchema.and(
-      z.any().openapi({ description: ' The description of the SNOMED-CT concept. ' }),
-    ).exactOptional(),
-    Code: StringSchema.and(
-      z.any().openapi({ description: ' The numeric ID for the SNOMED-CT concept. ' }),
-    ).exactOptional(),
-    Score: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The level of confidence Comprehend Medical has that the entity should be linked to the identified SNOMED-CT concept. ',
-        }),
-    ).exactOptional(),
+    Description: StringSchema.exactOptional().openapi({
+      description: ' The description of the SNOMED-CT concept. ',
+    }),
+    Code: StringSchema.exactOptional().openapi({
+      description: ' The numeric ID for the SNOMED-CT concept. ',
+    }),
+    Score: FloatSchema.exactOptional().openapi({
+      description:
+        ' The level of confidence Comprehend Medical has that the entity should be linked to the identified SNOMED-CT concept. ',
+    }),
   })
   .openapi({
     description:
@@ -1439,89 +1029,49 @@ const SNOMEDCTConceptListSchema = z.array(SNOMEDCTConceptSchema).openapi('SNOMED
 
 const SNOMEDCTAttributeSchema = z
   .object({
-    Category: SNOMEDCTEntityCategorySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The category of the detected attribute. Possible categories include MEDICAL_CONDITION, ANATOMY, and TEST_TREATMENT_PROCEDURE. ',
-        }),
-    ).exactOptional(),
-    Type: SNOMEDCTAttributeTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The type of attribute. Possible types include DX_NAME, ACUITY, DIRECTION, SYSTEM_ORGAN_SITE,TEST_NAME, TEST_VALUE, TEST_UNIT, PROCEDURE_NAME, and TREATMENT_NAME. ',
-        }),
-    ).exactOptional(),
-    Score: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The level of confidence that Comprehend Medical has that the segment of text is correctly recognized as an attribute. ',
-        }),
-    ).exactOptional(),
-    RelationshipScore: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The level of confidence that Comprehend Medical has that this attribute is correctly related to this entity. ',
-        }),
-    ).exactOptional(),
-    RelationshipType: SNOMEDCTRelationshipTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The type of relationship that exists between the entity and the related attribute. ',
-        }),
-    ).exactOptional(),
-    Id: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The numeric identifier for this attribute. This is a monotonically increasing id unique within this response rather than a global unique identifier. ',
-        }),
-    ).exactOptional(),
-    BeginOffset: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The 0-based character offset in the input text that shows where the attribute begins. The offset returns the UTF-8 code point in the string. ',
-        }),
-    ).exactOptional(),
-    EndOffset: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The 0-based character offset in the input text that shows where the attribute ends. The offset returns the UTF-8 code point in the string. ',
-        }),
-    ).exactOptional(),
-    Text: StringSchema.and(
-      z.any().openapi({ description: ' The segment of input text extracted as this attribute. ' }),
-    ).exactOptional(),
-    Traits: SNOMEDCTTraitListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Contextual information for an attribute. Examples include signs, symptoms, diagnosis, and negation. ',
-        }),
-    ).exactOptional(),
-    SNOMEDCTConcepts: SNOMEDCTConceptListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The SNOMED-CT concepts specific to an attribute, along with a score indicating the likelihood of the match. ',
-        }),
-    ).exactOptional(),
+    Category: SNOMEDCTEntityCategorySchema.exactOptional().openapi({
+      description:
+        ' The category of the detected attribute. Possible categories include MEDICAL_CONDITION, ANATOMY, and TEST_TREATMENT_PROCEDURE. ',
+    }),
+    Type: SNOMEDCTAttributeTypeSchema.exactOptional().openapi({
+      description:
+        ' The type of attribute. Possible types include DX_NAME, ACUITY, DIRECTION, SYSTEM_ORGAN_SITE,TEST_NAME, TEST_VALUE, TEST_UNIT, PROCEDURE_NAME, and TREATMENT_NAME. ',
+    }),
+    Score: FloatSchema.exactOptional().openapi({
+      description:
+        ' The level of confidence that Comprehend Medical has that the segment of text is correctly recognized as an attribute. ',
+    }),
+    RelationshipScore: FloatSchema.exactOptional().openapi({
+      description:
+        ' The level of confidence that Comprehend Medical has that this attribute is correctly related to this entity. ',
+    }),
+    RelationshipType: SNOMEDCTRelationshipTypeSchema.exactOptional().openapi({
+      description:
+        ' The type of relationship that exists between the entity and the related attribute. ',
+    }),
+    Id: IntegerSchema.exactOptional().openapi({
+      description:
+        ' The numeric identifier for this attribute. This is a monotonically increasing id unique within this response rather than a global unique identifier. ',
+    }),
+    BeginOffset: IntegerSchema.exactOptional().openapi({
+      description:
+        ' The 0-based character offset in the input text that shows where the attribute begins. The offset returns the UTF-8 code point in the string. ',
+    }),
+    EndOffset: IntegerSchema.exactOptional().openapi({
+      description:
+        ' The 0-based character offset in the input text that shows where the attribute ends. The offset returns the UTF-8 code point in the string. ',
+    }),
+    Text: StringSchema.exactOptional().openapi({
+      description: ' The segment of input text extracted as this attribute. ',
+    }),
+    Traits: SNOMEDCTTraitListSchema.exactOptional().openapi({
+      description:
+        ' Contextual information for an attribute. Examples include signs, symptoms, diagnosis, and negation. ',
+    }),
+    SNOMEDCTConcepts: SNOMEDCTConceptListSchema.exactOptional().openapi({
+      description:
+        ' The SNOMED-CT concepts specific to an attribute, along with a score indicating the likelihood of the match. ',
+    }),
   })
   .openapi({
     description:
@@ -1536,76 +1086,44 @@ const SNOMEDCTAttributeListSchema = z
 
 const SNOMEDCTEntitySchema = z
   .object({
-    Id: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The numeric identifier for the entity. This is a monotonically increasing id unique within this response rather than a global unique identifier. ',
-        }),
-    ).exactOptional(),
-    Text: OntologyLinkingBoundedLengthStringSchema.and(
-      z.any().openapi({ description: ' The segment of input text extracted as this entity. ' }),
-    ).exactOptional(),
-    Category: SNOMEDCTEntityCategorySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The category of the detected entity. Possible categories are MEDICAL_CONDITION, ANATOMY, or TEST_TREATMENT_PROCEDURE. ',
-        }),
-    ).exactOptional(),
-    Type: SNOMEDCTEntityTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Describes the specific type of entity with category of entities. Possible types include DX_NAME, ACUITY, DIRECTION, SYSTEM_ORGAN_SITE, TEST_NAME, TEST_VALUE, TEST_UNIT, PROCEDURE_NAME, or TREATMENT_NAME. ',
-        }),
-    ).exactOptional(),
-    Score: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The level of confidence that Comprehend Medical has in the accuracy of the detected entity. ',
-        }),
-    ).exactOptional(),
-    BeginOffset: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The 0-based character offset in the input text that shows where the entity begins. The offset returns the UTF-8 code point in the string. ',
-        }),
-    ).exactOptional(),
-    EndOffset: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The 0-based character offset in the input text that shows where the entity ends. The offset returns the UTF-8 code point in the string. ',
-        }),
-    ).exactOptional(),
-    Attributes: SNOMEDCTAttributeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An extracted segment of the text that is an attribute of an entity, or otherwise related to an entity, such as the dosage of a medication taken. ',
-        }),
-    ).exactOptional(),
-    Traits: SNOMEDCTTraitListSchema.and(
-      z.any().openapi({ description: ' Contextual information for the entity. ' }),
-    ).exactOptional(),
-    SNOMEDCTConcepts: SNOMEDCTConceptListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The SNOMED concepts that the entity could refer to, along with a score indicating the likelihood of the match. ',
-        }),
-    ).exactOptional(),
+    Id: IntegerSchema.exactOptional().openapi({
+      description:
+        ' The numeric identifier for the entity. This is a monotonically increasing id unique within this response rather than a global unique identifier. ',
+    }),
+    Text: OntologyLinkingBoundedLengthStringSchema.exactOptional().openapi({
+      description: ' The segment of input text extracted as this entity. ',
+    }),
+    Category: SNOMEDCTEntityCategorySchema.exactOptional().openapi({
+      description:
+        ' The category of the detected entity. Possible categories are MEDICAL_CONDITION, ANATOMY, or TEST_TREATMENT_PROCEDURE. ',
+    }),
+    Type: SNOMEDCTEntityTypeSchema.exactOptional().openapi({
+      description:
+        ' Describes the specific type of entity with category of entities. Possible types include DX_NAME, ACUITY, DIRECTION, SYSTEM_ORGAN_SITE, TEST_NAME, TEST_VALUE, TEST_UNIT, PROCEDURE_NAME, or TREATMENT_NAME. ',
+    }),
+    Score: FloatSchema.exactOptional().openapi({
+      description:
+        ' The level of confidence that Comprehend Medical has in the accuracy of the detected entity. ',
+    }),
+    BeginOffset: IntegerSchema.exactOptional().openapi({
+      description:
+        ' The 0-based character offset in the input text that shows where the entity begins. The offset returns the UTF-8 code point in the string. ',
+    }),
+    EndOffset: IntegerSchema.exactOptional().openapi({
+      description:
+        ' The 0-based character offset in the input text that shows where the entity ends. The offset returns the UTF-8 code point in the string. ',
+    }),
+    Attributes: SNOMEDCTAttributeListSchema.exactOptional().openapi({
+      description:
+        ' An extracted segment of the text that is an attribute of an entity, or otherwise related to an entity, such as the dosage of a medication taken. ',
+    }),
+    Traits: SNOMEDCTTraitListSchema.exactOptional().openapi({
+      description: ' Contextual information for the entity. ',
+    }),
+    SNOMEDCTConcepts: SNOMEDCTConceptListSchema.exactOptional().openapi({
+      description:
+        ' The SNOMED concepts that the entity could refer to, along with a score indicating the likelihood of the match. ',
+    }),
   })
   .openapi({
     description:
@@ -1618,25 +1136,17 @@ const SNOMEDCTEntityListSchema = z.array(SNOMEDCTEntitySchema).openapi('SNOMEDCT
 
 const SNOMEDCTDetailsSchema = z
   .object({
-    Edition: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The edition of SNOMED-CT used. The edition used for the InferSNOMEDCT editions is the US edition. ',
-        }),
-    ).exactOptional(),
-    Language: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The language used in the SNOMED-CT ontology. All Amazon Comprehend Medical operations are US English (en). ',
-        }),
-    ).exactOptional(),
-    VersionDate: StringSchema.and(
-      z.any().openapi({ description: ' The version date of the SNOMED-CT ontology used. ' }),
-    ).exactOptional(),
+    Edition: StringSchema.exactOptional().openapi({
+      description:
+        ' The edition of SNOMED-CT used. The edition used for the InferSNOMEDCT editions is the US edition. ',
+    }),
+    Language: StringSchema.exactOptional().openapi({
+      description:
+        ' The language used in the SNOMED-CT ontology. All Amazon Comprehend Medical operations are US English (en). ',
+    }),
+    VersionDate: StringSchema.exactOptional().openapi({
+      description: ' The version date of the SNOMED-CT ontology used. ',
+    }),
   })
   .openapi({
     description:
@@ -1647,14 +1157,10 @@ const SNOMEDCTDetailsSchema = z
 
 const CharactersSchema = z
   .object({
-    OriginalTextCharacters: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The number of characters present in the input text document as processed by Comprehend Medical. ',
-        }),
-    ).exactOptional(),
+    OriginalTextCharacters: IntegerSchema.exactOptional().openapi({
+      description:
+        ' The number of characters present in the input text document as processed by Comprehend Medical. ',
+    }),
   })
   .openapi({
     description: ' The number of characters in the input text to be analyzed. ',
@@ -1664,57 +1170,35 @@ const CharactersSchema = z
 
 const InferSNOMEDCTResponseSchema = z
   .object({
-    Entities: SNOMEDCTEntityListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The collection of medical concept entities extracted from the input text and their associated information. For each entity, the response provides the entity text, the entity category, where the entity text begins and ends, and the level of confidence that Comprehend Medical has in the detection and analysis. Attributes and traits of the entity are also returned. ',
-        }),
-    ),
-    PaginationToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' If the result of the request is truncated, the pagination token can be used to fetch the next page of entities. ',
-        }),
-    ).exactOptional(),
-    ModelVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The version of the model used to analyze the documents, in the format n.n.n You can use this information to track the model used for a particular batch of documents. ',
-        }),
-    ).exactOptional(),
-    SNOMEDCTDetails: SNOMEDCTDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The details of the SNOMED-CT revision, including the edition, language, and version date. ',
-        }),
-    ).exactOptional(),
-    Characters: CharactersSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The number of characters in the input request documentation. ' }),
-    ).exactOptional(),
+    Entities: SNOMEDCTEntityListSchema.openapi({
+      description:
+        ' The collection of medical concept entities extracted from the input text and their associated information. For each entity, the response provides the entity text, the entity category, where the entity text begins and ends, and the level of confidence that Comprehend Medical has in the detection and analysis. Attributes and traits of the entity are also returned. ',
+    }),
+    PaginationToken: StringSchema.exactOptional().openapi({
+      description:
+        ' If the result of the request is truncated, the pagination token can be used to fetch the next page of entities. ',
+    }),
+    ModelVersion: StringSchema.exactOptional().openapi({
+      description:
+        ' The version of the model used to analyze the documents, in the format n.n.n You can use this information to track the model used for a particular batch of documents. ',
+    }),
+    SNOMEDCTDetails: SNOMEDCTDetailsSchema.exactOptional().openapi({
+      description:
+        ' The details of the SNOMED-CT revision, including the edition, language, and version date. ',
+    }),
+    Characters: CharactersSchema.exactOptional().openapi({
+      description: ' The number of characters in the input request documentation. ',
+    }),
   })
   .openapi({ required: ['Entities'] })
   .openapi('InferSNOMEDCTResponse')
 
 const InferSNOMEDCTRequestSchema = z
   .object({
-    Text: OntologyLinkingBoundedLengthStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The input text to be analyzed using InferSNOMEDCT. The text should be a string with 1 to 10000 characters. ',
-        }),
-    ),
+    Text: OntologyLinkingBoundedLengthStringSchema.openapi({
+      description:
+        ' The input text to be analyzed using InferSNOMEDCT. The text should be a string with 1 to 10000 characters. ',
+    }),
   })
   .openapi({ required: ['Text'], title: 'InferSNOMEDCTRequest' })
   .openapi('InferSNOMEDCTRequest')
@@ -1725,45 +1209,34 @@ const ComprehendMedicalAsyncJobPropertiesListSchema = z
 
 const ListEntitiesDetectionV2JobsResponseSchema = z
   .object({
-    ComprehendMedicalAsyncJobPropertiesList: ComprehendMedicalAsyncJobPropertiesListSchema.and(
-      z.any().openapi({ description: 'A list containing the properties of each job returned.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Identifies the next page of results to return.' }),
-    ).exactOptional(),
+    ComprehendMedicalAsyncJobPropertiesList:
+      ComprehendMedicalAsyncJobPropertiesListSchema.exactOptional().openapi({
+        description: 'A list containing the properties of each job returned.',
+      }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Identifies the next page of results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListEntitiesDetectionV2JobsResponse')
 
 const ComprehendMedicalAsyncJobFilterSchema = z
   .object({
-    JobName: JobNameSchema.and(
-      z.any().openapi({ description: 'Filters on the name of the job.' }),
-    ).exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the list of jobs based on job status. Returns only jobs with the specified status.',
-        }),
-    ).exactOptional(),
-    SubmitTimeBefore: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the list of jobs based on the time that the job was submitted for processing. Returns only jobs submitted before the specified time. Jobs are returned in ascending order, oldest to newest.',
-        }),
-    ).exactOptional(),
-    SubmitTimeAfter: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the list of jobs based on the time that the job was submitted for processing. Returns only jobs submitted after the specified time. Jobs are returned in descending order, newest to oldest.',
-        }),
-    ).exactOptional(),
+    JobName: JobNameSchema.exactOptional().openapi({
+      description: 'Filters on the name of the job.',
+    }),
+    JobStatus: JobStatusSchema.exactOptional().openapi({
+      description:
+        'Filters the list of jobs based on job status. Returns only jobs with the specified status.',
+    }),
+    SubmitTimeBefore: TimestampSchema.exactOptional().openapi({
+      description:
+        'Filters the list of jobs based on the time that the job was submitted for processing. Returns only jobs submitted before the specified time. Jobs are returned in ascending order, oldest to newest.',
+    }),
+    SubmitTimeAfter: TimestampSchema.exactOptional().openapi({
+      description:
+        'Filters the list of jobs based on the time that the job was submitted for processing. Returns only jobs submitted after the specified time. Jobs are returned in descending order, newest to oldest.',
+    }),
   })
   .openapi({
     description: 'Provides information for filtering a list of detection jobs.',
@@ -1775,24 +1248,16 @@ const MaxResultsIntegerSchema = z.int().min(1).max(500).openapi('MaxResultsInteg
 
 const ListEntitiesDetectionV2JobsRequestSchema = z
   .object({
-    Filter: ComprehendMedicalAsyncJobFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the jobs that are returned. You can filter jobs based on their names, status, or the date and time that they were submitted. You can only set one filter at a time.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Identifies the next page of results to return.' }),
-    ).exactOptional(),
-    MaxResults: MaxResultsIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of results to return in each page. The default is 100.',
-        }),
-    ).exactOptional(),
+    Filter: ComprehendMedicalAsyncJobFilterSchema.exactOptional().openapi({
+      description:
+        'Filters the jobs that are returned. You can filter jobs based on their names, status, or the date and time that they were submitted. You can only set one filter at a time.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Identifies the next page of results to return.',
+    }),
+    MaxResults: MaxResultsIntegerSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in each page. The default is 100.',
+    }),
   })
   .openapi({ title: 'ListEntitiesDetectionV2JobsRequest', required: [] })
   .openapi('ListEntitiesDetectionV2JobsRequest')
@@ -1801,126 +1266,100 @@ const ValidationExceptionSchema = z.any().openapi('ValidationException')
 
 const ListICD10CMInferenceJobsResponseSchema = z
   .object({
-    ComprehendMedicalAsyncJobPropertiesList: ComprehendMedicalAsyncJobPropertiesListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list containing the properties of each job that is returned.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Identifies the next page of results to return.' }),
-    ).exactOptional(),
+    ComprehendMedicalAsyncJobPropertiesList:
+      ComprehendMedicalAsyncJobPropertiesListSchema.exactOptional().openapi({
+        description: 'A list containing the properties of each job that is returned.',
+      }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Identifies the next page of results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListICD10CMInferenceJobsResponse')
 
 const ListICD10CMInferenceJobsRequestSchema = z
   .object({
-    Filter: ComprehendMedicalAsyncJobFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the jobs that are returned. You can filter jobs based on their names, status, or the date and time that they were submitted. You can only set one filter at a time.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Identifies the next page of results to return.' }),
-    ).exactOptional(),
-    MaxResults: MaxResultsIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of results to return in each page. The default is 100.',
-        }),
-    ).exactOptional(),
+    Filter: ComprehendMedicalAsyncJobFilterSchema.exactOptional().openapi({
+      description:
+        'Filters the jobs that are returned. You can filter jobs based on their names, status, or the date and time that they were submitted. You can only set one filter at a time.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Identifies the next page of results to return.',
+    }),
+    MaxResults: MaxResultsIntegerSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in each page. The default is 100.',
+    }),
   })
   .openapi({ title: 'ListICD10CMInferenceJobsRequest', required: [] })
   .openapi('ListICD10CMInferenceJobsRequest')
 
 const ListPHIDetectionJobsResponseSchema = z
   .object({
-    ComprehendMedicalAsyncJobPropertiesList: ComprehendMedicalAsyncJobPropertiesListSchema.and(
-      z.any().openapi({ description: 'A list containing the properties of each job returned.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Identifies the next page of results to return.' }),
-    ).exactOptional(),
+    ComprehendMedicalAsyncJobPropertiesList:
+      ComprehendMedicalAsyncJobPropertiesListSchema.exactOptional().openapi({
+        description: 'A list containing the properties of each job returned.',
+      }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Identifies the next page of results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListPHIDetectionJobsResponse')
 
 const ListPHIDetectionJobsRequestSchema = z
   .object({
-    Filter: ComprehendMedicalAsyncJobFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the jobs that are returned. You can filter jobs based on their names, status, or the date and time that they were submitted. You can only set one filter at a time.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Identifies the next page of results to return.' }),
-    ).exactOptional(),
-    MaxResults: MaxResultsIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of results to return in each page. The default is 100.',
-        }),
-    ).exactOptional(),
+    Filter: ComprehendMedicalAsyncJobFilterSchema.exactOptional().openapi({
+      description:
+        'Filters the jobs that are returned. You can filter jobs based on their names, status, or the date and time that they were submitted. You can only set one filter at a time.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Identifies the next page of results to return.',
+    }),
+    MaxResults: MaxResultsIntegerSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in each page. The default is 100.',
+    }),
   })
   .openapi({ title: 'ListPHIDetectionJobsRequest', required: [] })
   .openapi('ListPHIDetectionJobsRequest')
 
 const ListRxNormInferenceJobsResponseSchema = z
   .object({
-    ComprehendMedicalAsyncJobPropertiesList: ComprehendMedicalAsyncJobPropertiesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of results to return in each page. The default is 100.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Identifies the next page of results to return.' }),
-    ).exactOptional(),
+    ComprehendMedicalAsyncJobPropertiesList:
+      ComprehendMedicalAsyncJobPropertiesListSchema.exactOptional().openapi({
+        description: 'The maximum number of results to return in each page. The default is 100.',
+      }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Identifies the next page of results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListRxNormInferenceJobsResponse')
 
 const ListRxNormInferenceJobsRequestSchema = z
   .object({
-    Filter: ComprehendMedicalAsyncJobFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the jobs that are returned. You can filter jobs based on their names, status, or the date and time that they were submitted. You can only set one filter at a time.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Identifies the next page of results to return.' }),
-    ).exactOptional(),
-    MaxResults: MaxResultsIntegerSchema.and(
-      z.any().openapi({ description: 'Identifies the next page of results to return.' }),
-    ).exactOptional(),
+    Filter: ComprehendMedicalAsyncJobFilterSchema.exactOptional().openapi({
+      description:
+        'Filters the jobs that are returned. You can filter jobs based on their names, status, or the date and time that they were submitted. You can only set one filter at a time.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Identifies the next page of results to return.',
+    }),
+    MaxResults: MaxResultsIntegerSchema.exactOptional().openapi({
+      description: 'Identifies the next page of results to return.',
+    }),
   })
   .openapi({ title: 'ListRxNormInferenceJobsRequest', required: [] })
   .openapi('ListRxNormInferenceJobsRequest')
 
 const ListSNOMEDCTInferenceJobsResponseSchema = z
   .object({
-    ComprehendMedicalAsyncJobPropertiesList: ComprehendMedicalAsyncJobPropertiesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' A list containing the properties of each job that is returned. ',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: ' Identifies the next page of results to return. ' }),
-    ).exactOptional(),
+    ComprehendMedicalAsyncJobPropertiesList:
+      ComprehendMedicalAsyncJobPropertiesListSchema.exactOptional().openapi({
+        description: ' A list containing the properties of each job that is returned. ',
+      }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: ' Identifies the next page of results to return. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListSNOMEDCTInferenceJobsResponse')
@@ -1928,33 +1367,22 @@ const ListSNOMEDCTInferenceJobsResponseSchema = z
 const ListSNOMEDCTInferenceJobsRequestSchema = z
   .object({
     Filter: ComprehendMedicalAsyncJobFilterSchema.exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: ' Identifies the next page of InferSNOMEDCT results to return. ' }),
-    ).exactOptional(),
-    MaxResults: MaxResultsIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The maximum number of results to return in each page. The default is 100. ',
-        }),
-    ).exactOptional(),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: ' Identifies the next page of InferSNOMEDCT results to return. ',
+    }),
+    MaxResults: MaxResultsIntegerSchema.exactOptional().openapi({
+      description: ' The maximum number of results to return in each page. The default is 100. ',
+    }),
   })
   .openapi({ title: 'ListSNOMEDCTInferenceJobsRequest', required: [] })
   .openapi('ListSNOMEDCTInferenceJobsRequest')
 
 const StartEntitiesDetectionV2JobResponseSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier generated for the job. To get the status of a job, use this identifier with the <code>DescribeEntitiesDetectionV2Job</code> operation.',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description:
+        'The identifier generated for the job. To get the status of a job, use this identifier with the <code>DescribeEntitiesDetectionV2Job</code> operation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartEntitiesDetectionV2JobResponse')
@@ -1968,56 +1396,30 @@ const ClientRequestTokenStringSchema = z
 
 const StartEntitiesDetectionV2JobRequestSchema = z
   .object({
-    InputDataConfig: InputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The input configuration that specifies the format and location of the input data for the job.',
-        }),
-    ),
-    OutputDataConfig: OutputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The output configuration that specifies where to send the output files.',
-        }),
-    ),
-    DataAccessRoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that grants Comprehend Medical; read access to your input data. For more information, see <a href="https://docs.aws.amazon.com/comprehend/latest/dg/access-control-managing-permissions-med.html#auth-role-permissions-med"> Role-Based Permissions Required for Asynchronous Operations</a>.',
-        }),
-    ),
-    JobName: JobNameSchema.and(
-      z.any().openapi({ description: 'The identifier of the job.' }),
-    ).exactOptional(),
-    ClientRequestToken: ClientRequestTokenStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A unique identifier for the request. If you don't set the client request token, Comprehend Medical; generates one for you.",
-        }),
-    ).exactOptional(),
-    KMSKey: KMSKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An AWS Key Management Service key to encrypt your output files. If you do not specify a key, the files are written in plain text.',
-        }),
-    ).exactOptional(),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language of the input documents. All documents must be in the same language. Comprehend Medical; processes files in US English (en).',
-        }),
-    ),
+    InputDataConfig: InputDataConfigSchema.openapi({
+      description:
+        'The input configuration that specifies the format and location of the input data for the job.',
+    }),
+    OutputDataConfig: OutputDataConfigSchema.openapi({
+      description: 'The output configuration that specifies where to send the output files.',
+    }),
+    DataAccessRoleArn: IamRoleArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that grants Comprehend Medical; read access to your input data. For more information, see <a href="https://docs.aws.amazon.com/comprehend/latest/dg/access-control-managing-permissions-med.html#auth-role-permissions-med"> Role-Based Permissions Required for Asynchronous Operations</a>.',
+    }),
+    JobName: JobNameSchema.exactOptional().openapi({ description: 'The identifier of the job.' }),
+    ClientRequestToken: ClientRequestTokenStringSchema.exactOptional().openapi({
+      description:
+        "A unique identifier for the request. If you don't set the client request token, Comprehend Medical; generates one for you.",
+    }),
+    KMSKey: KMSKeySchema.exactOptional().openapi({
+      description:
+        'An AWS Key Management Service key to encrypt your output files. If you do not specify a key, the files are written in plain text.',
+    }),
+    LanguageCode: LanguageCodeSchema.openapi({
+      description:
+        'The language of the input documents. All documents must be in the same language. Comprehend Medical; processes files in US English (en).',
+    }),
   })
   .openapi({
     required: ['InputDataConfig', 'OutputDataConfig', 'DataAccessRoleArn', 'LanguageCode'],
@@ -2027,65 +1429,39 @@ const StartEntitiesDetectionV2JobRequestSchema = z
 
 const StartICD10CMInferenceJobResponseSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier generated for the job. To get the status of a job, use this identifier with the <code>StartICD10CMInferenceJob</code> operation.',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description:
+        'The identifier generated for the job. To get the status of a job, use this identifier with the <code>StartICD10CMInferenceJob</code> operation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartICD10CMInferenceJobResponse')
 
 const StartICD10CMInferenceJobRequestSchema = z
   .object({
-    InputDataConfig: InputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the format and location of the input data for the job.',
-        }),
-    ),
-    OutputDataConfig: OutputDataConfigSchema.and(
-      z.any().openapi({ description: 'Specifies where to send the output files.' }),
-    ),
-    DataAccessRoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that grants Comprehend Medical; read access to your input data. For more information, see <a href="https://docs.aws.amazon.com/comprehend/latest/dg/access-control-managing-permissions-med.html#auth-role-permissions-med"> Role-Based Permissions Required for Asynchronous Operations</a>.',
-        }),
-    ),
-    JobName: JobNameSchema.and(
-      z.any().openapi({ description: 'The identifier of the job.' }),
-    ).exactOptional(),
-    ClientRequestToken: ClientRequestTokenStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A unique identifier for the request. If you don't set the client request token, Comprehend Medical; generates one.",
-        }),
-    ).exactOptional(),
-    KMSKey: KMSKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An AWS Key Management Service key to encrypt your output files. If you do not specify a key, the files are written in plain text.',
-        }),
-    ).exactOptional(),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language of the input documents. All documents must be in the same language.',
-        }),
-    ),
+    InputDataConfig: InputDataConfigSchema.openapi({
+      description: 'Specifies the format and location of the input data for the job.',
+    }),
+    OutputDataConfig: OutputDataConfigSchema.openapi({
+      description: 'Specifies where to send the output files.',
+    }),
+    DataAccessRoleArn: IamRoleArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that grants Comprehend Medical; read access to your input data. For more information, see <a href="https://docs.aws.amazon.com/comprehend/latest/dg/access-control-managing-permissions-med.html#auth-role-permissions-med"> Role-Based Permissions Required for Asynchronous Operations</a>.',
+    }),
+    JobName: JobNameSchema.exactOptional().openapi({ description: 'The identifier of the job.' }),
+    ClientRequestToken: ClientRequestTokenStringSchema.exactOptional().openapi({
+      description:
+        "A unique identifier for the request. If you don't set the client request token, Comprehend Medical; generates one.",
+    }),
+    KMSKey: KMSKeySchema.exactOptional().openapi({
+      description:
+        'An AWS Key Management Service key to encrypt your output files. If you do not specify a key, the files are written in plain text.',
+    }),
+    LanguageCode: LanguageCodeSchema.openapi({
+      description:
+        'The language of the input documents. All documents must be in the same language.',
+    }),
   })
   .openapi({
     required: ['InputDataConfig', 'OutputDataConfig', 'DataAccessRoleArn', 'LanguageCode'],
@@ -2095,65 +1471,39 @@ const StartICD10CMInferenceJobRequestSchema = z
 
 const StartPHIDetectionJobResponseSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier generated for the job. To get the status of a job, use this identifier with the <code>DescribePHIDetectionJob</code> operation.',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description:
+        'The identifier generated for the job. To get the status of a job, use this identifier with the <code>DescribePHIDetectionJob</code> operation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartPHIDetectionJobResponse')
 
 const StartPHIDetectionJobRequestSchema = z
   .object({
-    InputDataConfig: InputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the format and location of the input data for the job.',
-        }),
-    ),
-    OutputDataConfig: OutputDataConfigSchema.and(
-      z.any().openapi({ description: 'Specifies where to send the output files.' }),
-    ),
-    DataAccessRoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that grants Comprehend Medical; read access to your input data. For more information, see <a href="https://docs.aws.amazon.com/comprehend/latest/dg/access-control-managing-permissions-med.html#auth-role-permissions-med"> Role-Based Permissions Required for Asynchronous Operations</a>.',
-        }),
-    ),
-    JobName: JobNameSchema.and(
-      z.any().openapi({ description: 'The identifier of the job.' }),
-    ).exactOptional(),
-    ClientRequestToken: ClientRequestTokenStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A unique identifier for the request. If you don't set the client request token, Comprehend Medical; generates one.",
-        }),
-    ).exactOptional(),
-    KMSKey: KMSKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An AWS Key Management Service key to encrypt your output files. If you do not specify a key, the files are written in plain text.',
-        }),
-    ).exactOptional(),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language of the input documents. All documents must be in the same language.',
-        }),
-    ),
+    InputDataConfig: InputDataConfigSchema.openapi({
+      description: 'Specifies the format and location of the input data for the job.',
+    }),
+    OutputDataConfig: OutputDataConfigSchema.openapi({
+      description: 'Specifies where to send the output files.',
+    }),
+    DataAccessRoleArn: IamRoleArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that grants Comprehend Medical; read access to your input data. For more information, see <a href="https://docs.aws.amazon.com/comprehend/latest/dg/access-control-managing-permissions-med.html#auth-role-permissions-med"> Role-Based Permissions Required for Asynchronous Operations</a>.',
+    }),
+    JobName: JobNameSchema.exactOptional().openapi({ description: 'The identifier of the job.' }),
+    ClientRequestToken: ClientRequestTokenStringSchema.exactOptional().openapi({
+      description:
+        "A unique identifier for the request. If you don't set the client request token, Comprehend Medical; generates one.",
+    }),
+    KMSKey: KMSKeySchema.exactOptional().openapi({
+      description:
+        'An AWS Key Management Service key to encrypt your output files. If you do not specify a key, the files are written in plain text.',
+    }),
+    LanguageCode: LanguageCodeSchema.openapi({
+      description:
+        'The language of the input documents. All documents must be in the same language.',
+    }),
   })
   .openapi({
     required: ['InputDataConfig', 'OutputDataConfig', 'DataAccessRoleArn', 'LanguageCode'],
@@ -2163,60 +1513,36 @@ const StartPHIDetectionJobRequestSchema = z
 
 const StartRxNormInferenceJobResponseSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the job.' }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({ description: 'The identifier of the job.' }),
   })
   .openapi({ required: [] })
   .openapi('StartRxNormInferenceJobResponse')
 
 const StartRxNormInferenceJobRequestSchema = z
   .object({
-    InputDataConfig: InputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the format and location of the input data for the job.',
-        }),
-    ),
-    OutputDataConfig: OutputDataConfigSchema.and(
-      z.any().openapi({ description: 'Specifies where to send the output files.' }),
-    ),
-    DataAccessRoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that grants Comprehend Medical; read access to your input data. For more information, see <a href="https://docs.aws.amazon.com/comprehend/latest/dg/access-control-managing-permissions-med.html#auth-role-permissions-med"> Role-Based Permissions Required for Asynchronous Operations</a>.',
-        }),
-    ),
-    JobName: JobNameSchema.and(
-      z.any().openapi({ description: 'The identifier of the job.' }),
-    ).exactOptional(),
-    ClientRequestToken: ClientRequestTokenStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A unique identifier for the request. If you don't set the client request token, Comprehend Medical; generates one.",
-        }),
-    ).exactOptional(),
-    KMSKey: KMSKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An AWS Key Management Service key to encrypt your output files. If you do not specify a key, the files are written in plain text.',
-        }),
-    ).exactOptional(),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language of the input documents. All documents must be in the same language.',
-        }),
-    ),
+    InputDataConfig: InputDataConfigSchema.openapi({
+      description: 'Specifies the format and location of the input data for the job.',
+    }),
+    OutputDataConfig: OutputDataConfigSchema.openapi({
+      description: 'Specifies where to send the output files.',
+    }),
+    DataAccessRoleArn: IamRoleArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that grants Comprehend Medical; read access to your input data. For more information, see <a href="https://docs.aws.amazon.com/comprehend/latest/dg/access-control-managing-permissions-med.html#auth-role-permissions-med"> Role-Based Permissions Required for Asynchronous Operations</a>.',
+    }),
+    JobName: JobNameSchema.exactOptional().openapi({ description: 'The identifier of the job.' }),
+    ClientRequestToken: ClientRequestTokenStringSchema.exactOptional().openapi({
+      description:
+        "A unique identifier for the request. If you don't set the client request token, Comprehend Medical; generates one.",
+    }),
+    KMSKey: KMSKeySchema.exactOptional().openapi({
+      description:
+        'An AWS Key Management Service key to encrypt your output files. If you do not specify a key, the files are written in plain text.',
+    }),
+    LanguageCode: LanguageCodeSchema.openapi({
+      description:
+        'The language of the input documents. All documents must be in the same language.',
+    }),
   })
   .openapi({
     required: ['InputDataConfig', 'OutputDataConfig', 'DataAccessRoleArn', 'LanguageCode'],
@@ -2226,14 +1552,10 @@ const StartRxNormInferenceJobRequestSchema = z
 
 const StartSNOMEDCTInferenceJobResponseSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The identifier generated for the job. To get the status of a job, use this identifier with the StartSNOMEDCTInferenceJob operation. ',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description:
+        ' The identifier generated for the job. To get the status of a job, use this identifier with the StartSNOMEDCTInferenceJob operation. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartSNOMEDCTInferenceJobResponse')
@@ -2242,43 +1564,25 @@ const StartSNOMEDCTInferenceJobRequestSchema = z
   .object({
     InputDataConfig: InputDataConfigSchema,
     OutputDataConfig: OutputDataConfigSchema,
-    DataAccessRoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that grants Amazon Comprehend Medical read access to your input data. ',
-        }),
-    ),
-    JobName: JobNameSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The user generated name the asynchronous InferSNOMEDCT job. ' }),
-    ).exactOptional(),
-    ClientRequestToken: ClientRequestTokenStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " A unique identifier for the request. If you don't set the client request token, Amazon Comprehend Medical generates one. ",
-        }),
-    ).exactOptional(),
-    KMSKey: KMSKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An AWS Key Management Service key used to encrypt your output files. If you do not specify a key, the files are written in plain text. ',
-        }),
-    ).exactOptional(),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The language of the input documents. All documents must be in the same language. ',
-        }),
-    ),
+    DataAccessRoleArn: IamRoleArnSchema.openapi({
+      description:
+        ' The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that grants Amazon Comprehend Medical read access to your input data. ',
+    }),
+    JobName: JobNameSchema.exactOptional().openapi({
+      description: ' The user generated name the asynchronous InferSNOMEDCT job. ',
+    }),
+    ClientRequestToken: ClientRequestTokenStringSchema.exactOptional().openapi({
+      description:
+        " A unique identifier for the request. If you don't set the client request token, Amazon Comprehend Medical generates one. ",
+    }),
+    KMSKey: KMSKeySchema.exactOptional().openapi({
+      description:
+        ' An AWS Key Management Service key used to encrypt your output files. If you do not specify a key, the files are written in plain text. ',
+    }),
+    LanguageCode: LanguageCodeSchema.openapi({
+      description:
+        ' The language of the input documents. All documents must be in the same language. ',
+    }),
   })
   .openapi({
     required: ['InputDataConfig', 'OutputDataConfig', 'DataAccessRoleArn', 'LanguageCode'],
@@ -2288,109 +1592,83 @@ const StartSNOMEDCTInferenceJobRequestSchema = z
 
 const StopEntitiesDetectionV2JobResponseSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the medical entities detection job that was stopped.',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description: 'The identifier of the medical entities detection job that was stopped.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StopEntitiesDetectionV2JobResponse')
 
 const StopEntitiesDetectionV2JobRequestSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the medical entities job to stop.' }),
-    ),
+    JobId: JobIdSchema.openapi({
+      description: 'The identifier of the medical entities job to stop.',
+    }),
   })
   .openapi({ required: ['JobId'], title: 'StopEntitiesDetectionV2JobRequest' })
   .openapi('StopEntitiesDetectionV2JobRequest')
 
 const StopICD10CMInferenceJobResponseSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier generated for the job. To get the status of job, use this identifier with the <code>DescribeICD10CMInferenceJob</code> operation.',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description:
+        'The identifier generated for the job. To get the status of job, use this identifier with the <code>DescribeICD10CMInferenceJob</code> operation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StopICD10CMInferenceJobResponse')
 
 const StopICD10CMInferenceJobRequestSchema = z
-  .object({
-    JobId: JobIdSchema.and(z.any().openapi({ description: 'The identifier of the job.' })),
-  })
+  .object({ JobId: JobIdSchema.openapi({ description: 'The identifier of the job.' }) })
   .openapi({ required: ['JobId'], title: 'StopICD10CMInferenceJobRequest' })
   .openapi('StopICD10CMInferenceJobRequest')
 
 const StopPHIDetectionJobResponseSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the PHI detection job that was stopped.' }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description: 'The identifier of the PHI detection job that was stopped.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StopPHIDetectionJobResponse')
 
 const StopPHIDetectionJobRequestSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the PHI detection job to stop.' }),
-    ),
+    JobId: JobIdSchema.openapi({ description: 'The identifier of the PHI detection job to stop.' }),
   })
   .openapi({ required: ['JobId'], title: 'StopPHIDetectionJobRequest' })
   .openapi('StopPHIDetectionJobRequest')
 
 const StopRxNormInferenceJobResponseSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier generated for the job. To get the status of job, use this identifier with the <code>DescribeRxNormInferenceJob</code> operation.',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description:
+        'The identifier generated for the job. To get the status of job, use this identifier with the <code>DescribeRxNormInferenceJob</code> operation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StopRxNormInferenceJobResponse')
 
 const StopRxNormInferenceJobRequestSchema = z
-  .object({
-    JobId: JobIdSchema.and(z.any().openapi({ description: 'The identifier of the job.' })),
-  })
+  .object({ JobId: JobIdSchema.openapi({ description: 'The identifier of the job.' }) })
   .openapi({ required: ['JobId'], title: 'StopRxNormInferenceJobRequest' })
   .openapi('StopRxNormInferenceJobRequest')
 
 const StopSNOMEDCTInferenceJobResponseSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The identifier generated for the job. To get the status of job, use this identifier with the DescribeSNOMEDCTInferenceJob operation. ',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description:
+        ' The identifier generated for the job. To get the status of job, use this identifier with the DescribeSNOMEDCTInferenceJob operation. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StopSNOMEDCTInferenceJobResponse')
 
 const StopSNOMEDCTInferenceJobRequestSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The job id of the asynchronous InferSNOMEDCT job to be stopped. ',
-        }),
-    ),
+    JobId: JobIdSchema.openapi({
+      description: ' The job id of the asynchronous InferSNOMEDCT job to be stopped. ',
+    }),
   })
   .openapi({ required: ['JobId'], title: 'StopSNOMEDCTInferenceJobRequest' })
   .openapi('StopSNOMEDCTInferenceJobRequest')

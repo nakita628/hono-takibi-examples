@@ -6,17 +6,13 @@ const SuccessSchema = z.boolean().openapi('Success')
 
 const SendSSHPublicKeyResponseSchema = z
   .object({
-    RequestId: RequestIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the request. Please provide this ID when contacting AWS Support for assistance.',
-        }),
-    ).exactOptional(),
-    Success: SuccessSchema.and(
-      z.any().openapi({ description: 'Is true if the request succeeds and an error otherwise.' }),
-    ).exactOptional(),
+    RequestId: RequestIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the request. Please provide this ID when contacting AWS Support for assistance.',
+    }),
+    Success: SuccessSchema.exactOptional().openapi({
+      description: 'Is true if the request succeeds and an error otherwise.',
+    }),
   })
   .openapi({
     example: { RequestId: 'abcd1234-abcd-1234-abcd-1234abcd1234', Success: true },
@@ -49,30 +45,17 @@ const AvailabilityZoneSchema = z
 
 const SendSSHPublicKeyRequestSchema = z
   .object({
-    InstanceId: InstanceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the EC2 instance.' }),
-    ),
-    InstanceOSUser: InstanceOSUserSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The OS user on the EC2 instance for whom the key can be used to authenticate.',
-        }),
-    ),
-    SSHPublicKey: SSHPublicKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The public key material. To use the public key, you must have the matching private key.',
-        }),
-    ),
-    AvailabilityZone: AvailabilityZoneSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Availability Zone in which the EC2 instance was launched.' }),
-    ).exactOptional(),
+    InstanceId: InstanceIdSchema.openapi({ description: 'The ID of the EC2 instance.' }),
+    InstanceOSUser: InstanceOSUserSchema.openapi({
+      description: 'The OS user on the EC2 instance for whom the key can be used to authenticate.',
+    }),
+    SSHPublicKey: SSHPublicKeySchema.openapi({
+      description:
+        'The public key material. To use the public key, you must have the matching private key.',
+    }),
+    AvailabilityZone: AvailabilityZoneSchema.exactOptional().openapi({
+      description: 'The Availability Zone in which the EC2 instance was launched.',
+    }),
   })
   .openapi({
     required: ['InstanceId', 'InstanceOSUser', 'SSHPublicKey'],
@@ -96,17 +79,13 @@ const EC2InstanceUnavailableExceptionSchema = z.any().openapi('EC2InstanceUnavai
 
 const SendSerialConsoleSSHPublicKeyResponseSchema = z
   .object({
-    RequestId: RequestIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the request. Please provide this ID when contacting AWS Support for assistance.',
-        }),
-    ).exactOptional(),
-    Success: SuccessSchema.and(
-      z.any().openapi({ description: 'Is true if the request succeeds and an error otherwise.' }),
-    ).exactOptional(),
+    RequestId: RequestIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the request. Please provide this ID when contacting AWS Support for assistance.',
+    }),
+    Success: SuccessSchema.exactOptional().openapi({
+      description: 'Is true if the request succeeds and an error otherwise.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SendSerialConsoleSSHPublicKeyResponse')
@@ -115,25 +94,15 @@ const SerialPortSchema = z.int().min(0).max(0).openapi('SerialPort')
 
 const SendSerialConsoleSSHPublicKeyRequestSchema = z
   .object({
-    InstanceId: InstanceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the EC2 instance.' }),
-    ),
-    SerialPort: SerialPortSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The serial port of the EC2 instance. Currently only port 0 is supported.</p> <p>Default: 0</p>',
-        }),
-    ).exactOptional(),
-    SSHPublicKey: SSHPublicKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The public key material. To use the public key, you must have the matching private key. For information about the supported key formats and lengths, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#how-to-generate-your-own-key-and-import-it-to-aws">Requirements for key pairs</a> in the <i>Amazon EC2 User Guide</i>.',
-        }),
-    ),
+    InstanceId: InstanceIdSchema.openapi({ description: 'The ID of the EC2 instance.' }),
+    SerialPort: SerialPortSchema.exactOptional().openapi({
+      description:
+        '<p>The serial port of the EC2 instance. Currently only port 0 is supported.</p> <p>Default: 0</p>',
+    }),
+    SSHPublicKey: SSHPublicKeySchema.openapi({
+      description:
+        'The public key material. To use the public key, you must have the matching private key. For information about the supported key formats and lengths, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#how-to-generate-your-own-key-and-import-it-to-aws">Requirements for key pairs</a> in the <i>Amazon EC2 User Guide</i>.',
+    }),
   })
   .openapi({
     required: ['InstanceId', 'SSHPublicKey'],

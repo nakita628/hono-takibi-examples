@@ -2,7 +2,7 @@ import { createRoute, z } from '@hono/zod-openapi'
 
 type GoogleCloudBeyondcorpAppconnectorsV1ResourceInfoType = {
   id?: string
-  resource?: { [key: string]: { [key: string]: unknown } }
+  resource?: { [key: string]: unknown }
   status?: 'HEALTH_STATUS_UNSPECIFIED' | 'HEALTHY' | 'UNHEALTHY' | 'UNRESPONSIVE' | 'DEGRADED'
   sub?: GoogleCloudBeyondcorpAppconnectorsV1ResourceInfoType[]
   time?: string
@@ -262,17 +262,17 @@ const CloudSecurityZerotrustApplinkAppConnectorProtoConnectionConfigSchema = z
   .openapi('CloudSecurityZerotrustApplinkAppConnectorProtoConnectionConfig')
 
 const CloudSecurityZerotrustApplinkAppConnectorProtoConnectorDetailsSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'ConnectorDetails reflects the details of a connector.' })
   .openapi('CloudSecurityZerotrustApplinkAppConnectorProtoConnectorDetails')
 
 const CloudSecurityZerotrustApplinkLogagentProtoLogAgentDetailsSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'LogAgentDetails reflects the details of a log agent.' })
   .openapi('CloudSecurityZerotrustApplinkLogagentProtoLogAgentDetails')
 
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
@@ -906,7 +906,7 @@ const GoogleCloudBeyondcorpAppconnectorsV1ListAppConnectorsResponseSchema = z
   .openapi('GoogleCloudBeyondcorpAppconnectorsV1ListAppConnectorsResponse')
 
 const GoogleCloudBeyondcorpAppconnectorsV1RemoteAgentDetailsSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'RemoteAgentDetails reflects the details of a remote agent.' })
   .openapi('GoogleCloudBeyondcorpAppconnectorsV1RemoteAgentDetails')
 
@@ -1021,7 +1021,7 @@ const GoogleCloudBeyondcorpAppconnectorsV1alphaContainerHealthDetailsSchema = z
   .openapi('GoogleCloudBeyondcorpAppconnectorsV1alphaContainerHealthDetails')
 
 const GoogleCloudBeyondcorpAppconnectorsV1alphaRemoteAgentDetailsSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'RemoteAgentDetails reflects the details of a remote agent.' })
   .openapi('GoogleCloudBeyondcorpAppconnectorsV1alphaRemoteAgentDetails')
 
@@ -1324,7 +1324,7 @@ const GoogleCloudBeyondcorpConnectorsV1alphaContainerHealthDetailsSchema = z
   .openapi('GoogleCloudBeyondcorpConnectorsV1alphaContainerHealthDetails')
 
 const GoogleCloudBeyondcorpConnectorsV1alphaRemoteAgentDetailsSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'RemoteAgentDetails reflects the details of a remote agent.' })
   .openapi('GoogleCloudBeyondcorpConnectorsV1alphaRemoteAgentDetails')
 
@@ -1574,7 +1574,7 @@ const GoogleIamV1TestIamPermissionsResponseSchema = z
   .openapi('GoogleIamV1TestIamPermissionsResponse')
 
 const GoogleLongrunningCancelOperationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The request message for Operations.CancelOperation.' })
   .openapi('GoogleLongrunningCancelOperationRequest')
 

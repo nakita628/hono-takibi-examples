@@ -19,30 +19,18 @@ const ChannelUriSchema = z
 
 const ChannelSchema = z
   .object({
-    eventPublishers: EventPublishersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'List of publishers for different type of events that may be detected in an application from the profile. Anomaly detection is the only event publisher in Profiler.',
-        }),
-    ),
-    id: ChannelIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique identifier for each <code>Channel</code> in the notification configuration of a Profiling Group. A random UUID for channelId is used when adding a channel to the notification configuration if not specified in the request.',
-        }),
-    ).exactOptional(),
-    uri: ChannelUriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique arn of the resource to be used for notifications. We support a valid SNS topic arn as a channel uri.',
-        }),
-    ),
+    eventPublishers: EventPublishersSchema.openapi({
+      description:
+        'List of publishers for different type of events that may be detected in an application from the profile. Anomaly detection is the only event publisher in Profiler.',
+    }),
+    id: ChannelIdSchema.exactOptional().openapi({
+      description:
+        'Unique identifier for each <code>Channel</code> in the notification configuration of a Profiling Group. A random UUID for channelId is used when adding a channel to the notification configuration if not specified in the request.',
+    }),
+    uri: ChannelUriSchema.openapi({
+      description:
+        'Unique arn of the resource to be used for notifications. We support a valid SNS topic arn as a channel uri.',
+    }),
   })
   .openapi({
     required: ['eventPublishers', 'uri'],
@@ -55,14 +43,10 @@ const ChannelsSchema = z.array(ChannelSchema).min(1).max(2).openapi('Channels')
 
 const NotificationConfigurationSchema = z
   .object({
-    channels: ChannelsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'List of up to two channels to be used for sending notifications for events detected from the application profile.',
-        }),
-    ).exactOptional(),
+    channels: ChannelsSchema.exactOptional().openapi({
+      description:
+        'List of up to two channels to be used for sending notifications for events detected from the application profile.',
+    }),
   })
   .openapi({
     description:
@@ -73,11 +57,9 @@ const NotificationConfigurationSchema = z
 
 const AddNotificationChannelsResponseSchema = z
   .object({
-    notificationConfiguration: NotificationConfigurationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The new notification configuration for this profiling group.' }),
-    ).exactOptional(),
+    notificationConfiguration: NotificationConfigurationSchema.exactOptional().openapi({
+      description: 'The new notification configuration for this profiling group.',
+    }),
   })
   .openapi({
     description: 'The structure representing the AddNotificationChannelsResponse.',
@@ -101,14 +83,10 @@ const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
 
 const TimestampStructureSchema = z
   .object({
-    value: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A <code>Timestamp</code>. This is specified using the ISO 8601 format. For example, 2020-06-01T13:15:02.001Z represents 1 millisecond past June 1, 2020 1:15:02 PM UTC. ',
-        }),
-    ),
+    value: TimestampSchema.openapi({
+      description:
+        ' A <code>Timestamp</code>. This is specified using the ISO 8601 format. For example, 2020-06-01T13:15:02.001Z represents 1 millisecond past June 1, 2020 1:15:02 PM UTC. ',
+    }),
   })
   .openapi({
     required: ['value'],
@@ -127,30 +105,18 @@ const MetricTypeSchema = z.literal('AggregatedRelativeTotalTime').openapi('Metri
 
 const FrameMetricSchema = z
   .object({
-    frameName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Name of the method common across the multiple occurrences of a frame in an application profile.',
-        }),
-    ),
-    threadStates: ThreadStatesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'List of application runtime thread states used to get the counts for a frame a derive a metric value.',
-        }),
-    ),
-    type: MetricTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A type of aggregation that specifies how a metric for a frame is analyzed. The supported value <code>AggregatedRelativeTotalTime</code> is an aggregation of the metric value for one frame that is calculated across the occurrences of all frames in a profile. ',
-        }),
-    ),
+    frameName: StringSchema.openapi({
+      description:
+        ' Name of the method common across the multiple occurrences of a frame in an application profile.',
+    }),
+    threadStates: ThreadStatesSchema.openapi({
+      description:
+        'List of application runtime thread states used to get the counts for a frame a derive a metric value.',
+    }),
+    type: MetricTypeSchema.openapi({
+      description:
+        ' A type of aggregation that specifies how a metric for a frame is analyzed. The supported value <code>AggregatedRelativeTotalTime</code> is an aggregation of the metric value for one frame that is calculated across the occurrences of all frames in a profile. ',
+    }),
   })
   .openapi({
     required: ['frameName', 'threadStates', 'type'],
@@ -166,11 +132,9 @@ const FrameMetricValuesSchema = z.array(FrameMetricValueSchema).openapi('FrameMe
 const FrameMetricDatumSchema = z
   .object({
     frameMetric: FrameMetricSchema,
-    values: FrameMetricValuesSchema.and(
-      z
-        .any()
-        .openapi({ description: ' A list of values that are associated with a frame metric. ' }),
-    ),
+    values: FrameMetricValuesSchema.openapi({
+      description: ' A list of values that are associated with a frame metric. ',
+    }),
   })
   .openapi({
     required: ['frameMetric', 'values'],
@@ -188,54 +152,30 @@ const UnprocessedEndTimeMapSchema = z
 
 const BatchGetFrameMetricDataResponseSchema = z
   .object({
-    endTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The end time of the time period for the returned time series values. This is specified using the ISO 8601 format. For example, 2020-06-01T13:15:02.001Z represents 1 millisecond past June 1, 2020 1:15:02 PM UTC. ',
-        }),
-    ),
-    endTimes: ListOfTimestampsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' List of instances, or time steps, in the time series. For example, if the <code>period</code> is one day (<code>PT24H)</code>), and the <code>resolution</code> is five minutes (<code>PT5M</code>), then there are 288 <code>endTimes</code> in the list that are each five minutes appart. ',
-        }),
-    ),
-    frameMetricData: FrameMetricDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Details of the metrics to request a time series of values. The metric includes the name of the frame, the aggregation type to calculate the metric value for the frame, and the thread states to use to get the count for the metric value of the frame.',
-        }),
-    ),
-    resolution: AggregationPeriodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Resolution or granularity of the profile data used to generate the time series. This is the value used to jump through time steps in a time series. There are 3 valid values. </p> <ul> <li> <p> <code>P1D</code> — 1 day </p> </li> <li> <p> <code>PT1H</code> — 1 hour </p> </li> <li> <p> <code>PT5M</code> — 5 minutes </p> </li> </ul>',
-        }),
-    ),
-    startTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The start time of the time period for the returned time series values. This is specified using the ISO 8601 format. For example, 2020-06-01T13:15:02.001Z represents 1 millisecond past June 1, 2020 1:15:02 PM UTC. ',
-        }),
-    ),
-    unprocessedEndTimes: UnprocessedEndTimeMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'List of instances which remained unprocessed. This will create a missing time step in the list of end times.',
-        }),
-    ),
+    endTime: TimestampSchema.openapi({
+      description:
+        ' The end time of the time period for the returned time series values. This is specified using the ISO 8601 format. For example, 2020-06-01T13:15:02.001Z represents 1 millisecond past June 1, 2020 1:15:02 PM UTC. ',
+    }),
+    endTimes: ListOfTimestampsSchema.openapi({
+      description:
+        ' List of instances, or time steps, in the time series. For example, if the <code>period</code> is one day (<code>PT24H)</code>), and the <code>resolution</code> is five minutes (<code>PT5M</code>), then there are 288 <code>endTimes</code> in the list that are each five minutes appart. ',
+    }),
+    frameMetricData: FrameMetricDataSchema.openapi({
+      description:
+        'Details of the metrics to request a time series of values. The metric includes the name of the frame, the aggregation type to calculate the metric value for the frame, and the thread states to use to get the count for the metric value of the frame.',
+    }),
+    resolution: AggregationPeriodSchema.openapi({
+      description:
+        '<p>Resolution or granularity of the profile data used to generate the time series. This is the value used to jump through time steps in a time series. There are 3 valid values. </p> <ul> <li> <p> <code>P1D</code> — 1 day </p> </li> <li> <p> <code>PT1H</code> — 1 hour </p> </li> <li> <p> <code>PT5M</code> — 5 minutes </p> </li> </ul>',
+    }),
+    startTime: TimestampSchema.openapi({
+      description:
+        ' The start time of the time period for the returned time series values. This is specified using the ISO 8601 format. For example, 2020-06-01T13:15:02.001Z represents 1 millisecond past June 1, 2020 1:15:02 PM UTC. ',
+    }),
+    unprocessedEndTimes: UnprocessedEndTimeMapSchema.openapi({
+      description:
+        'List of instances which remained unprocessed. This will create a missing time step in the list of end times.',
+    }),
   })
   .openapi({
     required: [
@@ -258,30 +198,18 @@ const BooleanSchema = z.boolean().openapi('Boolean')
 
 const AgentConfigurationSchema = z
   .object({
-    agentParameters: AgentParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> Parameters used by the profiler. The valid parameters are: </p> <ul> <li> <p> <code>MaxStackDepth</code> - The maximum depth of the stacks in the code that is represented in the profile. For example, if CodeGuru Profiler finds a method <code>A</code>, which calls method <code>B</code>, which calls method <code>C</code>, which calls method <code>D</code>, then the depth is 4. If the <code>maxDepth</code> is set to 2, then the profiler evaluates <code>A</code> and <code>B</code>. </p> </li> <li> <p> <code>MemoryUsageLimitPercent</code> - The percentage of memory that is used by the profiler.</p> </li> <li> <p> <code>MinimumTimeForReportingInMilliseconds</code> - The minimum time in milliseconds between sending reports. </p> </li> <li> <p> <code>ReportingIntervalInMilliseconds</code> - The reporting interval in milliseconds used to report profiles. </p> </li> <li> <p> <code>SamplingIntervalInMilliseconds</code> - The sampling interval in milliseconds that is used to profile samples. </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    periodInSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' How long a profiling agent should send profiling data using <a href="https://docs.aws.amazon.com/codeguru/latest/profiler-api/API_ConfigureAgent.html"> <code>ConfigureAgent</code> </a>. For example, if this is set to 300, the profiling agent calls <a href="https://docs.aws.amazon.com/codeguru/latest/profiler-api/API_ConfigureAgent.html"> <code>ConfigureAgent</code> </a> every 5 minutes to submit the profiled data collected during that period. ',
-        }),
-    ),
-    shouldProfile: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A <code>Boolean</code> that specifies whether the profiling agent collects profiling data or not. Set to <code>true</code> to enable profiling. ',
-        }),
-    ),
+    agentParameters: AgentParametersSchema.exactOptional().openapi({
+      description:
+        '<p> Parameters used by the profiler. The valid parameters are: </p> <ul> <li> <p> <code>MaxStackDepth</code> - The maximum depth of the stacks in the code that is represented in the profile. For example, if CodeGuru Profiler finds a method <code>A</code>, which calls method <code>B</code>, which calls method <code>C</code>, which calls method <code>D</code>, then the depth is 4. If the <code>maxDepth</code> is set to 2, then the profiler evaluates <code>A</code> and <code>B</code>. </p> </li> <li> <p> <code>MemoryUsageLimitPercent</code> - The percentage of memory that is used by the profiler.</p> </li> <li> <p> <code>MinimumTimeForReportingInMilliseconds</code> - The minimum time in milliseconds between sending reports. </p> </li> <li> <p> <code>ReportingIntervalInMilliseconds</code> - The reporting interval in milliseconds used to report profiles. </p> </li> <li> <p> <code>SamplingIntervalInMilliseconds</code> - The sampling interval in milliseconds that is used to profile samples. </p> </li> </ul>',
+    }),
+    periodInSeconds: IntegerSchema.openapi({
+      description:
+        ' How long a profiling agent should send profiling data using <a href="https://docs.aws.amazon.com/codeguru/latest/profiler-api/API_ConfigureAgent.html"> <code>ConfigureAgent</code> </a>. For example, if this is set to 300, the profiling agent calls <a href="https://docs.aws.amazon.com/codeguru/latest/profiler-api/API_ConfigureAgent.html"> <code>ConfigureAgent</code> </a> every 5 minutes to submit the profiled data collected during that period. ',
+    }),
+    shouldProfile: BooleanSchema.openapi({
+      description:
+        ' A <code>Boolean</code> that specifies whether the profiling agent collects profiling data or not. Set to <code>true</code> to enable profiling. ',
+    }),
   })
   .openapi({
     required: ['periodInSeconds', 'shouldProfile'],
@@ -292,14 +220,10 @@ const AgentConfigurationSchema = z
 
 const ConfigureAgentResponseSchema = z
   .object({
-    configuration: AgentConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An <a href="https://docs.aws.amazon.com/codeguru/latest/profiler-api/API_AgentConfiguration.html"> <code>AgentConfiguration</code> </a> object that specifies if an agent profiles or not and for how long to return profiling data. ',
-        }),
-    ),
+    configuration: AgentConfigurationSchema.openapi({
+      description:
+        ' An <a href="https://docs.aws.amazon.com/codeguru/latest/profiler-api/API_AgentConfiguration.html"> <code>AgentConfiguration</code> </a> object that specifies if an agent profiles or not and for how long to return profiling data. ',
+    }),
   })
   .openapi({
     required: ['configuration'],
@@ -309,14 +233,10 @@ const ConfigureAgentResponseSchema = z
 
 const AgentOrchestrationConfigSchema = z
   .object({
-    profilingEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A <code>Boolean</code> that specifies whether the profiling agent collects profiling data or not. Set to <code>true</code> to enable profiling. ',
-        }),
-    ),
+    profilingEnabled: BooleanSchema.openapi({
+      description:
+        ' A <code>Boolean</code> that specifies whether the profiling agent collects profiling data or not. Set to <code>true</code> to enable profiling. ',
+    }),
   })
   .openapi({
     required: ['profilingEnabled'],
@@ -338,22 +258,14 @@ const ProfilingGroupNameSchema = z
 
 const AggregatedProfileTimeSchema = z
   .object({
-    period: AggregationPeriodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The aggregation period. This indicates the period during which an aggregation profile collects posted agent profiles for a profiling group. Use one of three valid durations that are specified using the ISO 8601 format. </p> <ul> <li> <p> <code>P1D</code> — 1 day </p> </li> <li> <p> <code>PT1H</code> — 1 hour </p> </li> <li> <p> <code>PT5M</code> — 5 minutes </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    start: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The time that aggregation of posted agent profiles for a profiling group starts. The aggregation profile contains profiles posted by the agent starting at this time for an aggregation period specified by the <code>period</code> property of the <code>AggregatedProfileTime</code> object. </p> <p> Specify <code>start</code> using the ISO 8601 format. For example, 2020-06-01T13:15:02.001Z represents 1 millisecond past June 1, 2020 1:15:02 PM UTC. </p>',
-        }),
-    ).exactOptional(),
+    period: AggregationPeriodSchema.exactOptional().openapi({
+      description:
+        '<p> The aggregation period. This indicates the period during which an aggregation profile collects posted agent profiles for a profiling group. Use one of three valid durations that are specified using the ISO 8601 format. </p> <ul> <li> <p> <code>P1D</code> — 1 day </p> </li> <li> <p> <code>PT1H</code> — 1 hour </p> </li> <li> <p> <code>PT5M</code> — 5 minutes </p> </li> </ul>',
+    }),
+    start: TimestampSchema.exactOptional().openapi({
+      description:
+        '<p> The time that aggregation of posted agent profiles for a profiling group starts. The aggregation profile contains profiles posted by the agent starting at this time for an aggregation period specified by the <code>period</code> property of the <code>AggregatedProfileTime</code> object. </p> <p> Specify <code>start</code> using the ISO 8601 format. For example, 2020-06-01T13:15:02.001Z represents 1 millisecond past June 1, 2020 1:15:02 PM UTC. </p>',
+    }),
   })
   .openapi({
     description:
@@ -364,30 +276,18 @@ const AggregatedProfileTimeSchema = z
 
 const ProfilingStatusSchema = z
   .object({
-    latestAgentOrchestratedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time when the profiling agent most recently pinged back. Specify using the ISO 8601 format. For example, 2020-06-01T13:15:02.001Z represents 1 millisecond past June 1, 2020 1:15:02 PM UTC.',
-        }),
-    ).exactOptional(),
-    latestAgentProfileReportedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time when the most recent profile was received. Specify using the ISO 8601 format. For example, 2020-06-01T13:15:02.001Z represents 1 millisecond past June 1, 2020 1:15:02 PM UTC.',
-        }),
-    ).exactOptional(),
-    latestAggregatedProfile: AggregatedProfileTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An <a href="https://docs.aws.amazon.com/codeguru/latest/profiler-api/API_AggregatedProfileTime.html"> <code>AggregatedProfileTime</code> </a> object that contains the aggregation period and start time for an aggregated profile. ',
-        }),
-    ).exactOptional(),
+    latestAgentOrchestratedAt: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time when the profiling agent most recently pinged back. Specify using the ISO 8601 format. For example, 2020-06-01T13:15:02.001Z represents 1 millisecond past June 1, 2020 1:15:02 PM UTC.',
+    }),
+    latestAgentProfileReportedAt: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time when the most recent profile was received. Specify using the ISO 8601 format. For example, 2020-06-01T13:15:02.001Z represents 1 millisecond past June 1, 2020 1:15:02 PM UTC.',
+    }),
+    latestAggregatedProfile: AggregatedProfileTimeSchema.exactOptional().openapi({
+      description:
+        ' An <a href="https://docs.aws.amazon.com/codeguru/latest/profiler-api/API_AggregatedProfileTime.html"> <code>AggregatedProfileTime</code> </a> object that contains the aggregation period and start time for an aggregated profile. ',
+    }),
   })
   .openapi({
     description:
@@ -400,73 +300,45 @@ const TagsMapSchema = z.record(z.string(), StringSchema).openapi('TagsMap')
 
 const ProfilingGroupDescriptionSchema = z
   .object({
-    agentOrchestrationConfig: AgentOrchestrationConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An <a href="https://docs.aws.amazon.com/codeguru/latest/profiler-api/API_AgentOrchestrationConfig.html"> <code>AgentOrchestrationConfig</code> </a> object that indicates if the profiling group is enabled for profiled or not. ',
-        }),
-    ).exactOptional(),
-    arn: ProfilingGroupArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) identifying the profiling group resource.',
-        }),
-    ).exactOptional(),
-    computePlatform: ComputePlatformSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The compute platform of the profiling group. If it is set to <code>AWSLambda</code>, then the profiled application runs on AWS Lambda. If it is set to <code>Default</code>, then the profiled application runs on a compute platform that is not AWS Lambda, such an Amazon EC2 instance, an on-premises server, or a different platform. The default is <code>Default</code>. ',
-        }),
-    ).exactOptional(),
-    createdAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time when the profiling group was created. Specify using the ISO 8601 format. For example, 2020-06-01T13:15:02.001Z represents 1 millisecond past June 1, 2020 1:15:02 PM UTC. ',
-        }),
-    ).exactOptional(),
-    name: ProfilingGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the profiling group.' }),
-    ).exactOptional(),
-    profilingStatus: ProfilingStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A <a href="https://docs.aws.amazon.com/codeguru/latest/profiler-api/API_ProfilingStatus.html"> <code>ProfilingStatus</code> </a> object that includes information about the last time a profile agent pinged back, the last time a profile was received, and the aggregation period and start time for the most recent aggregated profile. ',
-        }),
-    ).exactOptional(),
-    tags: TagsMapSchema.and(
-      z.any().openapi({ description: ' A list of the tags that belong to this profiling group. ' }),
-    ).exactOptional(),
-    updatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The date and time when the profiling group was last updated. Specify using the ISO 8601 format. For example, 2020-06-01T13:15:02.001Z represents 1 millisecond past June 1, 2020 1:15:02 PM UTC. ',
-        }),
-    ).exactOptional(),
+    agentOrchestrationConfig: AgentOrchestrationConfigSchema.exactOptional().openapi({
+      description:
+        ' An <a href="https://docs.aws.amazon.com/codeguru/latest/profiler-api/API_AgentOrchestrationConfig.html"> <code>AgentOrchestrationConfig</code> </a> object that indicates if the profiling group is enabled for profiled or not. ',
+    }),
+    arn: ProfilingGroupArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) identifying the profiling group resource.',
+    }),
+    computePlatform: ComputePlatformSchema.exactOptional().openapi({
+      description:
+        ' The compute platform of the profiling group. If it is set to <code>AWSLambda</code>, then the profiled application runs on AWS Lambda. If it is set to <code>Default</code>, then the profiled application runs on a compute platform that is not AWS Lambda, such an Amazon EC2 instance, an on-premises server, or a different platform. The default is <code>Default</code>. ',
+    }),
+    createdAt: TimestampSchema.exactOptional().openapi({
+      description:
+        'The time when the profiling group was created. Specify using the ISO 8601 format. For example, 2020-06-01T13:15:02.001Z represents 1 millisecond past June 1, 2020 1:15:02 PM UTC. ',
+    }),
+    name: ProfilingGroupNameSchema.exactOptional().openapi({
+      description: 'The name of the profiling group.',
+    }),
+    profilingStatus: ProfilingStatusSchema.exactOptional().openapi({
+      description:
+        ' A <a href="https://docs.aws.amazon.com/codeguru/latest/profiler-api/API_ProfilingStatus.html"> <code>ProfilingStatus</code> </a> object that includes information about the last time a profile agent pinged back, the last time a profile was received, and the aggregation period and start time for the most recent aggregated profile. ',
+    }),
+    tags: TagsMapSchema.exactOptional().openapi({
+      description: ' A list of the tags that belong to this profiling group. ',
+    }),
+    updatedAt: TimestampSchema.exactOptional().openapi({
+      description:
+        ' The date and time when the profiling group was last updated. Specify using the ISO 8601 format. For example, 2020-06-01T13:15:02.001Z represents 1 millisecond past June 1, 2020 1:15:02 PM UTC. ',
+    }),
   })
   .openapi({ description: ' Contains information about a profiling group. ', required: [] })
   .openapi('ProfilingGroupDescription')
 
 const CreateProfilingGroupResponseSchema = z
   .object({
-    profilingGroup: ProfilingGroupDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The returned <a href="https://docs.aws.amazon.com/codeguru/latest/profiler-api/API_ProfilingGroupDescription.html"> <code>ProfilingGroupDescription</code> </a> object that contains information about the created profiling group. ',
-        }),
-    ),
+    profilingGroup: ProfilingGroupDescriptionSchema.openapi({
+      description:
+        ' The returned <a href="https://docs.aws.amazon.com/codeguru/latest/profiler-api/API_ProfilingGroupDescription.html"> <code>ProfilingGroupDescription</code> </a> object that contains information about the created profiling group. ',
+    }),
   })
   .openapi({
     required: ['profilingGroup'],
@@ -475,20 +347,16 @@ const CreateProfilingGroupResponseSchema = z
   .openapi('CreateProfilingGroupResponse')
 
 const DeleteProfilingGroupResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The structure representing the deleteProfilingGroupResponse.' })
   .openapi('DeleteProfilingGroupResponse')
 
 const DescribeProfilingGroupResponseSchema = z
   .object({
-    profilingGroup: ProfilingGroupDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The returned <a href="https://docs.aws.amazon.com/codeguru/latest/profiler-api/API_ProfilingGroupDescription.html"> <code>ProfilingGroupDescription</code> </a> object that contains information about the requested profiling group. ',
-        }),
-    ),
+    profilingGroup: ProfilingGroupDescriptionSchema.openapi({
+      description:
+        ' The returned <a href="https://docs.aws.amazon.com/codeguru/latest/profiler-api/API_ProfilingGroupDescription.html"> <code>ProfilingGroupDescription</code> </a> object that contains information about the requested profiling group. ',
+    }),
   })
   .openapi({
     required: ['profilingGroup'],
@@ -510,44 +378,23 @@ const FindingsReportIdSchema = z
 
 const FindingsReportSummarySchema = z
   .object({
-    id: FindingsReportIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The universally unique identifier (UUID) of the recommendation report.',
-        }),
-    ).exactOptional(),
-    profileEndTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The end time of the period during which the metric is flagged as anomalous. This is specified using the ISO 8601 format. For example, 2020-06-01T13:15:02.001Z represents 1 millisecond past June 1, 2020 1:15:02 PM UTC. ',
-        }),
-    ).exactOptional(),
-    profileStartTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The start time of the profile the analysis data is about. This is specified using the ISO 8601 format. For example, 2020-06-01T13:15:02.001Z represents 1 millisecond past June 1, 2020 1:15:02 PM UTC.',
-        }),
-    ).exactOptional(),
-    profilingGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the profiling group that is associated with the analysis data.',
-        }),
-    ).exactOptional(),
-    totalNumberOfFindings: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of different recommendations that were found by the analysis.',
-        }),
-    ).exactOptional(),
+    id: FindingsReportIdSchema.exactOptional().openapi({
+      description: 'The universally unique identifier (UUID) of the recommendation report.',
+    }),
+    profileEndTime: TimestampSchema.exactOptional().openapi({
+      description:
+        ' The end time of the period during which the metric is flagged as anomalous. This is specified using the ISO 8601 format. For example, 2020-06-01T13:15:02.001Z represents 1 millisecond past June 1, 2020 1:15:02 PM UTC. ',
+    }),
+    profileStartTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The start time of the profile the analysis data is about. This is specified using the ISO 8601 format. For example, 2020-06-01T13:15:02.001Z represents 1 millisecond past June 1, 2020 1:15:02 PM UTC.',
+    }),
+    profilingGroupName: StringSchema.exactOptional().openapi({
+      description: 'The name of the profiling group that is associated with the analysis data.',
+    }),
+    totalNumberOfFindings: IntegerSchema.exactOptional().openapi({
+      description: 'The total number of different recommendations that were found by the analysis.',
+    }),
   })
   .openapi({
     description:
@@ -562,22 +409,14 @@ const FindingsReportSummariesSchema = z
 
 const GetFindingsReportAccountSummaryResponseSchema = z
   .object({
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> value to include in a future <code>GetFindingsReportAccountSummary</code> request. When the results of a <code>GetFindingsReportAccountSummary</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.',
-        }),
-    ).exactOptional(),
-    reportSummaries: FindingsReportSummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The return list of <a href="https://docs.aws.amazon.com/codeguru/latest/profiler-api/API_FindingsReportSummary.html"> <code>FindingsReportSummary</code> </a> objects taht contain summaries of analysis results for all profiling groups in your AWS account.',
-        }),
-    ),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> value to include in a future <code>GetFindingsReportAccountSummary</code> request. When the results of a <code>GetFindingsReportAccountSummary</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.',
+    }),
+    reportSummaries: FindingsReportSummariesSchema.openapi({
+      description:
+        'The return list of <a href="https://docs.aws.amazon.com/codeguru/latest/profiler-api/API_FindingsReportSummary.html"> <code>FindingsReportSummary</code> </a> objects taht contain summaries of analysis results for all profiling groups in your AWS account.',
+    }),
   })
   .openapi({
     required: ['reportSummaries'],
@@ -587,13 +426,9 @@ const GetFindingsReportAccountSummaryResponseSchema = z
 
 const GetNotificationConfigurationResponseSchema = z
   .object({
-    notificationConfiguration: NotificationConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The current notification configuration for this profiling group.',
-        }),
-    ),
+    notificationConfiguration: NotificationConfigurationSchema.openapi({
+      description: 'The current notification configuration for this profiling group.',
+    }),
   })
   .openapi({
     required: ['notificationConfiguration'],
@@ -608,21 +443,13 @@ const RevisionIdSchema = z
 
 const GetPolicyResponseSchema = z
   .object({
-    policy: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The JSON-formatted resource-based policy attached to the <code>ProfilingGroup</code>.',
-        }),
-    ),
-    revisionId: RevisionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A unique identifier for the current revision of the returned policy.',
-        }),
-    ),
+    policy: StringSchema.openapi({
+      description:
+        'The JSON-formatted resource-based policy attached to the <code>ProfilingGroup</code>.',
+    }),
+    revisionId: RevisionIdSchema.openapi({
+      description: 'A unique identifier for the current revision of the returned policy.',
+    }),
   })
   .openapi({
     required: ['policy', 'revisionId'],
@@ -634,9 +461,7 @@ const AggregatedProfileSchema = z.string().openapi('AggregatedProfile')
 
 const GetProfileResponseSchema = z
   .object({
-    profile: AggregatedProfileSchema.and(
-      z.any().openapi({ description: 'Information about the profile.' }),
-    ),
+    profile: AggregatedProfileSchema.openapi({ description: 'Information about the profile.' }),
   })
   .openapi({
     required: ['profile'],
@@ -648,14 +473,10 @@ const FeedbackTypeSchema = z.enum(['Positive', 'Negative']).openapi('FeedbackTyp
 
 const UserFeedbackSchema = z
   .object({
-    type: FeedbackTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional <code>Positive</code> or <code>Negative</code> feedback submitted by the user about whether the recommendation is useful or not.',
-        }),
-    ),
+    type: FeedbackTypeSchema.openapi({
+      description:
+        'Optional <code>Positive</code> or <code>Negative</code> feedback submitted by the user about whether the recommendation is useful or not.',
+    }),
   })
   .openapi({
     required: ['type'],
@@ -666,37 +487,21 @@ const UserFeedbackSchema = z
 
 const AnomalyInstanceSchema = z
   .object({
-    endTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The end time of the period during which the metric is flagged as anomalous. This is specified using the ISO 8601 format. For example, 2020-06-01T13:15:02.001Z represents 1 millisecond past June 1, 2020 1:15:02 PM UTC. ',
-        }),
-    ).exactOptional(),
-    id: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The universally unique identifier (UUID) of an instance of an anomaly in a metric. ',
-        }),
-    ),
-    startTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The start time of the period during which the metric is flagged as anomalous. This is specified using the ISO 8601 format. For example, 2020-06-01T13:15:02.001Z represents 1 millisecond past June 1, 2020 1:15:02 PM UTC. ',
-        }),
-    ),
-    userFeedback: UserFeedbackSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Feedback type on a specific instance of anomaly submitted by the user.',
-        }),
-    ).exactOptional(),
+    endTime: TimestampSchema.exactOptional().openapi({
+      description:
+        ' The end time of the period during which the metric is flagged as anomalous. This is specified using the ISO 8601 format. For example, 2020-06-01T13:15:02.001Z represents 1 millisecond past June 1, 2020 1:15:02 PM UTC. ',
+    }),
+    id: StringSchema.openapi({
+      description:
+        ' The universally unique identifier (UUID) of an instance of an anomaly in a metric. ',
+    }),
+    startTime: TimestampSchema.openapi({
+      description:
+        ' The start time of the period during which the metric is flagged as anomalous. This is specified using the ISO 8601 format. For example, 2020-06-01T13:15:02.001Z represents 1 millisecond past June 1, 2020 1:15:02 PM UTC. ',
+    }),
+    userFeedback: UserFeedbackSchema.exactOptional().openapi({
+      description: 'Feedback type on a specific instance of anomaly submitted by the user.',
+    }),
   })
   .openapi({
     required: ['id', 'startTime'],
@@ -710,30 +515,17 @@ const StringsSchema = z.array(StringSchema).openapi('Strings')
 
 const MetricSchema = z
   .object({
-    frameName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The name of the method that appears as a frame in any stack in a profile. ',
-        }),
-    ),
-    threadStates: StringsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The list of application runtime thread states that is used to calculate the metric value for the frame. ',
-        }),
-    ),
-    type: MetricTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A type that specifies how a metric for a frame is analyzed. The supported value <code>AggregatedRelativeTotalTime</code> is an aggregation of the metric value for one frame that is calculated across the occurences of all frames in a profile.',
-        }),
-    ),
+    frameName: StringSchema.openapi({
+      description: ' The name of the method that appears as a frame in any stack in a profile. ',
+    }),
+    threadStates: StringsSchema.openapi({
+      description:
+        ' The list of application runtime thread states that is used to calculate the metric value for the frame. ',
+    }),
+    type: MetricTypeSchema.openapi({
+      description:
+        ' A type that specifies how a metric for a frame is analyzed. The supported value <code>AggregatedRelativeTotalTime</code> is an aggregation of the metric value for one frame that is calculated across the occurences of all frames in a profile.',
+    }),
   })
   .openapi({
     required: ['frameName', 'threadStates', 'type'],
@@ -744,25 +536,17 @@ const MetricSchema = z
 
 const AnomalySchema = z
   .object({
-    instances: AnomalyInstancesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A list of the instances of the detected anomalies during the requested period. ',
-        }),
-    ),
-    metric: MetricSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Details about the metric that the analysis used when it detected the anomaly. The metric includes the name of the frame that was analyzed with the type and thread states used to derive the metric value for that frame. ',
-        }),
-    ),
-    reason: StringSchema.and(
-      z.any().openapi({ description: 'The reason for which metric was flagged as anomalous.' }),
-    ),
+    instances: AnomalyInstancesSchema.openapi({
+      description:
+        ' A list of the instances of the detected anomalies during the requested period. ',
+    }),
+    metric: MetricSchema.openapi({
+      description:
+        ' Details about the metric that the analysis used when it detected the anomaly. The metric includes the name of the frame that was analyzed with the type and thread states used to derive the metric value for that frame. ',
+    }),
+    reason: StringSchema.openapi({
+      description: 'The reason for which metric was flagged as anomalous.',
+    }),
   })
   .openapi({
     required: ['instances', 'metric', 'reason'],
@@ -783,51 +567,29 @@ const PercentageSchema = z.float64().min(0).max(100).openapi('Percentage')
 
 const PatternSchema = z
   .object({
-    countersToAggregate: StringsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' A list of the different counters used to determine if there is a match. ',
-        }),
-    ).exactOptional(),
-    description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The description of the recommendation. This explains a potential inefficiency in a profiled application.',
-        }),
-    ).exactOptional(),
-    id: StringSchema.and(
-      z.any().openapi({ description: 'The universally unique identifier (UUID) of this pattern.' }),
-    ).exactOptional(),
-    name: StringSchema.and(
-      z.any().openapi({ description: 'The name for this pattern.' }),
-    ).exactOptional(),
-    resolutionSteps: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A string that contains the steps recommended to address the potential inefficiency. ',
-        }),
-    ).exactOptional(),
-    targetFrames: TargetFramesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of frame names that were searched during the analysis that generated a recommendation.',
-        }),
-    ).exactOptional(),
-    thresholdPercent: PercentageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The percentage of time an application spends in one method that triggers a recommendation. The percentage of time is the same as the percentage of the total gathered sample counts during analysis. ',
-        }),
-    ).exactOptional(),
+    countersToAggregate: StringsSchema.exactOptional().openapi({
+      description: ' A list of the different counters used to determine if there is a match. ',
+    }),
+    description: StringSchema.exactOptional().openapi({
+      description:
+        'The description of the recommendation. This explains a potential inefficiency in a profiled application.',
+    }),
+    id: StringSchema.exactOptional().openapi({
+      description: 'The universally unique identifier (UUID) of this pattern.',
+    }),
+    name: StringSchema.exactOptional().openapi({ description: 'The name for this pattern.' }),
+    resolutionSteps: StringSchema.exactOptional().openapi({
+      description:
+        ' A string that contains the steps recommended to address the potential inefficiency. ',
+    }),
+    targetFrames: TargetFramesSchema.exactOptional().openapi({
+      description:
+        'A list of frame names that were searched during the analysis that generated a recommendation.',
+    }),
+    thresholdPercent: PercentageSchema.exactOptional().openapi({
+      description:
+        ' The percentage of time an application spends in one method that triggers a recommendation. The percentage of time is the same as the percentage of the total gathered sample counts during analysis. ',
+    }),
   })
   .openapi({
     description: ' A set of rules used to make a recommendation during an analysis. ',
@@ -837,24 +599,16 @@ const PatternSchema = z
 
 const MatchSchema = z
   .object({
-    frameAddress: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The location in the profiling graph that contains a recommendation found during analysis.',
-        }),
-    ).exactOptional(),
-    targetFramesIndex: IntegerSchema.and(
-      z.any().openapi({ description: 'The target frame that triggered a match.' }),
-    ).exactOptional(),
-    thresholdBreachValue: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value in the profile data that exceeded the recommendation threshold.',
-        }),
-    ).exactOptional(),
+    frameAddress: StringSchema.exactOptional().openapi({
+      description:
+        'The location in the profiling graph that contains a recommendation found during analysis.',
+    }),
+    targetFramesIndex: IntegerSchema.exactOptional().openapi({
+      description: 'The target frame that triggered a match.',
+    }),
+    thresholdBreachValue: DoubleSchema.exactOptional().openapi({
+      description: 'The value in the profile data that exceeded the recommendation threshold.',
+    }),
   })
   .openapi({
     description: 'The part of a profile that contains a recommendation found during analysis.',
@@ -866,45 +620,25 @@ const MatchesSchema = z.array(MatchSchema).openapi('Matches')
 
 const RecommendationSchema = z
   .object({
-    allMatchesCount: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'How many different places in the profile graph triggered a match.',
-        }),
-    ),
-    allMatchesSum: DoubleSchema.and(
-      z
-        .any()
-        .openapi({ description: 'How much of the total sample count is potentially affected.' }),
-    ),
-    endTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'End time of the profile that was used by this analysis. This is specified using the ISO 8601 format. For example, 2020-06-01T13:15:02.001Z represents 1 millisecond past June 1, 2020 1:15:02 PM UTC.',
-        }),
-    ),
-    pattern: PatternSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pattern that analysis recognized in the profile to make this recommendation.',
-        }),
-    ),
-    startTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The start time of the profile that was used by this analysis. This is specified using the ISO 8601 format. For example, 2020-06-01T13:15:02.001Z represents 1 millisecond past June 1, 2020 1:15:02 PM UTC.',
-        }),
-    ),
-    topMatches: MatchesSchema.and(
-      z.any().openapi({ description: 'List of the matches with most impact. ' }),
-    ),
+    allMatchesCount: IntegerSchema.openapi({
+      description: 'How many different places in the profile graph triggered a match.',
+    }),
+    allMatchesSum: DoubleSchema.openapi({
+      description: 'How much of the total sample count is potentially affected.',
+    }),
+    endTime: TimestampSchema.openapi({
+      description:
+        'End time of the profile that was used by this analysis. This is specified using the ISO 8601 format. For example, 2020-06-01T13:15:02.001Z represents 1 millisecond past June 1, 2020 1:15:02 PM UTC.',
+    }),
+    pattern: PatternSchema.openapi({
+      description:
+        'The pattern that analysis recognized in the profile to make this recommendation.',
+    }),
+    startTime: TimestampSchema.openapi({
+      description:
+        'The start time of the profile that was used by this analysis. This is specified using the ISO 8601 format. For example, 2020-06-01T13:15:02.001Z represents 1 millisecond past June 1, 2020 1:15:02 PM UTC.',
+    }),
+    topMatches: MatchesSchema.openapi({ description: 'List of the matches with most impact. ' }),
   })
   .openapi({
     required: ['allMatchesCount', 'allMatchesSum', 'endTime', 'pattern', 'startTime', 'topMatches'],
@@ -916,41 +650,23 @@ const RecommendationsSchema = z.array(RecommendationSchema).openapi('Recommendat
 
 const GetRecommendationsResponseSchema = z
   .object({
-    anomalies: AnomaliesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The list of anomalies that the analysis has found for this profile. ',
-        }),
-    ),
-    profileEndTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The end time of the profile the analysis data is about. This is specified using the ISO 8601 format. For example, 2020-06-01T13:15:02.001Z represents 1 millisecond past June 1, 2020 1:15:02 PM UTC. ',
-        }),
-    ),
-    profileStartTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The start time of the profile the analysis data is about. This is specified using the ISO 8601 format. For example, 2020-06-01T13:15:02.001Z represents 1 millisecond past June 1, 2020 1:15:02 PM UTC. ',
-        }),
-    ),
-    profilingGroupName: ProfilingGroupNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the profiling group the analysis data is about.' }),
-    ),
-    recommendations: RecommendationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The list of recommendations that the analysis found for this profile.',
-        }),
-    ),
+    anomalies: AnomaliesSchema.openapi({
+      description: ' The list of anomalies that the analysis has found for this profile. ',
+    }),
+    profileEndTime: TimestampSchema.openapi({
+      description:
+        ' The end time of the profile the analysis data is about. This is specified using the ISO 8601 format. For example, 2020-06-01T13:15:02.001Z represents 1 millisecond past June 1, 2020 1:15:02 PM UTC. ',
+    }),
+    profileStartTime: TimestampSchema.openapi({
+      description:
+        ' The start time of the profile the analysis data is about. This is specified using the ISO 8601 format. For example, 2020-06-01T13:15:02.001Z represents 1 millisecond past June 1, 2020 1:15:02 PM UTC. ',
+    }),
+    profilingGroupName: ProfilingGroupNameSchema.openapi({
+      description: 'The name of the profiling group the analysis data is about.',
+    }),
+    recommendations: RecommendationsSchema.openapi({
+      description: 'The list of recommendations that the analysis found for this profile.',
+    }),
   })
   .openapi({
     required: [
@@ -966,17 +682,13 @@ const GetRecommendationsResponseSchema = z
 
 const ListFindingsReportsResponseSchema = z
   .object({
-    findingsReportSummaries: FindingsReportSummariesSchema.and(
-      z.any().openapi({ description: 'The list of analysis results summaries.' }),
-    ),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> value to include in a future <code>ListFindingsReports</code> request. When the results of a <code>ListFindingsReports</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.',
-        }),
-    ).exactOptional(),
+    findingsReportSummaries: FindingsReportSummariesSchema.openapi({
+      description: 'The list of analysis results summaries.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> value to include in a future <code>ListFindingsReports</code> request. When the results of a <code>ListFindingsReports</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.',
+    }),
   })
   .openapi({
     required: ['findingsReportSummaries'],
@@ -986,14 +698,10 @@ const ListFindingsReportsResponseSchema = z
 
 const ProfileTimeSchema = z
   .object({
-    start: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The start time of a profile. It is specified using the ISO 8601 format. For example, 2020-06-01T13:15:02.001Z represents 1 millisecond past June 1, 2020 1:15:02 PM UTC.',
-        }),
-    ).exactOptional(),
+    start: TimestampSchema.exactOptional().openapi({
+      description:
+        'The start time of a profile. It is specified using the ISO 8601 format. For example, 2020-06-01T13:15:02.001Z represents 1 millisecond past June 1, 2020 1:15:02 PM UTC.',
+    }),
   })
   .openapi({ description: ' Contains the start time of a profile. ', required: [] })
   .openapi('ProfileTime')
@@ -1002,22 +710,14 @@ const ProfileTimesSchema = z.array(ProfileTimeSchema).openapi('ProfileTimes')
 
 const ListProfileTimesResponseSchema = z
   .object({
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> value to include in a future <code>ListProfileTimes</code> request. When the results of a <code>ListProfileTimes</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return. ',
-        }),
-    ).exactOptional(),
-    profileTimes: ProfileTimesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of start times of the available profiles for the aggregation period in the specified time range. ',
-        }),
-    ),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> value to include in a future <code>ListProfileTimes</code> request. When the results of a <code>ListProfileTimes</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return. ',
+    }),
+    profileTimes: ProfileTimesSchema.openapi({
+      description:
+        'The list of start times of the available profiles for the aggregation period in the specified time range. ',
+    }),
   })
   .openapi({
     required: ['profileTimes'],
@@ -1033,30 +733,18 @@ const ProfilingGroupDescriptionsSchema = z
 
 const ListProfilingGroupsResponseSchema = z
   .object({
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> value to include in a future <code>ListProfilingGroups</code> request. When the results of a <code>ListProfilingGroups</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return. ',
-        }),
-    ).exactOptional(),
-    profilingGroupNames: ProfilingGroupNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A returned list of profiling group names. A list of the names is returned only if <code>includeDescription</code> is <code>false</code>, otherwise a list of <a href="https://docs.aws.amazon.com/codeguru/latest/profiler-api/API_ProfilingGroupDescription.html"> <code>ProfilingGroupDescription</code> </a> objects is returned. ',
-        }),
-    ),
-    profilingGroups: ProfilingGroupDescriptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A returned list <a href="https://docs.aws.amazon.com/codeguru/latest/profiler-api/API_ProfilingGroupDescription.html"> <code>ProfilingGroupDescription</code> </a> objects. A list of <a href="https://docs.aws.amazon.com/codeguru/latest/profiler-api/API_ProfilingGroupDescription.html"> <code>ProfilingGroupDescription</code> </a> objects is returned only if <code>includeDescription</code> is <code>true</code>, otherwise a list of profiling group names is returned. ',
-        }),
-    ).exactOptional(),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> value to include in a future <code>ListProfilingGroups</code> request. When the results of a <code>ListProfilingGroups</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return. ',
+    }),
+    profilingGroupNames: ProfilingGroupNamesSchema.openapi({
+      description:
+        ' A returned list of profiling group names. A list of the names is returned only if <code>includeDescription</code> is <code>false</code>, otherwise a list of <a href="https://docs.aws.amazon.com/codeguru/latest/profiler-api/API_ProfilingGroupDescription.html"> <code>ProfilingGroupDescription</code> </a> objects is returned. ',
+    }),
+    profilingGroups: ProfilingGroupDescriptionsSchema.exactOptional().openapi({
+      description:
+        ' A returned list <a href="https://docs.aws.amazon.com/codeguru/latest/profiler-api/API_ProfilingGroupDescription.html"> <code>ProfilingGroupDescription</code> </a> objects. A list of <a href="https://docs.aws.amazon.com/codeguru/latest/profiler-api/API_ProfilingGroupDescription.html"> <code>ProfilingGroupDescription</code> </a> objects is returned only if <code>includeDescription</code> is <code>true</code>, otherwise a list of profiling group names is returned. ',
+    }),
   })
   .openapi({
     required: ['profilingGroupNames'],
@@ -1066,41 +754,29 @@ const ListProfilingGroupsResponseSchema = z
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    tags: TagsMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The list of tags assigned to the specified resource. This is the list of tags returned in the response. ',
-        }),
-    ).exactOptional(),
+    tags: TagsMapSchema.exactOptional().openapi({
+      description:
+        ' The list of tags assigned to the specified resource. This is the list of tags returned in the response. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
 
 const PostAgentProfileResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The structure representing the postAgentProfileResponse.' })
   .openapi('PostAgentProfileResponse')
 
 const PutPermissionResponseSchema = z
   .object({
-    policy: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The JSON-formatted resource-based policy on the profiling group that includes the added permissions. ',
-        }),
-    ),
-    revisionId: RevisionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A universally unique identifier (UUID) for the revision of the resource-based policy that includes the added permissions. The JSON-formatted policy is in the <code>policy</code> element of the response. ',
-        }),
-    ),
+    policy: StringSchema.openapi({
+      description:
+        ' The JSON-formatted resource-based policy on the profiling group that includes the added permissions. ',
+    }),
+    revisionId: RevisionIdSchema.openapi({
+      description:
+        ' A universally unique identifier (UUID) for the revision of the resource-based policy that includes the added permissions. The JSON-formatted policy is in the <code>policy</code> element of the response. ',
+    }),
   })
   .openapi({
     required: ['policy', 'revisionId'],
@@ -1112,11 +788,9 @@ const PrincipalSchema = z.string().openapi('Principal')
 
 const RemoveNotificationChannelResponseSchema = z
   .object({
-    notificationConfiguration: NotificationConfigurationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The new notification configuration for this profiling group.' }),
-    ).exactOptional(),
+    notificationConfiguration: NotificationConfigurationSchema.exactOptional().openapi({
+      description: 'The new notification configuration for this profiling group.',
+    }),
   })
   .openapi({
     description: 'The structure representing the RemoveNotificationChannelResponse.',
@@ -1126,22 +800,14 @@ const RemoveNotificationChannelResponseSchema = z
 
 const RemovePermissionResponseSchema = z
   .object({
-    policy: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The JSON-formatted resource-based policy on the profiling group after the specified permissions were removed. ',
-        }),
-    ),
-    revisionId: RevisionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A universally unique identifier (UUID) for the revision of the resource-based policy after the specified permissions were removed. The updated JSON-formatted policy is in the <code>policy</code> element of the response. ',
-        }),
-    ),
+    policy: StringSchema.openapi({
+      description:
+        ' The JSON-formatted resource-based policy on the profiling group after the specified permissions were removed. ',
+    }),
+    revisionId: RevisionIdSchema.openapi({
+      description:
+        ' A universally unique identifier (UUID) for the revision of the resource-based policy after the specified permissions were removed. The updated JSON-formatted policy is in the <code>policy</code> element of the response. ',
+    }),
   })
   .openapi({
     required: ['policy', 'revisionId'],
@@ -1150,24 +816,20 @@ const RemovePermissionResponseSchema = z
   .openapi('RemovePermissionResponse')
 
 const SubmitFeedbackResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The structure representing the SubmitFeedbackResponse.' })
   .openapi('SubmitFeedbackResponse')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const UpdateProfilingGroupResponseSchema = z
   .object({
-    profilingGroup: ProfilingGroupDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A <a href="https://docs.aws.amazon.com/codeguru/latest/profiler-api/API_ProfilingGroupDescription.html"> <code>ProfilingGroupDescription</code> </a> that contains information about the returned updated profiling group. ',
-        }),
-    ),
+    profilingGroup: ProfilingGroupDescriptionSchema.openapi({
+      description:
+        ' A <a href="https://docs.aws.amazon.com/codeguru/latest/profiler-api/API_ProfilingGroupDescription.html"> <code>ProfilingGroupDescription</code> </a> that contains information about the returned updated profiling group. ',
+    }),
   })
   .openapi({
     required: ['profilingGroup'],
@@ -1179,11 +841,9 @@ const ActionGroupSchema = z.literal('agentPermissions').openapi('ActionGroup')
 
 const AddNotificationChannelsRequestSchema = z
   .object({
-    channels: ChannelsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'One or 2 channels to report to when anomalies are detected.' }),
-    ),
+    channels: ChannelsSchema.openapi({
+      description: 'One or 2 channels to report to when anomalies are detected.',
+    }),
   })
   .openapi({
     required: ['channels'],
@@ -1215,14 +875,10 @@ const PeriodSchema = z.string().min(1).max(64).openapi('Period')
 
 const BatchGetFrameMetricDataRequestSchema = z
   .object({
-    frameMetrics: FrameMetricsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The details of the metrics that are used to request a time series of values. The metric includes the name of the frame, the aggregation type to calculate the metric value for the frame, and the thread states to use to get the count for the metric value of the frame.',
-        }),
-    ).exactOptional(),
+    frameMetrics: FrameMetricsSchema.exactOptional().openapi({
+      description:
+        ' The details of the metrics that are used to request a time series of values. The metric includes the name of the frame, the aggregation type to calculate the metric value for the frame, and the thread states to use to get the count for the metric value of the frame.',
+    }),
   })
   .openapi({
     title: 'BatchGetFrameMetricDataRequest',
@@ -1244,22 +900,14 @@ const MetadataSchema = z.record(z.string(), StringSchema).openapi('Metadata')
 
 const ConfigureAgentRequestSchema = z
   .object({
-    fleetInstanceId: FleetInstanceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " A universally unique identifier (UUID) for a profiling instance. For example, if the profiling instance is an Amazon EC2 instance, it is the instance ID. If it is an AWS Fargate container, it is the container's task ID. ",
-        }),
-    ).exactOptional(),
-    metadata: MetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> Metadata captured about the compute platform the agent is running on. It includes information about sampling and reporting. The valid fields are:</p> <ul> <li> <p> <code>COMPUTE_PLATFORM</code> - The compute platform on which the agent is running </p> </li> <li> <p> <code>AGENT_ID</code> - The ID for an agent instance. </p> </li> <li> <p> <code>AWS_REQUEST_ID</code> - The AWS request ID of a Lambda invocation. </p> </li> <li> <p> <code>EXECUTION_ENVIRONMENT</code> - The execution environment a Lambda function is running on. </p> </li> <li> <p> <code>LAMBDA_FUNCTION_ARN</code> - The Amazon Resource Name (ARN) that is used to invoke a Lambda function. </p> </li> <li> <p> <code>LAMBDA_MEMORY_LIMIT_IN_MB</code> - The memory allocated to a Lambda function. </p> </li> <li> <p> <code>LAMBDA_REMAINING_TIME_IN_MILLISECONDS</code> - The time in milliseconds before execution of a Lambda function times out. </p> </li> <li> <p> <code>LAMBDA_TIME_GAP_BETWEEN_INVOKES_IN_MILLISECONDS</code> - The time in milliseconds between two invocations of a Lambda function. </p> </li> <li> <p> <code>LAMBDA_PREVIOUS_EXECUTION_TIME_IN_MILLISECONDS</code> - The time in milliseconds for the previous Lambda invocation. </p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    fleetInstanceId: FleetInstanceIdSchema.exactOptional().openapi({
+      description:
+        " A universally unique identifier (UUID) for a profiling instance. For example, if the profiling instance is an Amazon EC2 instance, it is the instance ID. If it is an AWS Fargate container, it is the container's task ID. ",
+    }),
+    metadata: MetadataSchema.exactOptional().openapi({
+      description:
+        '<p> Metadata captured about the compute platform the agent is running on. It includes information about sampling and reporting. The valid fields are:</p> <ul> <li> <p> <code>COMPUTE_PLATFORM</code> - The compute platform on which the agent is running </p> </li> <li> <p> <code>AGENT_ID</code> - The ID for an agent instance. </p> </li> <li> <p> <code>AWS_REQUEST_ID</code> - The AWS request ID of a Lambda invocation. </p> </li> <li> <p> <code>EXECUTION_ENVIRONMENT</code> - The execution environment a Lambda function is running on. </p> </li> <li> <p> <code>LAMBDA_FUNCTION_ARN</code> - The Amazon Resource Name (ARN) that is used to invoke a Lambda function. </p> </li> <li> <p> <code>LAMBDA_MEMORY_LIMIT_IN_MB</code> - The memory allocated to a Lambda function. </p> </li> <li> <p> <code>LAMBDA_REMAINING_TIME_IN_MILLISECONDS</code> - The time in milliseconds before execution of a Lambda function times out. </p> </li> <li> <p> <code>LAMBDA_TIME_GAP_BETWEEN_INVOKES_IN_MILLISECONDS</code> - The time in milliseconds between two invocations of a Lambda function. </p> </li> <li> <p> <code>LAMBDA_PREVIOUS_EXECUTION_TIME_IN_MILLISECONDS</code> - The time in milliseconds for the previous Lambda invocation. </p> </li> </ul>',
+    }),
   })
   .openapi({
     title: 'ConfigureAgentRequest',
@@ -1270,28 +918,20 @@ const ConfigureAgentRequestSchema = z
 
 const CreateProfilingGroupRequestSchema = z
   .object({
-    agentOrchestrationConfig: AgentOrchestrationConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies whether profiling is enabled or disabled for the created profiling group. ',
-        }),
-    ).exactOptional(),
-    computePlatform: ComputePlatformSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The compute platform of the profiling group. Use <code>AWSLambda</code> if your application runs on AWS Lambda. Use <code>Default</code> if your application runs on a compute platform that is not AWS Lambda, such an Amazon EC2 instance, an on-premises server, or a different platform. If not specified, <code>Default</code> is used. ',
-        }),
-    ).exactOptional(),
-    profilingGroupName: ProfilingGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the profiling group to create.' }),
-    ),
-    tags: TagsMapSchema.and(
-      z.any().openapi({ description: ' A list of tags to add to the created profiling group. ' }),
-    ).exactOptional(),
+    agentOrchestrationConfig: AgentOrchestrationConfigSchema.exactOptional().openapi({
+      description:
+        ' Specifies whether profiling is enabled or disabled for the created profiling group. ',
+    }),
+    computePlatform: ComputePlatformSchema.exactOptional().openapi({
+      description:
+        ' The compute platform of the profiling group. Use <code>AWSLambda</code> if your application runs on AWS Lambda. Use <code>Default</code> if your application runs on a compute platform that is not AWS Lambda, such an Amazon EC2 instance, an on-premises server, or a different platform. If not specified, <code>Default</code> is used. ',
+    }),
+    profilingGroupName: ProfilingGroupNameSchema.openapi({
+      description: 'The name of the profiling group to create.',
+    }),
+    tags: TagsMapSchema.exactOptional().openapi({
+      description: ' A list of tags to add to the created profiling group. ',
+    }),
   })
   .openapi({
     required: ['profilingGroupName'],
@@ -1301,7 +941,7 @@ const CreateProfilingGroupRequestSchema = z
   .openapi('CreateProfilingGroupRequest')
 
 const DeleteProfilingGroupRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteProfilingGroupRequest',
     description: 'The structure representing the deleteProfilingGroupRequest.',
@@ -1309,7 +949,7 @@ const DeleteProfilingGroupRequestSchema = z
   .openapi('DeleteProfilingGroupRequest')
 
 const DescribeProfilingGroupRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DescribeProfilingGroupRequest',
     description: 'The structure representing the describeProfilingGroupRequest.',
@@ -1319,7 +959,7 @@ const DescribeProfilingGroupRequestSchema = z
 const MaxResultsSchema = z.int().min(1).max(1000).openapi('MaxResults')
 
 const GetFindingsReportAccountSummaryRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetFindingsReportAccountSummaryRequest',
     description: 'The structure representing the GetFindingsReportAccountSummaryRequest.',
@@ -1327,7 +967,7 @@ const GetFindingsReportAccountSummaryRequestSchema = z
   .openapi('GetFindingsReportAccountSummaryRequest')
 
 const GetNotificationConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetNotificationConfigurationRequest',
     description: 'The structure representing the GetNotificationConfigurationRequest.',
@@ -1335,7 +975,7 @@ const GetNotificationConfigurationRequestSchema = z
   .openapi('GetNotificationConfigurationRequest')
 
 const GetPolicyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetPolicyRequest',
     description: ' The structure representing the <code>getPolicyRequest</code>. ',
@@ -1345,7 +985,7 @@ const GetPolicyRequestSchema = z
 const MaxDepthSchema = z.int().min(1).max(10000).openapi('MaxDepth')
 
 const GetProfileRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetProfileRequest',
     description: 'The structure representing the getProfileRequest.',
@@ -1361,7 +1001,7 @@ const LocaleSchema = z
   .openapi('Locale')
 
 const GetRecommendationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetRecommendationsRequest',
     description: 'The structure representing the GetRecommendationsRequest.',
@@ -1369,7 +1009,7 @@ const GetRecommendationsRequestSchema = z
   .openapi('GetRecommendationsRequest')
 
 const ListFindingsReportsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListFindingsReportsRequest',
     description: 'The structure representing the ListFindingsReportsRequest.',
@@ -1379,7 +1019,7 @@ const ListFindingsReportsRequestSchema = z
 const OrderBySchema = z.enum(['TimestampDescending', 'TimestampAscending']).openapi('OrderBy')
 
 const ListProfileTimesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListProfileTimesRequest',
     description: 'The structure representing the listProfileTimesRequest.',
@@ -1387,7 +1027,7 @@ const ListProfileTimesRequestSchema = z
   .openapi('ListProfileTimesRequest')
 
 const ListProfilingGroupsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListProfilingGroupsRequest',
     description: 'The structure representing the listProfilingGroupsRequest.',
@@ -1395,7 +1035,7 @@ const ListProfilingGroupsRequestSchema = z
   .openapi('ListProfilingGroupsRequest')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
@@ -1415,9 +1055,7 @@ const MetadataFieldSchema = z
 
 const PostAgentProfileRequestSchema = z
   .object({
-    agentProfile: AgentProfileSchema.and(
-      z.any().openapi({ description: ' The submitted profiling data. ' }),
-    ),
+    agentProfile: AgentProfileSchema.openapi({ description: ' The submitted profiling data. ' }),
   })
   .openapi({
     required: ['agentProfile'],
@@ -1430,22 +1068,14 @@ const PrincipalsSchema = z.array(PrincipalSchema).min(1).max(50).openapi('Princi
 
 const PutPermissionRequestSchema = z
   .object({
-    principals: PrincipalsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A list ARNs for the roles and users you want to grant access to the profiling group. Wildcards are not are supported in the ARNs. ',
-        }),
-    ),
-    revisionId: RevisionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A universally unique identifier (UUID) for the revision of the policy you are adding to the profiling group. Do not specify this when you add permissions to a profiling group for the first time. If a policy already exists on the profiling group, you must specify the <code>revisionId</code>. ',
-        }),
-    ).exactOptional(),
+    principals: PrincipalsSchema.openapi({
+      description:
+        ' A list ARNs for the roles and users you want to grant access to the profiling group. Wildcards are not are supported in the ARNs. ',
+    }),
+    revisionId: RevisionIdSchema.exactOptional().openapi({
+      description:
+        ' A universally unique identifier (UUID) for the revision of the policy you are adding to the profiling group. Do not specify this when you add permissions to a profiling group for the first time. If a policy already exists on the profiling group, you must specify the <code>revisionId</code>. ',
+    }),
   })
   .openapi({
     required: ['principals'],
@@ -1455,7 +1085,7 @@ const PutPermissionRequestSchema = z
   .openapi('PutPermissionRequest')
 
 const RemoveNotificationChannelRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'RemoveNotificationChannelRequest',
     description: 'The structure representing the RemoveNotificationChannelRequest.',
@@ -1463,7 +1093,7 @@ const RemoveNotificationChannelRequestSchema = z
   .openapi('RemoveNotificationChannelRequest')
 
 const RemovePermissionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'RemovePermissionRequest',
     description:
@@ -1473,17 +1103,13 @@ const RemovePermissionRequestSchema = z
 
 const SubmitFeedbackRequestSchema = z
   .object({
-    comment: StringSchema.and(
-      z.any().openapi({ description: 'Optional feedback about this anomaly.' }),
-    ).exactOptional(),
-    type: FeedbackTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The feedback tpye. Thee are two valid values, <code>Positive</code> and <code>Negative</code>. ',
-        }),
-    ),
+    comment: StringSchema.exactOptional().openapi({
+      description: 'Optional feedback about this anomaly.',
+    }),
+    type: FeedbackTypeSchema.openapi({
+      description:
+        ' The feedback tpye. Thee are two valid values, <code>Positive</code> and <code>Negative</code>. ',
+    }),
   })
   .openapi({
     required: ['type'],
@@ -1496,30 +1122,23 @@ const TagKeysSchema = z.array(StringSchema).openapi('TagKeys')
 
 const TagResourceRequestSchema = z
   .object({
-    tags: TagsMapSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The list of tags that are added to the specified resource. ' }),
-    ),
+    tags: TagsMapSchema.openapi({
+      description: ' The list of tags that are added to the specified resource. ',
+    }),
   })
   .openapi({ required: ['tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateProfilingGroupRequestSchema = z
   .object({
-    agentOrchestrationConfig: AgentOrchestrationConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies whether profiling is enabled or disabled for a profiling group. ',
-        }),
-    ),
+    agentOrchestrationConfig: AgentOrchestrationConfigSchema.openapi({
+      description: ' Specifies whether profiling is enabled or disabled for a profiling group. ',
+    }),
   })
   .openapi({
     required: ['agentOrchestrationConfig'],
@@ -1996,14 +1615,10 @@ export const postProfilingGroupsClientTokenRoute = createRoute({
             .object({
               agentOrchestrationConfig: z
                 .object({
-                  profilingEnabled: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          ' A <code>Boolean</code> that specifies whether the profiling agent collects profiling data or not. Set to <code>true</code> to enable profiling. ',
-                      }),
-                  ).exactOptional(),
+                  profilingEnabled: BooleanSchema.exactOptional().openapi({
+                    description:
+                      ' A <code>Boolean</code> that specifies whether the profiling agent collects profiling data or not. Set to <code>true</code> to enable profiling. ',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -2160,14 +1775,10 @@ export const putProfilingGroupsProfilingGroupNameRoute = createRoute({
             .object({
               agentOrchestrationConfig: z
                 .object({
-                  profilingEnabled: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          ' A <code>Boolean</code> that specifies whether the profiling agent collects profiling data or not. Set to <code>true</code> to enable profiling. ',
-                      }),
-                  ).exactOptional(),
+                  profilingEnabled: BooleanSchema.exactOptional().openapi({
+                    description:
+                      ' A <code>Boolean</code> that specifies whether the profiling agent collects profiling data or not. Set to <code>true</code> to enable profiling. ',
+                  }),
                 })
                 .openapi({
                   description:

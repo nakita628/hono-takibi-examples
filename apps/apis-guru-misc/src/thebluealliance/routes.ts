@@ -416,11 +416,11 @@ const EventDistrictPointsSchema = z
 const EventInsightsSchema = z
   .object({
     playoff: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Insights for the playoff round of an event' }),
     qual: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Inights for the qualification round of an event' }),
   })
@@ -935,7 +935,7 @@ const EventOPRsSchema = z
   .openapi('EventOPRs')
 
 const EventPredictionsSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'JSON Object containing prediction information for the event. Contains year-specific information and is subject to change.',
@@ -1172,7 +1172,7 @@ const MatchSchema = z
           'UNIX timestamp (seconds since 1-Jan-1970 00:00:00) of the TBA predicted match start time.',
       }),
     score_breakdown: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -1909,7 +1909,7 @@ const MatchTimeseries_2018Schema = z
 const MediaSchema = z
   .object({
     details: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'If required, a JSON dict of additional media information.' }),
     direct_url: z.string().exactOptional().openapi({ description: 'Direct URL to the media.' }),
@@ -1978,7 +1978,7 @@ const TeamSchema = z
       .exactOptional()
       .openapi({ description: 'Will be NULL, for future development.' }),
     home_championship: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -2443,30 +2443,22 @@ export const getDistrictDistrictKeyEventsRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: z.array(EventSchema) } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -2494,30 +2486,22 @@ export const getDistrictDistrictKeyEventsKeysRoute = createRoute({
         },
       },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -2553,30 +2537,22 @@ export const getDistrictDistrictKeyEventsSimpleRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: z.array(EventSimpleSchema) } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -2600,30 +2576,22 @@ export const getDistrictDistrictKeyRankingsRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: z.array(DistrictRankingSchema) } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -2647,30 +2615,22 @@ export const getDistrictDistrictKeyTeamsRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: z.array(TeamSchema) } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -2698,30 +2658,22 @@ export const getDistrictDistrictKeyTeamsKeysRoute = createRoute({
         },
       },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -2746,30 +2698,22 @@ export const getDistrictDistrictKeyTeamsSimpleRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: z.array(TeamSimpleSchema) } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -2793,30 +2737,22 @@ export const getDistrictsYearRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: z.array(DistrictListSchema) } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -2840,30 +2776,22 @@ export const getEventEventKeyRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: EventSchema } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -2887,30 +2815,22 @@ export const getEventEventKeyAlliancesRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: z.array(EliminationAllianceSchema) } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -2934,30 +2854,22 @@ export const getEventEventKeyAwardsRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: z.array(AwardSchema) } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -2981,30 +2893,22 @@ export const getEventEventKeyDistrictPointsRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: EventDistrictPointsSchema } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -3028,30 +2932,22 @@ export const getEventEventKeyInsightsRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: EventInsightsSchema } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -3075,30 +2971,22 @@ export const getEventEventKeyMatchesRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: z.array(MatchSchema) } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -3126,30 +3014,22 @@ export const getEventEventKeyMatchesKeysRoute = createRoute({
         },
       },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -3173,30 +3053,22 @@ export const getEventEventKeyMatchesSimpleRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: z.array(MatchSimpleSchema) } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -3223,30 +3095,22 @@ export const getEventEventKeyMatchesTimeseriesRoute = createRoute({
         'application/json': { schema: z.array(z.string().openapi({ description: 'Match Key' })) },
       },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -3270,30 +3134,22 @@ export const getEventEventKeyOprsRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: EventOPRsSchema } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -3318,30 +3174,22 @@ export const getEventEventKeyPredictionsRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: EventPredictionsSchema } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -3365,30 +3213,22 @@ export const getEventEventKeyRankingsRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: EventRankingSchema } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -3412,30 +3252,22 @@ export const getEventEventKeySimpleRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: EventSimpleSchema } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -3459,30 +3291,22 @@ export const getEventEventKeyTeamsRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: z.array(TeamSchema) } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -3510,30 +3334,22 @@ export const getEventEventKeyTeamsKeysRoute = createRoute({
         },
       },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -3557,30 +3373,22 @@ export const getEventEventKeyTeamsSimpleRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: z.array(TeamSimpleSchema) } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -3614,30 +3422,22 @@ export const getEventEventKeyTeamsStatusesRoute = createRoute({
         },
       },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -3661,30 +3461,22 @@ export const getEventsYearRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: z.array(EventSchema) } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -3712,30 +3504,22 @@ export const getEventsYearKeysRoute = createRoute({
         },
       },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -3759,30 +3543,22 @@ export const getEventsYearSimpleRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: z.array(EventSimpleSchema) } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -3806,30 +3582,22 @@ export const getMatchMatchKeyRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: MatchSchema } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -3853,30 +3621,22 @@ export const getMatchMatchKeySimpleRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: MatchSimpleSchema } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -3899,32 +3659,24 @@ export const getMatchMatchKeyTimeseriesRoute = createRoute({
   responses: {
     200: {
       description: 'Successful response',
-      content: { 'application/json': { schema: z.array(z.object({})) } },
+      content: { 'application/json': { schema: z.array(z.looseObject({})) } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -3948,30 +3700,22 @@ export const getMatchMatchKeyZebraMotionworksRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: ZebraSchema } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -3992,30 +3736,22 @@ export const getStatusRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: APIStatusSchema } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -4039,30 +3775,22 @@ export const getTeamTeamKeyRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: TeamSchema } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -4086,30 +3814,22 @@ export const getTeamTeamKeyAwardsRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: z.array(AwardSchema) } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -4133,30 +3853,22 @@ export const getTeamTeamKeyAwardsYearRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: z.array(AwardSchema) } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -4181,30 +3893,22 @@ export const getTeamTeamKeyDistrictsRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: z.array(DistrictListSchema) } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -4228,30 +3932,22 @@ export const getTeamTeamKeyEventEventKeyAwardsRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: z.array(AwardSchema) } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -4275,30 +3971,22 @@ export const getTeamTeamKeyEventEventKeyMatchesRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: z.array(MatchSchema) } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -4326,30 +4014,22 @@ export const getTeamTeamKeyEventEventKeyMatchesKeysRoute = createRoute({
         },
       },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -4373,30 +4053,22 @@ export const getTeamTeamKeyEventEventKeyMatchesSimpleRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: z.array(MatchSchema) } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -4420,30 +4092,22 @@ export const getTeamTeamKeyEventEventKeyStatusRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: TeamEventStatusSchema } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -4467,30 +4131,22 @@ export const getTeamTeamKeyEventsRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: z.array(EventSchema) } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -4518,30 +4174,22 @@ export const getTeamTeamKeyEventsKeysRoute = createRoute({
         },
       },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -4565,30 +4213,22 @@ export const getTeamTeamKeyEventsSimpleRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: z.array(EventSimpleSchema) } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -4612,30 +4252,22 @@ export const getTeamTeamKeyEventsYearRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: z.array(EventSchema) } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -4664,30 +4296,22 @@ export const getTeamTeamKeyEventsYearKeysRoute = createRoute({
         },
       },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -4711,30 +4335,22 @@ export const getTeamTeamKeyEventsYearSimpleRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: z.array(EventSimpleSchema) } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -4768,30 +4384,22 @@ export const getTeamTeamKeyEventsYearStatusesRoute = createRoute({
         },
       },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -4815,30 +4423,22 @@ export const getTeamTeamKeyMatchesYearRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: z.array(MatchSchema) } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -4866,30 +4466,22 @@ export const getTeamTeamKeyMatchesYearKeysRoute = createRoute({
         },
       },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -4913,30 +4505,22 @@ export const getTeamTeamKeyMatchesYearSimpleRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: z.array(MatchSimpleSchema) } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -4960,30 +4544,22 @@ export const getTeamTeamKeyMediaTagMediaTagRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: z.array(MediaSchema) } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -5011,30 +4587,22 @@ export const getTeamTeamKeyMediaTagMediaTagYearRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: z.array(MediaSchema) } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -5058,30 +4626,22 @@ export const getTeamTeamKeyMediaYearRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: z.array(MediaSchema) } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -5106,30 +4666,22 @@ export const getTeamTeamKeyRobotsRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: z.array(TeamRobotSchema) } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -5153,30 +4705,22 @@ export const getTeamTeamKeySimpleRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: TeamSimpleSchema } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -5200,30 +4744,22 @@ export const getTeamTeamKeySocialMediaRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: z.array(MediaSchema) } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -5247,30 +4783,22 @@ export const getTeamTeamKeyYearsParticipatedRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: z.array(z.int()) } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -5294,30 +4822,22 @@ export const getTeamsPageNumRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: z.array(TeamSchema) } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -5342,30 +4862,22 @@ export const getTeamsPageNumKeysRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: z.array(z.string()) } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -5389,30 +4901,22 @@ export const getTeamsPageNumSimpleRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: z.array(TeamSimpleSchema) } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -5437,30 +4941,22 @@ export const getTeamsYearPageNumRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: z.array(TeamSchema) } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -5488,30 +4984,22 @@ export const getTeamsYearPageNumKeysRoute = createRoute({
         },
       },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,
@@ -5536,30 +5024,22 @@ export const getTeamsYearPageNumSimpleRoute = createRoute({
       description: 'Successful response',
       content: { 'application/json': { schema: z.array(TeamSimpleSchema) } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description:
-            'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `Cache-Control` header, in particular the `max-age` value, contains the number of seconds the result should be considered valid for. During this time subsequent calls should return from the local cache directly.',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the version of the most recent response. Used by clients in the `If-None-Match` request header.',
+            param: { required: false },
+          }),
       }),
     },
     304: NotModifiedResponse,

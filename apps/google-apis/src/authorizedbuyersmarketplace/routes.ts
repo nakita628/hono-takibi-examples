@@ -1,178 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const FirstPartyMobileApplicationTargetingSchema = z
-  .object({
-    excludedAppIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'A list of application IDs to be excluded.' }),
-    targetedAppIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'A list of application IDs to be included.' }),
-  })
-  .openapi({
-    description:
-      'Represents a list of targeted and excluded mobile application IDs that publishers own. Android App ID, for example, com.google.android.apps.maps, can be found in Google Play Store URL. iOS App ID (which is a number) can be found at the end of iTunes store URL. First party mobile applications is either included or excluded.',
-    required: [],
-  })
-  .openapi('FirstPartyMobileApplicationTargeting')
-
-type MobileApplicationTargetingType = {
-  firstPartyTargeting?: z.infer<typeof FirstPartyMobileApplicationTargetingSchema>
-}
-
-const AcceptProposalRequestSchema = z
-  .object({
-    proposalRevision: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The last known client revision number of the proposal.' }),
-  })
-  .openapi({
-    description:
-      'Request to accept a proposal. Accepting a proposal implies acceptance of the publisher terms_and_conditions, if any.',
-    required: [],
-  })
-  .openapi('AcceptProposalRequest')
-
-const ActivateClientRequestSchema = z
-  .object({})
-  .openapi({ description: 'Request message for activating a client.' })
-  .openapi('ActivateClientRequest')
-
-const ActivateClientUserRequestSchema = z
-  .object({})
-  .openapi({ description: 'Request message for activating a client user.' })
-  .openapi('ActivateClientUserRequest')
-
-const AdSizeSchema = z
-  .object({
-    height: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The height of the ad slot in pixels. This field will be present only when size type is `PIXEL`.',
-      }),
-    type: z
-      .enum(['TYPE_UNSPECIFIED', 'PIXEL', 'INTERSTITIAL', 'NATIVE', 'FLUID'])
-      .exactOptional()
-      .openapi({ description: 'The type of the ad slot size.' }),
-    width: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The width of the ad slot in pixels. This field will be present only when size type is `PIXEL`.',
-      }),
-  })
-  .openapi({ description: 'Represents size of a single ad slot, or a creative.', required: [] })
-  .openapi('AdSize')
-
-const AddCreativeRequestSchema = z
-  .object({
-    creative: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Name of the creative to add to the finalized deal, in the format `buyers/{buyerAccountId}/creatives/{creativeId}`. See creative.name.',
-      }),
-  })
-  .openapi({
-    description:
-      'Request message for adding creative to be used in the bidding process for the finalized deal.',
-    required: [],
-  })
-  .openapi('AddCreativeRequest')
-
-const NoteSchema = z
-  .object({
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. When this note was created.', readOnly: true }),
-    creatorRole: z
-      .enum(['BUYER_SELLER_ROLE_UNSPECIFIED', 'BUYER', 'SELLER'])
-      .exactOptional()
-      .openapi({ description: 'Output only. The role who created the note.', readOnly: true }),
-    note: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The text of the note. Maximum length is 1024 characters.' }),
-  })
-  .openapi({
-    description:
-      'A text note attached to the proposal to facilitate the communication between buyers and sellers.',
-    required: [],
-  })
-  .openapi('Note')
-
-const AddNoteRequestSchema = z
-  .object({ note: NoteSchema.exactOptional().openapi({ description: 'The note to add.' }) })
-  .openapi({ description: 'Request to add a note.', required: [] })
-  .openapi('AddNoteRequest')
-
-const AuctionPackageSchema = z
-  .object({
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Time the auction package was created.',
-        readOnly: true,
-      }),
-    creator: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The buyer that created this auction package. Format: `buyers/{buyerAccountId}`',
-        readOnly: true,
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. A description of the auction package.',
-        readOnly: true,
-      }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The display_name assigned to the auction package.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Immutable. The unique identifier for the auction package. Format: `buyers/{accountId}/auctionPackages/{auctionPackageId}` The auction_package_id part of name is sent in the BidRequest to all RTB bidders and is returned as deal_id by the bidder in the BidResponse.',
-      }),
-    subscribedClients: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The list of clients of the current buyer that are subscribed to the AuctionPackage. Format: `buyers/{buyerAccountId}/clients/{clientAccountId}`',
-        readOnly: true,
-      }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Time the auction package was last updated. This value is only increased when this auction package is updated but never when a buyer subscribed.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      "Defines a segment of inventory that buyer wants to buy. It's created by buyer and could be shared with multiple buyers.",
-    required: [],
-  })
-  .openapi('AuctionPackage')
-
 const CreativeRequirementsSchema = z
   .object({
     creativeFormat: z
@@ -550,6 +377,30 @@ const CriteriaTargetingSchema = z
   })
   .openapi('CriteriaTargeting')
 
+const AdSizeSchema = z
+  .object({
+    height: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The height of the ad slot in pixels. This field will be present only when size type is `PIXEL`.',
+      }),
+    type: z
+      .enum(['TYPE_UNSPECIFIED', 'PIXEL', 'INTERSTITIAL', 'NATIVE', 'FLUID'])
+      .exactOptional()
+      .openapi({ description: 'The type of the ad slot size.' }),
+    width: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The width of the ad slot in pixels. This field will be present only when size type is `PIXEL`.',
+      }),
+  })
+  .openapi({ description: 'Represents size of a single ad slot, or a creative.', required: [] })
+  .openapi('AdSize')
+
 const InventorySizeTargetingSchema = z
   .object({
     excludedInventorySizes: z
@@ -580,17 +431,32 @@ const InventoryTypeTargetingSchema = z
   })
   .openapi('InventoryTypeTargeting')
 
-const MobileApplicationTargetingSchema: z.ZodType<MobileApplicationTargetingType> = z
-  .lazy(() =>
-    z
-      .object({
-        firstPartyTargeting: FirstPartyMobileApplicationTargetingSchema.exactOptional().openapi({
-          description:
-            'Publisher owned apps to be targeted or excluded by the publisher to display the ads in.',
-        }),
-      })
-      .openapi({ description: 'Mobile application targeting settings.', required: [] }),
-  )
+const FirstPartyMobileApplicationTargetingSchema = z
+  .object({
+    excludedAppIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'A list of application IDs to be excluded.' }),
+    targetedAppIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'A list of application IDs to be included.' }),
+  })
+  .openapi({
+    description:
+      'Represents a list of targeted and excluded mobile application IDs that publishers own. Android App ID, for example, com.google.android.apps.maps, can be found in Google Play Store URL. iOS App ID (which is a number) can be found at the end of iTunes store URL. First party mobile applications is either included or excluded.',
+    required: [],
+  })
+  .openapi('FirstPartyMobileApplicationTargeting')
+
+const MobileApplicationTargetingSchema = z
+  .object({
+    firstPartyTargeting: FirstPartyMobileApplicationTargetingSchema.exactOptional().openapi({
+      description:
+        'Publisher owned apps to be targeted or excluded by the publisher to display the ads in.',
+    }),
+  })
+  .openapi({ description: 'Mobile application targeting settings.', required: [] })
   .openapi('MobileApplicationTargeting')
 
 const UriTargetingSchema = z
@@ -873,7 +739,241 @@ const UpdateDealRequestSchema = z
   })
   .openapi('UpdateDealRequest')
 
-const BatchUpdateDealsRequestSchema = z
+type BatchUpdateDealsRequestType = { requests?: z.infer<typeof UpdateDealRequestSchema>[] }
+
+type BatchUpdateDealsResponseType = { deals?: z.infer<typeof DealSchema>[] }
+
+type ListDealsResponseType = { deals?: z.infer<typeof DealSchema>[]; nextPageToken?: string }
+
+const DealPausingInfoSchema = z
+  .object({
+    pauseReason: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The reason for the pausing of the deal; empty for active deals.' }),
+    pauseRole: z
+      .enum(['BUYER_SELLER_ROLE_UNSPECIFIED', 'BUYER', 'SELLER'])
+      .exactOptional()
+      .openapi({
+        description: 'The party that first paused the deal; unspecified for active deals.',
+      }),
+    pausingConsented: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether pausing is consented between buyer and seller for the deal.',
+      }),
+  })
+  .openapi({ description: 'Information related to deal pausing.', required: [] })
+  .openapi('DealPausingInfo')
+
+const RtbMetricsSchema = z
+  .object({
+    adImpressions7Days: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Ad impressions in last 7 days.' }),
+    bidRate7Days: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Bid rate in last 7 days, calculated by (bids / bid requests).' }),
+    bidRequests7Days: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Bid requests in last 7 days.' }),
+    bids7Days: z.string().exactOptional().openapi({ description: 'Bids in last 7 days.' }),
+    filteredBidRate7Days: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description: 'Filtered bid rate in last 7 days, calculated by (filtered bids / bids).',
+      }),
+    mustBidRateCurrentMonth: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Must bid rate for current month.' }),
+  })
+  .openapi({
+    description:
+      'Real-time bidding metrics. For what each metric means refer to [Report metrics](https://support.google.com/adxbuyer/answer/6115195#report-metrics)',
+    required: [],
+  })
+  .openapi('RtbMetrics')
+
+const FinalizedDealSchema = z
+  .object({
+    deal: DealSchema.exactOptional().openapi({
+      description:
+        'A copy of the Deal made upon finalization. During renegotiation, this will reflect the last finalized deal before renegotiation was initiated.',
+    }),
+    dealPausingInfo: DealPausingInfoSchema.exactOptional().openapi({
+      description: 'Information related to deal pausing for the deal.',
+    }),
+    dealServingStatus: z
+      .enum([
+        'DEAL_SERVING_STATUS_UNSPECIFIED',
+        'ACTIVE',
+        'ENDED',
+        'PAUSED_BY_BUYER',
+        'PAUSED_BY_SELLER',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Serving status of the deal.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The resource name of the finalized deal. Format: `buyers/{accountId}/finalizeddeals/{finalizedDealId}`',
+      }),
+    readyToServe: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the Programmatic Guaranteed deal is ready for serving.' }),
+    rtbMetrics: RtbMetricsSchema.exactOptional().openapi({
+      description: 'Real-time bidding metrics for this deal.',
+    }),
+  })
+  .openapi({
+    description:
+      "A finalized deal is a snapshot of the deal when both buyer and seller accept the deal. The buyer or seller can update the deal after it's been finalized and renegotiate on the deal targeting, terms and other fields, while at the same time the finalized snapshot of the deal can still be retrieved using this API. The finalized deal contains a copy of the deal as it existed when most recently finalized, as well as fields related to deal serving such as pause/resume status, RTB metrics, and more.",
+    required: [],
+  })
+  .openapi('FinalizedDeal')
+
+type ListFinalizedDealsResponseType = {
+  finalizedDeals?: z.infer<typeof FinalizedDealSchema>[]
+  nextPageToken?: string
+}
+
+const AcceptProposalRequestSchema = z
+  .object({
+    proposalRevision: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The last known client revision number of the proposal.' }),
+  })
+  .openapi({
+    description:
+      'Request to accept a proposal. Accepting a proposal implies acceptance of the publisher terms_and_conditions, if any.',
+    required: [],
+  })
+  .openapi('AcceptProposalRequest')
+
+const ActivateClientRequestSchema = z
+  .looseObject({})
+  .openapi({ description: 'Request message for activating a client.' })
+  .openapi('ActivateClientRequest')
+
+const ActivateClientUserRequestSchema = z
+  .looseObject({})
+  .openapi({ description: 'Request message for activating a client user.' })
+  .openapi('ActivateClientUserRequest')
+
+const AddCreativeRequestSchema = z
+  .object({
+    creative: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Name of the creative to add to the finalized deal, in the format `buyers/{buyerAccountId}/creatives/{creativeId}`. See creative.name.',
+      }),
+  })
+  .openapi({
+    description:
+      'Request message for adding creative to be used in the bidding process for the finalized deal.',
+    required: [],
+  })
+  .openapi('AddCreativeRequest')
+
+const NoteSchema = z
+  .object({
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. When this note was created.', readOnly: true }),
+    creatorRole: z
+      .enum(['BUYER_SELLER_ROLE_UNSPECIFIED', 'BUYER', 'SELLER'])
+      .exactOptional()
+      .openapi({ description: 'Output only. The role who created the note.', readOnly: true }),
+    note: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The text of the note. Maximum length is 1024 characters.' }),
+  })
+  .openapi({
+    description:
+      'A text note attached to the proposal to facilitate the communication between buyers and sellers.',
+    required: [],
+  })
+  .openapi('Note')
+
+const AddNoteRequestSchema = z
+  .object({ note: NoteSchema.exactOptional().openapi({ description: 'The note to add.' }) })
+  .openapi({ description: 'Request to add a note.', required: [] })
+  .openapi('AddNoteRequest')
+
+const AuctionPackageSchema = z
+  .object({
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Time the auction package was created.',
+        readOnly: true,
+      }),
+    creator: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The buyer that created this auction package. Format: `buyers/{buyerAccountId}`',
+        readOnly: true,
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. A description of the auction package.',
+        readOnly: true,
+      }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The display_name assigned to the auction package.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Immutable. The unique identifier for the auction package. Format: `buyers/{accountId}/auctionPackages/{auctionPackageId}` The auction_package_id part of name is sent in the BidRequest to all RTB bidders and is returned as deal_id by the bidder in the BidResponse.',
+      }),
+    subscribedClients: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The list of clients of the current buyer that are subscribed to the AuctionPackage. Format: `buyers/{buyerAccountId}/clients/{clientAccountId}`',
+        readOnly: true,
+      }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Time the auction package was last updated. This value is only increased when this auction package is updated but never when a buyer subscribed.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      "Defines a segment of inventory that buyer wants to buy. It's created by buyer and could be shared with multiple buyers.",
+    required: [],
+  })
+  .openapi('AuctionPackage')
+
+const BatchUpdateDealsRequestSchema: z.ZodType<BatchUpdateDealsRequestType> = z
   .object({
     requests: z
       .array(UpdateDealRequestSchema)
@@ -883,13 +983,13 @@ const BatchUpdateDealsRequestSchema = z
   .openapi({ description: 'Request message for batch updating deals.', required: [] })
   .openapi('BatchUpdateDealsRequest')
 
-const BatchUpdateDealsResponseSchema = z
+const BatchUpdateDealsResponseSchema: z.ZodType<BatchUpdateDealsResponseType> = z
   .object({ deals: z.array(DealSchema).exactOptional().openapi({ description: 'Deals updated.' }) })
   .openapi({ description: 'Response message for batch updating deals.', required: [] })
   .openapi('BatchUpdateDealsResponse')
 
 const CancelNegotiationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request to cancel an ongoing negotiation.' })
   .openapi('CancelNegotiationRequest')
 
@@ -989,118 +1089,22 @@ const ContactSchema = z
   .openapi('Contact')
 
 const DeactivateClientRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request message for disabling a client.' })
   .openapi('DeactivateClientRequest')
 
 const DeactivateClientUserRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request message for deactivating a client user.' })
   .openapi('DeactivateClientUserRequest')
 
-const DealPausingInfoSchema = z
-  .object({
-    pauseReason: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The reason for the pausing of the deal; empty for active deals.' }),
-    pauseRole: z
-      .enum(['BUYER_SELLER_ROLE_UNSPECIFIED', 'BUYER', 'SELLER'])
-      .exactOptional()
-      .openapi({
-        description: 'The party that first paused the deal; unspecified for active deals.',
-      }),
-    pausingConsented: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Whether pausing is consented between buyer and seller for the deal.',
-      }),
-  })
-  .openapi({ description: 'Information related to deal pausing.', required: [] })
-  .openapi('DealPausingInfo')
-
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
   })
   .openapi('Empty')
-
-const RtbMetricsSchema = z
-  .object({
-    adImpressions7Days: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Ad impressions in last 7 days.' }),
-    bidRate7Days: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'Bid rate in last 7 days, calculated by (bids / bid requests).' }),
-    bidRequests7Days: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Bid requests in last 7 days.' }),
-    bids7Days: z.string().exactOptional().openapi({ description: 'Bids in last 7 days.' }),
-    filteredBidRate7Days: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description: 'Filtered bid rate in last 7 days, calculated by (filtered bids / bids).',
-      }),
-    mustBidRateCurrentMonth: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'Must bid rate for current month.' }),
-  })
-  .openapi({
-    description:
-      'Real-time bidding metrics. For what each metric means refer to [Report metrics](https://support.google.com/adxbuyer/answer/6115195#report-metrics)',
-    required: [],
-  })
-  .openapi('RtbMetrics')
-
-const FinalizedDealSchema = z
-  .object({
-    deal: DealSchema.exactOptional().openapi({
-      description:
-        'A copy of the Deal made upon finalization. During renegotiation, this will reflect the last finalized deal before renegotiation was initiated.',
-    }),
-    dealPausingInfo: DealPausingInfoSchema.exactOptional().openapi({
-      description: 'Information related to deal pausing for the deal.',
-    }),
-    dealServingStatus: z
-      .enum([
-        'DEAL_SERVING_STATUS_UNSPECIFIED',
-        'ACTIVE',
-        'ENDED',
-        'PAUSED_BY_BUYER',
-        'PAUSED_BY_SELLER',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Serving status of the deal.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The resource name of the finalized deal. Format: `buyers/{accountId}/finalizeddeals/{finalizedDealId}`',
-      }),
-    readyToServe: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the Programmatic Guaranteed deal is ready for serving.' }),
-    rtbMetrics: RtbMetricsSchema.exactOptional().openapi({
-      description: 'Real-time bidding metrics for this deal.',
-    }),
-  })
-  .openapi({
-    description:
-      "A finalized deal is a snapshot of the deal when both buyer and seller accept the deal. The buyer or seller can update the deal after it's been finalized and renegotiate on the deal targeting, terms and other fields, while at the same time the finalized snapshot of the deal can still be retrieved using this API. The finalized deal contains a copy of the deal as it existed when most recently finalized, as well as fields related to deal serving such as pause/resume status, RTB metrics, and more.",
-    required: [],
-  })
-  .openapi('FinalizedDeal')
 
 const ListAuctionPackagesResponseSchema = z
   .object({
@@ -1153,7 +1157,7 @@ const ListClientsResponseSchema = z
   .openapi({ description: 'Response message for the list method.', required: [] })
   .openapi('ListClientsResponse')
 
-const ListDealsResponseSchema = z
+const ListDealsResponseSchema: z.ZodType<ListDealsResponseType> = z
   .object({
     deals: z.array(DealSchema).exactOptional().openapi({ description: 'The list of deals.' }),
     nextPageToken: z
@@ -1164,7 +1168,7 @@ const ListDealsResponseSchema = z
   .openapi({ description: 'Response message for listing deals in a proposal.', required: [] })
   .openapi('ListDealsResponse')
 
-const ListFinalizedDealsResponseSchema = z
+const ListFinalizedDealsResponseSchema: z.ZodType<ListFinalizedDealsResponseType> = z
   .object({
     finalizedDeals: z
       .array(FinalizedDealSchema)
@@ -1523,7 +1527,7 @@ const PauseFinalizedDealRequestSchema = z
   .openapi('PauseFinalizedDealRequest')
 
 const ResumeFinalizedDealRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request message for resuming a finalized deal.' })
   .openapi('ResumeFinalizedDealRequest')
 
@@ -1598,12 +1602,12 @@ const SendRfpRequestSchema = z
   .openapi('SendRfpRequest')
 
 const SetReadyToServeRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request message for setting ready to serve for a finalized deal.' })
   .openapi('SetReadyToServeRequest')
 
 const SubscribeAuctionPackageRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request message for SubscribeAuctionPackage.' })
   .openapi('SubscribeAuctionPackageRequest')
 
@@ -1621,7 +1625,7 @@ const SubscribeClientsRequestSchema = z
   .openapi('SubscribeClientsRequest')
 
 const UnsubscribeAuctionPackageRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request message for UnsubscribeAuctionPackage.' })
   .openapi('UnsubscribeAuctionPackageRequest')
 

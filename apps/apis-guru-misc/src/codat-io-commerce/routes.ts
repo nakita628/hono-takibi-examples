@@ -78,8 +78,8 @@ const OrderSchema = z
             title: 'Currency',
             'x-internal': true,
           })
-          .and(z.any().openapi({ description: 'Currency in which the order was placed.' }))
-          .exactOptional(),
+          .exactOptional()
+          .openapi({ description: 'Currency in which the order was placed.' }),
         customerRef: z
           .object({
             id: z
@@ -1066,23 +1066,19 @@ const CustomerSchema = z
           .exactOptional()
           .openapi({ description: 'Name of the customer', example: 'Fred Smith' }),
         defaultCurrency: z
-          .any()
+          .string()
+          .openapi({
+            description:
+              'The currency data type in Codat is the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code, e.g. _GBP_.\n\n## Unknown currencies\n\nIn line with the ISO 4217 specification, the code _XXX_ is used when the data source does not return a currency for a transaction. \n\nThere are only a very small number of edge cases where this currency code is returned by the Codat system.',
+            examples: ['GBP', 'USD', 'EUR'],
+            title: 'Currency',
+            'x-internal': true,
+          })
+          .exactOptional()
           .openapi({
             description:
               'Default currency of any transactional data for the customer, \nfor example, orders or payments\n',
-          })
-          .and(
-            z
-              .string()
-              .openapi({
-                description:
-                  'The currency data type in Codat is the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code, e.g. _GBP_.\n\n## Unknown currencies\n\nIn line with the ISO 4217 specification, the code _XXX_ is used when the data source does not return a currency for a transaction. \n\nThere are only a very small number of edge cases where this currency code is returned by the Codat system.',
-                examples: ['GBP', 'USD', 'EUR'],
-                title: 'Currency',
-                'x-internal': true,
-              }),
-          )
-          .exactOptional(),
+          }),
         emailAddress: z
           .string()
           .exactOptional()

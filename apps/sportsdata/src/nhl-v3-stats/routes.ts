@@ -108,6 +108,55 @@ const GameSchema = z
   .openapi({ required: [] })
   .openapi('Game')
 
+const DfsSlateGameSchema = z
+  .object({
+    Game: GameSchema.exactOptional(),
+    GameID: z.int().nullable().exactOptional(),
+    OperatorGameID: z.int().nullable().exactOptional(),
+    RemovedByOperator: z.boolean().nullable().exactOptional(),
+    SlateGameID: z.int().exactOptional(),
+    SlateID: z.int().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('DfsSlateGame')
+
+const DfsSlatePlayerSchema = z
+  .object({
+    OperatorPlayerID: z.string().nullable().exactOptional(),
+    OperatorPlayerName: z.string().nullable().exactOptional(),
+    OperatorPosition: z.string().nullable().exactOptional(),
+    OperatorRosterSlots: z.array(z.string().nullable()).exactOptional(),
+    OperatorSalary: z.int().nullable().exactOptional(),
+    OperatorSlatePlayerID: z.string().nullable().exactOptional(),
+    PlayerGameProjectionStatID: z.int().nullable().exactOptional(),
+    PlayerID: z.int().nullable().exactOptional(),
+    RemovedByOperator: z.boolean().nullable().exactOptional(),
+    SlateGameID: z.int().nullable().exactOptional(),
+    SlateID: z.int().exactOptional(),
+    SlatePlayerID: z.int().exactOptional(),
+    Team: z.string().nullable().exactOptional(),
+    TeamID: z.int().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('DfsSlatePlayer')
+
+type DfsSlateType = {
+  DfsSlateGames?: z.infer<typeof DfsSlateGameSchema>[]
+  DfsSlatePlayers?: z.infer<typeof DfsSlatePlayerSchema>[]
+  IsMultiDaySlate?: boolean | null
+  NumberOfGames?: number | null
+  Operator?: string | null
+  OperatorDay?: string | null
+  OperatorGameType?: string | null
+  OperatorName?: string | null
+  OperatorSlateID?: number | null
+  OperatorStartTime?: string | null
+  RemovedByOperator?: boolean | null
+  SalaryCap?: number | null
+  SlateID?: number
+  SlateRosterSlots?: (string | null)[]
+}
+
 const PlayerGameSchema = z
   .object({
     Assists: z.number().nullable().exactOptional(),
@@ -290,39 +339,7 @@ const BoxScoreSchema = z
   .openapi({ required: [] })
   .openapi('BoxScore')
 
-const DfsSlateGameSchema = z
-  .object({
-    Game: GameSchema.exactOptional(),
-    GameID: z.int().nullable().exactOptional(),
-    OperatorGameID: z.int().nullable().exactOptional(),
-    RemovedByOperator: z.boolean().nullable().exactOptional(),
-    SlateGameID: z.int().exactOptional(),
-    SlateID: z.int().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('DfsSlateGame')
-
-const DfsSlatePlayerSchema = z
-  .object({
-    OperatorPlayerID: z.string().nullable().exactOptional(),
-    OperatorPlayerName: z.string().nullable().exactOptional(),
-    OperatorPosition: z.string().nullable().exactOptional(),
-    OperatorRosterSlots: z.array(z.string().nullable()).exactOptional(),
-    OperatorSalary: z.int().nullable().exactOptional(),
-    OperatorSlatePlayerID: z.string().nullable().exactOptional(),
-    PlayerGameProjectionStatID: z.int().nullable().exactOptional(),
-    PlayerID: z.int().nullable().exactOptional(),
-    RemovedByOperator: z.boolean().nullable().exactOptional(),
-    SlateGameID: z.int().nullable().exactOptional(),
-    SlateID: z.int().exactOptional(),
-    SlatePlayerID: z.int().exactOptional(),
-    Team: z.string().nullable().exactOptional(),
-    TeamID: z.int().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('DfsSlatePlayer')
-
-const DfsSlateSchema = z
+const DfsSlateSchema: z.ZodType<DfsSlateType> = z
   .object({
     DfsSlateGames: z.array(DfsSlateGameSchema).exactOptional(),
     DfsSlatePlayers: z.array(DfsSlatePlayerSchema).exactOptional(),

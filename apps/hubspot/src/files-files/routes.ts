@@ -454,7 +454,7 @@ const StandardErrorSchema = z
       .string()
       .openapi({ description: 'A string indicating the status of the error.', example: null }),
     subCategory: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'An object providing more specific details about the error category.',
@@ -823,14 +823,25 @@ const Oauth2SecurityScheme = {
     authorizationCode: {
       authorizationUrl: 'https://app.hubspot.com/oauth/authorize',
       tokenUrl: 'https://api.hubapi.com/oauth/v1/token',
-      scopes: { 'files.ui_hidden.read': '', 'files.ui_hidden.write': '' },
+      scopes: {
+        files: '',
+        'files.delete': '',
+        'files.read': '',
+        'files.ui_hidden.read': '',
+        'files.ui_hidden.write': '',
+        'files.write': '',
+      },
     },
   },
+  'x-hubspot-app-availability': {
+    files: { developer: true },
+    'files.delete': { portal: ['public', 'private'], developer: false },
+    'files.read': { portal: ['public', 'private'], user: ['public'], developer: false },
+    'files.ui_hidden.read': { portal: ['public', 'private'], developer: false },
+    'files.ui_hidden.write': { portal: ['public', 'private'], developer: false },
+    'files.write': { portal: ['public', 'private'], user: ['public'], developer: false },
+  },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const postFiles202609FilesRoute = createRoute({
   method: 'post',
@@ -867,23 +878,23 @@ export const postFiles202609FilesRoute = createRoute({
       description: 'successful operation',
       content: { 'application/json': { schema: FileSchema, example: null } },
       headers: z.object({
-        Location: {
-          description: 'URL of the newly created resource',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'URL of the newly created resource',
-              param: { required: false },
-              example: null,
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'URL of the newly created resource',
+            param: { required: false },
+            example: null,
+          }),
       }),
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['files.ui_hidden.write'] }],
+  security: [
+    { oauth2: ['files.ui_hidden.write'] },
+    { oauth2: ['files'] },
+    { oauth2: ['files.write'] },
+  ],
 })
 
 export const postFiles202609FilesImportFromUrlAsyncRoute = createRoute({
@@ -907,7 +918,11 @@ export const postFiles202609FilesImportFromUrlAsyncRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['files.ui_hidden.write'] }],
+  security: [
+    { oauth2: ['files.ui_hidden.write'] },
+    { oauth2: ['files'] },
+    { oauth2: ['files.write'] },
+  ],
 })
 
 export const getFiles202609FilesImportFromUrlAsyncTasksTaskIdStatusRoute = createRoute({
@@ -943,7 +958,11 @@ export const getFiles202609FilesImportFromUrlAsyncTasksTaskIdStatusRoute = creat
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['files.ui_hidden.read'] }],
+  security: [
+    { oauth2: ['files'] },
+    { oauth2: ['files.read'] },
+    { oauth2: ['files.ui_hidden.read'] },
+  ],
 })
 
 export const getFiles202609FilesSearchRoute = createRoute({
@@ -1633,7 +1652,11 @@ export const getFiles202609FilesSearchRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['files.ui_hidden.read'] }],
+  security: [
+    { oauth2: ['files'] },
+    { oauth2: ['files.read'] },
+    { oauth2: ['files.ui_hidden.read'] },
+  ],
 })
 
 export const getFiles202609FilesStatPathRoute = createRoute({
@@ -1692,7 +1715,11 @@ export const getFiles202609FilesStatPathRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['files.ui_hidden.read'] }],
+  security: [
+    { oauth2: ['files'] },
+    { oauth2: ['files.read'] },
+    { oauth2: ['files.ui_hidden.read'] },
+  ],
 })
 
 export const getFiles202609FilesFileIdRoute = createRoute({
@@ -1748,7 +1775,11 @@ export const getFiles202609FilesFileIdRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['files.ui_hidden.read'] }],
+  security: [
+    { oauth2: ['files'] },
+    { oauth2: ['files.read'] },
+    { oauth2: ['files.ui_hidden.read'] },
+  ],
 })
 
 export const putFiles202609FilesFileIdRoute = createRoute({
@@ -1802,7 +1833,11 @@ export const putFiles202609FilesFileIdRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['files.ui_hidden.write'] }],
+  security: [
+    { oauth2: ['files.ui_hidden.write'] },
+    { oauth2: ['files'] },
+    { oauth2: ['files.write'] },
+  ],
 })
 
 export const deleteFiles202609FilesFileIdRoute = createRoute({
@@ -1833,7 +1868,11 @@ export const deleteFiles202609FilesFileIdRoute = createRoute({
     }),
   },
   responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
-  security: [{ oauth2: ['files.ui_hidden.write'] }],
+  security: [
+    { oauth2: ['files.ui_hidden.write'] },
+    { oauth2: ['files'] },
+    { oauth2: ['files.delete'] },
+  ],
 })
 
 export const patchFiles202609FilesFileIdRoute = createRoute({
@@ -1874,7 +1913,11 @@ export const patchFiles202609FilesFileIdRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['files.ui_hidden.write'] }],
+  security: [
+    { oauth2: ['files.ui_hidden.write'] },
+    { oauth2: ['files'] },
+    { oauth2: ['files.write'] },
+  ],
 })
 
 export const getFiles202609FilesFileIdDownloadRoute = createRoute({
@@ -1905,7 +1948,11 @@ export const getFiles202609FilesFileIdDownloadRoute = createRoute({
     }),
   },
   responses: { default: ErrorResponse },
-  security: [{ oauth2: ['files.ui_hidden.read'] }],
+  security: [
+    { oauth2: ['files'] },
+    { oauth2: ['files.read'] },
+    { oauth2: ['files.ui_hidden.read'] },
+  ],
 })
 
 export const deleteFiles202609FilesFileIdGdprDeleteRoute = createRoute({
@@ -1936,7 +1983,11 @@ export const deleteFiles202609FilesFileIdGdprDeleteRoute = createRoute({
     }),
   },
   responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
-  security: [{ oauth2: ['files.ui_hidden.write'] }],
+  security: [
+    { oauth2: ['files.ui_hidden.write'] },
+    { oauth2: ['files'] },
+    { oauth2: ['files.delete'] },
+  ],
 })
 
 export const getFiles202609FilesFileIdSignedUrlRoute = createRoute({
@@ -2027,7 +2078,11 @@ export const getFiles202609FilesFileIdSignedUrlRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['files.ui_hidden.read'] }],
+  security: [
+    { oauth2: ['files'] },
+    { oauth2: ['files.read'] },
+    { oauth2: ['files.ui_hidden.read'] },
+  ],
 })
 
 export const postFiles202609FoldersRoute = createRoute({
@@ -2049,23 +2104,23 @@ export const postFiles202609FoldersRoute = createRoute({
       description: 'successful operation',
       content: { 'application/json': { schema: FolderSchema, example: null } },
       headers: z.object({
-        Location: {
-          description: 'URL of the newly created resource',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'URL of the newly created resource',
-              param: { required: false },
-              example: null,
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'URL of the newly created resource',
+            param: { required: false },
+            example: null,
+          }),
       }),
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['files.ui_hidden.write'] }],
+  security: [
+    { oauth2: ['files.ui_hidden.write'] },
+    { oauth2: ['files'] },
+    { oauth2: ['files.write'] },
+  ],
 })
 
 export const getFiles202609FoldersSearchRoute = createRoute({
@@ -2407,7 +2462,11 @@ export const getFiles202609FoldersSearchRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['files.ui_hidden.read'] }],
+  security: [
+    { oauth2: ['files'] },
+    { oauth2: ['files.read'] },
+    { oauth2: ['files.ui_hidden.read'] },
+  ],
 })
 
 export const getFiles202609FoldersFolderIdRoute = createRoute({
@@ -2464,7 +2523,11 @@ export const getFiles202609FoldersFolderIdRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['files.ui_hidden.read'] }],
+  security: [
+    { oauth2: ['files'] },
+    { oauth2: ['files.read'] },
+    { oauth2: ['files.ui_hidden.read'] },
+  ],
 })
 
 export const deleteFiles202609FoldersFolderIdRoute = createRoute({
@@ -2495,7 +2558,11 @@ export const deleteFiles202609FoldersFolderIdRoute = createRoute({
     }),
   },
   responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
-  security: [{ oauth2: ['files.ui_hidden.write'] }],
+  security: [
+    { oauth2: ['files.ui_hidden.write'] },
+    { oauth2: ['files'] },
+    { oauth2: ['files.delete'] },
+  ],
 })
 
 export const patchFiles202609FoldersFolderIdRoute = createRoute({
@@ -2536,7 +2603,11 @@ export const patchFiles202609FoldersFolderIdRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['files.ui_hidden.write'] }],
+  security: [
+    { oauth2: ['files.ui_hidden.write'] },
+    { oauth2: ['files'] },
+    { oauth2: ['files.write'] },
+  ],
 })
 
 export const getFiles202609FoldersFolderPathRoute = createRoute({
@@ -2593,7 +2664,11 @@ export const getFiles202609FoldersFolderPathRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['files.ui_hidden.read'] }],
+  security: [
+    { oauth2: ['files'] },
+    { oauth2: ['files.read'] },
+    { oauth2: ['files.ui_hidden.read'] },
+  ],
 })
 
 export const deleteFiles202609FoldersFolderPathRoute = createRoute({
@@ -2624,5 +2699,9 @@ export const deleteFiles202609FoldersFolderPathRoute = createRoute({
     }),
   },
   responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
-  security: [{ oauth2: ['files.ui_hidden.write'] }],
+  security: [
+    { oauth2: ['files.ui_hidden.write'] },
+    { oauth2: ['files'] },
+    { oauth2: ['files.delete'] },
+  ],
 })

@@ -513,7 +513,8 @@ Settings view
   "flags": {
     "core_default_app_access": true,
     "enterprise_audit_include_expanded_diff": true,
-    "flows_continuous_login": true
+    "flows_continuous_login": true,
+    "rbac_custom_permissions": true
   }
 }
 ```
@@ -585,7 +586,8 @@ curl https://authentik.example.com/api/v3/admin/settings/ \
     "flags": {
       "core_default_app_access": true,
       "enterprise_audit_include_expanded_diff": true,
-      "flows_continuous_login": true
+      "flows_continuous_login": true,
+      "rbac_custom_permissions": true
     }
   }'
 ```
@@ -617,7 +619,8 @@ Settings view
   "flags": {
     "core_default_app_access": true,
     "enterprise_audit_include_expanded_diff": true,
-    "flows_continuous_login": true
+    "flows_continuous_login": true,
+    "rbac_custom_permissions": true
   }
 }
 ```
@@ -647,6 +650,7 @@ Settings view
 |» » core_default_app_access|body|boolean|true|Applications with no policies bound can be accessed by any user.|
 |» » enterprise_audit_include_expanded_diff|body|boolean|true|Include additional information in audit logs, may incur a performance penalty.|
 |» » flows_continuous_login|body|boolean|true|Upon successful authentication, re-start authentication in other open tabs.|
+|» » rbac_custom_permissions|body|boolean|true|Let permission checks decide API access. While enabled, every API request costs an additional database query.|
 
 > Example responses
 
@@ -673,7 +677,8 @@ Settings view
   "flags": {
     "core_default_app_access": true,
     "enterprise_audit_include_expanded_diff": true,
-    "flows_continuous_login": true
+    "flows_continuous_login": true,
+    "rbac_custom_permissions": true
   }
 }
 ```
@@ -745,7 +750,8 @@ curl https://authentik.example.com/api/v3/admin/settings/ \
     "flags": {
       "core_default_app_access": true,
       "enterprise_audit_include_expanded_diff": true,
-      "flows_continuous_login": true
+      "flows_continuous_login": true,
+      "rbac_custom_permissions": true
     }
   }'
 ```
@@ -777,7 +783,8 @@ Settings view
   "flags": {
     "core_default_app_access": true,
     "enterprise_audit_include_expanded_diff": true,
-    "flows_continuous_login": true
+    "flows_continuous_login": true,
+    "rbac_custom_permissions": true
   }
 }
 ```
@@ -807,6 +814,7 @@ Settings view
 |» » core_default_app_access|body|boolean|true|Applications with no policies bound can be accessed by any user.|
 |» » enterprise_audit_include_expanded_diff|body|boolean|true|Include additional information in audit logs, may incur a performance penalty.|
 |» » flows_continuous_login|body|boolean|true|Upon successful authentication, re-start authentication in other open tabs.|
+|» » rbac_custom_permissions|body|boolean|true|Let permission checks decide API access. While enabled, every API request costs an additional database query.|
 
 > Example responses
 
@@ -833,7 +841,8 @@ Settings view
   "flags": {
     "core_default_app_access": true,
     "enterprise_audit_include_expanded_diff": true,
-    "flows_continuous_login": true
+    "flows_continuous_login": true,
+    "rbac_custom_permissions": true
   }
 }
 ```
@@ -7126,6 +7135,126 @@ To perform this operation, you must be authenticated by means of one of the foll
 authentik
 </aside>
 
+## authenticators_password_lock_create
+
+<a id="opIdauthenticators_password_lock_create"></a>
+
+> Code samples
+
+```bash
+curl https://authentik.example.com/api/v3/authenticators/password/0/lock/ \
+  -X POST \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`POST /authenticators/password/{id}/lock/`
+
+Prevent a password authenticator from authenticating.
+
+<h3 id="authenticatorspasswordlockcreate-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|integer|true|A unique integer value identifying this Password Device.|
+
+> Example responses
+
+> 400 Response
+
+```json
+{
+  "non_field_errors": [
+    "string"
+  ],
+  "code": "string",
+  "property1": null,
+  "property2": null
+}
+```
+
+> 403 Response
+
+```json
+{
+  "detail": "string",
+  "code": "string"
+}
+```
+
+<h3 id="authenticatorspasswordlockcreate-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|Successfully locked authenticator|None|
+|400|Bad Request||[ValidationError](#schemavalidationerror)|
+|403|Forbidden||[GenericError](#schemagenericerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+authentik
+</aside>
+
+## authenticators_password_unlock_create
+
+<a id="opIdauthenticators_password_unlock_create"></a>
+
+> Code samples
+
+```bash
+curl https://authentik.example.com/api/v3/authenticators/password/0/unlock/ \
+  -X POST \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`POST /authenticators/password/{id}/unlock/`
+
+Allow a locked password authenticator to authenticate again.
+
+<h3 id="authenticatorspasswordunlockcreate-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|integer|true|A unique integer value identifying this Password Device.|
+
+> Example responses
+
+> 400 Response
+
+```json
+{
+  "non_field_errors": [
+    "string"
+  ],
+  "code": "string",
+  "property1": null,
+  "property2": null
+}
+```
+
+> 403 Response
+
+```json
+{
+  "detail": "string",
+  "code": "string"
+}
+```
+
+<h3 id="authenticatorspasswordunlockcreate-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|Successfully unlocked authenticator|None|
+|400|Bad Request||[ValidationError](#schemavalidationerror)|
+|403|Forbidden||[GenericError](#schemagenericerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+authentik
+</aside>
+
 ## authenticators_sms_list
 
 <a id="opIdauthenticators_sms_list"></a>
@@ -9261,7 +9390,7 @@ ApplicationEntitlement Viewset
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |app|query|string(uuid)|false|none|
-|for_user|query|string|false|Entitlements assigned to this user, directly or through a group, regardless of the user's access to the application.|
+|for_user|query|integer|false|Entitlements assigned to this user, directly or through a group, regardless of the user's access to the application.|
 |name|query|string|false|none|
 |ordering|query|string|false|Which field to use when ordering the results.|
 |page|query|integer|false|A page number within the paginated result set.|
@@ -9289,6 +9418,8 @@ ApplicationEntitlement Viewset
       "pbm_uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
       "name": "string",
       "app": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "app_name": "string",
+      "app_slug": "string",
       "attributes": {
         "property1": null,
         "property2": null
@@ -9395,6 +9526,8 @@ ApplicationEntitlement Viewset
   "pbm_uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
   "name": "string",
   "app": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "app_name": "string",
+  "app_slug": "string",
   "attributes": {
     "property1": null,
     "property2": null
@@ -9468,6 +9601,8 @@ ApplicationEntitlement Viewset
   "pbm_uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
   "name": "string",
   "app": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "app_name": "string",
+  "app_slug": "string",
   "attributes": {
     "property1": null,
     "property2": null
@@ -9569,6 +9704,8 @@ ApplicationEntitlement Viewset
   "pbm_uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
   "name": "string",
   "app": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "app_name": "string",
+  "app_slug": "string",
   "attributes": {
     "property1": null,
     "property2": null
@@ -9730,6 +9867,8 @@ ApplicationEntitlement Viewset
   "pbm_uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
   "name": "string",
   "app": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "app_name": "string",
+  "app_slug": "string",
   "attributes": {
     "property1": null,
     "property2": null
@@ -9874,7 +10013,7 @@ List application entitlements which the current user can request access to
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |app|query|string(uuid)|false|none|
-|for_user|query|string|false|Entitlements assigned to this user, directly or through a group, regardless of the user's access to the application.|
+|for_user|query|integer|false|Entitlements assigned to this user, directly or through a group, regardless of the user's access to the application.|
 |name|query|string|false|none|
 |ordering|query|string|false|Which field to use when ordering the results.|
 |page|query|integer|false|A page number within the paginated result set.|
@@ -15782,6 +15921,8 @@ UserConsent Viewset
         "type": "internal",
         "uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
         "password_change_date": "1970-01-01T00:00:00Z",
+        "password_locked": true,
+        "password_device": 0,
         "last_updated": "1970-01-01T00:00:00Z"
       },
       "application": {
@@ -15965,6 +16106,8 @@ UserConsent Viewset
     "type": "internal",
     "uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
     "password_change_date": "1970-01-01T00:00:00Z",
+    "password_locked": true,
+    "password_device": 0,
     "last_updated": "1970-01-01T00:00:00Z"
   },
   "application": {
@@ -16327,6 +16470,8 @@ User Viewset
       "type": "internal",
       "uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
       "password_change_date": "1970-01-01T00:00:00Z",
+      "password_locked": true,
+      "password_device": 0,
       "last_updated": "1970-01-01T00:00:00Z"
     }
   ],
@@ -16507,6 +16652,8 @@ User Viewset
   "type": "internal",
   "uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
   "password_change_date": "1970-01-01T00:00:00Z",
+  "password_locked": true,
+  "password_device": 0,
   "last_updated": "1970-01-01T00:00:00Z"
 }
 ```
@@ -16616,6 +16763,8 @@ User Viewset
   "type": "internal",
   "uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
   "password_change_date": "1970-01-01T00:00:00Z",
+  "password_locked": true,
+  "password_device": 0,
   "last_updated": "1970-01-01T00:00:00Z"
 }
 ```
@@ -16791,6 +16940,8 @@ User Viewset
   "type": "internal",
   "uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
   "password_change_date": "1970-01-01T00:00:00Z",
+  "password_locked": true,
+  "password_device": 0,
   "last_updated": "1970-01-01T00:00:00Z"
 }
 ```
@@ -17026,6 +17177,8 @@ User Viewset
   "type": "internal",
   "uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
   "password_change_date": "1970-01-01T00:00:00Z",
+  "password_locked": true,
+  "password_device": 0,
   "last_updated": "1970-01-01T00:00:00Z"
 }
 ```
@@ -21829,6 +21982,72 @@ To perform this operation, you must be authenticated by means of one of the foll
 authentik
 </aside>
 
+## endpoints_agents_psso_register_device_retrieve
+
+<a id="opIdendpoints_agents_psso_register_device_retrieve"></a>
+
+> Code samples
+
+```bash
+curl https://authentik.example.com/api/v3/endpoints/agents/psso/register/device/ \
+  -H 'Accept: application/json'
+```
+
+`GET /endpoints/agents/psso/register/device/`
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "device_registered": true,
+  "sign_key_id": "string",
+  "enc_key_id": "string",
+  "users": [
+    {
+      "username": "string",
+      "enclave_key_id": "string"
+    }
+  ]
+}
+```
+
+> 400 Response
+
+```json
+{
+  "non_field_errors": [
+    "string"
+  ],
+  "code": "string",
+  "property1": null,
+  "property2": null
+}
+```
+
+> 403 Response
+
+```json
+{
+  "detail": "string",
+  "code": "string"
+}
+```
+
+<h3 id="endpointsagentspssoregisterdeviceretrieve-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||[AgentPSSODeviceState](#schemaagentpssodevicestate)|
+|400|Bad Request||[ValidationError](#schemavalidationerror)|
+|403|Forbidden||[GenericError](#schemagenericerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+authentik_device_auth
+</aside>
+
 ## endpoints_agents_psso_register_device_create
 
 <a id="opIdendpoints_agents_psso_register_device_create"></a>
@@ -21914,6 +22133,60 @@ curl https://authentik.example.com/api/v3/endpoints/agents/psso/register/device/
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK||[AgentPSSODeviceRegistrationResponse](#schemaagentpssodeviceregistrationresponse)|
+|400|Bad Request||[ValidationError](#schemavalidationerror)|
+|403|Forbidden||[GenericError](#schemagenericerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+authentik_device_auth
+</aside>
+
+## endpoints_agents_psso_register_device_destroy
+
+<a id="opIdendpoints_agents_psso_register_device_destroy"></a>
+
+> Code samples
+
+```bash
+curl https://authentik.example.com/api/v3/endpoints/agents/psso/register/device/ \
+  -X DELETE \
+  -H 'Accept: application/json'
+```
+
+`DELETE /endpoints/agents/psso/register/device/`
+
+Clear this device's Platform SSO registration, used when the configuration
+profile is removed from the device. The device stays enrolled otherwise.
+
+> Example responses
+
+> 400 Response
+
+```json
+{
+  "non_field_errors": [
+    "string"
+  ],
+  "code": "string",
+  "property1": null,
+  "property2": null
+}
+```
+
+> 403 Response
+
+```json
+{
+  "detail": "string",
+  "code": "string"
+}
+```
+
+<h3 id="endpointsagentspssoregisterdevicedestroy-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|No response body|None|
 |400|Bad Request||[ValidationError](#schemavalidationerror)|
 |403|Forbidden||[GenericError](#schemagenericerror)|
 
@@ -22369,6 +22642,10 @@ Get all creatable types
     "component": "string",
     "model_name": "string",
     "icon_url": "string",
+    "icon_themed_urls": {
+      "light": "string",
+      "dark": "string"
+    },
     "requires_enterprise": false,
     "deprecated": false
   }
@@ -26936,6 +27213,668 @@ To perform this operation, you must be authenticated by means of one of the foll
 authentik
 </aside>
 
+## endpoints_microsoft_intune_connectors_list
+
+<a id="opIdendpoints_microsoft_intune_connectors_list"></a>
+
+> Code samples
+
+```bash
+curl https://authentik.example.com/api/v3/endpoints/microsoft_intune/connectors/ \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /endpoints/microsoft_intune/connectors/`
+
+MicrosoftIntuneConnector Viewset
+
+<h3 id="endpointsmicrosoftintuneconnectorslist-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|name|query|string|false|none|
+|ordering|query|string|false|Which field to use when ordering the results.|
+|page|query|integer|false|A page number within the paginated result set.|
+|page_size|query|integer|false|Number of results to return per page.|
+|search|query|string|false|A search term.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "pagination": {
+    "next": 0,
+    "previous": 0,
+    "count": 0,
+    "current": 0,
+    "total_pages": 0,
+    "start_index": 0,
+    "end_index": 0
+  },
+  "results": [
+    {
+      "connector_uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "name": "string",
+      "enabled": true,
+      "component": "string",
+      "verbose_name": "string",
+      "verbose_name_plural": "string",
+      "meta_model_name": "string",
+      "client_id": "string",
+      "tenant_id": "string",
+      "certificate_authorities": [
+        "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+      ]
+    }
+  ],
+  "autocomplete": {
+    "property1": null,
+    "property2": null
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "non_field_errors": [
+    "string"
+  ],
+  "code": "string",
+  "property1": null,
+  "property2": null
+}
+```
+
+> 403 Response
+
+```json
+{
+  "detail": "string",
+  "code": "string"
+}
+```
+
+<h3 id="endpointsmicrosoftintuneconnectorslist-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||[PaginatedMicrosoftIntuneConnectorList](#schemapaginatedmicrosoftintuneconnectorlist)|
+|400|Bad Request||[ValidationError](#schemavalidationerror)|
+|403|Forbidden||[GenericError](#schemagenericerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+authentik
+</aside>
+
+## endpoints_microsoft_intune_connectors_create
+
+<a id="opIdendpoints_microsoft_intune_connectors_create"></a>
+
+> Code samples
+
+```bash
+curl https://authentik.example.com/api/v3/endpoints/microsoft_intune/connectors/ \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "connector_uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "name": "string",
+    "enabled": true,
+    "client_id": "string",
+    "client_secret": "string",
+    "tenant_id": "string",
+    "certificate_authorities": [
+      "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+    ]
+  }'
+```
+
+`POST /endpoints/microsoft_intune/connectors/`
+
+MicrosoftIntuneConnector Viewset
+
+> Body parameter
+
+```json
+{
+  "connector_uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "enabled": true,
+  "client_id": "string",
+  "client_secret": "string",
+  "tenant_id": "string",
+  "certificate_authorities": [
+    "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+  ]
+}
+```
+
+<h3 id="endpointsmicrosoftintuneconnectorscreate-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[MicrosoftIntuneConnectorRequest](#schemamicrosoftintuneconnectorrequest)|true|none|
+|» connector_uuid|body|string(uuid)|false|none|
+|» name|body|string|true|none|
+|» enabled|body|boolean|false|none|
+|» client_id|body|string|true|none|
+|» client_secret|body|string|true|none|
+|» tenant_id|body|string|true|none|
+|» certificate_authorities|body|[string(uuid)]|false|Certificate authorities which issue device certificates via Intune (Cloud PKI, SCEP or PKCS profiles), used by the endpoint stage to validate certificates. This option has a higher priority than the `client_certificate` option on `Brand`.|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "connector_uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "enabled": true,
+  "component": "string",
+  "verbose_name": "string",
+  "verbose_name_plural": "string",
+  "meta_model_name": "string",
+  "client_id": "string",
+  "tenant_id": "string",
+  "certificate_authorities": [
+    "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+  ]
+}
+```
+
+> 400 Response
+
+```json
+{
+  "non_field_errors": [
+    "string"
+  ],
+  "code": "string",
+  "property1": null,
+  "property2": null
+}
+```
+
+> 403 Response
+
+```json
+{
+  "detail": "string",
+  "code": "string"
+}
+```
+
+<h3 id="endpointsmicrosoftintuneconnectorscreate-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created||[MicrosoftIntuneConnector](#schemamicrosoftintuneconnector)|
+|400|Bad Request||[ValidationError](#schemavalidationerror)|
+|403|Forbidden||[GenericError](#schemagenericerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+authentik
+</aside>
+
+## endpoints_microsoft_intune_connectors_retrieve
+
+<a id="opIdendpoints_microsoft_intune_connectors_retrieve"></a>
+
+> Code samples
+
+```bash
+curl https://authentik.example.com/api/v3/endpoints/microsoft_intune/connectors/497f6eca-6276-4993-bfeb-53cbbbba6f08/ \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /endpoints/microsoft_intune/connectors/{connector_uuid}/`
+
+MicrosoftIntuneConnector Viewset
+
+<h3 id="endpointsmicrosoftintuneconnectorsretrieve-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|connector_uuid|path|string(uuid)|true|A UUID string identifying this Microsoft Intune Connector.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "connector_uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "enabled": true,
+  "component": "string",
+  "verbose_name": "string",
+  "verbose_name_plural": "string",
+  "meta_model_name": "string",
+  "client_id": "string",
+  "tenant_id": "string",
+  "certificate_authorities": [
+    "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+  ]
+}
+```
+
+> 400 Response
+
+```json
+{
+  "non_field_errors": [
+    "string"
+  ],
+  "code": "string",
+  "property1": null,
+  "property2": null
+}
+```
+
+> 403 Response
+
+```json
+{
+  "detail": "string",
+  "code": "string"
+}
+```
+
+<h3 id="endpointsmicrosoftintuneconnectorsretrieve-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||[MicrosoftIntuneConnector](#schemamicrosoftintuneconnector)|
+|400|Bad Request||[ValidationError](#schemavalidationerror)|
+|403|Forbidden||[GenericError](#schemagenericerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+authentik
+</aside>
+
+## endpoints_microsoft_intune_connectors_update
+
+<a id="opIdendpoints_microsoft_intune_connectors_update"></a>
+
+> Code samples
+
+```bash
+curl https://authentik.example.com/api/v3/endpoints/microsoft_intune/connectors/497f6eca-6276-4993-bfeb-53cbbbba6f08/ \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "connector_uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "name": "string",
+    "enabled": true,
+    "client_id": "string",
+    "client_secret": "string",
+    "tenant_id": "string",
+    "certificate_authorities": [
+      "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+    ]
+  }'
+```
+
+`PUT /endpoints/microsoft_intune/connectors/{connector_uuid}/`
+
+MicrosoftIntuneConnector Viewset
+
+> Body parameter
+
+```json
+{
+  "connector_uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "enabled": true,
+  "client_id": "string",
+  "client_secret": "string",
+  "tenant_id": "string",
+  "certificate_authorities": [
+    "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+  ]
+}
+```
+
+<h3 id="endpointsmicrosoftintuneconnectorsupdate-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|connector_uuid|path|string(uuid)|true|A UUID string identifying this Microsoft Intune Connector.|
+|body|body|[MicrosoftIntuneConnectorRequest](#schemamicrosoftintuneconnectorrequest)|true|none|
+|» connector_uuid|body|string(uuid)|false|none|
+|» name|body|string|true|none|
+|» enabled|body|boolean|false|none|
+|» client_id|body|string|true|none|
+|» client_secret|body|string|true|none|
+|» tenant_id|body|string|true|none|
+|» certificate_authorities|body|[string(uuid)]|false|Certificate authorities which issue device certificates via Intune (Cloud PKI, SCEP or PKCS profiles), used by the endpoint stage to validate certificates. This option has a higher priority than the `client_certificate` option on `Brand`.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "connector_uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "enabled": true,
+  "component": "string",
+  "verbose_name": "string",
+  "verbose_name_plural": "string",
+  "meta_model_name": "string",
+  "client_id": "string",
+  "tenant_id": "string",
+  "certificate_authorities": [
+    "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+  ]
+}
+```
+
+> 400 Response
+
+```json
+{
+  "non_field_errors": [
+    "string"
+  ],
+  "code": "string",
+  "property1": null,
+  "property2": null
+}
+```
+
+> 403 Response
+
+```json
+{
+  "detail": "string",
+  "code": "string"
+}
+```
+
+<h3 id="endpointsmicrosoftintuneconnectorsupdate-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||[MicrosoftIntuneConnector](#schemamicrosoftintuneconnector)|
+|400|Bad Request||[ValidationError](#schemavalidationerror)|
+|403|Forbidden||[GenericError](#schemagenericerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+authentik
+</aside>
+
+## endpoints_microsoft_intune_connectors_destroy
+
+<a id="opIdendpoints_microsoft_intune_connectors_destroy"></a>
+
+> Code samples
+
+```bash
+curl https://authentik.example.com/api/v3/endpoints/microsoft_intune/connectors/497f6eca-6276-4993-bfeb-53cbbbba6f08/ \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /endpoints/microsoft_intune/connectors/{connector_uuid}/`
+
+MicrosoftIntuneConnector Viewset
+
+<h3 id="endpointsmicrosoftintuneconnectorsdestroy-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|connector_uuid|path|string(uuid)|true|A UUID string identifying this Microsoft Intune Connector.|
+
+> Example responses
+
+> 400 Response
+
+```json
+{
+  "non_field_errors": [
+    "string"
+  ],
+  "code": "string",
+  "property1": null,
+  "property2": null
+}
+```
+
+> 403 Response
+
+```json
+{
+  "detail": "string",
+  "code": "string"
+}
+```
+
+<h3 id="endpointsmicrosoftintuneconnectorsdestroy-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|No response body|None|
+|400|Bad Request||[ValidationError](#schemavalidationerror)|
+|403|Forbidden||[GenericError](#schemagenericerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+authentik
+</aside>
+
+## endpoints_microsoft_intune_connectors_partial_update
+
+<a id="opIdendpoints_microsoft_intune_connectors_partial_update"></a>
+
+> Code samples
+
+```bash
+curl https://authentik.example.com/api/v3/endpoints/microsoft_intune/connectors/497f6eca-6276-4993-bfeb-53cbbbba6f08/ \
+  -X PATCH \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "connector_uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "name": "string",
+    "enabled": true,
+    "client_id": "string",
+    "client_secret": "string",
+    "tenant_id": "string",
+    "certificate_authorities": [
+      "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+    ]
+  }'
+```
+
+`PATCH /endpoints/microsoft_intune/connectors/{connector_uuid}/`
+
+MicrosoftIntuneConnector Viewset
+
+> Body parameter
+
+```json
+{
+  "connector_uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "enabled": true,
+  "client_id": "string",
+  "client_secret": "string",
+  "tenant_id": "string",
+  "certificate_authorities": [
+    "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+  ]
+}
+```
+
+<h3 id="endpointsmicrosoftintuneconnectorspartialupdate-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|connector_uuid|path|string(uuid)|true|A UUID string identifying this Microsoft Intune Connector.|
+|body|body|[PatchedMicrosoftIntuneConnectorRequest](#schemapatchedmicrosoftintuneconnectorrequest)|false|none|
+|» connector_uuid|body|string(uuid)|false|none|
+|» name|body|string|false|none|
+|» enabled|body|boolean|false|none|
+|» client_id|body|string|false|none|
+|» client_secret|body|string|false|none|
+|» tenant_id|body|string|false|none|
+|» certificate_authorities|body|[string(uuid)]|false|Certificate authorities which issue device certificates via Intune (Cloud PKI, SCEP or PKCS profiles), used by the endpoint stage to validate certificates. This option has a higher priority than the `client_certificate` option on `Brand`.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "connector_uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "enabled": true,
+  "component": "string",
+  "verbose_name": "string",
+  "verbose_name_plural": "string",
+  "meta_model_name": "string",
+  "client_id": "string",
+  "tenant_id": "string",
+  "certificate_authorities": [
+    "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+  ]
+}
+```
+
+> 400 Response
+
+```json
+{
+  "non_field_errors": [
+    "string"
+  ],
+  "code": "string",
+  "property1": null,
+  "property2": null
+}
+```
+
+> 403 Response
+
+```json
+{
+  "detail": "string",
+  "code": "string"
+}
+```
+
+<h3 id="endpointsmicrosoftintuneconnectorspartialupdate-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||[MicrosoftIntuneConnector](#schemamicrosoftintuneconnector)|
+|400|Bad Request||[ValidationError](#schemavalidationerror)|
+|403|Forbidden||[GenericError](#schemagenericerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+authentik
+</aside>
+
+## endpoints_microsoft_intune_connectors_used_by_list
+
+<a id="opIdendpoints_microsoft_intune_connectors_used_by_list"></a>
+
+> Code samples
+
+```bash
+curl https://authentik.example.com/api/v3/endpoints/microsoft_intune/connectors/497f6eca-6276-4993-bfeb-53cbbbba6f08/used_by/ \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /endpoints/microsoft_intune/connectors/{connector_uuid}/used_by/`
+
+Get a list of all objects that use this object
+
+<h3 id="endpointsmicrosoftintuneconnectorsusedbylist-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|connector_uuid|path|string(uuid)|true|A UUID string identifying this Microsoft Intune Connector.|
+
+> Example responses
+
+> 200 Response
+
+```json
+[
+  {
+    "app": "string",
+    "model_name": "string",
+    "pk": "string",
+    "name": "string",
+    "action": "cascade"
+  }
+]
+```
+
+> 400 Response
+
+```json
+{
+  "non_field_errors": [
+    "string"
+  ],
+  "code": "string",
+  "property1": null,
+  "property2": null
+}
+```
+
+> 403 Response
+
+```json
+{
+  "detail": "string",
+  "code": "string"
+}
+```
+
+<h3 id="endpointsmicrosoftintuneconnectorsusedbylist-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||Inline|
+|400|Bad Request||[ValidationError](#schemavalidationerror)|
+|403|Forbidden||[GenericError](#schemagenericerror)|
+
+<h3 id="endpointsmicrosoftintuneconnectorsusedbylist-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[UsedBy](#schemausedby)]|false|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+authentik
+</aside>
+
 <h1 id="authentik-enterprise">enterprise</h1>
 
 ## enterprise_license_list
@@ -27767,8 +28706,12 @@ Event Read-Only Viewset
 |actions|logout|
 |actions|user_write|
 |actions|user_offboarded|
+|actions|user_expiration_warning|
 |actions|suspicious_request|
 |actions|password_set|
+|actions|authenticator_locked|
+|actions|authenticator_unlocked|
+|actions|required_action_completed|
 |actions|secret_view|
 |actions|secret_rotate|
 |actions|invitation_used|
@@ -27964,8 +28907,12 @@ Event Read-Only Viewset
 |» action|logout|
 |» action|user_write|
 |» action|user_offboarded|
+|» action|user_expiration_warning|
 |» action|suspicious_request|
 |» action|password_set|
+|» action|authenticator_locked|
+|» action|authenticator_unlocked|
+|» action|required_action_completed|
 |» action|secret_view|
 |» action|secret_rotate|
 |» action|invitation_used|
@@ -28229,8 +29176,12 @@ Event Read-Only Viewset
 |» action|logout|
 |» action|user_write|
 |» action|user_offboarded|
+|» action|user_expiration_warning|
 |» action|suspicious_request|
 |» action|password_set|
+|» action|authenticator_locked|
+|» action|authenticator_unlocked|
+|» action|required_action_completed|
 |» action|secret_view|
 |» action|secret_rotate|
 |» action|invitation_used|
@@ -28470,8 +29421,12 @@ Event Read-Only Viewset
 |» action|logout|
 |» action|user_write|
 |» action|user_offboarded|
+|» action|user_expiration_warning|
 |» action|suspicious_request|
 |» action|password_set|
+|» action|authenticator_locked|
+|» action|authenticator_unlocked|
+|» action|required_action_completed|
 |» action|secret_view|
 |» action|secret_rotate|
 |» action|invitation_used|
@@ -28594,6 +29549,10 @@ Get all actions
     "component": "string",
     "model_name": "string",
     "icon_url": "string",
+    "icon_themed_urls": {
+      "light": "string",
+      "dark": "string"
+    },
     "requires_enterprise": false,
     "deprecated": false
   }
@@ -28690,8 +29649,12 @@ contain a URL to download
 |actions|logout|
 |actions|user_write|
 |actions|user_offboarded|
+|actions|user_expiration_warning|
 |actions|suspicious_request|
 |actions|password_set|
+|actions|authenticator_locked|
+|actions|authenticator_unlocked|
+|actions|required_action_completed|
 |actions|secret_view|
 |actions|secret_rotate|
 |actions|invitation_used|
@@ -28839,8 +29802,12 @@ Get event stats for specified filters and count steps
 |actions|logout|
 |actions|user_write|
 |actions|user_offboarded|
+|actions|user_expiration_warning|
 |actions|suspicious_request|
 |actions|password_set|
+|actions|authenticator_locked|
+|actions|authenticator_unlocked|
+|actions|required_action_completed|
 |actions|secret_view|
 |actions|secret_rotate|
 |actions|invitation_used|
@@ -28965,8 +29932,12 @@ Get the top_n events grouped by user count
 |actions|logout|
 |actions|user_write|
 |actions|user_offboarded|
+|actions|user_expiration_warning|
 |actions|suspicious_request|
 |actions|password_set|
+|actions|authenticator_locked|
+|actions|authenticator_unlocked|
+|actions|required_action_completed|
 |actions|secret_view|
 |actions|secret_rotate|
 |actions|invitation_used|
@@ -29102,8 +30073,12 @@ Get event volume for specified filters and timeframe
 |actions|logout|
 |actions|user_write|
 |actions|user_offboarded|
+|actions|user_expiration_warning|
 |actions|suspicious_request|
 |actions|password_set|
+|actions|authenticator_locked|
+|actions|authenticator_unlocked|
+|actions|required_action_completed|
 |actions|secret_view|
 |actions|secret_rotate|
 |actions|invitation_used|
@@ -35376,6 +36351,1202 @@ To perform this operation, you must be authenticated by means of one of the foll
 authentik
 </aside>
 
+## lifecycle_user_expiration_rules_list
+
+<a id="opIdlifecycle_user_expiration_rules_list"></a>
+
+> Code samples
+
+```bash
+curl https://authentik.example.com/api/v3/lifecycle/user_expiration_rules/ \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /lifecycle/user_expiration_rules/`
+
+Mixin to add a used_by endpoint to return a list of all objects using this object
+
+<h3 id="lifecycleuserexpirationruleslist-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|action|query|[OffboardingActionEnum](#schemaoffboardingactionenum)|false|none|
+|enabled|query|boolean|false|none|
+|group|query|string(uuid)|false|none|
+|ordering|query|string|false|Which field to use when ordering the results.|
+|page|query|integer|false|A page number within the paginated result set.|
+|page_size|query|integer|false|Number of results to return per page.|
+|pbm_uuid|query|string(uuid)|false|none|
+|search|query|string|false|A search term.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|action|deactivate|
+|action|delete|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "pagination": {
+    "next": 0,
+    "previous": 0,
+    "count": 0,
+    "current": 0,
+    "total_pages": 0,
+    "start_index": 0,
+    "end_index": 0
+  },
+  "results": [
+    {
+      "pk": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "pbm_uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "name": "string",
+      "enabled": true,
+      "activity_basis": {},
+      "group": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "group_obj": {
+        "pk": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+        "name": "string"
+      },
+      "user_types": [
+        "internal"
+      ],
+      "inactivity_duration": "string",
+      "action": "deactivate",
+      "revoke_sessions": true,
+      "revoke_tokens": true,
+      "warn_before": "string",
+      "notification_transports": [
+        "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+      ],
+      "exclude_superusers": true,
+      "policy_engine_mode": "all"
+    }
+  ],
+  "autocomplete": {
+    "property1": null,
+    "property2": null
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "non_field_errors": [
+    "string"
+  ],
+  "code": "string",
+  "property1": null,
+  "property2": null
+}
+```
+
+> 403 Response
+
+```json
+{
+  "detail": "string",
+  "code": "string"
+}
+```
+
+<h3 id="lifecycleuserexpirationruleslist-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||[PaginatedUserExpirationRuleList](#schemapaginateduserexpirationrulelist)|
+|400|Bad Request||[ValidationError](#schemavalidationerror)|
+|403|Forbidden||[GenericError](#schemagenericerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+authentik
+</aside>
+
+## lifecycle_user_expiration_rules_create
+
+<a id="opIdlifecycle_user_expiration_rules_create"></a>
+
+> Code samples
+
+```bash
+curl https://authentik.example.com/api/v3/lifecycle/user_expiration_rules/ \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "pk": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "name": "string",
+    "enabled": true,
+    "activity_basis": {},
+    "group": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "user_types": [
+      "internal"
+    ],
+    "inactivity_duration": "string",
+    "action": "deactivate",
+    "revoke_sessions": true,
+    "revoke_tokens": true,
+    "warn_before": "string",
+    "notification_transports": [
+      "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+    ],
+    "exclude_superusers": true,
+    "policy_engine_mode": "all"
+  }'
+```
+
+`POST /lifecycle/user_expiration_rules/`
+
+Mixin to add a used_by endpoint to return a list of all objects using this object
+
+> Body parameter
+
+```json
+{
+  "pk": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "enabled": true,
+  "activity_basis": {},
+  "group": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "user_types": [
+    "internal"
+  ],
+  "inactivity_duration": "string",
+  "action": "deactivate",
+  "revoke_sessions": true,
+  "revoke_tokens": true,
+  "warn_before": "string",
+  "notification_transports": [
+    "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+  ],
+  "exclude_superusers": true,
+  "policy_engine_mode": "all"
+}
+```
+
+<h3 id="lifecycleuserexpirationrulescreate-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[UserExpirationRuleRequest](#schemauserexpirationrulerequest)|true|none|
+|» pk|body|string(uuid)|false|none|
+|» name|body|string|true|none|
+|» enabled|body|boolean|false|none|
+|» activity_basis|body|object|false|Measure inactivity from the last login or successful user activity.|
+|» group|body|string(uuid) \| null|false|Only expire members of this group (including descendant groups). Leave empty to apply to every user.|
+|» user_types|body|[[UserTypeEnum](#schemausertypeenum)]|false|Only expire users of these types. Service accounts are excluded by default.|
+|» inactivity_duration|body|string|false|How long a user may be inactive before they are expired.|
+|» action|body|[OffboardingActionEnum](#schemaoffboardingactionenum)|false|none|
+|» revoke_sessions|body|boolean|false|none|
+|» revoke_tokens|body|boolean|false|none|
+|» warn_before|body|string \| null|false|Schedule the offboarding and notify the user this long before they expire. Leave empty to expire users without warning.|
+|» notification_transports|body|[string(uuid)]|false|Select which transports should be used to warn the user. If none are selected, the notification will only be shown in the authentik UI.|
+|» exclude_superusers|body|boolean|false|Never expire members of a superuser group.|
+|» policy_engine_mode|body|[PolicyEngineMode](#schemapolicyenginemode)|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» user_types|internal|
+|» user_types|external|
+|» user_types|service_account|
+|» user_types|internal_service_account|
+|» action|deactivate|
+|» action|delete|
+|» policy_engine_mode|all|
+|» policy_engine_mode|any|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "pk": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "pbm_uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "enabled": true,
+  "activity_basis": {},
+  "group": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "group_obj": {
+    "pk": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "name": "string"
+  },
+  "user_types": [
+    "internal"
+  ],
+  "inactivity_duration": "string",
+  "action": "deactivate",
+  "revoke_sessions": true,
+  "revoke_tokens": true,
+  "warn_before": "string",
+  "notification_transports": [
+    "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+  ],
+  "exclude_superusers": true,
+  "policy_engine_mode": "all"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "non_field_errors": [
+    "string"
+  ],
+  "code": "string",
+  "property1": null,
+  "property2": null
+}
+```
+
+> 403 Response
+
+```json
+{
+  "detail": "string",
+  "code": "string"
+}
+```
+
+<h3 id="lifecycleuserexpirationrulescreate-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created||[UserExpirationRule](#schemauserexpirationrule)|
+|400|Bad Request||[ValidationError](#schemavalidationerror)|
+|403|Forbidden||[GenericError](#schemagenericerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+authentik
+</aside>
+
+## lifecycle_user_expiration_rules_retrieve
+
+<a id="opIdlifecycle_user_expiration_rules_retrieve"></a>
+
+> Code samples
+
+```bash
+curl https://authentik.example.com/api/v3/lifecycle/user_expiration_rules/497f6eca-6276-4993-bfeb-53cbbbba6f08/ \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /lifecycle/user_expiration_rules/{id}/`
+
+Mixin to add a used_by endpoint to return a list of all objects using this object
+
+<h3 id="lifecycleuserexpirationrulesretrieve-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string(uuid)|true|A UUID string identifying this User Expiration Rule.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "pk": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "pbm_uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "enabled": true,
+  "activity_basis": {},
+  "group": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "group_obj": {
+    "pk": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "name": "string"
+  },
+  "user_types": [
+    "internal"
+  ],
+  "inactivity_duration": "string",
+  "action": "deactivate",
+  "revoke_sessions": true,
+  "revoke_tokens": true,
+  "warn_before": "string",
+  "notification_transports": [
+    "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+  ],
+  "exclude_superusers": true,
+  "policy_engine_mode": "all"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "non_field_errors": [
+    "string"
+  ],
+  "code": "string",
+  "property1": null,
+  "property2": null
+}
+```
+
+> 403 Response
+
+```json
+{
+  "detail": "string",
+  "code": "string"
+}
+```
+
+<h3 id="lifecycleuserexpirationrulesretrieve-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||[UserExpirationRule](#schemauserexpirationrule)|
+|400|Bad Request||[ValidationError](#schemavalidationerror)|
+|403|Forbidden||[GenericError](#schemagenericerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+authentik
+</aside>
+
+## lifecycle_user_expiration_rules_update
+
+<a id="opIdlifecycle_user_expiration_rules_update"></a>
+
+> Code samples
+
+```bash
+curl https://authentik.example.com/api/v3/lifecycle/user_expiration_rules/497f6eca-6276-4993-bfeb-53cbbbba6f08/ \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "pk": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "name": "string",
+    "enabled": true,
+    "activity_basis": {},
+    "group": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "user_types": [
+      "internal"
+    ],
+    "inactivity_duration": "string",
+    "action": "deactivate",
+    "revoke_sessions": true,
+    "revoke_tokens": true,
+    "warn_before": "string",
+    "notification_transports": [
+      "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+    ],
+    "exclude_superusers": true,
+    "policy_engine_mode": "all"
+  }'
+```
+
+`PUT /lifecycle/user_expiration_rules/{id}/`
+
+Mixin to add a used_by endpoint to return a list of all objects using this object
+
+> Body parameter
+
+```json
+{
+  "pk": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "enabled": true,
+  "activity_basis": {},
+  "group": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "user_types": [
+    "internal"
+  ],
+  "inactivity_duration": "string",
+  "action": "deactivate",
+  "revoke_sessions": true,
+  "revoke_tokens": true,
+  "warn_before": "string",
+  "notification_transports": [
+    "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+  ],
+  "exclude_superusers": true,
+  "policy_engine_mode": "all"
+}
+```
+
+<h3 id="lifecycleuserexpirationrulesupdate-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string(uuid)|true|A UUID string identifying this User Expiration Rule.|
+|body|body|[UserExpirationRuleRequest](#schemauserexpirationrulerequest)|true|none|
+|» pk|body|string(uuid)|false|none|
+|» name|body|string|true|none|
+|» enabled|body|boolean|false|none|
+|» activity_basis|body|object|false|Measure inactivity from the last login or successful user activity.|
+|» group|body|string(uuid) \| null|false|Only expire members of this group (including descendant groups). Leave empty to apply to every user.|
+|» user_types|body|[[UserTypeEnum](#schemausertypeenum)]|false|Only expire users of these types. Service accounts are excluded by default.|
+|» inactivity_duration|body|string|false|How long a user may be inactive before they are expired.|
+|» action|body|[OffboardingActionEnum](#schemaoffboardingactionenum)|false|none|
+|» revoke_sessions|body|boolean|false|none|
+|» revoke_tokens|body|boolean|false|none|
+|» warn_before|body|string \| null|false|Schedule the offboarding and notify the user this long before they expire. Leave empty to expire users without warning.|
+|» notification_transports|body|[string(uuid)]|false|Select which transports should be used to warn the user. If none are selected, the notification will only be shown in the authentik UI.|
+|» exclude_superusers|body|boolean|false|Never expire members of a superuser group.|
+|» policy_engine_mode|body|[PolicyEngineMode](#schemapolicyenginemode)|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» user_types|internal|
+|» user_types|external|
+|» user_types|service_account|
+|» user_types|internal_service_account|
+|» action|deactivate|
+|» action|delete|
+|» policy_engine_mode|all|
+|» policy_engine_mode|any|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "pk": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "pbm_uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "enabled": true,
+  "activity_basis": {},
+  "group": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "group_obj": {
+    "pk": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "name": "string"
+  },
+  "user_types": [
+    "internal"
+  ],
+  "inactivity_duration": "string",
+  "action": "deactivate",
+  "revoke_sessions": true,
+  "revoke_tokens": true,
+  "warn_before": "string",
+  "notification_transports": [
+    "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+  ],
+  "exclude_superusers": true,
+  "policy_engine_mode": "all"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "non_field_errors": [
+    "string"
+  ],
+  "code": "string",
+  "property1": null,
+  "property2": null
+}
+```
+
+> 403 Response
+
+```json
+{
+  "detail": "string",
+  "code": "string"
+}
+```
+
+<h3 id="lifecycleuserexpirationrulesupdate-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||[UserExpirationRule](#schemauserexpirationrule)|
+|400|Bad Request||[ValidationError](#schemavalidationerror)|
+|403|Forbidden||[GenericError](#schemagenericerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+authentik
+</aside>
+
+## lifecycle_user_expiration_rules_destroy
+
+<a id="opIdlifecycle_user_expiration_rules_destroy"></a>
+
+> Code samples
+
+```bash
+curl https://authentik.example.com/api/v3/lifecycle/user_expiration_rules/497f6eca-6276-4993-bfeb-53cbbbba6f08/ \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /lifecycle/user_expiration_rules/{id}/`
+
+Mixin to add a used_by endpoint to return a list of all objects using this object
+
+<h3 id="lifecycleuserexpirationrulesdestroy-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string(uuid)|true|A UUID string identifying this User Expiration Rule.|
+
+> Example responses
+
+> 400 Response
+
+```json
+{
+  "non_field_errors": [
+    "string"
+  ],
+  "code": "string",
+  "property1": null,
+  "property2": null
+}
+```
+
+> 403 Response
+
+```json
+{
+  "detail": "string",
+  "code": "string"
+}
+```
+
+<h3 id="lifecycleuserexpirationrulesdestroy-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|No response body|None|
+|400|Bad Request||[ValidationError](#schemavalidationerror)|
+|403|Forbidden||[GenericError](#schemagenericerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+authentik
+</aside>
+
+## lifecycle_user_expiration_rules_partial_update
+
+<a id="opIdlifecycle_user_expiration_rules_partial_update"></a>
+
+> Code samples
+
+```bash
+curl https://authentik.example.com/api/v3/lifecycle/user_expiration_rules/497f6eca-6276-4993-bfeb-53cbbbba6f08/ \
+  -X PATCH \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "pk": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "name": "string",
+    "enabled": true,
+    "activity_basis": {},
+    "group": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "user_types": [
+      "internal"
+    ],
+    "inactivity_duration": "string",
+    "action": "deactivate",
+    "revoke_sessions": true,
+    "revoke_tokens": true,
+    "warn_before": "string",
+    "notification_transports": [
+      "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+    ],
+    "exclude_superusers": true,
+    "policy_engine_mode": "all"
+  }'
+```
+
+`PATCH /lifecycle/user_expiration_rules/{id}/`
+
+Mixin to add a used_by endpoint to return a list of all objects using this object
+
+> Body parameter
+
+```json
+{
+  "pk": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "enabled": true,
+  "activity_basis": {},
+  "group": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "user_types": [
+    "internal"
+  ],
+  "inactivity_duration": "string",
+  "action": "deactivate",
+  "revoke_sessions": true,
+  "revoke_tokens": true,
+  "warn_before": "string",
+  "notification_transports": [
+    "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+  ],
+  "exclude_superusers": true,
+  "policy_engine_mode": "all"
+}
+```
+
+<h3 id="lifecycleuserexpirationrulespartialupdate-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string(uuid)|true|A UUID string identifying this User Expiration Rule.|
+|body|body|[PatchedUserExpirationRuleRequest](#schemapatcheduserexpirationrulerequest)|false|none|
+|» pk|body|string(uuid)|false|none|
+|» name|body|string|false|none|
+|» enabled|body|boolean|false|none|
+|» activity_basis|body|object|false|Measure inactivity from the last login or successful user activity.|
+|» group|body|string(uuid) \| null|false|Only expire members of this group (including descendant groups). Leave empty to apply to every user.|
+|» user_types|body|[[UserTypeEnum](#schemausertypeenum)]|false|Only expire users of these types. Service accounts are excluded by default.|
+|» inactivity_duration|body|string|false|How long a user may be inactive before they are expired.|
+|» action|body|[OffboardingActionEnum](#schemaoffboardingactionenum)|false|none|
+|» revoke_sessions|body|boolean|false|none|
+|» revoke_tokens|body|boolean|false|none|
+|» warn_before|body|string \| null|false|Schedule the offboarding and notify the user this long before they expire. Leave empty to expire users without warning.|
+|» notification_transports|body|[string(uuid)]|false|Select which transports should be used to warn the user. If none are selected, the notification will only be shown in the authentik UI.|
+|» exclude_superusers|body|boolean|false|Never expire members of a superuser group.|
+|» policy_engine_mode|body|[PolicyEngineMode](#schemapolicyenginemode)|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» user_types|internal|
+|» user_types|external|
+|» user_types|service_account|
+|» user_types|internal_service_account|
+|» action|deactivate|
+|» action|delete|
+|» policy_engine_mode|all|
+|» policy_engine_mode|any|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "pk": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "pbm_uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "enabled": true,
+  "activity_basis": {},
+  "group": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "group_obj": {
+    "pk": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "name": "string"
+  },
+  "user_types": [
+    "internal"
+  ],
+  "inactivity_duration": "string",
+  "action": "deactivate",
+  "revoke_sessions": true,
+  "revoke_tokens": true,
+  "warn_before": "string",
+  "notification_transports": [
+    "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+  ],
+  "exclude_superusers": true,
+  "policy_engine_mode": "all"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "non_field_errors": [
+    "string"
+  ],
+  "code": "string",
+  "property1": null,
+  "property2": null
+}
+```
+
+> 403 Response
+
+```json
+{
+  "detail": "string",
+  "code": "string"
+}
+```
+
+<h3 id="lifecycleuserexpirationrulespartialupdate-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||[UserExpirationRule](#schemauserexpirationrule)|
+|400|Bad Request||[ValidationError](#schemavalidationerror)|
+|403|Forbidden||[GenericError](#schemagenericerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+authentik
+</aside>
+
+## lifecycle_user_expiration_rules_preview_retrieve
+
+<a id="opIdlifecycle_user_expiration_rules_preview_retrieve"></a>
+
+> Code samples
+
+```bash
+curl https://authentik.example.com/api/v3/lifecycle/user_expiration_rules/497f6eca-6276-4993-bfeb-53cbbbba6f08/preview/ \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /lifecycle/user_expiration_rules/{id}/preview/`
+
+Preview new offboardings and changes to pending rows if this rule is enabled.
+
+POST accepts unsaved edits to the rule. Neither method saves the rule, changes
+offboardings, or sends warnings. Existing policy bindings still apply.
+
+<h3 id="lifecycleuserexpirationrulespreviewretrieve-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string(uuid)|true|A UUID string identifying this User Expiration Rule.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "count": 0,
+  "users": [
+    {
+      "pk": 0,
+      "username": "string",
+      "name": "string"
+    }
+  ],
+  "updated": {
+    "count": 0,
+    "offboardings": [
+      {
+        "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+        "user": {
+          "pk": 0,
+          "username": "string",
+          "name": "string"
+        },
+        "previous_action": {},
+        "action": {},
+        "previous_scheduled_at": "1970-01-01T00:00:00Z",
+        "scheduled_at": "1970-01-01T00:00:00Z",
+        "previous_revoke_sessions": true,
+        "revoke_sessions": true,
+        "previous_revoke_tokens": true,
+        "revoke_tokens": true
+      }
+    ]
+  },
+  "taken_over": {
+    "count": 0,
+    "offboardings": [
+      {
+        "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+        "user": {
+          "pk": 0,
+          "username": "string",
+          "name": "string"
+        },
+        "previous_action": {},
+        "action": {},
+        "previous_scheduled_at": "1970-01-01T00:00:00Z",
+        "scheduled_at": "1970-01-01T00:00:00Z",
+        "previous_revoke_sessions": true,
+        "revoke_sessions": true,
+        "previous_revoke_tokens": true,
+        "revoke_tokens": true
+      }
+    ]
+  },
+  "removed": {
+    "count": 0,
+    "offboardings": [
+      {
+        "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+        "user": {
+          "pk": 0,
+          "username": "string",
+          "name": "string"
+        },
+        "previous_action": {},
+        "action": {},
+        "previous_scheduled_at": "1970-01-01T00:00:00Z",
+        "scheduled_at": "1970-01-01T00:00:00Z",
+        "previous_revoke_sessions": true,
+        "revoke_sessions": true,
+        "previous_revoke_tokens": true,
+        "revoke_tokens": true
+      }
+    ]
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "non_field_errors": [
+    "string"
+  ],
+  "code": "string",
+  "property1": null,
+  "property2": null
+}
+```
+
+> 403 Response
+
+```json
+{
+  "detail": "string",
+  "code": "string"
+}
+```
+
+<h3 id="lifecycleuserexpirationrulespreviewretrieve-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||[UserExpirationRulePreview](#schemauserexpirationrulepreview)|
+|400|Bad Request||[ValidationError](#schemavalidationerror)|
+|403|Forbidden||[GenericError](#schemagenericerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+authentik
+</aside>
+
+## lifecycle_user_expiration_rules_preview_create
+
+<a id="opIdlifecycle_user_expiration_rules_preview_create"></a>
+
+> Code samples
+
+```bash
+curl https://authentik.example.com/api/v3/lifecycle/user_expiration_rules/497f6eca-6276-4993-bfeb-53cbbbba6f08/preview/ \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "pk": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "name": "string",
+    "enabled": true,
+    "activity_basis": {},
+    "group": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "user_types": [
+      "internal"
+    ],
+    "inactivity_duration": "string",
+    "action": "deactivate",
+    "revoke_sessions": true,
+    "revoke_tokens": true,
+    "warn_before": "string",
+    "notification_transports": [
+      "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+    ],
+    "exclude_superusers": true,
+    "policy_engine_mode": "all"
+  }'
+```
+
+`POST /lifecycle/user_expiration_rules/{id}/preview/`
+
+Preview new offboardings and changes to pending rows if this rule is enabled.
+
+POST accepts unsaved edits to the rule. Neither method saves the rule, changes
+offboardings, or sends warnings. Existing policy bindings still apply.
+
+> Body parameter
+
+```json
+{
+  "pk": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "enabled": true,
+  "activity_basis": {},
+  "group": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "user_types": [
+    "internal"
+  ],
+  "inactivity_duration": "string",
+  "action": "deactivate",
+  "revoke_sessions": true,
+  "revoke_tokens": true,
+  "warn_before": "string",
+  "notification_transports": [
+    "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+  ],
+  "exclude_superusers": true,
+  "policy_engine_mode": "all"
+}
+```
+
+<h3 id="lifecycleuserexpirationrulespreviewcreate-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string(uuid)|true|A UUID string identifying this User Expiration Rule.|
+|body|body|[UserExpirationRuleRequest](#schemauserexpirationrulerequest)|true|none|
+|» pk|body|string(uuid)|false|none|
+|» name|body|string|true|none|
+|» enabled|body|boolean|false|none|
+|» activity_basis|body|object|false|Measure inactivity from the last login or successful user activity.|
+|» group|body|string(uuid) \| null|false|Only expire members of this group (including descendant groups). Leave empty to apply to every user.|
+|» user_types|body|[[UserTypeEnum](#schemausertypeenum)]|false|Only expire users of these types. Service accounts are excluded by default.|
+|» inactivity_duration|body|string|false|How long a user may be inactive before they are expired.|
+|» action|body|[OffboardingActionEnum](#schemaoffboardingactionenum)|false|none|
+|» revoke_sessions|body|boolean|false|none|
+|» revoke_tokens|body|boolean|false|none|
+|» warn_before|body|string \| null|false|Schedule the offboarding and notify the user this long before they expire. Leave empty to expire users without warning.|
+|» notification_transports|body|[string(uuid)]|false|Select which transports should be used to warn the user. If none are selected, the notification will only be shown in the authentik UI.|
+|» exclude_superusers|body|boolean|false|Never expire members of a superuser group.|
+|» policy_engine_mode|body|[PolicyEngineMode](#schemapolicyenginemode)|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» user_types|internal|
+|» user_types|external|
+|» user_types|service_account|
+|» user_types|internal_service_account|
+|» action|deactivate|
+|» action|delete|
+|» policy_engine_mode|all|
+|» policy_engine_mode|any|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "count": 0,
+  "users": [
+    {
+      "pk": 0,
+      "username": "string",
+      "name": "string"
+    }
+  ],
+  "updated": {
+    "count": 0,
+    "offboardings": [
+      {
+        "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+        "user": {
+          "pk": 0,
+          "username": "string",
+          "name": "string"
+        },
+        "previous_action": {},
+        "action": {},
+        "previous_scheduled_at": "1970-01-01T00:00:00Z",
+        "scheduled_at": "1970-01-01T00:00:00Z",
+        "previous_revoke_sessions": true,
+        "revoke_sessions": true,
+        "previous_revoke_tokens": true,
+        "revoke_tokens": true
+      }
+    ]
+  },
+  "taken_over": {
+    "count": 0,
+    "offboardings": [
+      {
+        "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+        "user": {
+          "pk": 0,
+          "username": "string",
+          "name": "string"
+        },
+        "previous_action": {},
+        "action": {},
+        "previous_scheduled_at": "1970-01-01T00:00:00Z",
+        "scheduled_at": "1970-01-01T00:00:00Z",
+        "previous_revoke_sessions": true,
+        "revoke_sessions": true,
+        "previous_revoke_tokens": true,
+        "revoke_tokens": true
+      }
+    ]
+  },
+  "removed": {
+    "count": 0,
+    "offboardings": [
+      {
+        "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+        "user": {
+          "pk": 0,
+          "username": "string",
+          "name": "string"
+        },
+        "previous_action": {},
+        "action": {},
+        "previous_scheduled_at": "1970-01-01T00:00:00Z",
+        "scheduled_at": "1970-01-01T00:00:00Z",
+        "previous_revoke_sessions": true,
+        "revoke_sessions": true,
+        "previous_revoke_tokens": true,
+        "revoke_tokens": true
+      }
+    ]
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "non_field_errors": [
+    "string"
+  ],
+  "code": "string",
+  "property1": null,
+  "property2": null
+}
+```
+
+> 403 Response
+
+```json
+{
+  "detail": "string",
+  "code": "string"
+}
+```
+
+<h3 id="lifecycleuserexpirationrulespreviewcreate-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||[UserExpirationRulePreview](#schemauserexpirationrulepreview)|
+|400|Bad Request||[ValidationError](#schemavalidationerror)|
+|403|Forbidden||[GenericError](#schemagenericerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+authentik
+</aside>
+
+## lifecycle_user_expiration_rules_used_by_list
+
+<a id="opIdlifecycle_user_expiration_rules_used_by_list"></a>
+
+> Code samples
+
+```bash
+curl https://authentik.example.com/api/v3/lifecycle/user_expiration_rules/497f6eca-6276-4993-bfeb-53cbbbba6f08/used_by/ \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /lifecycle/user_expiration_rules/{id}/used_by/`
+
+Get a list of all objects that use this object
+
+<h3 id="lifecycleuserexpirationrulesusedbylist-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string(uuid)|true|A UUID string identifying this User Expiration Rule.|
+
+> Example responses
+
+> 200 Response
+
+```json
+[
+  {
+    "app": "string",
+    "model_name": "string",
+    "pk": "string",
+    "name": "string",
+    "action": "cascade"
+  }
+]
+```
+
+> 400 Response
+
+```json
+{
+  "non_field_errors": [
+    "string"
+  ],
+  "code": "string",
+  "property1": null,
+  "property2": null
+}
+```
+
+> 403 Response
+
+```json
+{
+  "detail": "string",
+  "code": "string"
+}
+```
+
+<h3 id="lifecycleuserexpirationrulesusedbylist-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||Inline|
+|400|Bad Request||[ValidationError](#schemavalidationerror)|
+|403|Forbidden||[GenericError](#schemagenericerror)|
+
+<h3 id="lifecycleuserexpirationrulesusedbylist-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[UsedBy](#schemausedby)]|false|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+authentik
+</aside>
+
 ## lifecycle_user_offboarding_list
 
 <a id="opIdlifecycle_user_offboarding_list"></a>
@@ -35395,9 +37566,12 @@ curl https://authentik.example.com/api/v3/lifecycle/user_offboarding/ \
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |action|query|[OffboardingActionEnum](#schemaoffboardingactionenum)|false|none|
+|generated|query|boolean|false|none|
 |ordering|query|string|false|Which field to use when ordering the results.|
 |page|query|integer|false|A page number within the paginated result set.|
 |page_size|query|integer|false|Number of results to return per page.|
+|rule|query|string(uuid)|false|none|
+|rule__isnull|query|boolean|false|none|
 |search|query|string|false|A search term.|
 |status|query|[OffboardingStatusEnum](#schemaoffboardingstatusenum)|false|none|
 |user__uuid|query|string(uuid)|false|none|
@@ -35464,7 +37638,13 @@ curl https://authentik.example.com/api/v3/lifecycle/user_offboarding/ \
         "uid": "string"
       },
       "created_at": "1970-01-01T00:00:00Z",
-      "executed_at": "1970-01-01T00:00:00Z"
+      "executed_at": "1970-01-01T00:00:00Z",
+      "rule": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "rule_obj": {
+        "pk": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+        "name": "string"
+      },
+      "generated": true
     }
   ],
   "autocomplete": {
@@ -35602,7 +37782,13 @@ curl https://authentik.example.com/api/v3/lifecycle/user_offboarding/ \
     "uid": "string"
   },
   "created_at": "1970-01-01T00:00:00Z",
-  "executed_at": "1970-01-01T00:00:00Z"
+  "executed_at": "1970-01-01T00:00:00Z",
+  "rule": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "rule_obj": {
+    "pk": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "name": "string"
+  },
+  "generated": true
 }
 ```
 
@@ -35701,7 +37887,13 @@ curl https://authentik.example.com/api/v3/lifecycle/user_offboarding/497f6eca-62
     "uid": "string"
   },
   "created_at": "1970-01-01T00:00:00Z",
-  "executed_at": "1970-01-01T00:00:00Z"
+  "executed_at": "1970-01-01T00:00:00Z",
+  "rule": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "rule_obj": {
+    "pk": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "name": "string"
+  },
+  "generated": true
 }
 ```
 
@@ -36959,6 +39151,8 @@ AccessToken Viewset
         "type": "internal",
         "uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
         "password_change_date": "1970-01-01T00:00:00Z",
+        "password_locked": true,
+        "password_device": 0,
         "last_updated": "1970-01-01T00:00:00Z"
       },
       "is_expired": true,
@@ -37102,6 +39296,8 @@ AccessToken Viewset
     "type": "internal",
     "uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
     "password_change_date": "1970-01-01T00:00:00Z",
+    "password_locked": true,
+    "password_device": 0,
     "last_updated": "1970-01-01T00:00:00Z"
   },
   "is_expired": true,
@@ -37396,6 +39592,8 @@ AuthorizationCode Viewset
         "type": "internal",
         "uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
         "password_change_date": "1970-01-01T00:00:00Z",
+        "password_locked": true,
+        "password_device": 0,
         "last_updated": "1970-01-01T00:00:00Z"
       },
       "is_expired": true,
@@ -37537,6 +39735,8 @@ AuthorizationCode Viewset
     "type": "internal",
     "uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
     "password_change_date": "1970-01-01T00:00:00Z",
+    "password_locked": true,
+    "password_device": 0,
     "last_updated": "1970-01-01T00:00:00Z"
   },
   "is_expired": true,
@@ -37829,6 +40029,8 @@ RefreshToken Viewset
         "type": "internal",
         "uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
         "password_change_date": "1970-01-01T00:00:00Z",
+        "password_locked": true,
+        "password_device": 0,
         "last_updated": "1970-01-01T00:00:00Z"
       },
       "is_expired": true,
@@ -37972,6 +40174,8 @@ RefreshToken Viewset
     "type": "internal",
     "uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
     "password_change_date": "1970-01-01T00:00:00Z",
+    "password_locked": true,
+    "password_device": 0,
     "last_updated": "1970-01-01T00:00:00Z"
   },
   "is_expired": true,
@@ -40148,6 +42352,10 @@ Get all creatable types
     "component": "string",
     "model_name": "string",
     "icon_url": "string",
+    "icon_themed_urls": {
+      "light": "string",
+      "dark": "string"
+    },
     "requires_enterprise": false,
     "deprecated": false
   }
@@ -42009,6 +44217,10 @@ Get all creatable types
     "component": "string",
     "model_name": "string",
     "icon_url": "string",
+    "icon_themed_urls": {
+      "light": "string",
+      "dark": "string"
+    },
     "requires_enterprise": false,
     "deprecated": false
   }
@@ -49913,6 +52125,10 @@ Get all creatable types
     "component": "string",
     "model_name": "string",
     "icon_url": "string",
+    "icon_themed_urls": {
+      "light": "string",
+      "dark": "string"
+    },
     "requires_enterprise": false,
     "deprecated": false
   }
@@ -59333,6 +61549,10 @@ Get all creatable types
     "component": "string",
     "model_name": "string",
     "icon_url": "string",
+    "icon_themed_urls": {
+      "light": "string",
+      "dark": "string"
+    },
     "requires_enterprise": false,
     "deprecated": false
   }
@@ -68503,6 +70723,7 @@ SAMLProvider Viewset
 |digest_algorithm|query|[DigestAlgorithmEnum](#schemadigestalgorithmenum)|false|none|
 |encryption_algorithm|query|object|false|none|
 |encryption_kp|query|string(uuid)|false|none|
+|ignore_force_authn|query|boolean|false|none|
 |invalidation_flow|query|string(uuid)|false|none|
 |is_backchannel|query|boolean|false|none|
 |issuer_override|query|string|false|none|
@@ -68603,6 +70824,7 @@ SAMLProvider Viewset
       "sign_response": true,
       "sign_logout_request": true,
       "sign_logout_response": true,
+      "ignore_force_authn": true,
       "sp_binding": {},
       "sls_binding": {},
       "logout_method": {},
@@ -68703,6 +70925,7 @@ curl https://authentik.example.com/api/v3/providers/saml/ \
     "sign_response": true,
     "sign_logout_request": true,
     "sign_logout_response": true,
+    "ignore_force_authn": true,
     "sp_binding": {},
     "sls_binding": {},
     "logout_method": {},
@@ -68748,6 +70971,7 @@ SAMLProvider Viewset
   "sign_response": true,
   "sign_logout_request": true,
   "sign_logout_response": true,
+  "ignore_force_authn": true,
   "sp_binding": {},
   "sls_binding": {},
   "logout_method": {},
@@ -68788,6 +71012,7 @@ SAMLProvider Viewset
 |» sign_response|body|boolean|false|none|
 |» sign_logout_request|body|boolean|false|none|
 |» sign_logout_response|body|boolean|false|none|
+|» ignore_force_authn|body|boolean|false|When enabled, the ForceAuthn attribute set by the Service Provider on an AuthnRequest is ignored and an existing session is used. When disabled, ForceAuthn requires the user to re-authenticate.|
 |» sp_binding|body|object|false|This determines how authentik sends the response back to the Service Provider.|
 |» sls_binding|body|object|false|This determines how authentik sends the logout response back to the Service Provider.|
 |» logout_method|body|object|false|Method to use for logout. Front-channel iframe loads all logout URLs simultaneously in hidden iframes. Front-channel native uses your active browser tab to send post requests and redirect to providers. Back-channel sends logout requests directly from the server without user interaction (requires POST SLS binding).|
@@ -68860,6 +71085,7 @@ SAMLProvider Viewset
   "sign_response": true,
   "sign_logout_request": true,
   "sign_logout_response": true,
+  "ignore_force_authn": true,
   "sp_binding": {},
   "sls_binding": {},
   "logout_method": {},
@@ -68978,6 +71204,7 @@ SAMLProvider Viewset
   "sign_response": true,
   "sign_logout_request": true,
   "sign_logout_response": true,
+  "ignore_force_authn": true,
   "sp_binding": {},
   "sls_binding": {},
   "logout_method": {},
@@ -69072,6 +71299,7 @@ curl https://authentik.example.com/api/v3/providers/saml/0/ \
     "sign_response": true,
     "sign_logout_request": true,
     "sign_logout_response": true,
+    "ignore_force_authn": true,
     "sp_binding": {},
     "sls_binding": {},
     "logout_method": {},
@@ -69117,6 +71345,7 @@ SAMLProvider Viewset
   "sign_response": true,
   "sign_logout_request": true,
   "sign_logout_response": true,
+  "ignore_force_authn": true,
   "sp_binding": {},
   "sls_binding": {},
   "logout_method": {},
@@ -69158,6 +71387,7 @@ SAMLProvider Viewset
 |» sign_response|body|boolean|false|none|
 |» sign_logout_request|body|boolean|false|none|
 |» sign_logout_response|body|boolean|false|none|
+|» ignore_force_authn|body|boolean|false|When enabled, the ForceAuthn attribute set by the Service Provider on an AuthnRequest is ignored and an existing session is used. When disabled, ForceAuthn requires the user to re-authenticate.|
 |» sp_binding|body|object|false|This determines how authentik sends the response back to the Service Provider.|
 |» sls_binding|body|object|false|This determines how authentik sends the logout response back to the Service Provider.|
 |» logout_method|body|object|false|Method to use for logout. Front-channel iframe loads all logout URLs simultaneously in hidden iframes. Front-channel native uses your active browser tab to send post requests and redirect to providers. Back-channel sends logout requests directly from the server without user interaction (requires POST SLS binding).|
@@ -69230,6 +71460,7 @@ SAMLProvider Viewset
   "sign_response": true,
   "sign_logout_request": true,
   "sign_logout_response": true,
+  "ignore_force_authn": true,
   "sp_binding": {},
   "sls_binding": {},
   "logout_method": {},
@@ -69384,6 +71615,7 @@ curl https://authentik.example.com/api/v3/providers/saml/0/ \
     "sign_response": true,
     "sign_logout_request": true,
     "sign_logout_response": true,
+    "ignore_force_authn": true,
     "sp_binding": {},
     "sls_binding": {},
     "logout_method": {},
@@ -69429,6 +71661,7 @@ SAMLProvider Viewset
   "sign_response": true,
   "sign_logout_request": true,
   "sign_logout_response": true,
+  "ignore_force_authn": true,
   "sp_binding": {},
   "sls_binding": {},
   "logout_method": {},
@@ -69470,6 +71703,7 @@ SAMLProvider Viewset
 |» sign_response|body|boolean|false|none|
 |» sign_logout_request|body|boolean|false|none|
 |» sign_logout_response|body|boolean|false|none|
+|» ignore_force_authn|body|boolean|false|When enabled, the ForceAuthn attribute set by the Service Provider on an AuthnRequest is ignored and an existing session is used. When disabled, ForceAuthn requires the user to re-authenticate.|
 |» sp_binding|body|object|false|This determines how authentik sends the response back to the Service Provider.|
 |» sls_binding|body|object|false|This determines how authentik sends the logout response back to the Service Provider.|
 |» logout_method|body|object|false|Method to use for logout. Front-channel iframe loads all logout URLs simultaneously in hidden iframes. Front-channel native uses your active browser tab to send post requests and redirect to providers. Back-channel sends logout requests directly from the server without user interaction (requires POST SLS binding).|
@@ -69542,6 +71776,7 @@ SAMLProvider Viewset
   "sign_response": true,
   "sign_logout_request": true,
   "sign_logout_response": true,
+  "ignore_force_authn": true,
   "sp_binding": {},
   "sls_binding": {},
   "logout_method": {},
@@ -69888,6 +72123,7 @@ file: string
   "sign_response": true,
   "sign_logout_request": true,
   "sign_logout_response": true,
+  "ignore_force_authn": true,
   "sp_binding": {},
   "sls_binding": {},
   "logout_method": {},
@@ -72854,6 +75090,7 @@ WSFederationProvider Viewset
 |digest_algorithm|query|[DigestAlgorithmEnum](#schemadigestalgorithmenum)|false|none|
 |encryption_algorithm|query|object|false|none|
 |encryption_kp|query|string(uuid)|false|none|
+|ignore_force_authn|query|boolean|false|none|
 |invalidation_flow|query|string(uuid)|false|none|
 |is_backchannel|query|boolean|false|none|
 |issuer_override|query|string|false|none|
@@ -74722,6 +76959,576 @@ authentik
 
 <h1 id="authentik-rbac">rbac</h1>
 
+## rbac_custom_permissions_list
+
+<a id="opIdrbac_custom_permissions_list"></a>
+
+> Code samples
+
+```bash
+curl https://authentik.example.com/api/v3/rbac/custom_permissions/ \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /rbac/custom_permissions/`
+
+Custom permissions
+
+<h3 id="rbaccustompermissionslist-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|codename|query|string|false|none|
+|ordering|query|string|false|Which field to use when ordering the results.|
+|page|query|integer|false|A page number within the paginated result set.|
+|page_size|query|integer|false|Number of results to return per page.|
+|search|query|string|false|A search term.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "pagination": {
+    "next": 0,
+    "previous": 0,
+    "count": 0,
+    "current": 0,
+    "total_pages": 0,
+    "start_index": 0,
+    "end_index": 0
+  },
+  "results": [
+    {
+      "pk": 0,
+      "codename": "string",
+      "name": "string",
+      "model": "string",
+      "permission": "string"
+    }
+  ],
+  "autocomplete": {
+    "property1": null,
+    "property2": null
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "non_field_errors": [
+    "string"
+  ],
+  "code": "string",
+  "property1": null,
+  "property2": null
+}
+```
+
+> 403 Response
+
+```json
+{
+  "detail": "string",
+  "code": "string"
+}
+```
+
+<h3 id="rbaccustompermissionslist-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||[PaginatedCustomPermissionList](#schemapaginatedcustompermissionlist)|
+|400|Bad Request||[ValidationError](#schemavalidationerror)|
+|403|Forbidden||[GenericError](#schemagenericerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+authentik
+</aside>
+
+## rbac_custom_permissions_create
+
+<a id="opIdrbac_custom_permissions_create"></a>
+
+> Code samples
+
+```bash
+curl https://authentik.example.com/api/v3/rbac/custom_permissions/ \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "codename": "string",
+    "name": "string",
+    "model": "string"
+  }'
+```
+
+`POST /rbac/custom_permissions/`
+
+Custom permissions
+
+> Body parameter
+
+```json
+{
+  "codename": "string",
+  "name": "string",
+  "model": "string"
+}
+```
+
+<h3 id="rbaccustompermissionscreate-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[CustomPermissionRequest](#schemacustompermissionrequest)|true|none|
+|» codename|body|string|true|none|
+|» name|body|string|true|none|
+|» model|body|string|true|none|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "pk": 0,
+  "codename": "string",
+  "name": "string",
+  "model": "string",
+  "permission": "string"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "non_field_errors": [
+    "string"
+  ],
+  "code": "string",
+  "property1": null,
+  "property2": null
+}
+```
+
+> 403 Response
+
+```json
+{
+  "detail": "string",
+  "code": "string"
+}
+```
+
+<h3 id="rbaccustompermissionscreate-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created||[CustomPermission](#schemacustompermission)|
+|400|Bad Request||[ValidationError](#schemavalidationerror)|
+|403|Forbidden||[GenericError](#schemagenericerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+authentik
+</aside>
+
+## rbac_custom_permissions_retrieve
+
+<a id="opIdrbac_custom_permissions_retrieve"></a>
+
+> Code samples
+
+```bash
+curl https://authentik.example.com/api/v3/rbac/custom_permissions/0/ \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /rbac/custom_permissions/{id}/`
+
+Custom permissions
+
+<h3 id="rbaccustompermissionsretrieve-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|integer|true|A unique integer value identifying this Custom permission.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "pk": 0,
+  "codename": "string",
+  "name": "string",
+  "model": "string",
+  "permission": "string"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "non_field_errors": [
+    "string"
+  ],
+  "code": "string",
+  "property1": null,
+  "property2": null
+}
+```
+
+> 403 Response
+
+```json
+{
+  "detail": "string",
+  "code": "string"
+}
+```
+
+<h3 id="rbaccustompermissionsretrieve-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||[CustomPermission](#schemacustompermission)|
+|400|Bad Request||[ValidationError](#schemavalidationerror)|
+|403|Forbidden||[GenericError](#schemagenericerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+authentik
+</aside>
+
+## rbac_custom_permissions_update
+
+<a id="opIdrbac_custom_permissions_update"></a>
+
+> Code samples
+
+```bash
+curl https://authentik.example.com/api/v3/rbac/custom_permissions/0/ \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "codename": "string",
+    "name": "string",
+    "model": "string"
+  }'
+```
+
+`PUT /rbac/custom_permissions/{id}/`
+
+Custom permissions
+
+> Body parameter
+
+```json
+{
+  "codename": "string",
+  "name": "string",
+  "model": "string"
+}
+```
+
+<h3 id="rbaccustompermissionsupdate-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|integer|true|A unique integer value identifying this Custom permission.|
+|body|body|[CustomPermissionRequest](#schemacustompermissionrequest)|true|none|
+|» codename|body|string|true|none|
+|» name|body|string|true|none|
+|» model|body|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "pk": 0,
+  "codename": "string",
+  "name": "string",
+  "model": "string",
+  "permission": "string"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "non_field_errors": [
+    "string"
+  ],
+  "code": "string",
+  "property1": null,
+  "property2": null
+}
+```
+
+> 403 Response
+
+```json
+{
+  "detail": "string",
+  "code": "string"
+}
+```
+
+<h3 id="rbaccustompermissionsupdate-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||[CustomPermission](#schemacustompermission)|
+|400|Bad Request||[ValidationError](#schemavalidationerror)|
+|403|Forbidden||[GenericError](#schemagenericerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+authentik
+</aside>
+
+## rbac_custom_permissions_destroy
+
+<a id="opIdrbac_custom_permissions_destroy"></a>
+
+> Code samples
+
+```bash
+curl https://authentik.example.com/api/v3/rbac/custom_permissions/0/ \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /rbac/custom_permissions/{id}/`
+
+Custom permissions
+
+<h3 id="rbaccustompermissionsdestroy-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|integer|true|A unique integer value identifying this Custom permission.|
+
+> Example responses
+
+> 400 Response
+
+```json
+{
+  "non_field_errors": [
+    "string"
+  ],
+  "code": "string",
+  "property1": null,
+  "property2": null
+}
+```
+
+> 403 Response
+
+```json
+{
+  "detail": "string",
+  "code": "string"
+}
+```
+
+<h3 id="rbaccustompermissionsdestroy-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|No response body|None|
+|400|Bad Request||[ValidationError](#schemavalidationerror)|
+|403|Forbidden||[GenericError](#schemagenericerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+authentik
+</aside>
+
+## rbac_custom_permissions_partial_update
+
+<a id="opIdrbac_custom_permissions_partial_update"></a>
+
+> Code samples
+
+```bash
+curl https://authentik.example.com/api/v3/rbac/custom_permissions/0/ \
+  -X PATCH \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "codename": "string",
+    "name": "string",
+    "model": "string"
+  }'
+```
+
+`PATCH /rbac/custom_permissions/{id}/`
+
+Custom permissions
+
+> Body parameter
+
+```json
+{
+  "codename": "string",
+  "name": "string",
+  "model": "string"
+}
+```
+
+<h3 id="rbaccustompermissionspartialupdate-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|integer|true|A unique integer value identifying this Custom permission.|
+|body|body|[PatchedCustomPermissionRequest](#schemapatchedcustompermissionrequest)|false|none|
+|» codename|body|string|false|none|
+|» name|body|string|false|none|
+|» model|body|string|false|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "pk": 0,
+  "codename": "string",
+  "name": "string",
+  "model": "string",
+  "permission": "string"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "non_field_errors": [
+    "string"
+  ],
+  "code": "string",
+  "property1": null,
+  "property2": null
+}
+```
+
+> 403 Response
+
+```json
+{
+  "detail": "string",
+  "code": "string"
+}
+```
+
+<h3 id="rbaccustompermissionspartialupdate-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||[CustomPermission](#schemacustompermission)|
+|400|Bad Request||[ValidationError](#schemavalidationerror)|
+|403|Forbidden||[GenericError](#schemagenericerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+authentik
+</aside>
+
+## rbac_endpoints_list
+
+<a id="opIdrbac_endpoints_list"></a>
+
+> Code samples
+
+```bash
+curl https://authentik.example.com/api/v3/rbac/endpoints/ \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /rbac/endpoints/`
+
+> Example responses
+
+> 200 Response
+
+```json
+[
+  {
+    "id": "string",
+    "functions": [
+      "string"
+    ]
+  }
+]
+```
+
+> 400 Response
+
+```json
+{
+  "non_field_errors": [
+    "string"
+  ],
+  "code": "string",
+  "property1": null,
+  "property2": null
+}
+```
+
+> 403 Response
+
+```json
+{
+  "detail": "string",
+  "code": "string"
+}
+```
+
+<h3 id="rbacendpointslist-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||Inline|
+|400|Bad Request||[ValidationError](#schemavalidationerror)|
+|403|Forbidden||[GenericError](#schemagenericerror)|
+
+<h3 id="rbacendpointslist-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[Endpoint](#schemaendpoint)]|false|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+authentik
+</aside>
+
 ## rbac_initial_permissions_list
 
 <a id="opIdrbac_initial_permissions_list"></a>
@@ -75373,6 +78180,657 @@ To perform this operation, you must be authenticated by means of one of the foll
 authentik
 </aside>
 
+## rbac_permission_checks_list
+
+<a id="opIdrbac_permission_checks_list"></a>
+
+> Code samples
+
+```bash
+curl https://authentik.example.com/api/v3/rbac/permission_checks/ \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /rbac/permission_checks/`
+
+Mixin to add a used_by endpoint to return a list of all objects using this object
+
+<h3 id="rbacpermissioncheckslist-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|name|query|string|false|none|
+|ordering|query|string|false|Which field to use when ordering the results.|
+|page|query|integer|false|A page number within the paginated result set.|
+|page_size|query|integer|false|Number of results to return per page.|
+|search|query|string|false|A search term.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "pagination": {
+    "next": 0,
+    "previous": 0,
+    "count": 0,
+    "current": 0,
+    "total_pages": 0,
+    "start_index": 0,
+    "end_index": 0
+  },
+  "results": [
+    {
+      "pk": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "name": "string",
+      "expression": "string",
+      "endpoints": [
+        "string"
+      ],
+      "unknown_endpoints": [
+        "string"
+      ],
+      "unknown_fields": {
+        "property1": [
+          "string"
+        ],
+        "property2": [
+          "string"
+        ]
+      }
+    }
+  ],
+  "autocomplete": {
+    "property1": null,
+    "property2": null
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "non_field_errors": [
+    "string"
+  ],
+  "code": "string",
+  "property1": null,
+  "property2": null
+}
+```
+
+> 403 Response
+
+```json
+{
+  "detail": "string",
+  "code": "string"
+}
+```
+
+<h3 id="rbacpermissioncheckslist-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||[PaginatedPermissionCheckList](#schemapaginatedpermissionchecklist)|
+|400|Bad Request||[ValidationError](#schemavalidationerror)|
+|403|Forbidden||[GenericError](#schemagenericerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+authentik
+</aside>
+
+## rbac_permission_checks_create
+
+<a id="opIdrbac_permission_checks_create"></a>
+
+> Code samples
+
+```bash
+curl https://authentik.example.com/api/v3/rbac/permission_checks/ \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "name": "string",
+    "expression": "string",
+    "endpoints": [
+      "string"
+    ]
+  }'
+```
+
+`POST /rbac/permission_checks/`
+
+Mixin to add a used_by endpoint to return a list of all objects using this object
+
+> Body parameter
+
+```json
+{
+  "name": "string",
+  "expression": "string",
+  "endpoints": [
+    "string"
+  ]
+}
+```
+
+<h3 id="rbacpermissioncheckscreate-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[PermissionCheckRequest](#schemapermissioncheckrequest)|true|none|
+|» name|body|string|true|none|
+|» expression|body|string|true|none|
+|» endpoints|body|[string]|true|none|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "pk": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "expression": "string",
+  "endpoints": [
+    "string"
+  ],
+  "unknown_endpoints": [
+    "string"
+  ],
+  "unknown_fields": {
+    "property1": [
+      "string"
+    ],
+    "property2": [
+      "string"
+    ]
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "non_field_errors": [
+    "string"
+  ],
+  "code": "string",
+  "property1": null,
+  "property2": null
+}
+```
+
+> 403 Response
+
+```json
+{
+  "detail": "string",
+  "code": "string"
+}
+```
+
+<h3 id="rbacpermissioncheckscreate-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created||[PermissionCheck](#schemapermissioncheck)|
+|400|Bad Request||[ValidationError](#schemavalidationerror)|
+|403|Forbidden||[GenericError](#schemagenericerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+authentik
+</aside>
+
+## rbac_permission_checks_retrieve
+
+<a id="opIdrbac_permission_checks_retrieve"></a>
+
+> Code samples
+
+```bash
+curl https://authentik.example.com/api/v3/rbac/permission_checks/497f6eca-6276-4993-bfeb-53cbbbba6f08/ \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /rbac/permission_checks/{check_uuid}/`
+
+Mixin to add a used_by endpoint to return a list of all objects using this object
+
+<h3 id="rbacpermissionchecksretrieve-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|check_uuid|path|string(uuid)|true|A UUID string identifying this Permission check.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "pk": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "expression": "string",
+  "endpoints": [
+    "string"
+  ],
+  "unknown_endpoints": [
+    "string"
+  ],
+  "unknown_fields": {
+    "property1": [
+      "string"
+    ],
+    "property2": [
+      "string"
+    ]
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "non_field_errors": [
+    "string"
+  ],
+  "code": "string",
+  "property1": null,
+  "property2": null
+}
+```
+
+> 403 Response
+
+```json
+{
+  "detail": "string",
+  "code": "string"
+}
+```
+
+<h3 id="rbacpermissionchecksretrieve-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||[PermissionCheck](#schemapermissioncheck)|
+|400|Bad Request||[ValidationError](#schemavalidationerror)|
+|403|Forbidden||[GenericError](#schemagenericerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+authentik
+</aside>
+
+## rbac_permission_checks_update
+
+<a id="opIdrbac_permission_checks_update"></a>
+
+> Code samples
+
+```bash
+curl https://authentik.example.com/api/v3/rbac/permission_checks/497f6eca-6276-4993-bfeb-53cbbbba6f08/ \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "name": "string",
+    "expression": "string",
+    "endpoints": [
+      "string"
+    ]
+  }'
+```
+
+`PUT /rbac/permission_checks/{check_uuid}/`
+
+Mixin to add a used_by endpoint to return a list of all objects using this object
+
+> Body parameter
+
+```json
+{
+  "name": "string",
+  "expression": "string",
+  "endpoints": [
+    "string"
+  ]
+}
+```
+
+<h3 id="rbacpermissionchecksupdate-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|check_uuid|path|string(uuid)|true|A UUID string identifying this Permission check.|
+|body|body|[PermissionCheckRequest](#schemapermissioncheckrequest)|true|none|
+|» name|body|string|true|none|
+|» expression|body|string|true|none|
+|» endpoints|body|[string]|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "pk": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "expression": "string",
+  "endpoints": [
+    "string"
+  ],
+  "unknown_endpoints": [
+    "string"
+  ],
+  "unknown_fields": {
+    "property1": [
+      "string"
+    ],
+    "property2": [
+      "string"
+    ]
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "non_field_errors": [
+    "string"
+  ],
+  "code": "string",
+  "property1": null,
+  "property2": null
+}
+```
+
+> 403 Response
+
+```json
+{
+  "detail": "string",
+  "code": "string"
+}
+```
+
+<h3 id="rbacpermissionchecksupdate-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||[PermissionCheck](#schemapermissioncheck)|
+|400|Bad Request||[ValidationError](#schemavalidationerror)|
+|403|Forbidden||[GenericError](#schemagenericerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+authentik
+</aside>
+
+## rbac_permission_checks_destroy
+
+<a id="opIdrbac_permission_checks_destroy"></a>
+
+> Code samples
+
+```bash
+curl https://authentik.example.com/api/v3/rbac/permission_checks/497f6eca-6276-4993-bfeb-53cbbbba6f08/ \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /rbac/permission_checks/{check_uuid}/`
+
+Mixin to add a used_by endpoint to return a list of all objects using this object
+
+<h3 id="rbacpermissionchecksdestroy-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|check_uuid|path|string(uuid)|true|A UUID string identifying this Permission check.|
+
+> Example responses
+
+> 400 Response
+
+```json
+{
+  "non_field_errors": [
+    "string"
+  ],
+  "code": "string",
+  "property1": null,
+  "property2": null
+}
+```
+
+> 403 Response
+
+```json
+{
+  "detail": "string",
+  "code": "string"
+}
+```
+
+<h3 id="rbacpermissionchecksdestroy-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|No response body|None|
+|400|Bad Request||[ValidationError](#schemavalidationerror)|
+|403|Forbidden||[GenericError](#schemagenericerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+authentik
+</aside>
+
+## rbac_permission_checks_partial_update
+
+<a id="opIdrbac_permission_checks_partial_update"></a>
+
+> Code samples
+
+```bash
+curl https://authentik.example.com/api/v3/rbac/permission_checks/497f6eca-6276-4993-bfeb-53cbbbba6f08/ \
+  -X PATCH \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "name": "string",
+    "expression": "string",
+    "endpoints": [
+      "string"
+    ]
+  }'
+```
+
+`PATCH /rbac/permission_checks/{check_uuid}/`
+
+Mixin to add a used_by endpoint to return a list of all objects using this object
+
+> Body parameter
+
+```json
+{
+  "name": "string",
+  "expression": "string",
+  "endpoints": [
+    "string"
+  ]
+}
+```
+
+<h3 id="rbacpermissioncheckspartialupdate-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|check_uuid|path|string(uuid)|true|A UUID string identifying this Permission check.|
+|body|body|[PatchedPermissionCheckRequest](#schemapatchedpermissioncheckrequest)|false|none|
+|» name|body|string|false|none|
+|» expression|body|string|false|none|
+|» endpoints|body|[string]|false|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "pk": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "expression": "string",
+  "endpoints": [
+    "string"
+  ],
+  "unknown_endpoints": [
+    "string"
+  ],
+  "unknown_fields": {
+    "property1": [
+      "string"
+    ],
+    "property2": [
+      "string"
+    ]
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "non_field_errors": [
+    "string"
+  ],
+  "code": "string",
+  "property1": null,
+  "property2": null
+}
+```
+
+> 403 Response
+
+```json
+{
+  "detail": "string",
+  "code": "string"
+}
+```
+
+<h3 id="rbacpermissioncheckspartialupdate-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||[PermissionCheck](#schemapermissioncheck)|
+|400|Bad Request||[ValidationError](#schemavalidationerror)|
+|403|Forbidden||[GenericError](#schemagenericerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+authentik
+</aside>
+
+## rbac_permission_checks_used_by_list
+
+<a id="opIdrbac_permission_checks_used_by_list"></a>
+
+> Code samples
+
+```bash
+curl https://authentik.example.com/api/v3/rbac/permission_checks/497f6eca-6276-4993-bfeb-53cbbbba6f08/used_by/ \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /rbac/permission_checks/{check_uuid}/used_by/`
+
+Get a list of all objects that use this object
+
+<h3 id="rbacpermissionchecksusedbylist-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|check_uuid|path|string(uuid)|true|A UUID string identifying this Permission check.|
+
+> Example responses
+
+> 200 Response
+
+```json
+[
+  {
+    "app": "string",
+    "model_name": "string",
+    "pk": "string",
+    "name": "string",
+    "action": "cascade"
+  }
+]
+```
+
+> 400 Response
+
+```json
+{
+  "non_field_errors": [
+    "string"
+  ],
+  "code": "string",
+  "property1": null,
+  "property2": null
+}
+```
+
+> 403 Response
+
+```json
+{
+  "detail": "string",
+  "code": "string"
+}
+```
+
+<h3 id="rbacpermissionchecksusedbylist-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||Inline|
+|400|Bad Request||[ValidationError](#schemavalidationerror)|
+|403|Forbidden||[GenericError](#schemagenericerror)|
+
+<h3 id="rbacpermissionchecksusedbylist-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[UsedBy](#schemausedby)]|false|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+authentik
+</aside>
+
 ## rbac_permissions_list
 
 <a id="opIdrbac_permissions_list"></a>
@@ -75752,6 +79210,8 @@ are only assigned to the specific object, otherwise they are assigned globally.
 |» model|authentik_providers_scim.scimmapping|
 |» model|authentik_rbac.role|
 |» model|authentik_rbac.initialpermissions|
+|» model|authentik_rbac.custompermission|
+|» model|authentik_rbac.permissioncheck|
 |» model|authentik_sources_kerberos.kerberossource|
 |» model|authentik_sources_kerberos.kerberossourcepropertymapping|
 |» model|authentik_sources_kerberos.userkerberossourceconnection|
@@ -75813,10 +79273,12 @@ are only assigned to the specific object, otherwise they are assigned globally.
 |» model|authentik_agents.agent|
 |» model|authentik_endpoints_connectors_fleet.fleetconnector|
 |» model|authentik_endpoints_connectors_google_chrome.googlechromeconnector|
+|» model|authentik_endpoints_connectors_microsoft_intune.microsoftintuneconnector|
 |» model|authentik_lifecycle.lifecyclerule|
 |» model|authentik_lifecycle.lifecycleiteration|
 |» model|authentik_lifecycle.review|
 |» model|authentik_lifecycle.useroffboarding|
+|» model|authentik_lifecycle.userexpirationrule|
 |» model|authentik_policies_unique_password.uniquepasswordpolicy|
 |» model|authentik_providers_google_workspace.googleworkspaceprovider|
 |» model|authentik_providers_google_workspace.googleworkspaceprovidermapping|
@@ -75989,6 +79451,8 @@ are only assigned to the specific object, otherwise they are assigned globally.
 |» model|authentik_providers_scim.scimmapping|
 |» model|authentik_rbac.role|
 |» model|authentik_rbac.initialpermissions|
+|» model|authentik_rbac.custompermission|
+|» model|authentik_rbac.permissioncheck|
 |» model|authentik_sources_kerberos.kerberossource|
 |» model|authentik_sources_kerberos.kerberossourcepropertymapping|
 |» model|authentik_sources_kerberos.userkerberossourceconnection|
@@ -76050,10 +79514,12 @@ are only assigned to the specific object, otherwise they are assigned globally.
 |» model|authentik_agents.agent|
 |» model|authentik_endpoints_connectors_fleet.fleetconnector|
 |» model|authentik_endpoints_connectors_google_chrome.googlechromeconnector|
+|» model|authentik_endpoints_connectors_microsoft_intune.microsoftintuneconnector|
 |» model|authentik_lifecycle.lifecyclerule|
 |» model|authentik_lifecycle.lifecycleiteration|
 |» model|authentik_lifecycle.review|
 |» model|authentik_lifecycle.useroffboarding|
+|» model|authentik_lifecycle.userexpirationrule|
 |» model|authentik_policies_unique_password.uniquepasswordpolicy|
 |» model|authentik_providers_google_workspace.googleworkspaceprovider|
 |» model|authentik_providers_google_workspace.googleworkspaceprovidermapping|
@@ -81029,6 +84495,10 @@ Get all creatable types
     "component": "string",
     "model_name": "string",
     "icon_url": "string",
+    "icon_themed_urls": {
+      "light": "string",
+      "dark": "string"
+    },
     "requires_enterprise": false,
     "deprecated": false
   }
@@ -81105,7 +84575,11 @@ Get all sources the user can configure
     "component": "string",
     "title": "string",
     "configure_url": "string",
-    "icon_url": "string"
+    "icon_url": "string",
+    "icon_themed_urls": {
+      "light": "string",
+      "dark": "string"
+    }
   }
 ]
 ```
@@ -91251,7 +94725,7 @@ SAMLSource Viewset
 |» slo_url|body|string(uri) \| null|false|Optional URL if your IDP supports Single-Logout.|
 |» allow_idp_initiated|body|boolean|false|Allows authentication flows initiated by the IdP. This can be a security risk, as no validation of the request ID is done.|
 |» force_authn|body|boolean|false|When enabled, the IdP will re-authenticate the user even if a session exists.|
-|» name_id_policy|body|object|false|NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.|
+|» name_id_policy|body|object|false|Format of the NameID Policy sent to the IdP. Select Unspecified to let the IdP choose the format of the NameID it returns.|
 |» binding_type|body|[BindingTypeEnum](#schemabindingtypeenum)|false|none|
 |» verification_kp|body|string(uuid) \| null|false|When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default.|
 |» signing_kp|body|string(uuid) \| null|false|Keypair used to sign outgoing Responses going to the Identity Provider.|
@@ -91603,7 +95077,7 @@ SAMLSource Viewset
 |» slo_url|body|string(uri) \| null|false|Optional URL if your IDP supports Single-Logout.|
 |» allow_idp_initiated|body|boolean|false|Allows authentication flows initiated by the IdP. This can be a security risk, as no validation of the request ID is done.|
 |» force_authn|body|boolean|false|When enabled, the IdP will re-authenticate the user even if a session exists.|
-|» name_id_policy|body|object|false|NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.|
+|» name_id_policy|body|object|false|Format of the NameID Policy sent to the IdP. Select Unspecified to let the IdP choose the format of the NameID it returns.|
 |» binding_type|body|[BindingTypeEnum](#schemabindingtypeenum)|false|none|
 |» verification_kp|body|string(uuid) \| null|false|When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default.|
 |» signing_kp|body|string(uuid) \| null|false|Keypair used to sign outgoing Responses going to the Identity Provider.|
@@ -91904,7 +95378,7 @@ SAMLSource Viewset
 |» slo_url|body|string(uri) \| null|false|Optional URL if your IDP supports Single-Logout.|
 |» allow_idp_initiated|body|boolean|false|Allows authentication flows initiated by the IdP. This can be a security risk, as no validation of the request ID is done.|
 |» force_authn|body|boolean|false|When enabled, the IdP will re-authenticate the user even if a session exists.|
-|» name_id_policy|body|object|false|NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.|
+|» name_id_policy|body|object|false|Format of the NameID Policy sent to the IdP. Select Unspecified to let the IdP choose the format of the NameID it returns.|
 |» binding_type|body|[BindingTypeEnum](#schemabindingtypeenum)|false|none|
 |» verification_kp|body|string(uuid) \| null|false|When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default.|
 |» signing_kp|body|string(uuid) \| null|false|Keypair used to sign outgoing Responses going to the Identity Provider.|
@@ -101860,6 +105334,10 @@ Get all creatable types
     "component": "string",
     "model_name": "string",
     "icon_url": "string",
+    "icon_themed_urls": {
+      "light": "string",
+      "dark": "string"
+    },
     "requires_enterprise": false,
     "deprecated": false
   }
@@ -101936,7 +105414,11 @@ Get all stages the user can configure
     "component": "string",
     "title": "string",
     "configure_url": "string",
-    "icon_url": "string"
+    "icon_url": "string",
+    "icon_themed_urls": {
+      "light": "string",
+      "dark": "string"
+    }
   }
 ]
 ```
@@ -106821,6 +110303,9 @@ AuthenticatorValidateStage Viewset
       "webauthn_hints": [
         "security-key"
       ],
+      "webauthn_additional_accepted_origins": [
+        "string"
+      ],
       "webauthn_allowed_device_types": [
         "497f6eca-6276-4993-bfeb-53cbbbba6f08"
       ],
@@ -106904,6 +110389,9 @@ curl https://authentik.example.com/api/v3/stages/authenticator/validate/ \
     "webauthn_hints": [
       "security-key"
     ],
+    "webauthn_additional_accepted_origins": [
+      "string"
+    ],
     "webauthn_allowed_device_types": [
       "497f6eca-6276-4993-bfeb-53cbbbba6f08"
     ],
@@ -106935,6 +110423,9 @@ AuthenticatorValidateStage Viewset
   "webauthn_hints": [
     "security-key"
   ],
+  "webauthn_additional_accepted_origins": [
+    "string"
+  ],
   "webauthn_allowed_device_types": [
     "497f6eca-6276-4993-bfeb-53cbbbba6f08"
   ],
@@ -106957,6 +110448,7 @@ AuthenticatorValidateStage Viewset
 |» last_auth_threshold|body|string|false|If any of the user's device has been used within this threshold, this stage will be skipped|
 |» webauthn_user_verification|body|object|false|Enforce user verification for WebAuthn devices.|
 |» webauthn_hints|body|[[WebAuthnHintEnum](#schemawebauthnhintenum)]|false|none|
+|» webauthn_additional_accepted_origins|body|[string]|false|Additional trusted origins for WebAuthn authentication. Matched exactly.|
 |» webauthn_allowed_device_types|body|[string(uuid)]|false|none|
 |» email_otp_throttling_factor|body|number(double)|false|none|
 |» sms_otp_throttling_factor|body|number(double)|false|none|
@@ -107019,6 +110511,9 @@ AuthenticatorValidateStage Viewset
   "webauthn_user_verification": {},
   "webauthn_hints": [
     "security-key"
+  ],
+  "webauthn_additional_accepted_origins": [
+    "string"
   ],
   "webauthn_allowed_device_types": [
     "497f6eca-6276-4993-bfeb-53cbbbba6f08"
@@ -107133,6 +110628,9 @@ AuthenticatorValidateStage Viewset
   "webauthn_hints": [
     "security-key"
   ],
+  "webauthn_additional_accepted_origins": [
+    "string"
+  ],
   "webauthn_allowed_device_types": [
     "497f6eca-6276-4993-bfeb-53cbbbba6f08"
   ],
@@ -107210,6 +110708,9 @@ curl https://authentik.example.com/api/v3/stages/authenticator/validate/497f6eca
     "webauthn_hints": [
       "security-key"
     ],
+    "webauthn_additional_accepted_origins": [
+      "string"
+    ],
     "webauthn_allowed_device_types": [
       "497f6eca-6276-4993-bfeb-53cbbbba6f08"
     ],
@@ -107241,6 +110742,9 @@ AuthenticatorValidateStage Viewset
   "webauthn_hints": [
     "security-key"
   ],
+  "webauthn_additional_accepted_origins": [
+    "string"
+  ],
   "webauthn_allowed_device_types": [
     "497f6eca-6276-4993-bfeb-53cbbbba6f08"
   ],
@@ -107264,6 +110768,7 @@ AuthenticatorValidateStage Viewset
 |» last_auth_threshold|body|string|false|If any of the user's device has been used within this threshold, this stage will be skipped|
 |» webauthn_user_verification|body|object|false|Enforce user verification for WebAuthn devices.|
 |» webauthn_hints|body|[[WebAuthnHintEnum](#schemawebauthnhintenum)]|false|none|
+|» webauthn_additional_accepted_origins|body|[string]|false|Additional trusted origins for WebAuthn authentication. Matched exactly.|
 |» webauthn_allowed_device_types|body|[string(uuid)]|false|none|
 |» email_otp_throttling_factor|body|number(double)|false|none|
 |» sms_otp_throttling_factor|body|number(double)|false|none|
@@ -107326,6 +110831,9 @@ AuthenticatorValidateStage Viewset
   "webauthn_user_verification": {},
   "webauthn_hints": [
     "security-key"
+  ],
+  "webauthn_additional_accepted_origins": [
+    "string"
   ],
   "webauthn_allowed_device_types": [
     "497f6eca-6276-4993-bfeb-53cbbbba6f08"
@@ -107464,6 +110972,9 @@ curl https://authentik.example.com/api/v3/stages/authenticator/validate/497f6eca
     "webauthn_hints": [
       "security-key"
     ],
+    "webauthn_additional_accepted_origins": [
+      "string"
+    ],
     "webauthn_allowed_device_types": [
       "497f6eca-6276-4993-bfeb-53cbbbba6f08"
     ],
@@ -107495,6 +111006,9 @@ AuthenticatorValidateStage Viewset
   "webauthn_hints": [
     "security-key"
   ],
+  "webauthn_additional_accepted_origins": [
+    "string"
+  ],
   "webauthn_allowed_device_types": [
     "497f6eca-6276-4993-bfeb-53cbbbba6f08"
   ],
@@ -107518,6 +111032,7 @@ AuthenticatorValidateStage Viewset
 |» last_auth_threshold|body|string|false|If any of the user's device has been used within this threshold, this stage will be skipped|
 |» webauthn_user_verification|body|object|false|Enforce user verification for WebAuthn devices.|
 |» webauthn_hints|body|[[WebAuthnHintEnum](#schemawebauthnhintenum)]|false|none|
+|» webauthn_additional_accepted_origins|body|[string]|false|Additional trusted origins for WebAuthn authentication. Matched exactly.|
 |» webauthn_allowed_device_types|body|[string(uuid)]|false|none|
 |» email_otp_throttling_factor|body|number(double)|false|none|
 |» sms_otp_throttling_factor|body|number(double)|false|none|
@@ -107580,6 +111095,9 @@ AuthenticatorValidateStage Viewset
   "webauthn_user_verification": {},
   "webauthn_hints": [
     "security-key"
+  ],
+  "webauthn_additional_accepted_origins": [
+    "string"
   ],
   "webauthn_allowed_device_types": [
     "497f6eca-6276-4993-bfeb-53cbbbba6f08"
@@ -107803,6 +111321,9 @@ AuthenticatorWebAuthnStage Viewset
       "hints": [
         "security-key"
       ],
+      "additional_accepted_origins": [
+        "string"
+      ],
       "device_type_restrictions": [
         "497f6eca-6276-4993-bfeb-53cbbbba6f08"
       ],
@@ -107879,6 +111400,9 @@ curl https://authentik.example.com/api/v3/stages/authenticator/webauthn/ \
     "hints": [
       "security-key"
     ],
+    "additional_accepted_origins": [
+      "string"
+    ],
     "device_type_restrictions": [
       "497f6eca-6276-4993-bfeb-53cbbbba6f08"
     ],
@@ -107903,6 +111427,9 @@ AuthenticatorWebAuthnStage Viewset
   "hints": [
     "security-key"
   ],
+  "additional_accepted_origins": [
+    "string"
+  ],
   "device_type_restrictions": [
     "497f6eca-6276-4993-bfeb-53cbbbba6f08"
   ],
@@ -107922,6 +111449,7 @@ AuthenticatorWebAuthnStage Viewset
 |» authenticator_attachment|body|object \| null|false|none|
 |» resident_key_requirement|body|[UserVerificationEnum](#schemauserverificationenum)|false|none|
 |» hints|body|[[WebAuthnHintEnum](#schemawebauthnhintenum)]|false|none|
+|» additional_accepted_origins|body|[string]|false|Additional trusted origins for WebAuthn registration. Matched exactly.|
 |» device_type_restrictions|body|[string(uuid)]|false|none|
 |» max_attempts|body|integer|false|none|
 
@@ -107974,6 +111502,9 @@ AuthenticatorWebAuthnStage Viewset
   "resident_key_requirement": "required",
   "hints": [
     "security-key"
+  ],
+  "additional_accepted_origins": [
+    "string"
   ],
   "device_type_restrictions": [
     "497f6eca-6276-4993-bfeb-53cbbbba6f08"
@@ -108081,6 +111612,9 @@ AuthenticatorWebAuthnStage Viewset
   "hints": [
     "security-key"
   ],
+  "additional_accepted_origins": [
+    "string"
+  ],
   "device_type_restrictions": [
     "497f6eca-6276-4993-bfeb-53cbbbba6f08"
   ],
@@ -108151,6 +111685,9 @@ curl https://authentik.example.com/api/v3/stages/authenticator/webauthn/497f6eca
     "hints": [
       "security-key"
     ],
+    "additional_accepted_origins": [
+      "string"
+    ],
     "device_type_restrictions": [
       "497f6eca-6276-4993-bfeb-53cbbbba6f08"
     ],
@@ -108175,6 +111712,9 @@ AuthenticatorWebAuthnStage Viewset
   "hints": [
     "security-key"
   ],
+  "additional_accepted_origins": [
+    "string"
+  ],
   "device_type_restrictions": [
     "497f6eca-6276-4993-bfeb-53cbbbba6f08"
   ],
@@ -108195,6 +111735,7 @@ AuthenticatorWebAuthnStage Viewset
 |» authenticator_attachment|body|object \| null|false|none|
 |» resident_key_requirement|body|[UserVerificationEnum](#schemauserverificationenum)|false|none|
 |» hints|body|[[WebAuthnHintEnum](#schemawebauthnhintenum)]|false|none|
+|» additional_accepted_origins|body|[string]|false|Additional trusted origins for WebAuthn registration. Matched exactly.|
 |» device_type_restrictions|body|[string(uuid)]|false|none|
 |» max_attempts|body|integer|false|none|
 
@@ -108247,6 +111788,9 @@ AuthenticatorWebAuthnStage Viewset
   "resident_key_requirement": "required",
   "hints": [
     "security-key"
+  ],
+  "additional_accepted_origins": [
+    "string"
   ],
   "device_type_restrictions": [
     "497f6eca-6276-4993-bfeb-53cbbbba6f08"
@@ -108378,6 +111922,9 @@ curl https://authentik.example.com/api/v3/stages/authenticator/webauthn/497f6eca
     "hints": [
       "security-key"
     ],
+    "additional_accepted_origins": [
+      "string"
+    ],
     "device_type_restrictions": [
       "497f6eca-6276-4993-bfeb-53cbbbba6f08"
     ],
@@ -108402,6 +111949,9 @@ AuthenticatorWebAuthnStage Viewset
   "hints": [
     "security-key"
   ],
+  "additional_accepted_origins": [
+    "string"
+  ],
   "device_type_restrictions": [
     "497f6eca-6276-4993-bfeb-53cbbbba6f08"
   ],
@@ -108422,6 +111972,7 @@ AuthenticatorWebAuthnStage Viewset
 |» authenticator_attachment|body|object \| null|false|none|
 |» resident_key_requirement|body|[UserVerificationEnum](#schemauserverificationenum)|false|none|
 |» hints|body|[[WebAuthnHintEnum](#schemawebauthnhintenum)]|false|none|
+|» additional_accepted_origins|body|[string]|false|Additional trusted origins for WebAuthn registration. Matched exactly.|
 |» device_type_restrictions|body|[string(uuid)]|false|none|
 |» max_attempts|body|integer|false|none|
 
@@ -108474,6 +112025,9 @@ AuthenticatorWebAuthnStage Viewset
   "resident_key_requirement": "required",
   "hints": [
     "security-key"
+  ],
+  "additional_accepted_origins": [
+    "string"
   ],
   "device_type_restrictions": [
     "497f6eca-6276-4993-bfeb-53cbbbba6f08"
@@ -112476,6 +116030,10 @@ Get all available templates, including custom templates
     "component": "string",
     "model_name": "string",
     "icon_url": "string",
+    "icon_themed_urls": {
+      "light": "string",
+      "dark": "string"
+    },
     "requires_enterprise": false,
     "deprecated": false
   }
@@ -116569,6 +120127,7 @@ PasswordStage Viewset
 |allow_show_password|query|boolean|false|none|
 |configure_flow|query|string(uuid)|false|none|
 |failed_attempts_before_cancel|query|integer|false|none|
+|failed_attempts_before_lockout|query|integer|false|none|
 |name|query|string|false|none|
 |ordering|query|string|false|Which field to use when ordering the results.|
 |page|query|integer|false|A page number within the paginated result set.|
@@ -116619,6 +120178,9 @@ PasswordStage Viewset
       ],
       "configure_flow": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
       "failed_attempts_before_cancel": -2147483648,
+      "failed_attempts_before_lockout": 0,
+      "last_attempt_warning_message": "string",
+      "lockout_message": "string",
       "allow_show_password": true
     }
   ],
@@ -116683,6 +120245,9 @@ curl https://authentik.example.com/api/v3/stages/password/ \
     ],
     "configure_flow": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
     "failed_attempts_before_cancel": -2147483648,
+    "failed_attempts_before_lockout": 0,
+    "last_attempt_warning_message": "string",
+    "lockout_message": "string",
     "allow_show_password": true
   }'
 ```
@@ -116701,6 +120266,9 @@ PasswordStage Viewset
   ],
   "configure_flow": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
   "failed_attempts_before_cancel": -2147483648,
+  "failed_attempts_before_lockout": 0,
+  "last_attempt_warning_message": "string",
+  "lockout_message": "string",
   "allow_show_password": true
 }
 ```
@@ -116713,7 +120281,10 @@ PasswordStage Viewset
 |» name|body|string|true|none|
 |» backends|body|[[BackendsEnum](#schemabackendsenum)]|true|Selection of backends to test the password against.|
 |» configure_flow|body|string(uuid) \| null|false|Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.|
-|» failed_attempts_before_cancel|body|integer|false|How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage.|
+|» failed_attempts_before_cancel|body|integer|false|How many attempts a user has before the flow is canceled. This only cancels the flow, it does not lock the user's password.|
+|» failed_attempts_before_lockout|body|integer|false|How many consecutive failed attempts lock the user's password until an administrator unlocks it. Set to 0 to never lock.|
+|» last_attempt_warning_message|body|string|false|Warning shown when the user has one password attempt remaining. Leave blank to show no warning.|
+|» lockout_message|body|string|false|Message shown when the user's password has been locked. Leave blank to show a generic authentication error.|
 |» allow_show_password|body|boolean|false|When enabled, provides a 'show password' button with the password input field.|
 
 #### Enumerated Values
@@ -116758,6 +120329,9 @@ PasswordStage Viewset
   ],
   "configure_flow": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
   "failed_attempts_before_cancel": -2147483648,
+  "failed_attempts_before_lockout": 0,
+  "last_attempt_warning_message": "string",
+  "lockout_message": "string",
   "allow_show_password": true
 }
 ```
@@ -116852,6 +120426,9 @@ PasswordStage Viewset
   ],
   "configure_flow": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
   "failed_attempts_before_cancel": -2147483648,
+  "failed_attempts_before_lockout": 0,
+  "last_attempt_warning_message": "string",
+  "lockout_message": "string",
   "allow_show_password": true
 }
 ```
@@ -116910,6 +120487,9 @@ curl https://authentik.example.com/api/v3/stages/password/497f6eca-6276-4993-bfe
     ],
     "configure_flow": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
     "failed_attempts_before_cancel": -2147483648,
+    "failed_attempts_before_lockout": 0,
+    "last_attempt_warning_message": "string",
+    "lockout_message": "string",
     "allow_show_password": true
   }'
 ```
@@ -116928,6 +120508,9 @@ PasswordStage Viewset
   ],
   "configure_flow": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
   "failed_attempts_before_cancel": -2147483648,
+  "failed_attempts_before_lockout": 0,
+  "last_attempt_warning_message": "string",
+  "lockout_message": "string",
   "allow_show_password": true
 }
 ```
@@ -116941,7 +120524,10 @@ PasswordStage Viewset
 |» name|body|string|true|none|
 |» backends|body|[[BackendsEnum](#schemabackendsenum)]|true|Selection of backends to test the password against.|
 |» configure_flow|body|string(uuid) \| null|false|Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.|
-|» failed_attempts_before_cancel|body|integer|false|How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage.|
+|» failed_attempts_before_cancel|body|integer|false|How many attempts a user has before the flow is canceled. This only cancels the flow, it does not lock the user's password.|
+|» failed_attempts_before_lockout|body|integer|false|How many consecutive failed attempts lock the user's password until an administrator unlocks it. Set to 0 to never lock.|
+|» last_attempt_warning_message|body|string|false|Warning shown when the user has one password attempt remaining. Leave blank to show no warning.|
+|» lockout_message|body|string|false|Message shown when the user's password has been locked. Leave blank to show a generic authentication error.|
 |» allow_show_password|body|boolean|false|When enabled, provides a 'show password' button with the password input field.|
 
 #### Enumerated Values
@@ -116986,6 +120572,9 @@ PasswordStage Viewset
   ],
   "configure_flow": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
   "failed_attempts_before_cancel": -2147483648,
+  "failed_attempts_before_lockout": 0,
+  "last_attempt_warning_message": "string",
+  "lockout_message": "string",
   "allow_show_password": true
 }
 ```
@@ -117104,6 +120693,9 @@ curl https://authentik.example.com/api/v3/stages/password/497f6eca-6276-4993-bfe
     ],
     "configure_flow": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
     "failed_attempts_before_cancel": -2147483648,
+    "failed_attempts_before_lockout": 0,
+    "last_attempt_warning_message": "string",
+    "lockout_message": "string",
     "allow_show_password": true
   }'
 ```
@@ -117122,6 +120714,9 @@ PasswordStage Viewset
   ],
   "configure_flow": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
   "failed_attempts_before_cancel": -2147483648,
+  "failed_attempts_before_lockout": 0,
+  "last_attempt_warning_message": "string",
+  "lockout_message": "string",
   "allow_show_password": true
 }
 ```
@@ -117135,7 +120730,10 @@ PasswordStage Viewset
 |» name|body|string|false|none|
 |» backends|body|[[BackendsEnum](#schemabackendsenum)]|false|Selection of backends to test the password against.|
 |» configure_flow|body|string(uuid) \| null|false|Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.|
-|» failed_attempts_before_cancel|body|integer|false|How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage.|
+|» failed_attempts_before_cancel|body|integer|false|How many attempts a user has before the flow is canceled. This only cancels the flow, it does not lock the user's password.|
+|» failed_attempts_before_lockout|body|integer|false|How many consecutive failed attempts lock the user's password until an administrator unlocks it. Set to 0 to never lock.|
+|» last_attempt_warning_message|body|string|false|Warning shown when the user has one password attempt remaining. Leave blank to show no warning.|
+|» lockout_message|body|string|false|Message shown when the user's password has been locked. Leave blank to show a generic authentication error.|
 |» allow_show_password|body|boolean|false|When enabled, provides a 'show password' button with the password input field.|
 
 #### Enumerated Values
@@ -117180,6 +120778,9 @@ PasswordStage Viewset
   ],
   "configure_flow": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
   "failed_attempts_before_cancel": -2147483648,
+  "failed_attempts_before_lockout": 0,
+  "last_attempt_warning_message": "string",
+  "lockout_message": "string",
   "allow_show_password": true
 }
 ```
@@ -124440,6 +128041,17 @@ AccountLockdownStage Serializer
 |revoke_tokens|boolean|false|none|Revoke all tokens for the user (API, app password, recovery, verification, OAuth)|
 |self_service_completion_flow|string(uuid) \| null|false|none|Flow to redirect users to after self-service lockdown. This flow should not require authentication since the user's session is deleted.|
 
+<h2 id="tocS_ActivityBasisEnum">ActivityBasisEnum</h2>
+<!-- backwards compatibility -->
+<a id="schemaactivitybasisenum"></a>
+<a id="schema_ActivityBasisEnum"></a>
+<a id="tocSactivitybasisenum"></a>
+<a id="tocsactivitybasisenum"></a>
+
+```json
+"last_login"
+```
+
 <h2 id="tocS_Agent">Agent</h2>
 <!-- backwards compatibility -->
 <a id="schemaagent"></a>
@@ -125006,6 +128618,62 @@ authentik settings for Platform SSO tokens
 |nonce_endpoint|string|true|none|none|
 |authorization_endpoint|string|true|none|none|
 
+<h2 id="tocS_AgentPSSODeviceState">AgentPSSODeviceState</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentpssodevicestate"></a>
+<a id="schema_AgentPSSODeviceState"></a>
+<a id="tocSagentpssodevicestate"></a>
+<a id="tocsagentpssodevicestate"></a>
+
+```json
+{
+  "device_registered": true,
+  "sign_key_id": "string",
+  "enc_key_id": "string",
+  "users": [
+    {
+      "username": "string",
+      "enclave_key_id": "string"
+    }
+  ]
+}
+```
+
+What authentik currently has stored for this device's Platform SSO
+registration, so the client can detect drift and repair it
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|device_registered|boolean|true|none|none|
+|sign_key_id|string|true|none|none|
+|enc_key_id|string|true|none|none|
+|users|[[AgentPSSODeviceStateUser](#schemaagentpssodevicestateuser)]|true|none|none|
+
+<h2 id="tocS_AgentPSSODeviceStateUser">AgentPSSODeviceStateUser</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentpssodevicestateuser"></a>
+<a id="schema_AgentPSSODeviceStateUser"></a>
+<a id="tocSagentpssodevicestateuser"></a>
+<a id="tocsagentpssodevicestateuser"></a>
+
+```json
+{
+  "username": "string",
+  "enclave_key_id": "string"
+}
+```
+
+A user currently registered for Platform SSO on this device
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|username|string|true|none|none|
+|enclave_key_id|string|true|none|none|
+
 <h2 id="tocS_AgentPSSOUserRegistrationRequest">AgentPSSOUserRegistrationRequest</h2>
 <!-- backwards compatibility -->
 <a id="schemaagentpssouserregistrationrequest"></a>
@@ -125360,7 +129028,7 @@ Application Serializer
 |provider_obj|object \| null|true|read-only|none|
 |backchannel_providers|[integer]|false|none|none|
 |backchannel_providers_obj|[[Provider](#schemaprovider)]|true|read-only|none|
-|launch_url|string \| null|true|read-only|Allow formatting of launch URL|
+|launch_url|string \| null|true|read-only|Format the launch URL for the user given as `for_user` in the context, or else the<br>requesting user|
 |open_in_new_tab|boolean|false|none|Open launch URL in a new browser tab or window.|
 |meta_launch_url|string(uri)|false|none|none|
 |meta_icon|string|false|none|none|
@@ -125391,6 +129059,8 @@ Application Serializer
   "pbm_uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
   "name": "string",
   "app": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "app_name": "string",
+  "app_slug": "string",
   "attributes": {
     "property1": null,
     "property2": null
@@ -125407,6 +129077,8 @@ ApplicationEntitlement Serializer
 |pbm_uuid|string(uuid)|true|read-only|none|
 |name|string|true|none|none|
 |app|string(uuid)|true|none|none|
+|app_name|string|true|read-only|Application's display Name.|
+|app_slug|string|true|read-only|Internal application name, used in URLs.|
 |attributes|object|false|none|none|
 
 <h2 id="tocS_ApplicationEntitlementRequest">ApplicationEntitlementRequest</h2>
@@ -126700,6 +130372,9 @@ AuthenticatorTOTPStage Serializer
   "webauthn_hints": [
     "security-key"
   ],
+  "webauthn_additional_accepted_origins": [
+    "string"
+  ],
   "webauthn_allowed_device_types": [
     "497f6eca-6276-4993-bfeb-53cbbbba6f08"
   ],
@@ -126735,6 +130410,7 @@ AuthenticatorValidateStage Serializer
 |last_auth_threshold|string|false|none|If any of the user's device has been used within this threshold, this stage will be skipped|
 |webauthn_user_verification|object|false|none|Enforce user verification for WebAuthn devices.|
 |webauthn_hints|[[WebAuthnHintEnum](#schemawebauthnhintenum)]|false|none|none|
+|webauthn_additional_accepted_origins|[string]|false|none|Additional trusted origins for WebAuthn authentication. Matched exactly.|
 |webauthn_allowed_device_types|[string(uuid)]|false|none|none|
 |webauthn_allowed_device_types_obj|[[WebAuthnDeviceType](#schemawebauthndevicetype)]|true|read-only|none|
 |email_otp_throttling_factor|number(double)|false|none|none|
@@ -126781,6 +130457,9 @@ AuthenticatorValidateStage Serializer
   "webauthn_hints": [
     "security-key"
   ],
+  "webauthn_additional_accepted_origins": [
+    "string"
+  ],
   "webauthn_allowed_device_types": [
     "497f6eca-6276-4993-bfeb-53cbbbba6f08"
   ],
@@ -126804,6 +130483,7 @@ AuthenticatorValidateStage Serializer
 |last_auth_threshold|string|false|none|If any of the user's device has been used within this threshold, this stage will be skipped|
 |webauthn_user_verification|object|false|none|Enforce user verification for WebAuthn devices.|
 |webauthn_hints|[[WebAuthnHintEnum](#schemawebauthnhintenum)]|false|none|none|
+|webauthn_additional_accepted_origins|[string]|false|none|Additional trusted origins for WebAuthn authentication. Matched exactly.|
 |webauthn_allowed_device_types|[string(uuid)]|false|none|none|
 |email_otp_throttling_factor|number(double)|false|none|none|
 |sms_otp_throttling_factor|number(double)|false|none|none|
@@ -127074,6 +130754,9 @@ WebAuthn Challenge response
   "hints": [
     "security-key"
   ],
+  "additional_accepted_origins": [
+    "string"
+  ],
   "device_type_restrictions": [
     "497f6eca-6276-4993-bfeb-53cbbbba6f08"
   ],
@@ -127106,6 +130789,7 @@ AuthenticatorWebAuthnStage Serializer
 |authenticator_attachment|object \| null|false|none|none|
 |resident_key_requirement|[UserVerificationEnum](#schemauserverificationenum)|false|none|none|
 |hints|[[WebAuthnHintEnum](#schemawebauthnhintenum)]|false|none|none|
+|additional_accepted_origins|[string]|false|none|Additional trusted origins for WebAuthn registration. Matched exactly.|
 |device_type_restrictions|[string(uuid)]|false|none|none|
 |device_type_restrictions_obj|[[WebAuthnDeviceType](#schemawebauthndevicetype)]|true|read-only|none|
 |max_attempts|integer|false|none|none|
@@ -127142,6 +130826,9 @@ AuthenticatorWebAuthnStage Serializer
   "hints": [
     "security-key"
   ],
+  "additional_accepted_origins": [
+    "string"
+  ],
   "device_type_restrictions": [
     "497f6eca-6276-4993-bfeb-53cbbbba6f08"
   ],
@@ -127162,6 +130849,7 @@ AuthenticatorWebAuthnStage Serializer
 |authenticator_attachment|object \| null|false|none|none|
 |resident_key_requirement|[UserVerificationEnum](#schemauserverificationenum)|false|none|none|
 |hints|[[WebAuthnHintEnum](#schemawebauthnhintenum)]|false|none|none|
+|additional_accepted_origins|[string]|false|none|Additional trusted origins for WebAuthn registration. Matched exactly.|
 |device_type_restrictions|[string(uuid)]|false|none|none|
 |max_attempts|integer|false|none|none|
 
@@ -128717,6 +132405,56 @@ Partial brand information for styling
 |flow_request|string|false|none|none|
 |default_locale|string|true|read-only|none|
 |flags|object|true|read-only|none|
+
+<h2 id="tocS_CustomPermission">CustomPermission</h2>
+<!-- backwards compatibility -->
+<a id="schemacustompermission"></a>
+<a id="schema_CustomPermission"></a>
+<a id="tocScustompermission"></a>
+<a id="tocscustompermission"></a>
+
+```json
+{
+  "pk": 0,
+  "codename": "string",
+  "name": "string",
+  "model": "string",
+  "permission": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|pk|integer|true|read-only|none|
+|codename|string|true|none|none|
+|name|string|true|none|none|
+|model|string|true|none|none|
+|permission|string|true|read-only|none|
+
+<h2 id="tocS_CustomPermissionRequest">CustomPermissionRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemacustompermissionrequest"></a>
+<a id="schema_CustomPermissionRequest"></a>
+<a id="tocScustompermissionrequest"></a>
+<a id="tocscustompermissionrequest"></a>
+
+```json
+{
+  "codename": "string",
+  "name": "string",
+  "model": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|codename|string|true|none|none|
+|name|string|true|none|none|
+|model|string|true|none|none|
 
 <h2 id="tocS_DataExport">DataExport</h2>
 <!-- backwards compatibility -->
@@ -130837,6 +134575,31 @@ EmailStage Serializer
 "http://www.w3.org/2001/04/xmlenc#aes128-cbc"
 ```
 
+<h2 id="tocS_Endpoint">Endpoint</h2>
+<!-- backwards compatibility -->
+<a id="schemaendpoint"></a>
+<a id="schema_Endpoint"></a>
+<a id="tocSendpoint"></a>
+<a id="tocsendpoint"></a>
+
+```json
+{
+  "id": "string",
+  "functions": [
+    "string"
+  ]
+}
+```
+
+Base serializer class which doesn't implement create/update methods
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|none|
+|functions|[string]|true|none|none|
+
 <h2 id="tocS_EndpointAgentChallenge">EndpointAgentChallenge</h2>
 <!-- backwards compatibility -->
 <a id="schemaendpointagentchallenge"></a>
@@ -131750,8 +135513,12 @@ Event Serializer
 |action|logout|
 |action|user_write|
 |action|user_offboarded|
+|action|user_expiration_warning|
 |action|suspicious_request|
 |action|password_set|
+|action|authenticator_locked|
+|action|authenticator_unlocked|
+|action|required_action_completed|
 |action|secret_view|
 |action|secret_rotate|
 |action|invitation_used|
@@ -131928,8 +135695,12 @@ Event Serializer
 |action|logout|
 |action|user_write|
 |action|user_offboarded|
+|action|user_expiration_warning|
 |action|suspicious_request|
 |action|password_set|
+|action|authenticator_locked|
+|action|authenticator_unlocked|
+|action|required_action_completed|
 |action|secret_view|
 |action|secret_rotate|
 |action|invitation_used|
@@ -132050,8 +135821,12 @@ Count of events of action created on day for a single event action
 |action|logout|
 |action|user_write|
 |action|user_offboarded|
+|action|user_expiration_warning|
 |action|suspicious_request|
 |action|password_set|
+|action|authenticator_locked|
+|action|authenticator_unlocked|
+|action|required_action_completed|
 |action|secret_view|
 |action|secret_rotate|
 |action|invitation_used|
@@ -132166,6 +135941,8 @@ Count of events of action created on day for a single event action
     "type": "internal",
     "uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
     "password_change_date": "1970-01-01T00:00:00Z",
+    "password_locked": true,
+    "password_device": 0,
     "last_updated": "1970-01-01T00:00:00Z"
   },
   "is_expired": true,
@@ -135584,6 +139361,10 @@ Group Source Connection
     {
       "name": "string",
       "icon_url": "string",
+      "icon_themed_urls": {
+        "light": "string",
+        "dark": "string"
+      },
       "promoted": false,
       "challenge": {
         "flow_info": {
@@ -137832,6 +141613,10 @@ Single log message with all context logged.
 {
   "name": "string",
   "icon_url": "string",
+  "icon_themed_urls": {
+    "light": "string",
+    "dark": "string"
+  },
   "promoted": false,
   "challenge": {
     "flow_info": {
@@ -137879,6 +141664,7 @@ Serializer for Login buttons of sources
 |---|---|---|---|---|
 |name|string|true|none|none|
 |icon_url|string \| null|false|none|none|
+|icon_themed_urls|object \| null|false|none|none|
 |promoted|boolean|false|none|none|
 |challenge|[LoginChallengeTypes](#schemaloginchallengetypes)|true|none|none|
 
@@ -138345,6 +142131,82 @@ MicrosoftEntraProviderUser Serializer
 |microsoft_id|string|true|none|none|
 |user|integer|true|none|none|
 |provider|integer|true|none|none|
+
+<h2 id="tocS_MicrosoftIntuneConnector">MicrosoftIntuneConnector</h2>
+<!-- backwards compatibility -->
+<a id="schemamicrosoftintuneconnector"></a>
+<a id="schema_MicrosoftIntuneConnector"></a>
+<a id="tocSmicrosoftintuneconnector"></a>
+<a id="tocsmicrosoftintuneconnector"></a>
+
+```json
+{
+  "connector_uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "enabled": true,
+  "component": "string",
+  "verbose_name": "string",
+  "verbose_name_plural": "string",
+  "meta_model_name": "string",
+  "client_id": "string",
+  "tenant_id": "string",
+  "certificate_authorities": [
+    "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+  ]
+}
+```
+
+MicrosoftIntuneConnector Serializer
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|connector_uuid|string(uuid)|false|none|none|
+|name|string|true|none|none|
+|enabled|boolean|false|none|none|
+|component|string|true|read-only|Get object component so that we know how to edit the object|
+|verbose_name|string|true|read-only|Return object's verbose_name|
+|verbose_name_plural|string|true|read-only|Return object's plural verbose_name|
+|meta_model_name|string|true|read-only|Return internal model name|
+|client_id|string|true|none|none|
+|tenant_id|string|true|none|none|
+|certificate_authorities|[string(uuid)]|false|none|Certificate authorities which issue device certificates via Intune (Cloud PKI, SCEP or PKCS profiles), used by the endpoint stage to validate certificates. This option has a higher priority than the `client_certificate` option on `Brand`.|
+
+<h2 id="tocS_MicrosoftIntuneConnectorRequest">MicrosoftIntuneConnectorRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemamicrosoftintuneconnectorrequest"></a>
+<a id="schema_MicrosoftIntuneConnectorRequest"></a>
+<a id="tocSmicrosoftintuneconnectorrequest"></a>
+<a id="tocsmicrosoftintuneconnectorrequest"></a>
+
+```json
+{
+  "connector_uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "enabled": true,
+  "client_id": "string",
+  "client_secret": "string",
+  "tenant_id": "string",
+  "certificate_authorities": [
+    "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+  ]
+}
+```
+
+MicrosoftIntuneConnector Serializer
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|connector_uuid|string(uuid)|false|none|none|
+|name|string|true|none|none|
+|enabled|boolean|false|none|none|
+|client_id|string|true|none|none|
+|client_secret|string|true|write-only|none|
+|tenant_id|string|true|none|none|
+|certificate_authorities|[string(uuid)]|false|none|Certificate authorities which issue device certificates via Intune (Cloud PKI, SCEP or PKCS profiles), used by the endpoint stage to validate certificates. This option has a higher priority than the `client_certificate` option on `Brand`.|
 
 <h2 id="tocS_ModelEnum">ModelEnum</h2>
 <!-- backwards compatibility -->
@@ -140697,6 +144559,8 @@ Outpost Serializer
       "pbm_uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
       "name": "string",
       "app": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "app_name": "string",
+      "app_slug": "string",
       "attributes": {
         "property1": null,
         "property2": null
@@ -141339,6 +145203,9 @@ Outpost Serializer
       "webauthn_hints": [
         "security-key"
       ],
+      "webauthn_additional_accepted_origins": [
+        "string"
+      ],
       "webauthn_allowed_device_types": [
         "497f6eca-6276-4993-bfeb-53cbbbba6f08"
       ],
@@ -141418,6 +145285,9 @@ Outpost Serializer
       "resident_key_requirement": "required",
       "hints": [
         "security-key"
+      ],
+      "additional_accepted_origins": [
+        "string"
       ],
       "device_type_restrictions": [
         "497f6eca-6276-4993-bfeb-53cbbbba6f08"
@@ -141867,6 +145737,48 @@ Outpost Serializer
 |---|---|---|---|---|
 |pagination|[Pagination](#schemapagination)|true|none|none|
 |results|[[ConsentStage](#schemaconsentstage)]|true|none|none|
+|autocomplete|[Autocomplete](#schemaautocomplete)|true|none|none|
+
+<h2 id="tocS_PaginatedCustomPermissionList">PaginatedCustomPermissionList</h2>
+<!-- backwards compatibility -->
+<a id="schemapaginatedcustompermissionlist"></a>
+<a id="schema_PaginatedCustomPermissionList"></a>
+<a id="tocSpaginatedcustompermissionlist"></a>
+<a id="tocspaginatedcustompermissionlist"></a>
+
+```json
+{
+  "pagination": {
+    "next": 0,
+    "previous": 0,
+    "count": 0,
+    "current": 0,
+    "total_pages": 0,
+    "start_index": 0,
+    "end_index": 0
+  },
+  "results": [
+    {
+      "pk": 0,
+      "codename": "string",
+      "name": "string",
+      "model": "string",
+      "permission": "string"
+    }
+  ],
+  "autocomplete": {
+    "property1": null,
+    "property2": null
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|pagination|[Pagination](#schemapagination)|true|none|none|
+|results|[[CustomPermission](#schemacustompermission)]|true|none|none|
 |autocomplete|[Autocomplete](#schemaautocomplete)|true|none|none|
 
 <h2 id="tocS_PaginatedDataExportList">PaginatedDataExportList</h2>
@@ -142980,6 +146892,8 @@ Outpost Serializer
         "type": "internal",
         "uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
         "password_change_date": "1970-01-01T00:00:00Z",
+        "password_locked": true,
+        "password_device": 0,
         "last_updated": "1970-01-01T00:00:00Z"
       },
       "is_expired": true,
@@ -145589,6 +149503,55 @@ Outpost Serializer
 |results|[[MicrosoftEntraProviderUser](#schemamicrosoftentraprovideruser)]|true|none|none|
 |autocomplete|[Autocomplete](#schemaautocomplete)|true|none|none|
 
+<h2 id="tocS_PaginatedMicrosoftIntuneConnectorList">PaginatedMicrosoftIntuneConnectorList</h2>
+<!-- backwards compatibility -->
+<a id="schemapaginatedmicrosoftintuneconnectorlist"></a>
+<a id="schema_PaginatedMicrosoftIntuneConnectorList"></a>
+<a id="tocSpaginatedmicrosoftintuneconnectorlist"></a>
+<a id="tocspaginatedmicrosoftintuneconnectorlist"></a>
+
+```json
+{
+  "pagination": {
+    "next": 0,
+    "previous": 0,
+    "count": 0,
+    "current": 0,
+    "total_pages": 0,
+    "start_index": 0,
+    "end_index": 0
+  },
+  "results": [
+    {
+      "connector_uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "name": "string",
+      "enabled": true,
+      "component": "string",
+      "verbose_name": "string",
+      "verbose_name_plural": "string",
+      "meta_model_name": "string",
+      "client_id": "string",
+      "tenant_id": "string",
+      "certificate_authorities": [
+        "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+      ]
+    }
+  ],
+  "autocomplete": {
+    "property1": null,
+    "property2": null
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|pagination|[Pagination](#schemapagination)|true|none|none|
+|results|[[MicrosoftIntuneConnector](#schemamicrosoftintuneconnector)]|true|none|none|
+|autocomplete|[Autocomplete](#schemaautocomplete)|true|none|none|
+
 <h2 id="tocS_PaginatedMutualTLSStageList">PaginatedMutualTLSStageList</h2>
 <!-- backwards compatibility -->
 <a id="schemapaginatedmutualtlsstagelist"></a>
@@ -146488,6 +150451,9 @@ Outpost Serializer
       ],
       "configure_flow": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
       "failed_attempts_before_cancel": -2147483648,
+      "failed_attempts_before_lockout": 0,
+      "last_attempt_warning_message": "string",
+      "lockout_message": "string",
       "allow_show_password": true
     }
   ],
@@ -146504,6 +150470,60 @@ Outpost Serializer
 |---|---|---|---|---|
 |pagination|[Pagination](#schemapagination)|true|none|none|
 |results|[[PasswordStage](#schemapasswordstage)]|true|none|none|
+|autocomplete|[Autocomplete](#schemaautocomplete)|true|none|none|
+
+<h2 id="tocS_PaginatedPermissionCheckList">PaginatedPermissionCheckList</h2>
+<!-- backwards compatibility -->
+<a id="schemapaginatedpermissionchecklist"></a>
+<a id="schema_PaginatedPermissionCheckList"></a>
+<a id="tocSpaginatedpermissionchecklist"></a>
+<a id="tocspaginatedpermissionchecklist"></a>
+
+```json
+{
+  "pagination": {
+    "next": 0,
+    "previous": 0,
+    "count": 0,
+    "current": 0,
+    "total_pages": 0,
+    "start_index": 0,
+    "end_index": 0
+  },
+  "results": [
+    {
+      "pk": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "name": "string",
+      "expression": "string",
+      "endpoints": [
+        "string"
+      ],
+      "unknown_endpoints": [
+        "string"
+      ],
+      "unknown_fields": {
+        "property1": [
+          "string"
+        ],
+        "property2": [
+          "string"
+        ]
+      }
+    }
+  ],
+  "autocomplete": {
+    "property1": null,
+    "property2": null
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|pagination|[Pagination](#schemapagination)|true|none|none|
+|results|[[PermissionCheck](#schemapermissioncheck)]|true|none|none|
 |autocomplete|[Autocomplete](#schemaautocomplete)|true|none|none|
 
 <h2 id="tocS_PaginatedPermissionList">PaginatedPermissionList</h2>
@@ -148143,6 +152163,7 @@ Outpost Serializer
       "sign_response": true,
       "sign_logout_request": true,
       "sign_logout_response": true,
+      "ignore_force_authn": true,
       "sp_binding": {},
       "sls_binding": {},
       "logout_method": {},
@@ -149787,6 +153808,8 @@ Outpost Serializer
         "type": "internal",
         "uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
         "password_change_date": "1970-01-01T00:00:00Z",
+        "password_locked": true,
+        "password_device": 0,
         "last_updated": "1970-01-01T00:00:00Z"
       },
       "is_expired": true,
@@ -149928,6 +153951,8 @@ Outpost Serializer
         "type": "internal",
         "uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
         "password_change_date": "1970-01-01T00:00:00Z",
+        "password_locked": true,
+        "password_device": 0,
         "last_updated": "1970-01-01T00:00:00Z"
       },
       "application": {
@@ -150067,6 +154092,66 @@ Outpost Serializer
 |---|---|---|---|---|
 |pagination|[Pagination](#schemapagination)|true|none|none|
 |results|[[UserDeleteStage](#schemauserdeletestage)]|true|none|none|
+|autocomplete|[Autocomplete](#schemaautocomplete)|true|none|none|
+
+<h2 id="tocS_PaginatedUserExpirationRuleList">PaginatedUserExpirationRuleList</h2>
+<!-- backwards compatibility -->
+<a id="schemapaginateduserexpirationrulelist"></a>
+<a id="schema_PaginatedUserExpirationRuleList"></a>
+<a id="tocSpaginateduserexpirationrulelist"></a>
+<a id="tocspaginateduserexpirationrulelist"></a>
+
+```json
+{
+  "pagination": {
+    "next": 0,
+    "previous": 0,
+    "count": 0,
+    "current": 0,
+    "total_pages": 0,
+    "start_index": 0,
+    "end_index": 0
+  },
+  "results": [
+    {
+      "pk": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "pbm_uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "name": "string",
+      "enabled": true,
+      "activity_basis": {},
+      "group": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "group_obj": {
+        "pk": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+        "name": "string"
+      },
+      "user_types": [
+        "internal"
+      ],
+      "inactivity_duration": "string",
+      "action": "deactivate",
+      "revoke_sessions": true,
+      "revoke_tokens": true,
+      "warn_before": "string",
+      "notification_transports": [
+        "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+      ],
+      "exclude_superusers": true,
+      "policy_engine_mode": "all"
+    }
+  ],
+  "autocomplete": {
+    "property1": null,
+    "property2": null
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|pagination|[Pagination](#schemapagination)|true|none|none|
+|results|[[UserExpirationRule](#schemauserexpirationrule)]|true|none|none|
 |autocomplete|[Autocomplete](#schemaautocomplete)|true|none|none|
 
 <h2 id="tocS_PaginatedUserKerberosSourceConnectionList">PaginatedUserKerberosSourceConnectionList</h2>
@@ -150288,6 +154373,8 @@ Outpost Serializer
       "type": "internal",
       "uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
       "password_change_date": "1970-01-01T00:00:00Z",
+      "password_locked": true,
+      "password_device": 0,
       "last_updated": "1970-01-01T00:00:00Z"
     }
   ],
@@ -150557,7 +154644,13 @@ Outpost Serializer
         "uid": "string"
       },
       "created_at": "1970-01-01T00:00:00Z",
-      "executed_at": "1970-01-01T00:00:00Z"
+      "executed_at": "1970-01-01T00:00:00Z",
+      "rule": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "rule_obj": {
+        "pk": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+        "name": "string"
+      },
+      "generated": true
     }
   ],
   "autocomplete": {
@@ -151197,6 +155290,29 @@ Partial User Serializer, does not include child relations.
 |attributes|object|false|none|none|
 |uid|string|true|read-only|none|
 
+<h2 id="tocS_PartialUserExpirationRule">PartialUserExpirationRule</h2>
+<!-- backwards compatibility -->
+<a id="schemapartialuserexpirationrule"></a>
+<a id="schema_PartialUserExpirationRule"></a>
+<a id="tocSpartialuserexpirationrule"></a>
+<a id="tocspartialuserexpirationrule"></a>
+
+```json
+{
+  "pk": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string"
+}
+```
+
+Base serializer class which doesn't implement create/update methods
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|pk|string(uuid)|true|read-only|none|
+|name|string|true|read-only|none|
+
 <h2 id="tocS_PasswordChallenge">PasswordChallenge</h2>
 <!-- backwards compatibility -->
 <a id="schemapasswordchallenge"></a>
@@ -151501,6 +155617,9 @@ Password Policy Serializer
   ],
   "configure_flow": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
   "failed_attempts_before_cancel": -2147483648,
+  "failed_attempts_before_lockout": 0,
+  "last_attempt_warning_message": "string",
+  "lockout_message": "string",
   "allow_show_password": true
 }
 ```
@@ -151520,7 +155639,10 @@ PasswordStage Serializer
 |flow_set|[[FlowSet](#schemaflowset)]|true|read-only|none|
 |backends|[[BackendsEnum](#schemabackendsenum)]|true|none|Selection of backends to test the password against.|
 |configure_flow|string(uuid) \| null|false|none|Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.|
-|failed_attempts_before_cancel|integer|false|none|How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage.|
+|failed_attempts_before_cancel|integer|false|none|How many attempts a user has before the flow is canceled. This only cancels the flow, it does not lock the user's password.|
+|failed_attempts_before_lockout|integer|false|none|How many consecutive failed attempts lock the user's password until an administrator unlocks it. Set to 0 to never lock.|
+|last_attempt_warning_message|string|false|none|Warning shown when the user has one password attempt remaining. Leave blank to show no warning.|
+|lockout_message|string|false|none|Message shown when the user's password has been locked. Leave blank to show a generic authentication error.|
 |allow_show_password|boolean|false|none|When enabled, provides a 'show password' button with the password input field.|
 
 #### Enumerated Values
@@ -151547,6 +155669,9 @@ PasswordStage Serializer
   ],
   "configure_flow": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
   "failed_attempts_before_cancel": -2147483648,
+  "failed_attempts_before_lockout": 0,
+  "last_attempt_warning_message": "string",
+  "lockout_message": "string",
   "allow_show_password": true
 }
 ```
@@ -151560,7 +155685,10 @@ PasswordStage Serializer
 |name|string|true|none|none|
 |backends|[[BackendsEnum](#schemabackendsenum)]|true|none|Selection of backends to test the password against.|
 |configure_flow|string(uuid) \| null|false|none|Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.|
-|failed_attempts_before_cancel|integer|false|none|How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage.|
+|failed_attempts_before_cancel|integer|false|none|How many attempts a user has before the flow is canceled. This only cancels the flow, it does not lock the user's password.|
+|failed_attempts_before_lockout|integer|false|none|How many consecutive failed attempts lock the user's password until an administrator unlocks it. Set to 0 to never lock.|
+|last_attempt_warning_message|string|false|none|Warning shown when the user has one password attempt remaining. Leave blank to show no warning.|
+|lockout_message|string|false|none|Message shown when the user's password has been locked. Leave blank to show a generic authentication error.|
 |allow_show_password|boolean|false|none|When enabled, provides a 'show password' button with the password input field.|
 
 #### Enumerated Values
@@ -152045,6 +156173,9 @@ AuthenticatorTOTPStage Serializer
   "webauthn_hints": [
     "security-key"
   ],
+  "webauthn_additional_accepted_origins": [
+    "string"
+  ],
   "webauthn_allowed_device_types": [
     "497f6eca-6276-4993-bfeb-53cbbbba6f08"
   ],
@@ -152068,6 +156199,7 @@ AuthenticatorValidateStage Serializer
 |last_auth_threshold|string|false|none|If any of the user's device has been used within this threshold, this stage will be skipped|
 |webauthn_user_verification|object|false|none|Enforce user verification for WebAuthn devices.|
 |webauthn_hints|[[WebAuthnHintEnum](#schemawebauthnhintenum)]|false|none|none|
+|webauthn_additional_accepted_origins|[string]|false|none|Additional trusted origins for WebAuthn authentication. Matched exactly.|
 |webauthn_allowed_device_types|[string(uuid)]|false|none|none|
 |email_otp_throttling_factor|number(double)|false|none|none|
 |sms_otp_throttling_factor|number(double)|false|none|none|
@@ -152109,6 +156241,9 @@ AuthenticatorValidateStage Serializer
   "hints": [
     "security-key"
   ],
+  "additional_accepted_origins": [
+    "string"
+  ],
   "device_type_restrictions": [
     "497f6eca-6276-4993-bfeb-53cbbbba6f08"
   ],
@@ -152129,6 +156264,7 @@ AuthenticatorWebAuthnStage Serializer
 |authenticator_attachment|object \| null|false|none|none|
 |resident_key_requirement|[UserVerificationEnum](#schemauserverificationenum)|false|none|none|
 |hints|[[WebAuthnHintEnum](#schemawebauthnhintenum)]|false|none|none|
+|additional_accepted_origins|[string]|false|none|Additional trusted origins for WebAuthn registration. Matched exactly.|
 |device_type_restrictions|[string(uuid)]|false|none|none|
 |max_attempts|integer|false|none|none|
 
@@ -152372,6 +156508,29 @@ ConsentStage Serializer
 |mode|always_require|
 |mode|permanent|
 |mode|expiring|
+
+<h2 id="tocS_PatchedCustomPermissionRequest">PatchedCustomPermissionRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemapatchedcustompermissionrequest"></a>
+<a id="schema_PatchedCustomPermissionRequest"></a>
+<a id="tocSpatchedcustompermissionrequest"></a>
+<a id="tocspatchedcustompermissionrequest"></a>
+
+```json
+{
+  "codename": "string",
+  "name": "string",
+  "model": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|codename|string|false|none|none|
+|name|string|false|none|none|
+|model|string|false|none|none|
 
 <h2 id="tocS_PatchedDenyStageRequest">PatchedDenyStageRequest</h2>
 <!-- backwards compatibility -->
@@ -152823,8 +156982,12 @@ Event Serializer
 |action|logout|
 |action|user_write|
 |action|user_offboarded|
+|action|user_expiration_warning|
 |action|suspicious_request|
 |action|password_set|
+|action|authenticator_locked|
+|action|authenticator_unlocked|
+|action|required_action_completed|
 |action|secret_view|
 |action|secret_rotate|
 |action|invitation_used|
@@ -154315,6 +158478,41 @@ MicrosoftEntraProvider Serializer
 |group_delete_action|delete|
 |group_delete_action|suspend|
 
+<h2 id="tocS_PatchedMicrosoftIntuneConnectorRequest">PatchedMicrosoftIntuneConnectorRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemapatchedmicrosoftintuneconnectorrequest"></a>
+<a id="schema_PatchedMicrosoftIntuneConnectorRequest"></a>
+<a id="tocSpatchedmicrosoftintuneconnectorrequest"></a>
+<a id="tocspatchedmicrosoftintuneconnectorrequest"></a>
+
+```json
+{
+  "connector_uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "enabled": true,
+  "client_id": "string",
+  "client_secret": "string",
+  "tenant_id": "string",
+  "certificate_authorities": [
+    "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+  ]
+}
+```
+
+MicrosoftIntuneConnector Serializer
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|connector_uuid|string(uuid)|false|none|none|
+|name|string|false|none|none|
+|enabled|boolean|false|none|none|
+|client_id|string|false|none|none|
+|client_secret|string|false|write-only|none|
+|tenant_id|string|false|none|none|
+|certificate_authorities|[string(uuid)]|false|none|Certificate authorities which issue device certificates via Intune (Cloud PKI, SCEP or PKCS profiles), used by the endpoint stage to validate certificates. This option has a higher priority than the `client_certificate` option on `Brand`.|
+
 <h2 id="tocS_PatchedMutualTLSStageRequest">PatchedMutualTLSStageRequest</h2>
 <!-- backwards compatibility -->
 <a id="schemapatchedmutualtlsstagerequest"></a>
@@ -154960,6 +159158,9 @@ Password Policy Serializer
   ],
   "configure_flow": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
   "failed_attempts_before_cancel": -2147483648,
+  "failed_attempts_before_lockout": 0,
+  "last_attempt_warning_message": "string",
+  "lockout_message": "string",
   "allow_show_password": true
 }
 ```
@@ -154973,7 +159174,10 @@ PasswordStage Serializer
 |name|string|false|none|none|
 |backends|[[BackendsEnum](#schemabackendsenum)]|false|none|Selection of backends to test the password against.|
 |configure_flow|string(uuid) \| null|false|none|Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.|
-|failed_attempts_before_cancel|integer|false|none|How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage.|
+|failed_attempts_before_cancel|integer|false|none|How many attempts a user has before the flow is canceled. This only cancels the flow, it does not lock the user's password.|
+|failed_attempts_before_lockout|integer|false|none|How many consecutive failed attempts lock the user's password until an administrator unlocks it. Set to 0 to never lock.|
+|last_attempt_warning_message|string|false|none|Warning shown when the user has one password attempt remaining. Leave blank to show no warning.|
+|lockout_message|string|false|none|Message shown when the user's password has been locked. Leave blank to show a generic authentication error.|
 |allow_show_password|boolean|false|none|When enabled, provides a 'show password' button with the password input field.|
 
 #### Enumerated Values
@@ -155064,6 +159268,8 @@ Request to assign a new permission
 |model|authentik_providers_scim.scimmapping|
 |model|authentik_rbac.role|
 |model|authentik_rbac.initialpermissions|
+|model|authentik_rbac.custompermission|
+|model|authentik_rbac.permissioncheck|
 |model|authentik_sources_kerberos.kerberossource|
 |model|authentik_sources_kerberos.kerberossourcepropertymapping|
 |model|authentik_sources_kerberos.userkerberossourceconnection|
@@ -155125,10 +159331,12 @@ Request to assign a new permission
 |model|authentik_agents.agent|
 |model|authentik_endpoints_connectors_fleet.fleetconnector|
 |model|authentik_endpoints_connectors_google_chrome.googlechromeconnector|
+|model|authentik_endpoints_connectors_microsoft_intune.microsoftintuneconnector|
 |model|authentik_lifecycle.lifecyclerule|
 |model|authentik_lifecycle.lifecycleiteration|
 |model|authentik_lifecycle.review|
 |model|authentik_lifecycle.useroffboarding|
+|model|authentik_lifecycle.userexpirationrule|
 |model|authentik_policies_unique_password.uniquepasswordpolicy|
 |model|authentik_providers_google_workspace.googleworkspaceprovider|
 |model|authentik_providers_google_workspace.googleworkspaceprovidermapping|
@@ -155145,6 +159353,31 @@ Request to assign a new permission
 |model|authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage|
 |model|authentik_stages_mtls.mutualtlsstage|
 |model|authentik_stages_source.sourcestage|
+
+<h2 id="tocS_PatchedPermissionCheckRequest">PatchedPermissionCheckRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemapatchedpermissioncheckrequest"></a>
+<a id="schema_PatchedPermissionCheckRequest"></a>
+<a id="tocSpatchedpermissioncheckrequest"></a>
+<a id="tocspatchedpermissioncheckrequest"></a>
+
+```json
+{
+  "name": "string",
+  "expression": "string",
+  "endpoints": [
+    "string"
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|false|none|none|
+|expression|string|false|none|none|
+|endpoints|[string]|false|none|none|
 
 <h2 id="tocS_PatchedPlexSourcePropertyMappingRequest">PatchedPlexSourcePropertyMappingRequest</h2>
 <!-- backwards compatibility -->
@@ -155842,6 +160075,7 @@ SAMLPropertyMapping Serializer
   "sign_response": true,
   "sign_logout_request": true,
   "sign_logout_response": true,
+  "ignore_force_authn": true,
   "sp_binding": {},
   "sls_binding": {},
   "logout_method": {},
@@ -155883,6 +160117,7 @@ SAMLProvider Serializer
 |sign_response|boolean|false|none|none|
 |sign_logout_request|boolean|false|none|none|
 |sign_logout_response|boolean|false|none|none|
+|ignore_force_authn|boolean|false|none|When enabled, the ForceAuthn attribute set by the Service Provider on an AuthnRequest is ignored and an existing session is used. When disabled, ForceAuthn requires the user to re-authenticate.|
 |sp_binding|object|false|none|This determines how authentik sends the response back to the Service Provider.|
 |sls_binding|object|false|none|This determines how authentik sends the logout response back to the Service Provider.|
 |logout_method|object|false|none|Method to use for logout. Front-channel iframe loads all logout URLs simultaneously in hidden iframes. Front-channel native uses your active browser tab to send post requests and redirect to providers. Back-channel sends logout requests directly from the server without user interaction (requires POST SLS binding).|
@@ -156009,7 +160244,7 @@ SAMLSource Serializer
 |slo_url|string(uri) \| null|false|none|Optional URL if your IDP supports Single-Logout.|
 |allow_idp_initiated|boolean|false|none|Allows authentication flows initiated by the IdP. This can be a security risk, as no validation of the request ID is done.|
 |force_authn|boolean|false|none|When enabled, the IdP will re-authenticate the user even if a session exists.|
-|name_id_policy|object|false|none|NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.|
+|name_id_policy|object|false|none|Format of the NameID Policy sent to the IdP. Select Unspecified to let the IdP choose the format of the NameID it returns.|
 |binding_type|[BindingTypeEnum](#schemabindingtypeenum)|false|none|none|
 |verification_kp|string(uuid) \| null|false|none|When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default.|
 |signing_kp|string(uuid) \| null|false|none|Keypair used to sign outgoing Responses going to the Identity Provider.|
@@ -156399,7 +160634,8 @@ ScopeMapping Serializer
   "flags": {
     "core_default_app_access": true,
     "enterprise_audit_include_expanded_diff": true,
-    "flows_continuous_login": true
+    "flows_continuous_login": true,
+    "rbac_custom_permissions": true
   }
 }
 ```
@@ -156681,6 +160917,71 @@ UserDeleteStage Serializer
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |name|string|false|none|none|
+
+<h2 id="tocS_PatchedUserExpirationRuleRequest">PatchedUserExpirationRuleRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemapatcheduserexpirationrulerequest"></a>
+<a id="schema_PatchedUserExpirationRuleRequest"></a>
+<a id="tocSpatcheduserexpirationrulerequest"></a>
+<a id="tocspatcheduserexpirationrulerequest"></a>
+
+```json
+{
+  "pk": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "enabled": true,
+  "activity_basis": {},
+  "group": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "user_types": [
+    "internal"
+  ],
+  "inactivity_duration": "string",
+  "action": "deactivate",
+  "revoke_sessions": true,
+  "revoke_tokens": true,
+  "warn_before": "string",
+  "notification_transports": [
+    "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+  ],
+  "exclude_superusers": true,
+  "policy_engine_mode": "all"
+}
+```
+
+Mixin to validate that a valid enterprise license
+exists before allowing to save the object
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|pk|string(uuid)|false|none|none|
+|name|string|false|none|none|
+|enabled|boolean|false|none|none|
+|activity_basis|object|false|none|Measure inactivity from the last login or successful user activity.|
+|group|string(uuid) \| null|false|none|Only expire members of this group (including descendant groups). Leave empty to apply to every user.|
+|user_types|[[UserTypeEnum](#schemausertypeenum)]|false|none|Only expire users of these types. Service accounts are excluded by default.|
+|inactivity_duration|string|false|none|How long a user may be inactive before they are expired.|
+|action|[OffboardingActionEnum](#schemaoffboardingactionenum)|false|none|none|
+|revoke_sessions|boolean|false|none|none|
+|revoke_tokens|boolean|false|none|none|
+|warn_before|string \| null|false|none|Schedule the offboarding and notify the user this long before they expire. Leave empty to expire users without warning.|
+|notification_transports|[string(uuid)]|false|none|Select which transports should be used to warn the user. If none are selected, the notification will only be shown in the authentik UI.|
+|exclude_superusers|boolean|false|none|Never expire members of a superuser group.|
+|policy_engine_mode|[PolicyEngineMode](#schemapolicyenginemode)|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|user_types|internal|
+|user_types|external|
+|user_types|service_account|
+|user_types|internal_service_account|
+|action|deactivate|
+|action|delete|
+|policy_engine_mode|all|
+|policy_engine_mode|any|
 
 <h2 id="tocS_PatchedUserKerberosSourceConnectionRequest">PatchedUserKerberosSourceConnectionRequest</h2>
 <!-- backwards compatibility -->
@@ -157221,6 +161522,8 @@ Request to assign a new permission
 |model|authentik_providers_scim.scimmapping|
 |model|authentik_rbac.role|
 |model|authentik_rbac.initialpermissions|
+|model|authentik_rbac.custompermission|
+|model|authentik_rbac.permissioncheck|
 |model|authentik_sources_kerberos.kerberossource|
 |model|authentik_sources_kerberos.kerberossourcepropertymapping|
 |model|authentik_sources_kerberos.userkerberossourceconnection|
@@ -157282,10 +161585,12 @@ Request to assign a new permission
 |model|authentik_agents.agent|
 |model|authentik_endpoints_connectors_fleet.fleetconnector|
 |model|authentik_endpoints_connectors_google_chrome.googlechromeconnector|
+|model|authentik_endpoints_connectors_microsoft_intune.microsoftintuneconnector|
 |model|authentik_lifecycle.lifecyclerule|
 |model|authentik_lifecycle.lifecycleiteration|
 |model|authentik_lifecycle.review|
 |model|authentik_lifecycle.useroffboarding|
+|model|authentik_lifecycle.userexpirationrule|
 |model|authentik_policies_unique_password.uniquepasswordpolicy|
 |model|authentik_providers_google_workspace.googleworkspaceprovider|
 |model|authentik_providers_google_workspace.googleworkspaceprovidermapping|
@@ -157323,6 +161628,71 @@ Result from assigning permissions to a user/role
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |id|string|true|none|none|
+
+<h2 id="tocS_PermissionCheck">PermissionCheck</h2>
+<!-- backwards compatibility -->
+<a id="schemapermissioncheck"></a>
+<a id="schema_PermissionCheck"></a>
+<a id="tocSpermissioncheck"></a>
+<a id="tocspermissioncheck"></a>
+
+```json
+{
+  "pk": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "expression": "string",
+  "endpoints": [
+    "string"
+  ],
+  "unknown_endpoints": [
+    "string"
+  ],
+  "unknown_fields": {
+    "property1": [
+      "string"
+    ],
+    "property2": [
+      "string"
+    ]
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|pk|string(uuid)|true|read-only|none|
+|name|string|true|none|none|
+|expression|string|true|none|none|
+|endpoints|[string]|true|none|none|
+|unknown_endpoints|[string]|true|read-only|none|
+|unknown_fields|object|true|read-only|none|
+
+<h2 id="tocS_PermissionCheckRequest">PermissionCheckRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemapermissioncheckrequest"></a>
+<a id="schema_PermissionCheckRequest"></a>
+<a id="tocSpermissioncheckrequest"></a>
+<a id="tocspermissioncheckrequest"></a>
+
+```json
+{
+  "name": "string",
+  "expression": "string",
+  "endpoints": [
+    "string"
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|none|
+|expression|string|true|none|none|
+|endpoints|[string]|true|none|none|
 
 <h2 id="tocS_PlexAuthenticationChallenge">PlexAuthenticationChallenge</h2>
 <!-- backwards compatibility -->
@@ -160593,6 +164963,7 @@ SAMLPropertyMapping Serializer
   "sign_response": true,
   "sign_logout_request": true,
   "sign_logout_response": true,
+  "ignore_force_authn": true,
   "sp_binding": {},
   "sls_binding": {},
   "logout_method": {},
@@ -160652,6 +165023,7 @@ SAMLProvider Serializer
 |sign_response|boolean|false|none|none|
 |sign_logout_request|boolean|false|none|none|
 |sign_logout_response|boolean|false|none|none|
+|ignore_force_authn|boolean|false|none|When enabled, the ForceAuthn attribute set by the Service Provider on an AuthnRequest is ignored and an existing session is used. When disabled, ForceAuthn requires the user to re-authenticate.|
 |sp_binding|object|false|none|This determines how authentik sends the response back to the Service Provider.|
 |sls_binding|object|false|none|This determines how authentik sends the logout response back to the Service Provider.|
 |logout_method|object|false|none|Method to use for logout. Front-channel iframe loads all logout URLs simultaneously in hidden iframes. Front-channel native uses your active browser tab to send post requests and redirect to providers. Back-channel sends logout requests directly from the server without user interaction (requires POST SLS binding).|
@@ -160754,6 +165126,7 @@ Import saml provider from XML Metadata
   "sign_response": true,
   "sign_logout_request": true,
   "sign_logout_response": true,
+  "ignore_force_authn": true,
   "sp_binding": {},
   "sls_binding": {},
   "logout_method": {},
@@ -160795,6 +165168,7 @@ SAMLProvider Serializer
 |sign_response|boolean|false|none|none|
 |sign_logout_request|boolean|false|none|none|
 |sign_logout_response|boolean|false|none|none|
+|ignore_force_authn|boolean|false|none|When enabled, the ForceAuthn attribute set by the Service Provider on an AuthnRequest is ignored and an existing session is used. When disabled, ForceAuthn requires the user to re-authenticate.|
 |sp_binding|object|false|none|This determines how authentik sends the response back to the Service Provider.|
 |sls_binding|object|false|none|This determines how authentik sends the logout response back to the Service Provider.|
 |logout_method|object|false|none|Method to use for logout. Front-channel iframe loads all logout URLs simultaneously in hidden iframes. Front-channel native uses your active browser tab to send post requests and redirect to providers. Back-channel sends logout requests directly from the server without user interaction (requires POST SLS binding).|
@@ -160917,7 +165291,7 @@ SAMLSource Serializer
 |slo_url|string(uri) \| null|false|none|Optional URL if your IDP supports Single-Logout.|
 |allow_idp_initiated|boolean|false|none|Allows authentication flows initiated by the IdP. This can be a security risk, as no validation of the request ID is done.|
 |force_authn|boolean|false|none|When enabled, the IdP will re-authenticate the user even if a session exists.|
-|name_id_policy|object|false|none|NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.|
+|name_id_policy|object|false|none|Format of the NameID Policy sent to the IdP. Select Unspecified to let the IdP choose the format of the NameID it returns.|
 |binding_type|[BindingTypeEnum](#schemabindingtypeenum)|false|none|none|
 |verification_kp|string(uuid) \| null|false|none|When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default.|
 |signing_kp|string(uuid) \| null|false|none|Keypair used to sign outgoing Responses going to the Identity Provider.|
@@ -161081,7 +165455,7 @@ SAMLSource Serializer
 |slo_url|string(uri) \| null|false|none|Optional URL if your IDP supports Single-Logout.|
 |allow_idp_initiated|boolean|false|none|Allows authentication flows initiated by the IdP. This can be a security risk, as no validation of the request ID is done.|
 |force_authn|boolean|false|none|When enabled, the IdP will re-authenticate the user even if a session exists.|
-|name_id_policy|object|false|none|NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.|
+|name_id_policy|object|false|none|Format of the NameID Policy sent to the IdP. Select Unspecified to let the IdP choose the format of the NameID it returns.|
 |binding_type|[BindingTypeEnum](#schemabindingtypeenum)|false|none|none|
 |verification_kp|string(uuid) \| null|false|none|When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default.|
 |signing_kp|string(uuid) \| null|false|none|Keypair used to sign outgoing Responses going to the Identity Provider.|
@@ -162586,7 +166960,8 @@ and, if this user is being impersonated, the original user in the `original` pro
   "flags": {
     "core_default_app_access": true,
     "enterprise_audit_include_expanded_diff": true,
-    "flows_continuous_login": true
+    "flows_continuous_login": true,
+    "rbac_custom_permissions": true
   }
 }
 ```
@@ -162643,7 +167018,8 @@ Settings Serializer
   "flags": {
     "core_default_app_access": true,
     "enterprise_audit_include_expanded_diff": true,
-    "flows_continuous_login": true
+    "flows_continuous_login": true,
+    "rbac_custom_permissions": true
   }
 }
 ```
@@ -164055,6 +168431,8 @@ Token Serializer
     "type": "internal",
     "uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
     "password_change_date": "1970-01-01T00:00:00Z",
+    "password_locked": true,
+    "password_device": 0,
     "last_updated": "1970-01-01T00:00:00Z"
   },
   "is_expired": true,
@@ -164346,6 +168724,10 @@ PolicyBindingSerializer which does not require target as target is set implicitl
   "component": "string",
   "model_name": "string",
   "icon_url": "string",
+  "icon_themed_urls": {
+    "light": "string",
+    "dark": "string"
+  },
   "requires_enterprise": false,
   "deprecated": false
 }
@@ -164362,6 +168744,7 @@ Types of an object that can be created
 |component|string|true|none|none|
 |model_name|string|true|none|none|
 |icon_url|string|false|none|none|
+|icon_themed_urls|object \| null|false|none|none|
 |requires_enterprise|boolean|false|none|none|
 |deprecated|boolean|false|none|none|
 
@@ -164607,6 +168990,8 @@ A list of all objects referencing the queried object
   "type": "internal",
   "uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
   "password_change_date": "1970-01-01T00:00:00Z",
+  "password_locked": true,
+  "password_device": 0,
   "last_updated": "1970-01-01T00:00:00Z"
 }
 ```
@@ -164636,6 +169021,8 @@ User Serializer
 |type|[UserTypeEnum](#schemausertypeenum)|false|none|none|
 |uuid|string(uuid)|true|read-only|none|
 |password_change_date|string(date-time)|true|read-only|none|
+|password_locked|boolean|true|read-only|Whether the user's password currently refuses authentication.|
+|password_device|integer \| null|true|read-only|none|
 |last_updated|string(date-time)|true|read-only|none|
 
 #### Enumerated Values
@@ -164776,6 +169163,8 @@ Account adding/removing operations
     "type": "internal",
     "uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
     "password_change_date": "1970-01-01T00:00:00Z",
+    "password_locked": true,
+    "password_device": 0,
     "last_updated": "1970-01-01T00:00:00Z"
   },
   "application": {
@@ -164936,6 +169325,369 @@ UserDeleteStage Serializer
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |name|string|true|none|none|
+
+<h2 id="tocS_UserExpirationRule">UserExpirationRule</h2>
+<!-- backwards compatibility -->
+<a id="schemauserexpirationrule"></a>
+<a id="schema_UserExpirationRule"></a>
+<a id="tocSuserexpirationrule"></a>
+<a id="tocsuserexpirationrule"></a>
+
+```json
+{
+  "pk": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "pbm_uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "enabled": true,
+  "activity_basis": {},
+  "group": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "group_obj": {
+    "pk": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "name": "string"
+  },
+  "user_types": [
+    "internal"
+  ],
+  "inactivity_duration": "string",
+  "action": "deactivate",
+  "revoke_sessions": true,
+  "revoke_tokens": true,
+  "warn_before": "string",
+  "notification_transports": [
+    "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+  ],
+  "exclude_superusers": true,
+  "policy_engine_mode": "all"
+}
+```
+
+Mixin to validate that a valid enterprise license
+exists before allowing to save the object
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|pk|string(uuid)|false|none|none|
+|pbm_uuid|string(uuid)|true|read-only|none|
+|name|string|true|none|none|
+|enabled|boolean|false|none|none|
+|activity_basis|object|false|none|Measure inactivity from the last login or successful user activity.|
+|group|string(uuid) \| null|false|none|Only expire members of this group (including descendant groups). Leave empty to apply to every user.|
+|group_obj|object|true|read-only|none|
+|user_types|[[UserTypeEnum](#schemausertypeenum)]|false|none|Only expire users of these types. Service accounts are excluded by default.|
+|inactivity_duration|string|false|none|How long a user may be inactive before they are expired.|
+|action|[OffboardingActionEnum](#schemaoffboardingactionenum)|false|none|none|
+|revoke_sessions|boolean|false|none|none|
+|revoke_tokens|boolean|false|none|none|
+|warn_before|string \| null|false|none|Schedule the offboarding and notify the user this long before they expire. Leave empty to expire users without warning.|
+|notification_transports|[string(uuid)]|false|none|Select which transports should be used to warn the user. If none are selected, the notification will only be shown in the authentik UI.|
+|exclude_superusers|boolean|false|none|Never expire members of a superuser group.|
+|policy_engine_mode|[PolicyEngineMode](#schemapolicyenginemode)|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|user_types|internal|
+|user_types|external|
+|user_types|service_account|
+|user_types|internal_service_account|
+|action|deactivate|
+|action|delete|
+|policy_engine_mode|all|
+|policy_engine_mode|any|
+
+<h2 id="tocS_UserExpirationRuleGroup">UserExpirationRuleGroup</h2>
+<!-- backwards compatibility -->
+<a id="schemauserexpirationrulegroup"></a>
+<a id="schema_UserExpirationRuleGroup"></a>
+<a id="tocSuserexpirationrulegroup"></a>
+<a id="tocsuserexpirationrulegroup"></a>
+
+```json
+{
+  "pk": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string"
+}
+```
+
+Base serializer class which doesn't implement create/update methods
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|pk|string(uuid)|true|read-only|none|
+|name|string|true|read-only|none|
+
+<h2 id="tocS_UserExpirationRulePendingPreview">UserExpirationRulePendingPreview</h2>
+<!-- backwards compatibility -->
+<a id="schemauserexpirationrulependingpreview"></a>
+<a id="schema_UserExpirationRulePendingPreview"></a>
+<a id="tocSuserexpirationrulependingpreview"></a>
+<a id="tocsuserexpirationrulependingpreview"></a>
+
+```json
+{
+  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "user": {
+    "pk": 0,
+    "username": "string",
+    "name": "string"
+  },
+  "previous_action": {},
+  "action": {},
+  "previous_scheduled_at": "1970-01-01T00:00:00Z",
+  "scheduled_at": "1970-01-01T00:00:00Z",
+  "previous_revoke_sessions": true,
+  "revoke_sessions": true,
+  "previous_revoke_tokens": true,
+  "revoke_tokens": true
+}
+```
+
+Base serializer class which doesn't implement create/update methods
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string(uuid)|true|read-only|none|
+|user|object|true|read-only|none|
+|previous_action|object|true|read-only|none|
+|action|object \| null|true|read-only|none|
+|previous_scheduled_at|string(date-time)|true|read-only|none|
+|scheduled_at|string(date-time) \| null|true|read-only|none|
+|previous_revoke_sessions|boolean|true|read-only|none|
+|revoke_sessions|boolean \| null|true|read-only|none|
+|previous_revoke_tokens|boolean|true|read-only|none|
+|revoke_tokens|boolean \| null|true|read-only|none|
+
+<h2 id="tocS_UserExpirationRulePendingPreviewGroup">UserExpirationRulePendingPreviewGroup</h2>
+<!-- backwards compatibility -->
+<a id="schemauserexpirationrulependingpreviewgroup"></a>
+<a id="schema_UserExpirationRulePendingPreviewGroup"></a>
+<a id="tocSuserexpirationrulependingpreviewgroup"></a>
+<a id="tocsuserexpirationrulependingpreviewgroup"></a>
+
+```json
+{
+  "count": 0,
+  "offboardings": [
+    {
+      "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "user": {
+        "pk": 0,
+        "username": "string",
+        "name": "string"
+      },
+      "previous_action": {},
+      "action": {},
+      "previous_scheduled_at": "1970-01-01T00:00:00Z",
+      "scheduled_at": "1970-01-01T00:00:00Z",
+      "previous_revoke_sessions": true,
+      "revoke_sessions": true,
+      "previous_revoke_tokens": true,
+      "revoke_tokens": true
+    }
+  ]
+}
+```
+
+Base serializer class which doesn't implement create/update methods
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|count|integer|true|read-only|none|
+|offboardings|[[UserExpirationRulePendingPreview](#schemauserexpirationrulependingpreview)]|true|read-only|none|
+
+<h2 id="tocS_UserExpirationRulePreview">UserExpirationRulePreview</h2>
+<!-- backwards compatibility -->
+<a id="schemauserexpirationrulepreview"></a>
+<a id="schema_UserExpirationRulePreview"></a>
+<a id="tocSuserexpirationrulepreview"></a>
+<a id="tocsuserexpirationrulepreview"></a>
+
+```json
+{
+  "count": 0,
+  "users": [
+    {
+      "pk": 0,
+      "username": "string",
+      "name": "string"
+    }
+  ],
+  "updated": {
+    "count": 0,
+    "offboardings": [
+      {
+        "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+        "user": {
+          "pk": 0,
+          "username": "string",
+          "name": "string"
+        },
+        "previous_action": {},
+        "action": {},
+        "previous_scheduled_at": "1970-01-01T00:00:00Z",
+        "scheduled_at": "1970-01-01T00:00:00Z",
+        "previous_revoke_sessions": true,
+        "revoke_sessions": true,
+        "previous_revoke_tokens": true,
+        "revoke_tokens": true
+      }
+    ]
+  },
+  "taken_over": {
+    "count": 0,
+    "offboardings": [
+      {
+        "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+        "user": {
+          "pk": 0,
+          "username": "string",
+          "name": "string"
+        },
+        "previous_action": {},
+        "action": {},
+        "previous_scheduled_at": "1970-01-01T00:00:00Z",
+        "scheduled_at": "1970-01-01T00:00:00Z",
+        "previous_revoke_sessions": true,
+        "revoke_sessions": true,
+        "previous_revoke_tokens": true,
+        "revoke_tokens": true
+      }
+    ]
+  },
+  "removed": {
+    "count": 0,
+    "offboardings": [
+      {
+        "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+        "user": {
+          "pk": 0,
+          "username": "string",
+          "name": "string"
+        },
+        "previous_action": {},
+        "action": {},
+        "previous_scheduled_at": "1970-01-01T00:00:00Z",
+        "scheduled_at": "1970-01-01T00:00:00Z",
+        "previous_revoke_sessions": true,
+        "revoke_sessions": true,
+        "previous_revoke_tokens": true,
+        "revoke_tokens": true
+      }
+    ]
+  }
+}
+```
+
+Base serializer class which doesn't implement create/update methods
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|count|integer|true|read-only|none|
+|users|[[UserExpirationRuleUser](#schemauserexpirationruleuser)]|true|read-only|none|
+|updated|object|true|read-only|none|
+|taken_over|object|true|read-only|none|
+|removed|object|true|read-only|none|
+
+<h2 id="tocS_UserExpirationRuleRequest">UserExpirationRuleRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemauserexpirationrulerequest"></a>
+<a id="schema_UserExpirationRuleRequest"></a>
+<a id="tocSuserexpirationrulerequest"></a>
+<a id="tocsuserexpirationrulerequest"></a>
+
+```json
+{
+  "pk": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "enabled": true,
+  "activity_basis": {},
+  "group": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "user_types": [
+    "internal"
+  ],
+  "inactivity_duration": "string",
+  "action": "deactivate",
+  "revoke_sessions": true,
+  "revoke_tokens": true,
+  "warn_before": "string",
+  "notification_transports": [
+    "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+  ],
+  "exclude_superusers": true,
+  "policy_engine_mode": "all"
+}
+```
+
+Mixin to validate that a valid enterprise license
+exists before allowing to save the object
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|pk|string(uuid)|false|none|none|
+|name|string|true|none|none|
+|enabled|boolean|false|none|none|
+|activity_basis|object|false|none|Measure inactivity from the last login or successful user activity.|
+|group|string(uuid) \| null|false|none|Only expire members of this group (including descendant groups). Leave empty to apply to every user.|
+|user_types|[[UserTypeEnum](#schemausertypeenum)]|false|none|Only expire users of these types. Service accounts are excluded by default.|
+|inactivity_duration|string|false|none|How long a user may be inactive before they are expired.|
+|action|[OffboardingActionEnum](#schemaoffboardingactionenum)|false|none|none|
+|revoke_sessions|boolean|false|none|none|
+|revoke_tokens|boolean|false|none|none|
+|warn_before|string \| null|false|none|Schedule the offboarding and notify the user this long before they expire. Leave empty to expire users without warning.|
+|notification_transports|[string(uuid)]|false|none|Select which transports should be used to warn the user. If none are selected, the notification will only be shown in the authentik UI.|
+|exclude_superusers|boolean|false|none|Never expire members of a superuser group.|
+|policy_engine_mode|[PolicyEngineMode](#schemapolicyenginemode)|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|user_types|internal|
+|user_types|external|
+|user_types|service_account|
+|user_types|internal_service_account|
+|action|deactivate|
+|action|delete|
+|policy_engine_mode|all|
+|policy_engine_mode|any|
+
+<h2 id="tocS_UserExpirationRuleUser">UserExpirationRuleUser</h2>
+<!-- backwards compatibility -->
+<a id="schemauserexpirationruleuser"></a>
+<a id="schema_UserExpirationRuleUser"></a>
+<a id="tocSuserexpirationruleuser"></a>
+<a id="tocsuserexpirationruleuser"></a>
+
+```json
+{
+  "pk": 0,
+  "username": "string",
+  "name": "string"
+}
+```
+
+Base serializer class which doesn't implement create/update methods
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|pk|integer|true|read-only|none|
+|username|string|true|read-only|none|
+|name|string|true|read-only|none|
 
 <h2 id="tocS_UserFieldsEnum">UserFieldsEnum</h2>
 <!-- backwards compatibility -->
@@ -165516,7 +170268,13 @@ User source connection
     "uid": "string"
   },
   "created_at": "1970-01-01T00:00:00Z",
-  "executed_at": "1970-01-01T00:00:00Z"
+  "executed_at": "1970-01-01T00:00:00Z",
+  "rule": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "rule_obj": {
+    "pk": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "name": "string"
+  },
+  "generated": true
 }
 ```
 
@@ -165538,6 +170296,9 @@ exists before allowing to save the object
 |created_by_obj|object|true|read-only|none|
 |created_at|string(date-time)|true|read-only|none|
 |executed_at|string(date-time) \| null|true|read-only|none|
+|rule|string(uuid) \| null|true|read-only|none|
+|rule_obj|object|true|read-only|none|
+|generated|boolean|true|read-only|none|
 
 #### Enumerated Values
 
@@ -166097,7 +170858,11 @@ Payload to create a service account
   "component": "string",
   "title": "string",
   "configure_url": "string",
-  "icon_url": "string"
+  "icon_url": "string",
+  "icon_themed_urls": {
+    "light": "string",
+    "dark": "string"
+  }
 }
 ```
 
@@ -166112,6 +170877,7 @@ Serializer for User settings for stages and sources
 |title|string|true|none|none|
 |configure_url|string|false|none|none|
 |icon_url|string|false|none|none|
+|icon_themed_urls|object \| null|false|none|none|
 
 <h2 id="tocS_UserSourceConnection">UserSourceConnection</h2>
 <!-- backwards compatibility -->

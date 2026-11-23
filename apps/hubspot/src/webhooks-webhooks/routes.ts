@@ -1,30 +1,33 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const ObjectSubscriptionUpsertRequestSchema = z
+const ActionOverrideRequestSchema = z
   .object({
-    actions: z
-      .array(
-        z
-          .enum([
-            'CREATE',
-            'UPDATE',
-            'DELETE',
-            'MERGE',
-            'RESTORE',
-            'ASSOCIATION_ADDED',
-            'ASSOCIATION_REMOVED',
-            'SNAPSHOT',
-            'APP_INSTALL',
-            'APP_UNINSTALL',
-            'ADDED_TO_LIST',
-            'REMOVED_FROM_LIST',
-            'GDPR_DELETE',
-          ])
-          .openapi({ example: null }),
-      )
+    associatedObjectTypeIds: z
+      .array(z.string().openapi({ example: null }))
+      .exactOptional()
       .openapi({
         description:
-          "An array of strings specifying the actions that trigger the subscription. Valid actions include 'CREATE', 'UPDATE', 'DELETE', 'MERGE', 'RESTORE'.",
+          'An array of strings, each representing an associated object type ID relevant to the action override.',
+        example: null,
+      }),
+    listIds: z
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64', example: null }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'An array of integers representing list IDs that are associated with the action override. The integers are in int64 format.',
         example: null,
       }),
     objectIds: z
@@ -41,63 +44,55 @@ const ObjectSubscriptionUpsertRequestSchema = z
           )
           .openapi({ type: 'integer', format: 'int64', example: null }),
       )
+      .exactOptional()
       .openapi({
         description:
-          'An array of integers representing the IDs of the objects involved in the subscription. Empty means listen to all objectIds.',
+          'An array of integers, each representing an object ID for which the action override is applicable. The integers are in int64 format.',
         example: null,
       }),
-    objectTypeId: z
+    properties: z
+      .array(z.string().openapi({ example: null }))
+      .exactOptional()
+      .openapi({
+        description:
+          'An array of strings representing the properties to be overridden in the action. Each string corresponds to a property name.',
+        example: null,
+      }),
+  })
+  .openapi({ example: null, required: [] })
+  .openapi('ActionOverrideRequest')
+
+const AppLifecycleEventSubscriptionUpsertRequestSchema = z
+  .object({
+    eventTypeId: z
       .string()
       .openapi({
         description:
-          'A string that identifies the type of object for which the subscription is being created or updated. For example "0-1" for contacts.',
-        example: null,
-      }),
-    portalId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'An integer representing the portal ID associated with the subscription.',
+          'A string representing the unique identifier for the event type that the subscription pertains to. This value corresponds to an internal event classification at HubSpot. \n\n4-1909196: App install event\n4-1916193: App uninstall event',
         example: null,
       }),
     properties: z
       .array(z.string().openapi({ example: null }))
       .openapi({
         description:
-          'An array of strings listing the properties of the objects that are relevant to the subscription. Empty means listen to all properties.',
+          'An array of strings specifying the properties of the event associated with the subscription.',
         example: null,
       }),
     subscriptionType: z
-      .literal('OBJECT')
-      .default('OBJECT')
+      .literal('APP_LIFECYCLE_EVENT')
+      .default('APP_LIFECYCLE_EVENT')
       .openapi({
         description:
-          "A string indicating the type of subscription. The default and only valid value is 'OBJECT'.",
+          "A string indicating the type of subscription, which is 'APP_LIFECYCLE_EVENT' by default.",
         example: null,
       }),
   })
   .openapi({
-    required: [
-      'actions',
-      'objectIds',
-      'objectTypeId',
-      'portalId',
-      'properties',
-      'subscriptionType',
-    ],
+    required: ['eventTypeId', 'properties', 'subscriptionType'],
     example: null,
     'x-hubspot-sub-type-impl': true,
   })
-  .openapi('ObjectSubscriptionUpsertRequest')
+  .openapi('AppLifecycleEventSubscriptionUpsertRequest')
 
 const AssociationSubscriptionUpsertRequestSchema = z
   .object({
@@ -197,272 +192,6 @@ const AssociationSubscriptionUpsertRequestSchema = z
     'x-hubspot-sub-type-impl': true,
   })
   .openapi('AssociationSubscriptionUpsertRequest')
-
-const AppLifecycleEventSubscriptionUpsertRequestSchema = z
-  .object({
-    eventTypeId: z
-      .string()
-      .openapi({
-        description:
-          'A string representing the unique identifier for the event type that the subscription pertains to. This value corresponds to an internal event classification at HubSpot. \n\n4-1909196: App install event\n4-1916193: App uninstall event',
-        example: null,
-      }),
-    properties: z
-      .array(z.string().openapi({ example: null }))
-      .openapi({
-        description:
-          'An array of strings specifying the properties of the event associated with the subscription.',
-        example: null,
-      }),
-    subscriptionType: z
-      .literal('APP_LIFECYCLE_EVENT')
-      .default('APP_LIFECYCLE_EVENT')
-      .openapi({
-        description:
-          "A string indicating the type of subscription, which is 'APP_LIFECYCLE_EVENT' by default.",
-        example: null,
-      }),
-  })
-  .openapi({
-    required: ['eventTypeId', 'properties', 'subscriptionType'],
-    example: null,
-    'x-hubspot-sub-type-impl': true,
-  })
-  .openapi('AppLifecycleEventSubscriptionUpsertRequest')
-
-const ListMembershipSubscriptionUpsertRequestSchema = z
-  .object({
-    actions: z
-      .array(
-        z
-          .enum([
-            'CREATE',
-            'UPDATE',
-            'DELETE',
-            'MERGE',
-            'RESTORE',
-            'ASSOCIATION_ADDED',
-            'ASSOCIATION_REMOVED',
-            'SNAPSHOT',
-            'APP_INSTALL',
-            'APP_UNINSTALL',
-            'ADDED_TO_LIST',
-            'REMOVED_FROM_LIST',
-            'GDPR_DELETE',
-          ])
-          .openapi({ example: null }),
-      )
-      .openapi({
-        description:
-          "An array of strings specifying the actions that trigger the subscription. Valid actions include 'ADDED_TO_LIST', and 'REMOVED_FROM_LIST'",
-        example: null,
-      }),
-    listIds: z
-      .array(
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64', example: null }),
-      )
-      .openapi({
-        description:
-          'An array of integers representing the IDs of the lists involved in the subscription. Empty means listen to all lists.',
-        example: null,
-      }),
-    objectIds: z
-      .array(
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64', example: null }),
-      )
-      .openapi({
-        description:
-          'An array of integers representing the IDs of the objects associated with the subscription. Empty means listen to all objectsIds.',
-        example: null,
-      }),
-    portalId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'An integer representing the ID of the portal where the subscription is being managed.',
-        example: null,
-      }),
-    subscriptionType: z
-      .literal('LIST_MEMBERSHIP')
-      .default('LIST_MEMBERSHIP')
-      .openapi({
-        description:
-          "A string indicating the type of subscription. The default and only valid value is 'LIST_MEMBERSHIP'.",
-        example: null,
-      }),
-  })
-  .openapi({
-    required: ['actions', 'listIds', 'objectIds', 'portalId', 'subscriptionType'],
-    example: null,
-    'x-hubspot-sub-type-impl': true,
-  })
-  .openapi('ListMembershipSubscriptionUpsertRequest')
-
-const GdprPrivacyDeletionSubscriptionUpsertRequestSchema = z
-  .object({
-    actions: z
-      .array(
-        z
-          .enum([
-            'CREATE',
-            'UPDATE',
-            'DELETE',
-            'MERGE',
-            'RESTORE',
-            'ASSOCIATION_ADDED',
-            'ASSOCIATION_REMOVED',
-            'SNAPSHOT',
-            'APP_INSTALL',
-            'APP_UNINSTALL',
-            'ADDED_TO_LIST',
-            'REMOVED_FROM_LIST',
-            'GDPR_DELETE',
-          ])
-          .openapi({ example: null }),
-      )
-      .openapi({
-        description:
-          "An array of strings specifying the actions that trigger the subscription. Valid action is 'GDPR_DELETE'. ",
-        example: null,
-      }),
-    objectTypeId: z
-      .string()
-      .openapi({
-        description:
-          'A string representing the unique identifier for the type of object associated with the subscription.',
-        example: null,
-      }),
-    portalId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'An integer representing the unique identifier for the HubSpot portal that is being listened to for changes. ',
-        example: null,
-      }),
-    subscriptionType: z
-      .literal('GDPR_PRIVACY_DELETION')
-      .default('GDPR_PRIVACY_DELETION')
-      .openapi({
-        description:
-          'A string indicating the type of subscription. GDPR_PRIVACY_DELETION is the only valid option for GdprPrivacyDeletionSubscriptionUpsertRequest. ',
-        example: null,
-      }),
-  })
-  .openapi({
-    required: ['actions', 'objectTypeId', 'portalId', 'subscriptionType'],
-    example: null,
-    'x-hubspot-sub-type-impl': true,
-  })
-  .openapi('GdprPrivacyDeletionSubscriptionUpsertRequest')
-
-type SubscriptionUpsertRequestType =
-  | z.infer<typeof ObjectSubscriptionUpsertRequestSchema>
-  | z.infer<typeof AssociationSubscriptionUpsertRequestSchema>
-  | z.infer<typeof AppLifecycleEventSubscriptionUpsertRequestSchema>
-  | z.infer<typeof ListMembershipSubscriptionUpsertRequestSchema>
-  | z.infer<typeof GdprPrivacyDeletionSubscriptionUpsertRequestSchema>
-
-const ActionOverrideRequestSchema = z
-  .object({
-    associatedObjectTypeIds: z
-      .array(z.string().openapi({ example: null }))
-      .exactOptional()
-      .openapi({
-        description:
-          'An array of strings, each representing an associated object type ID relevant to the action override.',
-        example: null,
-      }),
-    listIds: z
-      .array(
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64', example: null }),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'An array of integers representing list IDs that are associated with the action override. The integers are in int64 format.',
-        example: null,
-      }),
-    objectIds: z
-      .array(
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64', example: null }),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'An array of integers, each representing an object ID for which the action override is applicable. The integers are in int64 format.',
-        example: null,
-      }),
-    properties: z
-      .array(z.string().openapi({ example: null }))
-      .exactOptional()
-      .openapi({
-        description:
-          'An array of strings representing the properties to be overridden in the action. Each string corresponds to a property name.',
-        example: null,
-      }),
-  })
-  .openapi({ example: null, required: [] })
-  .openapi('ActionOverrideRequest')
 
 const BatchInputStringSchema = z
   .object({
@@ -667,7 +396,7 @@ const StandardErrorSchema = z
       .string()
       .openapi({ description: 'A string representing the status of the error.', example: null }),
     subCategory: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'An object providing more specific categorization of the error.',
@@ -965,12 +694,16 @@ const BatchResponseSubscriptionResponseWithErrorsSchema = z
   .openapi({ required: ['completedAt', 'results', 'startedAt', 'status'], example: null })
   .openapi('BatchResponseSubscriptionResponseWithErrors')
 
-const SubscriptionResponseMarch2027Schema = z
+const SubscriptionResponse_1Schema = z
   .object({
     actionOverrides: z
       .record(z.string(), ActionOverrideRequestSchema)
       .exactOptional()
-      .openapi({ example: null }),
+      .openapi({
+        description:
+          'An object containing action overrides, where each key is an action and the value is an ActionOverrideRequest object.',
+        example: null,
+      }),
     actions: z
       .array(
         z
@@ -991,7 +724,11 @@ const SubscriptionResponseMarch2027Schema = z
           ])
           .openapi({ example: null }),
       )
-      .openapi({ example: null }),
+      .openapi({
+        description:
+          "A list of actions that trigger the subscription. Possible values include 'CREATE', 'UPDATE', 'DELETE', 'MERGE', 'RESTORE', 'ASSOCIATION_ADDED', 'ASSOCIATION_REMOVED', 'SNAPSHOT', 'APP_INSTALL', 'APP_UNINSTALL', 'ADDED_TO_LIST', 'REMOVED_FROM_LIST', and 'GDPR_DELETE'.",
+        example: null,
+      }),
     appId: z
       .preprocess(
         (val) =>
@@ -1002,12 +739,26 @@ const SubscriptionResponseMarch2027Schema = z
               : val,
         z.int64(),
       )
-      .openapi({ type: 'integer', format: 'int64', example: null }),
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The unique identifier for the app associated with the subscription. It is an integer formatted as int64.',
+        example: null,
+      }),
     associatedObjectTypeIds: z
       .array(z.string().openapi({ example: null }))
       .exactOptional()
-      .openapi({ example: null }),
-    createdAt: z.iso.datetime({ offset: true }).openapi({ example: null }),
+      .openapi({
+        description: 'A list of associated object type IDs. Each ID is a string.',
+        example: null,
+      }),
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The date and time when the subscription was created, in ISO 8601 format.',
+        example: null,
+      }),
     createdBy: z
       .preprocess(
         (val) =>
@@ -1019,8 +770,21 @@ const SubscriptionResponseMarch2027Schema = z
         z.int64(),
       )
       .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', example: null }),
-    deletedAt: z.iso.datetime({ offset: true }).exactOptional().openapi({ example: null }),
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The ID of the user who created the subscription. It is an integer formatted as int64.',
+        example: null,
+      }),
+    deletedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The date and time when the subscription was deleted, in ISO 8601 format, if applicable.',
+        example: null,
+      }),
     id: z
       .preprocess(
         (val) =>
@@ -1031,8 +795,13 @@ const SubscriptionResponseMarch2027Schema = z
               : val,
         z.int64(),
       )
-      .openapi({ type: 'integer', format: 'int64', example: null }),
-    includeSensitivePropertiesChanged: z.boolean().exactOptional().openapi({ example: null }),
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The unique identifier for the subscription. It is an integer formatted as int64.',
+        example: null,
+      }),
     listIds: z
       .array(
         z
@@ -1048,7 +817,11 @@ const SubscriptionResponseMarch2027Schema = z
           .openapi({ type: 'integer', format: 'int64', example: null }),
       )
       .exactOptional()
-      .openapi({ example: null }),
+      .openapi({
+        description:
+          'A list of list IDs associated with the subscription. Each ID is an integer formatted as int64.',
+        example: null,
+      }),
     objectIds: z
       .array(
         z
@@ -1064,8 +837,18 @@ const SubscriptionResponseMarch2027Schema = z
           .openapi({ type: 'integer', format: 'int64', example: null }),
       )
       .exactOptional()
-      .openapi({ example: null }),
-    objectTypeId: z.string().openapi({ example: null }),
+      .openapi({
+        description:
+          'A list of object IDs associated with the subscription. Each ID is an integer formatted as int64.',
+        example: null,
+      }),
+    objectTypeId: z
+      .string()
+      .openapi({
+        description:
+          'The identifier for the object type associated with the subscription. It is a string.',
+        example: null,
+      }),
     portalId: z
       .preprocess(
         (val) =>
@@ -1077,11 +860,21 @@ const SubscriptionResponseMarch2027Schema = z
         z.int64(),
       )
       .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', example: null }),
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The unique identifier for the portal associated with the subscription. It is an integer formatted as int64.',
+        example: null,
+      }),
     properties: z
       .array(z.string().openapi({ example: null }))
       .exactOptional()
-      .openapi({ example: null }),
+      .openapi({
+        description:
+          'A list of property names associated with the subscription. Each property is a string.',
+        example: null,
+      }),
     subscriptionType: z
       .enum([
         'APP_LIFECYCLE_EVENT',
@@ -1091,8 +884,18 @@ const SubscriptionResponseMarch2027Schema = z
         'LIST_MEMBERSHIP',
         'OBJECT',
       ])
-      .openapi({ example: null }),
-    updatedAt: z.iso.datetime({ offset: true }).openapi({ example: null }),
+      .openapi({
+        description:
+          "The type of subscription, which can be one of the following: 'OBJECT', 'ASSOCIATION', 'EVENT', 'APP_LIFECYCLE_EVENT', 'LIST_MEMBERSHIP', or 'GDPR_PRIVACY_DELETION'.",
+        example: null,
+      }),
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description:
+          'The date and time when the subscription was last updated, in ISO 8601 format.',
+        example: null,
+      }),
   })
   .openapi({
     required: [
@@ -1106,12 +909,20 @@ const SubscriptionResponseMarch2027Schema = z
     ],
     example: null,
   })
-  .openapi('SubscriptionResponseMarch2027')
+  .openapi('SubscriptionResponse_1')
 
-const CollectionResponseSubscriptionResponseMarch2027NoPagingSchema = z
-  .object({ results: z.array(SubscriptionResponseMarch2027Schema).openapi({ example: null }) })
+const CollectionResponseSubscriptionResponseNoPagingSchema = z
+  .object({
+    results: z
+      .array(SubscriptionResponse_1Schema)
+      .openapi({
+        description:
+          "An array of SubscriptionResponse objects, each representing a subscription's details such as actions, appId, createdAt, and other relevant properties.",
+        example: null,
+      }),
+  })
   .openapi({ required: ['results'], example: null })
-  .openapi('CollectionResponseSubscriptionResponseMarch2027NoPaging')
+  .openapi('CollectionResponseSubscriptionResponseNoPaging')
 
 const ConditionSchema = z
   .object({
@@ -1468,6 +1279,270 @@ const FilterResponseSchema = z
   .openapi({ required: ['createdAt', 'filter', 'id'], example: null })
   .openapi('FilterResponse')
 
+const GdprPrivacyDeletionSubscriptionUpsertRequestSchema = z
+  .object({
+    actions: z
+      .array(
+        z
+          .enum([
+            'CREATE',
+            'UPDATE',
+            'DELETE',
+            'MERGE',
+            'RESTORE',
+            'ASSOCIATION_ADDED',
+            'ASSOCIATION_REMOVED',
+            'SNAPSHOT',
+            'APP_INSTALL',
+            'APP_UNINSTALL',
+            'ADDED_TO_LIST',
+            'REMOVED_FROM_LIST',
+            'GDPR_DELETE',
+          ])
+          .openapi({ example: null }),
+      )
+      .openapi({
+        description:
+          "An array of strings specifying the actions that trigger the subscription. Valid action is 'GDPR_DELETE'. ",
+        example: null,
+      }),
+    objectTypeId: z
+      .string()
+      .openapi({
+        description:
+          'A string representing the unique identifier for the type of object associated with the subscription.',
+        example: null,
+      }),
+    portalId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'An integer representing the unique identifier for the HubSpot portal that is being listened to for changes. ',
+        example: null,
+      }),
+    subscriptionType: z
+      .literal('GDPR_PRIVACY_DELETION')
+      .default('GDPR_PRIVACY_DELETION')
+      .openapi({
+        description:
+          'A string indicating the type of subscription. GDPR_PRIVACY_DELETION is the only valid option for GdprPrivacyDeletionSubscriptionUpsertRequest. ',
+        example: null,
+      }),
+  })
+  .openapi({
+    required: ['actions', 'objectTypeId', 'portalId', 'subscriptionType'],
+    example: null,
+    'x-hubspot-sub-type-impl': true,
+  })
+  .openapi('GdprPrivacyDeletionSubscriptionUpsertRequest')
+
+const ListMembershipSubscriptionUpsertRequestSchema = z
+  .object({
+    actions: z
+      .array(
+        z
+          .enum([
+            'CREATE',
+            'UPDATE',
+            'DELETE',
+            'MERGE',
+            'RESTORE',
+            'ASSOCIATION_ADDED',
+            'ASSOCIATION_REMOVED',
+            'SNAPSHOT',
+            'APP_INSTALL',
+            'APP_UNINSTALL',
+            'ADDED_TO_LIST',
+            'REMOVED_FROM_LIST',
+            'GDPR_DELETE',
+          ])
+          .openapi({ example: null }),
+      )
+      .openapi({
+        description:
+          "An array of strings specifying the actions that trigger the subscription. Valid actions include 'ADDED_TO_LIST', and 'REMOVED_FROM_LIST'",
+        example: null,
+      }),
+    listIds: z
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64', example: null }),
+      )
+      .openapi({
+        description:
+          'An array of integers representing the IDs of the lists involved in the subscription. Empty means listen to all lists.',
+        example: null,
+      }),
+    objectIds: z
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64', example: null }),
+      )
+      .openapi({
+        description:
+          'An array of integers representing the IDs of the objects associated with the subscription. Empty means listen to all objectsIds.',
+        example: null,
+      }),
+    portalId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'An integer representing the ID of the portal where the subscription is being managed.',
+        example: null,
+      }),
+    subscriptionType: z
+      .literal('LIST_MEMBERSHIP')
+      .default('LIST_MEMBERSHIP')
+      .openapi({
+        description:
+          "A string indicating the type of subscription. The default and only valid value is 'LIST_MEMBERSHIP'.",
+        example: null,
+      }),
+  })
+  .openapi({
+    required: ['actions', 'listIds', 'objectIds', 'portalId', 'subscriptionType'],
+    example: null,
+    'x-hubspot-sub-type-impl': true,
+  })
+  .openapi('ListMembershipSubscriptionUpsertRequest')
+
+const ObjectSubscriptionUpsertRequestSchema = z
+  .object({
+    actions: z
+      .array(
+        z
+          .enum([
+            'CREATE',
+            'UPDATE',
+            'DELETE',
+            'MERGE',
+            'RESTORE',
+            'ASSOCIATION_ADDED',
+            'ASSOCIATION_REMOVED',
+            'SNAPSHOT',
+            'APP_INSTALL',
+            'APP_UNINSTALL',
+            'ADDED_TO_LIST',
+            'REMOVED_FROM_LIST',
+            'GDPR_DELETE',
+          ])
+          .openapi({ example: null }),
+      )
+      .openapi({
+        description:
+          "An array of strings specifying the actions that trigger the subscription. Valid actions include 'CREATE', 'UPDATE', 'DELETE', 'MERGE', 'RESTORE'.",
+        example: null,
+      }),
+    objectIds: z
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64', example: null }),
+      )
+      .openapi({
+        description:
+          'An array of integers representing the IDs of the objects involved in the subscription. Empty means listen to all objectIds.',
+        example: null,
+      }),
+    objectTypeId: z
+      .string()
+      .openapi({
+        description:
+          'A string that identifies the type of object for which the subscription is being created or updated. For example "0-1" for contacts.',
+        example: null,
+      }),
+    portalId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'An integer representing the portal ID associated with the subscription.',
+        example: null,
+      }),
+    properties: z
+      .array(z.string().openapi({ example: null }))
+      .openapi({
+        description:
+          'An array of strings listing the properties of the objects that are relevant to the subscription. Empty means listen to all properties.',
+        example: null,
+      }),
+    subscriptionType: z
+      .literal('OBJECT')
+      .default('OBJECT')
+      .openapi({
+        description:
+          "A string indicating the type of subscription. The default and only valid value is 'OBJECT'.",
+        example: null,
+      }),
+  })
+  .openapi({
+    required: [
+      'actions',
+      'objectIds',
+      'objectTypeId',
+      'portalId',
+      'properties',
+      'subscriptionType',
+    ],
+    example: null,
+    'x-hubspot-sub-type-impl': true,
+  })
+  .openapi('ObjectSubscriptionUpsertRequest')
+
 const ThrottlingSettingsSchema = z
   .object({
     maxConcurrentRequests: z
@@ -1709,235 +1784,15 @@ const SubscriptionPatchRequestSchema = z
   .openapi({ example: null, required: [] })
   .openapi('SubscriptionPatchRequest')
 
-const SubscriptionResponse_1Schema = z
-  .object({
-    actionOverrides: z
-      .record(z.string(), ActionOverrideRequestSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'An object containing action overrides, where each key is an action and the value is an ActionOverrideRequest object.',
-        example: null,
-      }),
-    actions: z
-      .array(
-        z
-          .enum([
-            'CREATE',
-            'UPDATE',
-            'DELETE',
-            'MERGE',
-            'RESTORE',
-            'ASSOCIATION_ADDED',
-            'ASSOCIATION_REMOVED',
-            'SNAPSHOT',
-            'APP_INSTALL',
-            'APP_UNINSTALL',
-            'ADDED_TO_LIST',
-            'REMOVED_FROM_LIST',
-            'GDPR_DELETE',
-          ])
-          .openapi({ example: null }),
-      )
-      .openapi({
-        description:
-          "A list of actions that trigger the subscription. Possible values include 'CREATE', 'UPDATE', 'DELETE', 'MERGE', 'RESTORE', 'ASSOCIATION_ADDED', 'ASSOCIATION_REMOVED', 'SNAPSHOT', 'APP_INSTALL', 'APP_UNINSTALL', 'ADDED_TO_LIST', 'REMOVED_FROM_LIST', and 'GDPR_DELETE'.",
-        example: null,
-      }),
-    appId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The unique identifier for the app associated with the subscription. It is an integer formatted as int64.',
-        example: null,
-      }),
-    associatedObjectTypeIds: z
-      .array(z.string().openapi({ example: null }))
-      .exactOptional()
-      .openapi({
-        description: 'A list of associated object type IDs. Each ID is a string.',
-        example: null,
-      }),
-    createdAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The date and time when the subscription was created, in ISO 8601 format.',
-        example: null,
-      }),
-    createdBy: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The ID of the user who created the subscription. It is an integer formatted as int64.',
-        example: null,
-      }),
-    deletedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'The date and time when the subscription was deleted, in ISO 8601 format, if applicable.',
-        example: null,
-      }),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The unique identifier for the subscription. It is an integer formatted as int64.',
-        example: null,
-      }),
-    listIds: z
-      .array(
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64', example: null }),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of list IDs associated with the subscription. Each ID is an integer formatted as int64.',
-        example: null,
-      }),
-    objectIds: z
-      .array(
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64', example: null }),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of object IDs associated with the subscription. Each ID is an integer formatted as int64.',
-        example: null,
-      }),
-    objectTypeId: z
-      .string()
-      .openapi({
-        description:
-          'The identifier for the object type associated with the subscription. It is a string.',
-        example: null,
-      }),
-    portalId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The unique identifier for the portal associated with the subscription. It is an integer formatted as int64.',
-        example: null,
-      }),
-    properties: z
-      .array(z.string().openapi({ example: null }))
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of property names associated with the subscription. Each property is a string.',
-        example: null,
-      }),
-    subscriptionType: z
-      .enum([
-        'APP_LIFECYCLE_EVENT',
-        'ASSOCIATION',
-        'EVENT',
-        'GDPR_PRIVACY_DELETION',
-        'LIST_MEMBERSHIP',
-        'OBJECT',
-      ])
-      .openapi({
-        description:
-          "The type of subscription, which can be one of the following: 'OBJECT', 'ASSOCIATION', 'EVENT', 'APP_LIFECYCLE_EVENT', 'LIST_MEMBERSHIP', or 'GDPR_PRIVACY_DELETION'.",
-        example: null,
-      }),
-    updatedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description:
-          'The date and time when the subscription was last updated, in ISO 8601 format.',
-        example: null,
-      }),
-  })
-  .openapi({
-    required: [
-      'actions',
-      'appId',
-      'createdAt',
-      'id',
-      'objectTypeId',
-      'subscriptionType',
-      'updatedAt',
-    ],
-    example: null,
-  })
-  .openapi('SubscriptionResponse_1')
-
-const SubscriptionUpsertRequestSchema: z.ZodType<SubscriptionUpsertRequestType> = z
-  .lazy(() =>
-    z
-      .xor([
-        ObjectSubscriptionUpsertRequestSchema,
-        AssociationSubscriptionUpsertRequestSchema,
-        AppLifecycleEventSubscriptionUpsertRequestSchema,
-        ListMembershipSubscriptionUpsertRequestSchema,
-        GdprPrivacyDeletionSubscriptionUpsertRequestSchema,
-      ])
-      .openapi({ example: null }),
-  )
+const SubscriptionUpsertRequestSchema = z
+  .xor([
+    ObjectSubscriptionUpsertRequestSchema,
+    AssociationSubscriptionUpsertRequestSchema,
+    AppLifecycleEventSubscriptionUpsertRequestSchema,
+    ListMembershipSubscriptionUpsertRequestSchema,
+    GdprPrivacyDeletionSubscriptionUpsertRequestSchema,
+  ])
+  .openapi({ example: null })
   .openapi('SubscriptionUpsertRequest')
 
 const ErrorResponse = {
@@ -1957,10 +1812,6 @@ const Oauth2SecurityScheme = {
     },
   },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const getAppWebhooks202609AppIdSettingsRoute = createRoute({
   method: 'get',
@@ -2180,18 +2031,14 @@ export const postAppWebhooks202609AppIdSubscriptionsRoute = createRoute({
       description: 'successful operation',
       content: { 'application/json': { schema: SubscriptionResponseSchema, example: null } },
       headers: z.object({
-        Location: {
-          description: 'URL of the newly created resource',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'URL of the newly created resource',
-              param: { required: false },
-              example: null,
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'URL of the newly created resource',
+            param: { required: false },
+            example: null,
+          }),
       }),
     },
     default: ErrorResponse,
@@ -2795,7 +2642,14 @@ export const getWebhooksJournalJournalLocal202609EarliestRoute = createRoute({
         }),
     }),
   },
-  responses: { default: ErrorResponse },
+  responses: {
+    200: {
+      description: 'successful operation',
+      content: { 'application/json': { schema: JournalFetchResponseSchema, example: null } },
+    },
+    204: { description: 'The journal has no entries', content: {} },
+    default: ErrorResponse,
+  },
   security: [],
 })
 
@@ -2836,7 +2690,14 @@ export const getWebhooksJournalJournalLocal202609LatestRoute = createRoute({
         }),
     }),
   },
-  responses: { default: ErrorResponse },
+  responses: {
+    200: {
+      description: 'successful operation',
+      content: { 'application/json': { schema: JournalFetchResponseSchema, example: null } },
+    },
+    204: { description: 'The journal has no entries', content: {} },
+    default: ErrorResponse,
+  },
   security: [],
 })
 
@@ -2894,7 +2755,14 @@ export const getWebhooksJournalJournalLocal202609OffsetOffsetNextRoute = createR
         }),
     }),
   },
-  responses: { default: ErrorResponse },
+  responses: {
+    200: {
+      description: 'successful operation',
+      content: { 'application/json': { schema: JournalFetchResponseSchema, example: null } },
+    },
+    204: { description: 'No journal entry exists after the given offset', content: {} },
+    default: ErrorResponse,
+  },
   security: [],
 })
 
@@ -3272,7 +3140,14 @@ export const getWebhooksJournalJournal202609EarliestRoute = createRoute({
         }),
     }),
   },
-  responses: { default: ErrorResponse },
+  responses: {
+    200: {
+      description: 'successful operation',
+      content: { 'application/json': { schema: JournalFetchResponseSchema, example: null } },
+    },
+    204: { description: 'The journal has no entries', content: {} },
+    default: ErrorResponse,
+  },
   security: [],
 })
 
@@ -3313,7 +3188,14 @@ export const getWebhooksJournalJournal202609LatestRoute = createRoute({
         }),
     }),
   },
-  responses: { default: ErrorResponse },
+  responses: {
+    200: {
+      description: 'successful operation',
+      content: { 'application/json': { schema: JournalFetchResponseSchema, example: null } },
+    },
+    204: { description: 'The journal has no entries', content: {} },
+    default: ErrorResponse,
+  },
   security: [],
 })
 
@@ -3371,7 +3253,14 @@ export const getWebhooksJournalJournal202609OffsetOffsetNextRoute = createRoute(
         }),
     }),
   },
-  responses: { default: ErrorResponse },
+  responses: {
+    200: {
+      description: 'successful operation',
+      content: { 'application/json': { schema: JournalFetchResponseSchema, example: null } },
+    },
+    204: { description: 'No journal entry exists after the given offset', content: {} },
+    default: ErrorResponse,
+  },
   security: [],
 })
 
@@ -3454,7 +3343,7 @@ export const getWebhooksJournalSubscriptions202609Route = createRoute({
       description: 'successful operation',
       content: {
         'application/json': {
-          schema: CollectionResponseSubscriptionResponseMarch2027NoPagingSchema,
+          schema: CollectionResponseSubscriptionResponseNoPagingSchema,
           example: null,
         },
       },

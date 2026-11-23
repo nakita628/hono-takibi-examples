@@ -16,7 +16,7 @@ It's as simple as this example: `osc api /about` (_about_ is one of the endpoint
 
 Base URLs:
 
-* <a href="https://api.apis.guru/">https://api.apis.guru/</a>
+* <a href="/">/</a>
 
 Web: <a href="https://openbuildservice.org/">Open Build Service</a> 
 License: <a href="https://github.com/openSUSE/open-build-service/blob/master/COPYING">GNU General Public License v2.0</a>

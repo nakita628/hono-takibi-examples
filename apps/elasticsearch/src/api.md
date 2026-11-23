@@ -268980,7 +268980,7 @@ Status Code **200**
 |» » » » *oneOf*|string|false|none|none|
 |» trigger|object|true|none|none|
 |» » schedule|object|false|none|none|
-|» » » timezone|string|false|none|none|
+|» » » timezone|string|false|none|The time zone to use for the schedule. Not supported for `interval` schedules.|
 |» » » cron|object|false|none|none|
 |» » » daily|object|false|none|none|
 |» » » » at|[[watcher._types.ScheduleTimeOfDay](#schemawatcher._types.scheduletimeofday)]|true|none|none|
@@ -269239,7 +269239,7 @@ If the user is able to read index `a`, but not index `b`, the same will apply wh
 |» » » » *oneOf*|body|string|false|none|
 |» trigger|body|object|false|The trigger that defines when the watch should run.|
 |» » schedule|body|object|false|none|
-|» » » timezone|body|string|false|none|
+|» » » timezone|body|string|false|The time zone to use for the schedule. Not supported for `interval` schedules.|
 |» » » cron|body|object|false|none|
 |» » » daily|body|object|false|none|
 |» » » » at|body|[[watcher._types.ScheduleTimeOfDay](#schemawatcher._types.scheduletimeofday)]|true|none|
@@ -269524,7 +269524,7 @@ If the user is able to read index `a`, but not index `b`, the same will apply wh
 |» » » » *oneOf*|body|string|false|none|
 |» trigger|body|object|false|The trigger that defines when the watch should run.|
 |» » schedule|body|object|false|none|
-|» » » timezone|body|string|false|none|
+|» » » timezone|body|string|false|The time zone to use for the schedule. Not supported for `interval` schedules.|
 |» » » cron|body|object|false|none|
 |» » » daily|body|object|false|none|
 |» » » » at|body|[[watcher._types.ScheduleTimeOfDay](#schemawatcher._types.scheduletimeofday)]|true|none|
@@ -269906,7 +269906,7 @@ Refer to the external documentation for examples of watch execution requests, in
 |» » » » » *oneOf*|body|string|false|none|
 |» » trigger|body|object|true|none|
 |» » » schedule|body|object|false|none|
-|» » » » timezone|body|string|false|none|
+|» » » » timezone|body|string|false|The time zone to use for the schedule. Not supported for `interval` schedules.|
 |» » » » cron|body|object|false|none|
 |» » » » daily|body|object|false|none|
 |» » » » » at|body|[[watcher._types.ScheduleTimeOfDay](#schemawatcher._types.scheduletimeofday)]|true|none|
@@ -270607,7 +270607,7 @@ Refer to the external documentation for examples of watch execution requests, in
 |» » » » » *oneOf*|body|string|false|none|
 |» » trigger|body|object|true|none|
 |» » » schedule|body|object|false|none|
-|» » » » timezone|body|string|false|none|
+|» » » » timezone|body|string|false|The time zone to use for the schedule. Not supported for `interval` schedules.|
 |» » » » cron|body|object|false|none|
 |» » » » daily|body|object|false|none|
 |» » » » » at|body|[[watcher._types.ScheduleTimeOfDay](#schemawatcher._types.scheduletimeofday)]|true|none|
@@ -271307,7 +271307,7 @@ Refer to the external documentation for examples of watch execution requests, in
 |» » » » » *oneOf*|body|string|false|none|
 |» » trigger|body|object|true|none|
 |» » » schedule|body|object|false|none|
-|» » » » timezone|body|string|false|none|
+|» » » » timezone|body|string|false|The time zone to use for the schedule. Not supported for `interval` schedules.|
 |» » » » cron|body|object|false|none|
 |» » » » daily|body|object|false|none|
 |» » » » » at|body|[[watcher._types.ScheduleTimeOfDay](#schemawatcher._types.scheduletimeofday)]|true|none|
@@ -272007,7 +272007,7 @@ Refer to the external documentation for examples of watch execution requests, in
 |» » » » » *oneOf*|body|string|false|none|
 |» » trigger|body|object|true|none|
 |» » » schedule|body|object|false|none|
-|» » » » timezone|body|string|false|none|
+|» » » » timezone|body|string|false|The time zone to use for the schedule. Not supported for `interval` schedules.|
 |» » » » cron|body|object|false|none|
 |» » » » daily|body|object|false|none|
 |» » » » » at|body|[[watcher._types.ScheduleTimeOfDay](#schemawatcher._types.scheduletimeofday)]|true|none|
@@ -469359,7 +469359,7 @@ The source of the data for the transform.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|timezone|string|false|none|none|
+|timezone|string|false|none|The time zone to use for the schedule. Not supported for `interval` schedules.|
 |cron|object|false|none|none|
 |daily|object|false|none|none|
 |hourly|object|false|none|none|

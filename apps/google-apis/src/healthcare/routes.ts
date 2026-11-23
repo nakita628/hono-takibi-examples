@@ -1,5 +1,1218 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const NotificationConfigSchema = z
+  .object({
+    pubsubTopic: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The [Pub/Sub](https://cloud.google.com/pubsub/docs/) topic that notifications of changes are published on. Supplied by the client. PubsubMessage.Data contains the resource name. PubsubMessage.MessageId is the ID of this message. It is guaranteed to be unique within the topic. PubsubMessage.PublishTime is the time at which the message was published. Notifications are only sent if the topic is non-empty. [Topic names](https://cloud.google.com/pubsub/docs/overview#names) must be scoped to a project. Cloud Healthcare API service account must have publisher permissions on the given Pub/Sub topic. Not having adequate permissions causes the calls that send notifications to fail. If a notification can't be published to Pub/Sub, errors are logged to Cloud Logging (see [Viewing error logs in Cloud Logging](https://cloud.google.com/healthcare/docs/how-tos/logging)). If the number of errors exceeds a certain rate, some aren't submitted. Note that not all operations trigger notifications, see [Configuring Pub/Sub notifications](https://cloud.google.com/healthcare/docs/how-tos/pubsub) for specific details.",
+      }),
+    sendForBulkImport: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether or not to send Pub/Sub notifications on bulk import. Only supported for DICOM imports.',
+      }),
+  })
+  .openapi({
+    description: 'Specifies where to send notifications upon changes to a data store.',
+    required: [],
+  })
+  .openapi('NotificationConfig')
+
+const FhirNotificationConfigSchema = z
+  .object({
+    pubsubTopic: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The [Pub/Sub](https://cloud.google.com/pubsub/docs/) topic that notifications of changes are published on. Supplied by the client. The notification is a `PubsubMessage` with the following fields: * `PubsubMessage.Data` contains the resource name. * `PubsubMessage.MessageId` is the ID of this notification. It is guaranteed to be unique within the topic. * `PubsubMessage.PublishTime` is the time when the message was published. Note that notifications are only sent if the topic is non-empty. [Topic names](https://cloud.google.com/pubsub/docs/overview#names) must be scoped to a project. The Cloud Healthcare API service account, service-@gcp-sa-healthcare.iam.gserviceaccount.com, must have publisher permissions on the given Pub/Sub topic. Not having adequate permissions causes the calls that send notifications to fail (https://cloud.google.com/healthcare-api/docs/permissions-healthcare-api-gcp-products#dicom_fhir_and_hl7v2_store_cloud_pubsub_permissions). If a notification can't be published to Pub/Sub, errors are logged to Cloud Logging. For more information, see [Viewing error logs in Cloud Logging](https://cloud.google.com/healthcare-api/docs/how-tos/logging).",
+      }),
+    sendFullResource: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether to send full FHIR resource to this Pub/Sub topic for Create and Update operation. Note that setting this to true does not guarantee that all resources will be sent in the format of full FHIR resource. When a resource change is too large or during heavy traffic, only the resource name will be sent. Clients should always check the "payloadType" label from a Pub/Sub message to determine whether it needs to fetch the full resource as a separate operation.',
+      }),
+  })
+  .openapi({ description: 'Contains the configuration for FHIR notifications.', required: [] })
+  .openapi('FhirNotificationConfig')
+
+const SearchParameterSchema = z
+  .object({
+    canonicalUrl: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The canonical url of the search parameter resource.' }),
+    parameter: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The versioned name of the search parameter resource. The format is projects/{project-id}/locations/{location}/datasets/{dataset-id}/fhirStores/{fhirStore-id}/fhir/SearchParameter/{resource-id}/_history/{version-id} For fhir stores with disable_resource_versioning=true, the format is projects/{project-id}/locations/{location}/datasets/{dataset-id}/fhirStores/{fhirStore-id}/fhir/SearchParameter/{resource-id}/',
+      }),
+  })
+  .openapi({
+    description: 'Contains the versioned name and the URL for one SearchParameter.',
+    required: [],
+  })
+  .openapi('SearchParameter')
+
+const SearchConfigSchema = z
+  .object({
+    searchParameters: z
+      .array(SearchParameterSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of search parameters in this FHIR store that are used to configure this FHIR store.',
+      }),
+  })
+  .openapi({ description: 'Contains the configuration for FHIR search.', required: [] })
+  .openapi('SearchConfig')
+
+const TimePartitioningSchema = z
+  .object({
+    expirationMs: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Number of milliseconds for which to keep the storage for a partition.',
+      }),
+    type: z
+      .enum(['PARTITION_TYPE_UNSPECIFIED', 'HOUR', 'DAY', 'MONTH', 'YEAR'])
+      .exactOptional()
+      .openapi({ description: 'Type of partitioning.' }),
+  })
+  .openapi({
+    description: 'Configuration for FHIR BigQuery time-partitioned tables.',
+    required: [],
+  })
+  .openapi('TimePartitioning')
+
+const SchemaConfigSchema = z
+  .object({
+    lastUpdatedPartitionConfig: TimePartitioningSchema.exactOptional().openapi({
+      description:
+        "The configuration for exported BigQuery tables to be partitioned by FHIR resource's last updated time column.",
+    }),
+    recursiveStructureDepth: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The depth for all recursive structures in the output analytics schema. For example, `concept` in the CodeSystem resource is a recursive structure; when the depth is 2, the CodeSystem table will have a column called `concept.concept` but not `concept.concept.concept`. If not specified or set to 0, the server will use the default value 2. The maximum depth allowed is 5.',
+      }),
+    schemaType: z
+      .enum(['SCHEMA_TYPE_UNSPECIFIED', 'LOSSLESS', 'ANALYTICS', 'ANALYTICS_V2'])
+      .exactOptional()
+      .openapi({ description: 'Specifies the output schema type. Schema type is required.' }),
+  })
+  .openapi({
+    description:
+      'Configuration for the FHIR BigQuery schema. Determines how the server generates the schema.',
+    required: [],
+  })
+  .openapi('SchemaConfig')
+
+const GoogleCloudHealthcareV1beta1FhirBigQueryDestinationSchema = z
+  .object({
+    datasetUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'BigQuery URI to an existing dataset, up to 2000 characters long, in the format `bq://projectId.bqDatasetId`.',
+      }),
+    force: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Use `write_disposition` instead. If `write_disposition` is specified, this parameter is ignored. force=false is equivalent to write_disposition=WRITE_EMPTY and force=true is equivalent to write_disposition=WRITE_TRUNCATE.',
+      }),
+    schemaConfig: SchemaConfigSchema.exactOptional().openapi({
+      description: 'The configuration for the exported BigQuery schema.',
+    }),
+    writeDisposition: z
+      .enum(['WRITE_DISPOSITION_UNSPECIFIED', 'WRITE_EMPTY', 'WRITE_TRUNCATE', 'WRITE_APPEND'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Determines if existing data in the destination dataset is overwritten, appended to, or not written if the tables contain data. If a write_disposition is specified, the `force` parameter is ignored.',
+      }),
+  })
+  .openapi({ description: 'The configuration for exporting to BigQuery.', required: [] })
+  .openapi('GoogleCloudHealthcareV1beta1FhirBigQueryDestination')
+
+const AnnotationConfigSchema = z
+  .object({
+    annotationStoreName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the annotation store, in the form `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}/annotationStores/{annotation_store_id}`). * The destination annotation store must be in the same project as the source data. De-identifying data across multiple projects is not supported. * The destination annotation store must exist when using DeidentifyDicomStore or DeidentifyFhirStore. DeidentifyDataset automatically creates the destination annotation store.',
+      }),
+    storeQuote: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If set to true, the sensitive texts are included in SensitiveTextAnnotation of Annotation.',
+      }),
+  })
+  .openapi({
+    description: 'Specifies how to store annotations during de-identification operation.',
+    required: [],
+  })
+  .openapi('AnnotationConfig')
+
+const TagFilterListSchema = z
+  .object({
+    tags: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Tags to be filtered. Tags must be DICOM Data Elements, File Meta Elements, or Directory Structuring Elements, as defined at: http://dicom.nema.org/medical/dicom/current/output/html/part06.html#table_6-1,. They may be provided by "Keyword" or "Tag". For example, "PatientID", "00100010".',
+      }),
+  })
+  .openapi({ description: 'List of tags to be filtered.', required: [] })
+  .openapi('TagFilterList')
+
+const DicomConfigSchema = z
+  .object({
+    filterProfile: z
+      .enum([
+        'TAG_FILTER_PROFILE_UNSPECIFIED',
+        'MINIMAL_KEEP_LIST_PROFILE',
+        'ATTRIBUTE_CONFIDENTIALITY_BASIC_PROFILE',
+        'KEEP_ALL_PROFILE',
+        'DEIDENTIFY_TAG_CONTENTS',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Tag filtering profile that determines which tags to keep/remove.' }),
+    keepList: TagFilterListSchema.exactOptional().openapi({
+      description: 'List of tags to keep. Remove all other tags.',
+    }),
+    removeList: TagFilterListSchema.exactOptional().openapi({
+      description: 'List of tags to remove. Keep all other tags.',
+    }),
+    skipIdRedaction: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If true, skip replacing StudyInstanceUID, SeriesInstanceUID, SOPInstanceUID, and MediaStorageSOPInstanceUID and leave them untouched. The Cloud Healthcare API regenerates these UIDs by default based on the DICOM Standard\'s reasoning: "Whilst these UIDs cannot be mapped directly to an individual out of context, given access to the original images, or to a database of the original images containing the UIDs, it would be possible to recover the individual\'s identity." http://dicom.nema.org/medical/dicom/current/output/chtml/part15/sect_E.3.9.html',
+      }),
+  })
+  .openapi({
+    description: 'Specifies the parameters needed for de-identification of DICOM stores.',
+    required: [],
+  })
+  .openapi('DicomConfig')
+
+const ImageConfigSchema = z
+  .object({
+    additionalInfoTypes: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Additional InfoTypes to redact in the images in addition to those used by `text_redaction_mode`. Can only be used when `text_redaction_mode` is set to `REDACT_SENSITIVE_TEXT`, `REDACT_SENSITIVE_TEXT_CLEAN_DESCRIPTORS` or `TEXT_REDACTION_MODE_UNSPECIFIED`.',
+      }),
+    excludeInfoTypes: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'InfoTypes to skip redacting, overriding those used by `text_redaction_mode`. Can only be used when `text_redaction_mode` is set to `REDACT_SENSITIVE_TEXT` or `REDACT_SENSITIVE_TEXT_CLEAN_DESCRIPTORS`.',
+      }),
+    textRedactionMode: z
+      .enum([
+        'TEXT_REDACTION_MODE_UNSPECIFIED',
+        'REDACT_ALL_TEXT',
+        'REDACT_SENSITIVE_TEXT',
+        'REDACT_NO_TEXT',
+        'REDACT_SENSITIVE_TEXT_CLEAN_DESCRIPTORS',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Determines how to redact text from image.' }),
+  })
+  .openapi({
+    description: 'Specifies how to handle de-identification of image pixels.',
+    required: [],
+  })
+  .openapi('ImageConfig')
+
+const CleanTextTagSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'Inspect text and transform sensitive text. Configurable using `TextConfig`. Supported [Value Representations] (http://dicom.nema.org/medical/dicom/2018e/output/chtml/part05/sect_6.2.html#table_6.2-1): AE, LO, LT, PN, SH, ST, UC, UT, DA, DT, AS',
+  })
+  .openapi('CleanTextTag')
+
+const DeleteTagSchema = z
+  .looseObject({})
+  .openapi({ description: 'Delete tag.' })
+  .openapi('DeleteTag')
+
+const KeepTagSchema = z
+  .looseObject({})
+  .openapi({ description: 'Keep tag unchanged.' })
+  .openapi('KeepTag')
+
+const RecurseTagSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'Recursively apply DICOM de-id to tags nested in a sequence. Supported [Value Representation] (http://dicom.nema.org/medical/dicom/2018e/output/chtml/part05/sect_6.2.html#table_6.2-1): SQ',
+  })
+  .openapi('RecurseTag')
+
+const RegenUidTagSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'Replace UID with a new generated UID. Supported [Value Representation] (http://dicom.nema.org/medical/dicom/2018e/output/chtml/part05/sect_6.2.html#table_6.2-1): UI',
+  })
+  .openapi('RegenUidTag')
+
+const RemoveTagSchema = z
+  .looseObject({})
+  .openapi({ description: 'Replace with empty tag.' })
+  .openapi('RemoveTag')
+
+const ResetTagSchema = z
+  .looseObject({})
+  .openapi({ description: 'Reset tag to a placeholder value.' })
+  .openapi('ResetTag')
+
+const ActionSchema = z
+  .object({
+    cleanImageTag: ImageConfigSchema.exactOptional().openapi({
+      description:
+        "Inspect image and transform sensitive burnt-in text. Doesn't apply to elements nested in a sequence, which revert to `Keep`. Supported [tags](http://dicom.nema.org/medical/dicom/2018e/output/chtml/part06/chapter_6.html): PixelData",
+    }),
+    cleanTextTag: CleanTextTagSchema.exactOptional().openapi({
+      description:
+        'Inspect text and transform sensitive text. Configurable via TextConfig. Supported Value Representations: AE, LO, LT, PN, SH, ST, UC, UT, DA, DT, AS',
+    }),
+    deleteTag: DeleteTagSchema.exactOptional().openapi({ description: 'Delete tag.' }),
+    keepTag: KeepTagSchema.exactOptional().openapi({ description: 'Keep tag unchanged.' }),
+    queries: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Select all tags with the listed tag IDs, names, or Value Representations (VRs). Examples: ID: "00100010" Keyword: "PatientName" VR: "PN"',
+      }),
+    recurseTag: RecurseTagSchema.exactOptional().openapi({
+      description:
+        'Recursively apply DICOM de-id to tags nested in a sequence. Supported [Value Representation] (http://dicom.nema.org/medical/dicom/2018e/output/chtml/part05/sect_6.2.html#table_6.2-1): SQ',
+    }),
+    regenUidTag: RegenUidTagSchema.exactOptional().openapi({
+      description:
+        'Replace UID with a new generated UID. Supported [Value Representation] (http://dicom.nema.org/medical/dicom/2018e/output/chtml/part05/sect_6.2.html#table_6.2-1): UI',
+    }),
+    removeTag: RemoveTagSchema.exactOptional().openapi({ description: 'Replace with empty tag.' }),
+    resetTag: ResetTagSchema.exactOptional().openapi({
+      description: 'Reset tag to a placeholder value.',
+    }),
+  })
+  .openapi({
+    description: 'Specifies a selection of tags and an `Action` to apply to each one.',
+    required: [],
+  })
+  .openapi('Action')
+
+const CleanDescriptorsOptionSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'This option is based on the DICOM Standard\'s [Clean Descriptors Option](http://dicom.nema.org/medical/dicom/2018e/output/chtml/part15/sect_E.3.5.html), and the `CleanText` `Action` is applied to all the specified fields. When cleaning text, the process attempts to transform phrases matching any of the tags marked for removal (action codes D, Z, X, and U) in the [Basic Profile](http://dicom.nema.org/medical/dicom/2018e/output/chtml/part15/chapter_E.html). These contextual phrases are replaced with the token "[CTX]". This option uses an additional `InfoType` during inspection.',
+  })
+  .openapi('CleanDescriptorsOption')
+
+const OptionsSchema = z
+  .object({
+    cleanDescriptors: CleanDescriptorsOptionSchema.exactOptional().openapi({
+      description: 'Set Clean Descriptors Option.',
+    }),
+    cleanImage: ImageConfigSchema.exactOptional().openapi({
+      description:
+        'Apply `Action.clean_image` to [`PixelData`](http://dicom.nema.org/medical/dicom/2018e/output/chtml/part06/chapter_6.html) as configured.',
+    }),
+    primaryIds: z
+      .enum(['PRIMARY_IDS_OPTION_UNSPECIFIED', 'KEEP', 'REGEN'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Set `Action` for [`StudyInstanceUID`, `SeriesInstanceUID`, `SOPInstanceUID`, and `MediaStorageSOPInstanceUID`](http://dicom.nema.org/medical/dicom/2018e/output/chtml/part06/chapter_6.html).',
+      }),
+  })
+  .openapi({
+    description: 'Specifies additional options to apply to the base profile.',
+    required: [],
+  })
+  .openapi('Options')
+
+const DicomTagConfigSchema = z
+  .object({
+    actions: z
+      .array(ActionSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies custom tag selections and `Actions` to apply to them. Overrides `options` and `profile`. Conflicting `Actions` are applied in the order given.',
+      }),
+    options: OptionsSchema.exactOptional().openapi({
+      description: 'Specifies additional options to apply, overriding the base `profile`.',
+    }),
+    profileType: z
+      .enum([
+        'PROFILE_TYPE_UNSPECIFIED',
+        'MINIMAL_KEEP_LIST_PROFILE',
+        'ATTRIBUTE_CONFIDENTIALITY_BASIC_PROFILE',
+        'KEEP_ALL_PROFILE',
+        'DEIDENTIFY_TAG_CONTENTS',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Base profile type for handling DICOM tags.' }),
+  })
+  .openapi({
+    description: 'Specifies the parameters needed for the de-identification of DICOM stores.',
+    required: [],
+  })
+  .openapi('DicomTagConfig')
+
+const FieldMetadataSchema = z
+  .object({
+    action: z
+      .enum(['ACTION_UNSPECIFIED', 'TRANSFORM', 'INSPECT_AND_TRANSFORM', 'DO_NOT_TRANSFORM'])
+      .exactOptional()
+      .openapi({ description: 'Deidentify action for one field.' }),
+    paths: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'List of paths to FHIR fields to redact. Each path is a period-separated list where each component is either a field name or FHIR type name. All types begin with an upper case letter. For example, the resource field "Patient.Address.city", which uses a string type, can be matched by "Patient.Address.String". Path also supports partial matching. For example, "Patient.Address.city" can be matched by "Address.city" (Patient omitted). Partial matching and type matching can be combined. For example, "Patient.Address.city" can be matched by "Address.String". For "choice" types (those defined in the FHIR spec with the form: field[x]), use two separate components. For example, "deceasedAge.unit" is matched by "Deceased.Age.unit". Supported types are: AdministrativeGenderCode, Base64Binary, Boolean, Code, Date, DateTime, Decimal, HumanName, Id, Instant, Integer, LanguageCode, Markdown, Oid, PositiveInt, String, UnsignedInt, Uri, Uuid, Xhtml. The sub-type for HumanName(for example HumanName.given, HumanName.family) can be omitted.',
+      }),
+  })
+  .openapi({
+    description:
+      'Specifies FHIR paths to match, and how to handle de-identification of matching fields.',
+    required: [],
+  })
+  .openapi('FieldMetadata')
+
+const FhirConfigSchema = z
+  .object({
+    defaultKeepExtensions: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "The behaviour for handling FHIR extensions that aren't otherwise specified for de-identification. If true, all extensions are preserved during de-identification by default. If false or unspecified, all extensions are removed during de-identification by default.",
+      }),
+    fieldMetadataList: z
+      .array(FieldMetadataSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies FHIR paths to match and how to transform them. Any field that is not matched by a FieldMetadata is passed through to the output dataset unmodified. All extensions will be processed according to `default_keep_extensions`. If a field can be matched by more than one FieldMetadata, the first FieldMetadata.Action is applied.',
+      }),
+  })
+  .openapi({
+    description: 'Specifies how to handle de-identification of a FHIR store.',
+    required: [],
+  })
+  .openapi('FhirConfig')
+
+const CharacterMaskFieldSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'Replace field value with masking character. Supported [types](https://www.hl7.org/fhir/datatypes.html): Code, Decimal, HumanName, Id, LanguageCode, Markdown, Oid, String, Uri, Uuid, Xhtml',
+  })
+  .openapi('CharacterMaskField')
+
+const CleanTextFieldSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'Inspect text and transform sensitive text. Configure using `TextConfig`. Supported [types](https://www.hl7.org/fhir/datatypes.html): Code, Date, DateTime, Decimal, HumanName, Id, LanguageCode, Markdown, Oid, String, Uri, Uuid, Xhtml',
+  })
+  .openapi('CleanTextField')
+
+const CryptoHashFieldSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'Replace field value with a hash of that value. Supported [types](https://www.hl7.org/fhir/datatypes.html): Code, Decimal, HumanName, Id, LanguageCode, Markdown, Oid, String, Uri, Uuid, Xhtml',
+  })
+  .openapi('CryptoHashField')
+
+const DateShiftFieldSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'Shift the date by a randomized number of days. See [date shifting](https://cloud.google.com/dlp/docs/concepts-date-shifting) for more information. Supported [types](https://www.hl7.org/fhir/datatypes.html): Date, DateTime',
+  })
+  .openapi('DateShiftField')
+
+const KeepFieldSchema = z
+  .looseObject({})
+  .openapi({ description: 'Keep field unchanged.' })
+  .openapi('KeepField')
+
+const RemoveFieldSchema = z
+  .looseObject({})
+  .openapi({ description: 'Remove field.' })
+  .openapi('RemoveField')
+
+const GoogleCloudHealthcareV1beta1DeidentifyFieldMetadataSchema = z
+  .object({
+    characterMaskField: CharacterMaskFieldSchema.exactOptional().openapi({
+      description:
+        "Replace the field's value with a masking character. Supported [types](https://www.hl7.org/fhir/datatypes.html): Code, Decimal, HumanName, Id, LanguageCode, Markdown, Oid, String, Uri, Uuid, Xhtml",
+    }),
+    cleanTextField: CleanTextFieldSchema.exactOptional().openapi({
+      description:
+        "Inspect the field's text and transform sensitive text. Configure using `TextConfig`. Supported [types](https://www.hl7.org/fhir/datatypes.html): Code, Date, DateTime, Decimal, HumanName, Id, LanguageCode, Markdown, Oid, String, Uri, Uuid, Xhtml",
+    }),
+    cryptoHashField: CryptoHashFieldSchema.exactOptional().openapi({
+      description:
+        'Replace field value with a hash of that value. Supported [types](https://www.hl7.org/fhir/datatypes.html): Code, Decimal, HumanName, Id, LanguageCode, Markdown, Oid, String, Uri, Uuid, Xhtml',
+    }),
+    dateShiftField: DateShiftFieldSchema.exactOptional().openapi({
+      description:
+        'Shift the date by a randomized number of days. See [date shifting](https://cloud.google.com/dlp/docs/concepts-date-shifting) for more information. Supported [types](https://www.hl7.org/fhir/datatypes.html): Date, DateTime',
+    }),
+    keepField: KeepFieldSchema.exactOptional().openapi({
+      description: 'Keep the field unchanged.',
+    }),
+    paths: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'List of paths to FHIR fields to redact. Each path is a period-separated list where each component is either a field name or FHIR type name. All types begin with an upper case letter. For example, the resource field "Patient.Address.city", which uses a string type, can be matched by "Patient.Address.String". Path also supports partialkk matching. For example, "Patient.Address.city" can be matched by "Address.city" (Patient omitted). Partial matching and type matching can be combined, for example "Patient.Address.city" can be matched by "Address.String". For "choice" types (those defined in the FHIR spec with the form: field[x]), use two separate components. For example, "deceasedAge.unit" is matched by "Deceased.Age.unit". Supported [types](https://www.hl7.org/fhir/datatypes.html) are: AdministrativeGenderCode, Base64Binary, Boolean, Code, Date, DateTime, Decimal, HumanName, Id, Instant, Integer, LanguageCode, Markdown, Oid, PositiveInt, String, UnsignedInt, Uri, Uuid, Xhtml. The sub-type for HumanName (for example HumanName.given, HumanName.family) can be omitted.',
+      }),
+    removeField: RemoveFieldSchema.exactOptional().openapi({ description: 'Remove the field.' }),
+  })
+  .openapi({
+    description:
+      'Specifies the FHIR paths to match and how to handle the de-identification of matching fields.',
+    required: [],
+  })
+  .openapi('GoogleCloudHealthcareV1beta1DeidentifyFieldMetadata')
+
+const CharacterMaskConfigSchema = z
+  .object({
+    maskingCharacter: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Character to mask the sensitive values. If not supplied, defaults to "*".',
+      }),
+  })
+  .openapi({
+    description: 'Mask a string by replacing its characters with a fixed character.',
+    required: [],
+  })
+  .openapi('CharacterMaskConfig')
+
+const ContextualDeidConfigSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'The fields that aren\'t marked `Keep` or `CleanText` in the `BASIC` profile are collected into a contextual phrase list. For fields marked `CleanText`, the process attempts to transform phrases matching these contextual entries. These contextual phrases are replaced with the token "[CTX]". This feature uses an additional InfoType during inspection.',
+  })
+  .openapi('ContextualDeidConfig')
+
+const KmsWrappedCryptoKeySchema = z
+  .object({
+    cryptoKey: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The resource name of the KMS CryptoKey to use for unwrapping. For example, `projects/{project_id}/locations/{location_id}/keyRings/{keyring}/cryptoKeys/{key}`.',
+      }),
+    wrappedKey: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. The wrapped data crypto key.' }),
+  })
+  .openapi({
+    description:
+      "Include to use an existing data crypto key wrapped by KMS. The wrapped key must be a 128-, 192-, or 256-bit key. The key must grant the Cloud IAM permission `cloudkms.cryptoKeyVersions.useToDecrypt` to the project's Cloud Healthcare Service Agent service account. For more information, see [Creating a wrapped key] (https://cloud.google.com/dlp/docs/create-wrapped-key).",
+    required: [],
+  })
+  .openapi('KmsWrappedCryptoKey')
+
+const CryptoHashConfigSchema = z
+  .object({
+    cryptoKey: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'An AES 128/192/256 bit key. Causes the hash to be computed based on this key. A default key is generated for each Deidentify operation and is used when neither `crypto_key` nor `kms_wrapped` is specified. Must not be set if `kms_wrapped` is set.',
+      }),
+    kmsWrapped: KmsWrappedCryptoKeySchema.exactOptional().openapi({
+      description: 'KMS wrapped key. Must not be set if `crypto_key` is set.',
+    }),
+  })
+  .openapi({
+    description:
+      'Pseudonymization method that generates surrogates via cryptographic hashing. Uses SHA-256. Outputs a base64-encoded representation of the hashed output. For example, `L7k0BHmF1ha5U3NfGykjro4xWi1MPVQPjhMAZbSV9mM=`.',
+    required: [],
+  })
+  .openapi('CryptoHashConfig')
+
+const DateShiftConfigSchema = z
+  .object({
+    cryptoKey: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'An AES 128/192/256 bit key. The date shift is computed based on this key and the patient ID. If the patient ID is empty for a DICOM resource, the date shift is computed based on this key and the study instance UID. If `crypto_key` is not set, then `kms_wrapped` is used to calculate the date shift. If neither is set, a default key is generated for each de-identify operation. Must not be set if `kms_wrapped` is set.',
+      }),
+    kmsWrapped: KmsWrappedCryptoKeySchema.exactOptional().openapi({
+      description:
+        'KMS wrapped key. If `kms_wrapped` is not set, then `crypto_key` is used to calculate the date shift. If neither is set, a default key is generated for each de-identify operation. Must not be set if `crypto_key` is set.',
+    }),
+  })
+  .openapi({
+    description:
+      'Shift a date forward or backward in time by a random amount which is consistent for a given patient and crypto key combination.',
+    required: [],
+  })
+  .openapi('DateShiftConfig')
+
+const KeepExtensionsConfigSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      "The behaviour for handling FHIR extensions that aren't otherwise specified for de-identification. If provided, all extensions are preserved during de-identification by default. If unspecified, all extensions are removed during de-identification by default.",
+  })
+  .openapi('KeepExtensionsConfig')
+
+const GoogleCloudHealthcareV1beta1DeidentifyOptionsSchema = z
+  .object({
+    characterMaskConfig: CharacterMaskConfigSchema.exactOptional().openapi({
+      description: 'Character mask config for `CharacterMaskField` `FieldMetadatas`.',
+    }),
+    contextualDeid: ContextualDeidConfigSchema.exactOptional().openapi({
+      description: 'Configure contextual de-id.',
+    }),
+    cryptoHashConfig: CryptoHashConfigSchema.exactOptional().openapi({
+      description: 'Crypo hash config for `CharacterMaskField` `FieldMetadatas`.',
+    }),
+    dateShiftConfig: DateShiftConfigSchema.exactOptional().openapi({
+      description: 'Date shifting config for `CharacterMaskField` `FieldMetadatas`.',
+    }),
+    keepExtensions: KeepExtensionsConfigSchema.exactOptional().openapi({
+      description: 'Configure keeping extensions by default.',
+    }),
+  })
+  .openapi({
+    description: 'Specifies additional options to apply to the base `profile`.',
+    required: [],
+  })
+  .openapi('GoogleCloudHealthcareV1beta1DeidentifyOptions')
+
+const FhirFieldConfigSchema = z
+  .object({
+    fieldMetadataList: z
+      .array(GoogleCloudHealthcareV1beta1DeidentifyFieldMetadataSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies FHIR paths to match and how to transform them. Any field that is not matched by a `FieldMetadata` is passed through to the output dataset unmodified. All extensions will be processed according to `keep_extensions`. If a field can be matched by more than one `FieldMetadata`, the first `FieldMetadata.Action` is applied. Overrides `options` and `profile`.',
+      }),
+    options: GoogleCloudHealthcareV1beta1DeidentifyOptionsSchema.exactOptional().openapi({
+      description: 'Specifies additional options, overriding the base `profile`.',
+    }),
+    profileType: z
+      .enum(['PROFILE_TYPE_UNSPECIFIED', 'KEEP_ALL', 'BASIC', 'CLEAN_ALL'])
+      .exactOptional()
+      .openapi({ description: 'Base profile type for handling FHIR fields.' }),
+  })
+  .openapi({
+    description: 'Specifies how to handle the de-identification of a FHIR store.',
+    required: [],
+  })
+  .openapi('FhirFieldConfig')
+
+const FhirOutputSchema = z
+  .object({
+    fhirStore: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Name of the output FHIR store, which must already exist. You must grant the healthcare.fhirResources.update permission on the destination store to your project's **Cloud Healthcare Service Agent** [service account](https://cloud.google.com/healthcare/docs/how-tos/permissions-healthcare-api-gcp-products#the_cloud_healthcare_service_agent). The destination store must set `enable_update_create` to true. The destination store must use FHIR version R4. Writing these resources will consume FHIR operations quota from the project containing the source data. De-identify operation metadata is only generated for DICOM de-identification operations.",
+      }),
+  })
+  .openapi({ description: 'Details about the FHIR store to write the output to.', required: [] })
+  .openapi('FhirOutput')
+
+const DeidentifyOperationMetadataSchema = z
+  .object({
+    fhirOutput: FhirOutputSchema.exactOptional().openapi({
+      description: 'Details about the FHIR store to write the output to.',
+    }),
+  })
+  .openapi({
+    description: 'Details about the work the de-identify operation performed.',
+    required: [],
+  })
+  .openapi('DeidentifyOperationMetadata')
+
+const RedactConfigSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'Define how to redact sensitive values. Default behaviour is erase. For example, "My name is Jane." becomes "My name is ."',
+  })
+  .openapi('RedactConfig')
+
+const ReplaceWithInfoTypeConfigSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'When using the INSPECT_AND_TRANSFORM action, each match is replaced with the name of the info_type. For example, "My name is Jane" becomes "My name is [PERSON_NAME]." The TRANSFORM action is equivalent to redacting.',
+  })
+  .openapi('ReplaceWithInfoTypeConfig')
+
+const InfoTypeTransformationSchema = z
+  .object({
+    characterMaskConfig: CharacterMaskConfigSchema.exactOptional().openapi({
+      description: 'Config for character mask.',
+    }),
+    cryptoHashConfig: CryptoHashConfigSchema.exactOptional().openapi({
+      description: 'Config for crypto hash.',
+    }),
+    dateShiftConfig: DateShiftConfigSchema.exactOptional().openapi({
+      description: 'Config for date shift.',
+    }),
+    infoTypes: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          '`InfoTypes` to apply this transformation to. If this is not specified, this transformation becomes the default transformation, and is used for any `info_type` that is not specified in another transformation.',
+      }),
+    redactConfig: RedactConfigSchema.exactOptional().openapi({
+      description: 'Config for text redaction.',
+    }),
+    replaceWithInfoTypeConfig: ReplaceWithInfoTypeConfigSchema.exactOptional().openapi({
+      description: 'Config for replace with InfoType.',
+    }),
+  })
+  .openapi({
+    description: 'A transformation to apply to text that is identified as a specific info_type.',
+    required: [],
+  })
+  .openapi('InfoTypeTransformation')
+
+const TextConfigSchema = z
+  .object({
+    additionalTransformations: z
+      .array(InfoTypeTransformationSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Additional transformations to apply to the detected data, overriding `profile`.',
+      }),
+    excludeInfoTypes: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'InfoTypes to skip transforming, overriding `profile`.' }),
+    profileType: z
+      .enum(['PROFILE_TYPE_UNSPECIFIED', 'EMPTY', 'BASIC'])
+      .exactOptional()
+      .openapi({ description: 'Base profile type for text transformation.' }),
+    transformations: z
+      .array(InfoTypeTransformationSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The transformations to apply to the detected data. Deprecated. Use `additional_transformations` instead.',
+      }),
+  })
+  .openapi({ description: 'Configures how to transform sensitive text `InfoTypes`.', required: [] })
+  .openapi('TextConfig')
+
+const DeidentifyConfigSchema = z
+  .object({
+    annotation: AnnotationConfigSchema.exactOptional().openapi({
+      description:
+        'Configures how annotations, meaning that the location and infoType of sensitive information findings, are created during de-identification. If unspecified, no annotations are created.',
+    }),
+    dicom: DicomConfigSchema.exactOptional().openapi({
+      description:
+        'Configures de-id of application/DICOM content. Deprecated. Use `dicom_tag_config` instead.',
+    }),
+    dicomTagConfig: DicomTagConfigSchema.exactOptional().openapi({
+      description: 'Configures de-id of application/DICOM content.',
+    }),
+    fhir: FhirConfigSchema.exactOptional().openapi({
+      description:
+        'Configures de-id of application/FHIR content. Deprecated. Use `fhir_field_config` instead.',
+    }),
+    fhirFieldConfig: FhirFieldConfigSchema.exactOptional().openapi({
+      description: 'Configures de-id of application/FHIR content.',
+    }),
+    image: ImageConfigSchema.exactOptional().openapi({
+      description:
+        'Configures the de-identification of image pixels in the source_dataset. Deprecated. Use `dicom_tag_config.options.clean_image` instead.',
+    }),
+    operationMetadata: DeidentifyOperationMetadataSchema.exactOptional().openapi({
+      description: 'Details about the work the de-identify operation performed.',
+    }),
+    text: TextConfigSchema.exactOptional().openapi({
+      description:
+        'Configures de-identification of text wherever it is found in the source_dataset.',
+    }),
+  })
+  .openapi({
+    description:
+      'Configures de-id options specific to different types of content. Each submessage customizes the handling of an https://tools.ietf.org/html/rfc6838 media type or subtype. Configs are applied in a nested manner at runtime.',
+    required: [],
+  })
+  .openapi('DeidentifyConfig')
+
+const DeidentifiedStoreDestinationSchema = z
+  .object({
+    config: DeidentifyConfigSchema.exactOptional().openapi({
+      description:
+        'The configuration to use when de-identifying resources that are added to this store.',
+    }),
+    store: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The full resource name of a Cloud Healthcare FHIR store, for example, `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}/fhirStores/{fhir_store_id}`.',
+      }),
+  })
+  .openapi({
+    description: 'Contains configuration for streaming de-identified FHIR export.',
+    required: [],
+  })
+  .openapi('DeidentifiedStoreDestination')
+
+type StreamConfigType = {
+  bigqueryDestination?: z.infer<typeof GoogleCloudHealthcareV1beta1FhirBigQueryDestinationSchema>
+  deidentifiedStoreDestination?: z.infer<typeof DeidentifiedStoreDestinationSchema>
+  resourceTypes?: string[]
+}
+
+const StreamConfigSchema: z.ZodType<StreamConfigType> = z
+  .object({
+    bigqueryDestination:
+      GoogleCloudHealthcareV1beta1FhirBigQueryDestinationSchema.exactOptional().openapi({
+        description:
+          'The destination BigQuery structure that contains both the dataset location and corresponding schema config. The output is organized in one table per resource type. The server reuses the existing tables (if any) that are named after the resource types, e.g. "Patient", "Observation". When there is no existing table for a given resource type, the server attempts to create one. When a table schema doesn\'t align with the schema config, either because of existing incompatible schema or out of band incompatible modification, the server does not stream in new data. One resolution in this case is to delete the incompatible table and let the server recreate one, though the newly created table only contains data after the table recreation. BigQuery imposes a 1 MB limit on streaming insert row size, therefore any resource mutation that generates more than 1 MB of BigQuery data will not be streamed. Results are written to BigQuery tables according to the parameters in BigQueryDestination.WriteDisposition. Different versions of the same resource are distinguishable by the meta.versionId and meta.lastUpdated columns. The operation (CREATE/UPDATE/DELETE) that results in the new version is recorded in the meta.tag. The tables contain all historical resource versions since streaming was enabled. For query convenience, the server also creates one view per table of the same name containing only the current resource version. The streamed data in the BigQuery dataset is not guaranteed to be completely unique. The combination of the id and meta.versionId columns should ideally identify a single unique row. But in rare cases, duplicates may exist. At query time, users may use the SQL select statement to keep only one of the duplicate rows given an id and meta.versionId pair. Alternatively, the server created view mentioned above also filters out duplicates. If a resource mutation cannot be streamed to BigQuery, errors will be logged to Cloud Logging (see [Viewing error logs in Cloud Logging](https://cloud.google.com/healthcare/docs/how-tos/logging)).',
+      }),
+    deidentifiedStoreDestination: DeidentifiedStoreDestinationSchema.exactOptional().openapi({
+      description:
+        "The destination FHIR store for de-identified resources. After this field is added, all subsequent creates/updates/patches to the source store will be de-identified using the provided configuration and applied to the destination store. Importing resources to the source store will not trigger the streaming. If the source store already contains resources when this option is enabled, those resources will not be copied to the destination store unless they are subsequently updated. This may result in invalid references in the destination store. Before adding this config, you must grant the healthcare.fhirResources.update permission on the destination store to your project's **Cloud Healthcare Service Agent** [service account](https://cloud.google.com/healthcare/docs/how-tos/permissions-healthcare-api-gcp-products#the_cloud_healthcare_service_agent). The destination store must set enable_update_create to true. The destination store must have disable_referential_integrity set to true. If a resource cannot be de-identified, errors will be logged to Cloud Logging (see [Viewing error logs in Cloud Logging](https://cloud.google.com/healthcare/docs/how-tos/logging)).",
+    }),
+    resourceTypes: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Supply a FHIR resource type (such as "Patient" or "Observation"). See https://www.hl7.org/fhir/valueset-resource-types.html for a list of all FHIR resource types. The server treats an empty list as an intent to stream all the supported resource types in this FHIR store.',
+      }),
+  })
+  .openapi({ description: 'Contains configuration for streaming FHIR export.', required: [] })
+  .openapi('StreamConfig')
+
+const ValidationConfigSchema = z
+  .object({
+    disableFhirpathValidation: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether to disable FHIRPath validation for incoming resources. Set this to true to disable checking incoming resources for conformance against FHIRPath requirement defined in the FHIR specification. This property only affects resource types that do not have profiles configured for them, any rules in enabled implementation guides will still be enforced.',
+      }),
+    disableProfileValidation: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether to disable profile validation for this FHIR store. Set this to true to disable checking incoming resources for conformance against StructureDefinitions in this FHIR store.',
+      }),
+    disableReferenceTypeValidation: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether to disable reference type validation for incoming resources. Set this to true to disable checking incoming resources for conformance against reference type requirement defined in the FHIR specification. This property only affects resource types that do not have profiles configured for them, any rules in enabled implementation guides will still be enforced.',
+      }),
+    disableRequiredFieldValidation: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether to disable required fields validation for incoming resources. Set this to true to disable checking incoming resources for conformance against required fields requirement defined in the FHIR specification. This property only affects resource types that do not have profiles configured for them, any rules in enabled implementation guides will still be enforced.',
+      }),
+    enabledImplementationGuides: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of ImplementationGuide URLs in this FHIR store that are used to configure the profiles to use for validation. For example, to use the US Core profiles for validation, set `enabled_implementation_guides` to `["http://hl7.org/fhir/us/core/ImplementationGuide/ig"]`. If `enabled_implementation_guides` is empty or omitted, then incoming resources are only required to conform to the base FHIR profiles. Otherwise, a resource must conform to at least one profile listed in the `global` property of one of the enabled ImplementationGuides. The Cloud Healthcare API does not currently enforce all of the rules in a StructureDefinition. The following rules are supported: - min/max - minValue/maxValue - maxLength - type - fixed[x] - pattern[x] on simple types - slicing, when using "value" as the discriminator type When a URL cannot be resolved (for example, in a type assertion), the server does not return an error.',
+      }),
+  })
+  .openapi({
+    description: 'Contains the configuration for FHIR profiles and validation.',
+    required: [],
+  })
+  .openapi('ValidationConfig')
+
+type FhirStoreType = {
+  complexDataTypeReferenceParsing?:
+    | 'COMPLEX_DATA_TYPE_REFERENCE_PARSING_UNSPECIFIED'
+    | 'DISABLED'
+    | 'ENABLED'
+  defaultSearchHandlingStrict?: boolean
+  disableReferentialIntegrity?: boolean
+  disableResourceVersioning?: boolean
+  enableUpdateCreate?: boolean
+  labels?: { [key: string]: string }
+  name?: string
+  notificationConfig?: z.infer<typeof NotificationConfigSchema>
+  notificationConfigs?: z.infer<typeof FhirNotificationConfigSchema>[]
+  searchConfig?: z.infer<typeof SearchConfigSchema>
+  streamConfigs?: z.infer<typeof StreamConfigSchema>[]
+  validationConfig?: z.infer<typeof ValidationConfigSchema>
+  version?: 'VERSION_UNSPECIFIED' | 'DSTU2' | 'STU3' | 'R4'
+}
+
+const SchemaGroupSchema: z.ZodType<SchemaGroupType> = z
+  .lazy(() =>
+    z
+      .object({
+        choice: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'True indicates that this is a choice group, meaning that only one of its segments can exist in a given message.',
+          }),
+        maxOccurs: z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description:
+              'The maximum number of times this group can be repeated. 0 or -1 means unbounded.',
+          }),
+        members: z
+          .array(GroupOrSegmentSchema)
+          .exactOptional()
+          .openapi({ description: 'Nested groups and/or segments.' }),
+        minOccurs: z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The minimum number of times this group must be present/repeated.',
+          }),
+        name: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The name of this group. For example, "ORDER_DETAIL".' }),
+      })
+      .openapi({ description: 'An HL7v2 logical group construct.', required: [] }),
+  )
+  .openapi('SchemaGroup')
+
+type SchemaSegmentType = { maxOccurs?: number; minOccurs?: number; type?: string }
+
+const SchemaSegmentSchema: z.ZodType<SchemaSegmentType> = z
+  .object({
+    maxOccurs: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The maximum number of times this segment can be present in this group. 0 or -1 means unbounded.',
+      }),
+    minOccurs: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The minimum number of times this segment can be present in this group.',
+      }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The Segment type. For example, "PID".' }),
+  })
+  .openapi({ description: 'An HL7v2 Segment.', required: [] })
+  .openapi('SchemaSegment')
+
+type GroupOrSegmentType = {
+  group?: z.infer<typeof SchemaGroupSchema>
+  segment?: z.infer<typeof SchemaSegmentSchema>
+}
+
+const Hl7V2NotificationConfigSchema = z
+  .object({
+    filter: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Restricts notifications sent for messages matching a filter. If this is empty, all messages are matched. The following syntax is available: * A string field value can be written as text inside quotation marks, for example `"query text"`. The only valid relational operation for text fields is equality (`=`), where text is searched within the field, rather than having the field be equal to the text. For example, `"Comment = great"` returns messages with `great` in the comment field. * A number field value can be written as an integer, a decimal, or an exponential. The valid relational operators for number fields are the equality operator (`=`), along with the less than/greater than operators (`<`, `<=`, `>`, `>=`). Note that there is no inequality (`!=`) operator. You can prepend the `NOT` operator to an expression to negate it. * A date field value must be written in `yyyy-mm-dd` form. Fields with date and time use the RFC3339 time format. Leading zeros are required for one-digit months and days. The valid relational operators for date fields are the equality operator (`=`) , along with the less than/greater than operators (`<`, `<=`, `>`, `>=`). Note that there is no inequality (`!=`) operator. You can prepend the `NOT` operator to an expression to negate it. * Multiple field query expressions can be combined in one query by adding `AND` or `OR` operators between the expressions. If a boolean operator appears within a quoted string, it is not treated as special, it\'s just another part of the character string to be matched. You can prepend the `NOT` operator to an expression to negate it. Fields/functions available for filtering are: * `message_type`, from the MSH-9.1 field. For example, `NOT message_type = "ADT"`. * `send_date` or `sendDate`, the YYYY-MM-DD date the message was sent in the dataset\'s time_zone, from the MSH-7 segment. For example, `send_date < "2017-01-02"`. * `send_time`, the timestamp when the message was sent, using the RFC3339 time format for comparisons, from the MSH-7 segment. For example, `send_time < "2017-01-02T00:00:00-05:00"`. * `create_time`, the timestamp when the message was created in the HL7v2 store. Use the RFC3339 time format for comparisons. For example, `create_time < "2017-01-02T00:00:00-05:00"`. * `send_facility`, the care center that the message came from, from the MSH-4 segment. For example, `send_facility = "ABC"`. * `PatientId(value, type)`, which matches if the message lists a patient having an ID of the given value and type in the PID-2, PID-3, or PID-4 segments. For example, `PatientId("123456", "MRN")`. * `labels.x`, a string value of the label with key `x` as set using the Message.labels map. For example, `labels."priority"="high"`. The operator `:*` can be used to assert the existence of a label. For example, `labels."priority":*`.',
+      }),
+    pubsubTopic: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The [Pub/Sub](https://cloud.google.com/pubsub/docs/) topic that notifications of changes are published on. Supplied by the client. The notification is a `PubsubMessage` with the following fields: * `PubsubMessage.Data` contains the resource name. * `PubsubMessage.MessageId` is the ID of this notification. It is guaranteed to be unique within the topic. * `PubsubMessage.PublishTime` is the time when the message was published. Note that notifications are only sent if the topic is non-empty. [Topic names](https://cloud.google.com/pubsub/docs/overview#names) must be scoped to a project. Cloud Healthcare API service account must have publisher permissions on the given Pub/Sub topic. Not having adequate permissions causes the calls that send notifications to fail. If a notification can't be published to Pub/Sub, errors are logged to Cloud Logging. For more information, see [Viewing error logs in Cloud Logging](https://cloud.google.com/healthcare/docs/how-tos/logging).",
+      }),
+  })
+  .openapi({
+    description: 'Specifies where and whether to send notifications upon changes to a data store.',
+    required: [],
+  })
+  .openapi('Hl7V2NotificationConfig')
+
+const VersionSourceSchema = z
+  .object({
+    mshField: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The field to extract from the MSH segment. For example, "3.1" or "18[1].1".',
+      }),
+    value: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The value to match with the field. For example, "My Application Name" or "2.3".',
+      }),
+  })
+  .openapi({
+    description: 'Describes a selector for extracting and matching an MSH field to a value.',
+    required: [],
+  })
+  .openapi('VersionSource')
+
+const Hl7SchemaConfigSchema = z
+  .object({
+    messageSchemaConfigs: z
+      .record(z.string(), SchemaGroupSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Map from each HL7v2 message type and trigger event pair, such as ADT_A04, to its schema configuration root group.',
+      }),
+    version: z
+      .array(VersionSourceSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Each VersionSource is tested and only if they all match is the schema used for the message.',
+      }),
+  })
+  .openapi({
+    description:
+      'Root config message for HL7v2 schema. This contains a schema structure of groups and segments, and filters that determine which messages to apply the schema structure to.',
+    required: [],
+  })
+  .openapi('Hl7SchemaConfig')
+
+const FieldSchema = z
+  .object({
+    maxOccurs: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The maximum number of times this field can be repeated. 0 or -1 means unbounded.',
+      }),
+    minOccurs: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The minimum number of times this field must be present/repeated.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the field. For example, "PID-1" or just "1".' }),
+    table: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The HL7v2 table this field refers to. For example, PID-15 (Patient\'s Primary Language) usually refers to table "0296".',
+      }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of this field. A Type with this name must be defined in an Hl7TypesConfig.',
+      }),
+  })
+  .openapi({ description: 'A (sub) field of a type.', required: [] })
+  .openapi('Field')
+
+const TypeSchema = z
+  .object({
+    fields: z
+      .array(FieldSchema)
+      .exactOptional()
+      .openapi({ description: 'The (sub) fields this type has (if not primitive).' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of this type. This would be the segment or datatype name. For example, "PID" or "XPN".',
+      }),
+    primitive: z
+      .enum(['PRIMITIVE_UNSPECIFIED', 'STRING', 'VARIES', 'UNESCAPED_STRING'])
+      .exactOptional()
+      .openapi({
+        description:
+          'If this is a primitive type then this field is the type of the primitive For example, STRING. Leave unspecified for composite types.',
+      }),
+  })
+  .openapi({
+    description: 'A type definition for some HL7v2 type (incl. Segments and Datatypes).',
+    required: [],
+  })
+  .openapi('Type')
+
+const Hl7TypesConfigSchema = z
+  .object({
+    type: z
+      .array(TypeSchema)
+      .exactOptional()
+      .openapi({ description: 'The HL7v2 type definitions.' }),
+    version: z
+      .array(VersionSourceSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The version selectors that this config applies to. A message must match ALL version sources to apply.',
+      }),
+  })
+  .openapi({
+    description: 'Root config for HL7v2 datatype definitions for a specific HL7v2 version.',
+    required: [],
+  })
+  .openapi('Hl7TypesConfig')
+
+const SchemaPackageSchema = z
+  .object({
+    ignoreMinOccurs: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Flag to ignore all min_occurs restrictions in the schema. This means that incoming messages can omit any group, segment, field, component, or subcomponent.',
+      }),
+    schemas: z
+      .array(Hl7SchemaConfigSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Schema configs that are layered based on their VersionSources that match the incoming message. Schema configs present in higher indices override those in lower indices with the same message type and trigger event if their VersionSources all match an incoming message.',
+      }),
+    schematizedParsingType: z
+      .enum(['SCHEMATIZED_PARSING_TYPE_UNSPECIFIED', 'SOFT_FAIL', 'HARD_FAIL'])
+      .exactOptional()
+      .openapi({ description: 'Determines how messages that fail to parse are handled.' }),
+    types: z
+      .array(Hl7TypesConfigSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Schema type definitions that are layered based on their VersionSources that match the incoming message. Type definitions present in higher indices override those in lower indices with the same type name if their VersionSources all match an incoming message.',
+      }),
+    unexpectedSegmentHandling: z
+      .enum(['UNEXPECTED_SEGMENT_HANDLING_MODE_UNSPECIFIED', 'FAIL', 'SKIP', 'PARSE'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Determines how unexpected segments (segments not matched to the schema) are handled.',
+      }),
+  })
+  .openapi({
+    description: 'A schema package contains a set of schemas and type definitions.',
+    required: [],
+  })
+  .openapi('SchemaPackage')
+
+type ParserConfigType = {
+  allowNullHeader?: boolean
+  schema?: z.infer<typeof SchemaPackageSchema>
+  segmentTerminator?: string
+  version?: 'PARSER_VERSION_UNSPECIFIED' | 'V1' | 'V2' | 'V3'
+}
+
+const ParserConfigSchema: z.ZodType<ParserConfigType> = z
+  .object({
+    allowNullHeader: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Determines whether messages with no header are allowed.' }),
+    schema: SchemaPackageSchema.exactOptional().openapi({
+      description:
+        'Schemas used to parse messages in this store, if schematized parsing is desired.',
+    }),
+    segmentTerminator: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Byte(s) to use as the segment terminator. If this is unset, '\\r' is used as segment terminator, matching the HL7 version 2 specification.",
+      }),
+    version: z
+      .enum(['PARSER_VERSION_UNSPECIFIED', 'V1', 'V2', 'V3'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Immutable. Determines the version of both the default parser to be used when `schema` is not given, as well as the schematized parser used when `schema` is specified. This field is immutable after HL7v2 store creation.',
+      }),
+  })
+  .openapi({
+    description:
+      'The configuration for the parser. It determines how the server parses the messages.',
+    required: [],
+  })
+  .openapi('ParserConfig')
+
+type Hl7V2StoreType = {
+  labels?: { [key: string]: string }
+  name?: string
+  notificationConfig?: z.infer<typeof NotificationConfigSchema>
+  notificationConfigs?: z.infer<typeof Hl7V2NotificationConfigSchema>[]
+  parserConfig?: z.infer<typeof ParserConfigSchema>
+  rejectDuplicateMessage?: boolean
+}
+
 const CloudHealthcareSourceSchema = z
   .object({
     name: z
@@ -125,80 +1338,338 @@ const SensitiveTextAnnotationSchema = z
   })
   .openapi('SensitiveTextAnnotation')
 
-type AnnotationType = {
-  annotationSource?: z.infer<typeof AnnotationSourceSchema>
-  customData?: { [key: string]: string }
-  imageAnnotation?: z.infer<typeof ImageAnnotationSchema>
-  name?: string
-  resourceAnnotation?: z.infer<typeof ResourceAnnotationSchema>
-  textAnnotation?: z.infer<typeof SensitiveTextAnnotationSchema>
-}
-
-const SchemaGroupSchema: z.ZodType<SchemaGroupType> = z
-  .lazy(() =>
-    z
-      .object({
-        choice: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'True indicates that this is a choice group, meaning that only one of its segments can exist in a given message.',
-          }),
-        maxOccurs: z
-          .int32()
-          .exactOptional()
-          .openapi({
-            description:
-              'The maximum number of times this group can be repeated. 0 or -1 means unbounded.',
-          }),
-        members: z
-          .array(GroupOrSegmentSchema)
-          .exactOptional()
-          .openapi({ description: 'Nested groups and/or segments.' }),
-        minOccurs: z
-          .int32()
-          .exactOptional()
-          .openapi({
-            description: 'The minimum number of times this group must be present/repeated.',
-          }),
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The name of this group. For example, "ORDER_DETAIL".' }),
-      })
-      .openapi({ description: 'An HL7v2 logical group construct.', required: [] }),
-  )
-  .openapi('SchemaGroup')
-
-type SchemaSegmentType = { maxOccurs?: number; minOccurs?: number; type?: string }
-
-const SchemaSegmentSchema: z.ZodType<SchemaSegmentType> = z
+const AnnotationSchema = z
   .object({
-    maxOccurs: z
-      .int32()
+    annotationSource: AnnotationSourceSchema.exactOptional().openapi({
+      description: 'Details of the source.',
+    }),
+    customData: z
+      .record(z.string(), z.string())
       .exactOptional()
       .openapi({
         description:
-          'The maximum number of times this segment can be present in this group. 0 or -1 means unbounded.',
+          'Additional information for this annotation record, such as annotator and verifier information or study campaign.',
       }),
-    minOccurs: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'The minimum number of times this segment can be present in this group.',
-      }),
-    type: z
+    imageAnnotation: ImageAnnotationSchema.exactOptional().openapi({
+      description: 'Annotations for images. For example, bounding polygons.',
+    }),
+    name: z
       .string()
       .exactOptional()
-      .openapi({ description: 'The Segment type. For example, "PID".' }),
+      .openapi({
+        description:
+          'Resource name of the Annotation, of the form `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}/annotationStores/{annotation_store_id}/annotations/{annotation_id}`.',
+      }),
+    resourceAnnotation: ResourceAnnotationSchema.exactOptional().openapi({
+      description: 'Annotations for resource. For example, classification tags.',
+    }),
+    textAnnotation: SensitiveTextAnnotationSchema.exactOptional().openapi({
+      description:
+        'Annotations for sensitive texts. For example, a range that describes the location of sensitive text.',
+    }),
   })
-  .openapi({ description: 'An HL7v2 Segment.', required: [] })
-  .openapi('SchemaSegment')
+  .openapi({ description: 'An annotation record.', required: [] })
+  .openapi('Annotation')
 
-type GroupOrSegmentType = {
-  group?: z.infer<typeof SchemaGroupSchema>
-  segment?: z.infer<typeof SchemaSegmentSchema>
+type ListAnnotationsResponseType = {
+  annotations?: z.infer<typeof AnnotationSchema>[]
+  nextPageToken?: string
+}
+
+const ExprSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.',
+      }),
+    expression: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Textual representation of an expression in Common Expression Language syntax.',
+      }),
+    location: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. String indicating the location of the expression for error reporting, e.g. a file name and a position in the file.',
+      }),
+    title: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Title for the expression, i.e. a short string describing its purpose. This can be used e.g. in UIs which allow to enter the expression.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents a textual expression in the Common Expression Language (CEL) syntax. CEL is a C-like expression language. The syntax and semantics of CEL are documented at https://github.com/google/cel-spec. Example (Comparison): title: "Summary size limit" description: "Determines if a summary is less than 100 chars" expression: "document.summary.size() < 100" Example (Equality): title: "Requestor is owner" description: "Determines if requestor is the document owner" expression: "document.owner == request.auth.claims.email" Example (Logic): title: "Public documents" description: "Determine whether the document should be publicly visible" expression: "document.type != \'private\' && document.type != \'internal\'" Example (Data Manipulation): title: "Notification string" description: "Create a notification string with a timestamp." expression: "\'New message received at \' + string(document.create_time)" The exact variables and functions that may be referenced within an expression are determined by the service that evaluates it. See the service documentation for additional information.',
+    required: [],
+  })
+  .openapi('Expr')
+
+const AttributeSchema = z
+  .object({
+    attributeDefinitionId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Indicates the name of an attribute defined in the consent store.' }),
+    values: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The value of the attribute. Must be an acceptable value as defined in the consent store. For example, if the consent store defines "data type" with acceptable values "questionnaire" and "step-count", when the attribute name is data type, this field must contain one of those values.',
+      }),
+  })
+  .openapi({
+    description:
+      'An attribute value for a Consent or User data mapping. Each Attribute must have a corresponding AttributeDefinition in the consent store that defines the default and allowed values.',
+    required: [],
+  })
+  .openapi('Attribute')
+
+const GoogleCloudHealthcareV1beta1ConsentPolicySchema = z
+  .object({
+    authorizationRule: ExprSchema.exactOptional().openapi({
+      description:
+        'Required. The request conditions to meet to grant access. In addition to any supported comparison operators, authorization rules may have `IN` operator as well as at most 10 logical operators that are limited to `AND` (`&&`), `OR` (`||`).',
+    }),
+    resourceAttributes: z
+      .array(AttributeSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The resources that this policy applies to. A resource is a match if it matches all the attributes listed here. If empty, this policy applies to all User data mappings for the given user.',
+      }),
+  })
+  .openapi({
+    description:
+      "Represents a user's consent in terms of the resources that can be accessed and under what conditions.",
+    required: [],
+  })
+  .openapi('GoogleCloudHealthcareV1beta1ConsentPolicy')
+
+const ConsentSchema = z
+  .object({
+    consentArtifact: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Required. The resource name of the Consent artifact that contains proof of the end user's consent, of the form `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}/consentStores/{consent_store_id}/consentArtifacts/{consent_artifact_id}`.",
+      }),
+    expireTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Timestamp in UTC of when this Consent is considered expired.' }),
+    metadata: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. User-supplied key-value pairs used to organize Consent resources. Metadata keys must: - be between 1 and 63 characters long - have a UTF-8 encoding of maximum 128 bytes - begin with a letter - consist of up to 63 characters including lowercase letters, numeric characters, underscores, and dashes Metadata values must be: - be between 1 and 63 characters long - have a UTF-8 encoding of maximum 128 bytes - consist of up to 63 characters including lowercase letters, numeric characters, underscores, and dashes No more than 64 metadata entries can be associated with a given consent.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Resource name of the Consent, of the form `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}/consentStores/{consent_store_id}/consents/{consent_id}`. Cannot be changed after creation.',
+      }),
+    policies: z
+      .array(GoogleCloudHealthcareV1beta1ConsentPolicySchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "Optional. Represents a user's consent in terms of the resources that can be accessed and under what conditions.",
+      }),
+    revisionCreateTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The timestamp that the revision was created.',
+        readOnly: true,
+      }),
+    revisionId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Output only. The revision ID of the Consent. The format is an 8-character hexadecimal string. Refer to a specific revision of a Consent by appending `@{revision_id}` to the Consent's resource name.",
+        readOnly: true,
+      }),
+    state: z
+      .enum(['STATE_UNSPECIFIED', 'ACTIVE', 'ARCHIVED', 'REVOKED', 'DRAFT', 'REJECTED'])
+      .exactOptional()
+      .openapi({ description: 'Required. Indicates the current state of this Consent.' }),
+    ttl: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Input only. The time to live for this Consent from when it is created.',
+      }),
+    userId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "Required. User's UUID provided by the client." }),
+  })
+  .openapi({ description: "Represents a user's consent.", required: [] })
+  .openapi('Consent')
+
+type ListConsentRevisionsResponseType = {
+  consents?: z.infer<typeof ConsentSchema>[]
+  nextPageToken?: string
+}
+
+type ListConsentsResponseType = {
+  consents?: z.infer<typeof ConsentSchema>[]
+  nextPageToken?: string
+}
+
+const FhirStoreSchema: z.ZodType<FhirStoreType> = z
+  .object({
+    complexDataTypeReferenceParsing: z
+      .enum(['COMPLEX_DATA_TYPE_REFERENCE_PARSING_UNSPECIFIED', 'DISABLED', 'ENABLED'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Enable parsing of references within complex FHIR data types such as Extensions. If this value is set to ENABLED, then features like referential integrity and Bundle reference rewriting apply to all references. If this flag has not been specified the behavior of the FHIR store will not change, references in complex data types will not be parsed. New stores will have this value set to ENABLED after a notification period. Warning: turning on this flag causes processing existing resources to fail if they contain references to non-existent resources.',
+      }),
+    defaultSearchHandlingStrict: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If true, overrides the default search behavior for this FHIR store to `handling=strict` which returns an error for unrecognized search parameters. If false, uses the FHIR specification default `handling=lenient` which ignores unrecognized search parameters. The handling can always be changed from the default on an individual API call by setting the HTTP header `Prefer: handling=strict` or `Prefer: handling=lenient`.',
+      }),
+    disableReferentialIntegrity: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Immutable. Whether to disable referential integrity in this FHIR store. This field is immutable after FHIR store creation. The default value is false, meaning that the API enforces referential integrity and fails the requests that result in inconsistent state in the FHIR store. When this field is set to true, the API skips referential integrity checks. Consequently, operations that rely on references, such as GetPatientEverything, do not return all the results if broken references exist.',
+      }),
+    disableResourceVersioning: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Immutable. Whether to disable resource versioning for this FHIR store. This field can not be changed after the creation of FHIR store. If set to false, which is the default behavior, all write operations cause historical versions to be recorded automatically. The historical versions can be fetched through the history APIs, but cannot be updated. If set to true, no historical versions are kept. The server sends errors for attempts to read the historical versions.',
+      }),
+    enableUpdateCreate: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether this FHIR store has the [updateCreate capability](https://www.hl7.org/fhir/capabilitystatement-definitions.html#CapabilityStatement.rest.resource.updateCreate). This determines if the client can use an Update operation to create a new resource with a client-specified ID. If false, all IDs are server-assigned through the Create operation and attempts to update a non-existent resource return errors. It is strongly advised not to include or encode any sensitive data such as patient identifiers in client-specified resource IDs. Those IDs are part of the FHIR resource path recorded in Cloud audit logs and Pub/Sub notifications. Those IDs can also be contained in reference fields within other resources.',
+      }),
+    labels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'User-supplied key-value pairs used to organize FHIR stores. Label keys must be between 1 and 63 characters long, have a UTF-8 encoding of maximum 128 bytes, and must conform to the following PCRE regular expression: \\p{Ll}\\p{Lo}{0,62} Label values are optional, must be between 1 and 63 characters long, have a UTF-8 encoding of maximum 128 bytes, and must conform to the following PCRE regular expression: [\\p{Ll}\\p{Lo}\\p{N}_-]{0,63} No more than 64 labels can be associated with a given store.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Resource name of the FHIR store, of the form `projects/{project_id}/datasets/{dataset_id}/fhirStores/{fhir_store_id}`.',
+      }),
+    notificationConfig: NotificationConfigSchema.exactOptional().openapi({
+      description:
+        'If non-empty, publish all resource modifications of this FHIR store to this destination. The Pub/Sub message attributes contain a map with a string describing the action that has triggered the notification. For example, "action":"CreateResource". Deprecated. Use `notification_configs` instead.',
+    }),
+    notificationConfigs: z
+      .array(FhirNotificationConfigSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies where and whether to send notifications upon changes to a Fhir store.',
+      }),
+    searchConfig: SearchConfigSchema.exactOptional().openapi({
+      description: 'Configuration for how FHIR resources can be searched.',
+    }),
+    streamConfigs: z
+      .array(StreamConfigSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "A list of streaming configs that configure the destinations of streaming export for every resource mutation in this FHIR store. Each store is allowed to have up to 10 streaming configs. After a new config is added, the next resource mutation is streamed to the new location in addition to the existing ones. When a location is removed from the list, the server stops streaming to that location. Before adding a new config, you must add the required [`bigquery.dataEditor`](https://cloud.google.com/bigquery/docs/access-control#bigquery.dataEditor) role to your project's **Cloud Healthcare Service Agent** [service account](https://cloud.google.com/iam/docs/service-accounts). Some lag (typically on the order of dozens of seconds) is expected before the results show up in the streaming destination.",
+      }),
+    validationConfig: ValidationConfigSchema.exactOptional().openapi({
+      description:
+        'Configuration for how to validate incoming FHIR resources against configured profiles.',
+    }),
+    version: z
+      .enum(['VERSION_UNSPECIFIED', 'DSTU2', 'STU3', 'R4'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Immutable. The FHIR specification version that this FHIR store supports natively. This field is immutable after store creation. Requests are rejected if they contain FHIR resources of a different version. Version is required for every FHIR store.',
+      }),
+  })
+  .openapi({ description: 'Represents a FHIR store.', required: [] })
+  .openapi('FhirStore')
+
+type ListFhirStoresResponseType = {
+  fhirStores?: z.infer<typeof FhirStoreSchema>[]
+  nextPageToken?: string
+}
+
+const Hl7V2StoreSchema: z.ZodType<Hl7V2StoreType> = z
+  .object({
+    labels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'User-supplied key-value pairs used to organize HL7v2 stores. Label keys must be between 1 and 63 characters long, have a UTF-8 encoding of maximum 128 bytes, and must conform to the following PCRE regular expression: \\p{Ll}\\p{Lo}{0,62} Label values are optional, must be between 1 and 63 characters long, have a UTF-8 encoding of maximum 128 bytes, and must conform to the following PCRE regular expression: [\\p{Ll}\\p{Lo}\\p{N}_-]{0,63} No more than 64 labels can be associated with a given store.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Resource name of the HL7v2 store, of the form `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}/hl7V2Stores/{hl7v2_store_id}`.',
+      }),
+    notificationConfig: NotificationConfigSchema.exactOptional().openapi({
+      description:
+        'The notification destination all messages (both Ingest & Create) are published on. Only the message name is sent as part of the notification. If this is unset, no notifications are sent. Supplied by the client.',
+    }),
+    notificationConfigs: z
+      .array(Hl7V2NotificationConfigSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of notification configs. Each configuration uses a filter to determine whether to publish a message (both Ingest & Create) on the corresponding notification destination. Only the message name is sent as part of the notification. Supplied by the client.',
+      }),
+    parserConfig: ParserConfigSchema.exactOptional().openapi({
+      description:
+        'The configuration for the parser. It determines how the server parses the messages.',
+    }),
+    rejectDuplicateMessage: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Determines whether to reject duplicate messages. A duplicate message is a message with the same raw bytes as a message that has already been ingested/created in this HL7v2 store. The default value is false, meaning that the store accepts the duplicate messages and it also returns the same ACK message in the IngestMessageResponse as has been returned previously. Note that only one resource is created in the store. When this field is set to true, CreateMessage/IngestMessage requests with a duplicate message will be rejected by the store, and IngestMessageErrorDetail returns a NACK message upon rejection.',
+      }),
+  })
+  .openapi({ description: 'Represents an HL7v2 store.', required: [] })
+  .openapi('Hl7V2Store')
+
+type ListHl7V2StoresResponseType = {
+  hl7V2Stores?: z.infer<typeof Hl7V2StoreSchema>[]
+  nextPageToken?: string
 }
 
 const GroupOrSegmentSchema: z.ZodType<GroupOrSegmentType> = z
@@ -222,118 +1693,6 @@ type SchemaGroupType = {
   minOccurs?: number
   name?: string
 }
-
-const ImageConfigSchema = z
-  .object({
-    additionalInfoTypes: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Additional InfoTypes to redact in the images in addition to those used by `text_redaction_mode`. Can only be used when `text_redaction_mode` is set to `REDACT_SENSITIVE_TEXT`, `REDACT_SENSITIVE_TEXT_CLEAN_DESCRIPTORS` or `TEXT_REDACTION_MODE_UNSPECIFIED`.',
-      }),
-    excludeInfoTypes: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'InfoTypes to skip redacting, overriding those used by `text_redaction_mode`. Can only be used when `text_redaction_mode` is set to `REDACT_SENSITIVE_TEXT` or `REDACT_SENSITIVE_TEXT_CLEAN_DESCRIPTORS`.',
-      }),
-    textRedactionMode: z
-      .enum([
-        'TEXT_REDACTION_MODE_UNSPECIFIED',
-        'REDACT_ALL_TEXT',
-        'REDACT_SENSITIVE_TEXT',
-        'REDACT_NO_TEXT',
-        'REDACT_SENSITIVE_TEXT_CLEAN_DESCRIPTORS',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Determines how to redact text from image.' }),
-  })
-  .openapi({
-    description: 'Specifies how to handle de-identification of image pixels.',
-    required: [],
-  })
-  .openapi('ImageConfig')
-
-const CleanTextTagSchema = z
-  .object({})
-  .openapi({
-    description:
-      'Inspect text and transform sensitive text. Configurable using `TextConfig`. Supported [Value Representations] (http://dicom.nema.org/medical/dicom/2018e/output/chtml/part05/sect_6.2.html#table_6.2-1): AE, LO, LT, PN, SH, ST, UC, UT, DA, DT, AS',
-  })
-  .openapi('CleanTextTag')
-
-const DeleteTagSchema = z.object({}).openapi({ description: 'Delete tag.' }).openapi('DeleteTag')
-
-const KeepTagSchema = z
-  .object({})
-  .openapi({ description: 'Keep tag unchanged.' })
-  .openapi('KeepTag')
-
-const RecurseTagSchema = z
-  .object({})
-  .openapi({
-    description:
-      'Recursively apply DICOM de-id to tags nested in a sequence. Supported [Value Representation] (http://dicom.nema.org/medical/dicom/2018e/output/chtml/part05/sect_6.2.html#table_6.2-1): SQ',
-  })
-  .openapi('RecurseTag')
-
-const RegenUidTagSchema = z
-  .object({})
-  .openapi({
-    description:
-      'Replace UID with a new generated UID. Supported [Value Representation] (http://dicom.nema.org/medical/dicom/2018e/output/chtml/part05/sect_6.2.html#table_6.2-1): UI',
-  })
-  .openapi('RegenUidTag')
-
-const RemoveTagSchema = z
-  .object({})
-  .openapi({ description: 'Replace with empty tag.' })
-  .openapi('RemoveTag')
-
-const ResetTagSchema = z
-  .object({})
-  .openapi({ description: 'Reset tag to a placeholder value.' })
-  .openapi('ResetTag')
-
-const ActionSchema = z
-  .object({
-    cleanImageTag: ImageConfigSchema.exactOptional().openapi({
-      description:
-        "Inspect image and transform sensitive burnt-in text. Doesn't apply to elements nested in a sequence, which revert to `Keep`. Supported [tags](http://dicom.nema.org/medical/dicom/2018e/output/chtml/part06/chapter_6.html): PixelData",
-    }),
-    cleanTextTag: CleanTextTagSchema.exactOptional().openapi({
-      description:
-        'Inspect text and transform sensitive text. Configurable via TextConfig. Supported Value Representations: AE, LO, LT, PN, SH, ST, UC, UT, DA, DT, AS',
-    }),
-    deleteTag: DeleteTagSchema.exactOptional().openapi({ description: 'Delete tag.' }),
-    keepTag: KeepTagSchema.exactOptional().openapi({ description: 'Keep tag unchanged.' }),
-    queries: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Select all tags with the listed tag IDs, names, or Value Representations (VRs). Examples: ID: "00100010" Keyword: "PatientName" VR: "PN"',
-      }),
-    recurseTag: RecurseTagSchema.exactOptional().openapi({
-      description:
-        'Recursively apply DICOM de-id to tags nested in a sequence. Supported [Value Representation] (http://dicom.nema.org/medical/dicom/2018e/output/chtml/part05/sect_6.2.html#table_6.2-1): SQ',
-    }),
-    regenUidTag: RegenUidTagSchema.exactOptional().openapi({
-      description:
-        'Replace UID with a new generated UID. Supported [Value Representation] (http://dicom.nema.org/medical/dicom/2018e/output/chtml/part05/sect_6.2.html#table_6.2-1): UI',
-    }),
-    removeTag: RemoveTagSchema.exactOptional().openapi({ description: 'Replace with empty tag.' }),
-    resetTag: ResetTagSchema.exactOptional().openapi({
-      description: 'Reset tag to a placeholder value.',
-    }),
-  })
-  .openapi({
-    description: 'Specifies a selection of tags and an `Action` to apply to each one.',
-    required: [],
-  })
-  .openapi('Action')
 
 const ActivateConsentRequestSchema = z
   .object({
@@ -563,65 +1922,6 @@ const AnalyzeEntitiesResponseSchema = z
   })
   .openapi('AnalyzeEntitiesResponse')
 
-const AnnotationSchema: z.ZodType<AnnotationType> = z
-  .lazy(() =>
-    z
-      .object({
-        annotationSource: AnnotationSourceSchema.exactOptional().openapi({
-          description: 'Details of the source.',
-        }),
-        customData: z
-          .record(z.string(), z.string())
-          .exactOptional()
-          .openapi({
-            description:
-              'Additional information for this annotation record, such as annotator and verifier information or study campaign.',
-          }),
-        imageAnnotation: ImageAnnotationSchema.exactOptional().openapi({
-          description: 'Annotations for images. For example, bounding polygons.',
-        }),
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Resource name of the Annotation, of the form `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}/annotationStores/{annotation_store_id}/annotations/{annotation_id}`.',
-          }),
-        resourceAnnotation: ResourceAnnotationSchema.exactOptional().openapi({
-          description: 'Annotations for resource. For example, classification tags.',
-        }),
-        textAnnotation: SensitiveTextAnnotationSchema.exactOptional().openapi({
-          description:
-            'Annotations for sensitive texts. For example, a range that describes the location of sensitive text.',
-        }),
-      })
-      .openapi({ description: 'An annotation record.', required: [] }),
-  )
-  .openapi('Annotation')
-
-const AnnotationConfigSchema = z
-  .object({
-    annotationStoreName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the annotation store, in the form `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}/annotationStores/{annotation_store_id}`). * The destination annotation store must be in the same project as the source data. De-identifying data across multiple projects is not supported. * The destination annotation store must exist when using DeidentifyDicomStore or DeidentifyFhirStore. DeidentifyDataset automatically creates the destination annotation store.',
-      }),
-    storeQuote: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If set to true, the sensitive texts are included in SensitiveTextAnnotation of Annotation.',
-      }),
-  })
-  .openapi({
-    description: 'Specifies how to store annotations during de-identification operation.',
-    required: [],
-  })
-  .openapi('AnnotationConfig')
-
 const AnnotationStoreSchema = z
   .object({
     labels: z
@@ -647,35 +1947,14 @@ const AnnotationStoreSchema = z
   .openapi('AnnotationStore')
 
 const ArchiveUserDataMappingRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Archives the specified User data mapping.' })
   .openapi('ArchiveUserDataMappingRequest')
 
 const ArchiveUserDataMappingResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Archives the specified User data mapping.' })
   .openapi('ArchiveUserDataMappingResponse')
-
-const AttributeSchema = z
-  .object({
-    attributeDefinitionId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Indicates the name of an attribute defined in the consent store.' }),
-    values: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'The value of the attribute. Must be an acceptable value as defined in the consent store. For example, if the consent store defines "data type" with acceptable values "questionnaire" and "step-count", when the attribute name is data type, this field must contain one of those values.',
-      }),
-  })
-  .openapi({
-    description:
-      'An attribute value for a Consent or User data mapping. Each Attribute must have a corresponding AttributeDefinition in the consent store that defines the default and allowed values.',
-    required: [],
-  })
-  .openapi('Attribute')
 
 const AttributeDefinitionSchema = z
   .object({
@@ -883,44 +2162,6 @@ const BatchGetMessagesResponseSchema = z
   .openapi({ description: 'Gets multiple messages in a specified HL7v2 store.', required: [] })
   .openapi('BatchGetMessagesResponse')
 
-const ExprSchema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.',
-      }),
-    expression: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Textual representation of an expression in Common Expression Language syntax.',
-      }),
-    location: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. String indicating the location of the expression for error reporting, e.g. a file name and a position in the file.',
-      }),
-    title: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Title for the expression, i.e. a short string describing its purpose. This can be used e.g. in UIs which allow to enter the expression.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents a textual expression in the Common Expression Language (CEL) syntax. CEL is a C-like expression language. The syntax and semantics of CEL are documented at https://github.com/google/cel-spec. Example (Comparison): title: "Summary size limit" description: "Determines if a summary is less than 100 chars" expression: "document.summary.size() < 100" Example (Equality): title: "Requestor is owner" description: "Determines if requestor is the document owner" expression: "document.owner == request.auth.claims.email" Example (Logic): title: "Public documents" description: "Determine whether the document should be publicly visible" expression: "document.type != \'private\' && document.type != \'internal\'" Example (Data Manipulation): title: "Notification string" description: "Create a notification string with a timestamp." expression: "\'New message received at \' + string(document.create_time)" The exact variables and functions that may be referenced within an expression are determined by the service that evaluates it. See the service documentation for additional information.',
-    required: [],
-  })
-  .openapi('Expr')
-
 const BindingSchema = z
   .object({
     condition: ExprSchema.exactOptional().openapi({
@@ -946,32 +2187,9 @@ const BindingSchema = z
   .openapi('Binding')
 
 const CancelOperationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The request message for Operations.CancelOperation.' })
   .openapi('CancelOperationRequest')
-
-const CharacterMaskConfigSchema = z
-  .object({
-    maskingCharacter: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Character to mask the sensitive values. If not supplied, defaults to "*".',
-      }),
-  })
-  .openapi({
-    description: 'Mask a string by replacing its characters with a fixed character.',
-    required: [],
-  })
-  .openapi('CharacterMaskConfig')
-
-const CharacterMaskFieldSchema = z
-  .object({})
-  .openapi({
-    description:
-      'Replace field value with masking character. Supported [types](https://www.hl7.org/fhir/datatypes.html): Code, Decimal, HumanName, Id, LanguageCode, Markdown, Oid, String, Uri, Uuid, Xhtml',
-  })
-  .openapi('CharacterMaskField')
 
 const ConsentListSchema = z
   .object({
@@ -1056,22 +2274,6 @@ const CheckDataAccessResponseSchema = z
   })
   .openapi('CheckDataAccessResponse')
 
-const CleanDescriptorsOptionSchema = z
-  .object({})
-  .openapi({
-    description:
-      'This option is based on the DICOM Standard\'s [Clean Descriptors Option](http://dicom.nema.org/medical/dicom/2018e/output/chtml/part15/sect_E.3.5.html), and the `CleanText` `Action` is applied to all the specified fields. When cleaning text, the process attempts to transform phrases matching any of the tags marked for removal (action codes D, Z, X, and U) in the [Basic Profile](http://dicom.nema.org/medical/dicom/2018e/output/chtml/part15/chapter_E.html). These contextual phrases are replaced with the token "[CTX]". This option uses an additional `InfoType` during inspection.',
-  })
-  .openapi('CleanDescriptorsOption')
-
-const CleanTextFieldSchema = z
-  .object({})
-  .openapi({
-    description:
-      'Inspect text and transform sensitive text. Configure using `TextConfig`. Supported [types](https://www.hl7.org/fhir/datatypes.html): Code, Date, DateTime, Decimal, HumanName, Id, LanguageCode, Markdown, Oid, String, Uri, Uuid, Xhtml',
-  })
-  .openapi('CleanTextField')
-
 const ConfigureSearchRequestSchema = z
   .object({
     canonicalUrls: z
@@ -1094,94 +2296,6 @@ const ConfigureSearchRequestSchema = z
     required: [],
   })
   .openapi('ConfigureSearchRequest')
-
-const GoogleCloudHealthcareV1beta1ConsentPolicySchema = z
-  .object({
-    authorizationRule: ExprSchema.exactOptional().openapi({
-      description:
-        'Required. The request conditions to meet to grant access. In addition to any supported comparison operators, authorization rules may have `IN` operator as well as at most 10 logical operators that are limited to `AND` (`&&`), `OR` (`||`).',
-    }),
-    resourceAttributes: z
-      .array(AttributeSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The resources that this policy applies to. A resource is a match if it matches all the attributes listed here. If empty, this policy applies to all User data mappings for the given user.',
-      }),
-  })
-  .openapi({
-    description:
-      "Represents a user's consent in terms of the resources that can be accessed and under what conditions.",
-    required: [],
-  })
-  .openapi('GoogleCloudHealthcareV1beta1ConsentPolicy')
-
-const ConsentSchema = z
-  .object({
-    consentArtifact: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Required. The resource name of the Consent artifact that contains proof of the end user's consent, of the form `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}/consentStores/{consent_store_id}/consentArtifacts/{consent_artifact_id}`.",
-      }),
-    expireTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Timestamp in UTC of when this Consent is considered expired.' }),
-    metadata: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. User-supplied key-value pairs used to organize Consent resources. Metadata keys must: - be between 1 and 63 characters long - have a UTF-8 encoding of maximum 128 bytes - begin with a letter - consist of up to 63 characters including lowercase letters, numeric characters, underscores, and dashes Metadata values must be: - be between 1 and 63 characters long - have a UTF-8 encoding of maximum 128 bytes - consist of up to 63 characters including lowercase letters, numeric characters, underscores, and dashes No more than 64 metadata entries can be associated with a given consent.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Resource name of the Consent, of the form `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}/consentStores/{consent_store_id}/consents/{consent_id}`. Cannot be changed after creation.',
-      }),
-    policies: z
-      .array(GoogleCloudHealthcareV1beta1ConsentPolicySchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "Optional. Represents a user's consent in terms of the resources that can be accessed and under what conditions.",
-      }),
-    revisionCreateTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The timestamp that the revision was created.',
-        readOnly: true,
-      }),
-    revisionId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Output only. The revision ID of the Consent. The format is an 8-character hexadecimal string. Refer to a specific revision of a Consent by appending `@{revision_id}` to the Consent's resource name.",
-        readOnly: true,
-      }),
-    state: z
-      .enum(['STATE_UNSPECIFIED', 'ACTIVE', 'ARCHIVED', 'REVOKED', 'DRAFT', 'REJECTED'])
-      .exactOptional()
-      .openapi({ description: 'Required. Indicates the current state of this Consent.' }),
-    ttl: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Input only. The time to live for this Consent from when it is created.',
-      }),
-    userId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "Required. User's UUID provided by the client." }),
-  })
-  .openapi({ description: "Represents a user's consent.", required: [] })
-  .openapi('Consent')
 
 const ImageSchema = z
   .object({
@@ -1308,67 +2422,10 @@ const ConsentStoreSchema = z
   .openapi({ description: 'Represents a consent store.', required: [] })
   .openapi('ConsentStore')
 
-const ContextualDeidConfigSchema = z
-  .object({})
-  .openapi({
-    description:
-      'The fields that aren\'t marked `Keep` or `CleanText` in the `BASIC` profile are collected into a contextual phrase list. For fields marked `CleanText`, the process attempts to transform phrases matching these contextual entries. These contextual phrases are replaced with the token "[CTX]". This feature uses an additional InfoType during inspection.',
-  })
-  .openapi('ContextualDeidConfig')
-
 const CreateMessageRequestSchema = z
   .object({ message: MessageSchema.exactOptional().openapi({ description: 'HL7v2 message.' }) })
   .openapi({ description: 'Creates a new message.', required: [] })
   .openapi('CreateMessageRequest')
-
-const KmsWrappedCryptoKeySchema = z
-  .object({
-    cryptoKey: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The resource name of the KMS CryptoKey to use for unwrapping. For example, `projects/{project_id}/locations/{location_id}/keyRings/{keyring}/cryptoKeys/{key}`.',
-      }),
-    wrappedKey: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The wrapped data crypto key.' }),
-  })
-  .openapi({
-    description:
-      "Include to use an existing data crypto key wrapped by KMS. The wrapped key must be a 128-, 192-, or 256-bit key. The key must grant the Cloud IAM permission `cloudkms.cryptoKeyVersions.useToDecrypt` to the project's Cloud Healthcare Service Agent service account. For more information, see [Creating a wrapped key] (https://cloud.google.com/dlp/docs/create-wrapped-key).",
-    required: [],
-  })
-  .openapi('KmsWrappedCryptoKey')
-
-const CryptoHashConfigSchema = z
-  .object({
-    cryptoKey: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'An AES 128/192/256 bit key. Causes the hash to be computed based on this key. A default key is generated for each Deidentify operation and is used when neither `crypto_key` nor `kms_wrapped` is specified. Must not be set if `kms_wrapped` is set.',
-      }),
-    kmsWrapped: KmsWrappedCryptoKeySchema.exactOptional().openapi({
-      description: 'KMS wrapped key. Must not be set if `crypto_key` is set.',
-    }),
-  })
-  .openapi({
-    description:
-      'Pseudonymization method that generates surrogates via cryptographic hashing. Uses SHA-256. Outputs a base64-encoded representation of the hashed output. For example, `L7k0BHmF1ha5U3NfGykjro4xWi1MPVQPjhMAZbSV9mM=`.',
-    required: [],
-  })
-  .openapi('CryptoHashConfig')
-
-const CryptoHashFieldSchema = z
-  .object({})
-  .openapi({
-    description:
-      'Replace field value with a hash of that value. Supported [types](https://www.hl7.org/fhir/datatypes.html): Code, Decimal, HumanName, Id, LanguageCode, Markdown, Oid, String, Uri, Uuid, Xhtml',
-  })
-  .openapi('CryptoHashField')
 
 const DatasetSchema = z
   .object({
@@ -1393,437 +2450,6 @@ const DatasetSchema = z
     required: [],
   })
   .openapi('Dataset')
-
-const DateShiftConfigSchema = z
-  .object({
-    cryptoKey: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'An AES 128/192/256 bit key. The date shift is computed based on this key and the patient ID. If the patient ID is empty for a DICOM resource, the date shift is computed based on this key and the study instance UID. If `crypto_key` is not set, then `kms_wrapped` is used to calculate the date shift. If neither is set, a default key is generated for each de-identify operation. Must not be set if `kms_wrapped` is set.',
-      }),
-    kmsWrapped: KmsWrappedCryptoKeySchema.exactOptional().openapi({
-      description:
-        'KMS wrapped key. If `kms_wrapped` is not set, then `crypto_key` is used to calculate the date shift. If neither is set, a default key is generated for each de-identify operation. Must not be set if `crypto_key` is set.',
-    }),
-  })
-  .openapi({
-    description:
-      'Shift a date forward or backward in time by a random amount which is consistent for a given patient and crypto key combination.',
-    required: [],
-  })
-  .openapi('DateShiftConfig')
-
-const DateShiftFieldSchema = z
-  .object({})
-  .openapi({
-    description:
-      'Shift the date by a randomized number of days. See [date shifting](https://cloud.google.com/dlp/docs/concepts-date-shifting) for more information. Supported [types](https://www.hl7.org/fhir/datatypes.html): Date, DateTime',
-  })
-  .openapi('DateShiftField')
-
-const TagFilterListSchema = z
-  .object({
-    tags: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Tags to be filtered. Tags must be DICOM Data Elements, File Meta Elements, or Directory Structuring Elements, as defined at: http://dicom.nema.org/medical/dicom/current/output/html/part06.html#table_6-1,. They may be provided by "Keyword" or "Tag". For example, "PatientID", "00100010".',
-      }),
-  })
-  .openapi({ description: 'List of tags to be filtered.', required: [] })
-  .openapi('TagFilterList')
-
-const DicomConfigSchema = z
-  .object({
-    filterProfile: z
-      .enum([
-        'TAG_FILTER_PROFILE_UNSPECIFIED',
-        'MINIMAL_KEEP_LIST_PROFILE',
-        'ATTRIBUTE_CONFIDENTIALITY_BASIC_PROFILE',
-        'KEEP_ALL_PROFILE',
-        'DEIDENTIFY_TAG_CONTENTS',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Tag filtering profile that determines which tags to keep/remove.' }),
-    keepList: TagFilterListSchema.exactOptional().openapi({
-      description: 'List of tags to keep. Remove all other tags.',
-    }),
-    removeList: TagFilterListSchema.exactOptional().openapi({
-      description: 'List of tags to remove. Keep all other tags.',
-    }),
-    skipIdRedaction: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If true, skip replacing StudyInstanceUID, SeriesInstanceUID, SOPInstanceUID, and MediaStorageSOPInstanceUID and leave them untouched. The Cloud Healthcare API regenerates these UIDs by default based on the DICOM Standard\'s reasoning: "Whilst these UIDs cannot be mapped directly to an individual out of context, given access to the original images, or to a database of the original images containing the UIDs, it would be possible to recover the individual\'s identity." http://dicom.nema.org/medical/dicom/current/output/chtml/part15/sect_E.3.9.html',
-      }),
-  })
-  .openapi({
-    description: 'Specifies the parameters needed for de-identification of DICOM stores.',
-    required: [],
-  })
-  .openapi('DicomConfig')
-
-const OptionsSchema = z
-  .object({
-    cleanDescriptors: CleanDescriptorsOptionSchema.exactOptional().openapi({
-      description: 'Set Clean Descriptors Option.',
-    }),
-    cleanImage: ImageConfigSchema.exactOptional().openapi({
-      description:
-        'Apply `Action.clean_image` to [`PixelData`](http://dicom.nema.org/medical/dicom/2018e/output/chtml/part06/chapter_6.html) as configured.',
-    }),
-    primaryIds: z
-      .enum(['PRIMARY_IDS_OPTION_UNSPECIFIED', 'KEEP', 'REGEN'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Set `Action` for [`StudyInstanceUID`, `SeriesInstanceUID`, `SOPInstanceUID`, and `MediaStorageSOPInstanceUID`](http://dicom.nema.org/medical/dicom/2018e/output/chtml/part06/chapter_6.html).',
-      }),
-  })
-  .openapi({
-    description: 'Specifies additional options to apply to the base profile.',
-    required: [],
-  })
-  .openapi('Options')
-
-const DicomTagConfigSchema = z
-  .object({
-    actions: z
-      .array(ActionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies custom tag selections and `Actions` to apply to them. Overrides `options` and `profile`. Conflicting `Actions` are applied in the order given.',
-      }),
-    options: OptionsSchema.exactOptional().openapi({
-      description: 'Specifies additional options to apply, overriding the base `profile`.',
-    }),
-    profileType: z
-      .enum([
-        'PROFILE_TYPE_UNSPECIFIED',
-        'MINIMAL_KEEP_LIST_PROFILE',
-        'ATTRIBUTE_CONFIDENTIALITY_BASIC_PROFILE',
-        'KEEP_ALL_PROFILE',
-        'DEIDENTIFY_TAG_CONTENTS',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Base profile type for handling DICOM tags.' }),
-  })
-  .openapi({
-    description: 'Specifies the parameters needed for the de-identification of DICOM stores.',
-    required: [],
-  })
-  .openapi('DicomTagConfig')
-
-const FieldMetadataSchema = z
-  .object({
-    action: z
-      .enum(['ACTION_UNSPECIFIED', 'TRANSFORM', 'INSPECT_AND_TRANSFORM', 'DO_NOT_TRANSFORM'])
-      .exactOptional()
-      .openapi({ description: 'Deidentify action for one field.' }),
-    paths: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'List of paths to FHIR fields to redact. Each path is a period-separated list where each component is either a field name or FHIR type name. All types begin with an upper case letter. For example, the resource field "Patient.Address.city", which uses a string type, can be matched by "Patient.Address.String". Path also supports partial matching. For example, "Patient.Address.city" can be matched by "Address.city" (Patient omitted). Partial matching and type matching can be combined. For example, "Patient.Address.city" can be matched by "Address.String". For "choice" types (those defined in the FHIR spec with the form: field[x]), use two separate components. For example, "deceasedAge.unit" is matched by "Deceased.Age.unit". Supported types are: AdministrativeGenderCode, Base64Binary, Boolean, Code, Date, DateTime, Decimal, HumanName, Id, Instant, Integer, LanguageCode, Markdown, Oid, PositiveInt, String, UnsignedInt, Uri, Uuid, Xhtml. The sub-type for HumanName(for example HumanName.given, HumanName.family) can be omitted.',
-      }),
-  })
-  .openapi({
-    description:
-      'Specifies FHIR paths to match, and how to handle de-identification of matching fields.',
-    required: [],
-  })
-  .openapi('FieldMetadata')
-
-const FhirConfigSchema = z
-  .object({
-    defaultKeepExtensions: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "The behaviour for handling FHIR extensions that aren't otherwise specified for de-identification. If true, all extensions are preserved during de-identification by default. If false or unspecified, all extensions are removed during de-identification by default.",
-      }),
-    fieldMetadataList: z
-      .array(FieldMetadataSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies FHIR paths to match and how to transform them. Any field that is not matched by a FieldMetadata is passed through to the output dataset unmodified. All extensions will be processed according to `default_keep_extensions`. If a field can be matched by more than one FieldMetadata, the first FieldMetadata.Action is applied.',
-      }),
-  })
-  .openapi({
-    description: 'Specifies how to handle de-identification of a FHIR store.',
-    required: [],
-  })
-  .openapi('FhirConfig')
-
-const KeepFieldSchema = z
-  .object({})
-  .openapi({ description: 'Keep field unchanged.' })
-  .openapi('KeepField')
-
-const RemoveFieldSchema = z
-  .object({})
-  .openapi({ description: 'Remove field.' })
-  .openapi('RemoveField')
-
-const GoogleCloudHealthcareV1beta1DeidentifyFieldMetadataSchema = z
-  .object({
-    characterMaskField: CharacterMaskFieldSchema.exactOptional().openapi({
-      description:
-        "Replace the field's value with a masking character. Supported [types](https://www.hl7.org/fhir/datatypes.html): Code, Decimal, HumanName, Id, LanguageCode, Markdown, Oid, String, Uri, Uuid, Xhtml",
-    }),
-    cleanTextField: CleanTextFieldSchema.exactOptional().openapi({
-      description:
-        "Inspect the field's text and transform sensitive text. Configure using `TextConfig`. Supported [types](https://www.hl7.org/fhir/datatypes.html): Code, Date, DateTime, Decimal, HumanName, Id, LanguageCode, Markdown, Oid, String, Uri, Uuid, Xhtml",
-    }),
-    cryptoHashField: CryptoHashFieldSchema.exactOptional().openapi({
-      description:
-        'Replace field value with a hash of that value. Supported [types](https://www.hl7.org/fhir/datatypes.html): Code, Decimal, HumanName, Id, LanguageCode, Markdown, Oid, String, Uri, Uuid, Xhtml',
-    }),
-    dateShiftField: DateShiftFieldSchema.exactOptional().openapi({
-      description:
-        'Shift the date by a randomized number of days. See [date shifting](https://cloud.google.com/dlp/docs/concepts-date-shifting) for more information. Supported [types](https://www.hl7.org/fhir/datatypes.html): Date, DateTime',
-    }),
-    keepField: KeepFieldSchema.exactOptional().openapi({
-      description: 'Keep the field unchanged.',
-    }),
-    paths: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'List of paths to FHIR fields to redact. Each path is a period-separated list where each component is either a field name or FHIR type name. All types begin with an upper case letter. For example, the resource field "Patient.Address.city", which uses a string type, can be matched by "Patient.Address.String". Path also supports partialkk matching. For example, "Patient.Address.city" can be matched by "Address.city" (Patient omitted). Partial matching and type matching can be combined, for example "Patient.Address.city" can be matched by "Address.String". For "choice" types (those defined in the FHIR spec with the form: field[x]), use two separate components. For example, "deceasedAge.unit" is matched by "Deceased.Age.unit". Supported [types](https://www.hl7.org/fhir/datatypes.html) are: AdministrativeGenderCode, Base64Binary, Boolean, Code, Date, DateTime, Decimal, HumanName, Id, Instant, Integer, LanguageCode, Markdown, Oid, PositiveInt, String, UnsignedInt, Uri, Uuid, Xhtml. The sub-type for HumanName (for example HumanName.given, HumanName.family) can be omitted.',
-      }),
-    removeField: RemoveFieldSchema.exactOptional().openapi({ description: 'Remove the field.' }),
-  })
-  .openapi({
-    description:
-      'Specifies the FHIR paths to match and how to handle the de-identification of matching fields.',
-    required: [],
-  })
-  .openapi('GoogleCloudHealthcareV1beta1DeidentifyFieldMetadata')
-
-const KeepExtensionsConfigSchema = z
-  .object({})
-  .openapi({
-    description:
-      "The behaviour for handling FHIR extensions that aren't otherwise specified for de-identification. If provided, all extensions are preserved during de-identification by default. If unspecified, all extensions are removed during de-identification by default.",
-  })
-  .openapi('KeepExtensionsConfig')
-
-const GoogleCloudHealthcareV1beta1DeidentifyOptionsSchema = z
-  .object({
-    characterMaskConfig: CharacterMaskConfigSchema.exactOptional().openapi({
-      description: 'Character mask config for `CharacterMaskField` `FieldMetadatas`.',
-    }),
-    contextualDeid: ContextualDeidConfigSchema.exactOptional().openapi({
-      description: 'Configure contextual de-id.',
-    }),
-    cryptoHashConfig: CryptoHashConfigSchema.exactOptional().openapi({
-      description: 'Crypo hash config for `CharacterMaskField` `FieldMetadatas`.',
-    }),
-    dateShiftConfig: DateShiftConfigSchema.exactOptional().openapi({
-      description: 'Date shifting config for `CharacterMaskField` `FieldMetadatas`.',
-    }),
-    keepExtensions: KeepExtensionsConfigSchema.exactOptional().openapi({
-      description: 'Configure keeping extensions by default.',
-    }),
-  })
-  .openapi({
-    description: 'Specifies additional options to apply to the base `profile`.',
-    required: [],
-  })
-  .openapi('GoogleCloudHealthcareV1beta1DeidentifyOptions')
-
-const FhirFieldConfigSchema = z
-  .object({
-    fieldMetadataList: z
-      .array(GoogleCloudHealthcareV1beta1DeidentifyFieldMetadataSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies FHIR paths to match and how to transform them. Any field that is not matched by a `FieldMetadata` is passed through to the output dataset unmodified. All extensions will be processed according to `keep_extensions`. If a field can be matched by more than one `FieldMetadata`, the first `FieldMetadata.Action` is applied. Overrides `options` and `profile`.',
-      }),
-    options: GoogleCloudHealthcareV1beta1DeidentifyOptionsSchema.exactOptional().openapi({
-      description: 'Specifies additional options, overriding the base `profile`.',
-    }),
-    profileType: z
-      .enum(['PROFILE_TYPE_UNSPECIFIED', 'KEEP_ALL', 'BASIC', 'CLEAN_ALL'])
-      .exactOptional()
-      .openapi({ description: 'Base profile type for handling FHIR fields.' }),
-  })
-  .openapi({
-    description: 'Specifies how to handle the de-identification of a FHIR store.',
-    required: [],
-  })
-  .openapi('FhirFieldConfig')
-
-const FhirOutputSchema = z
-  .object({
-    fhirStore: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Name of the output FHIR store, which must already exist. You must grant the healthcare.fhirResources.update permission on the destination store to your project's **Cloud Healthcare Service Agent** [service account](https://cloud.google.com/healthcare/docs/how-tos/permissions-healthcare-api-gcp-products#the_cloud_healthcare_service_agent). The destination store must set `enable_update_create` to true. The destination store must use FHIR version R4. Writing these resources will consume FHIR operations quota from the project containing the source data. De-identify operation metadata is only generated for DICOM de-identification operations.",
-      }),
-  })
-  .openapi({ description: 'Details about the FHIR store to write the output to.', required: [] })
-  .openapi('FhirOutput')
-
-const DeidentifyOperationMetadataSchema = z
-  .object({
-    fhirOutput: FhirOutputSchema.exactOptional().openapi({
-      description: 'Details about the FHIR store to write the output to.',
-    }),
-  })
-  .openapi({
-    description: 'Details about the work the de-identify operation performed.',
-    required: [],
-  })
-  .openapi('DeidentifyOperationMetadata')
-
-const RedactConfigSchema = z
-  .object({})
-  .openapi({
-    description:
-      'Define how to redact sensitive values. Default behaviour is erase. For example, "My name is Jane." becomes "My name is ."',
-  })
-  .openapi('RedactConfig')
-
-const ReplaceWithInfoTypeConfigSchema = z
-  .object({})
-  .openapi({
-    description:
-      'When using the INSPECT_AND_TRANSFORM action, each match is replaced with the name of the info_type. For example, "My name is Jane" becomes "My name is [PERSON_NAME]." The TRANSFORM action is equivalent to redacting.',
-  })
-  .openapi('ReplaceWithInfoTypeConfig')
-
-const InfoTypeTransformationSchema = z
-  .object({
-    characterMaskConfig: CharacterMaskConfigSchema.exactOptional().openapi({
-      description: 'Config for character mask.',
-    }),
-    cryptoHashConfig: CryptoHashConfigSchema.exactOptional().openapi({
-      description: 'Config for crypto hash.',
-    }),
-    dateShiftConfig: DateShiftConfigSchema.exactOptional().openapi({
-      description: 'Config for date shift.',
-    }),
-    infoTypes: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          '`InfoTypes` to apply this transformation to. If this is not specified, this transformation becomes the default transformation, and is used for any `info_type` that is not specified in another transformation.',
-      }),
-    redactConfig: RedactConfigSchema.exactOptional().openapi({
-      description: 'Config for text redaction.',
-    }),
-    replaceWithInfoTypeConfig: ReplaceWithInfoTypeConfigSchema.exactOptional().openapi({
-      description: 'Config for replace with InfoType.',
-    }),
-  })
-  .openapi({
-    description: 'A transformation to apply to text that is identified as a specific info_type.',
-    required: [],
-  })
-  .openapi('InfoTypeTransformation')
-
-const TextConfigSchema = z
-  .object({
-    additionalTransformations: z
-      .array(InfoTypeTransformationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Additional transformations to apply to the detected data, overriding `profile`.',
-      }),
-    excludeInfoTypes: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'InfoTypes to skip transforming, overriding `profile`.' }),
-    profileType: z
-      .enum(['PROFILE_TYPE_UNSPECIFIED', 'EMPTY', 'BASIC'])
-      .exactOptional()
-      .openapi({ description: 'Base profile type for text transformation.' }),
-    transformations: z
-      .array(InfoTypeTransformationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The transformations to apply to the detected data. Deprecated. Use `additional_transformations` instead.',
-      }),
-  })
-  .openapi({ description: 'Configures how to transform sensitive text `InfoTypes`.', required: [] })
-  .openapi('TextConfig')
-
-const DeidentifyConfigSchema = z
-  .object({
-    annotation: AnnotationConfigSchema.exactOptional().openapi({
-      description:
-        'Configures how annotations, meaning that the location and infoType of sensitive information findings, are created during de-identification. If unspecified, no annotations are created.',
-    }),
-    dicom: DicomConfigSchema.exactOptional().openapi({
-      description:
-        'Configures de-id of application/DICOM content. Deprecated. Use `dicom_tag_config` instead.',
-    }),
-    dicomTagConfig: DicomTagConfigSchema.exactOptional().openapi({
-      description: 'Configures de-id of application/DICOM content.',
-    }),
-    fhir: FhirConfigSchema.exactOptional().openapi({
-      description:
-        'Configures de-id of application/FHIR content. Deprecated. Use `fhir_field_config` instead.',
-    }),
-    fhirFieldConfig: FhirFieldConfigSchema.exactOptional().openapi({
-      description: 'Configures de-id of application/FHIR content.',
-    }),
-    image: ImageConfigSchema.exactOptional().openapi({
-      description:
-        'Configures the de-identification of image pixels in the source_dataset. Deprecated. Use `dicom_tag_config.options.clean_image` instead.',
-    }),
-    operationMetadata: DeidentifyOperationMetadataSchema.exactOptional().openapi({
-      description: 'Details about the work the de-identify operation performed.',
-    }),
-    text: TextConfigSchema.exactOptional().openapi({
-      description:
-        'Configures de-identification of text wherever it is found in the source_dataset.',
-    }),
-  })
-  .openapi({
-    description:
-      'Configures de-id options specific to different types of content. Each submessage customizes the handling of an https://tools.ietf.org/html/rfc6838 media type or subtype. Configs are applied in a nested manner at runtime.',
-    required: [],
-  })
-  .openapi('DeidentifyConfig')
-
-const DeidentifiedStoreDestinationSchema = z
-  .object({
-    config: DeidentifyConfigSchema.exactOptional().openapi({
-      description:
-        'The configuration to use when de-identifying resources that are added to this store.',
-    }),
-    store: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The full resource name of a Cloud Healthcare FHIR store, for example, `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}/fhirStores/{fhir_store_id}`.',
-      }),
-  })
-  .openapi({
-    description: 'Contains configuration for streaming de-identified FHIR export.',
-    required: [],
-  })
-  .openapi('DeidentifiedStoreDestination')
 
 const DeidentifyDatasetRequestSchema = z
   .object({
@@ -1954,32 +2580,9 @@ const DeidentifyFhirStoreRequestSchema = z
   .openapi('DeidentifyFhirStoreRequest')
 
 const DeidentifySummarySchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Contains a detailed summary of the Deidentify operation.' })
   .openapi('DeidentifySummary')
-
-const NotificationConfigSchema = z
-  .object({
-    pubsubTopic: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The [Pub/Sub](https://cloud.google.com/pubsub/docs/) topic that notifications of changes are published on. Supplied by the client. PubsubMessage.Data contains the resource name. PubsubMessage.MessageId is the ID of this message. It is guaranteed to be unique within the topic. PubsubMessage.PublishTime is the time at which the message was published. Notifications are only sent if the topic is non-empty. [Topic names](https://cloud.google.com/pubsub/docs/overview#names) must be scoped to a project. Cloud Healthcare API service account must have publisher permissions on the given Pub/Sub topic. Not having adequate permissions causes the calls that send notifications to fail. If a notification can't be published to Pub/Sub, errors are logged to Cloud Logging (see [Viewing error logs in Cloud Logging](https://cloud.google.com/healthcare/docs/how-tos/logging)). If the number of errors exceeds a certain rate, some aren't submitted. Note that not all operations trigger notifications, see [Configuring Pub/Sub notifications](https://cloud.google.com/healthcare/docs/how-tos/pubsub) for specific details.",
-      }),
-    sendForBulkImport: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether or not to send Pub/Sub notifications on bulk import. Only supported for DICOM imports.',
-      }),
-  })
-  .openapi({
-    description: 'Specifies where to send notifications upon changes to a data store.',
-    required: [],
-  })
-  .openapi('NotificationConfig')
 
 const GoogleCloudHealthcareV1beta1DicomBigQueryDestinationSchema = z
   .object({
@@ -2053,7 +2656,7 @@ const DicomStoreSchema = z
   .openapi('DicomStore')
 
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
@@ -2161,7 +2764,7 @@ const EvaluateAnnotationStoreRequestSchema = z
   .openapi('EvaluateAnnotationStoreRequest')
 
 const EvaluateAnnotationStoreResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Response for successful Annotation store evaluation operations. This structure is included in the response upon operation completion.',
@@ -2292,7 +2895,7 @@ const ExportAnnotationsRequestSchema = z
   .openapi('ExportAnnotationsRequest')
 
 const ExportAnnotationsResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Response for successful annotation export operations. This structure is included in response upon operation completion.',
@@ -2346,7 +2949,7 @@ const ExportDicomDataRequestSchema = z
   .openapi('ExportDicomDataRequest')
 
 const ExportDicomDataResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'Returns additional information in regards to a completed DICOM store export.',
   })
@@ -2411,86 +3014,12 @@ const ExportMessagesRequestSchema = z
   .openapi('ExportMessagesRequest')
 
 const ExportMessagesResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Final response for the export operation. This structure is included in the response to describe the detailed outcome.',
   })
   .openapi('ExportMessagesResponse')
-
-const TimePartitioningSchema = z
-  .object({
-    expirationMs: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Number of milliseconds for which to keep the storage for a partition.',
-      }),
-    type: z
-      .enum(['PARTITION_TYPE_UNSPECIFIED', 'HOUR', 'DAY', 'MONTH', 'YEAR'])
-      .exactOptional()
-      .openapi({ description: 'Type of partitioning.' }),
-  })
-  .openapi({
-    description: 'Configuration for FHIR BigQuery time-partitioned tables.',
-    required: [],
-  })
-  .openapi('TimePartitioning')
-
-const SchemaConfigSchema = z
-  .object({
-    lastUpdatedPartitionConfig: TimePartitioningSchema.exactOptional().openapi({
-      description:
-        "The configuration for exported BigQuery tables to be partitioned by FHIR resource's last updated time column.",
-    }),
-    recursiveStructureDepth: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The depth for all recursive structures in the output analytics schema. For example, `concept` in the CodeSystem resource is a recursive structure; when the depth is 2, the CodeSystem table will have a column called `concept.concept` but not `concept.concept.concept`. If not specified or set to 0, the server will use the default value 2. The maximum depth allowed is 5.',
-      }),
-    schemaType: z
-      .enum(['SCHEMA_TYPE_UNSPECIFIED', 'LOSSLESS', 'ANALYTICS', 'ANALYTICS_V2'])
-      .exactOptional()
-      .openapi({ description: 'Specifies the output schema type. Schema type is required.' }),
-  })
-  .openapi({
-    description:
-      'Configuration for the FHIR BigQuery schema. Determines how the server generates the schema.',
-    required: [],
-  })
-  .openapi('SchemaConfig')
-
-const GoogleCloudHealthcareV1beta1FhirBigQueryDestinationSchema = z
-  .object({
-    datasetUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'BigQuery URI to an existing dataset, up to 2000 characters long, in the format `bq://projectId.bqDatasetId`.',
-      }),
-    force: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Use `write_disposition` instead. If `write_disposition` is specified, this parameter is ignored. force=false is equivalent to write_disposition=WRITE_EMPTY and force=true is equivalent to write_disposition=WRITE_TRUNCATE.',
-      }),
-    schemaConfig: SchemaConfigSchema.exactOptional().openapi({
-      description: 'The configuration for the exported BigQuery schema.',
-    }),
-    writeDisposition: z
-      .enum(['WRITE_DISPOSITION_UNSPECIFIED', 'WRITE_EMPTY', 'WRITE_TRUNCATE', 'WRITE_APPEND'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Determines if existing data in the destination dataset is overwritten, appended to, or not written if the tables contain data. If a write_disposition is specified, the `force` parameter is ignored.',
-      }),
-  })
-  .openapi({ description: 'The configuration for exporting to BigQuery.', required: [] })
-  .openapi('GoogleCloudHealthcareV1beta1FhirBigQueryDestination')
 
 const GoogleCloudHealthcareV1beta1FhirGcsDestinationSchema = z
   .object({
@@ -2534,212 +3063,6 @@ const ExportResourcesRequestSchema = z
   .openapi({ description: 'Request to export resources.', required: [] })
   .openapi('ExportResourcesRequest')
 
-const FhirNotificationConfigSchema = z
-  .object({
-    pubsubTopic: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The [Pub/Sub](https://cloud.google.com/pubsub/docs/) topic that notifications of changes are published on. Supplied by the client. The notification is a `PubsubMessage` with the following fields: * `PubsubMessage.Data` contains the resource name. * `PubsubMessage.MessageId` is the ID of this notification. It is guaranteed to be unique within the topic. * `PubsubMessage.PublishTime` is the time when the message was published. Note that notifications are only sent if the topic is non-empty. [Topic names](https://cloud.google.com/pubsub/docs/overview#names) must be scoped to a project. The Cloud Healthcare API service account, service-@gcp-sa-healthcare.iam.gserviceaccount.com, must have publisher permissions on the given Pub/Sub topic. Not having adequate permissions causes the calls that send notifications to fail (https://cloud.google.com/healthcare-api/docs/permissions-healthcare-api-gcp-products#dicom_fhir_and_hl7v2_store_cloud_pubsub_permissions). If a notification can't be published to Pub/Sub, errors are logged to Cloud Logging. For more information, see [Viewing error logs in Cloud Logging](https://cloud.google.com/healthcare-api/docs/how-tos/logging).",
-      }),
-    sendFullResource: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether to send full FHIR resource to this Pub/Sub topic for Create and Update operation. Note that setting this to true does not guarantee that all resources will be sent in the format of full FHIR resource. When a resource change is too large or during heavy traffic, only the resource name will be sent. Clients should always check the "payloadType" label from a Pub/Sub message to determine whether it needs to fetch the full resource as a separate operation.',
-      }),
-  })
-  .openapi({ description: 'Contains the configuration for FHIR notifications.', required: [] })
-  .openapi('FhirNotificationConfig')
-
-const SearchParameterSchema = z
-  .object({
-    canonicalUrl: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The canonical url of the search parameter resource.' }),
-    parameter: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The versioned name of the search parameter resource. The format is projects/{project-id}/locations/{location}/datasets/{dataset-id}/fhirStores/{fhirStore-id}/fhir/SearchParameter/{resource-id}/_history/{version-id} For fhir stores with disable_resource_versioning=true, the format is projects/{project-id}/locations/{location}/datasets/{dataset-id}/fhirStores/{fhirStore-id}/fhir/SearchParameter/{resource-id}/',
-      }),
-  })
-  .openapi({
-    description: 'Contains the versioned name and the URL for one SearchParameter.',
-    required: [],
-  })
-  .openapi('SearchParameter')
-
-const SearchConfigSchema = z
-  .object({
-    searchParameters: z
-      .array(SearchParameterSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of search parameters in this FHIR store that are used to configure this FHIR store.',
-      }),
-  })
-  .openapi({ description: 'Contains the configuration for FHIR search.', required: [] })
-  .openapi('SearchConfig')
-
-const StreamConfigSchema = z
-  .object({
-    bigqueryDestination:
-      GoogleCloudHealthcareV1beta1FhirBigQueryDestinationSchema.exactOptional().openapi({
-        description:
-          'The destination BigQuery structure that contains both the dataset location and corresponding schema config. The output is organized in one table per resource type. The server reuses the existing tables (if any) that are named after the resource types, e.g. "Patient", "Observation". When there is no existing table for a given resource type, the server attempts to create one. When a table schema doesn\'t align with the schema config, either because of existing incompatible schema or out of band incompatible modification, the server does not stream in new data. One resolution in this case is to delete the incompatible table and let the server recreate one, though the newly created table only contains data after the table recreation. BigQuery imposes a 1 MB limit on streaming insert row size, therefore any resource mutation that generates more than 1 MB of BigQuery data will not be streamed. Results are written to BigQuery tables according to the parameters in BigQueryDestination.WriteDisposition. Different versions of the same resource are distinguishable by the meta.versionId and meta.lastUpdated columns. The operation (CREATE/UPDATE/DELETE) that results in the new version is recorded in the meta.tag. The tables contain all historical resource versions since streaming was enabled. For query convenience, the server also creates one view per table of the same name containing only the current resource version. The streamed data in the BigQuery dataset is not guaranteed to be completely unique. The combination of the id and meta.versionId columns should ideally identify a single unique row. But in rare cases, duplicates may exist. At query time, users may use the SQL select statement to keep only one of the duplicate rows given an id and meta.versionId pair. Alternatively, the server created view mentioned above also filters out duplicates. If a resource mutation cannot be streamed to BigQuery, errors will be logged to Cloud Logging (see [Viewing error logs in Cloud Logging](https://cloud.google.com/healthcare/docs/how-tos/logging)).',
-      }),
-    deidentifiedStoreDestination: DeidentifiedStoreDestinationSchema.exactOptional().openapi({
-      description:
-        "The destination FHIR store for de-identified resources. After this field is added, all subsequent creates/updates/patches to the source store will be de-identified using the provided configuration and applied to the destination store. Importing resources to the source store will not trigger the streaming. If the source store already contains resources when this option is enabled, those resources will not be copied to the destination store unless they are subsequently updated. This may result in invalid references in the destination store. Before adding this config, you must grant the healthcare.fhirResources.update permission on the destination store to your project's **Cloud Healthcare Service Agent** [service account](https://cloud.google.com/healthcare/docs/how-tos/permissions-healthcare-api-gcp-products#the_cloud_healthcare_service_agent). The destination store must set enable_update_create to true. The destination store must have disable_referential_integrity set to true. If a resource cannot be de-identified, errors will be logged to Cloud Logging (see [Viewing error logs in Cloud Logging](https://cloud.google.com/healthcare/docs/how-tos/logging)).",
-    }),
-    resourceTypes: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Supply a FHIR resource type (such as "Patient" or "Observation"). See https://www.hl7.org/fhir/valueset-resource-types.html for a list of all FHIR resource types. The server treats an empty list as an intent to stream all the supported resource types in this FHIR store.',
-      }),
-  })
-  .openapi({ description: 'Contains configuration for streaming FHIR export.', required: [] })
-  .openapi('StreamConfig')
-
-const ValidationConfigSchema = z
-  .object({
-    disableFhirpathValidation: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether to disable FHIRPath validation for incoming resources. Set this to true to disable checking incoming resources for conformance against FHIRPath requirement defined in the FHIR specification. This property only affects resource types that do not have profiles configured for them, any rules in enabled implementation guides will still be enforced.',
-      }),
-    disableProfileValidation: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether to disable profile validation for this FHIR store. Set this to true to disable checking incoming resources for conformance against StructureDefinitions in this FHIR store.',
-      }),
-    disableReferenceTypeValidation: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether to disable reference type validation for incoming resources. Set this to true to disable checking incoming resources for conformance against reference type requirement defined in the FHIR specification. This property only affects resource types that do not have profiles configured for them, any rules in enabled implementation guides will still be enforced.',
-      }),
-    disableRequiredFieldValidation: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether to disable required fields validation for incoming resources. Set this to true to disable checking incoming resources for conformance against required fields requirement defined in the FHIR specification. This property only affects resource types that do not have profiles configured for them, any rules in enabled implementation guides will still be enforced.',
-      }),
-    enabledImplementationGuides: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of ImplementationGuide URLs in this FHIR store that are used to configure the profiles to use for validation. For example, to use the US Core profiles for validation, set `enabled_implementation_guides` to `["http://hl7.org/fhir/us/core/ImplementationGuide/ig"]`. If `enabled_implementation_guides` is empty or omitted, then incoming resources are only required to conform to the base FHIR profiles. Otherwise, a resource must conform to at least one profile listed in the `global` property of one of the enabled ImplementationGuides. The Cloud Healthcare API does not currently enforce all of the rules in a StructureDefinition. The following rules are supported: - min/max - minValue/maxValue - maxLength - type - fixed[x] - pattern[x] on simple types - slicing, when using "value" as the discriminator type When a URL cannot be resolved (for example, in a type assertion), the server does not return an error.',
-      }),
-  })
-  .openapi({
-    description: 'Contains the configuration for FHIR profiles and validation.',
-    required: [],
-  })
-  .openapi('ValidationConfig')
-
-const FhirStoreSchema = z
-  .object({
-    complexDataTypeReferenceParsing: z
-      .enum(['COMPLEX_DATA_TYPE_REFERENCE_PARSING_UNSPECIFIED', 'DISABLED', 'ENABLED'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Enable parsing of references within complex FHIR data types such as Extensions. If this value is set to ENABLED, then features like referential integrity and Bundle reference rewriting apply to all references. If this flag has not been specified the behavior of the FHIR store will not change, references in complex data types will not be parsed. New stores will have this value set to ENABLED after a notification period. Warning: turning on this flag causes processing existing resources to fail if they contain references to non-existent resources.',
-      }),
-    defaultSearchHandlingStrict: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If true, overrides the default search behavior for this FHIR store to `handling=strict` which returns an error for unrecognized search parameters. If false, uses the FHIR specification default `handling=lenient` which ignores unrecognized search parameters. The handling can always be changed from the default on an individual API call by setting the HTTP header `Prefer: handling=strict` or `Prefer: handling=lenient`.',
-      }),
-    disableReferentialIntegrity: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Immutable. Whether to disable referential integrity in this FHIR store. This field is immutable after FHIR store creation. The default value is false, meaning that the API enforces referential integrity and fails the requests that result in inconsistent state in the FHIR store. When this field is set to true, the API skips referential integrity checks. Consequently, operations that rely on references, such as GetPatientEverything, do not return all the results if broken references exist.',
-      }),
-    disableResourceVersioning: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Immutable. Whether to disable resource versioning for this FHIR store. This field can not be changed after the creation of FHIR store. If set to false, which is the default behavior, all write operations cause historical versions to be recorded automatically. The historical versions can be fetched through the history APIs, but cannot be updated. If set to true, no historical versions are kept. The server sends errors for attempts to read the historical versions.',
-      }),
-    enableUpdateCreate: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether this FHIR store has the [updateCreate capability](https://www.hl7.org/fhir/capabilitystatement-definitions.html#CapabilityStatement.rest.resource.updateCreate). This determines if the client can use an Update operation to create a new resource with a client-specified ID. If false, all IDs are server-assigned through the Create operation and attempts to update a non-existent resource return errors. It is strongly advised not to include or encode any sensitive data such as patient identifiers in client-specified resource IDs. Those IDs are part of the FHIR resource path recorded in Cloud audit logs and Pub/Sub notifications. Those IDs can also be contained in reference fields within other resources.',
-      }),
-    labels: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'User-supplied key-value pairs used to organize FHIR stores. Label keys must be between 1 and 63 characters long, have a UTF-8 encoding of maximum 128 bytes, and must conform to the following PCRE regular expression: \\p{Ll}\\p{Lo}{0,62} Label values are optional, must be between 1 and 63 characters long, have a UTF-8 encoding of maximum 128 bytes, and must conform to the following PCRE regular expression: [\\p{Ll}\\p{Lo}\\p{N}_-]{0,63} No more than 64 labels can be associated with a given store.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Resource name of the FHIR store, of the form `projects/{project_id}/datasets/{dataset_id}/fhirStores/{fhir_store_id}`.',
-      }),
-    notificationConfig: NotificationConfigSchema.exactOptional().openapi({
-      description:
-        'If non-empty, publish all resource modifications of this FHIR store to this destination. The Pub/Sub message attributes contain a map with a string describing the action that has triggered the notification. For example, "action":"CreateResource". Deprecated. Use `notification_configs` instead.',
-    }),
-    notificationConfigs: z
-      .array(FhirNotificationConfigSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies where and whether to send notifications upon changes to a Fhir store.',
-      }),
-    searchConfig: SearchConfigSchema.exactOptional().openapi({
-      description: 'Configuration for how FHIR resources can be searched.',
-    }),
-    streamConfigs: z
-      .array(StreamConfigSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "A list of streaming configs that configure the destinations of streaming export for every resource mutation in this FHIR store. Each store is allowed to have up to 10 streaming configs. After a new config is added, the next resource mutation is streamed to the new location in addition to the existing ones. When a location is removed from the list, the server stops streaming to that location. Before adding a new config, you must add the required [`bigquery.dataEditor`](https://cloud.google.com/bigquery/docs/access-control#bigquery.dataEditor) role to your project's **Cloud Healthcare Service Agent** [service account](https://cloud.google.com/iam/docs/service-accounts). Some lag (typically on the order of dozens of seconds) is expected before the results show up in the streaming destination.",
-      }),
-    validationConfig: ValidationConfigSchema.exactOptional().openapi({
-      description:
-        'Configuration for how to validate incoming FHIR resources against configured profiles.',
-    }),
-    version: z
-      .enum(['VERSION_UNSPECIFIED', 'DSTU2', 'STU3', 'R4'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Immutable. The FHIR specification version that this FHIR store supports natively. This field is immutable after store creation. Requests are rejected if they contain FHIR resources of a different version. Version is required for every FHIR store.',
-      }),
-  })
-  .openapi({ description: 'Represents a FHIR store.', required: [] })
-  .openapi('FhirStore')
-
 const FhirStoreMetricSchema = z
   .object({
     count: z
@@ -2782,41 +3105,6 @@ const FhirStoreMetricsSchema = z
   })
   .openapi({ description: 'List of metrics for a given FHIR store.', required: [] })
   .openapi('FhirStoreMetrics')
-
-const FieldSchema = z
-  .object({
-    maxOccurs: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The maximum number of times this field can be repeated. 0 or -1 means unbounded.',
-      }),
-    minOccurs: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The minimum number of times this field must be present/repeated.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the field. For example, "PID-1" or just "1".' }),
-    table: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The HL7v2 table this field refers to. For example, PID-15 (Patient\'s Primary Language) usually refers to table "0296".',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of this field. A Type with this name must be defined in an Hl7TypesConfig.',
-      }),
-  })
-  .openapi({ description: 'A (sub) field of a type.', required: [] })
-  .openapi('Field')
 
 const GcsSourceSchema = z
   .object({
@@ -2864,12 +3152,12 @@ const GoogleCloudHealthcareV1beta1ConsentGcsDestinationSchema = z
   .openapi('GoogleCloudHealthcareV1beta1ConsentGcsDestination')
 
 const GoogleCloudHealthcareV1beta1DeidentifyDeidentifyDicomStoreSummarySchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Contains a summary of the DeidentifyDicomStore operation.' })
   .openapi('GoogleCloudHealthcareV1beta1DeidentifyDeidentifyDicomStoreSummary')
 
 const GoogleCloudHealthcareV1beta1DeidentifyDeidentifyFhirStoreSummarySchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Contains a summary of the DeidentifyFhirStore operation.' })
   .openapi('GoogleCloudHealthcareV1beta1DeidentifyDeidentifyFhirStoreSummary')
 
@@ -2890,7 +3178,7 @@ const GoogleCloudHealthcareV1beta1DicomGcsSourceSchema = z
   .openapi('GoogleCloudHealthcareV1beta1DicomGcsSource')
 
 const GoogleCloudHealthcareV1beta1FhirExportResourcesResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Response when all resources export successfully. This structure is included in the response to describe the detailed outcome after the operation finishes successfully.',
@@ -2914,243 +3202,12 @@ const GoogleCloudHealthcareV1beta1FhirGcsSourceSchema = z
   .openapi('GoogleCloudHealthcareV1beta1FhirGcsSource')
 
 const GoogleCloudHealthcareV1beta1FhirImportResourcesResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Final response of importing resources. This structure is included in the response to describe the detailed outcome after the operation finishes successfully.',
   })
   .openapi('GoogleCloudHealthcareV1beta1FhirImportResourcesResponse')
-
-const VersionSourceSchema = z
-  .object({
-    mshField: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The field to extract from the MSH segment. For example, "3.1" or "18[1].1".',
-      }),
-    value: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The value to match with the field. For example, "My Application Name" or "2.3".',
-      }),
-  })
-  .openapi({
-    description: 'Describes a selector for extracting and matching an MSH field to a value.',
-    required: [],
-  })
-  .openapi('VersionSource')
-
-const Hl7SchemaConfigSchema = z
-  .object({
-    messageSchemaConfigs: z
-      .record(z.string(), SchemaGroupSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Map from each HL7v2 message type and trigger event pair, such as ADT_A04, to its schema configuration root group.',
-      }),
-    version: z
-      .array(VersionSourceSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Each VersionSource is tested and only if they all match is the schema used for the message.',
-      }),
-  })
-  .openapi({
-    description:
-      'Root config message for HL7v2 schema. This contains a schema structure of groups and segments, and filters that determine which messages to apply the schema structure to.',
-    required: [],
-  })
-  .openapi('Hl7SchemaConfig')
-
-const TypeSchema = z
-  .object({
-    fields: z
-      .array(FieldSchema)
-      .exactOptional()
-      .openapi({ description: 'The (sub) fields this type has (if not primitive).' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of this type. This would be the segment or datatype name. For example, "PID" or "XPN".',
-      }),
-    primitive: z
-      .enum(['PRIMITIVE_UNSPECIFIED', 'STRING', 'VARIES', 'UNESCAPED_STRING'])
-      .exactOptional()
-      .openapi({
-        description:
-          'If this is a primitive type then this field is the type of the primitive For example, STRING. Leave unspecified for composite types.',
-      }),
-  })
-  .openapi({
-    description: 'A type definition for some HL7v2 type (incl. Segments and Datatypes).',
-    required: [],
-  })
-  .openapi('Type')
-
-const Hl7TypesConfigSchema = z
-  .object({
-    type: z
-      .array(TypeSchema)
-      .exactOptional()
-      .openapi({ description: 'The HL7v2 type definitions.' }),
-    version: z
-      .array(VersionSourceSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The version selectors that this config applies to. A message must match ALL version sources to apply.',
-      }),
-  })
-  .openapi({
-    description: 'Root config for HL7v2 datatype definitions for a specific HL7v2 version.',
-    required: [],
-  })
-  .openapi('Hl7TypesConfig')
-
-const Hl7V2NotificationConfigSchema = z
-  .object({
-    filter: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Restricts notifications sent for messages matching a filter. If this is empty, all messages are matched. The following syntax is available: * A string field value can be written as text inside quotation marks, for example `"query text"`. The only valid relational operation for text fields is equality (`=`), where text is searched within the field, rather than having the field be equal to the text. For example, `"Comment = great"` returns messages with `great` in the comment field. * A number field value can be written as an integer, a decimal, or an exponential. The valid relational operators for number fields are the equality operator (`=`), along with the less than/greater than operators (`<`, `<=`, `>`, `>=`). Note that there is no inequality (`!=`) operator. You can prepend the `NOT` operator to an expression to negate it. * A date field value must be written in `yyyy-mm-dd` form. Fields with date and time use the RFC3339 time format. Leading zeros are required for one-digit months and days. The valid relational operators for date fields are the equality operator (`=`) , along with the less than/greater than operators (`<`, `<=`, `>`, `>=`). Note that there is no inequality (`!=`) operator. You can prepend the `NOT` operator to an expression to negate it. * Multiple field query expressions can be combined in one query by adding `AND` or `OR` operators between the expressions. If a boolean operator appears within a quoted string, it is not treated as special, it\'s just another part of the character string to be matched. You can prepend the `NOT` operator to an expression to negate it. Fields/functions available for filtering are: * `message_type`, from the MSH-9.1 field. For example, `NOT message_type = "ADT"`. * `send_date` or `sendDate`, the YYYY-MM-DD date the message was sent in the dataset\'s time_zone, from the MSH-7 segment. For example, `send_date < "2017-01-02"`. * `send_time`, the timestamp when the message was sent, using the RFC3339 time format for comparisons, from the MSH-7 segment. For example, `send_time < "2017-01-02T00:00:00-05:00"`. * `create_time`, the timestamp when the message was created in the HL7v2 store. Use the RFC3339 time format for comparisons. For example, `create_time < "2017-01-02T00:00:00-05:00"`. * `send_facility`, the care center that the message came from, from the MSH-4 segment. For example, `send_facility = "ABC"`. * `PatientId(value, type)`, which matches if the message lists a patient having an ID of the given value and type in the PID-2, PID-3, or PID-4 segments. For example, `PatientId("123456", "MRN")`. * `labels.x`, a string value of the label with key `x` as set using the Message.labels map. For example, `labels."priority"="high"`. The operator `:*` can be used to assert the existence of a label. For example, `labels."priority":*`.',
-      }),
-    pubsubTopic: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The [Pub/Sub](https://cloud.google.com/pubsub/docs/) topic that notifications of changes are published on. Supplied by the client. The notification is a `PubsubMessage` with the following fields: * `PubsubMessage.Data` contains the resource name. * `PubsubMessage.MessageId` is the ID of this notification. It is guaranteed to be unique within the topic. * `PubsubMessage.PublishTime` is the time when the message was published. Note that notifications are only sent if the topic is non-empty. [Topic names](https://cloud.google.com/pubsub/docs/overview#names) must be scoped to a project. Cloud Healthcare API service account must have publisher permissions on the given Pub/Sub topic. Not having adequate permissions causes the calls that send notifications to fail. If a notification can't be published to Pub/Sub, errors are logged to Cloud Logging. For more information, see [Viewing error logs in Cloud Logging](https://cloud.google.com/healthcare/docs/how-tos/logging).",
-      }),
-  })
-  .openapi({
-    description: 'Specifies where and whether to send notifications upon changes to a data store.',
-    required: [],
-  })
-  .openapi('Hl7V2NotificationConfig')
-
-const SchemaPackageSchema = z
-  .object({
-    ignoreMinOccurs: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Flag to ignore all min_occurs restrictions in the schema. This means that incoming messages can omit any group, segment, field, component, or subcomponent.',
-      }),
-    schemas: z
-      .array(Hl7SchemaConfigSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Schema configs that are layered based on their VersionSources that match the incoming message. Schema configs present in higher indices override those in lower indices with the same message type and trigger event if their VersionSources all match an incoming message.',
-      }),
-    schematizedParsingType: z
-      .enum(['SCHEMATIZED_PARSING_TYPE_UNSPECIFIED', 'SOFT_FAIL', 'HARD_FAIL'])
-      .exactOptional()
-      .openapi({ description: 'Determines how messages that fail to parse are handled.' }),
-    types: z
-      .array(Hl7TypesConfigSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Schema type definitions that are layered based on their VersionSources that match the incoming message. Type definitions present in higher indices override those in lower indices with the same type name if their VersionSources all match an incoming message.',
-      }),
-    unexpectedSegmentHandling: z
-      .enum(['UNEXPECTED_SEGMENT_HANDLING_MODE_UNSPECIFIED', 'FAIL', 'SKIP', 'PARSE'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Determines how unexpected segments (segments not matched to the schema) are handled.',
-      }),
-  })
-  .openapi({
-    description: 'A schema package contains a set of schemas and type definitions.',
-    required: [],
-  })
-  .openapi('SchemaPackage')
-
-const ParserConfigSchema = z
-  .object({
-    allowNullHeader: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Determines whether messages with no header are allowed.' }),
-    schema: SchemaPackageSchema.exactOptional().openapi({
-      description:
-        'Schemas used to parse messages in this store, if schematized parsing is desired.',
-    }),
-    segmentTerminator: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Byte(s) to use as the segment terminator. If this is unset, '\\r' is used as segment terminator, matching the HL7 version 2 specification.",
-      }),
-    version: z
-      .enum(['PARSER_VERSION_UNSPECIFIED', 'V1', 'V2', 'V3'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Immutable. Determines the version of both the default parser to be used when `schema` is not given, as well as the schematized parser used when `schema` is specified. This field is immutable after HL7v2 store creation.',
-      }),
-  })
-  .openapi({
-    description:
-      'The configuration for the parser. It determines how the server parses the messages.',
-    required: [],
-  })
-  .openapi('ParserConfig')
-
-const Hl7V2StoreSchema = z
-  .object({
-    labels: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'User-supplied key-value pairs used to organize HL7v2 stores. Label keys must be between 1 and 63 characters long, have a UTF-8 encoding of maximum 128 bytes, and must conform to the following PCRE regular expression: \\p{Ll}\\p{Lo}{0,62} Label values are optional, must be between 1 and 63 characters long, have a UTF-8 encoding of maximum 128 bytes, and must conform to the following PCRE regular expression: [\\p{Ll}\\p{Lo}\\p{N}_-]{0,63} No more than 64 labels can be associated with a given store.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Resource name of the HL7v2 store, of the form `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}/hl7V2Stores/{hl7v2_store_id}`.',
-      }),
-    notificationConfig: NotificationConfigSchema.exactOptional().openapi({
-      description:
-        'The notification destination all messages (both Ingest & Create) are published on. Only the message name is sent as part of the notification. If this is unset, no notifications are sent. Supplied by the client.',
-    }),
-    notificationConfigs: z
-      .array(Hl7V2NotificationConfigSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of notification configs. Each configuration uses a filter to determine whether to publish a message (both Ingest & Create) on the corresponding notification destination. Only the message name is sent as part of the notification. Supplied by the client.',
-      }),
-    parserConfig: ParserConfigSchema.exactOptional().openapi({
-      description:
-        'The configuration for the parser. It determines how the server parses the messages.',
-    }),
-    rejectDuplicateMessage: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Determines whether to reject duplicate messages. A duplicate message is a message with the same raw bytes as a message that has already been ingested/created in this HL7v2 store. The default value is false, meaning that the store accepts the duplicate messages and it also returns the same ACK message in the IngestMessageResponse as has been returned previously. Note that only one resource is created in the store. When this field is set to true, CreateMessage/IngestMessage requests with a duplicate message will be rejected by the store, and IngestMessageErrorDetail returns a NACK message upon rejection.',
-      }),
-  })
-  .openapi({ description: 'Represents an HL7v2 store.', required: [] })
-  .openapi('Hl7V2Store')
 
 const HttpBodySchema = z
   .object({
@@ -3198,7 +3255,7 @@ const ImportAnnotationsRequestSchema = z
   .openapi('ImportAnnotationsRequest')
 
 const ImportAnnotationsResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Final response of importing Annotations in successful case. This structure is included in the response. It is only included when the operation finishes.',
@@ -3220,7 +3277,7 @@ const ImportDicomDataRequestSchema = z
   .openapi('ImportDicomDataRequest')
 
 const ImportDicomDataResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'Returns additional information in regards to a completed DICOM store import.',
   })
@@ -3237,7 +3294,7 @@ const ImportMessagesRequestSchema = z
   .openapi('ImportMessagesRequest')
 
 const ImportMessagesResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Final response of importing messages. This structure is included in the response to describe the detailed outcome. It is only included when the operation finishes successfully.',
@@ -3305,7 +3362,7 @@ const ListAnnotationStoresResponseSchema = z
   .openapi({ description: 'Lists the Annotation stores in the given dataset.', required: [] })
   .openapi('ListAnnotationStoresResponse')
 
-const ListAnnotationsResponseSchema = z
+const ListAnnotationsResponseSchema: z.ZodType<ListAnnotationsResponseType> = z
   .object({
     annotations: z
       .array(AnnotationSchema)
@@ -3368,7 +3425,7 @@ const ListConsentArtifactsResponseSchema = z
   .openapi({ required: [] })
   .openapi('ListConsentArtifactsResponse')
 
-const ListConsentRevisionsResponseSchema = z
+const ListConsentRevisionsResponseSchema: z.ZodType<ListConsentRevisionsResponseType> = z
   .object({
     consents: z
       .array(ConsentSchema)
@@ -3408,7 +3465,7 @@ const ListConsentStoresResponseSchema = z
   .openapi({ required: [] })
   .openapi('ListConsentStoresResponse')
 
-const ListConsentsResponseSchema = z
+const ListConsentsResponseSchema: z.ZodType<ListConsentsResponseType> = z
   .object({
     consents: z
       .array(ConsentSchema)
@@ -3465,7 +3522,7 @@ const ListDicomStoresResponseSchema = z
   .openapi({ description: 'Lists the DICOM stores in the given dataset.', required: [] })
   .openapi('ListDicomStoresResponse')
 
-const ListFhirStoresResponseSchema = z
+const ListFhirStoresResponseSchema: z.ZodType<ListFhirStoresResponseType> = z
   .object({
     fhirStores: z
       .array(FhirStoreSchema)
@@ -3485,7 +3542,7 @@ const ListFhirStoresResponseSchema = z
   .openapi({ description: 'Lists the FHIR stores in the given dataset.', required: [] })
   .openapi('ListFhirStoresResponse')
 
-const ListHl7V2StoresResponseSchema = z
+const ListHl7V2StoresResponseSchema: z.ZodType<ListHl7V2StoresResponseType> = z
   .object({
     hl7V2Stores: z
       .array(Hl7V2StoreSchema)

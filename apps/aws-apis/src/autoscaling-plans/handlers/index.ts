@@ -1,0 +1,6 @@
+export * from './x-amz-target-any-scale-scaling-planner-frontend-service-create-scaling-plan'
+export * from './x-amz-target-any-scale-scaling-planner-frontend-service-delete-scaling-plan'
+export * from './x-amz-target-any-scale-scaling-planner-frontend-service-describe-scaling-plan-resources'
+export * from './x-amz-target-any-scale-scaling-planner-frontend-service-describe-scaling-plans'
+export * from './x-amz-target-any-scale-scaling-planner-frontend-service-get-scaling-plan-resource-forecast-data'
+export * from './x-amz-target-any-scale-scaling-planner-frontend-service-update-scaling-plan'

@@ -204,11 +204,18 @@ const Oauth2SecurityScheme = {
       },
     },
   },
+  'x-hubspot-app-availability': {
+    'cpq.quotes.read': { portal: ['public'], user: ['public'], developer: false },
+    'cpq.quotes.write': { portal: ['public'], user: ['public'], developer: false },
+    'crm.objects.quotes.read': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: false,
+    },
+    'crm.objects.quotes.write': { portal: ['public', 'private'], developer: false },
+    'tax_rates.read': { portal: ['public', 'private'], developer: false },
+  },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const getTaxRates202609TaxRatesRoute = createRoute({
   method: 'get',

@@ -397,7 +397,7 @@ export const getAchmeainsurancecontractsRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -853,7 +853,7 @@ export const getAchmeainsurancecontractsAchmeaInsuranceContractIdInsuredwagecalc
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -1139,7 +1139,9 @@ export const getAowDateRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -1550,7 +1552,9 @@ export const getApplicationsApplicationIdAuthorizationsRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -2187,7 +2191,9 @@ export const getChamberofcommerceChamberOfCommerceNumberCompanyinformationRoute 
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -2511,7 +2517,7 @@ export const getDatanewbusinessFunctionsRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -2709,18 +2715,14 @@ export const getDatanewbusinessTokenRoute = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -2806,7 +2808,9 @@ export const getDatanewbusinessTokenRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -3185,7 +3189,9 @@ export const getLocationservicesAddressRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -3596,7 +3602,7 @@ export const getProvidersRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -3957,7 +3963,9 @@ export const putProvidersApplicationsetsApplicationSetIdRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -4001,7 +4009,7 @@ export const putProvidersApplicationsetsApplicationSetIdRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -4221,7 +4229,9 @@ export const deleteProvidersApplicationsetsApplicationSetIdRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -4308,7 +4318,9 @@ export const deleteProvidersApplicationsetsApplicationSetIdRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -4668,7 +4680,7 @@ export const getProvidersAuthorizationsetsAuthorizationsetidRoute = createRoute(
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -4847,7 +4859,9 @@ export const deleteProvidersEmailidentitiesEmailIdentityIdRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -4934,7 +4948,9 @@ export const deleteProvidersEmailidentitiesEmailIdentityIdRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -5132,7 +5148,9 @@ export const postProvidersEmailidentitiesEmailIdentityIdSendtestemailRoute = cre
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -6075,7 +6093,7 @@ export const getProvidersEmployersRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -6268,7 +6286,9 @@ export const patchProvidersEmployersAnnouncementsRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -6355,7 +6375,9 @@ export const patchProvidersEmployersAnnouncementsRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -6754,7 +6776,9 @@ export const getProvidersEmployersBenefitinkindtypesBenefitInKindTypeIdRoute = c
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -7091,7 +7115,9 @@ export const putProvidersEmployersBenefitinkindtypesBenefitInKindTypeIdRoute = c
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -7135,7 +7161,7 @@ export const putProvidersEmployersBenefitinkindtypesBenefitInKindTypeIdRoute = c
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -7355,7 +7381,9 @@ export const deleteProvidersEmployersBenefitinkindtypesBenefitInKindTypeIdRoute 
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -7442,7 +7470,9 @@ export const deleteProvidersEmployersBenefitinkindtypesBenefitInKindTypeIdRoute 
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -7862,7 +7892,7 @@ export const patchProvidersEmployersConceptemployeesImportPayrollAdministrationI
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -8638,18 +8668,14 @@ export const getProvidersEmployersConceptemployeesMinimizedConceptEmployeeIdRout
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -8735,7 +8761,9 @@ export const getProvidersEmployersConceptemployeesMinimizedConceptEmployeeIdRout
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -9723,7 +9751,9 @@ export const putProvidersEmployersConceptemployeesMinimizedConceptEmployeeIdRout
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -9767,7 +9797,7 @@ export const putProvidersEmployersConceptemployeesMinimizedConceptEmployeeIdRout
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -11946,18 +11976,14 @@ export const getProvidersEmployersConceptemployeesConceptEmployeeIdRoute = creat
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -12043,7 +12069,9 @@ export const getProvidersEmployersConceptemployeesConceptEmployeeIdRoute = creat
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -16096,7 +16124,9 @@ export const putProvidersEmployersConceptemployeesConceptEmployeeIdRoute = creat
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -16140,7 +16170,7 @@ export const putProvidersEmployersConceptemployeesConceptEmployeeIdRoute = creat
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -16360,7 +16390,9 @@ export const deleteProvidersEmployersConceptemployeesConceptEmployeeIdRoute = cr
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -16447,7 +16479,9 @@ export const deleteProvidersEmployersConceptemployeesConceptEmployeeIdRoute = cr
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -16673,7 +16707,7 @@ export const postProvidersEmployersConceptemployeesConceptEmployeeIdAssessmentIn
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -16878,18 +16912,14 @@ export const getProvidersEmployersConceptemployeesConceptEmployeeIdCitizenservic
           },
         },
         headers: z.object({
-          ETag: {
-            description:
-              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-                param: { required: false },
-              }),
-          },
+          ETag: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+              param: { required: false },
+            }),
         }),
       },
       400: {
@@ -16975,7 +17005,9 @@ export const getProvidersEmployersConceptemployeesConceptEmployeeIdCitizenservic
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -17297,7 +17329,9 @@ export const putProvidersEmployersConceptemployeesConceptEmployeeIdCitizenservic
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -17341,7 +17375,7 @@ export const putProvidersEmployersConceptemployeesConceptEmployeeIdCitizenservic
           'application/json': {
             schema: z
               .object({
-                content: z.object({}).exactOptional(),
+                content: z.looseObject({}).exactOptional(),
                 messages: z
                   .array(
                     z
@@ -17497,7 +17531,7 @@ export const patchProvidersEmployersConceptemployeesConceptEmployeeIdConvertToEm
     responses: {
       200: {
         description: 'OK',
-        content: { 'application/json;version=2018-01-01': { schema: z.object({}) } },
+        content: { 'application/json;version=2018-01-01': { schema: z.looseObject({}) } },
       },
       400: {
         description: 'Bad Request',
@@ -17582,7 +17616,9 @@ export const patchProvidersEmployersConceptemployeesConceptEmployeeIdConvertToEm
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -18159,7 +18195,7 @@ export const getProvidersEmployersConceptemployeesConceptEmployeeIdDocumentsRout
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -18521,7 +18557,7 @@ export const postProvidersEmployersConceptemployeesConceptEmployeeIdDocumentsRou
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -18932,7 +18968,9 @@ export const putProvidersEmployersConceptemployeesConceptEmployeeIdDocumentsDocu
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -18976,7 +19014,7 @@ export const putProvidersEmployersConceptemployeesConceptEmployeeIdDocumentsDocu
           'application/json': {
             schema: z
               .object({
-                content: z.object({}).exactOptional(),
+                content: z.looseObject({}).exactOptional(),
                 messages: z
                   .array(
                     z
@@ -19198,7 +19236,9 @@ export const deleteProvidersEmployersConceptemployeesConceptEmployeeIdDocumentsD
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -19285,7 +19325,9 @@ export const deleteProvidersEmployersConceptemployeesConceptEmployeeIdDocumentsD
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -19783,7 +19825,7 @@ export const getProvidersEmployersConceptemployeesConceptEmployeeIdDocumentsDocu
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -20157,7 +20199,7 @@ export const getProvidersEmployersConceptemployeesConceptEmployeeIdDocumentsDocu
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -20377,7 +20419,7 @@ export const deleteProvidersEmployersConceptemployeesConceptEmployeeIdDocumentsD
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -20734,7 +20776,7 @@ export const postProvidersEmployersConceptemployeesConceptEmployeeIdDocumentsDoc
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -20959,7 +21001,7 @@ export const getProvidersEmployersConceptemployeesConceptEmployeeIdDocumentsDocu
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -21263,7 +21305,7 @@ export const postProvidersEmployersConceptemployeesConceptEmployeeIdDocumenttemp
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -21574,7 +21616,7 @@ export const postProvidersEmployersConceptemployeesConceptEmployeeIdDocumenttemp
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -21886,7 +21928,7 @@ export const getProvidersEmployersConceptemployeesConceptEmployeeIdDossierRoute 
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -22065,7 +22107,9 @@ export const deleteProvidersEmployersConceptemployeesConceptEmployeeIdDossierRou
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -22152,7 +22196,9 @@ export const deleteProvidersEmployersConceptemployeesConceptEmployeeIdDossierRou
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -22456,7 +22502,9 @@ export const postProvidersEmployersConceptemployeesConceptEmployeeIdPreboardingt
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -22651,7 +22699,9 @@ export const patchProvidersEmployersConceptemployeesConceptEmployeeIdPreboarding
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -22738,7 +22788,9 @@ export const patchProvidersEmployersConceptemployeesConceptEmployeeIdPreboarding
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -23215,7 +23267,9 @@ export const getProvidersEmployersConceptemployeesConceptEmployeeIdSelfserviceRo
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -23621,7 +23675,9 @@ export const getProvidersEmployersContractcodesContractCodeIdRoute = createRoute
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -23972,7 +24028,9 @@ export const putProvidersEmployersContractcodesContractCodeIdRoute = createRoute
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -24016,7 +24074,7 @@ export const putProvidersEmployersContractcodesContractCodeIdRoute = createRoute
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -24236,7 +24294,9 @@ export const deleteProvidersEmployersContractcodesContractCodeIdRoute = createRo
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -24323,7 +24383,9 @@ export const deleteProvidersEmployersContractcodesContractCodeIdRoute = createRo
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -24721,7 +24783,9 @@ export const getProvidersEmployersCustomfieldsCustomFieldIdRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -25056,7 +25120,9 @@ export const putProvidersEmployersCustomfieldsCustomFieldIdRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -25100,7 +25166,7 @@ export const putProvidersEmployersCustomfieldsCustomFieldIdRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -25320,7 +25386,9 @@ export const deleteProvidersEmployersCustomfieldsCustomFieldIdRoute = createRout
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -25407,7 +25475,9 @@ export const deleteProvidersEmployersCustomfieldsCustomFieldIdRoute = createRout
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -25812,7 +25882,9 @@ export const getProvidersEmployersCustomholidaysCustomHolidayIdRoute = createRou
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -26161,7 +26233,9 @@ export const putProvidersEmployersCustomholidaysCustomHolidayIdRoute = createRou
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -26205,7 +26279,7 @@ export const putProvidersEmployersCustomholidaysCustomHolidayIdRoute = createRou
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -26425,7 +26499,9 @@ export const deleteProvidersEmployersCustomholidaysCustomHolidayIdRoute = create
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -26512,7 +26588,9 @@ export const deleteProvidersEmployersCustomholidaysCustomHolidayIdRoute = create
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -26764,18 +26842,14 @@ export const getProvidersEmployersDepartmentsDepartmentIdRoute = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -26861,7 +26935,9 @@ export const getProvidersEmployersDepartmentsDepartmentIdRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -27276,7 +27352,9 @@ export const putProvidersEmployersDepartmentsDepartmentIdRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -27320,7 +27398,7 @@ export const putProvidersEmployersDepartmentsDepartmentIdRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -27762,7 +27840,9 @@ export const getProvidersEmployersEducationfurtherindicationsEducationFurtherInd
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -28125,7 +28205,9 @@ export const putProvidersEmployersEducationfurtherindicationsEducationFurtherInd
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -28169,7 +28251,7 @@ export const putProvidersEmployersEducationfurtherindicationsEducationFurtherInd
           'application/json': {
             schema: z
               .object({
-                content: z.object({}).exactOptional(),
+                content: z.looseObject({}).exactOptional(),
                 messages: z
                   .array(
                     z
@@ -28393,7 +28475,9 @@ export const deleteProvidersEmployersEducationfurtherindicationsEducationFurther
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -28480,7 +28564,9 @@ export const deleteProvidersEmployersEducationfurtherindicationsEducationFurther
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -28891,7 +28977,9 @@ export const getProvidersEmployersEducationtypesEducationTypeIdRoute = createRou
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -29252,7 +29340,9 @@ export const putProvidersEmployersEducationtypesEducationTypeIdRoute = createRou
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -29296,7 +29386,7 @@ export const putProvidersEmployersEducationtypesEducationTypeIdRoute = createRou
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -29516,7 +29606,9 @@ export const deleteProvidersEmployersEducationtypesEducationTypeIdRoute = create
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -29603,7 +29695,9 @@ export const deleteProvidersEmployersEducationtypesEducationTypeIdRoute = create
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -29779,7 +29873,9 @@ export const deleteProvidersEmployersEmailidentitiesEmailIdentityIdRoute = creat
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -29866,7 +29962,9 @@ export const deleteProvidersEmployersEmailidentitiesEmailIdentityIdRoute = creat
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -30064,7 +30162,9 @@ export const postProvidersEmployersEmailidentitiesEmailIdentityIdSendtestemailRo
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -30305,18 +30405,14 @@ export const getProvidersEmployersEmployeesAbsencesAbsencecontactHistoryAbsencec
           },
         },
         headers: z.object({
-          ETag: {
-            description:
-              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-                param: { required: false },
-              }),
-          },
+          ETag: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+              param: { required: false },
+            }),
         }),
       },
       400: {
@@ -30402,7 +30498,9 @@ export const getProvidersEmployersEmployeesAbsencesAbsencecontactHistoryAbsencec
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -30797,7 +30895,9 @@ export const putProvidersEmployersEmployeesAbsencesAbsencecontactHistoryAbsencec
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -30841,7 +30941,7 @@ export const putProvidersEmployersEmployeesAbsencesAbsencecontactHistoryAbsencec
           'application/json': {
             schema: z
               .object({
-                content: z.object({}).exactOptional(),
+                content: z.looseObject({}).exactOptional(),
                 messages: z
                   .array(
                     z
@@ -31065,7 +31165,9 @@ export const deleteProvidersEmployersEmployeesAbsencesAbsencecontactHistoryAbsen
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -31152,7 +31254,9 @@ export const deleteProvidersEmployersEmployeesAbsencesAbsencecontactHistoryAbsen
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -31419,18 +31523,14 @@ export const getProvidersEmployersEmployeesAbsencesAbsenceprogressAbsenceProgres
           },
         },
         headers: z.object({
-          ETag: {
-            description:
-              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-                param: { required: false },
-              }),
-          },
+          ETag: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+              param: { required: false },
+            }),
         }),
       },
       400: {
@@ -31516,7 +31616,9 @@ export const getProvidersEmployersEmployeesAbsencesAbsenceprogressAbsenceProgres
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -31965,7 +32067,9 @@ export const putProvidersEmployersEmployeesAbsencesAbsenceprogressAbsenceProgres
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -32009,7 +32113,7 @@ export const putProvidersEmployersEmployeesAbsencesAbsenceprogressAbsenceProgres
           'application/json': {
             schema: z
               .object({
-                content: z.object({}).exactOptional(),
+                content: z.looseObject({}).exactOptional(),
                 messages: z
                   .array(
                     z
@@ -32233,7 +32337,9 @@ export const deleteProvidersEmployersEmployeesAbsencesAbsenceprogressAbsenceProg
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -32320,7 +32426,9 @@ export const deleteProvidersEmployersEmployeesAbsencesAbsenceprogressAbsenceProg
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -33042,18 +33150,14 @@ export const getProvidersEmployersEmployeesAbsencesAbsenceIdRoute = createRoute(
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -33139,7 +33243,9 @@ export const getProvidersEmployersEmployeesAbsencesAbsenceIdRoute = createRoute(
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -34488,7 +34594,9 @@ export const putProvidersEmployersEmployeesAbsencesAbsenceIdRoute = createRoute(
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -34532,7 +34640,7 @@ export const putProvidersEmployersEmployeesAbsencesAbsenceIdRoute = createRoute(
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -34752,7 +34860,9 @@ export const deleteProvidersEmployersEmployeesAbsencesAbsenceIdRoute = createRou
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -34839,7 +34949,9 @@ export const deleteProvidersEmployersEmployeesAbsencesAbsenceIdRoute = createRou
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -35298,7 +35410,7 @@ export const getProvidersEmployersEmployeesAbsencesAbsenceIdAbsencecontactHistor
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -35682,7 +35794,9 @@ export const postProvidersEmployersEmployeesAbsencesAbsenceIdAbsencecontactHisto
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -36163,7 +36277,7 @@ export const getProvidersEmployersEmployeesAbsencesAbsenceIdAbsenceprogressRoute
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -36600,7 +36714,9 @@ export const postProvidersEmployersEmployeesAbsencesAbsenceIdAbsenceprogressRout
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -36843,7 +36959,9 @@ export const patchProvidersEmployersEmployeesAbsencesAbsenceIdCloseabsenceRoute 
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -36930,7 +37048,9 @@ export const patchProvidersEmployersEmployeesAbsencesAbsenceIdCloseabsenceRoute 
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -37036,7 +37156,7 @@ export const patchProvidersEmployersEmployeesAbsencesAbsenceIdReopenabsenceRoute
         }),
     }),
     body: {
-      content: { 'application/json;version=2020-03-16': { schema: z.object({}) } },
+      content: { 'application/json;version=2020-03-16': { schema: z.looseObject({}) } },
       required: true,
     },
   },
@@ -37124,7 +37244,9 @@ export const patchProvidersEmployersEmployeesAbsencesAbsenceIdReopenabsenceRoute
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -37211,7 +37333,9 @@ export const patchProvidersEmployersEmployeesAbsencesAbsenceIdReopenabsenceRoute
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -37506,18 +37630,14 @@ export const getProvidersEmployersEmployeesChildrenChildIdRoute = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -37603,7 +37723,9 @@ export const getProvidersEmployersEmployeesChildrenChildIdRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -38108,7 +38230,9 @@ export const putProvidersEmployersEmployeesChildrenChildIdRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -38152,7 +38276,7 @@ export const putProvidersEmployersEmployeesChildrenChildIdRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -38372,7 +38496,9 @@ export const deleteProvidersEmployersEmployeesChildrenChildIdRoute = createRoute
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -38459,7 +38585,9 @@ export const deleteProvidersEmployersEmployeesChildrenChildIdRoute = createRoute
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -38782,18 +38910,14 @@ export const getProvidersEmployersEmployeesContactsContactIdRoute = createRoute(
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -38879,7 +39003,9 @@ export const getProvidersEmployersEmployeesContactsContactIdRoute = createRoute(
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -39442,7 +39568,9 @@ export const putProvidersEmployersEmployeesContactsContactIdRoute = createRoute(
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -39486,7 +39614,7 @@ export const putProvidersEmployersEmployeesContactsContactIdRoute = createRoute(
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -39706,7 +39834,9 @@ export const deleteProvidersEmployersEmployeesContactsContactIdRoute = createRou
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -39793,7 +39923,9 @@ export const deleteProvidersEmployersEmployeesContactsContactIdRoute = createRou
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -40217,7 +40349,9 @@ export const getProvidersEmployersEmployeesCustomfieldsEmployeeCustomFieldIdRout
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -40601,7 +40735,9 @@ export const putProvidersEmployersEmployeesCustomfieldsEmployeeCustomFieldIdRout
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -40645,7 +40781,7 @@ export const putProvidersEmployersEmployeesCustomfieldsEmployeeCustomFieldIdRout
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -40865,7 +41001,9 @@ export const deleteProvidersEmployersEmployeesCustomfieldsEmployeeCustomFieldIdR
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -40952,7 +41090,9 @@ export const deleteProvidersEmployersEmployeesCustomfieldsEmployeeCustomFieldIdR
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -41336,18 +41476,14 @@ export const getProvidersEmployersEmployeesEducationsEmployeeEducationIdRoute = 
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -41433,7 +41569,9 @@ export const getProvidersEmployersEmployeesEducationsEmployeeEducationIdRoute = 
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -42108,7 +42246,9 @@ export const putProvidersEmployersEmployeesEducationsEmployeeEducationIdRoute = 
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -42152,7 +42292,7 @@ export const putProvidersEmployersEmployeesEducationsEmployeeEducationIdRoute = 
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -42372,7 +42512,9 @@ export const deleteProvidersEmployersEmployeesEducationsEmployeeEducationIdRoute
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -42459,7 +42601,9 @@ export const deleteProvidersEmployersEmployeesEducationsEmployeeEducationIdRoute
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -42651,7 +42795,9 @@ export const patchProvidersEmployersEmployeesEmploymentsWageProposalsRoute = cre
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -42738,7 +42884,9 @@ export const patchProvidersEmployersEmployeesEmploymentsWageProposalsRoute = cre
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -43307,7 +43455,9 @@ export const getProvidersEmployersEmployeesEmploymentsAbpfundsAbpFundIdRoute = c
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -43940,7 +44090,9 @@ export const putProvidersEmployersEmployeesEmploymentsAbpfundsAbpFundIdRoute = c
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -43984,7 +44136,7 @@ export const putProvidersEmployersEmployeesEmploymentsAbpfundsAbpFundIdRoute = c
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -44204,7 +44356,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsAbpfundsAbpFundIdRoute 
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -44291,7 +44445,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsAbpfundsAbpFundIdRoute 
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -44675,18 +44831,14 @@ export const getProvidersEmployersEmployeesEmploymentsAttachmentsofearningsAttac
           },
         },
         headers: z.object({
-          ETag: {
-            description:
-              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-                param: { required: false },
-              }),
-          },
+          ETag: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+              param: { required: false },
+            }),
         }),
       },
       400: {
@@ -44772,7 +44924,9 @@ export const getProvidersEmployersEmployeesEmploymentsAttachmentsofearningsAttac
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -45448,7 +45602,9 @@ export const putProvidersEmployersEmployeesEmploymentsAttachmentsofearningsAttac
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -45492,7 +45648,7 @@ export const putProvidersEmployersEmployeesEmploymentsAttachmentsofearningsAttac
           'application/json': {
             schema: z
               .object({
-                content: z.object({}).exactOptional(),
+                content: z.looseObject({}).exactOptional(),
                 messages: z
                   .array(
                     z
@@ -45716,7 +45872,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsAttachmentsofearningsAt
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -45803,7 +45961,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsAttachmentsofearningsAt
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -46308,7 +46468,9 @@ export const getProvidersEmployersEmployeesEmploymentsBasesforcalculationBasefor
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -46879,7 +47041,9 @@ export const putProvidersEmployersEmployeesEmploymentsBasesforcalculationBasefor
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -46923,7 +47087,7 @@ export const putProvidersEmployersEmployeesEmploymentsBasesforcalculationBasefor
           'application/json': {
             schema: z
               .object({
-                content: z.object({}).exactOptional(),
+                content: z.looseObject({}).exactOptional(),
                 messages: z
                   .array(
                     z
@@ -47147,7 +47311,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsBasesforcalculationBase
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -47234,7 +47400,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsBasesforcalculationBase
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -47685,7 +47853,9 @@ export const getProvidersEmployersEmployeesEmploymentsBasesforemploymentfundcalc
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -48148,7 +48318,9 @@ export const putProvidersEmployersEmployeesEmploymentsBasesforemploymentfundcalc
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -48192,7 +48364,7 @@ export const putProvidersEmployersEmployeesEmploymentsBasesforemploymentfundcalc
           'application/json': {
             schema: z
               .object({
-                content: z.object({}).exactOptional(),
+                content: z.looseObject({}).exactOptional(),
                 messages: z
                   .array(
                     z
@@ -48416,7 +48588,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsBasesforemploymentfundc
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -48503,7 +48677,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsBasesforemploymentfundc
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -48795,18 +48971,14 @@ export const getProvidersEmployersEmployeesEmploymentsBenefitsAndDeductionsBenef
           },
         },
         headers: z.object({
-          ETag: {
-            description:
-              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-                param: { required: false },
-              }),
-          },
+          ETag: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+              param: { required: false },
+            }),
         }),
       },
       400: {
@@ -48892,7 +49064,9 @@ export const getProvidersEmployersEmployeesEmploymentsBenefitsAndDeductionsBenef
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -49386,7 +49560,9 @@ export const putProvidersEmployersEmployeesEmploymentsBenefitsAndDeductionsBenef
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -49430,7 +49606,7 @@ export const putProvidersEmployersEmployeesEmploymentsBenefitsAndDeductionsBenef
           'application/json': {
             schema: z
               .object({
-                content: z.object({}).exactOptional(),
+                content: z.looseObject({}).exactOptional(),
                 messages: z
                   .array(
                     z
@@ -49654,7 +49830,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsBenefitsAndDeductionsBe
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -49741,7 +49919,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsBenefitsAndDeductionsBe
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -50222,7 +50402,9 @@ export const getProvidersEmployersEmployeesEmploymentsBenefitsinkindBenefitInKin
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -50718,7 +50900,9 @@ export const putProvidersEmployersEmployeesEmploymentsBenefitsinkindBenefitInKin
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -50762,7 +50946,7 @@ export const putProvidersEmployersEmployeesEmploymentsBenefitsinkindBenefitInKin
           'application/json': {
             schema: z
               .object({
-                content: z.object({}).exactOptional(),
+                content: z.looseObject({}).exactOptional(),
                 messages: z
                   .array(
                     z
@@ -50986,7 +51170,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsBenefitsinkindBenefitIn
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -51073,7 +51259,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsBenefitsinkindBenefitIn
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -51415,18 +51603,14 @@ export const getProvidersEmployersEmployeesEmploymentsCompanycarsCompanyCarIdRou
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -51512,7 +51696,9 @@ export const getProvidersEmployersEmployeesEmploymentsCompanycarsCompanyCarIdRou
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -52108,7 +52294,9 @@ export const putProvidersEmployersEmployeesEmploymentsCompanycarsCompanyCarIdRou
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -52152,7 +52340,7 @@ export const putProvidersEmployersEmployeesEmploymentsCompanycarsCompanyCarIdRou
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -52373,7 +52561,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsCompanycarsCompanyCarId
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -52460,7 +52650,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsCompanycarsCompanyCarId
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -52846,7 +53038,9 @@ export const getProvidersEmployersEmployeesEmploymentsCostperhourCostperhourIdRo
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -53339,7 +53533,9 @@ export const putProvidersEmployersEmployeesEmploymentsCostperhourCostperhourIdRo
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -53383,7 +53579,7 @@ export const putProvidersEmployersEmployeesEmploymentsCostperhourCostperhourIdRo
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -53617,7 +53813,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsCostperhourCostperhourI
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -53704,7 +53902,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsCostperhourCostperhourI
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -54129,7 +54329,9 @@ export const getProvidersEmployersEmployeesEmploymentsCustomfieldsEmploymentCust
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -54514,7 +54716,9 @@ export const putProvidersEmployersEmployeesEmploymentsCustomfieldsEmploymentCust
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -54558,7 +54762,7 @@ export const putProvidersEmployersEmployeesEmploymentsCustomfieldsEmploymentCust
           'application/json': {
             schema: z
               .object({
-                content: z.object({}).exactOptional(),
+                content: z.looseObject({}).exactOptional(),
                 messages: z
                   .array(
                     z
@@ -54782,7 +54986,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsCustomfieldsEmploymentC
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -54869,7 +55075,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsCustomfieldsEmploymentC
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -55334,7 +55542,9 @@ export const getProvidersEmployersEmployeesEmploymentsCustomnotificationsCustomN
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -55800,7 +56010,9 @@ export const putProvidersEmployersEmployeesEmploymentsCustomnotificationsCustomN
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -55844,7 +56056,7 @@ export const putProvidersEmployersEmployeesEmploymentsCustomnotificationsCustomN
           'application/json': {
             schema: z
               .object({
-                content: z.object({}).exactOptional(),
+                content: z.looseObject({}).exactOptional(),
                 messages: z
                   .array(
                     z
@@ -56068,7 +56280,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsCustomnotificationsCust
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -56155,7 +56369,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsCustomnotificationsCust
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -56334,7 +56550,9 @@ export const patchProvidersEmployersEmployeesEmploymentsDeclarationsProcessRoute
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -56421,7 +56639,9 @@ export const patchProvidersEmployersEmployeesEmploymentsDeclarationsProcessRoute
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -56613,7 +56833,9 @@ export const patchProvidersEmployersEmployeesEmploymentsDeclarationsReviewRoute 
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -56700,7 +56922,9 @@ export const patchProvidersEmployersEmployeesEmploymentsDeclarationsReviewRoute 
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -57197,7 +57421,9 @@ export const getProvidersEmployersEmployeesEmploymentsDeclarationsDeclarationIdR
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -57756,7 +57982,9 @@ export const getProvidersEmployersEmployeesEmploymentsDeclarationsDeclarationIdA
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -58067,18 +58295,14 @@ export const getProvidersEmployersEmployeesEmploymentsDeviatingawfcontributionsD
           },
         },
         headers: z.object({
-          ETag: {
-            description:
-              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-                param: { required: false },
-              }),
-          },
+          ETag: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+              param: { required: false },
+            }),
         }),
       },
       400: {
@@ -58164,7 +58388,9 @@ export const getProvidersEmployersEmployeesEmploymentsDeviatingawfcontributionsD
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -58702,7 +58928,9 @@ export const putProvidersEmployersEmployeesEmploymentsDeviatingawfcontributionsD
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -58746,7 +58974,7 @@ export const putProvidersEmployersEmployeesEmploymentsDeviatingawfcontributionsD
           'application/json': {
             schema: z
               .object({
-                content: z.object({}).exactOptional(),
+                content: z.looseObject({}).exactOptional(),
                 messages: z
                   .array(
                     z
@@ -58970,7 +59198,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsDeviatingawfcontributio
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -59057,7 +59287,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsDeviatingawfcontributio
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -59501,7 +59733,9 @@ export const getProvidersEmployersEmployeesEmploymentsDeviatinghourlywagesDeviat
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -59928,7 +60162,9 @@ export const putProvidersEmployersEmployeesEmploymentsDeviatinghourlywagesDeviat
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -59972,7 +60208,7 @@ export const putProvidersEmployersEmployeesEmploymentsDeviatinghourlywagesDeviat
           'application/json': {
             schema: z
               .object({
-                content: z.object({}).exactOptional(),
+                content: z.looseObject({}).exactOptional(),
                 messages: z
                   .array(
                     z
@@ -60196,7 +60432,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsDeviatinghourlywagesDev
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -60283,7 +60521,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsDeviatinghourlywagesDev
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -60854,7 +61094,9 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentfundsEmploymentF
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -61492,7 +61734,9 @@ export const putProvidersEmployersEmployeesEmploymentsEmploymentfundsEmploymentF
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -61536,7 +61780,7 @@ export const putProvidersEmployersEmployeesEmploymentsEmploymentfundsEmploymentF
           'application/json': {
             schema: z
               .object({
-                content: z.object({}).exactOptional(),
+                content: z.looseObject({}).exactOptional(),
                 messages: z
                   .array(
                     z
@@ -61760,7 +62004,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsEmploymentfundsEmployme
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -61847,7 +62093,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsEmploymentfundsEmployme
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -62165,18 +62413,14 @@ export const getProvidersEmployersEmployeesEmploymentsFiscalcompanycarsFiscalCom
           },
         },
         headers: z.object({
-          ETag: {
-            description:
-              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-                param: { required: false },
-              }),
-          },
+          ETag: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+              param: { required: false },
+            }),
         }),
       },
       400: {
@@ -62262,7 +62506,9 @@ export const getProvidersEmployersEmployeesEmploymentsFiscalcompanycarsFiscalCom
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -62810,7 +63056,9 @@ export const putProvidersEmployersEmployeesEmploymentsFiscalcompanycarsFiscalCom
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -62854,7 +63102,7 @@ export const putProvidersEmployersEmployeesEmploymentsFiscalcompanycarsFiscalCom
           'application/json': {
             schema: z
               .object({
-                content: z.object({}).exactOptional(),
+                content: z.looseObject({}).exactOptional(),
                 messages: z
                   .array(
                     z
@@ -63078,7 +63326,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsFiscalcompanycarsFiscal
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -63165,7 +63415,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsFiscalcompanycarsFiscal
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -63694,18 +63946,14 @@ export const getProvidersEmployersEmployeesEmploymentsFiscalpropertiesFiscalProp
           },
         },
         headers: z.object({
-          ETag: {
-            description:
-              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-                param: { required: false },
-              }),
-          },
+          ETag: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+              param: { required: false },
+            }),
         }),
       },
       400: {
@@ -63791,7 +64039,9 @@ export const getProvidersEmployersEmployeesEmploymentsFiscalpropertiesFiscalProp
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -64760,7 +65010,9 @@ export const putProvidersEmployersEmployeesEmploymentsFiscalpropertiesFiscalProp
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -64804,7 +65056,7 @@ export const putProvidersEmployersEmployeesEmploymentsFiscalpropertiesFiscalProp
           'application/json': {
             schema: z
               .object({
-                content: z.object({}).exactOptional(),
+                content: z.looseObject({}).exactOptional(),
                 messages: z
                   .array(
                     z
@@ -65028,7 +65280,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsFiscalpropertiesFiscalP
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -65115,7 +65369,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsFiscalpropertiesFiscalP
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -65389,18 +65645,14 @@ export const getProvidersEmployersEmployeesEmploymentsHealthcareinsuranceactconf
           },
         },
         headers: z.object({
-          ETag: {
-            description:
-              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-                param: { required: false },
-              }),
-          },
+          ETag: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+              param: { required: false },
+            }),
         }),
       },
       400: {
@@ -65486,7 +65738,9 @@ export const getProvidersEmployersEmployeesEmploymentsHealthcareinsuranceactconf
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -65949,7 +66203,9 @@ export const putProvidersEmployersEmployeesEmploymentsHealthcareinsuranceactconf
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -65993,7 +66249,7 @@ export const putProvidersEmployersEmployeesEmploymentsHealthcareinsuranceactconf
           'application/json': {
             schema: z
               .object({
-                content: z.object({}).exactOptional(),
+                content: z.looseObject({}).exactOptional(),
                 messages: z
                   .array(
                     z
@@ -66217,7 +66473,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsHealthcareinsuranceactc
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -66304,7 +66562,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsHealthcareinsuranceactc
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -66834,18 +67094,14 @@ export const getProvidersEmployersEmployeesEmploymentsJournalallocationsJournalA
           },
         },
         headers: z.object({
-          ETag: {
-            description:
-              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-                param: { required: false },
-              }),
-          },
+          ETag: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+              param: { required: false },
+            }),
         }),
       },
       400: {
@@ -66931,7 +67187,9 @@ export const getProvidersEmployersEmployeesEmploymentsJournalallocationsJournalA
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -67886,7 +68144,9 @@ export const putProvidersEmployersEmployeesEmploymentsJournalallocationsJournalA
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -67930,7 +68190,7 @@ export const putProvidersEmployersEmployeesEmploymentsJournalallocationsJournalA
           'application/json': {
             schema: z
               .object({
-                content: z.object({}).exactOptional(),
+                content: z.looseObject({}).exactOptional(),
                 messages: z
                   .array(
                     z
@@ -68154,7 +68414,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsJournalallocationsJourn
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -68241,7 +68503,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsJournalallocationsJourn
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -68829,7 +69093,9 @@ export const getProvidersEmployersEmployeesEmploymentsLeaveLeaveIdRoute = create
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -69598,7 +69864,9 @@ export const putProvidersEmployersEmployeesEmploymentsLeaveLeaveIdRoute = create
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -69642,7 +69910,7 @@ export const putProvidersEmployersEmployeesEmploymentsLeaveLeaveIdRoute = create
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -69861,7 +70129,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsLeaveLeaveIdRoute = cre
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -69948,7 +70218,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsLeaveLeaveIdRoute = cre
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -70408,7 +70680,7 @@ export const getProvidersEmployersEmployeesEmploymentsLeaveLeaveIdMetadataRoute 
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -70602,7 +70874,9 @@ export const patchProvidersEmployersEmployeesEmploymentsLeaverequestsRoute = cre
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -70689,7 +70963,9 @@ export const patchProvidersEmployersEmployeesEmploymentsLeaverequestsRoute = cre
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -71269,18 +71545,14 @@ export const getProvidersEmployersEmployeesEmploymentsLeaverequestsLeaveRequestI
           },
         },
         headers: z.object({
-          ETag: {
-            description:
-              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-                param: { required: false },
-              }),
-          },
+          ETag: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+              param: { required: false },
+            }),
         }),
       },
       400: {
@@ -71366,7 +71638,9 @@ export const getProvidersEmployersEmployeesEmploymentsLeaverequestsLeaveRequestI
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -72287,7 +72561,9 @@ export const putProvidersEmployersEmployeesEmploymentsLeaverequestsLeaveRequestI
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -72331,7 +72607,7 @@ export const putProvidersEmployersEmployeesEmploymentsLeaverequestsLeaveRequestI
           'application/json': {
             schema: z
               .object({
-                content: z.object({}).exactOptional(),
+                content: z.looseObject({}).exactOptional(),
                 messages: z
                   .array(
                     z
@@ -72922,7 +73198,9 @@ export const getProvidersEmployersEmployeesEmploymentsNotesNoteIdRoute = createR
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -73567,7 +73845,9 @@ export const putProvidersEmployersEmployeesEmploymentsNotesNoteIdRoute = createR
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -73611,7 +73891,7 @@ export const putProvidersEmployersEmployeesEmploymentsNotesNoteIdRoute = createR
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -73831,7 +74111,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsNotesNoteIdRoute = crea
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -73918,7 +74200,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsNotesNoteIdRoute = crea
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -74284,18 +74568,14 @@ export const getProvidersEmployersEmployeesEmploymentsOrganizationalentitiesOrga
           },
         },
         headers: z.object({
-          ETag: {
-            description:
-              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-                param: { required: false },
-              }),
-          },
+          ETag: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+              param: { required: false },
+            }),
         }),
       },
       400: {
@@ -74381,7 +74661,9 @@ export const getProvidersEmployersEmployeesEmploymentsOrganizationalentitiesOrga
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -75027,7 +75309,9 @@ export const putProvidersEmployersEmployeesEmploymentsOrganizationalentitiesOrga
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -75071,7 +75355,7 @@ export const putProvidersEmployersEmployeesEmploymentsOrganizationalentitiesOrga
           'application/json': {
             schema: z
               .object({
-                content: z.object({}).exactOptional(),
+                content: z.looseObject({}).exactOptional(),
                 messages: z
                   .array(
                     z
@@ -75295,7 +75579,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsOrganizationalentitiesO
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -75382,7 +75668,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsOrganizationalentitiesO
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -76171,7 +76459,9 @@ export const getProvidersEmployersEmployeesEmploymentsOtherPayrollVariablesOther
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -77246,7 +77536,9 @@ export const putProvidersEmployersEmployeesEmploymentsOtherPayrollVariablesOther
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -77290,7 +77582,7 @@ export const putProvidersEmployersEmployeesEmploymentsOtherPayrollVariablesOther
           'application/json': {
             schema: z
               .object({
-                content: z.object({}).exactOptional(),
+                content: z.looseObject({}).exactOptional(),
                 messages: z
                   .array(
                     z
@@ -77514,7 +77806,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsOtherPayrollVariablesOt
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -77601,7 +77895,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsOtherPayrollVariablesOt
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -77991,18 +78287,14 @@ export const getProvidersEmployersEmployeesEmploymentsPaymentinformationnonsepaP
           },
         },
         headers: z.object({
-          ETag: {
-            description:
-              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-                param: { required: false },
-              }),
-          },
+          ETag: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+              param: { required: false },
+            }),
         }),
       },
       400: {
@@ -78088,7 +78380,9 @@ export const getProvidersEmployersEmployeesEmploymentsPaymentinformationnonsepaP
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -78783,7 +79077,9 @@ export const putProvidersEmployersEmployeesEmploymentsPaymentinformationnonsepaP
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -78827,7 +79123,7 @@ export const putProvidersEmployersEmployeesEmploymentsPaymentinformationnonsepaP
           'application/json': {
             schema: z
               .object({
-                content: z.object({}).exactOptional(),
+                content: z.looseObject({}).exactOptional(),
                 messages: z
                   .array(
                     z
@@ -79051,7 +79347,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsPaymentinformationnonse
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -79138,7 +79436,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsPaymentinformationnonse
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -79643,18 +79943,14 @@ export const getProvidersEmployersEmployeesEmploymentsPaymentinformationsepaPaym
           },
         },
         headers: z.object({
-          ETag: {
-            description:
-              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-                param: { required: false },
-              }),
-          },
+          ETag: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+              param: { required: false },
+            }),
         }),
       },
       400: {
@@ -79740,7 +80036,9 @@ export const getProvidersEmployersEmployeesEmploymentsPaymentinformationsepaPaym
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -80574,7 +80872,9 @@ export const putProvidersEmployersEmployeesEmploymentsPaymentinformationsepaPaym
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -80618,7 +80918,7 @@ export const putProvidersEmployersEmployeesEmploymentsPaymentinformationsepaPaym
           'application/json': {
             schema: z
               .object({
-                content: z.object({}).exactOptional(),
+                content: z.looseObject({}).exactOptional(),
                 messages: z
                   .array(
                     z
@@ -80842,7 +81142,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsPaymentinformationsepaP
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -80929,7 +81231,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsPaymentinformationsepaP
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -81214,18 +81518,14 @@ export const getProvidersEmployersEmployeesEmploymentsPaymentinformationsepasepa
           },
         },
         headers: z.object({
-          ETag: {
-            description:
-              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-                param: { required: false },
-              }),
-          },
+          ETag: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+              param: { required: false },
+            }),
         }),
       },
       400: {
@@ -81311,7 +81611,9 @@ export const getProvidersEmployersEmployeesEmploymentsPaymentinformationsepasepa
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -81795,7 +82097,9 @@ export const putProvidersEmployersEmployeesEmploymentsPaymentinformationsepasepa
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -81839,7 +82143,7 @@ export const putProvidersEmployersEmployeesEmploymentsPaymentinformationsepasepa
           'application/json': {
             schema: z
               .object({
-                content: z.object({}).exactOptional(),
+                content: z.looseObject({}).exactOptional(),
                 messages: z
                   .array(
                     z
@@ -82064,7 +82368,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsPaymentinformationsepas
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -82151,7 +82457,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsPaymentinformationsepas
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -82619,18 +82927,14 @@ export const getProvidersEmployersEmployeesEmploymentsPayrollperioddataPayrollpe
           },
         },
         headers: z.object({
-          ETag: {
-            description:
-              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-                param: { required: false },
-              }),
-          },
+          ETag: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+              param: { required: false },
+            }),
         }),
       },
       400: {
@@ -82716,7 +83020,9 @@ export const getProvidersEmployersEmployeesEmploymentsPayrollperioddataPayrollpe
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -83560,7 +83866,9 @@ export const putProvidersEmployersEmployeesEmploymentsPayrollperioddataPayrollpe
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -83604,7 +83912,7 @@ export const putProvidersEmployersEmployeesEmploymentsPayrollperioddataPayrollpe
           'application/json': {
             schema: z
               .object({
-                content: z.object({}).exactOptional(),
+                content: z.looseObject({}).exactOptional(),
                 messages: z
                   .array(
                     z
@@ -83828,7 +84136,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsPayrollperioddataPayrol
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -83915,7 +84225,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsPayrollperioddataPayrol
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -84333,7 +84645,9 @@ export const getProvidersEmployersEmployeesEmploymentsPensionbenefitsPensionBene
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -84707,7 +85021,9 @@ export const putProvidersEmployersEmployeesEmploymentsPensionbenefitsPensionBene
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -84751,7 +85067,7 @@ export const putProvidersEmployersEmployeesEmploymentsPensionbenefitsPensionBene
           'application/json': {
             schema: z
               .object({
-                content: z.object({}).exactOptional(),
+                content: z.looseObject({}).exactOptional(),
                 messages: z
                   .array(
                     z
@@ -84975,7 +85291,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsPensionbenefitsPensionB
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -85062,7 +85380,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsPensionbenefitsPensionB
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -85304,18 +85624,14 @@ export const getProvidersEmployersEmployeesEmploymentsProtectedearningsProtected
           },
         },
         headers: z.object({
-          ETag: {
-            description:
-              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-                param: { required: false },
-              }),
-          },
+          ETag: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+              param: { required: false },
+            }),
         }),
       },
       400: {
@@ -85401,7 +85717,9 @@ export const getProvidersEmployersEmployeesEmploymentsProtectedearningsProtected
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -85800,7 +86118,9 @@ export const putProvidersEmployersEmployeesEmploymentsProtectedearningsProtected
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -85844,7 +86164,7 @@ export const putProvidersEmployersEmployeesEmploymentsProtectedearningsProtected
           'application/json': {
             schema: z
               .object({
-                content: z.object({}).exactOptional(),
+                content: z.looseObject({}).exactOptional(),
                 messages: z
                   .array(
                     z
@@ -86068,7 +86388,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsProtectedearningsProtec
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -86155,7 +86477,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsProtectedearningsProtec
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -86449,18 +86773,14 @@ export const getProvidersEmployersEmployeesEmploymentsSocialsecuritybenefitsSoci
           },
         },
         headers: z.object({
-          ETag: {
-            description:
-              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-                param: { required: false },
-              }),
-          },
+          ETag: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+              param: { required: false },
+            }),
         }),
       },
       400: {
@@ -86546,7 +86866,9 @@ export const getProvidersEmployersEmployeesEmploymentsSocialsecuritybenefitsSoci
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -87028,7 +87350,9 @@ export const putProvidersEmployersEmployeesEmploymentsSocialsecuritybenefitsSoci
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -87072,7 +87396,7 @@ export const putProvidersEmployersEmployeesEmploymentsSocialsecuritybenefitsSoci
           'application/json': {
             schema: z
               .object({
-                content: z.object({}).exactOptional(),
+                content: z.looseObject({}).exactOptional(),
                 messages: z
                   .array(
                     z
@@ -87296,7 +87620,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsSocialsecuritybenefitsS
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -87383,7 +87709,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsSocialsecuritybenefitsS
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -87630,18 +87958,14 @@ export const getProvidersEmployersEmployeesEmploymentsSocialsecurityconfiguratio
           },
         },
         headers: z.object({
-          ETag: {
-            description:
-              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-                param: { required: false },
-              }),
-          },
+          ETag: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+              param: { required: false },
+            }),
         }),
       },
       400: {
@@ -87727,7 +88051,9 @@ export const getProvidersEmployersEmployeesEmploymentsSocialsecurityconfiguratio
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -88136,7 +88462,9 @@ export const putProvidersEmployersEmployeesEmploymentsSocialsecurityconfiguratio
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -88180,7 +88508,7 @@ export const putProvidersEmployersEmployeesEmploymentsSocialsecurityconfiguratio
           'application/json': {
             schema: z
               .object({
-                content: z.object({}).exactOptional(),
+                content: z.looseObject({}).exactOptional(),
                 messages: z
                   .array(
                     z
@@ -88404,7 +88732,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsSocialsecurityconfigura
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -88491,7 +88821,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsSocialsecurityconfigura
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -88870,7 +89202,9 @@ export const getProvidersEmployersEmployeesEmploymentsWachtgeldWachtegeldenIdRou
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -89307,7 +89641,9 @@ export const putProvidersEmployersEmployeesEmploymentsWachtgeldWachtegeldenIdRou
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -89351,7 +89687,7 @@ export const putProvidersEmployersEmployeesEmploymentsWachtgeldWachtegeldenIdRou
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -89585,7 +89921,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsWachtgeldWachtegeldenId
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -89672,7 +90010,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsWachtgeldWachtegeldenId
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -90040,18 +90380,14 @@ export const getProvidersEmployersEmployeesEmploymentsWagesWageIdRoute = createR
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -90137,7 +90473,9 @@ export const getProvidersEmployersEmployeesEmploymentsWagesWageIdRoute = createR
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -90787,7 +91125,9 @@ export const putProvidersEmployersEmployeesEmploymentsWagesWageIdRoute = createR
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -90831,7 +91171,7 @@ export const putProvidersEmployersEmployeesEmploymentsWagesWageIdRoute = createR
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -91051,7 +91391,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsWagesWageIdRoute = crea
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -91138,7 +91480,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsWagesWageIdRoute = crea
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -91709,18 +92053,14 @@ export const getProvidersEmployersEmployeesEmploymentsWorkinghoursWorkinghoursId
           },
         },
         headers: z.object({
-          ETag: {
-            description:
-              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-                param: { required: false },
-              }),
-          },
+          ETag: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+              param: { required: false },
+            }),
         }),
       },
       400: {
@@ -91806,7 +92146,9 @@ export const getProvidersEmployersEmployeesEmploymentsWorkinghoursWorkinghoursId
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -92858,7 +93200,9 @@ export const putProvidersEmployersEmployeesEmploymentsWorkinghoursWorkinghoursId
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -92902,7 +93246,7 @@ export const putProvidersEmployersEmployeesEmploymentsWorkinghoursWorkinghoursId
           'application/json': {
             schema: z
               .object({
-                content: z.object({}).exactOptional(),
+                content: z.looseObject({}).exactOptional(),
                 messages: z
                   .array(
                     z
@@ -93127,7 +93471,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsWorkinghoursWorkinghour
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -93214,7 +93560,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsWorkinghoursWorkinghour
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -94335,18 +94683,14 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdRoute = create
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -94432,7 +94776,9 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdRoute = create
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -96534,7 +96880,9 @@ export const putProvidersEmployersEmployeesEmploymentsEmploymentIdRoute = create
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -96578,7 +96926,7 @@ export const putProvidersEmployersEmployeesEmploymentsEmploymentIdRoute = create
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -96955,7 +97303,9 @@ export const patchProvidersEmployersEmployeesEmploymentsEmploymentIdRoute = crea
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -96999,7 +97349,7 @@ export const patchProvidersEmployersEmployeesEmploymentsEmploymentIdRoute = crea
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -97644,7 +97994,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdAbpfundsRoute 
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -98274,7 +98624,9 @@ export const postProvidersEmployersEmployeesEmploymentsEmploymentIdAbpfundsRoute
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -98876,7 +99228,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdAttachmentsofe
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -99541,7 +99893,9 @@ export const postProvidersEmployersEmployeesEmploymentsEmploymentIdAttachmentsof
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -100102,7 +100456,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdBasesforcalcul
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -100693,7 +101047,9 @@ export const postProvidersEmployersEmployeesEmploymentsEmploymentIdBasesforcalcu
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -101199,7 +101555,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdBasesforemploy
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -101683,7 +102039,9 @@ export const postProvidersEmployersEmployeesEmploymentsEmploymentIdBasesforemplo
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -102191,7 +102549,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdBenefitsInKind
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -102678,7 +103036,9 @@ export const postProvidersEmployersEmployeesEmploymentsEmploymentIdBenefitsInKin
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -103186,7 +103546,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdBenefitsandded
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -103668,7 +104028,9 @@ export const postProvidersEmployersEmployeesEmploymentsEmploymentIdBenefitsandde
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -104231,7 +104593,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdCompanycarsRou
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -104816,7 +105178,9 @@ export const postProvidersEmployersEmployeesEmploymentsEmploymentIdCompanycarsRo
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -105016,7 +105380,9 @@ export const patchProvidersEmployersEmployeesEmploymentsEmploymentIdCorrectstart
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -105103,7 +105469,9 @@ export const patchProvidersEmployersEmployeesEmploymentsEmploymentIdCorrectstart
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -105147,7 +105515,7 @@ export const patchProvidersEmployersEmployeesEmploymentsEmploymentIdCorrectstart
           'application/json': {
             schema: z
               .object({
-                content: z.object({}).exactOptional(),
+                content: z.looseObject({}).exactOptional(),
                 messages: z
                   .array(
                     z
@@ -105694,7 +106062,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdCostperhourRou
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -106161,7 +106529,9 @@ export const postProvidersEmployersEmployeesEmploymentsEmploymentIdCostperhourRo
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -106612,7 +106982,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdCustomfieldsRo
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -106985,7 +107355,9 @@ export const postProvidersEmployersEmployeesEmploymentsEmploymentIdCustomfieldsR
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -107477,7 +107849,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdCustomnotifica
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -107933,7 +108305,9 @@ export const postProvidersEmployersEmployeesEmploymentsEmploymentIdCustomnotific
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -108483,7 +108857,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdDeclarationsRo
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -109011,7 +109385,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdDeviatingawfco
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -109538,7 +109912,9 @@ export const postProvidersEmployersEmployeesEmploymentsEmploymentIdDeviatingawfc
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -110009,7 +110385,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdDeviatinghourl
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -110425,7 +110801,9 @@ export const postProvidersEmployersEmployeesEmploymentsEmploymentIdDeviatinghour
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -111002,7 +111380,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdDocumentsRoute
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -111374,7 +111752,7 @@ export const postProvidersEmployersEmployeesEmploymentsEmploymentIdDocumentsRout
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -111785,7 +112163,9 @@ export const putProvidersEmployersEmployeesEmploymentsEmploymentIdDocumentsDocum
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -111829,7 +112209,7 @@ export const putProvidersEmployersEmployeesEmploymentsEmploymentIdDocumentsDocum
           'application/json': {
             schema: z
               .object({
-                content: z.object({}).exactOptional(),
+                content: z.looseObject({}).exactOptional(),
                 messages: z
                   .array(
                     z
@@ -112051,7 +112431,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsEmploymentIdDocumentsDo
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -112138,7 +112520,9 @@ export const deleteProvidersEmployersEmployeesEmploymentsEmploymentIdDocumentsDo
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -112636,7 +113020,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdDocumentsDocum
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -113010,7 +113394,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdDocumentsDocum
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -113230,7 +113614,7 @@ export const deleteProvidersEmployersEmployeesEmploymentsEmploymentIdDocumentsDo
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -113587,7 +113971,7 @@ export const postProvidersEmployersEmployeesEmploymentsEmploymentIdDocumentsDocu
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -113812,7 +114196,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdDocumentsDocum
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -114132,7 +114516,7 @@ export const postProvidersEmployersEmployeesEmploymentsEmploymentIdDocumenttempl
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -114443,7 +114827,7 @@ export const postProvidersEmployersEmployeesEmploymentsEmploymentIdDocumenttempl
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -114788,7 +115172,9 @@ export const patchProvidersEmployersEmployeesEmploymentsEmploymentIdEmployeeprof
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -115404,7 +115790,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdEmploymentfund
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -116035,7 +116421,9 @@ export const postProvidersEmployersEmployeesEmploymentsEmploymentIdEmploymentfun
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -116574,7 +116962,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdFiscalcompanyc
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -117111,7 +117499,9 @@ export const postProvidersEmployersEmployeesEmploymentsEmploymentIdFiscalcompany
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -117880,7 +118270,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdFiscalproperti
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -118838,7 +119228,9 @@ export const postProvidersEmployersEmployeesEmploymentsEmploymentIdFiscalpropert
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -119330,7 +119722,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdHealthcareinsu
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -119782,7 +120174,9 @@ export const postProvidersEmployersEmployeesEmploymentsEmploymentIdHealthcareins
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -120529,7 +120923,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdJournalallocat
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -121473,7 +121867,9 @@ export const postProvidersEmployersEmployeesEmploymentsEmploymentIdJournalalloca
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -122120,7 +122516,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdLeaveRoute = c
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -122878,7 +123274,9 @@ export const postProvidersEmployersEmployeesEmploymentsEmploymentIdLeaveRoute = 
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -123545,7 +123943,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdLeaveDefaultsR
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -124007,7 +124405,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdLeaveMetadataR
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -124240,7 +124638,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdLeaveOverviewY
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -124684,7 +125082,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdLeaveProposedl
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -125202,7 +125600,9 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdLeavebalancesR
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -125652,7 +126052,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdLeavepoliciesR
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -125858,7 +126258,9 @@ export const patchProvidersEmployersEmployeesEmploymentsEmploymentIdLeavepolicie
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -125945,7 +126347,9 @@ export const patchProvidersEmployersEmployeesEmploymentsEmploymentIdLeavepolicie
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -125989,7 +126393,7 @@ export const patchProvidersEmployersEmployeesEmploymentsEmploymentIdLeavepolicie
           'application/json': {
             schema: z
               .object({
-                content: z.object({}).exactOptional(),
+                content: z.looseObject({}).exactOptional(),
                 messages: z
                   .array(
                     z
@@ -126749,7 +127153,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdLeaverequestsR
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -127336,7 +127740,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdNotesRoute = c
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -127971,7 +128375,9 @@ export const postProvidersEmployersEmployeesEmploymentsEmploymentIdNotesRoute = 
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -128567,7 +128973,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdOrganizational
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -129202,7 +129608,9 @@ export const postProvidersEmployersEmployeesEmploymentsEmploymentIdOrganizationa
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -130018,7 +130426,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdOtherPayrollVa
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -131083,7 +131491,9 @@ export const postProvidersEmployersEmployeesEmploymentsEmploymentIdOtherPayrollV
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -131688,7 +132098,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdPaymentinforma
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -132373,7 +132783,9 @@ export const postProvidersEmployersEmployeesEmploymentsEmploymentIdPaymentinform
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -133123,7 +133535,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdPaymentinforma
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -133946,7 +134358,9 @@ export const postProvidersEmployersEmployeesEmploymentsEmploymentIdPaymentinform
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -134445,7 +134859,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdPaymentinforma
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -134917,7 +135331,9 @@ export const postProvidersEmployersEmployeesEmploymentsEmploymentIdPaymentinform
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -135397,7 +135813,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdPayrollSimulat
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -136097,7 +136513,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdPayrollperiodd
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -136930,7 +137346,9 @@ export const postProvidersEmployersEmployeesEmploymentsEmploymentIdPayrollperiod
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -137466,7 +137884,9 @@ export const patchProvidersEmployersEmployeesEmploymentsEmploymentIdPayrollperio
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -137994,7 +138414,9 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdPayrollperiodr
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -138479,7 +138901,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdPayslipsRoute 
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -138703,7 +139125,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdPayslipsSummar
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -139234,7 +139656,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdPayslipsPayrol
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -139466,7 +139888,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdPayslipsYearRo
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -139913,7 +140335,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdPensionbenefit
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -140277,7 +140699,9 @@ export const postProvidersEmployersEmployeesEmploymentsEmploymentIdPensionbenefi
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -140734,7 +141158,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdProtectedearni
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -141122,7 +141546,9 @@ export const postProvidersEmployersEmployeesEmploymentsEmploymentIdProtectedearn
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -141217,7 +141643,7 @@ export const patchProvidersEmployersEmployeesEmploymentsEmploymentIdReinstateRou
     body: {
       description:
         'This endpoint does not require a request body. However, the `Accept` header does need to be set to ensure the correct resource version is used.',
-      content: { 'application/json;version=2018-01-01': { schema: z.object({}) } },
+      content: { 'application/json;version=2018-01-01': { schema: z.looseObject({}) } },
     },
   },
   responses: {
@@ -141304,7 +141730,9 @@ export const patchProvidersEmployersEmployeesEmploymentsEmploymentIdReinstateRou
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -141391,7 +141819,9 @@ export const patchProvidersEmployersEmployeesEmploymentsEmploymentIdReinstateRou
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -141435,7 +141865,7 @@ export const patchProvidersEmployersEmployeesEmploymentsEmploymentIdReinstateRou
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -141974,7 +142404,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdSocialsecurity
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -142460,7 +142890,9 @@ export const postProvidersEmployersEmployeesEmploymentsEmploymentIdSocialsecurit
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -142922,7 +143354,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdSocialsecurity
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -143320,7 +143752,9 @@ export const postProvidersEmployersEmployeesEmploymentsEmploymentIdSocialsecurit
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -143631,7 +144065,9 @@ export const patchProvidersEmployersEmployeesEmploymentsEmploymentIdTerminateRou
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
         'application/json;version=2019-12-16': {
           schema: z
@@ -143713,7 +144149,9 @@ export const patchProvidersEmployersEmployeesEmploymentsEmploymentIdTerminateRou
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -143800,7 +144238,9 @@ export const patchProvidersEmployersEmployeesEmploymentsEmploymentIdTerminateRou
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -143844,7 +144284,7 @@ export const patchProvidersEmployersEmployeesEmploymentsEmploymentIdTerminateRou
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -143970,7 +144410,7 @@ export const postProvidersEmployersEmployeesEmploymentsEmploymentIdTransitioncom
       body: {
         description:
           'This endpoint does not require a request body. However, the `Accept` header does need to be set to ensure the correct resource version is used.',
-        content: { 'application/json;version=2018-01-01': { schema: z.object({}) } },
+        content: { 'application/json;version=2018-01-01': { schema: z.looseObject({}) } },
       },
     },
     responses: {
@@ -144158,7 +144598,9 @@ export const postProvidersEmployersEmployeesEmploymentsEmploymentIdTransitioncom
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -144452,18 +144894,14 @@ export const postProvidersEmployersEmployeesEmploymentsEmploymentIdTransitioncom
           },
         },
         headers: z.object({
-          ETag: {
-            description:
-              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-                param: { required: false },
-              }),
-          },
+          ETag: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+              param: { required: false },
+            }),
         }),
       },
       400: {
@@ -144549,7 +144987,9 @@ export const postProvidersEmployersEmployeesEmploymentsEmploymentIdTransitioncom
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -144799,18 +145239,14 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdTransitioncomp
           },
         },
         headers: z.object({
-          ETag: {
-            description:
-              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-                param: { required: false },
-              }),
-          },
+          ETag: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+              param: { required: false },
+            }),
         }),
       },
       400: {
@@ -144896,7 +145332,9 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdTransitioncomp
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -145366,7 +145804,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdWachtgeldRoute
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -145781,7 +146219,9 @@ export const postProvidersEmployersEmployeesEmploymentsEmploymentIdWachtgeldRout
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -146334,7 +146774,9 @@ export const postProvidersEmployersEmployeesEmploymentsEmploymentIdWageprojectio
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -147063,7 +147505,9 @@ export const postProvidersEmployersEmployeesEmploymentsEmploymentIdWageprojectio
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -147664,7 +148108,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdWagesRoute = c
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -148303,7 +148747,9 @@ export const postProvidersEmployersEmployeesEmploymentsEmploymentIdWagesRoute = 
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -148508,7 +148954,9 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdWagesheetYearR
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -149298,7 +149746,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdWorkinghoursRo
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -150329,7 +150777,9 @@ export const postProvidersEmployersEmployeesEmploymentsEmploymentIdWorkinghoursR
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -150745,7 +151195,7 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdYearendstateme
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -150951,7 +151401,9 @@ export const getProvidersEmployersEmployeesEmploymentsEmploymentIdYearendstateme
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -151508,7 +151960,9 @@ export const getProvidersEmployersEmployeesNotesNoteIdRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -152153,7 +152607,9 @@ export const putProvidersEmployersEmployeesNotesNoteIdRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -152197,7 +152653,7 @@ export const putProvidersEmployersEmployeesNotesNoteIdRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -152416,7 +152872,9 @@ export const deleteProvidersEmployersEmployeesNotesNoteIdRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -152503,7 +152961,9 @@ export const deleteProvidersEmployersEmployeesNotesNoteIdRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -152861,18 +153321,14 @@ export const getProvidersEmployersEmployeesPartnersPartnerIdRoute = createRoute(
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -152958,7 +153414,9 @@ export const getProvidersEmployersEmployeesPartnersPartnerIdRoute = createRoute(
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -153580,7 +154038,9 @@ export const putProvidersEmployersEmployeesPartnersPartnerIdRoute = createRoute(
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -153624,7 +154084,7 @@ export const putProvidersEmployersEmployeesPartnersPartnerIdRoute = createRoute(
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -153843,7 +154303,9 @@ export const deleteProvidersEmployersEmployeesPartnersPartnerIdRoute = createRou
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -153930,7 +154392,9 @@ export const deleteProvidersEmployersEmployeesPartnersPartnerIdRoute = createRou
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -154130,7 +154594,9 @@ export const patchProvidersEmployersEmployeesSelfserviceRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -154217,7 +154683,9 @@ export const patchProvidersEmployersEmployeesSelfserviceRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -154261,7 +154729,7 @@ export const patchProvidersEmployersEmployeesSelfserviceRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -155839,18 +156307,14 @@ export const getProvidersEmployersEmployeesEmployeeIdRoute = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -155936,7 +156400,9 @@ export const getProvidersEmployersEmployeesEmployeeIdRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -158815,7 +159281,9 @@ export const putProvidersEmployersEmployeesEmployeeIdRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -159757,7 +160225,7 @@ export const getProvidersEmployersEmployeesEmployeeIdAbsencesRoute = createRoute
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -161057,7 +161525,9 @@ export const postProvidersEmployersEmployeesEmployeeIdAbsencesRoute = createRout
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -161268,7 +161738,9 @@ export const getProvidersEmployersEmployeesEmployeeIdAbsencesOverviewRoute = cre
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -161467,18 +161939,14 @@ export const getProvidersEmployersEmployeesEmployeeIdBenifyurlRoute = createRout
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -161564,7 +162032,9 @@ export const getProvidersEmployersEmployeesEmployeeIdBenifyurlRoute = createRout
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -161848,7 +162318,9 @@ export const postProvidersEmployersEmployeesEmployeeIdChangeaddressrequestRoute 
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -161935,7 +162407,9 @@ export const postProvidersEmployersEmployeesEmployeeIdChangeaddressrequestRoute 
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -162184,7 +162658,9 @@ export const postProvidersEmployersEmployeesEmployeeIdChangecontactinformationre
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -162271,7 +162747,9 @@ export const postProvidersEmployersEmployeesEmployeeIdChangecontactinformationre
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -162789,7 +163267,7 @@ export const getProvidersEmployersEmployeesEmployeeIdChildrenRoute = createRoute
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -163283,7 +163761,9 @@ export const postProvidersEmployersEmployeesEmployeeIdChildrenRoute = createRout
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -163485,18 +163965,14 @@ export const getProvidersEmployersEmployeesEmployeeIdCitizenservicenumberRoute =
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -163582,7 +164058,9 @@ export const getProvidersEmployersEmployeesEmployeeIdCitizenservicenumberRoute =
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -163903,7 +164381,9 @@ export const putProvidersEmployersEmployeesEmployeeIdCitizenservicenumberRoute =
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -164442,7 +164922,7 @@ export const getProvidersEmployersEmployeesEmployeeIdContactsRoute = createRoute
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -164994,7 +165474,9 @@ export const postProvidersEmployersEmployeesEmployeeIdContactsRoute = createRout
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -165445,7 +165927,7 @@ export const getProvidersEmployersEmployeesEmployeeIdCustomfieldsRoute = createR
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -165818,7 +166300,9 @@ export const postProvidersEmployersEmployeesEmployeeIdCustomfieldsRoute = create
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -166427,7 +166911,7 @@ export const getProvidersEmployersEmployeesEmployeeIdEducationsRoute = createRou
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -167091,7 +167575,9 @@ export const postProvidersEmployersEmployeesEmployeeIdEducationsRoute = createRo
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -168433,7 +168919,7 @@ export const getProvidersEmployersEmployeesEmployeeIdEmploymentsRoute = createRo
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -169921,18 +170407,14 @@ export const postProvidersEmployersEmployeesEmployeeIdEmploymentsRoute = createR
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -170018,7 +170500,9 @@ export const postProvidersEmployersEmployeesEmployeeIdEmploymentsRoute = createR
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -170603,7 +171087,7 @@ export const getProvidersEmployersEmployeesEmployeeIdNotesRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -171238,7 +171722,9 @@ export const postProvidersEmployersEmployeesEmployeeIdNotesRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -171719,7 +172205,7 @@ export const getProvidersEmployersEmployeesEmployeeIdOccupationaldisabilitiesRou
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -172311,7 +172797,7 @@ export const getProvidersEmployersEmployeesEmployeeIdPartnersRoute = createRoute
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -172922,7 +173408,9 @@ export const postProvidersEmployersEmployeesEmployeeIdPartnersRoute = createRout
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -173318,7 +173806,9 @@ export const deleteProvidersEmployersEmployeesEmployeeIdPhotoRoute = createRoute
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -173405,7 +173895,9 @@ export const deleteProvidersEmployersEmployeesEmployeeIdPhotoRoute = createRoute
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -173717,7 +174209,9 @@ export const patchProvidersEmployersEmployeesEmployeeIdRevokeEmployeeSelfService
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -173804,7 +174298,9 @@ export const patchProvidersEmployersEmployeesEmployeeIdRevokeEmployeeSelfService
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -173848,7 +174344,7 @@ export const patchProvidersEmployersEmployeesEmployeeIdRevokeEmployeeSelfService
           'application/json': {
             schema: z
               .object({
-                content: z.object({}).exactOptional(),
+                content: z.looseObject({}).exactOptional(),
                 messages: z
                   .array(
                     z
@@ -174359,7 +174855,9 @@ export const getProvidersEmployersEmployeesEmployeeIdSelfserviceRoute = createRo
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -174569,18 +175067,14 @@ export const getProvidersEmployersFunctionsFunctionIdRoute = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -174666,7 +175160,9 @@ export const getProvidersEmployersFunctionsFunctionIdRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -175005,7 +175501,9 @@ export const putProvidersEmployersFunctionsFunctionIdRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -175049,7 +175547,7 @@ export const putProvidersEmployersFunctionsFunctionIdRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -175500,7 +175998,7 @@ export const getProvidersEmployersLastmodifiedversionnumbersRoute = createRoute(
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -175945,7 +176443,9 @@ export const getProvidersEmployersLeavePoliciesAgebasedleaveAgeBasedLeaveIdRoute
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -176428,7 +176928,9 @@ export const putProvidersEmployersLeavePoliciesAgebasedleaveAgeBasedLeaveIdRoute
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -176472,7 +176974,7 @@ export const putProvidersEmployersLeavePoliciesAgebasedleaveAgeBasedLeaveIdRoute
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -176692,7 +177194,9 @@ export const deleteProvidersEmployersLeavePoliciesAgebasedleaveAgeBasedLeaveIdRo
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -176779,7 +177283,9 @@ export const deleteProvidersEmployersLeavePoliciesAgebasedleaveAgeBasedLeaveIdRo
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -177190,7 +177696,9 @@ export const getProvidersEmployersLeavePoliciesWagebasedleaveWageBasedLeaveIdRou
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -177609,7 +178117,9 @@ export const putProvidersEmployersLeavePoliciesWagebasedleaveWageBasedLeaveIdRou
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -177653,7 +178163,7 @@ export const putProvidersEmployersLeavePoliciesWagebasedleaveWageBasedLeaveIdRou
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -177874,7 +178384,9 @@ export const deleteProvidersEmployersLeavePoliciesWagebasedleaveWageBasedLeaveId
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -177961,7 +178473,9 @@ export const deleteProvidersEmployersLeavePoliciesWagebasedleaveWageBasedLeaveId
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -178406,7 +178920,9 @@ export const getProvidersEmployersLeavePoliciesYearsofservicebasedleaveYearsOfSe
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -178890,7 +179406,9 @@ export const putProvidersEmployersLeavePoliciesYearsofservicebasedleaveYearsOfSe
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -178934,7 +179452,7 @@ export const putProvidersEmployersLeavePoliciesYearsofservicebasedleaveYearsOfSe
           'application/json': {
             schema: z
               .object({
-                content: z.object({}).exactOptional(),
+                content: z.looseObject({}).exactOptional(),
                 messages: z
                   .array(
                     z
@@ -179158,7 +179676,9 @@ export const deleteProvidersEmployersLeavePoliciesYearsofservicebasedleaveYearsO
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -179245,7 +179765,9 @@ export const deleteProvidersEmployersLeavePoliciesYearsofservicebasedleaveYearsO
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -180024,7 +180546,9 @@ export const getProvidersEmployersLeavePoliciesLeavePolicyIdRoute = createRoute(
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -181179,7 +181703,9 @@ export const putProvidersEmployersLeavePoliciesLeavePolicyIdRoute = createRoute(
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -181223,7 +181749,7 @@ export const putProvidersEmployersLeavePoliciesLeavePolicyIdRoute = createRoute(
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -181442,7 +181968,9 @@ export const deleteProvidersEmployersLeavePoliciesLeavePolicyIdRoute = createRou
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -181529,7 +182057,9 @@ export const deleteProvidersEmployersLeavePoliciesLeavePolicyIdRoute = createRou
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -182027,7 +182557,7 @@ export const getProvidersEmployersLeavePoliciesLeavePolicyIdAgebasedleaveRoute =
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -182497,7 +183027,9 @@ export const postProvidersEmployersLeavePoliciesLeavePolicyIdAgebasedleaveRoute 
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -182963,7 +183495,7 @@ export const getProvidersEmployersLeavePoliciesLeavePolicyIdWagebasedleaveRoute 
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -183369,7 +183901,9 @@ export const postProvidersEmployersLeavePoliciesLeavePolicyIdWagebasedleaveRoute
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -183868,7 +184402,7 @@ export const getProvidersEmployersLeavePoliciesLeavePolicyIdYearsofservicebasedl
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -184340,7 +184874,9 @@ export const postProvidersEmployersLeavePoliciesLeavePolicyIdYearsofservicebased
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -184881,7 +185417,7 @@ export const getProvidersEmployersLeavepoliciesLeavePolicyIdEmploymentsRoute = c
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -185086,7 +185622,9 @@ export const patchProvidersEmployersLeavepoliciesLeavePolicyIdEmploymentsRoute =
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -185173,7 +185711,9 @@ export const patchProvidersEmployersLeavepoliciesLeavePolicyIdEmploymentsRoute =
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -185217,7 +185757,7 @@ export const patchProvidersEmployersLeavepoliciesLeavePolicyIdEmploymentsRoute =
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -185811,7 +186351,7 @@ export const getProvidersEmployersMinimizedRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -186370,7 +186910,9 @@ export const getProvidersEmployersNotesNoteIdRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -187015,7 +187557,9 @@ export const putProvidersEmployersNotesNoteIdRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -187059,7 +187603,7 @@ export const putProvidersEmployersNotesNoteIdRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -187278,7 +187822,9 @@ export const deleteProvidersEmployersNotesNoteIdRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -187365,7 +187911,9 @@ export const deleteProvidersEmployersNotesNoteIdRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -187556,7 +188104,9 @@ export const patchProvidersEmployersNotificationsRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -187643,7 +188193,9 @@ export const patchProvidersEmployersNotificationsRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -188046,7 +188598,9 @@ export const patchProvidersEmployersPayrollAdministrationsPayrollAdministrationI
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -188870,7 +189424,7 @@ export const getProvidersEmployersPayrolladministrationsApgpensiondeclarationsAp
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -189068,7 +189622,9 @@ export const patchProvidersEmployersPayrolladministrationsApgpensiondeclarations
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -189155,7 +189711,9 @@ export const patchProvidersEmployersPayrolladministrationsApgpensiondeclarations
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -189339,7 +189897,9 @@ export const getProvidersEmployersPayrolladministrationsApgpensiondeclarationsAp
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -189523,7 +190083,9 @@ export const getProvidersEmployersPayrolladministrationsApgpensiondeclarationsAp
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -189975,18 +190537,14 @@ export const getProvidersEmployersPayrolladministrationsJournalrunsJournalrunIdR
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -190072,7 +190630,9 @@ export const getProvidersEmployersPayrolladministrationsJournalrunsJournalrunIdR
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -190293,7 +190853,9 @@ export const patchProvidersEmployersPayrolladministrationsJournalrunsJournalrunI
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -190380,7 +190942,9 @@ export const patchProvidersEmployersPayrolladministrationsJournalrunsJournalrunI
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -190424,7 +190988,7 @@ export const patchProvidersEmployersPayrolladministrationsJournalrunsJournalrunI
           'application/json': {
             schema: z
               .object({
-                content: z.object({}).exactOptional(),
+                content: z.looseObject({}).exactOptional(),
                 messages: z
                   .array(
                     z
@@ -190786,7 +191350,9 @@ export const postProvidersEmployersPayrolladministrationsJournalrunsJournalrunId
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -190830,7 +191396,7 @@ export const postProvidersEmployersPayrolladministrationsJournalrunsJournalrunId
           'application/json': {
             schema: z
               .object({
-                content: z.object({}).exactOptional(),
+                content: z.looseObject({}).exactOptional(),
                 messages: z
                   .array(
                     z
@@ -191231,18 +191797,14 @@ export const getProvidersEmployersPayrolladministrationsJournalrunsJournalrunIdE
           },
         },
         headers: z.object({
-          ETag: {
-            description:
-              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-                param: { required: false },
-              }),
-          },
+          ETag: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+              param: { required: false },
+            }),
         }),
       },
       400: {
@@ -191328,7 +191890,9 @@ export const getProvidersEmployersPayrolladministrationsJournalrunsJournalrunIdE
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -191857,7 +192421,9 @@ export const getProvidersEmployersPayrolladministrationsJournalrunsJournalrunIdE
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -192310,7 +192876,7 @@ export const getProvidersEmployersPayrolladministrationsJournalrunsJournalrunIdR
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -192628,7 +193194,7 @@ export const getProvidersEmployersPayrolladministrationsJournalrunsJournalrunIdR
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -192946,7 +193512,7 @@ export const getProvidersEmployersPayrolladministrationsJournalrunsJournalrunIdR
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -193511,7 +194077,9 @@ export const postProvidersEmployersPayrolladministrationsJournalrunsJournalrunId
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -193555,7 +194123,7 @@ export const postProvidersEmployersPayrolladministrationsJournalrunsJournalrunId
           'application/json': {
             schema: z
               .object({
-                content: z.object({}).exactOptional(),
+                content: z.looseObject({}).exactOptional(),
                 messages: z
                   .array(
                     z
@@ -193781,7 +194349,9 @@ export const patchProvidersEmployersPayrolladministrationsPayrollrunsRoute = cre
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -193868,7 +194438,9 @@ export const patchProvidersEmployersPayrolladministrationsPayrollrunsRoute = cre
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -194425,7 +194997,9 @@ export const getProvidersEmployersPayrolladministrationsPayrollrunsNotesNoteIdRo
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -195070,7 +195644,9 @@ export const putProvidersEmployersPayrolladministrationsPayrollrunsNotesNoteIdRo
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -195114,7 +195690,7 @@ export const putProvidersEmployersPayrolladministrationsPayrollrunsNotesNoteIdRo
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -195335,7 +195911,9 @@ export const deleteProvidersEmployersPayrolladministrationsPayrollrunsNotesNoteI
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -195422,7 +196000,9 @@ export const deleteProvidersEmployersPayrolladministrationsPayrollrunsNotesNoteI
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -195569,19 +196149,15 @@ export const getProvidersEmployersPayrolladministrationsPayrollrunsSepafilesSepa
           'application/xml': { schema: z.file().openapi({ type: 'string', format: 'binary' }) },
         },
         headers: z.object({
-          'Content-Disposition': {
-            description:
-              'The filename. Explanation of the components of the filename -\\> SEPA_Clientnumber_year_payrollperiod_description\n',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The filename. Explanation of the components of the filename -\\> SEPA_Clientnumber_year_payrollperiod_description\n',
-                param: { required: false },
-                example: 'inline; filename="SEPA_568_2018_2_SALARISBETALING PERIODE 2.XML"',
-              }),
-          },
+          'Content-Disposition': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'The filename. Explanation of the components of the filename -\\> SEPA_Clientnumber_year_payrollperiod_description\n',
+              param: { required: false },
+              example: 'inline; filename="SEPA_568_2018_2_SALARISBETALING PERIODE 2.XML"',
+            }),
         }),
       },
       400: {
@@ -195667,7 +196243,9 @@ export const getProvidersEmployersPayrolladministrationsPayrollrunsSepafilesSepa
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -196238,18 +196816,14 @@ export const getProvidersEmployersPayrolladministrationsPayrollrunsPayrollrunIdR
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -196335,7 +196909,9 @@ export const getProvidersEmployersPayrolladministrationsPayrollrunsPayrollrunIdR
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -196840,7 +197416,7 @@ export const getProvidersEmployersPayrolladministrationsPayrollrunsPayrollrunIdB
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -197026,7 +197602,9 @@ export const getProvidersEmployersPayrolladministrationsPayrollrunsPayrollrunIdD
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -197210,7 +197788,9 @@ export const getProvidersEmployersPayrolladministrationsPayrollrunsPayrollrunIdE
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -197394,7 +197974,9 @@ export const getProvidersEmployersPayrolladministrationsPayrollrunsPayrollrunIdJ
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -197980,7 +198562,7 @@ export const getProvidersEmployersPayrolladministrationsPayrollrunsPayrollrunIdN
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -198616,7 +199198,9 @@ export const postProvidersEmployersPayrolladministrationsPayrollrunsPayrollrunId
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -198800,7 +199384,9 @@ export const getProvidersEmployersPayrolladministrationsPayrollrunsPayrollrunIdP
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -198984,7 +199570,9 @@ export const getProvidersEmployersPayrolladministrationsPayrollrunsPayrollrunIdP
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -199168,7 +199756,9 @@ export const getProvidersEmployersPayrolladministrationsPayrollrunsPayrollrunIdP
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -199722,7 +200312,7 @@ export const getProvidersEmployersPayrolladministrationsPayrollrunsPayrollrunIdR
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -199908,7 +200498,9 @@ export const getProvidersEmployersPayrolladministrationsPayrollrunsPayrollrunIdR
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -200117,7 +200709,9 @@ export const getProvidersEmployersPayrolladministrationsPayrollrunsPayrollrunIdS
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -200264,19 +200858,15 @@ export const getProvidersEmployersPayrolladministrationsPayrollrunsPayrollrunIdT
           'application/xml': { schema: z.file().openapi({ type: 'string', format: 'binary' }) },
         },
         headers: z.object({
-          'Content-Disposition': {
-            description:
-              'The filename. Explanation of the components of the filename -\\> SEPA_Clientnumber_year_payrollperiod_description\n',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The filename. Explanation of the components of the filename -\\> SEPA_Clientnumber_year_payrollperiod_description\n',
-                param: { required: false },
-                example: 'inline; filename="SEPA_569_2018_1_TOTAAL.XML"',
-              }),
-          },
+          'Content-Disposition': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'The filename. Explanation of the components of the filename -\\> SEPA_Clientnumber_year_payrollperiod_description\n',
+              param: { required: false },
+              example: 'inline; filename="SEPA_569_2018_1_TOTAAL.XML"',
+            }),
         }),
       },
       400: {
@@ -200362,7 +200952,9 @@ export const getProvidersEmployersPayrolladministrationsPayrollrunsPayrollrunIdT
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -200541,7 +201133,9 @@ export const postProvidersEmployersPayrolladministrationsPayrollrunsPayrollrunId
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -200728,7 +201322,9 @@ export const getProvidersEmployersPayrolladministrationsPayrollrunsPayrollrunIdW
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -200921,7 +201517,9 @@ export const patchProvidersEmployersPayrolladministrationsPayrolltaxreturnsRoute
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -201008,7 +201606,9 @@ export const patchProvidersEmployersPayrolladministrationsPayrolltaxreturnsRoute
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -201204,7 +201804,9 @@ export const patchProvidersEmployersPayrolladministrationsPayrolltaxreturnsMessa
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -201291,7 +201893,9 @@ export const patchProvidersEmployersPayrolladministrationsPayrolltaxreturnsMessa
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -201490,7 +202094,9 @@ export const postProvidersEmployersPayrolladministrationsPayrolltaxreturnsMessag
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -201577,7 +202183,9 @@ export const postProvidersEmployersPayrolladministrationsPayrolltaxreturnsMessag
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -202465,7 +203073,7 @@ export const getProvidersEmployersPayrolladministrationsPayrolltaxreturnsPayroll
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -202752,7 +203360,9 @@ export const getProvidersEmployersPayrolladministrationsPayrolltaxreturnsPayroll
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -203060,7 +203670,9 @@ export const getProvidersEmployersPayrolladministrationsPayrolltaxreturnsPayroll
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -203244,7 +203856,9 @@ export const getProvidersEmployersPayrolladministrationsPayrolltaxreturnsPayroll
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -203428,7 +204042,9 @@ export const getProvidersEmployersPayrolladministrationsPayrolltaxreturnsPayroll
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -203628,7 +204244,9 @@ export const postProvidersEmployersPayrolladministrationsPayrolltaxreturnsPayrol
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -204575,7 +205193,7 @@ export const getProvidersEmployersPayrolladministrationsUpapensiondeclarationsUp
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -204773,7 +205391,9 @@ export const patchProvidersEmployersPayrolladministrationsUpapensiondeclarations
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -204860,7 +205480,9 @@ export const patchProvidersEmployersPayrolladministrationsUpapensiondeclarations
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -205044,7 +205666,9 @@ export const getProvidersEmployersPayrolladministrationsUpapensiondeclarationsUp
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -205302,7 +205926,9 @@ export const getProvidersEmployersPayrolladministrationsPayrollAdministrationIdA
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -205546,7 +206172,9 @@ export const getProvidersEmployersPayrolladministrationsPayrollAdministrationIdA
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -205752,7 +206380,9 @@ export const getProvidersEmployersPayrolladministrationsPayrollAdministrationIdA
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -206003,7 +206633,9 @@ export const getProvidersEmployersPayrolladministrationsPayrollAdministrationIdA
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -206870,7 +207502,7 @@ export const getProvidersEmployersPayrolladministrationsPayrollAdministrationIdA
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -207183,7 +207815,7 @@ export const postProvidersEmployersPayrolladministrationsPayrollAdministrationId
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -207389,7 +208021,9 @@ export const getProvidersEmployersPayrolladministrationsPayrollAdministrationIdA
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -208340,7 +208974,7 @@ export const getProvidersEmployersPayrolladministrationsPayrollAdministrationIdA
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -208703,18 +209337,14 @@ export const getProvidersEmployersPayrolladministrationsPayrollAdministrationIdA
           },
         },
         headers: z.object({
-          ETag: {
-            description:
-              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-                param: { required: false },
-              }),
-          },
+          ETag: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+              param: { required: false },
+            }),
         }),
       },
       400: {
@@ -208800,7 +209430,9 @@ export const getProvidersEmployersPayrolladministrationsPayrollAdministrationIdA
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -209006,7 +209638,9 @@ export const getProvidersEmployersPayrolladministrationsPayrollAdministrationIdD
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -209218,7 +209852,9 @@ export const getProvidersEmployersPayrolladministrationsPayrollAdministrationIdE
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -209868,7 +210504,9 @@ export const getProvidersEmployersPayrolladministrationsPayrollAdministrationIdJ
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -210404,7 +211042,9 @@ export const postProvidersEmployersPayrolladministrationsPayrollAdministrationId
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -210616,7 +211256,9 @@ export const getProvidersEmployersPayrolladministrationsPayrollAdministrationIdP
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -211428,7 +212070,7 @@ export const getProvidersEmployersPayrolladministrationsPayrollAdministrationIdP
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -211636,7 +212278,9 @@ export const getProvidersEmployersPayrolladministrationsPayrollAdministrationIdP
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -211949,18 +212593,14 @@ export const getProvidersEmployersPayrolladministrationsPayrollAdministrationIdP
           },
         },
         headers: z.object({
-          ETag: {
-            description:
-              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-                param: { required: false },
-              }),
-          },
+          ETag: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+              param: { required: false },
+            }),
         }),
       },
       400: {
@@ -212046,7 +212686,9 @@ export const getProvidersEmployersPayrolladministrationsPayrollAdministrationIdP
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -212593,7 +213235,7 @@ export const getProvidersEmployersPayrolladministrationsPayrollAdministrationIdP
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -213119,7 +213761,7 @@ export const getProvidersEmployersPayrolladministrationsPayrollAdministrationIdP
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -213374,7 +214016,9 @@ export const postProvidersEmployersPayrolladministrationsPayrollAdministrationId
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -213781,7 +214425,7 @@ export const getProvidersEmployersPayrolladministrationsPayrollAdministrationIdP
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -214402,7 +215046,7 @@ export const getProvidersEmployersPayrolladministrationsPayrollAdministrationIdP
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -215186,7 +215830,7 @@ export const getProvidersEmployersPayrolladministrationsPayrollAdministrationIdP
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -215987,7 +216631,7 @@ export const getProvidersEmployersPayrolladministrationsPayrollAdministrationIdP
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -216618,7 +217262,9 @@ export const postProvidersEmployersPayrolladministrationsPayrollAdministrationId
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -216949,18 +217595,14 @@ export const getProvidersEmployersPayrolladministrationsPayrollAdministrationIdP
           },
         },
         headers: z.object({
-          ETag: {
-            description:
-              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-                param: { required: false },
-              }),
-          },
+          ETag: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+              param: { required: false },
+            }),
         }),
       },
       400: {
@@ -217046,7 +217688,9 @@ export const getProvidersEmployersPayrolladministrationsPayrollAdministrationIdP
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -218060,7 +218704,7 @@ export const getProvidersEmployersPayrolladministrationsPayrollAdministrationIdP
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -218277,7 +218921,9 @@ export const postProvidersEmployersPayrolladministrationsPayrollAdministrationId
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -218403,17 +219049,14 @@ export const getProvidersEmployersPayrolladministrationsPayrollAdministrationIdP
           'application/xml': { schema: z.file().openapi({ type: 'string', format: 'binary' }) },
         },
         headers: z.object({
-          'Content-Disposition': {
-            description: 'The filename\n',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'The filename\n',
-                param: { required: false },
-                example: 'inline; filename="SEPA001111111110L29000076201901.xml"',
-              }),
-          },
+          'Content-Disposition': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'The filename\n',
+              param: { required: false },
+              example: 'inline; filename="SEPA001111111110L29000076201901.xml"',
+            }),
         }),
       },
       400: {
@@ -218499,7 +219142,9 @@ export const getProvidersEmployersPayrolladministrationsPayrollAdministrationIdP
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -218724,7 +219369,9 @@ export const postProvidersEmployersPayrolladministrationsPayrollAdministrationId
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -218838,7 +219485,7 @@ export const postProvidersEmployersPayrolladministrationsPayrollAdministrationId
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -219830,7 +220477,7 @@ export const getProvidersEmployersPayrolladministrationsPayrollAdministrationIdU
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -220143,7 +220790,7 @@ export const postProvidersEmployersPayrolladministrationsPayrollAdministrationId
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -220561,7 +221208,7 @@ export const getProvidersEmployersPayrolladministrationsPayrollAdministrationIdY
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -220783,7 +221430,9 @@ export const getProvidersEmployersPayrolladministrationsPayrollAdministrationIdY
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -221259,7 +221908,7 @@ export const getProvidersEmployersUsersDownloadrequestsRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -221698,7 +222347,9 @@ export const postProvidersEmployersUsersDownloadrequestsRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -221972,18 +222623,14 @@ export const getProvidersEmployersUsersDownloadrequestsDownloadRequestIdRoute = 
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -222069,7 +222716,9 @@ export const getProvidersEmployersUsersDownloadrequestsDownloadRequestIdRoute = 
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -222259,7 +222908,9 @@ export const deleteProvidersEmployersUsersDownloadrequestsDownloadRequestIdRoute
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -222346,7 +222997,9 @@ export const deleteProvidersEmployersUsersDownloadrequestsDownloadRequestIdRoute
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -222529,7 +223182,9 @@ export const getProvidersEmployersUsersDownloadrequestsDownloadRequestIdFileRout
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -222973,7 +223628,7 @@ export const getProvidersEmployersUsersEmployerUserIdConfiguredexternaltenantRou
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -223343,7 +223998,9 @@ export const patchProvidersEmployersUsersEmployerUserIdConfiguredexternaltenantR
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -223802,18 +224459,14 @@ export const getProvidersEmployersUsersUserIdRoute = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -223899,7 +224552,9 @@ export const getProvidersEmployersUsersUserIdRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -224356,7 +225011,9 @@ export const putProvidersEmployersUsersUserIdRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -224443,7 +225100,9 @@ export const putProvidersEmployersUsersUserIdRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -224487,7 +225146,7 @@ export const putProvidersEmployersUsersUserIdRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -224706,7 +225365,9 @@ export const deleteProvidersEmployersUsersUserIdRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -224793,7 +225454,9 @@ export const deleteProvidersEmployersUsersUserIdRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -225363,7 +226026,9 @@ export const patchProvidersEmployersUsersUserIdRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -225940,7 +226605,7 @@ export const getProvidersEmployersUsersUserIdEmployersRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -226308,7 +226973,7 @@ export const getProvidersEmployersUsersUserIdIntegrationsRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -226735,7 +227400,9 @@ export const putProvidersEmployersUsersUserIdIntegrationsApplicationIdRoute = cr
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -226936,7 +227603,9 @@ export const deleteProvidersEmployersUsersUserIdIntegrationsApplicationIdRoute =
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -227023,7 +227692,9 @@ export const deleteProvidersEmployersUsersUserIdIntegrationsApplicationIdRoute =
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -227591,7 +228262,7 @@ export const getProvidersEmployersUsersUserIdNotificationsettingsRoute = createR
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -227855,7 +228526,9 @@ export const patchProvidersEmployersUsersUserIdNotificationsettingsRoute = creat
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -227942,7 +228615,9 @@ export const patchProvidersEmployersUsersUserIdNotificationsettingsRoute = creat
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -228518,18 +229193,14 @@ export const getProvidersEmployersWorkflowsWorkflowIdRoute = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -228615,7 +229286,9 @@ export const getProvidersEmployersWorkflowsWorkflowIdRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -229579,18 +230252,14 @@ export const putProvidersEmployersWorkflowsWorkflowIdRoute = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -229676,7 +230345,9 @@ export const putProvidersEmployersWorkflowsWorkflowIdRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -229772,7 +230443,7 @@ export const postProvidersEmployersWorkflowsWorkflowIdTransitionRoute = createRo
       content: {
         'application/json;version=2018-01-01': {
           schema: z
-            .object({})
+            .looseObject({})
             .nullable()
             .openapi({
               description:
@@ -229875,7 +230546,9 @@ export const postProvidersEmployersWorkflowsWorkflowIdTransitionRoute = createRo
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -229962,7 +230635,9 @@ export const postProvidersEmployersWorkflowsWorkflowIdTransitionRoute = createRo
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -230320,18 +230995,14 @@ export const getProvidersEmployersWorkflowtriggermappingsWorkflowTriggerMappingI
           },
         },
         headers: z.object({
-          ETag: {
-            description:
-              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-                param: { required: false },
-              }),
-          },
+          ETag: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+              param: { required: false },
+            }),
         }),
       },
       400: {
@@ -230417,7 +231088,9 @@ export const getProvidersEmployersWorkflowtriggermappingsWorkflowTriggerMappingI
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -231049,7 +231722,9 @@ export const putProvidersEmployersWorkflowtriggermappingsWorkflowTriggerMappingI
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -231093,7 +231768,7 @@ export const putProvidersEmployersWorkflowtriggermappingsWorkflowTriggerMappingI
           'application/json': {
             schema: z
               .object({
-                content: z.object({}).exactOptional(),
+                content: z.looseObject({}).exactOptional(),
                 messages: z
                   .array(
                     z
@@ -231317,7 +231992,9 @@ export const deleteProvidersEmployersWorkflowtriggermappingsWorkflowTriggerMappi
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -231404,7 +232081,9 @@ export const deleteProvidersEmployersWorkflowtriggermappingsWorkflowTriggerMappi
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -232143,18 +232822,14 @@ export const getProvidersEmployersEmployerIdRoute = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -232240,7 +232915,9 @@ export const getProvidersEmployersEmployerIdRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -233628,7 +234305,9 @@ export const putProvidersEmployersEmployerIdRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -233672,7 +234351,7 @@ export const putProvidersEmployersEmployerIdRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -234329,7 +235008,7 @@ export const getProvidersEmployersEmployerIdActualorganizationalentitiesRoute = 
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -234961,7 +235640,7 @@ export const getProvidersEmployersEmployerIdActualwagesRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -235783,7 +236462,7 @@ export const getProvidersEmployersEmployerIdActualworkinghoursRoute = createRout
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -236244,7 +236923,7 @@ export const getProvidersEmployersEmployerIdAdministrationsRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -236720,7 +237399,7 @@ export const getProvidersEmployersEmployerIdAnnouncementsRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -237179,7 +237858,7 @@ export const getProvidersEmployersEmployerIdApplicationsRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -237576,7 +238255,7 @@ export const getProvidersEmployersEmployerIdApplicationsApplicationIdUsersRoute 
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -238102,7 +238781,7 @@ export const getProvidersEmployersEmployerIdAssessmentsRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -238907,7 +239586,7 @@ export const getProvidersEmployersEmployerIdAssignedworkflowsRoute = createRoute
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -239651,7 +240330,7 @@ export const getProvidersEmployersEmployerIdAuditTrailEmployeeDataRoute = create
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -240113,7 +240792,7 @@ export const getProvidersEmployersEmployerIdAuthorizationsRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -240541,7 +241220,7 @@ export const getProvidersEmployersEmployerIdBenefitinkindtypesRoute = createRout
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -240868,7 +241547,9 @@ export const postProvidersEmployersEmployerIdBenefitinkindtypesRoute = createRou
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -241591,7 +242272,7 @@ export const getProvidersEmployersEmployerIdBillableitemsRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -243972,7 +244653,7 @@ export const getProvidersEmployersEmployerIdConceptemployeesRoute = createRoute(
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -248014,7 +248695,9 @@ export const postProvidersEmployersEmployerIdConceptemployeesRoute = createRoute
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -248512,7 +249195,7 @@ export const getProvidersEmployersEmployerIdConceptemployeesSelfserviceRoute = c
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -248947,7 +249630,7 @@ export const getProvidersEmployersEmployerIdContractcodesRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -249288,7 +249971,9 @@ export const postProvidersEmployersEmployerIdContractcodesRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -249713,7 +250398,7 @@ export const getProvidersEmployersEmployerIdCustomfieldsRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -250038,7 +250723,9 @@ export const postProvidersEmployersEmployerIdCustomfieldsRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -250470,7 +251157,7 @@ export const getProvidersEmployersEmployerIdCustomholidaysRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -250809,7 +251496,9 @@ export const postProvidersEmployersEmployerIdCustomholidaysRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -251010,18 +251699,14 @@ export const getProvidersEmployersEmployerIdDashboardRoute = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -251107,7 +251792,9 @@ export const getProvidersEmployersEmployerIdDashboardRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -251582,7 +252269,7 @@ export const getProvidersEmployersEmployerIdDashboardLicensesRoute = createRoute
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -252049,7 +252736,9 @@ export const putProvidersEmployersEmployerIdDashboardLicensesRoute = createRoute
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -252093,7 +252782,7 @@ export const putProvidersEmployersEmployerIdDashboardLicensesRoute = createRoute
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -252332,18 +253021,14 @@ export const getProvidersEmployersEmployerIdDatanewbusinesstokenRoute = createRo
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -252429,7 +253114,9 @@ export const getProvidersEmployersEmployerIdDatanewbusinesstokenRoute = createRo
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -252903,7 +253590,7 @@ export const getProvidersEmployersEmployerIdDepartmentsRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -253315,7 +254002,9 @@ export const postProvidersEmployersEmployerIdDepartmentsRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -253856,7 +254545,7 @@ export const getProvidersEmployersEmployerIdDocumentsRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -254228,7 +254917,7 @@ export const postProvidersEmployersEmployerIdDocumentsRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -254811,7 +255500,9 @@ export const putProvidersEmployersEmployerIdDocumentsAuthorizationsRoute = creat
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -254898,7 +255589,9 @@ export const putProvidersEmployersEmployerIdDocumentsAuthorizationsRoute = creat
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -254942,7 +255635,7 @@ export const putProvidersEmployersEmployerIdDocumentsAuthorizationsRoute = creat
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -255149,7 +255842,9 @@ export const deleteProvidersEmployersEmployerIdDocumentsCompletedossierRoute = c
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -255236,7 +255931,9 @@ export const deleteProvidersEmployersEmployerIdDocumentsCompletedossierRoute = c
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -255280,7 +255977,7 @@ export const deleteProvidersEmployersEmployerIdDocumentsCompletedossierRoute = c
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -255573,7 +256270,9 @@ export const postProvidersEmployersEmployerIdDocumentsCompletedossierInitiateRou
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -255617,7 +256316,7 @@ export const postProvidersEmployersEmployerIdDocumentsCompletedossierInitiateRou
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -256053,7 +256752,9 @@ export const putProvidersEmployersEmployerIdDocumentsDocumentIdRoute = createRou
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -256097,7 +256798,7 @@ export const putProvidersEmployersEmployerIdDocumentsDocumentIdRoute = createRou
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -256315,7 +257016,9 @@ export const deleteProvidersEmployersEmployerIdDocumentsDocumentIdRoute = create
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -256402,7 +257105,9 @@ export const deleteProvidersEmployersEmployerIdDocumentsDocumentIdRoute = create
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -256896,7 +257601,7 @@ export const getProvidersEmployersEmployerIdDocumentsDocumentIdAudittrailRoute =
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -257391,7 +258096,7 @@ export const getProvidersEmployersEmployerIdDocumenttemplatesRoute = createRoute
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -257706,7 +258411,7 @@ export const postProvidersEmployersEmployerIdDocumenttemplatesRoute = createRout
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -258053,7 +258758,9 @@ export const putProvidersEmployersEmployerIdDocumenttemplatesDocumentIdRoute = c
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -258097,7 +258804,7 @@ export const putProvidersEmployersEmployerIdDocumenttemplatesDocumentIdRoute = c
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -258315,7 +259022,9 @@ export const deleteProvidersEmployersEmployerIdDocumenttemplatesDocumentIdRoute 
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -258402,7 +259111,9 @@ export const deleteProvidersEmployersEmployerIdDocumenttemplatesDocumentIdRoute 
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -258732,7 +259443,7 @@ export const postProvidersEmployersEmployerIdDocumenttemplatesDocumentIdGenerate
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -259172,7 +259883,7 @@ export const getProvidersEmployersEmployerIdEducationfurtherindicationsRoute = c
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -259523,7 +260234,9 @@ export const postProvidersEmployersEmployerIdEducationfurtherindicationsRoute = 
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -259961,7 +260674,7 @@ export const getProvidersEmployersEmployerIdEducationtypesRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -260312,7 +261025,9 @@ export const postProvidersEmployersEmployerIdEducationtypesRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -260789,7 +261504,7 @@ export const getProvidersEmployersEmployerIdEmailidentitiesRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -261214,7 +261929,9 @@ export const postProvidersEmployersEmployerIdEmailidentitiesRoute = createRoute(
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -261637,7 +262354,9 @@ export const postProvidersEmployersEmployerIdEmailidentitiesVerifyRoute = create
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -262182,7 +262901,7 @@ export const getProvidersEmployersEmployerIdEmailtemplatesRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -262724,7 +263443,9 @@ export const getProvidersEmployersEmployerIdEmailtemplatesEmailTemplateIdRoute =
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -263313,7 +264034,9 @@ export const putProvidersEmployersEmployerIdEmailtemplatesEmailTemplateIdRoute =
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -263357,7 +264080,7 @@ export const putProvidersEmployersEmployerIdEmailtemplatesEmailTemplateIdRoute =
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -263601,7 +264324,9 @@ export const deleteProvidersEmployersEmployerIdEmailtemplatesEmailTemplateIdRout
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -263688,7 +264413,9 @@ export const deleteProvidersEmployersEmployerIdEmailtemplatesEmailTemplateIdRout
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -265502,7 +266229,7 @@ export const getProvidersEmployersEmployerIdEmployeesRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -266124,7 +266851,7 @@ export const getProvidersEmployersEmployerIdEmployeesActualpartnersRoute = creat
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -266673,7 +267400,7 @@ export const getProvidersEmployersEmployerIdEmployeesChildrenRoute = createRoute
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -267244,7 +267971,7 @@ export const getProvidersEmployersEmployerIdEmployeesContactsRoute = createRoute
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -268588,7 +269315,7 @@ export const getProvidersEmployersEmployerIdEmployeesEmploymentsRoute = createRo
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -269334,7 +270061,7 @@ export const getProvidersEmployersEmployerIdEmployeesEmploymentsWageProposalsRou
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -269874,7 +270601,7 @@ export const getProvidersEmployersEmployerIdEmployeesEmploymentsActualbenefitsan
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -270114,7 +270841,9 @@ export const postProvidersEmployersEmployerIdEmployeesEmploymentsBenefitsanddedu
                     required: [],
                   }),
               )
-              .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+              .and(
+                z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+              ),
           },
         },
       },
@@ -270430,7 +271159,7 @@ export const getProvidersEmployersEmployerIdEmployeesEmploymentsCalendarAbsences
                                 z
                                   .object({
                                     details: z
-                                      .object({})
+                                      .looseObject({})
                                       .nullable()
                                       .exactOptional()
                                       .openapi({
@@ -270656,7 +271385,7 @@ export const getProvidersEmployersEmployerIdEmployeesEmploymentsCalendarAbsences
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -270975,7 +271704,7 @@ export const getProvidersEmployersEmployerIdEmployeesEmploymentsCalendarAvailabl
                                 z
                                   .object({
                                     details: z
-                                      .object({})
+                                      .looseObject({})
                                       .nullable()
                                       .exactOptional()
                                       .openapi({
@@ -271200,7 +271929,7 @@ export const getProvidersEmployersEmployerIdEmployeesEmploymentsCalendarAvailabl
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -271517,7 +272246,7 @@ export const getProvidersEmployersEmployerIdEmployeesEmploymentsCalendarLeaveRou
                               z
                                 .object({
                                   details: z
-                                    .object({})
+                                    .looseObject({})
                                     .nullable()
                                     .exactOptional()
                                     .openapi({
@@ -271742,7 +272471,7 @@ export const getProvidersEmployersEmployerIdEmployeesEmploymentsCalendarLeaveRou
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -272060,7 +272789,7 @@ export const getProvidersEmployersEmployerIdEmployeesEmploymentsCalendarLeavereq
                                 z
                                   .object({
                                     details: z
-                                      .object({})
+                                      .looseObject({})
                                       .nullable()
                                       .exactOptional()
                                       .openapi({
@@ -272285,7 +273014,7 @@ export const getProvidersEmployersEmployerIdEmployeesEmploymentsCalendarLeavereq
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -275017,7 +275746,7 @@ export const getProvidersEmployersEmployerIdEmployeesEmploymentsComprehensiveRou
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -275748,7 +276477,7 @@ export const getProvidersEmployersEmployerIdEmployeesEmploymentsDeclarationsRout
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -276166,7 +276895,7 @@ export const getProvidersEmployersEmployerIdEmployeesEmploymentsDeclarationsWith
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -276603,7 +277332,7 @@ export const getProvidersEmployersEmployerIdEmployeesEmploymentsLastmodifiedvers
               )
               .and(
                 z
-                  .object({ _embedded: z.array(z.object({})).exactOptional() })
+                  .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                   .openapi({ required: [] }),
               ),
           },
@@ -277332,7 +278061,7 @@ export const getProvidersEmployersEmployerIdEmployeesEmploymentsLeaverequestsRou
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -277978,7 +278707,7 @@ export const getProvidersEmployersEmployerIdEmployeesEmploymentsMinimizedRoute =
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -278199,7 +278928,9 @@ export const postProvidersEmployersEmployerIdEmployeesEmploymentsWagesRoute = cr
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -278710,7 +279441,7 @@ export const getProvidersEmployersEmployerIdEmployeesSelfserviceRoute = createRo
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -278926,7 +279657,9 @@ export const patchProvidersEmployersEmployerIdEmployeesSelfserviceRoute = create
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -278970,7 +279703,7 @@ export const patchProvidersEmployersEmployerIdEmployeesSelfserviceRoute = create
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -280650,18 +281383,14 @@ export const getProvidersEmployersEmployerIdEmploymenttemplatesRoute = createRou
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -280747,7 +281476,9 @@ export const getProvidersEmployersEmployerIdEmploymenttemplatesRoute = createRou
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -281104,7 +281835,7 @@ export const getProvidersEmployersEmployerIdExternaltenantsRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -281532,7 +282263,7 @@ export const getProvidersEmployersEmployerIdFunctionsRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -281860,7 +282591,9 @@ export const postProvidersEmployersEmployerIdFunctionsRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -282139,7 +282872,7 @@ export const postProvidersEmployersEmployerIdLeaveRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -282585,7 +283318,7 @@ export const getProvidersEmployersEmployerIdLeaveProposedleavehoursRoute = creat
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -283423,7 +284156,7 @@ export const getProvidersEmployersEmployerIdLeavePoliciesRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -284565,7 +285298,9 @@ export const postProvidersEmployersEmployerIdLeavePoliciesRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -284880,7 +285615,9 @@ export const patchProvidersEmployersEmployerIdLeavePoliciesRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -285816,7 +286553,9 @@ export const getProvidersEmployersEmployerIdLeavebalancesRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -286485,7 +287224,9 @@ export const getProvidersEmployersEmployerIdLeavebalancesGroupedRoute = createRo
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -287002,7 +287743,7 @@ export const getProvidersEmployersEmployerIdLeavetypesRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -287317,18 +288058,14 @@ export const getProvidersEmployersEmployerIdLeavetypesLeaveTypeIdRoute = createR
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -287414,7 +288151,9 @@ export const getProvidersEmployersEmployerIdLeavetypesLeaveTypeIdRoute = createR
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -287946,7 +288685,9 @@ export const putProvidersEmployersEmployerIdLeavetypesLeaveTypeIdRoute = createR
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -287990,7 +288731,7 @@ export const putProvidersEmployersEmployerIdLeavetypesLeaveTypeIdRoute = createR
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -288408,7 +289149,7 @@ export const postProvidersEmployersEmployerIdLogoRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -288587,7 +289328,9 @@ export const deleteProvidersEmployersEmployerIdLogoRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -288674,7 +289417,9 @@ export const deleteProvidersEmployersEmployerIdLogoRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -289128,7 +289873,7 @@ export const getProvidersEmployersEmployerIdModulesRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -289621,7 +290366,7 @@ export const getProvidersEmployersEmployerIdNationalholidaysRoute = createRoute(
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -289910,18 +290655,14 @@ export const getProvidersEmployersEmployerIdNationalholidaysNationalHolidayIdRou
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -290007,7 +290748,9 @@ export const getProvidersEmployersEmployerIdNationalholidaysNationalHolidayIdRou
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -290486,7 +291229,9 @@ export const putProvidersEmployersEmployerIdNationalholidaysNationalHolidayIdRou
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -290530,7 +291275,7 @@ export const putProvidersEmployersEmployerIdNationalholidaysNationalHolidayIdRou
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -291145,7 +291890,7 @@ export const getProvidersEmployersEmployerIdNotesRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -291780,7 +292525,9 @@ export const postProvidersEmployersEmployerIdNotesRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -292411,7 +293158,7 @@ export const getProvidersEmployersEmployerIdNotificationsRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -293298,7 +294045,7 @@ export const getProvidersEmployersEmployerIdPayrolladministrationsRoute = create
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -293546,18 +294293,14 @@ export const getProvidersEmployersEmployerIdProformaRoute = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -293643,7 +294386,9 @@ export const getProvidersEmployersEmployerIdProformaRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -293851,7 +294596,9 @@ export const postProvidersEmployersEmployerIdProformaInitializeRoute = createRou
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -294586,7 +295333,7 @@ export const getProvidersEmployersEmployerIdUseraccessibledepartmentsRoute = cre
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -295273,7 +296020,7 @@ export const getProvidersEmployersEmployerIdUsersRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -295988,7 +296735,9 @@ export const postProvidersEmployersEmployerIdUsersRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -296484,7 +297233,7 @@ export const getProvidersEmployersEmployerIdUsersDepartmentsRoute = createRoute(
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -297153,7 +297902,9 @@ export const postProvidersEmployersEmployerIdUsersInviteRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -297364,7 +298115,9 @@ export const postProvidersEmployersEmployerIdUsersLinkRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -297807,7 +298560,7 @@ export const getProvidersEmployersEmployerIdUsersUserIdAuthorizationsRoute = cre
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -298059,7 +298812,9 @@ export const patchProvidersEmployersEmployerIdUsersUserIdAuthorizationsRoute = c
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -298146,7 +298901,9 @@ export const patchProvidersEmployersEmployerIdUsersUserIdAuthorizationsRoute = c
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -298370,7 +299127,9 @@ export const patchProvidersEmployersEmployerIdUsersUserIdDepartmentsRoute = crea
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -298457,7 +299216,9 @@ export const patchProvidersEmployersEmployerIdUsersUserIdDepartmentsRoute = crea
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -298501,7 +299262,7 @@ export const patchProvidersEmployersEmployerIdUsersUserIdDepartmentsRoute = crea
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -299334,7 +300095,7 @@ export const getProvidersEmployersEmployerIdWorkflowsRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -299919,7 +300680,7 @@ export const getProvidersEmployersEmployerIdWorkflowtriggermappingsRoute = creat
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -300539,7 +301300,9 @@ export const postProvidersEmployersEmployerIdWorkflowtriggermappingsRoute = crea
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -301319,7 +302082,9 @@ export const getProvidersLeavePoliciesLeavePolicyIdRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -301817,7 +302582,7 @@ export const getProvidersLeavePoliciesLeavePolicyIdAgebasedleaveRoute = createRo
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -302285,7 +303050,7 @@ export const getProvidersLeavePoliciesLeavePolicyIdWagebasedleaveRoute = createR
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -302785,7 +303550,7 @@ export const getProvidersLeavePoliciesLeavePolicyIdYearsofservicebasedleaveRoute
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -303169,7 +303934,7 @@ export const getProvidersNotificationsetsNotificationSetIdRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -303546,7 +304311,7 @@ export const getProvidersUsersProviderUserIdConfiguredexternaltenantRoute = crea
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -303916,7 +304681,9 @@ export const patchProvidersUsersProviderUserIdConfiguredexternaltenantRoute = cr
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -304352,7 +305119,7 @@ export const getProvidersProviderIdApplicationsetsRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -304700,7 +305467,9 @@ export const postProvidersProviderIdApplicationsetsRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -305045,7 +305814,7 @@ export const getProvidersProviderIdAuthorizationsRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -305502,7 +306271,7 @@ export const getProvidersProviderIdAuthorizationsetsRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -306020,7 +306789,7 @@ export const getProvidersProviderIdBillableitemsRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -306499,7 +307268,7 @@ export const getProvidersProviderIdEmailidentitiesRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -306924,7 +307693,9 @@ export const postProvidersProviderIdEmailidentitiesRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -307347,7 +308118,9 @@ export const postProvidersProviderIdEmailidentitiesVerifyRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -307892,7 +308665,7 @@ export const getProvidersProviderIdEmailtemplatesRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -308434,7 +309207,9 @@ export const getProvidersProviderIdEmailtemplatesEmailTemplateIdRoute = createRo
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -309809,7 +310584,9 @@ export const postProvidersProviderIdEmployersRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -310166,7 +310943,7 @@ export const getProvidersProviderIdExternaltenantsRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -311004,7 +311781,7 @@ export const getProvidersProviderIdLeavePoliciesRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -311707,7 +312484,7 @@ export const getProvidersProviderIdNotificationsetsRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -312383,7 +313160,9 @@ export const getProvidersProviderIdPayrollprocessstatusRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -312813,7 +313592,7 @@ export const getQwoaterEmployersRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -313142,7 +313921,9 @@ export const getRdwservicesAdditionaltaxliabilityRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -313557,7 +314338,7 @@ export const getUserRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -314112,7 +314893,7 @@ export const putUserRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -314481,7 +315262,7 @@ export const getUserFiltersettingsEmployerIdRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -314924,7 +315705,7 @@ export const putUserFiltersettingsEmployerIdRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -315283,7 +316064,9 @@ export const deleteUserPhotoRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -315370,7 +316153,9 @@ export const deleteUserPhotoRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -315729,7 +316514,9 @@ export const putUsersApplicationsetsApplicationSetIdRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -315773,7 +316560,7 @@ export const putUsersApplicationsetsApplicationSetIdRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              content: z.object({}).exactOptional(),
+              content: z.looseObject({}).exactOptional(),
               messages: z
                 .array(
                   z
@@ -315993,7 +316780,9 @@ export const deleteUsersApplicationsetsApplicationSetIdRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -316080,7 +316869,9 @@ export const deleteUsersApplicationsetsApplicationSetIdRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -316870,7 +317661,7 @@ export const getUsersInitiatedworkflowsRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -317225,7 +318016,7 @@ export const getUsersIntegrationsRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -317663,7 +318454,7 @@ export const getUsersUserIdApplicationsetsRoute = createRoute({
             )
             .and(
               z
-                .object({ _embedded: z.array(z.object({})).exactOptional() })
+                .object({ _embedded: z.array(z.looseObject({})).exactOptional() })
                 .openapi({ required: [] }),
             ),
         },
@@ -318011,7 +318802,9 @@ export const postUsersUserIdApplicationsetsRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -318218,18 +319011,14 @@ export const getUsersUserIdYourcampusurlRoute = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The etag for concurrency control. If a PUT is performed this value has to be supplied in the if-match header of the request.\n',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -318315,7 +319104,9 @@ export const getUsersUserIdYourcampusurlRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -318825,7 +319616,9 @@ export const getWageprojectionCladataCollectiveLaborAgreementIdRoute = createRou
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -319209,7 +320002,9 @@ export const getWageprojectionCollectivelaboragreementsRoute = createRoute({
                   required: [],
                 }),
             )
-            .and(z.object({ content: z.object({}).exactOptional() }).openapi({ required: [] })),
+            .and(
+              z.object({ content: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
+            ),
         },
       },
     },

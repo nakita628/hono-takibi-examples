@@ -3215,7 +3215,8 @@ Retrieves a collection of calls made to and from your account
       "to_formatted": "(305) 191-3581",
       "trunk_sid": "TKdeadbeefdeadbeefdeadbeefdeadbeef",
       "uri": "/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Calls/CAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json",
-      "queue_time": "1000"
+      "queue_time": "1000",
+      "stir_verstat": "TN-Validation-Passed-A"
     },
     {
       "account_sid": "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -3253,7 +3254,8 @@ Retrieves a collection of calls made to and from your account
       "to_formatted": "(305) 191-3580",
       "trunk_sid": "TKdeadbeefdeadbeefdeadbeefdeadbeef",
       "uri": "/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Calls/CAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa0.json",
-      "queue_time": "1000"
+      "queue_time": "1000",
+      "stir_verstat": "TN-Validation-Passed-A"
     }
   ],
   "end": 1,
@@ -3466,7 +3468,8 @@ ClientNotificationUrl: "https://clientnotification.com"
   "to_formatted": "(415) 867-5309",
   "trunk_sid": null,
   "uri": "/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Calls/CAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json",
-  "queue_time": "1000"
+  "queue_time": "1000",
+  "stir_verstat": "TN-Validation-Passed-A"
 }
 ```
 
@@ -3555,7 +3558,8 @@ Fetch the call specified by the provided Call SID
   "to_formatted": "(305) 191-3581",
   "trunk_sid": "TKdeadbeefdeadbeefdeadbeefdeadbeef",
   "uri": "/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Calls/CAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json",
-  "queue_time": "1000"
+  "queue_time": "1000",
+  "stir_verstat": "TN-Validation-Passed-A"
 }
 ```
 
@@ -3683,7 +3687,8 @@ Url: "https://example.com"
   "to_formatted": "(415) 867-5309",
   "trunk_sid": null,
   "uri": "/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Calls/CAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json",
-  "queue_time": "1000"
+  "queue_time": "1000",
+  "stir_verstat": "TN-Validation-Passed-A"
 }
 ```
 
@@ -17480,6 +17485,7 @@ The set of permissions that you authorized for the Connect App.  Can be: `get-al
   "group_sid": "stringstringstringstringstringstri",
   "caller_name": "string",
   "queue_time": "string",
+  "stir_verstat": "string",
   "trunk_sid": "stringstringstringstringstringstri",
   "uri": "string",
   "subresource_uris": {}
@@ -17513,6 +17519,7 @@ The set of permissions that you authorized for the Connect App.  Can be: `get-al
 |group_sid|string \| null|false|none|The Group SID associated with this call. If no Group is associated with the call, the field is empty.|
 |caller_name|string \| null|false|none|The caller's name if this call was an incoming call to a phone number with caller ID Lookup enabled. Otherwise, empty.|
 |queue_time|string \| null|false|none|The wait time in milliseconds before the call is placed.|
+|stir_verstat|string \| null|false|none|The STIR/SHAKEN verification status of the call, for example `TN-Validation-Passed-A`. Empty if the incoming call had no STIR/SHAKEN information.|
 |trunk_sid|string \| null|false|none|The unique identifier of the trunk resource that was used for this call. The field is empty if the call was not made using a SIP trunk or if the call is not terminated.|
 |uri|string \| null|false|none|The URI of this resource, relative to `https://api.twilio.com`.|
 |subresource_uris|object(uri-map) \| null|false|none|A list of subresources available to this call, identified by their URIs relative to `https://api.twilio.com`.|

@@ -2435,6 +2435,6 @@ export const postUploadRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })

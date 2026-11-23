@@ -58,20 +58,24 @@ Web: <a href="https://developer.revolut.com">Revolut Developer Support</a>
 'Authorization: Bearer <yourSecretApiKey>'
 ```
 
-To use this API, you need to generate API keys from your Revolut Business account. The Secret key is used in the authorization header for all server calls, while the Public key is provided with payment methods at checkout.
+To use this API, you need to generate API keys in the API Console. The Secret key is used in the authorization header for all server calls, while the Public key is provided with payment methods at checkout.
 
 :::info
 For detailed instructions on generating your API keys, see: [Generate API keys](https://developer.revolut.com/docs/guides/merchant/get-started#generate-api-keys).
 :::
 
-- HTTP Authentication, scheme: ssl :::note
+:::info
+Every operation requires your API key to have the matching resource permission (Read or Write) assigned in the API Console. Write access also grants Read access to the resource. For the full list of products, resources, and their permissions, see [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements).
+:::
+
+- HTTP Authentication, scheme: ssl :::info
 This authentication protocol is used exclusively when using [Fast checkout](https://developer.revolut.com/docs/guides/merchant/optimise-checkout/fast-checkout).
 :::
 
 Connection over HTTPS is using SSL authentication. For successful authentication, your system's certificate should be issued by a Public Certificate Authority (PCA) and your system should trust Revolut's public certificate.
 
 * API Key (Payload-Signature)
-    - Parameter Name: **Revolut-Pay-Payload-Signature**, in: header. :::note
+    - Parameter Name: **Revolut-Pay-Payload-Signature**, in: header. :::info
 This authentication protocol is used exclusively when using [Fast checkout](https://developer.revolut.com/docs/guides/merchant/optimise-checkout/fast-checkout).
 :::
 
@@ -103,7 +107,7 @@ We strongly advise upgrading to the new [Create an order endpoint](https://devel
 curl https://merchant.revolut.com/api/orders \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'Revolut-Api-Version: 2026-08-17'
+  -H 'Revolut-Api-Version: 2026-09-22'
 ```
 
 `GET /api/orders`
@@ -123,7 +127,9 @@ The response contains simplified `Order` objects. To get the full details of a s
 |merchant_order_data_reference|query|[Merchant-Order-External-Reference](#schemamerchant-order-external-reference)|false|Filter orders by your own order reference set in `merchant_order_data.reference`.|
 |state|query|[[Order-State](#schemaorder-state)]|false|Filter orders by state. Repeat the parameter to filter by multiple states.|
 |location_id|query|string(uuid)|false|Filter results by location ID.|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|true|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>If not specified, you will receive an error.<br><br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 
 #### Enumerated Values
@@ -144,6 +150,7 @@ The response contains simplified `Order` objects. To get the full details of a s
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 
 > Example responses
 
@@ -285,7 +292,8 @@ The response contains simplified `Order` objects. To get the full details of a s
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -295,7 +303,8 @@ The response contains simplified `Order` objects. To get the full details of a s
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -315,7 +324,8 @@ The response contains simplified `Order` objects. To get the full details of a s
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -325,7 +335,8 @@ The response contains simplified `Order` objects. To get the full details of a s
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -357,7 +368,7 @@ curl https://merchant.revolut.com/api/orders \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'Revolut-Api-Version: 2026-08-17' \
+  -H 'Revolut-Api-Version: 2026-09-22' \
   -d '{
     "amount": 500,
     "currency": "GBP"
@@ -432,27 +443,29 @@ If you operate in any of the industries listed below, sharing industry-specific 
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|true|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>If not specified, you will receive an error.<br><br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 |body|body|[Order-Creation-v4](#schemaorder-creation-v4)|false|none|
 |» amount|body|[Order-Amount-v2](#schemaorder-amount-v2)|true|The order total expressed in minor currency units, according to the [ISO 4217 standard](https://en.wikipedia.org/wiki/ISO_4217). For example, `7034` in `EUR` corresponds to €70.34.<br><br>:::info<br>- Conversion between major and minor units varies by currency. For instance, `100` minor units equal £1.00 in `GBP`, whereas in `ISK` they represent 100 units. For more details, see the [ISO 4217 standard](https://en.wikipedia.org/wiki/ISO_4217).<br>- If `line_items` are provided, the order `amount` must equal the sum of all line items' `total_amount`.<br>- For card payments with a non-zero amount, the order `amount` must be at least **$0.005** (or equivalent in different currencies, calculated using Revolut's exchange rate on the payment date). Otherwise, card payments can't be performed.<br>:::|
 |» currency|body|[Currency](#schemacurrency)|true|[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.<br><br>:::info<br>For more information about the supported currencies, see: [Help Center](https://help.revolut.com/business/help/merchant-accounts/payments/in-which-currencies-can-i-accept-payments/).<br>:::|
 |» settlement_currency|body|[Settlement-Currency](#schemasettlement-currency)|false|[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case. <br><br>If `settlement_currency` is different from the value of `currency`, the money will be exchanged when the amount is settled to your merchant account. In case of a refund or chargeback, the money will be exchanged to the order's initial `currency`.<br><br>If `settlement_currency` is not specified, this value is taken from `currency`.<br><br>:::info<br>For more information about the supported currencies, see: [Help Center](https://help.revolut.com/business/help/merchant-accounts/payments/in-which-currencies-can-i-accept-payments/).<br>:::|
 |» description|body|[Order-Description](#schemaorder-description)|false|The description of the order.|
-|» customer|body|[Customer-v2](#schemacustomer-v2)|false|Object containing information about a customer.<br><br>If you have it, we strongly advise providing at least either `id`, `phone`, or `email`.<br><br>Using the [Customers operations](https://developer.revolut.com/docs/api/merchant#tag-customers), you can manage customer instances.<br><br>The following behaviours apply to different use cases:<br><br>  \| Use case \| API behavior \|<br>  \| -------- \| ------------ \|<br>  \| Existing customer \| If `id` was provided, we ignore other customer details and associate the customer with the order.<br/><br/>If either `email`, `phone`, or `full_name` was provided (without an existing customer's `id`), we always create a new customer, irrespective of another, existing customer object having the same details. \|<br>  \| New customer \| If either `email`, `phone`, or `full_name` was provided, we create a new customer, irrespective of another customer object having the same details. <br/><br/>If `id` of a non-existent customer was provided, we return a `404` error, irrespective of other details provided. \|<br><br>:::note<br>To avoid unintentional duplication of customer records, search for an existing customer by email or phone using the [List customers](https://developer.revolut.com/docs/api/merchant#retrieve-customer-list) endpoint first, then provide `customer.id` in the order.<br>:::|
+|» customer|body|[Customer-v2](#schemacustomer-v2)|false|Object containing information about a customer.<br><br>If you have it, we strongly advise providing at least either `id`, `phone`, or `email`.<br><br>Using the [Customers operations](https://developer.revolut.com/docs/api/merchant#tag-customers), you can manage customer instances.<br><br>The following behaviours apply to different use cases:<br><br>  \| Use case \| API behavior \|<br>  \| -------- \| ------------ \|<br>  \| Existing customer \| If `id` was provided, we ignore other customer details and associate the customer with the order.<br/><br/>If either `email`, `phone`, or `full_name` was provided (without an existing customer's `id`), we always create a new customer, irrespective of another, existing customer object having the same details. \|<br>  \| New customer \| If either `email`, `phone`, or `full_name` was provided, we create a new customer, irrespective of another customer object having the same details. <br/><br/>If `id` of a non-existent customer was provided, we return a `404` error, irrespective of other details provided. \|<br><br>:::info<br>To avoid unintentional duplication of customer records, search for an existing customer by email or phone using the [List customers](https://developer.revolut.com/docs/api/merchant#retrieve-customer-list) endpoint first, then provide `customer.id` in the order.<br>:::|
 |» enforce_challenge|body|[Enforce-Challenge-v2](#schemaenforce-challenge-v2)|false|The enforce challenge mode. `automatic` is used by default.<br><br>\| Parameter value \| Description \|<br>\| --------------- \| ----------- \|<br>\| `automatic` \| The payments created for an order will have challenge requirement calculated by our fraud mechanisms. Not all payments will trigger a 3DS challenge. \|<br>\| `forced` \| The payments created for an order will always require a 3DS challenge. Currently only supported for card payments. \||
-|» line_items|body|[Line-Items](#schemaline-items)|false|An array of line items included in the order. Each line item represents an individual product or service, along with its quantity, price, taxes, and discounts.<br><br>:::info<br>Required for merchants collecting payment for one or multiple products/services in one transaction. Omitting this information may trigger additional scrutiny and risk mitigation actions by Revolut.<br>:::|
-|» shipping|body|[Shipping](#schemashipping)|false|Details about the shipping related to the order, including address, contact information, and individual shipments.<br><br>:::info<br>Required for merchants shipping physical goods. Omitting this information may trigger additional scrutiny and risk mitigation actions by Revolut.<br>:::|
+|» line_items|body|[Line-Items](#schemaline-items)|false|An array of line items included in the order. Each line item represents an individual product or service, along with its quantity, price, taxes, and discounts.<br><br>:::note<br>Required for merchants collecting payment for one or multiple products/services in one transaction. Omitting this information may trigger additional scrutiny and risk mitigation actions by Revolut.<br>:::|
+|» shipping|body|[Shipping](#schemashipping)|false|Details about the shipping related to the order, including address, contact information, and individual shipments.<br><br>:::note<br>Required for merchants shipping physical goods. Omitting this information may trigger additional scrutiny and risk mitigation actions by Revolut.<br>:::|
 |» capture_mode|body|[Capture-Mode-v2](#schemacapture-mode-v2)|false|The capture mode of the order. `automatic` is used by default.<br><br>\| Parameter value \| Description \|<br>\| --------------- \| ----------- \|<br>\| `automatic` \| The order is captured automatically after payment authorisation. \|<br>\| `manual` \| The order is not captured automatically. You must manually capture the order later. \|<br><br>:::info<br>For more information, see [Capture an order](https://developer.revolut.com/docs/api/merchant#capture-order).<br>:::|
-|» authorisation_type|body|[Authorisation-Type](#schemaauthorisation-type)|false|The type of authorisation for the order. Used with manual capture mode. If omitted, `final` is used by default.<br><br>### Pre-authorisation<br><br>Pre-authorisation allows you to reserve funds on a customer's card without immediately capturing them. This is useful for scenarios like:<br><br>- Hotel bookings where the final amount may vary<br>- Car rentals where additional charges may apply<br>- Deposits that need to be held temporarily<br><br>\| Parameter value \| Description \|<br>\| --------------- \| ----------- \|<br>\| `final` \| Standard authorisation for immediate or near-immediate capture. \|<br>\| `pre_authorisation` \| Reserve funds for later capture, used with manual capture mode. \|<br><br>:::note<br>Pre-authorisation must be used with `capture_mode: manual`. For more information, see [Capture an order](https://developer.revolut.com/docs/api/merchant#capture-order).<br>:::|
+|» authorisation_type|body|[Authorisation-Type](#schemaauthorisation-type)|false|The type of authorisation for the order. Used with manual capture mode. If omitted, `final` is used by default.<br><br>### Pre-authorisation<br><br>Pre-authorisation allows you to reserve funds on a customer's card without immediately capturing them. This is useful for scenarios like:<br><br>- Hotel bookings where the final amount may vary<br>- Car rentals where additional charges may apply<br>- Deposits that need to be held temporarily<br><br>\| Parameter value \| Description \|<br>\| --------------- \| ----------- \|<br>\| `final` \| Standard authorisation for immediate or near-immediate capture. \|<br>\| `pre_authorisation` \| Reserve funds for later capture, used with manual capture mode. \|<br><br>:::info<br>Pre-authorisation must be used with `capture_mode: manual`. For more information, see [Capture an order](https://developer.revolut.com/docs/api/merchant#capture-order).<br>:::|
 |» cancel_authorised_after|body|[Cancel-Authorised-After](#schemacancel-authorised-after)|false|Automatic cancellation period for uncaptured orders, specified in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format. <br><br>After this period, the authorised payment is automatically cancelled and the order is cancelled. Maximum: 7 days = `P7D`.<br><br>:::note<br>The following limitations apply:<br>  - Cannot be a negative value.<br>  - Cannot be updated if the new value is less than or equal to the elapsed time since authorisation. <br><br>    **Failing scenario:**<br>      - Original value: 7 days<br>      - Time since authorisation: 3 days<br>      - Update value: 2 days<br>      <br>    In this scenario, an error is returned.<br>    <br>    **Successful scenario:**<br>      - Original value: 7 days<br>      - Time since authorisation: 3 days<br>      - Update value: 4 days<br><br>    In this scenario, the parameter can be updated.<br><br>  - Cannot be updated if cancellation is ≤ 30 minutes away.<br><br>    **Failing scenario:**<br>      - Original value: 12 hours<br>      - Time since authorisation: 11 hours 40 minutes<br>                        <br>    In this scenario, an error is returned.<br>    <br>    **Successful scenario:** <br>      - Original value: 12 hours<br>      - Time since authorisation: 11 hours 20 minutes<br><br>    In this scenario, the parameter can be updated.<br>:::|
 |» expire_pending_after|body|[Expire-Pending-After](#schemaexpire-pending-after)|false|Automatic expiration period for pending orders, specified in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.<br><br>Orders in `pending` state will be automatically failed if they stay unpaid for longer than the period specified.<br><br>When the order expires, it transitions to the `failed` state and an `ORDER_FAILED` webhook event is triggered.<br><br>:::note<br>- This field can only be set during order creation and cannot be updated afterward.<br>- Must be between `PT1M` (1 minute) and `PT720H` (30 days).<br>- Cannot be a negative value.<br>:::|
 |» location_id|body|[Location-Id](#schemalocation-id)|false|Unique ID representing the location where merchants sells products.<br><br>:::info<br>For more information, see: [Locations](https://developer.revolut.com/docs/api/merchant#tag-locations).<br>:::        |
 |» metadata|body|[Metadata](#schemametadata)|false|Additional information to track your orders in your system, by providing custom metadata using `"<key>" : "<value>"` pairs.<br><br>:::warning<br>**Restrictions:**<br><br>- Both keys and values must be `string`s<br>- Values cannot be `null`.<br>- Max number of key-value pairs: `50`<br>- Max length of values: `500` characters<br>- Format of keys: Must start with a letter and contain only letters, digits, and underscores. Max 40 characters. Pattern: `^[a-zA-Z][a-zA-Z\\d_]{0,39}$`<br>:::|
-|» industry_data|body|[Industry-Data](#schemaindustry-data)|false|Object containing industry-specific information associated with the order.<br><br>:::info<br>In the following cases, industry-specific info is required. Omitting this information may trigger additional scrutiny and risk mitigation actions by the Revolut risk team.<br><br>  \| Transaction type \| Required for \| <br>  \| ---------------- \| ----------- \|<br>  \| `airline`        \| Airlines and Online Travel Agencies (OTAs). \|<br>  \| `crypto`         \| Crypto merchants. \|<br>  \| `marketplace`    \| Marketplace merchants. \|<br>  \| `event`          \| Event ticket sellers. \|<br>  \| `lodging`        \| Lodging providers and OTAs. \|<br>:::|
+|» industry_data|body|[Industry-Data](#schemaindustry-data)|false|Object containing industry-specific information associated with the order.<br><br>:::note<br>In the following cases, industry-specific info is required. Omitting this information may trigger additional scrutiny and risk mitigation actions by the Revolut risk team.<br><br>  \| Transaction type \| Required for \| <br>  \| ---------------- \| ----------- \|<br>  \| `airline`        \| Airlines and Online Travel Agencies (OTAs). \|<br>  \| `crypto`         \| Crypto merchants. \|<br>  \| `marketplace`    \| Marketplace merchants. \|<br>  \| `event`          \| Event ticket sellers. \|<br>  \| `lodging`        \| Lodging providers and OTAs. \|<br>:::|
 |» merchant_order_data|body|[Merchant-Order-Data](#schemamerchant-order-data)|false|Object for providing additional information stored in the merchant's order management system. |
 |» upcoming_payment_data|body|[Upcoming-Payment](#schemaupcoming-payment)|false|Object containing information about upcoming payments associated with the order.|
-|» redirect_url|body|[Redirect-Url](#schemaredirect-url)|false|The URL your customer will be redirected to after completing a payment flow.<br><br>- **Hosted Checkout Page** (`checkout_url`): This is the post-success URL - the customer is redirected only after a successful payment.<br>- **Embedded Revolut Pay** (Revolut Checkout widget): This URL is used for all redirect outcomes - success, failure, and cancellation.<br><br>:::warning [Restrictions]<br>- Must be a valid URI as defined by [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)<br>- URI scheme is required and must be either `http` or `https`<br>- URI host is required and cannot be `localhost` or an IP address<br>- Max length: `2000`<br>- Reserved or invalid characters must be percent-encoded (for example, use `%20` instead of a space)<br>:::<br><br>:::note [Revolut Checkout]<br>- Revolut Pay will not appear in the widget on mobile devices unless redirect targets are configured - either via this `redirect_url` parameter or the SDK-level `revolutPayOptions.mobileRedirectUrls` option.<br>- If `redirect_url` is set on the order, it takes precedence over `revolutPayOptions.mobileRedirectUrls` and is used for all redirect outcomes (success, failure, cancel).<br>:::<br><br>:::info<br>For more information, see:<br>- [Hosted Checkout Page: Custom redirection](https://developer.revolut.com/docs/guides/merchant/accept-payments/online-payments/hosted-checkout-page/api#custom-post-payment-redirection-optional)<br>- [Revolut Checkout: Configure mobile redirects](https://developer.revolut.com/docs/guides/merchant/accept-payments/online-payments/revolut-checkout/web#35-configure-revolut-pay-mobile-redirects)<br>:::|
+|» redirect_url|body|[Redirect-Url](#schemaredirect-url)|false|The URL your customer will be redirected to after completing a payment flow.<br><br>- **Hosted Checkout Page** (`checkout_url`): This is the post-success URL - the customer is redirected only after a successful payment.<br>- **Embedded Revolut Pay** (Revolut Checkout widget): This URL is used for all redirect outcomes - success, failure, and cancellation.<br><br>:::warning [Restrictions]<br>- Must be a valid URI as defined by [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)<br>- URI scheme is required and must be either `http` or `https`<br>- URI host is required and cannot be `localhost` or an IP address<br>- Max length: `2000`<br>- Reserved or invalid characters must be percent-encoded (for example, use `%20` instead of a space)<br>:::<br><br>:::note [Revolut Checkout]<br>- Revolut Pay will not appear in the widget on mobile devices unless redirect targets are configured - either via this `redirect_url` parameter or the SDK-level `revolutPayOptions.mobileRedirectUrls` option.<br>- If `redirect_url` is set on the order, it takes precedence over `revolutPayOptions.mobileRedirectUrls` and is used for all redirect outcomes (success, failure, cancel).<br>:::<br><br>:::info<br>For more information, see:<br>- [Hosted Checkout Page: Custom redirection](https://developer.revolut.com/docs/guides/merchant/accept-payments/online-payments/hosted-checkout-page/api#1-create-an-order)<br>- [Revolut Checkout: Configure mobile redirects](https://developer.revolut.com/docs/guides/merchant/accept-payments/online-payments/revolut-checkout/web#35-configure-revolut-pay-mobile-redirects)<br>:::|
 |» statement_descriptor_suffix|body|[Statement-Descriptor-Suffix](#schemastatement-descriptor-suffix)|false|You can set a dynamic statement descriptor for your orders by providing a custom suffix. <br><br>A statement descriptor is the text shown on cardholders' bank or card statements, helping them recognise a transaction or merchant. This field can be used to send extra information with the statement descriptor for card transactions.<br><br>The complete descriptor is built using the following format: `{base}*{suffix}`, where:<br>  <br>  - **`{base}`** is the existing descriptor configured in the Revolut Business dashboard (**Settings > Business account > Merchant profile > Statement descriptor**).  <br>  - **`{suffix}`** is defined by the `statement_descriptor_suffix` field.<br><br>:::note<br>- If the combined descriptor's length (base + suffix) exceeds the character limits of card scheme providers, the final value will be truncated. For example if the limit is 22 characters, the base descriptor is `"base"` and the suffix is `"testdescriptorsuffix"`, the final descriptor becomes `"base*testdescriptorsuf"`.<br>- The final statement descriptor shown on a cardholder's statement may vary by issuing bank, as some banks apply their own custom formatting or truncation rules.<br>:::|
 
 #### Enumerated Values
@@ -467,6 +480,7 @@ If you operate in any of the industries listed below, sharing industry-specific 
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 |» enforce_challenge|automatic|
 |» enforce_challenge|forced|
 |» capture_mode|automatic|
@@ -532,7 +546,8 @@ If you operate in any of the industries listed below, sharing industry-specific 
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -542,7 +557,8 @@ If you operate in any of the industries listed below, sharing industry-specific 
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -552,7 +568,8 @@ If you operate in any of the industries listed below, sharing industry-specific 
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -583,7 +600,7 @@ Bearer-Auth
 curl https://merchant.revolut.com/api/orders/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'Revolut-Api-Version: 2026-08-17'
+  -H 'Revolut-Api-Version: 2026-09-22'
 ```
 
 `GET /api/orders/{order_id}`
@@ -595,7 +612,9 @@ order ID, and the corresponding order information is returned.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|true|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>If not specified, you will receive an error.<br><br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 |order_id|path|string(uuid)|true|The ID of the `Order` object.|
 
@@ -611,6 +630,7 @@ order ID, and the corresponding order information is returned.
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 
 > Example responses
 
@@ -670,7 +690,8 @@ order ID, and the corresponding order information is returned.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -701,7 +722,7 @@ curl https://merchant.revolut.com/api/orders/497f6eca-6276-4993-bfeb-53cbbbba6f0
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'Revolut-Api-Version: 2026-08-17' \
+  -H 'Revolut-Api-Version: 2026-09-22' \
   -d '{
     "amount": 1000,
     "currency": "EUR",
@@ -758,7 +779,9 @@ For more information about the order lifecycle, see: [Order and payment lifecycl
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|true|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>If not specified, you will receive an error.<br><br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 |order_id|path|string(uuid)|true|The ID of the `Order` object.|
 |body|body|[Order-Update-v4](#schemaorder-update-v4)|false|none|
@@ -766,17 +789,17 @@ For more information about the order lifecycle, see: [Order and payment lifecycl
 |» currency|body|[Currency](#schemacurrency)|false|[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.<br><br>:::info<br>For more information about the supported currencies, see: [Help Center](https://help.revolut.com/business/help/merchant-accounts/payments/in-which-currencies-can-i-accept-payments/).<br>:::|
 |» settlement_currency|body|[Settlement-Currency](#schemasettlement-currency)|false|[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case. <br><br>If `settlement_currency` is different from the value of `currency`, the money will be exchanged when the amount is settled to your merchant account. In case of a refund or chargeback, the money will be exchanged to the order's initial `currency`.<br><br>If `settlement_currency` is not specified, this value is taken from `currency`.<br><br>:::info<br>For more information about the supported currencies, see: [Help Center](https://help.revolut.com/business/help/merchant-accounts/payments/in-which-currencies-can-i-accept-payments/).<br>:::|
 |» description|body|[Order-Description](#schemaorder-description)|false|The description of the order.|
-|» customer|body|[Customer-v2](#schemacustomer-v2)|false|Object containing information about a customer.<br><br>If you have it, we strongly advise providing at least either `id`, `phone`, or `email`.<br><br>Using the [Customers operations](https://developer.revolut.com/docs/api/merchant#tag-customers), you can manage customer instances.<br><br>The following behaviours apply to different use cases:<br><br>  \| Use case \| API behavior \|<br>  \| -------- \| ------------ \|<br>  \| Existing customer \| If `id` was provided, we ignore other customer details and associate the customer with the order.<br/><br/>If either `email`, `phone`, or `full_name` was provided (without an existing customer's `id`), we always create a new customer, irrespective of another, existing customer object having the same details. \|<br>  \| New customer \| If either `email`, `phone`, or `full_name` was provided, we create a new customer, irrespective of another customer object having the same details. <br/><br/>If `id` of a non-existent customer was provided, we return a `404` error, irrespective of other details provided. \|<br><br>:::note<br>To avoid unintentional duplication of customer records, search for an existing customer by email or phone using the [List customers](https://developer.revolut.com/docs/api/merchant#retrieve-customer-list) endpoint first, then provide `customer.id` in the order.<br>:::|
-|» shipping|body|[Shipping](#schemashipping)|false|Details about the shipping related to the order, including address, contact information, and individual shipments.<br><br>:::info<br>Required for merchants shipping physical goods. Omitting this information may trigger additional scrutiny and risk mitigation actions by Revolut.<br>:::|
+|» customer|body|[Customer-v2](#schemacustomer-v2)|false|Object containing information about a customer.<br><br>If you have it, we strongly advise providing at least either `id`, `phone`, or `email`.<br><br>Using the [Customers operations](https://developer.revolut.com/docs/api/merchant#tag-customers), you can manage customer instances.<br><br>The following behaviours apply to different use cases:<br><br>  \| Use case \| API behavior \|<br>  \| -------- \| ------------ \|<br>  \| Existing customer \| If `id` was provided, we ignore other customer details and associate the customer with the order.<br/><br/>If either `email`, `phone`, or `full_name` was provided (without an existing customer's `id`), we always create a new customer, irrespective of another, existing customer object having the same details. \|<br>  \| New customer \| If either `email`, `phone`, or `full_name` was provided, we create a new customer, irrespective of another customer object having the same details. <br/><br/>If `id` of a non-existent customer was provided, we return a `404` error, irrespective of other details provided. \|<br><br>:::info<br>To avoid unintentional duplication of customer records, search for an existing customer by email or phone using the [List customers](https://developer.revolut.com/docs/api/merchant#retrieve-customer-list) endpoint first, then provide `customer.id` in the order.<br>:::|
+|» shipping|body|[Shipping](#schemashipping)|false|Details about the shipping related to the order, including address, contact information, and individual shipments.<br><br>:::note<br>Required for merchants shipping physical goods. Omitting this information may trigger additional scrutiny and risk mitigation actions by Revolut.<br>:::|
 |» enforce_challenge|body|[Enforce-Challenge-v2](#schemaenforce-challenge-v2)|false|The enforce challenge mode. `automatic` is used by default.<br><br>\| Parameter value \| Description \|<br>\| --------------- \| ----------- \|<br>\| `automatic` \| The payments created for an order will have challenge requirement calculated by our fraud mechanisms. Not all payments will trigger a 3DS challenge. \|<br>\| `forced` \| The payments created for an order will always require a 3DS challenge. Currently only supported for card payments. \||
-|» line_items|body|[Line-Items](#schemaline-items)|false|An array of line items included in the order. Each line item represents an individual product or service, along with its quantity, price, taxes, and discounts.<br><br>:::info<br>Required for merchants collecting payment for one or multiple products/services in one transaction. Omitting this information may trigger additional scrutiny and risk mitigation actions by Revolut.<br>:::|
+|» line_items|body|[Line-Items](#schemaline-items)|false|An array of line items included in the order. Each line item represents an individual product or service, along with its quantity, price, taxes, and discounts.<br><br>:::note<br>Required for merchants collecting payment for one or multiple products/services in one transaction. Omitting this information may trigger additional scrutiny and risk mitigation actions by Revolut.<br>:::|
 |» capture_mode|body|[Capture-Mode-v2](#schemacapture-mode-v2)|false|The capture mode of the order. `automatic` is used by default.<br><br>\| Parameter value \| Description \|<br>\| --------------- \| ----------- \|<br>\| `automatic` \| The order is captured automatically after payment authorisation. \|<br>\| `manual` \| The order is not captured automatically. You must manually capture the order later. \|<br><br>:::info<br>For more information, see [Capture an order](https://developer.revolut.com/docs/api/merchant#capture-order).<br>:::|
 |» cancel_authorised_after|body|[Cancel-Authorised-After](#schemacancel-authorised-after)|false|Automatic cancellation period for uncaptured orders, specified in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format. <br><br>After this period, the authorised payment is automatically cancelled and the order is cancelled. Maximum: 7 days = `P7D`.<br><br>:::note<br>The following limitations apply:<br>  - Cannot be a negative value.<br>  - Cannot be updated if the new value is less than or equal to the elapsed time since authorisation. <br><br>    **Failing scenario:**<br>      - Original value: 7 days<br>      - Time since authorisation: 3 days<br>      - Update value: 2 days<br>      <br>    In this scenario, an error is returned.<br>    <br>    **Successful scenario:**<br>      - Original value: 7 days<br>      - Time since authorisation: 3 days<br>      - Update value: 4 days<br><br>    In this scenario, the parameter can be updated.<br><br>  - Cannot be updated if cancellation is ≤ 30 minutes away.<br><br>    **Failing scenario:**<br>      - Original value: 12 hours<br>      - Time since authorisation: 11 hours 40 minutes<br>                        <br>    In this scenario, an error is returned.<br>    <br>    **Successful scenario:** <br>      - Original value: 12 hours<br>      - Time since authorisation: 11 hours 20 minutes<br><br>    In this scenario, the parameter can be updated.<br>:::|
 |» metadata|body|[Metadata](#schemametadata)|false|Additional information to track your orders in your system, by providing custom metadata using `"<key>" : "<value>"` pairs.<br><br>:::warning<br>**Restrictions:**<br><br>- Both keys and values must be `string`s<br>- Values cannot be `null`.<br>- Max number of key-value pairs: `50`<br>- Max length of values: `500` characters<br>- Format of keys: Must start with a letter and contain only letters, digits, and underscores. Max 40 characters. Pattern: `^[a-zA-Z][a-zA-Z\\d_]{0,39}$`<br>:::|
-|» industry_data|body|[Industry-Data](#schemaindustry-data)|false|Object containing industry-specific information associated with the order.<br><br>:::info<br>In the following cases, industry-specific info is required. Omitting this information may trigger additional scrutiny and risk mitigation actions by the Revolut risk team.<br><br>  \| Transaction type \| Required for \| <br>  \| ---------------- \| ----------- \|<br>  \| `airline`        \| Airlines and Online Travel Agencies (OTAs). \|<br>  \| `crypto`         \| Crypto merchants. \|<br>  \| `marketplace`    \| Marketplace merchants. \|<br>  \| `event`          \| Event ticket sellers. \|<br>  \| `lodging`        \| Lodging providers and OTAs. \|<br>:::|
+|» industry_data|body|[Industry-Data](#schemaindustry-data)|false|Object containing industry-specific information associated with the order.<br><br>:::note<br>In the following cases, industry-specific info is required. Omitting this information may trigger additional scrutiny and risk mitigation actions by the Revolut risk team.<br><br>  \| Transaction type \| Required for \| <br>  \| ---------------- \| ----------- \|<br>  \| `airline`        \| Airlines and Online Travel Agencies (OTAs). \|<br>  \| `crypto`         \| Crypto merchants. \|<br>  \| `marketplace`    \| Marketplace merchants. \|<br>  \| `event`          \| Event ticket sellers. \|<br>  \| `lodging`        \| Lodging providers and OTAs. \|<br>:::|
 |» merchant_order_data|body|[Merchant-Order-Data](#schemamerchant-order-data)|false|Object for providing additional information stored in the merchant's order management system. |
 |» upcoming_payment_data|body|[Upcoming-Payment](#schemaupcoming-payment)|false|Object containing information about upcoming payments associated with the order.|
-|» redirect_url|body|[Redirect-Url](#schemaredirect-url)|false|The URL your customer will be redirected to after completing a payment flow.<br><br>- **Hosted Checkout Page** (`checkout_url`): This is the post-success URL - the customer is redirected only after a successful payment.<br>- **Embedded Revolut Pay** (Revolut Checkout widget): This URL is used for all redirect outcomes - success, failure, and cancellation.<br><br>:::warning [Restrictions]<br>- Must be a valid URI as defined by [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)<br>- URI scheme is required and must be either `http` or `https`<br>- URI host is required and cannot be `localhost` or an IP address<br>- Max length: `2000`<br>- Reserved or invalid characters must be percent-encoded (for example, use `%20` instead of a space)<br>:::<br><br>:::note [Revolut Checkout]<br>- Revolut Pay will not appear in the widget on mobile devices unless redirect targets are configured - either via this `redirect_url` parameter or the SDK-level `revolutPayOptions.mobileRedirectUrls` option.<br>- If `redirect_url` is set on the order, it takes precedence over `revolutPayOptions.mobileRedirectUrls` and is used for all redirect outcomes (success, failure, cancel).<br>:::<br><br>:::info<br>For more information, see:<br>- [Hosted Checkout Page: Custom redirection](https://developer.revolut.com/docs/guides/merchant/accept-payments/online-payments/hosted-checkout-page/api#custom-post-payment-redirection-optional)<br>- [Revolut Checkout: Configure mobile redirects](https://developer.revolut.com/docs/guides/merchant/accept-payments/online-payments/revolut-checkout/web#35-configure-revolut-pay-mobile-redirects)<br>:::|
+|» redirect_url|body|[Redirect-Url](#schemaredirect-url)|false|The URL your customer will be redirected to after completing a payment flow.<br><br>- **Hosted Checkout Page** (`checkout_url`): This is the post-success URL - the customer is redirected only after a successful payment.<br>- **Embedded Revolut Pay** (Revolut Checkout widget): This URL is used for all redirect outcomes - success, failure, and cancellation.<br><br>:::warning [Restrictions]<br>- Must be a valid URI as defined by [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)<br>- URI scheme is required and must be either `http` or `https`<br>- URI host is required and cannot be `localhost` or an IP address<br>- Max length: `2000`<br>- Reserved or invalid characters must be percent-encoded (for example, use `%20` instead of a space)<br>:::<br><br>:::note [Revolut Checkout]<br>- Revolut Pay will not appear in the widget on mobile devices unless redirect targets are configured - either via this `redirect_url` parameter or the SDK-level `revolutPayOptions.mobileRedirectUrls` option.<br>- If `redirect_url` is set on the order, it takes precedence over `revolutPayOptions.mobileRedirectUrls` and is used for all redirect outcomes (success, failure, cancel).<br>:::<br><br>:::info<br>For more information, see:<br>- [Hosted Checkout Page: Custom redirection](https://developer.revolut.com/docs/guides/merchant/accept-payments/online-payments/hosted-checkout-page/api#1-create-an-order)<br>- [Revolut Checkout: Configure mobile redirects](https://developer.revolut.com/docs/guides/merchant/accept-payments/online-payments/revolut-checkout/web#35-configure-revolut-pay-mobile-redirects)<br>:::|
 |» statement_descriptor_suffix|body|[Statement-Descriptor-Suffix](#schemastatement-descriptor-suffix)|false|You can set a dynamic statement descriptor for your orders by providing a custom suffix. <br><br>A statement descriptor is the text shown on cardholders' bank or card statements, helping them recognise a transaction or merchant. This field can be used to send extra information with the statement descriptor for card transactions.<br><br>The complete descriptor is built using the following format: `{base}*{suffix}`, where:<br>  <br>  - **`{base}`** is the existing descriptor configured in the Revolut Business dashboard (**Settings > Business account > Merchant profile > Statement descriptor**).  <br>  - **`{suffix}`** is defined by the `statement_descriptor_suffix` field.<br><br>:::note<br>- If the combined descriptor's length (base + suffix) exceeds the character limits of card scheme providers, the final value will be truncated. For example if the limit is 22 characters, the base descriptor is `"base"` and the suffix is `"testdescriptorsuffix"`, the final descriptor becomes `"base*testdescriptorsuf"`.<br>- The final statement descriptor shown on a cardholder's statement may vary by issuing bank, as some banks apply their own custom formatting or truncation rules.<br>:::|
 
 #### Enumerated Values
@@ -791,6 +814,7 @@ For more information about the order lifecycle, see: [Order and payment lifecycl
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 |» enforce_challenge|automatic|
 |» enforce_challenge|forced|
 |» capture_mode|automatic|
@@ -882,7 +906,8 @@ For more information about the order lifecycle, see: [Order and payment lifecycl
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -915,7 +940,7 @@ curl https://merchant.revolut.com/api/orders/497f6eca-6276-4993-bfeb-53cbbbba6f0
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'Revolut-Api-Version: 2026-08-17' \
+  -H 'Revolut-Api-Version: 2026-09-22' \
   -d '{
     "amount": 600
   }'
@@ -969,13 +994,15 @@ For more information, see: [Incremental authorisation guide](https://developer.r
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|true|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>If not specified, you will receive an error.<br><br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 |order_id|path|string(uuid)|true|The ID of the `Order` object.|
 |body|body|[Incremental-Authorisation-Request](#schemaincremental-authorisation-request)|true|none|
 |» amount|body|[Increment-Amount](#schemaincrement-amount)|true|The new total amount to be authorised (in minor units, e.g., cents).<br><br>This should be the **full new amount**, not the increment value.<br>For example, if the current authorised amount is `500` and you want to add 100, pass `600`.<br><br>:::warning<br>- Must be greater than or equal to the current authorised amount (incrementing with same amount allowed to extend capture deadline for Mastercard)<br>- The sum of all increment amounts cannot exceed 5x the initial authorised amount (e.g., initial amount £100 allows up to £500 in total increments)<br>:::|
 |» reference|body|[Increment-Reference](#schemaincrement-reference)|false|External reference for this incremental authorisation.<br><br>:::tip<br>Use your internal charge or invoice ID. This reference is returned in webhooks for easy matching to your system.<br>:::|
-|» line_items|body|[Line-Items](#schemaline-items)|false|An array of line items included in the order. Each line item represents an individual product or service, along with its quantity, price, taxes, and discounts.<br><br>:::info<br>Required for merchants collecting payment for one or multiple products/services in one transaction. Omitting this information may trigger additional scrutiny and risk mitigation actions by Revolut.<br>:::|
+|» line_items|body|[Line-Items](#schemaline-items)|false|An array of line items included in the order. Each line item represents an individual product or service, along with its quantity, price, taxes, and discounts.<br><br>:::note<br>Required for merchants collecting payment for one or multiple products/services in one transaction. Omitting this information may trigger additional scrutiny and risk mitigation actions by Revolut.<br>:::|
 
 #### Enumerated Values
 
@@ -989,6 +1016,7 @@ For more information, see: [Incremental authorisation guide](https://developer.r
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 
 > Example responses
 
@@ -1127,7 +1155,8 @@ For more information, see: [Incremental authorisation guide](https://developer.r
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -1160,7 +1189,7 @@ curl https://merchant.revolut.com/api/orders/497f6eca-6276-4993-bfeb-53cbbbba6f0
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'Revolut-Api-Version: 2026-08-17' \
+  -H 'Revolut-Api-Version: 2026-09-22' \
   -d '{
     "amount": 100
   }'
@@ -1235,7 +1264,7 @@ If you provide `line_items` when capturing, they will **overwrite** the original
 :::
 
 :::info
-For a comprehensive guide including use cases and examples, see: [Authorise a payment to capture later](https://developer.revolut.com/docs/guides/merchant/operations/capture-and-settlement/capture-later#update-line-items-at-capture).
+For a comprehensive guide including use cases and examples, see: [Authorise a payment to capture later](https://developer.revolut.com/docs/guides/merchant/operations/capture-and-settlement/capture-later#4-capture-the-payment).
 :::
 
 ## Idempotency and repeated requests
@@ -1246,7 +1275,7 @@ The capture operation is idempotent. This means that an order can only be captur
 - Any subsequent request with the same capture amount will not recapture funds and behaves like a [Retrieve an order](https://developer.revolut.com/docs/api/merchant/2024-09-01#retrieve-order) request, returning the current order state.
 - A subsequent request with a different capture amount returns an error.
 
-:::info
+:::note
 Utilising the idempotent nature of this endpoint helps maintain data consistency and prevents duplicate processing of the same order.
 :::
 
@@ -1262,12 +1291,14 @@ Utilising the idempotent nature of this endpoint helps maintain data consistency
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|true|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>If not specified, you will receive an error.<br><br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 |order_id|path|string(uuid)|true|The ID of the `Order` object.|
 |body|body|[Order-Capture-v2](#schemaorder-capture-v2)|false|none|
 |» amount|body|[Order-Capture-Amount](#schemaorder-capture-amount)|false|Specify an amount to capture, in minor currency units. The amount must not exceed the authorised amount.<br><br>An order can only be captured once. Partial capture is supported by sending an amount lower than the authorised amount. The uncaptured amount will be voided.<br><br>If you resend a capture request for an order that is already captured, no additional capture is performed. Resending with the same amount returns the current order state, while resending with a different amount returns an error.<br><br>If not provided, it defaults to the authorised amount (full capture will be executed).|
-|» line_items|body|[Line-Items](#schemaline-items)|false|An array of line items included in the order. Each line item represents an individual product or service, along with its quantity, price, taxes, and discounts.<br><br>:::info<br>Required for merchants collecting payment for one or multiple products/services in one transaction. Omitting this information may trigger additional scrutiny and risk mitigation actions by Revolut.<br>:::|
+|» line_items|body|[Line-Items](#schemaline-items)|false|An array of line items included in the order. Each line item represents an individual product or service, along with its quantity, price, taxes, and discounts.<br><br>:::note<br>Required for merchants collecting payment for one or multiple products/services in one transaction. Omitting this information may trigger additional scrutiny and risk mitigation actions by Revolut.<br>:::|
 
 #### Enumerated Values
 
@@ -1281,6 +1312,7 @@ Utilising the idempotent nature of this endpoint helps maintain data consistency
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 
 > Example responses
 
@@ -1391,7 +1423,8 @@ Utilising the idempotent nature of this endpoint helps maintain data consistency
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -1401,7 +1434,8 @@ Utilising the idempotent nature of this endpoint helps maintain data consistency
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -1454,7 +1488,9 @@ For more information about the order lifecycle, see: [Order and payment lifecycl
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|false|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 |order_id|path|string(uuid)|true|The ID of the `Order` object.|
 
@@ -1470,6 +1506,7 @@ For more information about the order lifecycle, see: [Order and payment lifecycl
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 
 > Example responses
 
@@ -1539,7 +1576,8 @@ For more information about the order lifecycle, see: [Order and payment lifecycl
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -1549,7 +1587,8 @@ For more information about the order lifecycle, see: [Order and payment lifecycl
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -1582,7 +1621,7 @@ curl https://merchant.revolut.com/api/orders/497f6eca-6276-4993-bfeb-53cbbbba6f0
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'Revolut-Api-Version: 2026-08-17' \
+  -H 'Revolut-Api-Version: 2026-09-22' \
   -d '{
     "amount": 100,
     "currency": "GBP"
@@ -1620,7 +1659,9 @@ For more information see our [Refund payments](https://developer.revolut.com/doc
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|true|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>If not specified, you will receive an error.<br><br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 |Idempotency-Key|header|string|false|The `Idempotency-Key` ensures that requests are processed only once, preventing multiple executions of the same operation due to retries or duplicate requests.<br><br>This header is optional and can accept any unique string value the merchant uses.<br><br>A recommended practice is to use a unique identifier from your system (such as the entity's ID or a request UUID) as the idempotency key. This facilitates tracking and managing requests effectively.|
 |order_id|path|string(uuid)|true|The ID of the `Order` object.|
@@ -1644,6 +1685,7 @@ For more information see our [Refund payments](https://developer.revolut.com/doc
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 
 > Example responses
 
@@ -1757,7 +1799,8 @@ For more information see our [Refund payments](https://developer.revolut.com/doc
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -1767,7 +1810,8 @@ For more information see our [Refund payments](https://developer.revolut.com/doc
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -1817,7 +1861,9 @@ Use this endpoint to retrieve payment details for saved payment methods to make 
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |order_id|path|string(uuid)|true|The ID of the `Order` object.|
 
 > Example responses
@@ -1916,7 +1962,8 @@ Use this endpoint to retrieve payment details for saved payment methods to make 
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -1926,7 +1973,8 @@ Use this endpoint to retrieve payment details for saved payment methods to make 
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -2040,7 +2088,9 @@ For more information about customers' payment methods, see the [Retrieve payment
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |order_id|path|string(uuid)|true|The ID of the `Order` object.|
 |body|body|[Saved-Payment-Method](#schemasaved-payment-method)|false|none|
 |» saved_payment_method|body|object|true|Object containing information about the saved payment method used to pay for the order.|
@@ -2111,7 +2161,8 @@ For more information about customers' payment methods, see the [Retrieve payment
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -2121,7 +2172,8 @@ For more information about customers' payment methods, see the [Retrieve payment
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -2185,7 +2237,7 @@ You cannot create a payment method explicitly because they are generated as part
 curl https://merchant.revolut.com/api/customers \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'Revolut-Api-Version: 2026-08-17'
+  -H 'Revolut-Api-Version: 2026-09-22'
 ```
 
 `GET /api/customers`
@@ -2208,10 +2260,12 @@ To paginate through all results:
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |limit|query|integer|false|Maximum number of records to return. Used for **pagination**.|
-|page_token|query|string|false|Token for retrieving the next page of results. Used for **pagination**.<br><br>To paginate through results:<br><br>  1. Make an initial request with the desired `limit`.<br>  1. The response will include a `next_page_token` if more results are available.<br>  1. Use that token in the `page_token` parameter of your next request.<br>  1. Repeat until `next_page_token` is not present.<br><br>:::note<br>When using `page_token`, you must include all query parameters from the initial request (such as `from`, `to`, or other filter parameters) to maintain consistent filtering across pages.<br>:::|
+|page_token|query|string(uuid)|false|Token for retrieving the next page of results. Used for **pagination**.<br><br>To paginate through results:<br><br>  1. Make an initial request with the desired `limit`.<br>  1. The response will include a `next_page_token` if more results are available.<br>  1. Use that token in the `page_token` parameter of your next request.<br>  1. Repeat until `next_page_token` is not present.<br><br>:::note<br>When using `page_token`, you must include all query parameters from the initial request (such as `from`, `to`, or other filter parameters) to maintain consistent filtering across pages.<br>:::|
 |from|query|string(date-time)|false|Filter records created from this date/time. Used for **filtering**.|
 |to|query|string(date-time)|false|Filter records created until this date/time. Used for **filtering**.|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|true|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>This endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.<br><br>If not specified, you will receive an error.<br><br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 
 #### Enumerated Values
@@ -2224,6 +2278,7 @@ To paginate through all results:
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 
 > Example responses
 
@@ -2258,7 +2313,8 @@ To paginate through all results:
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -2278,7 +2334,8 @@ To paginate through all results:
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -2288,7 +2345,8 @@ To paginate through all results:
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -2319,7 +2377,7 @@ curl https://merchant.revolut.com/api/customers \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'Revolut-Api-Version: 2026-08-17' \
+  -H 'Revolut-Api-Version: 2026-09-22' \
   -d '{
     "full_name": "Example Customer",
     "email": "example.customer@example.com",
@@ -2377,7 +2435,9 @@ For merchants in the following industries, `full_name` and `date_of_birth` are r
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|true|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>This endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.<br><br>If not specified, you will receive an error.<br><br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 |body|body|[Customer-Creation-v2](#schemacustomer-creation-v2)|false|none|
 |» full_name|body|[Full-Name](#schemafull-name)|false|The full name of the customer.|
@@ -2395,6 +2455,7 @@ For merchants in the following industries, `full_name` and `date_of_birth` are r
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 
 > Example responses
 
@@ -2417,7 +2478,8 @@ For merchants in the following industries, `full_name` and `date_of_birth` are r
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -2427,7 +2489,8 @@ For merchants in the following industries, `full_name` and `date_of_birth` are r
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -2447,7 +2510,8 @@ For merchants in the following industries, `full_name` and `date_of_birth` are r
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -2457,7 +2521,8 @@ For merchants in the following industries, `full_name` and `date_of_birth` are r
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -2487,7 +2552,7 @@ Bearer-Auth
 curl https://merchant.revolut.com/api/customers/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'Revolut-Api-Version: 2026-08-17'
+  -H 'Revolut-Api-Version: 2026-09-22'
 ```
 
 `GET /api/customers/{customer_id}`
@@ -2498,7 +2563,9 @@ Get the information about a specific customer, including their saved payment met
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|true|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>This endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.<br><br>If not specified, you will receive an error.<br><br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 |customer_id|path|string(uuid)|true|The ID of the `Customer` object.|
 
@@ -2512,6 +2579,7 @@ Get the information about a specific customer, including their saved payment met
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 
 > Example responses
 
@@ -2582,7 +2650,8 @@ Get the information about a specific customer, including their saved payment met
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -2592,7 +2661,8 @@ Get the information about a specific customer, including their saved payment met
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -2602,7 +2672,8 @@ Get the information about a specific customer, including their saved payment met
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -2631,7 +2702,7 @@ curl https://merchant.revolut.com/api/customers/497f6eca-6276-4993-bfeb-53cbbbba
   -X DELETE \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'Revolut-Api-Version: 2026-08-17'
+  -H 'Revolut-Api-Version: 2026-09-22'
 ```
 
 `DELETE /api/customers/{customer_id}`
@@ -2642,7 +2713,9 @@ Delete the profile of a specific customer.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|true|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>This endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.<br><br>If not specified, you will receive an error.<br><br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 |customer_id|path|string(uuid)|true|The ID of the `Customer` object.|
 
@@ -2656,6 +2729,7 @@ Delete the profile of a specific customer.
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 
 > Example responses
 
@@ -2675,7 +2749,8 @@ Delete the profile of a specific customer.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -2695,7 +2770,8 @@ Delete the profile of a specific customer.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -2705,7 +2781,8 @@ Delete the profile of a specific customer.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -2715,7 +2792,8 @@ Delete the profile of a specific customer.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -2748,7 +2826,7 @@ curl https://merchant.revolut.com/api/customers/497f6eca-6276-4993-bfeb-53cbbbba
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'Revolut-Api-Version: 2026-08-17' \
+  -H 'Revolut-Api-Version: 2026-09-22' \
   -d '{
     "email": "updated.customer@example.com"
   }'
@@ -2785,7 +2863,9 @@ For merchants in the following industries, `full_name` and `date_of_birth` are r
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|true|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>This endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.<br><br>If not specified, you will receive an error.<br><br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 |customer_id|path|string(uuid)|true|The ID of the `Customer` object.|
 |body|body|[Customer-Update-v2](#schemacustomer-update-v2)|false|none|
@@ -2804,6 +2884,7 @@ For merchants in the following industries, `full_name` and `date_of_birth` are r
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 
 > Example responses
 
@@ -2874,7 +2955,8 @@ For merchants in the following industries, `full_name` and `date_of_birth` are r
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -2884,7 +2966,8 @@ For merchants in the following industries, `full_name` and `date_of_birth` are r
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -2904,7 +2987,8 @@ For merchants in the following industries, `full_name` and `date_of_birth` are r
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -2914,7 +2998,8 @@ For merchants in the following industries, `full_name` and `date_of_birth` are r
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -2924,7 +3009,8 @@ For merchants in the following industries, `full_name` and `date_of_birth` are r
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -2955,7 +3041,7 @@ Bearer-Auth
 curl https://merchant.revolut.com/api/customers/497f6eca-6276-4993-bfeb-53cbbbba6f08/payment-methods \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'Revolut-Api-Version: 2026-08-17'
+  -H 'Revolut-Api-Version: 2026-09-22'
 ```
 
 `GET /api/customers/{customer_id}/payment-methods`
@@ -2971,7 +3057,9 @@ This can be useful in the following example cases:
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |only_merchant|query|boolean|false|If `true`, returns only the saved payment methods that can be used for<br>merchant-initiated transactions (MIT).|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|true|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>This endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.<br><br>If not specified, you will receive an error.<br><br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 |customer_id|path|string(uuid)|true|The ID of the `Customer` object.|
 
@@ -2985,6 +3073,7 @@ This can be useful in the following example cases:
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 
 > Example responses
 
@@ -3072,7 +3161,8 @@ This can be useful in the following example cases:
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -3082,7 +3172,8 @@ This can be useful in the following example cases:
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -3092,7 +3183,8 @@ This can be useful in the following example cases:
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -3120,7 +3212,7 @@ Bearer-Auth
 curl https://merchant.revolut.com/api/customers/497f6eca-6276-4993-bfeb-53cbbbba6f08/payment-methods/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'Revolut-Api-Version: 2026-08-17'
+  -H 'Revolut-Api-Version: 2026-09-22'
 ```
 
 `GET /api/customers/{customer_id}/payment-methods/{payment_method_id}`
@@ -3131,7 +3223,9 @@ Retrieve the information of a specific saved payment method for a customer.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|true|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>This endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.<br><br>If not specified, you will receive an error.<br><br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 |customer_id|path|string(uuid)|true|The ID of the `Customer` object.|
 |payment_method_id|path|string(uuid)|true|The ID of the payment method.|
@@ -3146,6 +3240,7 @@ Retrieve the information of a specific saved payment method for a customer.
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 
 > Example responses
 
@@ -3183,7 +3278,8 @@ Retrieve the information of a specific saved payment method for a customer.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -3193,7 +3289,8 @@ Retrieve the information of a specific saved payment method for a customer.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -3203,7 +3300,8 @@ Retrieve the information of a specific saved payment method for a customer.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -3232,7 +3330,7 @@ curl https://merchant.revolut.com/api/customers/497f6eca-6276-4993-bfeb-53cbbbba
   -X DELETE \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'Revolut-Api-Version: 2026-08-17'
+  -H 'Revolut-Api-Version: 2026-09-22'
 ```
 
 `DELETE /api/customers/{customer_id}/payment-methods/{payment_method_id}`
@@ -3245,7 +3343,9 @@ To reuse a deleted payment method, direct your customer to the checkout page to 
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|true|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>This endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.<br><br>If not specified, you will receive an error.<br><br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 |customer_id|path|string(uuid)|true|The ID of the `Customer` object.|
 |payment_method_id|path|string(uuid)|true|The ID of the payment method.|
@@ -3260,6 +3360,7 @@ To reuse a deleted payment method, direct your customer to the checkout page to 
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 
 > Example responses
 
@@ -3279,7 +3380,8 @@ To reuse a deleted payment method, direct your customer to the checkout page to 
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -3299,7 +3401,8 @@ To reuse a deleted payment method, direct your customer to the checkout page to 
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -3309,7 +3412,8 @@ To reuse a deleted payment method, direct your customer to the checkout page to 
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -3319,7 +3423,8 @@ To reuse a deleted payment method, direct your customer to the checkout page to 
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -3352,7 +3457,7 @@ curl https://merchant.revolut.com/api/customers/497f6eca-6276-4993-bfeb-53cbbbba
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'Revolut-Api-Version: 2026-08-17' \
+  -H 'Revolut-Api-Version: 2026-09-22' \
   -d '{
     "saved_for": "customer"
   }'
@@ -3362,7 +3467,7 @@ curl https://merchant.revolut.com/api/customers/497f6eca-6276-4993-bfeb-53cbbbba
 
 Update the attributes of a specific saved payment method for a customer.
 
-:::note
+:::info
 Updating `saved_for` to `customer` is a one-way operation — you can't change it back to `merchant`.
 
 Once updated, this payment method can no longer be used for merchant-initiated transactions (MIT), for example, to charge recurring payments. It can only be used when the customer is on the checkout page.
@@ -3384,7 +3489,9 @@ For more information, see:
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|true|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>This endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.<br><br>If not specified, you will receive an error.<br><br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 |customer_id|path|string(uuid)|true|The ID of the `Customer` object.|
 |payment_method_id|path|string(uuid)|true|The ID of the payment method.|
@@ -3401,6 +3508,7 @@ For more information, see:
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 |» saved_for|customer|
 
 > Example responses
@@ -3439,7 +3547,8 @@ For more information, see:
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -3459,7 +3568,8 @@ For more information, see:
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -3469,7 +3579,8 @@ For more information, see:
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -3479,7 +3590,8 @@ For more information, see:
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -3531,7 +3643,9 @@ Use this endpoint to track a payment's lifecycle, for example:
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |payment_id|path|string(uuid)|true|The ID of the `Payment` object.|
 |Revolut-Api-Version|header|string(date)|false|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 
@@ -3547,6 +3661,7 @@ Use this endpoint to track a payment's lifecycle, for example:
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 
 > Example responses
 
@@ -3619,7 +3734,8 @@ Use this endpoint to track a payment's lifecycle, for example:
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -3688,7 +3804,7 @@ This powerful structure allows you to build complex pricing models, including fr
 curl https://merchant.revolut.com/api/subscription-plans \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'Revolut-Api-Version: 2026-08-17'
+  -H 'Revolut-Api-Version: 2026-09-22'
 ```
 
 `GET /api/subscription-plans`
@@ -3706,8 +3822,10 @@ Retrieve all subscription plans configured for your merchant account. You can us
 |limit|query|integer|false|Maximum number of records to return. Used for **pagination**.|
 |from|query|string(date-time)|false|Filter records created from this date/time. Used for **filtering**.|
 |to|query|string(date-time)|false|Filter records created until this date/time. Used for **filtering**.|
-|page_token|query|string|false|Token for retrieving the next page of results. Used for **pagination**.<br><br>To paginate through results:<br><br>  1. Make an initial request with the desired `limit`.<br>  1. The response will include a `next_page_token` if more results are available.<br>  1. Use that token in the `page_token` parameter of your next request.<br>  1. Repeat until `next_page_token` is not present.<br><br>:::note<br>When using `page_token`, you must include all query parameters from the initial request (such as `from`, `to`, or other filter parameters) to maintain consistent filtering across pages.<br>:::|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|page_token|query|string(uuid)|false|Token for retrieving the next page of results. Used for **pagination**.<br><br>To paginate through results:<br><br>  1. Make an initial request with the desired `limit`.<br>  1. The response will include a `next_page_token` if more results are available.<br>  1. Use that token in the `page_token` parameter of your next request.<br>  1. Repeat until `next_page_token` is not present.<br><br>:::note<br>When using `page_token`, you must include all query parameters from the initial request (such as `from`, `to`, or other filter parameters) to maintain consistent filtering across pages.<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|true|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>If not specified, you will receive an error.<br><br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 
 #### Enumerated Values
@@ -3722,6 +3840,7 @@ Retrieve all subscription plans configured for your merchant account. You can us
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 
 > Example responses
 
@@ -3796,7 +3915,8 @@ Retrieve all subscription plans configured for your merchant account. You can us
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -3806,7 +3926,8 @@ Retrieve all subscription plans configured for your merchant account. You can us
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -3826,7 +3947,8 @@ Retrieve all subscription plans configured for your merchant account. You can us
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -3836,7 +3958,8 @@ Retrieve all subscription plans configured for your merchant account. You can us
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -3846,7 +3969,8 @@ Retrieve all subscription plans configured for your merchant account. You can us
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -3879,7 +4003,7 @@ curl https://merchant.revolut.com/api/subscription-plans \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'Revolut-Api-Version: 2026-08-17' \
+  -H 'Revolut-Api-Version: 2026-09-22' \
   -d '{
     "name": "Enterprise Pro Plan",
     "variations": [
@@ -3981,7 +4105,9 @@ The customer is billed a fixed platform fee plus £10.00 for each of their 5 act
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|true|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>If not specified, you will receive an error.<br><br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 |body|body|[Subscription-Plan-Creation](#schemasubscription-plan-creation)|true|none|
 |» name|body|[Subscription-Plan-Name](#schemasubscription-plan-name)|true|The name of the subscription plan.|
@@ -4000,6 +4126,7 @@ The customer is billed a fixed platform fee plus £10.00 for each of their 5 act
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 
 > Example responses
 
@@ -4047,7 +4174,8 @@ The customer is billed a fixed platform fee plus £10.00 for each of their 5 act
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -4057,7 +4185,8 @@ The customer is billed a fixed platform fee plus £10.00 for each of their 5 act
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -4077,7 +4206,8 @@ The customer is billed a fixed platform fee plus £10.00 for each of their 5 act
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -4087,7 +4217,8 @@ The customer is billed a fixed platform fee plus £10.00 for each of their 5 act
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -4097,7 +4228,8 @@ The customer is billed a fixed platform fee plus £10.00 for each of their 5 act
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -4128,7 +4260,7 @@ Bearer-Auth
 curl https://merchant.revolut.com/api/subscription-plans/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'Revolut-Api-Version: 2026-08-17'
+  -H 'Revolut-Api-Version: 2026-09-22'
 ```
 
 `GET /api/subscription-plans/{subscription_plan_id}`
@@ -4147,7 +4279,9 @@ If a `trial_duration` is defined, phases begin immediately after the trial ends.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|true|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>If not specified, you will receive an error.<br><br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 |subscription_plan_id|path|string(uuid)|true|The ID of the subscription plan.|
 
@@ -4163,6 +4297,7 @@ If a `trial_duration` is defined, phases begin immediately after the trial ends.
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 
 > Example responses
 
@@ -4210,7 +4345,8 @@ If a `trial_duration` is defined, phases begin immediately after the trial ends.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -4220,7 +4356,8 @@ If a `trial_duration` is defined, phases begin immediately after the trial ends.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -4230,7 +4367,8 @@ If a `trial_duration` is defined, phases begin immediately after the trial ends.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -4240,7 +4378,8 @@ If a `trial_duration` is defined, phases begin immediately after the trial ends.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -4250,7 +4389,8 @@ If a `trial_duration` is defined, phases begin immediately after the trial ends.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -4280,7 +4420,7 @@ Bearer-Auth
 curl https://merchant.revolut.com/api/subscriptions \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'Revolut-Api-Version: 2026-08-17'
+  -H 'Revolut-Api-Version: 2026-09-22'
 ```
 
 `GET /api/subscriptions`
@@ -4299,8 +4439,10 @@ Retrieve all subscriptions for the merchant account. You can use the query param
 |from|query|string(date-time)|false|Filter records created from this date/time. Used for **filtering**.|
 |to|query|string(date-time)|false|Filter records created until this date/time. Used for **filtering**.|
 |external_reference|query|string|false|Return subscriptions with a specific `external_reference`. Used for **filtering**.|
-|page_token|query|string|false|Token for retrieving the next page of results. Used for **pagination**.<br><br>To paginate through results:<br><br>  1. Make an initial request with the desired `limit`.<br>  1. The response will include a `next_page_token` if more results are available.<br>  1. Use that token in the `page_token` parameter of your next request.<br>  1. Repeat until `next_page_token` is not present.<br><br>:::note<br>When using `page_token`, you must include all query parameters from the initial request (such as `from`, `to`, or other filter parameters) to maintain consistent filtering across pages.<br>:::|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|page_token|query|string(uuid)|false|Token for retrieving the next page of results. Used for **pagination**.<br><br>To paginate through results:<br><br>  1. Make an initial request with the desired `limit`.<br>  1. The response will include a `next_page_token` if more results are available.<br>  1. Use that token in the `page_token` parameter of your next request.<br>  1. Repeat until `next_page_token` is not present.<br><br>:::note<br>When using `page_token`, you must include all query parameters from the initial request (such as `from`, `to`, or other filter parameters) to maintain consistent filtering across pages.<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|true|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>If not specified, you will receive an error.<br><br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 
 #### Enumerated Values
@@ -4315,6 +4457,7 @@ Retrieve all subscriptions for the merchant account. You can use the query param
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 
 > Example responses
 
@@ -4359,7 +4502,8 @@ Retrieve all subscriptions for the merchant account. You can use the query param
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -4369,7 +4513,8 @@ Retrieve all subscriptions for the merchant account. You can use the query param
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -4389,7 +4534,8 @@ Retrieve all subscriptions for the merchant account. You can use the query param
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -4399,7 +4545,8 @@ Retrieve all subscriptions for the merchant account. You can use the query param
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -4409,7 +4556,8 @@ Retrieve all subscriptions for the merchant account. You can use the query param
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -4442,7 +4590,7 @@ curl https://merchant.revolut.com/api/subscriptions \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'Revolut-Api-Version: 2026-08-17' \
+  -H 'Revolut-Api-Version: 2026-09-22' \
   -d '{
     "plan_variation_id": "550e8400-e29b-41d4-a716-446655440000",
     "customer_id": "650e8400-e29b-41d4-a716-446655440001",
@@ -4544,7 +4692,9 @@ Use this flow when you want to embed the payment experience directly on your web
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |Idempotency-Key|header|string|false|The `Idempotency-Key` ensures that requests are processed only once, preventing multiple executions of the same operation due to retries or duplicate requests.<br><br>This header is optional and can accept any unique string value the merchant uses.<br><br>A recommended practice is to use a unique identifier from your system (such as the entity's ID or a request UUID) as the idempotency key. This facilitates tracking and managing requests effectively.|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|true|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>If not specified, you will receive an error.<br><br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 |body|body|[Subscription-Creation](#schemasubscription-creation)|true|none|
 |» plan_variation_id|body|[Subscription-Plan-Variation-Id](#schemasubscription-plan-variation-id)|true|Unique identifier for the subscription plan variation.|
@@ -4565,6 +4715,7 @@ Use this flow when you want to embed the payment experience directly on your web
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 
 > Example responses
 
@@ -4592,7 +4743,8 @@ Use this flow when you want to embed the payment experience directly on your web
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -4602,7 +4754,8 @@ Use this flow when you want to embed the payment experience directly on your web
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -4622,7 +4775,8 @@ Use this flow when you want to embed the payment experience directly on your web
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -4632,7 +4786,8 @@ Use this flow when you want to embed the payment experience directly on your web
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -4642,7 +4797,8 @@ Use this flow when you want to embed the payment experience directly on your web
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -4673,7 +4829,7 @@ Bearer-Auth
 curl https://merchant.revolut.com/api/subscriptions/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'Revolut-Api-Version: 2026-08-17'
+  -H 'Revolut-Api-Version: 2026-09-22'
 ```
 
 `GET /api/subscriptions/{subscription_id}`
@@ -4686,7 +4842,9 @@ Use this endpoint to get the current state and details of a specific subscriptio
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|true|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>If not specified, you will receive an error.<br><br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 |subscription_id|path|string(uuid)|true|The ID of the subscription.|
 
@@ -4702,6 +4860,7 @@ Use this endpoint to get the current state and details of a specific subscriptio
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 
 > Example responses
 
@@ -4732,7 +4891,8 @@ Use this endpoint to get the current state and details of a specific subscriptio
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -4742,7 +4902,8 @@ Use this endpoint to get the current state and details of a specific subscriptio
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -4752,7 +4913,8 @@ Use this endpoint to get the current state and details of a specific subscriptio
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -4762,7 +4924,8 @@ Use this endpoint to get the current state and details of a specific subscriptio
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -4772,7 +4935,8 @@ Use this endpoint to get the current state and details of a specific subscriptio
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -4804,7 +4968,7 @@ curl https://merchant.revolut.com/api/subscriptions/497f6eca-6276-4993-bfeb-53cb
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'Revolut-Api-Version: 2026-08-17' \
+  -H 'Revolut-Api-Version: 2026-09-22' \
   -d '{
     "external_reference": "ext-ref-12345"
   }'
@@ -4836,7 +5000,9 @@ You can update a subscription and specific parameters based on the value of the 
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|true|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>If not specified, you will receive an error.<br><br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 |subscription_id|path|string(uuid)|true|The ID of the subscription.|
 |body|body|[Subscription-Update](#schemasubscription-update)|true|none|
@@ -4854,6 +5020,7 @@ You can update a subscription and specific parameters based on the value of the 
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 
 > Example responses
 
@@ -4884,7 +5051,8 @@ You can update a subscription and specific parameters based on the value of the 
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -4894,7 +5062,8 @@ You can update a subscription and specific parameters based on the value of the 
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -4914,7 +5083,8 @@ You can update a subscription and specific parameters based on the value of the 
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -4924,7 +5094,8 @@ You can update a subscription and specific parameters based on the value of the 
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -4934,7 +5105,8 @@ You can update a subscription and specific parameters based on the value of the 
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -4944,7 +5116,8 @@ You can update a subscription and specific parameters based on the value of the 
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -4977,7 +5150,7 @@ curl https://merchant.revolut.com/api/subscriptions/497f6eca-6276-4993-bfeb-53cb
   -X POST \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'Revolut-Api-Version: 2026-08-17'
+  -H 'Revolut-Api-Version: 2026-09-22'
 ```
 
 `POST /api/subscriptions/{subscription_id}/cancel`
@@ -4990,7 +5163,9 @@ You can cancel a subscription in any state except `cancelled` or `finished`. Whe
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|true|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>If not specified, you will receive an error.<br><br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 |subscription_id|path|string(uuid)|true|The ID of the subscription.|
 
@@ -5006,6 +5181,7 @@ You can cancel a subscription in any state except `cancelled` or `finished`. Whe
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 
 > Example responses
 
@@ -5015,7 +5191,8 @@ You can cancel a subscription in any state except `cancelled` or `finished`. Whe
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -5025,7 +5202,8 @@ You can cancel a subscription in any state except `cancelled` or `finished`. Whe
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -5045,7 +5223,8 @@ You can cancel a subscription in any state except `cancelled` or `finished`. Whe
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -5055,7 +5234,8 @@ You can cancel a subscription in any state except `cancelled` or `finished`. Whe
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -5065,7 +5245,8 @@ You can cancel a subscription in any state except `cancelled` or `finished`. Whe
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -5075,7 +5256,8 @@ You can cancel a subscription in any state except `cancelled` or `finished`. Whe
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -5109,7 +5291,7 @@ curl https://merchant.revolut.com/api/subscriptions/497f6eca-6276-4993-bfeb-53cb
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'Revolut-Api-Version: 2026-08-17' \
+  -H 'Revolut-Api-Version: 2026-09-22' \
   -d '{
     "plan_variation_id": "850e8400-e29b-41d4-a716-446655440003",
     "scheduled": "at_cycle_end"
@@ -5148,7 +5330,9 @@ When you schedule a plan change, the subscription continues operating under its 
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|true|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>If not specified, you will receive an error.<br><br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 |subscription_id|path|string(uuid)|true|The ID of the subscription.|
 |body|body|[Subscription-Change-Plan](#schemasubscription-change-plan)|true|none|
@@ -5169,6 +5353,7 @@ When you schedule a plan change, the subscription continues operating under its 
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 |» scheduled|at_cycle_end|
 |» reason|customer_request|
 |» reason|merchant_request|
@@ -5191,7 +5376,8 @@ When you schedule a plan change, the subscription continues operating under its 
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -5211,7 +5397,8 @@ When you schedule a plan change, the subscription continues operating under its 
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -5231,7 +5418,8 @@ When you schedule a plan change, the subscription continues operating under its 
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -5241,7 +5429,8 @@ When you schedule a plan change, the subscription continues operating under its 
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -5275,7 +5464,7 @@ curl https://merchant.revolut.com/api/subscriptions/497f6eca-6276-4993-bfeb-53cb
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'Revolut-Api-Version: 2026-08-17' \
+  -H 'Revolut-Api-Version: 2026-09-22' \
   -d '{
     "renewal_date": "2026-07-01T00:00:00Z"
   }'
@@ -5318,7 +5507,9 @@ Subsequent cycles resume the original plan cadence (e.g., monthly) from the new 
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|true|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>If not specified, you will receive an error.<br><br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 |subscription_id|path|string(uuid)|true|The ID of the subscription.|
 |body|body|[Subscription-Update-Renewal-Date](#schemasubscription-update-renewal-date)|true|none|
@@ -5336,6 +5527,7 @@ Subsequent cycles resume the original plan cadence (e.g., monthly) from the new 
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 
 > Example responses
 
@@ -5345,7 +5537,8 @@ Subsequent cycles resume the original plan cadence (e.g., monthly) from the new 
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -5355,7 +5548,8 @@ Subsequent cycles resume the original plan cadence (e.g., monthly) from the new 
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -5375,7 +5569,8 @@ Subsequent cycles resume the original plan cadence (e.g., monthly) from the new 
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -5395,7 +5590,8 @@ Subsequent cycles resume the original plan cadence (e.g., monthly) from the new 
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -5405,7 +5601,8 @@ Subsequent cycles resume the original plan cadence (e.g., monthly) from the new 
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -5437,7 +5634,7 @@ Bearer-Auth
 curl https://merchant.revolut.com/api/subscriptions/497f6eca-6276-4993-bfeb-53cbbbba6f08/cycles \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'Revolut-Api-Version: 2026-08-17'
+  -H 'Revolut-Api-Version: 2026-09-22'
 ```
 
 `GET /api/subscriptions/{subscription_id}/cycles`
@@ -5457,8 +5654,10 @@ You can use the query parameters for:
 |limit|query|integer|false|Maximum number of records to return. Used for **pagination**.|
 |from|query|string(date-time)|false|Filter records created from this date/time. Used for **filtering**.|
 |to|query|string(date-time)|false|Filter records created until this date/time. Used for **filtering**.|
-|page_token|query|string|false|Token for retrieving the next page of results. Used for **pagination**.<br><br>To paginate through results:<br><br>  1. Make an initial request with the desired `limit`.<br>  1. The response will include a `next_page_token` if more results are available.<br>  1. Use that token in the `page_token` parameter of your next request.<br>  1. Repeat until `next_page_token` is not present.<br><br>:::note<br>When using `page_token`, you must include all query parameters from the initial request (such as `from`, `to`, or other filter parameters) to maintain consistent filtering across pages.<br>:::|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|page_token|query|string(uuid)|false|Token for retrieving the next page of results. Used for **pagination**.<br><br>To paginate through results:<br><br>  1. Make an initial request with the desired `limit`.<br>  1. The response will include a `next_page_token` if more results are available.<br>  1. Use that token in the `page_token` parameter of your next request.<br>  1. Repeat until `next_page_token` is not present.<br><br>:::note<br>When using `page_token`, you must include all query parameters from the initial request (such as `from`, `to`, or other filter parameters) to maintain consistent filtering across pages.<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|true|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>If not specified, you will receive an error.<br><br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 |subscription_id|path|string(uuid)|true|The ID of the subscription.|
 
@@ -5474,6 +5673,7 @@ You can use the query parameters for:
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 
 > Example responses
 
@@ -5517,7 +5717,8 @@ You can use the query parameters for:
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -5527,7 +5728,8 @@ You can use the query parameters for:
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -5537,7 +5739,8 @@ You can use the query parameters for:
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -5547,7 +5750,8 @@ You can use the query parameters for:
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -5557,7 +5761,8 @@ You can use the query parameters for:
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -5587,7 +5792,7 @@ Bearer-Auth
 curl https://merchant.revolut.com/api/subscriptions/497f6eca-6276-4993-bfeb-53cbbbba6f08/cycles/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'Revolut-Api-Version: 2026-08-17'
+  -H 'Revolut-Api-Version: 2026-09-22'
 ```
 
 `GET /api/subscriptions/{subscription_id}/cycles/{cycle_id}`
@@ -5600,7 +5805,9 @@ Use this endpoint to get the details and current state of a particular billing c
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|true|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>If not specified, you will receive an error.<br><br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 |subscription_id|path|string(uuid)|true|The ID of the subscription.|
 |cycle_id|path|string(uuid)|true|The ID of the subscription cycle.|
@@ -5617,6 +5824,7 @@ Use this endpoint to get the details and current state of a particular billing c
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 
 > Example responses
 
@@ -5643,7 +5851,8 @@ Use this endpoint to get the details and current state of a particular billing c
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -5653,7 +5862,8 @@ Use this endpoint to get the details and current state of a particular billing c
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -5663,7 +5873,8 @@ Use this endpoint to get the details and current state of a particular billing c
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -5673,7 +5884,8 @@ Use this endpoint to get the details and current state of a particular billing c
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -5683,7 +5895,8 @@ Use this endpoint to get the details and current state of a particular billing c
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -5713,7 +5926,7 @@ Bearer-Auth
 curl https://merchant.revolut.com/api/subscription-usages \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'Revolut-Api-Version: 2026-08-17'
+  -H 'Revolut-Api-Version: 2026-09-22'
 ```
 
 `GET /api/subscription-usages`
@@ -5733,8 +5946,10 @@ Retrieve all usage records for the merchant account. Results are ordered by `usa
 |to_usage_date|query|string(date-time)|false|Filter usage records with a `usage_date` before this date and time.|
 |subscription_id|query|string(uuid)|false|Filter usages by the ID of the subscription.|
 |subscription_cycle_id|query|string(uuid)|false|Filter usages by the ID of the subscription cycle.|
-|page_token|query|string|false|Token for retrieving the next page of results. Used for **pagination**.<br><br>To paginate through results:<br><br>  1. Make an initial request with the desired `limit`.<br>  1. The response will include a `next_page_token` if more results are available.<br>  1. Use that token in the `page_token` parameter of your next request.<br>  1. Repeat until `next_page_token` is not present.<br><br>:::note<br>When using `page_token`, you must include all query parameters from the initial request (such as `from`, `to`, or other filter parameters) to maintain consistent filtering across pages.<br>:::|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|page_token|query|string(uuid)|false|Token for retrieving the next page of results. Used for **pagination**.<br><br>To paginate through results:<br><br>  1. Make an initial request with the desired `limit`.<br>  1. The response will include a `next_page_token` if more results are available.<br>  1. Use that token in the `page_token` parameter of your next request.<br>  1. Repeat until `next_page_token` is not present.<br><br>:::note<br>When using `page_token`, you must include all query parameters from the initial request (such as `from`, `to`, or other filter parameters) to maintain consistent filtering across pages.<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|true|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>If not specified, you will receive an error.<br><br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 
 #### Enumerated Values
@@ -5749,6 +5964,7 @@ Retrieve all usage records for the merchant account. Results are ordered by `usa
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 
 > Example responses
 
@@ -5796,7 +6012,8 @@ Retrieve all usage records for the merchant account. Results are ordered by `usa
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -5806,7 +6023,8 @@ Retrieve all usage records for the merchant account. Results are ordered by `usa
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -5826,7 +6044,8 @@ Retrieve all usage records for the merchant account. Results are ordered by `usa
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -5836,7 +6055,8 @@ Retrieve all usage records for the merchant account. Results are ordered by `usa
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -5869,7 +6089,7 @@ curl https://merchant.revolut.com/api/subscription-usages \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -H 'Idempotency-Key: string' \
-  -H 'Revolut-Api-Version: 2026-08-17' \
+  -H 'Revolut-Api-Version: 2026-09-22' \
   -d '{
     "subscription_id": "550e8400-e29b-41d4-a716-446655440000",
     "subscription_item_code": "active_seats",
@@ -5934,7 +6154,9 @@ The `Idempotency-Key` header is **required** for this endpoint. Providing a uniq
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |Idempotency-Key|header|string|true|The `Idempotency-Key` ensures that requests are processed only once, preventing multiple executions of the same operation due to retries or duplicate requests.<br><br>This header is required. It can accept any unique string value the merchant uses.<br><br>A recommended practice is to use a unique identifier from your system (such as the entity's ID or a request UUID) as the idempotency key. This facilitates tracking and managing requests effectively.|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|true|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>If not specified, you will receive an error.<br><br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 |body|body|[Subscription-Usage-Creation](#schemasubscription-usage-creation)|true|none|
 |» subscription_id|body|[Subscription-Id](#schemasubscription-id)|true|Unique identifier for the subscription.|
@@ -5955,6 +6177,7 @@ The `Idempotency-Key` header is **required** for this endpoint. Providing a uniq
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 
 > Example responses
 
@@ -5993,7 +6216,8 @@ The `Idempotency-Key` header is **required** for this endpoint. Providing a uniq
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -6023,7 +6247,8 @@ The `Idempotency-Key` header is **required** for this endpoint. Providing a uniq
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -6033,7 +6258,8 @@ The `Idempotency-Key` header is **required** for this endpoint. Providing a uniq
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -6064,7 +6290,7 @@ Bearer-Auth
 curl https://merchant.revolut.com/api/subscription-usages/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'Revolut-Api-Version: 2026-08-17'
+  -H 'Revolut-Api-Version: 2026-09-22'
 ```
 
 `GET /api/subscription-usages/{usage_id}`
@@ -6077,7 +6303,9 @@ Use this endpoint to get the details of a specific usage that was reported or up
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|true|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>If not specified, you will receive an error.<br><br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 |usage_id|path|string(uuid)|true|The ID of the usage record.|
 
@@ -6093,6 +6321,7 @@ Use this endpoint to get the details of a specific usage that was reported or up
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 
 > Example responses
 
@@ -6121,7 +6350,8 @@ Use this endpoint to get the details of a specific usage that was reported or up
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -6131,7 +6361,8 @@ Use this endpoint to get the details of a specific usage that was reported or up
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -6141,7 +6372,8 @@ Use this endpoint to get the details of a specific usage that was reported or up
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -6151,7 +6383,8 @@ Use this endpoint to get the details of a specific usage that was reported or up
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -6161,7 +6394,8 @@ Use this endpoint to get the details of a specific usage that was reported or up
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -6192,7 +6426,7 @@ curl https://merchant.revolut.com/api/subscription-usages/497f6eca-6276-4993-bfe
   -X DELETE \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'Revolut-Api-Version: 2026-08-17'
+  -H 'Revolut-Api-Version: 2026-09-22'
 ```
 
 `DELETE /api/subscription-usages/{usage_id}`
@@ -6203,7 +6437,9 @@ Delete a subscription usage record. This operation is only permitted while the b
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|true|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>If not specified, you will receive an error.<br><br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 |usage_id|path|string(uuid)|true|The ID of the usage record.|
 
@@ -6219,6 +6455,7 @@ Delete a subscription usage record. This operation is only permitted while the b
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 
 > Example responses
 
@@ -6228,7 +6465,8 @@ Delete a subscription usage record. This operation is only permitted while the b
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -6238,7 +6476,8 @@ Delete a subscription usage record. This operation is only permitted while the b
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -6258,7 +6497,8 @@ Delete a subscription usage record. This operation is only permitted while the b
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -6278,7 +6518,8 @@ Delete a subscription usage record. This operation is only permitted while the b
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -6288,7 +6529,8 @@ Delete a subscription usage record. This operation is only permitted while the b
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -6322,7 +6564,7 @@ curl https://merchant.revolut.com/api/subscription-usages/497f6eca-6276-4993-bfe
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'Revolut-Api-Version: 2026-08-17' \
+  -H 'Revolut-Api-Version: 2026-09-22' \
   -d '{
     "quantity": 150
   }'
@@ -6344,7 +6586,9 @@ Update the quantity or metadata of a subscription usage record.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|true|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>If not specified, you will receive an error.<br><br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 |usage_id|path|string(uuid)|true|The ID of the usage record.|
 |body|body|[Subscription-Usage-Update](#schemasubscription-usage-update)|true|none|
@@ -6363,6 +6607,7 @@ Update the quantity or metadata of a subscription usage record.
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 
 > Example responses
 
@@ -6391,7 +6636,8 @@ Update the quantity or metadata of a subscription usage record.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -6401,7 +6647,8 @@ Update the quantity or metadata of a subscription usage record.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -6421,7 +6668,8 @@ Update the quantity or metadata of a subscription usage record.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -6441,7 +6689,8 @@ Update the quantity or metadata of a subscription usage record.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -6451,7 +6700,8 @@ Update the quantity or metadata of a subscription usage record.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -6491,7 +6741,7 @@ Payout information, including IDs, can be retrieved via the [Retrieve payout lis
 curl https://merchant.revolut.com/api/payouts \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'Revolut-Api-Version: 2026-08-17'
+  -H 'Revolut-Api-Version: 2026-09-22'
 ```
 
 `GET /api/payouts`
@@ -6511,7 +6761,9 @@ Retrieve all the payouts you made from your Merchant account. You can also use t
 |from_created_date|query|string(date-time)|false|Retrieve records with a `created_at` value ≥ `from_created_date`.<br><br>Use the [ISO 8601 date-time format](https://en.wikipedia.org/wiki/ISO_8601): `yyyy-MM-ddTHH:mm:ss[.SSSSSS]Z`.|
 |to_created_date|query|string(date-time)|false|Retrieve records with a `created_at` value ≤ `to_created_date`.<br><br>Use the [ISO 8601 date-time format](https://en.wikipedia.org/wiki/ISO_8601): `yyyy-MM-ddTHH:mm:ss[.SSSSSS]Z`.|
 |state|query|[[Payout-State](#schemapayout-state)]|false|Filter payouts by state. Repeat the parameter to filter by multiple states.|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|true|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>If not specified, you will receive an error.<br><br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 
 #### Enumerated Values
@@ -6529,6 +6781,7 @@ Retrieve all the payouts you made from your Merchant account. You can also use t
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 
 > Example responses
 
@@ -6581,7 +6834,8 @@ Retrieve all the payouts you made from your Merchant account. You can also use t
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -6591,7 +6845,8 @@ Retrieve all the payouts you made from your Merchant account. You can also use t
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -6628,7 +6883,7 @@ Bearer-Auth
 curl https://merchant.revolut.com/api/payouts/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'Revolut-Api-Version: 2026-08-17'
+  -H 'Revolut-Api-Version: 2026-09-22'
 ```
 
 `GET /api/payouts/{payout_id}`
@@ -6639,7 +6894,9 @@ Retrieve the details of a payout. Provide the unique payout ID, and the correspo
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|true|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>If not specified, you will receive an error.<br><br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 |payout_id|path|string(uuid)|true|The ID of the `Payout` object.|
 
@@ -6655,6 +6912,7 @@ Retrieve the details of a payout. Provide the unique payout ID, and the correspo
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 
 > Example responses
 
@@ -6707,7 +6965,8 @@ Retrieve the details of a payout. Provide the unique payout ID, and the correspo
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -6744,7 +7003,7 @@ Endpoints that allow merchants to view customer payment disputes.
 curl https://merchant.revolut.com/api/disputes \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'Revolut-Api-Version: 2026-08-17'
+  -H 'Revolut-Api-Version: 2026-09-22'
 ```
 
 `GET /api/disputes`
@@ -6770,7 +7029,9 @@ You can also use the query parameters for:
 |to_created_date|query|string(date-time)|false|Retrieve records with a `created_at` value ≤ `to_created_date`.<br><br>Use the [ISO 8601 date-time format](https://en.wikipedia.org/wiki/ISO_8601): `yyyy-MM-ddTHH:mm:ss[.SSSSSS]Z`.|
 |state|query|[string]|false|Filter disputes by state. Repeat the parameter to filter by multiple states.<br><br>\| Value \| Description \|<br>\|-------\|-------------\|<br>\| `needs_response` \| Dispute requires your response \|<br>\| `under_review` \| Dispute is being reviewed \|<br>\| `won` \| Dispute resolved in your favour \|<br>\| `lost` \| Dispute resolved against you \|<br><br>The parameter is case sensitive.|
 |payment_id|query|[string(uuid)]|false|Filter disputes by the ID of the associated payment. Repeat the parameter to filter by multiple payment IDs.<br><br>```<br>https://merchant.revolut.com/api/disputes?payment_id=123&payment_id=456<br>```|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|true|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>If not specified, you will receive an error.<br><br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 
 #### Enumerated Values
@@ -6789,6 +7050,7 @@ You can also use the query parameters for:
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 
 > Example responses
 
@@ -6896,7 +7158,8 @@ You can also use the query parameters for:
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -6924,7 +7187,7 @@ Bearer-Auth
 curl https://merchant.revolut.com/api/disputes/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'Revolut-Api-Version: 2026-08-17'
+  -H 'Revolut-Api-Version: 2026-09-22'
 ```
 
 `GET /api/disputes/{dispute_id}`
@@ -6939,7 +7202,9 @@ This endpoint is only available in **Production** environment.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|true|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>If not specified, you will receive an error.<br><br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 |dispute_id|path|string(uuid)|true|The ID of the `Dispute` object.|
 
@@ -6955,6 +7220,7 @@ This endpoint is only available in **Production** environment.
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 
 > Example responses
 
@@ -7024,7 +7290,8 @@ This endpoint is only available in **Production** environment.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -7054,7 +7321,7 @@ curl https://merchant.revolut.com/api/disputes/497f6eca-6276-4993-bfeb-53cbbbba6
   -X POST \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'Revolut-Api-Version: 2026-08-17'
+  -H 'Revolut-Api-Version: 2026-09-22'
 ```
 
 `POST /api/disputes/{dispute_id}/accept`
@@ -7071,7 +7338,9 @@ This endpoint is only available in **Production** environment.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|true|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>If not specified, you will receive an error.<br><br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 |dispute_id|path|string(uuid)|true|The ID of the `Dispute` object.|
 
@@ -7087,6 +7356,7 @@ This endpoint is only available in **Production** environment.
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 
 > Example responses
 
@@ -7136,7 +7406,8 @@ This endpoint is only available in **Production** environment.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -7146,7 +7417,8 @@ This endpoint is only available in **Production** environment.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -7178,7 +7450,7 @@ curl https://merchant.revolut.com/api/disputes/497f6eca-6276-4993-bfeb-53cbbbba6
   -X POST \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'Revolut-Api-Version: 2026-08-17' \
+  -H 'Revolut-Api-Version: 2026-09-22' \
   -F 'file=@/path/to/file'
 ```
 
@@ -7209,7 +7481,9 @@ file: "<binary file content>"
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|true|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>If not specified, you will receive an error.<br><br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 |Content-Type|header|string|true|The content type sent in the request.|
 |dispute_id|path|string(uuid)|true|The ID of the `Dispute` object.|
@@ -7228,6 +7502,7 @@ file: "<binary file content>"
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 
 > Example responses
 
@@ -7305,7 +7580,8 @@ file: "<binary file content>"
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -7315,7 +7591,8 @@ file: "<binary file content>"
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -7350,7 +7627,7 @@ curl https://merchant.revolut.com/api/disputes/497f6eca-6276-4993-bfeb-53cbbbba6
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'Revolut-Api-Version: 2026-08-17' \
+  -H 'Revolut-Api-Version: 2026-09-22' \
   -d '{
     "reason": "refund_already_issued",
     "evidences": [
@@ -7386,7 +7663,9 @@ This endpoint is only available in **Production** environment.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|true|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>If not specified, you will receive an error.<br><br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 |dispute_id|path|string(uuid)|true|The ID of the `Dispute` object.|
 |body|body|[Dispute-Challenge](#schemadispute-challenge)|true|none|
@@ -7406,6 +7685,7 @@ This endpoint is only available in **Production** environment.
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 |» reason|product_already_delivered|
 |» reason|refund_already_issued|
 |» reason|disagree_with_customers_claim|
@@ -7458,7 +7738,8 @@ This endpoint is only available in **Production** environment.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -7468,7 +7749,8 @@ This endpoint is only available in **Production** environment.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -7606,7 +7888,9 @@ Each report type uses a different primary ID, depending on which system the data
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |body|body|[Report-Run-Settlement-Report](#schemareport-run-settlement-report) \| [Report-Run-Custom-Report](#schemareport-run-custom-report) \| [Report-Run-Payments-Report](#schemareport-run-payments-report) \| [Report-Run-Payout-Report](#schemareport-run-payout-report) \| [Report-Run-Icpp-Report](#schemareport-run-icpp-report)|false|none|
 |» *oneOf*|body|[Report-Run-Settlement-Report](#schemareport-run-settlement-report)|false|A settlement report contains all the query information for generating reports of settled transactions associated with a Merchant account.|
 |» *oneOf*|body|[Report-Run-Custom-Report](#schemareport-run-custom-report)|false|A custom report contains all the query information for generating reports of selected transactions associated with a Merchant account.|
@@ -7631,7 +7915,8 @@ Each report type uses a different primary ID, depending on which system the data
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -7641,7 +7926,8 @@ Each report type uses a different primary ID, depending on which system the data
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -7661,7 +7947,8 @@ Each report type uses a different primary ID, depending on which system the data
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -7671,7 +7958,8 @@ Each report type uses a different primary ID, depending on which system the data
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -7681,7 +7969,8 @@ Each report type uses a different primary ID, depending on which system the data
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -7728,7 +8017,9 @@ Once that 24-hour window elapses, the report run remains retrievable but transit
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |report_run_id|path|string(uuid)|true|Unique ID of the report run.|
 
 > Example responses
@@ -7748,7 +8039,8 @@ Once that 24-hour window elapses, the report run remains retrievable but transit
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -7758,7 +8050,8 @@ Once that 24-hour window elapses, the report run remains retrievable but transit
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -7768,7 +8061,8 @@ Once that 24-hour window elapses, the report run remains retrievable but transit
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -7778,7 +8072,8 @@ Once that 24-hour window elapses, the report run remains retrievable but transit
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -7837,7 +8132,9 @@ Use the schema selector below to see the available columns for each report type.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |report_run_id|path|string(uuid)|true|Unique ID of the report run.|
 
 > Example responses
@@ -7858,7 +8155,8 @@ transaction_id,order_id,original_order_id,started_date,updated_date,completed_da
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -7868,7 +8166,8 @@ transaction_id,order_id,original_order_id,started_date,updated_date,completed_da
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -7878,7 +8177,8 @@ transaction_id,order_id,original_order_id,started_date,updated_date,completed_da
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -7888,7 +8188,8 @@ transaction_id,order_id,original_order_id,started_date,updated_date,completed_da
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -7951,7 +8252,7 @@ For more information about the order and payment lifecycle, see: [Order and paym
 curl https://merchant.revolut.com/api/webhooks \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'Revolut-Api-Version: 2026-08-17'
+  -H 'Revolut-Api-Version: 2026-09-22'
 ```
 
 `GET /api/webhooks`
@@ -7962,7 +8263,9 @@ Get a list of webhooks that you are currently subscribed to.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|true|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>This endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.<br><br>If not specified, you will receive an error.<br><br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 
 #### Enumerated Values
@@ -7975,6 +8278,7 @@ Get a list of webhooks that you are currently subscribed to.
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 
 > Example responses
 
@@ -8016,7 +8320,8 @@ Get a list of webhooks that you are currently subscribed to.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -8036,7 +8341,8 @@ Get a list of webhooks that you are currently subscribed to.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -8066,7 +8372,7 @@ curl https://merchant.revolut.com/api/webhooks \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'Revolut-Api-Version: 2026-08-17' \
+  -H 'Revolut-Api-Version: 2026-09-22' \
   -d '{
     "url": "https://example.com/webhooks",
     "events": [
@@ -8104,11 +8410,13 @@ Ensure your webhook registrations are necessary and within the allowed limit.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|true|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>This endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.<br><br>If not specified, you will receive an error.<br><br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 |body|body|[Webhook-Creation](#schemawebhook-creation)|false|none|
 |» url|body|[Webhook-Url](#schemawebhook-url)|true|Your webhook's URL to which event notifications will be sent. <br><br>Must be a valid HTTP or HTTPS URL, capable of receiving `POST` requests.<br><br>:::warning<br>Restrictions:<br>- Must be a valid URI as defined by [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)<br>- URI scheme is required and must be either `http` or `https`<br>- URI host is required and cannot be `localhost` or an IP address<br>- Max length: `2000`<br>- Reserved or invalid characters must be percent-encoded (for example, use `%20` instead of a space)<br>:::|
-|» events|body|[Webhook-Events](#schemawebhook-events)|true|List of event types that the webhook is configured to listen to.<br><br>Each event is related to status changes of a specific object in the Merchant API:<br><br>  \| Object \| Event types \|<br>  \| --------- \| ----------- \|<br>  \| `Order`   \| <ul> <li>`ORDER_COMPLETED`</li> <li>`ORDER_AUTHORISED`</li> <li>`ORDER_CANCELLED`</li> <li>`ORDER_FAILED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_AUTHORISED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_DECLINED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_FAILED`</li> </ul> \|<br>  \| `Payment` \| <ul> <li>`ORDER_PAYMENT_AUTHENTICATION_CHALLENGED`</li> <li>`ORDER_PAYMENT_AUTHENTICATED`</li> <li>`ORDER_PAYMENT_AUTHORISATION_STARTED`</li> <li>`ORDER_PAYMENT_DECLINED`</li> <li>`ORDER_PAYMENT_FAILED`</li> </ul> \|<br>  \| `Subscription`  \| <ul> <li>`SUBSCRIPTION_INITIATED`</li> <li>`SUBSCRIPTION_FINISHED`</li> <li>`SUBSCRIPTION_CANCELLED`</li> <li>`SUBSCRIPTION_OVERDUE`</li></ul> \|<br>  \| `Payout`  \| <ul> <li>`PAYOUT_INITIATED`</li> <li>`PAYOUT_COMPLETED`</li> <li>`PAYOUT_FAILED`</li> </ul> \|<br>  \| `Dispute`  \| <ul> <li>`DISPUTE_ACTION_REQUIRED`</li> <li>`DISPUTE_UNDER_REVIEW`</li> <li>`DISPUTE_WON`</li> <li>`DISPUTE_LOST`</li></ul> \||
+|» events|body|[Webhook-Events](#schemawebhook-events)|true|List of event types that the webhook is configured to listen to.<br><br>Each event is related to status changes of a specific object in the Merchant API:<br><br>  \| Object \| Event types \|<br>  \| --------- \| ----------- \|<br>  \| `Order`   \| <ul> <li>`ORDER_COMPLETED`</li> <li>`ORDER_AUTHORISED`</li> <li>`ORDER_CANCELLED`</li> <li>`ORDER_FAILED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_AUTHORISED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_DECLINED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_FAILED`</li> </ul> \|<br>  \| `Payment` \| <ul> <li>`ORDER_PAYMENT_AUTHENTICATION_CHALLENGED`</li> <li>`ORDER_PAYMENT_AUTHENTICATED`</li> <li>`ORDER_PAYMENT_AUTHORISATION_STARTED`</li> <li>`ORDER_PAYMENT_DECLINED`</li> <li>`ORDER_PAYMENT_FAILED`</li> </ul> \|<br>  \| `Subscription`  \| <ul> <li>`SUBSCRIPTION_INITIATED`</li> <li>`SUBSCRIPTION_FINISHED`</li> <li>`SUBSCRIPTION_CANCELLED`</li> <li>`SUBSCRIPTION_OVERDUE`</li></ul> \|<br>  \| `Payout`  \| <ul> <li>`PAYOUT_INITIATED`</li> <li>`PAYOUT_COMPLETED`</li> <li>`PAYOUT_FAILED`</li> </ul> \|<br>  \| `Dispute`  \| <ul> <li>`DISPUTE_ACTION_REQUIRED`</li> <li>`DISPUTE_UNDER_REVIEW`</li> <li>`DISPUTE_WON`</li> <li>`DISPUTE_LOST`</li></ul> \|<br>  \| `Disbursement`  \| <ul> <li>`DISBURSEMENT_COMPLETED`</li> <li>`DISBURSEMENT_DECLINED`</li> </ul> \|<br>  \| `Disbursement refund`  \| <ul> <li>`DISBURSEMENT_REFUND_COMPLETED`</li> </ul> \||
 
 #### Enumerated Values
 
@@ -8120,6 +8428,7 @@ Ensure your webhook registrations are necessary and within the allowed limit.
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 |» events|ORDER_COMPLETED|
 |» events|ORDER_AUTHORISED|
 |» events|ORDER_CANCELLED|
@@ -8143,6 +8452,9 @@ Ensure your webhook registrations are necessary and within the allowed limit.
 |» events|DISPUTE_UNDER_REVIEW|
 |» events|DISPUTE_WON|
 |» events|DISPUTE_LOST|
+|» events|DISBURSEMENT_COMPLETED|
+|» events|DISBURSEMENT_DECLINED|
+|» events|DISBURSEMENT_REFUND_COMPLETED|
 
 > Example responses
 
@@ -8166,7 +8478,8 @@ Ensure your webhook registrations are necessary and within the allowed limit.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -8176,7 +8489,8 @@ Ensure your webhook registrations are necessary and within the allowed limit.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -8196,7 +8510,8 @@ Ensure your webhook registrations are necessary and within the allowed limit.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -8206,7 +8521,8 @@ Ensure your webhook registrations are necessary and within the allowed limit.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -8236,7 +8552,7 @@ Bearer-Auth
 curl https://merchant.revolut.com/api/webhooks/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'Revolut-Api-Version: 2026-08-17'
+  -H 'Revolut-Api-Version: 2026-09-22'
 ```
 
 `GET /api/webhooks/{webhook_id}`
@@ -8247,7 +8563,9 @@ Get the details of a specific webhook, including its `signing_secret`.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|true|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>This endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.<br><br>If not specified, you will receive an error.<br><br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 |webhook_id|path|string(uuid)|true|The ID of the webhook.|
 
@@ -8261,6 +8579,7 @@ Get the details of a specific webhook, including its `signing_secret`.
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 
 > Example responses
 
@@ -8284,7 +8603,8 @@ Get the details of a specific webhook, including its `signing_secret`.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -8294,7 +8614,8 @@ Get the details of a specific webhook, including its `signing_secret`.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -8304,7 +8625,8 @@ Get the details of a specific webhook, including its `signing_secret`.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -8333,7 +8655,7 @@ curl https://merchant.revolut.com/api/webhooks/497f6eca-6276-4993-bfeb-53cbbbba6
   -X DELETE \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'Revolut-Api-Version: 2026-08-17'
+  -H 'Revolut-Api-Version: 2026-09-22'
 ```
 
 `DELETE /api/webhooks/{webhook_id}`
@@ -8344,7 +8666,9 @@ Delete a webhook so that events are no longer sent to the specified URL.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|true|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>This endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.<br><br>If not specified, you will receive an error.<br><br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 |webhook_id|path|string(uuid)|true|The ID of the webhook.|
 
@@ -8358,6 +8682,7 @@ Delete a webhook so that events are no longer sent to the specified URL.
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 
 > Example responses
 
@@ -8377,7 +8702,8 @@ Delete a webhook so that events are no longer sent to the specified URL.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -8397,7 +8723,8 @@ Delete a webhook so that events are no longer sent to the specified URL.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -8407,7 +8734,8 @@ Delete a webhook so that events are no longer sent to the specified URL.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -8417,7 +8745,8 @@ Delete a webhook so that events are no longer sent to the specified URL.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -8450,7 +8779,7 @@ curl https://merchant.revolut.com/api/webhooks/497f6eca-6276-4993-bfeb-53cbbbba6
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'Revolut-Api-Version: 2026-08-17' \
+  -H 'Revolut-Api-Version: 2026-09-22' \
   -d '{
     "url": "https://example.com/webhooks/updated",
     "events": [
@@ -8484,12 +8813,14 @@ All request body fields are optional. Only the fields provided will be updated.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|true|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>This endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.<br><br>If not specified, you will receive an error.<br><br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 |webhook_id|path|string(uuid)|true|The ID of the webhook.|
 |body|body|[Webhook-Update](#schemawebhook-update)|false|none|
 |» url|body|[Webhook-Url](#schemawebhook-url)|false|Your webhook's URL to which event notifications will be sent. <br><br>Must be a valid HTTP or HTTPS URL, capable of receiving `POST` requests.<br><br>:::warning<br>Restrictions:<br>- Must be a valid URI as defined by [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)<br>- URI scheme is required and must be either `http` or `https`<br>- URI host is required and cannot be `localhost` or an IP address<br>- Max length: `2000`<br>- Reserved or invalid characters must be percent-encoded (for example, use `%20` instead of a space)<br>:::|
-|» events|body|[Webhook-Events](#schemawebhook-events)|false|List of event types that the webhook is configured to listen to.<br><br>Each event is related to status changes of a specific object in the Merchant API:<br><br>  \| Object \| Event types \|<br>  \| --------- \| ----------- \|<br>  \| `Order`   \| <ul> <li>`ORDER_COMPLETED`</li> <li>`ORDER_AUTHORISED`</li> <li>`ORDER_CANCELLED`</li> <li>`ORDER_FAILED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_AUTHORISED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_DECLINED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_FAILED`</li> </ul> \|<br>  \| `Payment` \| <ul> <li>`ORDER_PAYMENT_AUTHENTICATION_CHALLENGED`</li> <li>`ORDER_PAYMENT_AUTHENTICATED`</li> <li>`ORDER_PAYMENT_AUTHORISATION_STARTED`</li> <li>`ORDER_PAYMENT_DECLINED`</li> <li>`ORDER_PAYMENT_FAILED`</li> </ul> \|<br>  \| `Subscription`  \| <ul> <li>`SUBSCRIPTION_INITIATED`</li> <li>`SUBSCRIPTION_FINISHED`</li> <li>`SUBSCRIPTION_CANCELLED`</li> <li>`SUBSCRIPTION_OVERDUE`</li></ul> \|<br>  \| `Payout`  \| <ul> <li>`PAYOUT_INITIATED`</li> <li>`PAYOUT_COMPLETED`</li> <li>`PAYOUT_FAILED`</li> </ul> \|<br>  \| `Dispute`  \| <ul> <li>`DISPUTE_ACTION_REQUIRED`</li> <li>`DISPUTE_UNDER_REVIEW`</li> <li>`DISPUTE_WON`</li> <li>`DISPUTE_LOST`</li></ul> \||
+|» events|body|[Webhook-Events](#schemawebhook-events)|false|List of event types that the webhook is configured to listen to.<br><br>Each event is related to status changes of a specific object in the Merchant API:<br><br>  \| Object \| Event types \|<br>  \| --------- \| ----------- \|<br>  \| `Order`   \| <ul> <li>`ORDER_COMPLETED`</li> <li>`ORDER_AUTHORISED`</li> <li>`ORDER_CANCELLED`</li> <li>`ORDER_FAILED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_AUTHORISED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_DECLINED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_FAILED`</li> </ul> \|<br>  \| `Payment` \| <ul> <li>`ORDER_PAYMENT_AUTHENTICATION_CHALLENGED`</li> <li>`ORDER_PAYMENT_AUTHENTICATED`</li> <li>`ORDER_PAYMENT_AUTHORISATION_STARTED`</li> <li>`ORDER_PAYMENT_DECLINED`</li> <li>`ORDER_PAYMENT_FAILED`</li> </ul> \|<br>  \| `Subscription`  \| <ul> <li>`SUBSCRIPTION_INITIATED`</li> <li>`SUBSCRIPTION_FINISHED`</li> <li>`SUBSCRIPTION_CANCELLED`</li> <li>`SUBSCRIPTION_OVERDUE`</li></ul> \|<br>  \| `Payout`  \| <ul> <li>`PAYOUT_INITIATED`</li> <li>`PAYOUT_COMPLETED`</li> <li>`PAYOUT_FAILED`</li> </ul> \|<br>  \| `Dispute`  \| <ul> <li>`DISPUTE_ACTION_REQUIRED`</li> <li>`DISPUTE_UNDER_REVIEW`</li> <li>`DISPUTE_WON`</li> <li>`DISPUTE_LOST`</li></ul> \|<br>  \| `Disbursement`  \| <ul> <li>`DISBURSEMENT_COMPLETED`</li> <li>`DISBURSEMENT_DECLINED`</li> </ul> \|<br>  \| `Disbursement refund`  \| <ul> <li>`DISBURSEMENT_REFUND_COMPLETED`</li> </ul> \||
 
 #### Enumerated Values
 
@@ -8501,6 +8832,7 @@ All request body fields are optional. Only the fields provided will be updated.
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 |» events|ORDER_COMPLETED|
 |» events|ORDER_AUTHORISED|
 |» events|ORDER_CANCELLED|
@@ -8524,6 +8856,9 @@ All request body fields are optional. Only the fields provided will be updated.
 |» events|DISPUTE_UNDER_REVIEW|
 |» events|DISPUTE_WON|
 |» events|DISPUTE_LOST|
+|» events|DISBURSEMENT_COMPLETED|
+|» events|DISBURSEMENT_DECLINED|
+|» events|DISBURSEMENT_REFUND_COMPLETED|
 
 > Example responses
 
@@ -8547,7 +8882,8 @@ All request body fields are optional. Only the fields provided will be updated.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -8557,7 +8893,8 @@ All request body fields are optional. Only the fields provided will be updated.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -8577,7 +8914,8 @@ All request body fields are optional. Only the fields provided will be updated.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -8587,7 +8925,8 @@ All request body fields are optional. Only the fields provided will be updated.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -8597,7 +8936,8 @@ All request body fields are optional. Only the fields provided will be updated.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -8630,7 +8970,7 @@ curl https://merchant.revolut.com/api/webhooks/497f6eca-6276-4993-bfeb-53cbbbba6
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'Revolut-Api-Version: 2026-08-17' \
+  -H 'Revolut-Api-Version: 2026-09-22' \
   -d '{
     "expiration_period": "PT5H30M"
   }'
@@ -8658,7 +8998,9 @@ For more information, see [Tutorials: Verify the payload signature](https://deve
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|true|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>This endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.<br><br>If not specified, you will receive an error.<br><br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 |webhook_id|path|string(uuid)|true|The ID of the webhook.|
 |body|body|object|false|none|
@@ -8674,6 +9016,7 @@ For more information, see [Tutorials: Verify the payload signature](https://deve
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 
 > Example responses
 
@@ -8697,7 +9040,8 @@ For more information, see [Tutorials: Verify the payload signature](https://deve
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -8707,7 +9051,8 @@ For more information, see [Tutorials: Verify the payload signature](https://deve
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -8727,7 +9072,8 @@ For more information, see [Tutorials: Verify the payload signature](https://deve
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -8737,7 +9083,8 @@ For more information, see [Tutorials: Verify the payload signature](https://deve
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -8747,7 +9094,8 @@ For more information, see [Tutorials: Verify the payload signature](https://deve
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -8816,7 +9164,9 @@ Without the `type` query parameter, this endpoint returns only **online** locati
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |type|query|string|false|Filter the list by location type.|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 
 #### Enumerated Values
 
@@ -8905,7 +9255,8 @@ Without the `type` query parameter, this endpoint returns only **online** locati
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -8915,7 +9266,8 @@ Without the `type` query parameter, this endpoint returns only **online** locati
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -8983,7 +9335,9 @@ Create a `Location` object. Supports `online` and `physical` location types.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |body|body|[Location-Creation](#schemalocation-creation)|false|none|
 |» *oneOf*|body|[Location-Creation-Online](#schemalocation-creation-online)|false|Request body for creating an online merchant location.|
 |» *oneOf*|body|[Location-Creation-Physical](#schemalocation-creation-physical)|false|Request body for creating a physical merchant location.|
@@ -9009,7 +9363,8 @@ Create a `Location` object. Supports `online` and `physical` location types.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -9019,7 +9374,8 @@ Create a `Location` object. Supports `online` and `physical` location types.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -9039,7 +9395,8 @@ Create a `Location` object. Supports `online` and `physical` location types.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -9049,7 +9406,8 @@ Create a `Location` object. Supports `online` and `physical` location types.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -9059,7 +9417,8 @@ Create a `Location` object. Supports `online` and `physical` location types.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -9100,7 +9459,9 @@ Retrieve details of a specific location, based on its ID.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |location_id|path|string(uuid)|true|The ID of the location.|
 
 > Example responses
@@ -9124,7 +9485,8 @@ Retrieve details of a specific location, based on its ID.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -9134,7 +9496,8 @@ Retrieve details of a specific location, based on its ID.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -9144,7 +9507,8 @@ Retrieve details of a specific location, based on its ID.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -9183,7 +9547,9 @@ Delete a specific location, based on its ID.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |location_id|path|string(uuid)|true|The ID of the location.|
 
 > Example responses
@@ -9204,7 +9570,8 @@ Delete a specific location, based on its ID.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -9224,7 +9591,8 @@ Delete a specific location, based on its ID.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -9234,7 +9602,8 @@ Delete a specific location, based on its ID.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -9244,7 +9613,8 @@ Delete a specific location, based on its ID.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -9310,7 +9680,9 @@ The value of the location's `type` parameter cannot be updated.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |location_id|path|string(uuid)|true|The ID of the location.|
 |body|body|[Location-Update](#schemalocation-update)|false|none|
 |» *oneOf*|body|[Location-Update-Online](#schemalocation-update-online)|false|Request body for updating an online merchant location's name or details.|
@@ -9337,7 +9709,8 @@ The value of the location's `type` parameter cannot be updated.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -9347,7 +9720,8 @@ The value of the location's `type` parameter cannot be updated.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -9367,7 +9741,8 @@ The value of the location's `type` parameter cannot be updated.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -9377,7 +9752,8 @@ The value of the location's `type` parameter cannot be updated.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -9387,7 +9763,8 @@ The value of the location's `type` parameter cannot be updated.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -9462,7 +9839,9 @@ For more information about integration, see: [Push payments to Revolut Terminal]
 |---|---|---|---|---|
 |operation_mode|query|[Terminal-Operation-Mode](#schematerminal-operation-mode)|false|Filter terminals by operation mode.<br><br>\| Value \| Description \|<br>\|-------\|-------------\|<br>\| `pos` \| Returns only terminals in Pay at Counter mode \|<br>\| `payment_acceptance` \| Returns only terminals in standard checkout mode \||
 |location_id|query|string(uuid)|false|Filter results by location ID.|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|false|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 
 #### Enumerated Values
@@ -9479,6 +9858,7 @@ For more information about integration, see: [Push payments to Revolut Terminal]
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 
 > Example responses
 
@@ -9516,7 +9896,8 @@ For more information about integration, see: [Push payments to Revolut Terminal]
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -9526,7 +9907,8 @@ For more information about integration, see: [Push payments to Revolut Terminal]
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -9536,7 +9918,8 @@ For more information about integration, see: [Push payments to Revolut Terminal]
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -9638,7 +10021,9 @@ For the complete push payments flow, see: [Push payments to Revolut Terminal](ht
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|false|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 |order_id|path|string(uuid)|true|The ID of the `Order` object.|
 |body|body|[Payment-Intent-Creation](#schemapayment-intent-creation)|true|none|
@@ -9657,6 +10042,7 @@ For the complete push payments flow, see: [Push payments to Revolut Terminal](ht
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 
 > Example responses
 
@@ -9678,7 +10064,8 @@ For the complete push payments flow, see: [Push payments to Revolut Terminal](ht
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -9688,7 +10075,8 @@ For the complete push payments flow, see: [Push payments to Revolut Terminal](ht
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -9708,7 +10096,8 @@ For the complete push payments flow, see: [Push payments to Revolut Terminal](ht
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -9728,7 +10117,8 @@ For the complete push payments flow, see: [Push payments to Revolut Terminal](ht
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -9738,7 +10128,8 @@ For the complete push payments flow, see: [Push payments to Revolut Terminal](ht
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -9801,7 +10192,9 @@ For the complete push payments flow, see: [Push payments to Revolut Terminal](ht
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|false|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 |payment_intent_id|path|[Payment-Intent-Id](#schemapayment-intent-id)|true|The unique identifier of the payment intent.|
 
@@ -9817,6 +10210,7 @@ For the complete push payments flow, see: [Push payments to Revolut Terminal](ht
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 
 > Example responses
 
@@ -9838,7 +10232,8 @@ For the complete push payments flow, see: [Push payments to Revolut Terminal](ht
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -9848,7 +10243,8 @@ For the complete push payments flow, see: [Push payments to Revolut Terminal](ht
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -9858,7 +10254,8 @@ For the complete push payments flow, see: [Push payments to Revolut Terminal](ht
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -9909,7 +10306,9 @@ For the complete push payments flow, see: [Push payments to Revolut Terminal](ht
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|false|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 |payment_intent_id|path|[Payment-Intent-Id](#schemapayment-intent-id)|true|The unique identifier of the payment intent.|
 
@@ -9925,6 +10324,7 @@ For the complete push payments flow, see: [Push payments to Revolut Terminal](ht
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 
 > Example responses
 
@@ -9949,7 +10349,8 @@ For the complete push payments flow, see: [Push payments to Revolut Terminal](ht
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -9959,7 +10360,8 @@ For the complete push payments flow, see: [Push payments to Revolut Terminal](ht
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -9979,7 +10381,8 @@ For the complete push payments flow, see: [Push payments to Revolut Terminal](ht
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -9989,7 +10392,8 @@ For the complete push payments flow, see: [Push payments to Revolut Terminal](ht
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -9999,7 +10403,8 @@ For the complete push payments flow, see: [Push payments to Revolut Terminal](ht
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -10066,7 +10471,9 @@ Before you call this endpoint, make sure that you have completed the following s
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |body|body|object|false|none|
 |» domain|body|string|true|Domain name of your website without the scheme (i.e. without `http://` or `https://`).|
 
@@ -10108,7 +10515,8 @@ Before you call this endpoint, make sure that you have completed the following s
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -10118,7 +10526,8 @@ Before you call this endpoint, make sure that you have completed the following s
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -10173,7 +10582,9 @@ Unregister your website from Apple Pay's registered domains.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |Revolut-Api-Version|header|string(date)|false|The version of the Merchant API, specified in `YYYY-MM-DD` format.<br><br>:::info<br>For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).<br>:::|
 |body|body|object|false|none|
 |» domain|body|string|true|Domain name of your website without the scheme (i.e. without `http://` or `https://`).|
@@ -10191,6 +10602,7 @@ Unregister your website from Apple Pay's registered domains.
 |Revolut-Api-Version|2026-03-12|
 |Revolut-Api-Version|2026-04-20|
 |Revolut-Api-Version|2026-08-17|
+|Revolut-Api-Version|2026-09-22|
 
 > Example responses
 
@@ -10230,7 +10642,8 @@ Unregister your website from Apple Pay's registered domains.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -10240,7 +10653,8 @@ Unregister your website from Apple Pay's registered domains.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -10290,7 +10704,9 @@ For more information about locations, see: [Merchant API: Locations](https://dev
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 
 > Example responses
 
@@ -10327,7 +10743,8 @@ For more information about locations, see: [Merchant API: Locations](https://dev
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -10347,7 +10764,8 @@ For more information about locations, see: [Merchant API: Locations](https://dev
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -10357,7 +10775,8 @@ For more information about locations, see: [Merchant API: Locations](https://dev
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -10420,7 +10839,7 @@ Additionally, Revolut Pay can support multiple webhooks if you have multiple sto
   - [Manage multiple stores with Fast checkout](https://developer.revolut.com/docs/guides/merchant/optimise-checkout/fast-checkout#manage-multiple-stores-with-fast-checkout)
   - [Merchant API: Locations](https://developer.revolut.com/docs/api/merchant#tag-locations)
 
-:::note
+:::info
 To set up a webhook for tracking order completion, failure, error, etc. events, use the [Webhooks endpoints](https://developer.revolut.com/docs/api/merchant#tag-webhooks).
 :::
 
@@ -10437,7 +10856,9 @@ To set up a webhook for tracking order completion, failure, error, etc. events, 
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |body|body|[Synchronous-Webhook-Creation](#schemasynchronous-webhook-creation)|false|none|
 |» event_type|body|string|true|Type of event this synchronous webhook is configured for.<br><br>:::note<br>At the moment, synchronous webhooks only support address validation events. <br>:::|
 |» url|body|string(uri)|true|The valid URL of the endpoint, that uses HTTPS URL schema. Revolut sends the shipping address of the customer to this URL for validation.<br><br>:::warning<br>Restrictions:<br>- Must be a valid URI as defined by [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)<br>- URI scheme is required and must be `https`<br>- URI host is required and cannot be `localhost` or an IP address<br>- Max length: `2000`<br>- Reserved or invalid characters must be percent-encoded (for example, use `%20` instead of a space)<br>:::|
@@ -10468,7 +10889,8 @@ To set up a webhook for tracking order completion, failure, error, etc. events, 
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -10488,7 +10910,8 @@ To set up a webhook for tracking order completion, failure, error, etc. events, 
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -10498,7 +10921,8 @@ To set up a webhook for tracking order completion, failure, error, etc. events, 
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -10539,7 +10963,9 @@ Delete a specific synchronous webhook registration, based on its ID.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Authorization|header|string|true|This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. <br><br>It ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.<br><br>If your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.<br><br>:::info<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)<br>:::|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)<br>:::|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.<br><br>Its purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.<br><br>Required in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.<br><br>:::info<br>For how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)<br>:::|
 |synchronous_webhook_id|path|string(uuid)|true|The ID of the synchronous webhook.|
 
 > Example responses
@@ -10570,7 +10996,8 @@ Delete a specific synchronous webhook registration, based on its ID.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -10580,7 +11007,8 @@ Delete a specific synchronous webhook registration, based on its ID.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -10590,7 +11018,8 @@ Delete a specific synchronous webhook registration, based on its ID.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -10654,11 +11083,13 @@ To ensure secure delivery of webhook events, please allowlist the following IP a
 |---|---|---|---|---|
 |Revolut-Request-Timestamp|header|string|true|The [UNIX timestamp](https://www.unixtimestamp.com/) of the date and time when the webhook event was sent from Revolut. Used to verify the webhook event payload was actually sent by Revolut.<br><br>:::info<br>For more information, see: [Verify payload signature](https://developer.revolut.com/docs/guides/merchant/monitor-and-observe/webhooks/verify-the-payload-signature)<br>:::|
 |Revolut-Signature|header|string|true|The payload signature computed by Revolut using a Hash-based Message Authentication Code (HMAC). Used to verify the webhook event payload was actually sent by Revolut.<br><br>:::info<br>For more information, see: [Verify payload signature](https://developer.revolut.com/docs/guides/merchant/monitor-and-observe/webhooks/verify-the-payload-signature)<br>:::|
-|body|body|[Webhook-Order-Event](#schemawebhook-order-event) \| [Webhook-Subscription-Event](#schemawebhook-subscription-event) \| [Webhook-Payout-Event](#schemawebhook-payout-event) \| [Webhook-Dispute-Event](#schemawebhook-dispute-event)|true|none|
+|body|body|[Webhook-Order-Event](#schemawebhook-order-event) \| [Webhook-Subscription-Event](#schemawebhook-subscription-event) \| [Webhook-Payout-Event](#schemawebhook-payout-event) \| [Webhook-Dispute-Event](#schemawebhook-dispute-event) \| [Webhook-Disbursement-Event](#schemawebhook-disbursement-event) \| [Webhook-Disbursement-Refund-Event](#schemawebhook-disbursement-refund-event)|true|none|
 |» *oneOf*|body|[Webhook-Order-Event](#schemawebhook-order-event)|false|A webhook event payload for order-related events, including the order ID and optional reference fields.|
 |» *oneOf*|body|[Webhook-Subscription-Event](#schemawebhook-subscription-event)|false|A webhook event payload for subscription-related events, including the subscription ID and external reference.|
 |» *oneOf*|body|[Webhook-Payout-Event](#schemawebhook-payout-event)|false|A webhook event payload for payout-related events, including the payout ID.|
 |» *oneOf*|body|[Webhook-Dispute-Event](#schemawebhook-dispute-event)|false|A webhook event payload for dispute-related events, including the dispute ID.|
+|» *oneOf*|body|[Webhook-Disbursement-Event](#schemawebhook-disbursement-event)|false|A webhook event payload for disbursement-related events, including the disbursement ID.|
+|» *oneOf*|body|[Webhook-Disbursement-Refund-Event](#schemawebhook-disbursement-refund-event)|false|A webhook event payload for disbursement-refund-related events, including the disbursement refund ID.|
 
 <h3 id="webhook-event-responses">Responses</h3>
 
@@ -10743,10 +11174,10 @@ Temporary ID for the order, which expires when the payment is authorised.
 
 The order `token` is used for [token-based initialisation](https://developer.revolut.com/docs/sdks/merchant-web-sdk/initialisation/token-based), and is returned by the `createOrder` callback in the following payment methods:
 
-- [Embedded Checkout](https://developer.revolut.com/docs/sdks/merchant-web-sdk/payment-methods/embedded-checkout#embedded-checkout-options-interface)
-- [Revolut Pay](https://developer.revolut.com/docs/sdks/merchant-web-sdk/payment-methods/revolut-pay#widget-payments-revolut-pay-options)
-- [Apple Pay and Google Pay](https://developer.revolut.com/docs/sdks/merchant-web-sdk/payment-methods/apple-pay-google-pay#payment-request-options-interface)
-- [Pay by Bank](https://developer.revolut.com/docs/sdks/merchant-web-sdk/payment-methods/pay-by-bank#pay-by-bank-options-interface)
+- [Embedded Checkout](https://developer.revolut.com/docs/sdks/merchant-web-sdk/payment-methods/embedded-checkout#embeddedcheckoutoptions-interface)
+- [Revolut Pay](https://developer.revolut.com/docs/sdks/merchant-web-sdk/payment-methods/revolut-pay#widgetpaymentsrevolutpayoptions)
+- [Apple Pay and Google Pay](https://developer.revolut.com/docs/sdks/merchant-web-sdk/payment-methods/apple-pay-google-pay#paymentrequestoptions-interface)
+- [Pay by Bank](https://developer.revolut.com/docs/sdks/merchant-web-sdk/payment-methods/pay-by-bank#paybybankoptions-interface)
 
 <h2 id="tocS_Order-Type-v2">Order-Type-v2</h2>
 <!-- backwards compatibility -->
@@ -10878,7 +11309,7 @@ Pre-authorisation allows you to reserve funds on a customer's card without immed
 | `final` | Standard authorisation for immediate or near-immediate capture. |
 | `pre_authorisation` | Reserve funds for later capture, used with manual capture mode. |
 
-:::note
+:::info
 Pre-authorisation must be used with `capture_mode: manual`. For more information, see [Capture an order](https://developer.revolut.com/docs/api/merchant#capture-order).
 :::
 
@@ -11336,7 +11767,7 @@ A single line item in an order, describing a product or service with its quantit
 
 An array of line items included in the order. Each line item represents an individual product or service, along with its quantity, price, taxes, and discounts.
 
-:::info
+:::note
 Required for merchants collecting payment for one or multiple products/services in one transaction. Omitting this information may trigger additional scrutiny and risk mitigation actions by Revolut.
 :::
 
@@ -11435,7 +11866,7 @@ The URL your customer will be redirected to after completing a payment flow.
 
 :::info
 For more information, see:
-- [Hosted Checkout Page: Custom redirection](https://developer.revolut.com/docs/guides/merchant/accept-payments/online-payments/hosted-checkout-page/api#custom-post-payment-redirection-optional)
+- [Hosted Checkout Page: Custom redirection](https://developer.revolut.com/docs/guides/merchant/accept-payments/online-payments/hosted-checkout-page/api#1-create-an-order)
 - [Revolut Checkout: Configure mobile redirects](https://developer.revolut.com/docs/guides/merchant/accept-payments/online-payments/revolut-checkout/web#35-configure-revolut-pay-mobile-redirects)
 :::
 
@@ -11604,7 +12035,7 @@ To get the full details of an order, use the [Retrieve an order](https://develop
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |id|[Order-Id](#schemaorder-id)|true|none|Permanent order ID used to retrieve, capture, cancel, or refund an order after authorization.|
-|token|[Order-Token](#schemaorder-token)|false|none|Temporary ID for the order, which expires when the payment is authorised.<br><br>The order `token` is used for [token-based initialisation](https://developer.revolut.com/docs/sdks/merchant-web-sdk/initialisation/token-based), and is returned by the `createOrder` callback in the following payment methods:<br><br>- [Embedded Checkout](https://developer.revolut.com/docs/sdks/merchant-web-sdk/payment-methods/embedded-checkout#embedded-checkout-options-interface)<br>- [Revolut Pay](https://developer.revolut.com/docs/sdks/merchant-web-sdk/payment-methods/revolut-pay#widget-payments-revolut-pay-options)<br>- [Apple Pay and Google Pay](https://developer.revolut.com/docs/sdks/merchant-web-sdk/payment-methods/apple-pay-google-pay#payment-request-options-interface)<br>- [Pay by Bank](https://developer.revolut.com/docs/sdks/merchant-web-sdk/payment-methods/pay-by-bank#pay-by-bank-options-interface)|
+|token|[Order-Token](#schemaorder-token)|false|none|Temporary ID for the order, which expires when the payment is authorised.<br><br>The order `token` is used for [token-based initialisation](https://developer.revolut.com/docs/sdks/merchant-web-sdk/initialisation/token-based), and is returned by the `createOrder` callback in the following payment methods:<br><br>- [Embedded Checkout](https://developer.revolut.com/docs/sdks/merchant-web-sdk/payment-methods/embedded-checkout#embeddedcheckoutoptions-interface)<br>- [Revolut Pay](https://developer.revolut.com/docs/sdks/merchant-web-sdk/payment-methods/revolut-pay#widgetpaymentsrevolutpayoptions)<br>- [Apple Pay and Google Pay](https://developer.revolut.com/docs/sdks/merchant-web-sdk/payment-methods/apple-pay-google-pay#paymentrequestoptions-interface)<br>- [Pay by Bank](https://developer.revolut.com/docs/sdks/merchant-web-sdk/payment-methods/pay-by-bank#paybybankoptions-interface)|
 |type|[Order-Type-v2](#schemaorder-type-v2)|true|none|The type of the order.|
 |state|[Order-State](#schemaorder-state)|true|none|The state of the order in its lifecycle.<br><br>\| State \| Description \|<br>\|-------\|-------------\|<br>\| `pending` \| Order created, awaiting payment \|<br>\| `processing` \| Payment is being processed \|<br>\| `authorised` \| Payment authorised but not yet captured (for manual capture) \|<br>\| `completed` \| Payment successfully captured and settled \|<br>\| `cancelled` \| Order was cancelled \|<br>\| `failed` \| Payment failed \|<br><br>:::info<br>For more information, see: [Order and payment lifecycle](https://developer.revolut.com/docs/guides/merchant/reference/order-lifecycle)<br>:::|
 |created_at|string(date-time)|true|none|The date and time the order was created.|
@@ -11614,16 +12045,16 @@ To get the full details of an order, use the [Retrieve an order](https://develop
 |outstanding_amount|[Outstanding-Amount](#schemaoutstanding-amount)|true|none|The amount not yet paid for a given order (in minor currency units). For example, `7034` represents €70.34. <br><br>The value in this field may differ from `amount` if there are partial payments associated with the order.|
 |capture_mode|[Capture-Mode-v2](#schemacapture-mode-v2)|true|none|The capture mode of the order. `automatic` is used by default.<br><br>\| Parameter value \| Description \|<br>\| --------------- \| ----------- \|<br>\| `automatic` \| The order is captured automatically after payment authorisation. \|<br>\| `manual` \| The order is not captured automatically. You must manually capture the order later. \|<br><br>:::info<br>For more information, see [Capture an order](https://developer.revolut.com/docs/api/merchant#capture-order).<br>:::|
 |enforce_challenge|[Enforce-Challenge-v2](#schemaenforce-challenge-v2)|true|none|The enforce challenge mode. `automatic` is used by default.<br><br>\| Parameter value \| Description \|<br>\| --------------- \| ----------- \|<br>\| `automatic` \| The payments created for an order will have challenge requirement calculated by our fraud mechanisms. Not all payments will trigger a 3DS challenge. \|<br>\| `forced` \| The payments created for an order will always require a 3DS challenge. Currently only supported for card payments. \||
-|authorisation_type|[Authorisation-Type](#schemaauthorisation-type)|false|none|The type of authorisation for the order. Used with manual capture mode. If omitted, `final` is used by default.<br><br>### Pre-authorisation<br><br>Pre-authorisation allows you to reserve funds on a customer's card without immediately capturing them. This is useful for scenarios like:<br><br>- Hotel bookings where the final amount may vary<br>- Car rentals where additional charges may apply<br>- Deposits that need to be held temporarily<br><br>\| Parameter value \| Description \|<br>\| --------------- \| ----------- \|<br>\| `final` \| Standard authorisation for immediate or near-immediate capture. \|<br>\| `pre_authorisation` \| Reserve funds for later capture, used with manual capture mode. \|<br><br>:::note<br>Pre-authorisation must be used with `capture_mode: manual`. For more information, see [Capture an order](https://developer.revolut.com/docs/api/merchant#capture-order).<br>:::|
+|authorisation_type|[Authorisation-Type](#schemaauthorisation-type)|false|none|The type of authorisation for the order. Used with manual capture mode. If omitted, `final` is used by default.<br><br>### Pre-authorisation<br><br>Pre-authorisation allows you to reserve funds on a customer's card without immediately capturing them. This is useful for scenarios like:<br><br>- Hotel bookings where the final amount may vary<br>- Car rentals where additional charges may apply<br>- Deposits that need to be held temporarily<br><br>\| Parameter value \| Description \|<br>\| --------------- \| ----------- \|<br>\| `final` \| Standard authorisation for immediate or near-immediate capture. \|<br>\| `pre_authorisation` \| Reserve funds for later capture, used with manual capture mode. \|<br><br>:::info<br>Pre-authorisation must be used with `capture_mode: manual`. For more information, see [Capture an order](https://developer.revolut.com/docs/api/merchant#capture-order).<br>:::|
 |description|[Order-Description](#schemaorder-description)|false|none|The description of the order.|
 |metadata|[Metadata](#schemametadata)|false|none|Additional information to track your orders in your system, by providing custom metadata using `"<key>" : "<value>"` pairs.<br><br>:::warning<br>**Restrictions:**<br><br>- Both keys and values must be `string`s<br>- Values cannot be `null`.<br>- Max number of key-value pairs: `50`<br>- Max length of values: `500` characters<br>- Format of keys: Must start with a letter and contain only letters, digits, and underscores. Max 40 characters. Pattern: `^[a-zA-Z][a-zA-Z\\d_]{0,39}$`<br>:::|
 |related_order_id|[Related-Order-Id](#schemarelated-order-id)|false|none|The unique ID of the original order that was refunded and this refund is associated with. You can use this ID to get more information about the related order using the [Retrieve an order](https://developer.revolut.com/docs/api/merchant#retrieve-order) operation.<br><br>:::note<br>This field is only returned for orders with `type: refund`.<br>:::|
 |subscription_data|[Subscription-Data](#schemasubscription-data)|false|none|Subscription details linked to the order. Use this object to match an order with its underlying subscription and understand the billing context in which the order was created.<br><br>Only present on orders created by a subscription.|
 |customer|[Order-Customer-v2](#schemaorder-customer-v2)|false|none|A lightweight customer object embedded in an order.<br><br>This is a simplified representation intended for the order context. For the full customer object including all payment methods, use the [Retrieve a customer](https://developer.revolut.com/docs/api/merchant#retrieve-customer) endpoint.|
-|line_items|[Line-Items](#schemaline-items)|false|none|An array of line items included in the order. Each line item represents an individual product or service, along with its quantity, price, taxes, and discounts.<br><br>:::info<br>Required for merchants collecting payment for one or multiple products/services in one transaction. Omitting this information may trigger additional scrutiny and risk mitigation actions by Revolut.<br>:::|
+|line_items|[Line-Items](#schemaline-items)|false|none|An array of line items included in the order. Each line item represents an individual product or service, along with its quantity, price, taxes, and discounts.<br><br>:::note<br>Required for merchants collecting payment for one or multiple products/services in one transaction. Omitting this information may trigger additional scrutiny and risk mitigation actions by Revolut.<br>:::|
 |merchant_order_data|[Merchant-Order-Data](#schemamerchant-order-data)|false|none|Object for providing additional information stored in the merchant's order management system. |
 |location_id|[Location-Id](#schemalocation-id)|false|none|Unique ID representing the location where merchants sells products.<br><br>:::info<br>For more information, see: [Locations](https://developer.revolut.com/docs/api/merchant#tag-locations).<br>:::        |
-|redirect_url|[Redirect-Url](#schemaredirect-url)|false|none|The URL your customer will be redirected to after completing a payment flow.<br><br>- **Hosted Checkout Page** (`checkout_url`): This is the post-success URL - the customer is redirected only after a successful payment.<br>- **Embedded Revolut Pay** (Revolut Checkout widget): This URL is used for all redirect outcomes - success, failure, and cancellation.<br><br>:::warning [Restrictions]<br>- Must be a valid URI as defined by [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)<br>- URI scheme is required and must be either `http` or `https`<br>- URI host is required and cannot be `localhost` or an IP address<br>- Max length: `2000`<br>- Reserved or invalid characters must be percent-encoded (for example, use `%20` instead of a space)<br>:::<br><br>:::note [Revolut Checkout]<br>- Revolut Pay will not appear in the widget on mobile devices unless redirect targets are configured - either via this `redirect_url` parameter or the SDK-level `revolutPayOptions.mobileRedirectUrls` option.<br>- If `redirect_url` is set on the order, it takes precedence over `revolutPayOptions.mobileRedirectUrls` and is used for all redirect outcomes (success, failure, cancel).<br>:::<br><br>:::info<br>For more information, see:<br>- [Hosted Checkout Page: Custom redirection](https://developer.revolut.com/docs/guides/merchant/accept-payments/online-payments/hosted-checkout-page/api#custom-post-payment-redirection-optional)<br>- [Revolut Checkout: Configure mobile redirects](https://developer.revolut.com/docs/guides/merchant/accept-payments/online-payments/revolut-checkout/web#35-configure-revolut-pay-mobile-redirects)<br>:::|
+|redirect_url|[Redirect-Url](#schemaredirect-url)|false|none|The URL your customer will be redirected to after completing a payment flow.<br><br>- **Hosted Checkout Page** (`checkout_url`): This is the post-success URL - the customer is redirected only after a successful payment.<br>- **Embedded Revolut Pay** (Revolut Checkout widget): This URL is used for all redirect outcomes - success, failure, and cancellation.<br><br>:::warning [Restrictions]<br>- Must be a valid URI as defined by [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)<br>- URI scheme is required and must be either `http` or `https`<br>- URI host is required and cannot be `localhost` or an IP address<br>- Max length: `2000`<br>- Reserved or invalid characters must be percent-encoded (for example, use `%20` instead of a space)<br>:::<br><br>:::note [Revolut Checkout]<br>- Revolut Pay will not appear in the widget on mobile devices unless redirect targets are configured - either via this `redirect_url` parameter or the SDK-level `revolutPayOptions.mobileRedirectUrls` option.<br>- If `redirect_url` is set on the order, it takes precedence over `revolutPayOptions.mobileRedirectUrls` and is used for all redirect outcomes (success, failure, cancel).<br>:::<br><br>:::info<br>For more information, see:<br>- [Hosted Checkout Page: Custom redirection](https://developer.revolut.com/docs/guides/merchant/accept-payments/online-payments/hosted-checkout-page/api#1-create-an-order)<br>- [Revolut Checkout: Configure mobile redirects](https://developer.revolut.com/docs/guides/merchant/accept-payments/online-payments/revolut-checkout/web#35-configure-revolut-pay-mobile-redirects)<br>:::|
 |cancel_authorised_after|[Cancel-Authorised-After](#schemacancel-authorised-after)|false|none|Automatic cancellation period for uncaptured orders, specified in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format. <br><br>After this period, the authorised payment is automatically cancelled and the order is cancelled. Maximum: 7 days = `P7D`.<br><br>:::note<br>The following limitations apply:<br>  - Cannot be a negative value.<br>  - Cannot be updated if the new value is less than or equal to the elapsed time since authorisation. <br><br>    **Failing scenario:**<br>      - Original value: 7 days<br>      - Time since authorisation: 3 days<br>      - Update value: 2 days<br>      <br>    In this scenario, an error is returned.<br>    <br>    **Successful scenario:**<br>      - Original value: 7 days<br>      - Time since authorisation: 3 days<br>      - Update value: 4 days<br><br>    In this scenario, the parameter can be updated.<br><br>  - Cannot be updated if cancellation is ≤ 30 minutes away.<br><br>    **Failing scenario:**<br>      - Original value: 12 hours<br>      - Time since authorisation: 11 hours 40 minutes<br>                        <br>    In this scenario, an error is returned.<br>    <br>    **Successful scenario:** <br>      - Original value: 12 hours<br>      - Time since authorisation: 11 hours 20 minutes<br><br>    In this scenario, the parameter can be updated.<br>:::|
 |statement_descriptor_suffix|[Statement-Descriptor-Suffix](#schemastatement-descriptor-suffix)|false|none|You can set a dynamic statement descriptor for your orders by providing a custom suffix. <br><br>A statement descriptor is the text shown on cardholders' bank or card statements, helping them recognise a transaction or merchant. This field can be used to send extra information with the statement descriptor for card transactions.<br><br>The complete descriptor is built using the following format: `{base}*{suffix}`, where:<br>  <br>  - **`{base}`** is the existing descriptor configured in the Revolut Business dashboard (**Settings > Business account > Merchant profile > Statement descriptor**).  <br>  - **`{suffix}`** is defined by the `statement_descriptor_suffix` field.<br><br>:::note<br>- If the combined descriptor's length (base + suffix) exceeds the character limits of card scheme providers, the final value will be truncated. For example if the limit is 22 characters, the base descriptor is `"base"` and the suffix is `"testdescriptorsuffix"`, the final descriptor becomes `"base*testdescriptorsuf"`.<br>- The final statement descriptor shown on a cardholder's statement may vary by issuing bank, as some banks apply their own custom formatting or truncation rules.<br>:::|
 
@@ -11755,7 +12186,8 @@ A paginated list of orders.
 {
   "code": "string",
   "message": "string",
-  "timestamp": 0
+  "timestamp": 0,
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
 }
 ```
 
@@ -11768,6 +12200,7 @@ An error response returned by the API.
 |code|string \| integer|true|none|An identifier for the error. This can be either a string (e.g., `"validation"`, `"bad_state"`) or an integer (e.g., `1005`, `2054`). Share this code with Revolut support for troubleshooting.|
 |message|string|false|none|Human-readable text describing what went wrong. Not always present.|
 |timestamp|integer|true|none|The [UNIX timestamp](https://www.unixtimestamp.com/) (in milliseconds) of when the error occurred.|
+|errorId|string(uuid)|false|none|A unique identifier for the error instance. Share this ID with Revolut support for troubleshooting. Not always present.|
 
 <h2 id="tocS_Settlement-Currency">Settlement-Currency</h2>
 <!-- backwards compatibility -->
@@ -11820,7 +12253,7 @@ The following behaviours apply to different use cases:
   | Existing customer | If `id` was provided, we ignore other customer details and associate the customer with the order.<br/><br/>If either `email`, `phone`, or `full_name` was provided (without an existing customer's `id`), we always create a new customer, irrespective of another, existing customer object having the same details. |
   | New customer | If either `email`, `phone`, or `full_name` was provided, we create a new customer, irrespective of another customer object having the same details. <br/><br/>If `id` of a non-existent customer was provided, we return a `404` error, irrespective of other details provided. |
 
-:::note
+:::info
 To avoid unintentional duplication of customer records, search for an existing customer by email or phone using the [List customers](https://developer.revolut.com/docs/api/merchant#retrieve-customer-list) endpoint first, then provide `customer.id` in the order.
 :::
 
@@ -11976,7 +12409,7 @@ List of individual shipment details.
 
 Details about the shipping related to the order, including address, contact information, and individual shipments.
 
-:::info
+:::note
 Required for merchants shipping physical goods. Omitting this information may trigger additional scrutiny and risk mitigation actions by Revolut.
 :::
 
@@ -12166,7 +12599,7 @@ A single leg of a journey, including departure and arrival airports, flight deta
 
 Array containing information of journey legs associated with the booking.
 
-:::info
+:::note
 This field is required for activating **Revolut Flight Alerts** functionalities within the Revolut app. 
 
 This information is used to compile a tracking widget that provides real-time updates on flight status and sends notifications, such as a check-in reminders, boarding alerts, and notifications for cancellations or delays. 
@@ -12250,14 +12683,14 @@ These are the specific data field requirements for merchants who must provide ai
 |type|[Industry-Data-Type](#schemaindustry-data-type)|true|none|Type of the industry-specific data object, determining what additional data is expected.<br><br>Available types:<br><br>  \| Object type   \| Description \|<br>  \| ------------- \| ----------- \|<br>  \| `airline`     \| Object containing information about a specific airline ticket purchase. \|<br>  \| `car_rental`  \| Object containing information about a car rental booking associated with the order. \|<br>  \| `crypto`      \| Object containing information about crypto transactions associated with the order. \|<br>  \| `marketplace` \| This object is required by Mastercard and Visa for merchants operating as marketplaces under the **Merchant Category Code (MCC):** `5262`. The marketplace object ensures compliance with the card schemes' regulations by providing detailed information about the subseller involved in the transaction. \|<br>  \| `event` \| Object containing information about event ticket bookings associated with the order. \|<br>  \| `lodging` \| Object containing information about lodging bookings associated with the order. \||
 |booking_id|[Booking-Id](#schemabooking-id)|true|none|A unique identifier provided by the merchant associated with the order. <br><br>This `booking_id` is used to reference and correlate booking information with the Merchant API and the merchant's internal system.|
 |fulfillment_date|string(date-time)|false|none|The UTC date and time of the final journey leg.<br><br>:::warning<br>The following limitations apply:<br>  - When creating or updating an order, `fulfillment_date` cannot be set to a date in the past.<br>  - When updating an order, if the current `fulfillment_date` value is already in the past, it cannot be modified. The date must remain as is to maintain data integrity for completed transactions.<br>:::|
-|tickets_purchase|boolean|false|none|Flag indicating whether the order includes actual ticket purchases. Set to `true` if the order contains ticket purchases, and `false` if it does not (e.g., it **only** contains seat reservations, or baggage upgrades). <br><br>:::info<br>This field is required for activating **Revolut Flight Alerts** functionalities within the Revolut app.<br><br>Provide the info on order creation or update, before capturing the order.<br>:::|
+|tickets_purchase|boolean|false|none|Flag indicating whether the order includes actual ticket purchases. Set to `true` if the order contains ticket purchases, and `false` if it does not (e.g., it **only** contains seat reservations, or baggage upgrades). <br><br>:::note<br>This field is required for activating **Revolut Flight Alerts** functionalities within the Revolut app.<br><br>Provide the info on order creation or update, before capturing the order.<br>:::|
 |ticket_type|string|false|none|The type of the ticket.<br><br>\| Parameter value \| Description \|<br>\| --------------- \| ----------- \|<br>\| `fixed`         \| Non-modifiable once confirmed. \|<br>\| `flexible`      \| Allows modifications or cancellations under specified conditions. \||
 |crs_code|string|false|none|The code of the Computer Reservation System (CRS) used to make the booking and purchase the ticket.|
 |ticket_change_indicator|string|false|none|Parameter indicating whether this order is related to a new ticket reservation or a modification of an existing one.|
 |refundability|[Refundability](#schemarefundability)|false|none|Parameter indicating whether the booking is refundable, partially refundable, or not refundable.|
 |passengers|[Passengers](#schemapassengers)|false|none|Array containing information of passengers associated with the booking.|
-|journey_legs|[Journey-Legs](#schemajourney-legs)|false|none|Array containing information of journey legs associated with the booking.<br><br>:::info<br>This field is required for activating **Revolut Flight Alerts** functionalities within the Revolut app. <br><br>This information is used to compile a tracking widget that provides real-time updates on flight status and sends notifications, such as a check-in reminders, boarding alerts, and notifications for cancellations or delays. <br><br>To enable the widget the following fields are required on order creation or update, before capturing the order:<br><br>  ```<br>  sequence,<br>  departure_airport_code,<br>  arrival_airport_code,<br>  flight_number,<br>  travel_date,<br>  airline_name,<br>  airline_code,<br>  ```<br>:::|
-|booking_url|string(uri)|false|none|URL to the online portal for managing the airline booking, which includes check-in functionality. This URL may be a personalised, pre-populated check-in link specific to the user or a generic link, and it is essential for enabling direct access to booking details within the Revolut app.<br><br>:::info<br>This field is required for activating **Revolut Flight Alerts** functionalities within the Revolut app. <br><br>Provide the info on order creation or update, before capturing the order.<br>:::<br><br>:::warning<br>Restrictions:<br>- Must be a valid URI as defined by [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)<br>- URI scheme is required and must be either `http` or `https`<br>- URI host is required and cannot be `localhost` or an IP address<br>- Max length: `2000`<br>- Reserved or invalid characters must be percent-encoded (for example, use `%20` instead of a space)<br>:::|
+|journey_legs|[Journey-Legs](#schemajourney-legs)|false|none|Array containing information of journey legs associated with the booking.<br><br>:::note<br>This field is required for activating **Revolut Flight Alerts** functionalities within the Revolut app. <br><br>This information is used to compile a tracking widget that provides real-time updates on flight status and sends notifications, such as a check-in reminders, boarding alerts, and notifications for cancellations or delays. <br><br>To enable the widget the following fields are required on order creation or update, before capturing the order:<br><br>  ```<br>  sequence,<br>  departure_airport_code,<br>  arrival_airport_code,<br>  flight_number,<br>  travel_date,<br>  airline_name,<br>  airline_code,<br>  ```<br>:::|
+|booking_url|string(uri)|false|none|URL to the online portal for managing the airline booking, which includes check-in functionality. This URL may be a personalised, pre-populated check-in link specific to the user or a generic link, and it is essential for enabling direct access to booking details within the Revolut app.<br><br>:::note<br>This field is required for activating **Revolut Flight Alerts** functionalities within the Revolut app. <br><br>Provide the info on order creation or update, before capturing the order.<br>:::<br><br>:::warning<br>Restrictions:<br>- Must be a valid URI as defined by [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)<br>- URI scheme is required and must be either `http` or `https`<br>- URI host is required and cannot be `localhost` or an IP address<br>- Max length: `2000`<br>- Reserved or invalid characters must be percent-encoded (for example, use `%20` instead of a space)<br>:::|
 
 #### Enumerated Values
 
@@ -12338,7 +12771,7 @@ Details of a crypto transaction, including the transaction hash, status, and rec
 
 Object containing information about crypto transactions associated with the order.
 
-:::info
+:::note
 These are the specific data field requirements for merchants offering crypto services. Note that these requirements can be extended on a case by case basis as decided by Revolut.
 
 ```
@@ -12402,7 +12835,7 @@ Details of a physical address.
 |region|string|false|none|State or province of the address.|
 |city|string|true|none|City of the address.|
 |country_code|string|true|none|ISO 2-letter country code.|
-|country_subdivision_code|string|false|none|The subdivision code represents the state, province, or region within the country, following the [ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2) standard. This code uniquely identifies subdivisions within a country. <br><br>For example, for London in the United Kingdom, use `GB-LND`.<br><br>:::warning<br>The parameter is required for countries listed on the [ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2) page.<br>:::|
+|country_subdivision_code|string|false|none|The subdivision code represents the state, province, or region within the country, following the [ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2) standard. This code uniquely identifies subdivisions within a country. <br><br>For example, for London in the United Kingdom, use `GB-LND`.<br><br>:::warning<br>Required when the `country_code` is a country with [ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2) subdivisions. For countries without subdivisions, omit this parameter. The two-letter prefix must match the `country_code`. Empty values are not accepted.<br>:::|
 |postcode|string|true|none|Postal code of the address.|
 
 <h2 id="tocS_Subseller">Subseller</h2>
@@ -12472,13 +12905,15 @@ Information about the subseller related to this order.
 
 This object is required by Mastercard and Visa for merchants operating as marketplaces under the Merchant Category Code (MCC) `5262`. The marketplace object ensures compliance with the card schemes' regulations by providing detailed information about the subseller involved in the transaction.
 
-:::info
+:::note
 These are the specific data field requirements for merchants who must provide marketplace data.
 
 ```
 subseller.id
 subseller.name
+subseller.website
 subseller.phone
+subseller.address
 ```
 :::
 
@@ -12653,7 +13088,7 @@ Object containing booking information about a specific event.
 
 Object containing booking information for a list of event tickets associated with the order.
 
-:::info
+:::note
 These are the specific data field requirements for merchants who must provide event data. Note that these requirements can be extended on a case by case basis as decided by Revolut.
 
 ```
@@ -12761,7 +13196,7 @@ List of guests associated with the booking.
 
 Object containing details of a lodging booking.
 
-:::info
+:::note
 These are the specific data field requirements for merchants who must provide lodging data. Note that these requirements can be extended on a case by case basis as decided by Revolut.
 
 ```
@@ -12850,7 +13285,7 @@ supplier_payment_date
 
 Object containing industry-specific information associated with the order.
 
-:::info
+:::note
 In the following cases, industry-specific info is required. Omitting this information may trigger additional scrutiny and risk mitigation actions by the Revolut risk team.
 
   | Transaction type | Required for | 
@@ -12867,10 +13302,10 @@ In the following cases, industry-specific info is required. Omitting this inform
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |*oneOf*|[Airline-Data](#schemaairline-data)|false|none|Object containing additional information about an airline booking associated with the order. <br><br>Use this object to provide required data to enable **Revolut Flight Alerts**. This feature allows users to receive real-time flight updates such as check-in reminders, boarding alerts, and notifications for cancellations or delays in the Revolut app.<br><br>To enable **Revolut Flight Alerts** functionalities in the Revolut app, the following fields are **required** on order creation or update, before capturing the order:<br>  ```<br>  tickets_purchase,<br>  journey_legs,<br>  booking_url<br>  ```<br><br>:::note<br>These are the specific data field requirements for merchants who must provide airline data. Note that these requirements can be extended on a case by case basis as decided by Revolut.<br><br>\| Required for airline/charter merchants \| Required for OTA merchants \|<br>\| -------------------------------------- \| -------------------------- \|<br>\| <ul><li>`booking_id`</li><li>`fulfillment_date`</li><li>`passengers[].first_name`</li><li>`passengers[].last_name`</li><li>`journey_legs[].pnr`</li><li>`journey_legs[].sequence`</li><li>`journey_legs[].flight_number`</li><li>`journey_legs[].travel_date`</li><li>`journey_legs[].airline_code`</li><li>`journey_legs[].departure_airport_code`</li><li>`journey_legs[].arrival_airport_code`</li></ul> \| <ul><li>`booking_id`</li><li>`fulfillment_date`</li><li>`passengers[].first_name`</li><li>`passengers[].last_name`</li><li>`journey_legs[].pnr`</li><li>`journey_legs[].arrival_airport_code`</li></ul> \|<br>:::|
-|*oneOf*|[Crypto-Transactions](#schemacrypto-transactions)|false|none|Object containing information about crypto transactions associated with the order.<br><br>:::info<br>These are the specific data field requirements for merchants offering crypto services. Note that these requirements can be extended on a case by case basis as decided by Revolut.<br><br>```<br>transactions[].id<br>transactions[].status<br>transactions[].recipient_wallet_id<br>subseller_mcc<br>subseller_url<br>customer.full_name<br>customer.date_of_birth<br>```<br>:::|
-|*oneOf*|[Marketplace](#schemamarketplace)|false|none|This object is required by Mastercard and Visa for merchants operating as marketplaces under the Merchant Category Code (MCC) `5262`. The marketplace object ensures compliance with the card schemes' regulations by providing detailed information about the subseller involved in the transaction.<br><br>:::info<br>These are the specific data field requirements for merchants who must provide marketplace data.<br><br>```<br>subseller.id<br>subseller.name<br>subseller.phone<br>```<br>:::|
-|*oneOf*|[Events](#schemaevents)|false|none|Object containing booking information for a list of event tickets associated with the order.<br><br>:::info<br>These are the specific data field requirements for merchants who must provide event data. Note that these requirements can be extended on a case by case basis as decided by Revolut.<br><br>```<br>booking_id<br>events[].start_date<br>events[].end_date<br>events[].supplier<br>events[].tickets[].id<br>```<br>:::|
-|*oneOf*|[Lodging](#schemalodging)|false|none|Object containing details of a lodging booking.<br><br>:::info<br>These are the specific data field requirements for merchants who must provide lodging data. Note that these requirements can be extended on a case by case basis as decided by Revolut.<br><br>```<br>booking_id<br>check_in_date<br>check_out_date<br>supplier_payment_date<br>```<br>:::|
+|*oneOf*|[Crypto-Transactions](#schemacrypto-transactions)|false|none|Object containing information about crypto transactions associated with the order.<br><br>:::note<br>These are the specific data field requirements for merchants offering crypto services. Note that these requirements can be extended on a case by case basis as decided by Revolut.<br><br>```<br>transactions[].id<br>transactions[].status<br>transactions[].recipient_wallet_id<br>subseller_mcc<br>subseller_url<br>customer.full_name<br>customer.date_of_birth<br>```<br>:::|
+|*oneOf*|[Marketplace](#schemamarketplace)|false|none|This object is required by Mastercard and Visa for merchants operating as marketplaces under the Merchant Category Code (MCC) `5262`. The marketplace object ensures compliance with the card schemes' regulations by providing detailed information about the subseller involved in the transaction.<br><br>:::note<br>These are the specific data field requirements for merchants who must provide marketplace data.<br><br>```<br>subseller.id<br>subseller.name<br>subseller.website<br>subseller.phone<br>subseller.address<br>```<br>:::|
+|*oneOf*|[Events](#schemaevents)|false|none|Object containing booking information for a list of event tickets associated with the order.<br><br>:::note<br>These are the specific data field requirements for merchants who must provide event data. Note that these requirements can be extended on a case by case basis as decided by Revolut.<br><br>```<br>booking_id<br>events[].start_date<br>events[].end_date<br>events[].supplier<br>events[].tickets[].id<br>```<br>:::|
+|*oneOf*|[Lodging](#schemalodging)|false|none|Object containing details of a lodging booking.<br><br>:::note<br>These are the specific data field requirements for merchants who must provide lodging data. Note that these requirements can be extended on a case by case basis as decided by Revolut.<br><br>```<br>booking_id<br>check_in_date<br>check_out_date<br>supplier_payment_date<br>```<br>:::|
 
 <h2 id="tocS_Upcoming-Payment">Upcoming-Payment</h2>
 <!-- backwards compatibility -->
@@ -13032,20 +13467,20 @@ Object schema containing information about order creation body request parameter
 |currency|[Currency](#schemacurrency)|true|none|[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.<br><br>:::info<br>For more information about the supported currencies, see: [Help Center](https://help.revolut.com/business/help/merchant-accounts/payments/in-which-currencies-can-i-accept-payments/).<br>:::|
 |settlement_currency|[Settlement-Currency](#schemasettlement-currency)|false|none|[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case. <br><br>If `settlement_currency` is different from the value of `currency`, the money will be exchanged when the amount is settled to your merchant account. In case of a refund or chargeback, the money will be exchanged to the order's initial `currency`.<br><br>If `settlement_currency` is not specified, this value is taken from `currency`.<br><br>:::info<br>For more information about the supported currencies, see: [Help Center](https://help.revolut.com/business/help/merchant-accounts/payments/in-which-currencies-can-i-accept-payments/).<br>:::|
 |description|[Order-Description](#schemaorder-description)|false|none|The description of the order.|
-|customer|[Customer-v2](#schemacustomer-v2)|false|none|Object containing information about a customer.<br><br>If you have it, we strongly advise providing at least either `id`, `phone`, or `email`.<br><br>Using the [Customers operations](https://developer.revolut.com/docs/api/merchant#tag-customers), you can manage customer instances.<br><br>The following behaviours apply to different use cases:<br><br>  \| Use case \| API behavior \|<br>  \| -------- \| ------------ \|<br>  \| Existing customer \| If `id` was provided, we ignore other customer details and associate the customer with the order.<br/><br/>If either `email`, `phone`, or `full_name` was provided (without an existing customer's `id`), we always create a new customer, irrespective of another, existing customer object having the same details. \|<br>  \| New customer \| If either `email`, `phone`, or `full_name` was provided, we create a new customer, irrespective of another customer object having the same details. <br/><br/>If `id` of a non-existent customer was provided, we return a `404` error, irrespective of other details provided. \|<br><br>:::note<br>To avoid unintentional duplication of customer records, search for an existing customer by email or phone using the [List customers](https://developer.revolut.com/docs/api/merchant#retrieve-customer-list) endpoint first, then provide `customer.id` in the order.<br>:::|
+|customer|[Customer-v2](#schemacustomer-v2)|false|none|Object containing information about a customer.<br><br>If you have it, we strongly advise providing at least either `id`, `phone`, or `email`.<br><br>Using the [Customers operations](https://developer.revolut.com/docs/api/merchant#tag-customers), you can manage customer instances.<br><br>The following behaviours apply to different use cases:<br><br>  \| Use case \| API behavior \|<br>  \| -------- \| ------------ \|<br>  \| Existing customer \| If `id` was provided, we ignore other customer details and associate the customer with the order.<br/><br/>If either `email`, `phone`, or `full_name` was provided (without an existing customer's `id`), we always create a new customer, irrespective of another, existing customer object having the same details. \|<br>  \| New customer \| If either `email`, `phone`, or `full_name` was provided, we create a new customer, irrespective of another customer object having the same details. <br/><br/>If `id` of a non-existent customer was provided, we return a `404` error, irrespective of other details provided. \|<br><br>:::info<br>To avoid unintentional duplication of customer records, search for an existing customer by email or phone using the [List customers](https://developer.revolut.com/docs/api/merchant#retrieve-customer-list) endpoint first, then provide `customer.id` in the order.<br>:::|
 |enforce_challenge|[Enforce-Challenge-v2](#schemaenforce-challenge-v2)|false|none|The enforce challenge mode. `automatic` is used by default.<br><br>\| Parameter value \| Description \|<br>\| --------------- \| ----------- \|<br>\| `automatic` \| The payments created for an order will have challenge requirement calculated by our fraud mechanisms. Not all payments will trigger a 3DS challenge. \|<br>\| `forced` \| The payments created for an order will always require a 3DS challenge. Currently only supported for card payments. \||
-|line_items|[Line-Items](#schemaline-items)|false|none|An array of line items included in the order. Each line item represents an individual product or service, along with its quantity, price, taxes, and discounts.<br><br>:::info<br>Required for merchants collecting payment for one or multiple products/services in one transaction. Omitting this information may trigger additional scrutiny and risk mitigation actions by Revolut.<br>:::|
-|shipping|[Shipping](#schemashipping)|false|none|Details about the shipping related to the order, including address, contact information, and individual shipments.<br><br>:::info<br>Required for merchants shipping physical goods. Omitting this information may trigger additional scrutiny and risk mitigation actions by Revolut.<br>:::|
+|line_items|[Line-Items](#schemaline-items)|false|none|An array of line items included in the order. Each line item represents an individual product or service, along with its quantity, price, taxes, and discounts.<br><br>:::note<br>Required for merchants collecting payment for one or multiple products/services in one transaction. Omitting this information may trigger additional scrutiny and risk mitigation actions by Revolut.<br>:::|
+|shipping|[Shipping](#schemashipping)|false|none|Details about the shipping related to the order, including address, contact information, and individual shipments.<br><br>:::note<br>Required for merchants shipping physical goods. Omitting this information may trigger additional scrutiny and risk mitigation actions by Revolut.<br>:::|
 |capture_mode|[Capture-Mode-v2](#schemacapture-mode-v2)|false|none|The capture mode of the order. `automatic` is used by default.<br><br>\| Parameter value \| Description \|<br>\| --------------- \| ----------- \|<br>\| `automatic` \| The order is captured automatically after payment authorisation. \|<br>\| `manual` \| The order is not captured automatically. You must manually capture the order later. \|<br><br>:::info<br>For more information, see [Capture an order](https://developer.revolut.com/docs/api/merchant#capture-order).<br>:::|
-|authorisation_type|[Authorisation-Type](#schemaauthorisation-type)|false|none|The type of authorisation for the order. Used with manual capture mode. If omitted, `final` is used by default.<br><br>### Pre-authorisation<br><br>Pre-authorisation allows you to reserve funds on a customer's card without immediately capturing them. This is useful for scenarios like:<br><br>- Hotel bookings where the final amount may vary<br>- Car rentals where additional charges may apply<br>- Deposits that need to be held temporarily<br><br>\| Parameter value \| Description \|<br>\| --------------- \| ----------- \|<br>\| `final` \| Standard authorisation for immediate or near-immediate capture. \|<br>\| `pre_authorisation` \| Reserve funds for later capture, used with manual capture mode. \|<br><br>:::note<br>Pre-authorisation must be used with `capture_mode: manual`. For more information, see [Capture an order](https://developer.revolut.com/docs/api/merchant#capture-order).<br>:::|
+|authorisation_type|[Authorisation-Type](#schemaauthorisation-type)|false|none|The type of authorisation for the order. Used with manual capture mode. If omitted, `final` is used by default.<br><br>### Pre-authorisation<br><br>Pre-authorisation allows you to reserve funds on a customer's card without immediately capturing them. This is useful for scenarios like:<br><br>- Hotel bookings where the final amount may vary<br>- Car rentals where additional charges may apply<br>- Deposits that need to be held temporarily<br><br>\| Parameter value \| Description \|<br>\| --------------- \| ----------- \|<br>\| `final` \| Standard authorisation for immediate or near-immediate capture. \|<br>\| `pre_authorisation` \| Reserve funds for later capture, used with manual capture mode. \|<br><br>:::info<br>Pre-authorisation must be used with `capture_mode: manual`. For more information, see [Capture an order](https://developer.revolut.com/docs/api/merchant#capture-order).<br>:::|
 |cancel_authorised_after|[Cancel-Authorised-After](#schemacancel-authorised-after)|false|none|Automatic cancellation period for uncaptured orders, specified in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format. <br><br>After this period, the authorised payment is automatically cancelled and the order is cancelled. Maximum: 7 days = `P7D`.<br><br>:::note<br>The following limitations apply:<br>  - Cannot be a negative value.<br>  - Cannot be updated if the new value is less than or equal to the elapsed time since authorisation. <br><br>    **Failing scenario:**<br>      - Original value: 7 days<br>      - Time since authorisation: 3 days<br>      - Update value: 2 days<br>      <br>    In this scenario, an error is returned.<br>    <br>    **Successful scenario:**<br>      - Original value: 7 days<br>      - Time since authorisation: 3 days<br>      - Update value: 4 days<br><br>    In this scenario, the parameter can be updated.<br><br>  - Cannot be updated if cancellation is ≤ 30 minutes away.<br><br>    **Failing scenario:**<br>      - Original value: 12 hours<br>      - Time since authorisation: 11 hours 40 minutes<br>                        <br>    In this scenario, an error is returned.<br>    <br>    **Successful scenario:** <br>      - Original value: 12 hours<br>      - Time since authorisation: 11 hours 20 minutes<br><br>    In this scenario, the parameter can be updated.<br>:::|
 |expire_pending_after|[Expire-Pending-After](#schemaexpire-pending-after)|false|none|Automatic expiration period for pending orders, specified in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.<br><br>Orders in `pending` state will be automatically failed if they stay unpaid for longer than the period specified.<br><br>When the order expires, it transitions to the `failed` state and an `ORDER_FAILED` webhook event is triggered.<br><br>:::note<br>- This field can only be set during order creation and cannot be updated afterward.<br>- Must be between `PT1M` (1 minute) and `PT720H` (30 days).<br>- Cannot be a negative value.<br>:::|
 |location_id|[Location-Id](#schemalocation-id)|false|none|Unique ID representing the location where merchants sells products.<br><br>:::info<br>For more information, see: [Locations](https://developer.revolut.com/docs/api/merchant#tag-locations).<br>:::        |
 |metadata|[Metadata](#schemametadata)|false|none|Additional information to track your orders in your system, by providing custom metadata using `"<key>" : "<value>"` pairs.<br><br>:::warning<br>**Restrictions:**<br><br>- Both keys and values must be `string`s<br>- Values cannot be `null`.<br>- Max number of key-value pairs: `50`<br>- Max length of values: `500` characters<br>- Format of keys: Must start with a letter and contain only letters, digits, and underscores. Max 40 characters. Pattern: `^[a-zA-Z][a-zA-Z\\d_]{0,39}$`<br>:::|
-|industry_data|[Industry-Data](#schemaindustry-data)|false|none|Object containing industry-specific information associated with the order.<br><br>:::info<br>In the following cases, industry-specific info is required. Omitting this information may trigger additional scrutiny and risk mitigation actions by the Revolut risk team.<br><br>  \| Transaction type \| Required for \| <br>  \| ---------------- \| ----------- \|<br>  \| `airline`        \| Airlines and Online Travel Agencies (OTAs). \|<br>  \| `crypto`         \| Crypto merchants. \|<br>  \| `marketplace`    \| Marketplace merchants. \|<br>  \| `event`          \| Event ticket sellers. \|<br>  \| `lodging`        \| Lodging providers and OTAs. \|<br>:::|
+|industry_data|[Industry-Data](#schemaindustry-data)|false|none|Object containing industry-specific information associated with the order.<br><br>:::note<br>In the following cases, industry-specific info is required. Omitting this information may trigger additional scrutiny and risk mitigation actions by the Revolut risk team.<br><br>  \| Transaction type \| Required for \| <br>  \| ---------------- \| ----------- \|<br>  \| `airline`        \| Airlines and Online Travel Agencies (OTAs). \|<br>  \| `crypto`         \| Crypto merchants. \|<br>  \| `marketplace`    \| Marketplace merchants. \|<br>  \| `event`          \| Event ticket sellers. \|<br>  \| `lodging`        \| Lodging providers and OTAs. \|<br>:::|
 |merchant_order_data|[Merchant-Order-Data](#schemamerchant-order-data)|false|none|Object for providing additional information stored in the merchant's order management system. |
 |upcoming_payment_data|[Upcoming-Payment](#schemaupcoming-payment)|false|none|Object containing information about upcoming payments associated with the order.|
-|redirect_url|[Redirect-Url](#schemaredirect-url)|false|none|The URL your customer will be redirected to after completing a payment flow.<br><br>- **Hosted Checkout Page** (`checkout_url`): This is the post-success URL - the customer is redirected only after a successful payment.<br>- **Embedded Revolut Pay** (Revolut Checkout widget): This URL is used for all redirect outcomes - success, failure, and cancellation.<br><br>:::warning [Restrictions]<br>- Must be a valid URI as defined by [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)<br>- URI scheme is required and must be either `http` or `https`<br>- URI host is required and cannot be `localhost` or an IP address<br>- Max length: `2000`<br>- Reserved or invalid characters must be percent-encoded (for example, use `%20` instead of a space)<br>:::<br><br>:::note [Revolut Checkout]<br>- Revolut Pay will not appear in the widget on mobile devices unless redirect targets are configured - either via this `redirect_url` parameter or the SDK-level `revolutPayOptions.mobileRedirectUrls` option.<br>- If `redirect_url` is set on the order, it takes precedence over `revolutPayOptions.mobileRedirectUrls` and is used for all redirect outcomes (success, failure, cancel).<br>:::<br><br>:::info<br>For more information, see:<br>- [Hosted Checkout Page: Custom redirection](https://developer.revolut.com/docs/guides/merchant/accept-payments/online-payments/hosted-checkout-page/api#custom-post-payment-redirection-optional)<br>- [Revolut Checkout: Configure mobile redirects](https://developer.revolut.com/docs/guides/merchant/accept-payments/online-payments/revolut-checkout/web#35-configure-revolut-pay-mobile-redirects)<br>:::|
+|redirect_url|[Redirect-Url](#schemaredirect-url)|false|none|The URL your customer will be redirected to after completing a payment flow.<br><br>- **Hosted Checkout Page** (`checkout_url`): This is the post-success URL - the customer is redirected only after a successful payment.<br>- **Embedded Revolut Pay** (Revolut Checkout widget): This URL is used for all redirect outcomes - success, failure, and cancellation.<br><br>:::warning [Restrictions]<br>- Must be a valid URI as defined by [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)<br>- URI scheme is required and must be either `http` or `https`<br>- URI host is required and cannot be `localhost` or an IP address<br>- Max length: `2000`<br>- Reserved or invalid characters must be percent-encoded (for example, use `%20` instead of a space)<br>:::<br><br>:::note [Revolut Checkout]<br>- Revolut Pay will not appear in the widget on mobile devices unless redirect targets are configured - either via this `redirect_url` parameter or the SDK-level `revolutPayOptions.mobileRedirectUrls` option.<br>- If `redirect_url` is set on the order, it takes precedence over `revolutPayOptions.mobileRedirectUrls` and is used for all redirect outcomes (success, failure, cancel).<br>:::<br><br>:::info<br>For more information, see:<br>- [Hosted Checkout Page: Custom redirection](https://developer.revolut.com/docs/guides/merchant/accept-payments/online-payments/hosted-checkout-page/api#1-create-an-order)<br>- [Revolut Checkout: Configure mobile redirects](https://developer.revolut.com/docs/guides/merchant/accept-payments/online-payments/revolut-checkout/web#35-configure-revolut-pay-mobile-redirects)<br>:::|
 |statement_descriptor_suffix|[Statement-Descriptor-Suffix](#schemastatement-descriptor-suffix)|false|none|You can set a dynamic statement descriptor for your orders by providing a custom suffix. <br><br>A statement descriptor is the text shown on cardholders' bank or card statements, helping them recognise a transaction or merchant. This field can be used to send extra information with the statement descriptor for card transactions.<br><br>The complete descriptor is built using the following format: `{base}*{suffix}`, where:<br>  <br>  - **`{base}`** is the existing descriptor configured in the Revolut Business dashboard (**Settings > Business account > Merchant profile > Statement descriptor**).  <br>  - **`{suffix}`** is defined by the `statement_descriptor_suffix` field.<br><br>:::note<br>- If the combined descriptor's length (base + suffix) exceeds the character limits of card scheme providers, the final value will be truncated. For example if the limit is 22 characters, the base descriptor is `"base"` and the suffix is `"testdescriptorsuffix"`, the final descriptor becomes `"base*testdescriptorsuf"`.<br>- The final statement descriptor shown on a cardholder's statement may vary by issuing bank, as some banks apply their own custom formatting or truncation rules.<br>:::|
 
 #### Enumerated Values
@@ -13188,7 +13623,7 @@ The payment amount in minor units (e.g., cents). The value of this field depends
 | Pre-authorised payment | `authorisation_started` | New amount being authorised (during increment processing) |
 | Pre-authorised payment | `authorised` | Currently authorised amount (equals `authorised_amount`) |
 
-:::info
+:::note
 For pre-authorised payments, see the `authorised_amount` field for tracking the currently authorised amount separately.
 :::
 
@@ -13243,6 +13678,23 @@ The currency of the settled payment. [ISO 4217](https://en.wikipedia.org/wiki/IS
 For more information about the supported currencies, see: [Help Center](https://help.revolut.com/business/help/merchant-accounts/payments/in-which-currencies-can-i-accept-payments/).
 :::
 
+<h2 id="tocS_Saved-Payment-Method-Id">Saved-Payment-Method-Id</h2>
+<!-- backwards compatibility -->
+<a id="schemasaved-payment-method-id"></a>
+<a id="schema_Saved-Payment-Method-Id"></a>
+<a id="tocSsaved-payment-method-id"></a>
+<a id="tocssaved-payment-method-id"></a>
+
+```json
+"497f6eca-6276-4993-bfeb-53cbbbba6f08"
+```
+
+ID of the saved payment method.
+
+:::note
+The `id` parameter is only returned when the payment method is saved.
+:::
+
 <h2 id="tocS_Payment-Method-Type">Payment-Method-Type</h2>
 <!-- backwards compatibility -->
 <a id="schemapayment-method-type"></a>
@@ -13266,6 +13718,23 @@ Available values:
 | `revolut_pay_card` | The customer paid the order via Revolut Pay using their credit or debit card. |
 | `revolut_pay_account` | The customer paid the order via Revolut Pay using their Revolut account. |
 | `sepa_direct_debit` | The customer paid the order using SEPA Direct Debit. |
+
+<h2 id="tocS_Payment-Method-Commercial">Payment-Method-Commercial</h2>
+<!-- backwards compatibility -->
+<a id="schemapayment-method-commercial"></a>
+<a id="schema_Payment-Method-Commercial"></a>
+<a id="tocSpayment-method-commercial"></a>
+<a id="tocspayment-method-commercial"></a>
+
+```json
+true
+```
+
+Indicates whether the customer paid with a commercial payment method, for example a business card or a commercial Revolut account.
+
+:::note
+If the commercial classification is unavailable, the field is omitted for card payments and returned as `false` for Revolut Pay account payments.
+:::
 
 <h2 id="tocS_Card-Checks-v2">Card-Checks-v2</h2>
 <!-- backwards compatibility -->
@@ -13364,7 +13833,7 @@ Only returned for refund payments made by a card.
 "1970-01-01T00:00:00Z"
 ```
 
-The date and time by which the payment must be captured.
+The date and time by which the payment must be captured. For pre-authorisation orders, this deadline is intentionally set one day before the card scheme's authorisation validity expires, to allow time for payment clearing.
 
 After this deadline, the authorised funds may be automatically released by the card issuer.
 
@@ -13478,11 +13947,11 @@ Object containing details of a card used via Apple Pay.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|string(uuid)|false|none|ID of the saved payment method.<br><br>:::note<br>The `id` parameter is only returned when the payment method is saved.<br>:::|
+|id|[Saved-Payment-Method-Id](#schemasaved-payment-method-id)|false|none|ID of the saved payment method.<br><br>:::note<br>The `id` parameter is only returned when the payment method is saved.<br>:::|
 |type|[Payment-Method-Type](#schemapayment-method-type)|true|none|The type of payment method used to pay for the order.<br><br>Available values:<br><br>\| Payment method `type` \| Description \|<br>\| --------------------- \| ----------- \|<br>\| `apple_pay` \| The customer paid the order using Apple Pay. \|<br>\| `card` \| The customer paid the order using their credit or debit card. \|<br>\| `google_pay` \| The customer paid the order using Google Pay. \|<br>\| `revolut_pay_card` \| The customer paid the order via Revolut Pay using their credit or debit card. \|<br>\| `revolut_pay_account` \| The customer paid the order via Revolut Pay using their Revolut account. \|<br>\| `sepa_direct_debit` \| The customer paid the order using SEPA Direct Debit. \||
 |card_brand|string|false|none|The type of the card.|
 |funding|string|false|none|The type of card funding.|
-|commercial|boolean|false|none|Indicates whether the card is a commercial card.<br>The field is omitted when the classification is unavailable.|
+|commercial|[Payment-Method-Commercial](#schemapayment-method-commercial)|false|none|Indicates whether the customer paid with a commercial payment method, for example a business card or a commercial Revolut account.<br><br>:::note<br>If the commercial classification is unavailable, the field is omitted for card payments and returned as `false` for Revolut Pay account payments.<br>:::|
 |card_country_code|string|false|none|The 2-letter country code of the country where the card was issued.|
 |card_bin|string|false|none|The BIN of the card.|
 |card_last_four|string|false|none|The last four digits of the card number.|
@@ -13491,7 +13960,7 @@ Object containing details of a card used via Apple Pay.
 |checks|[Card-Checks-v2](#schemacard-checks-v2)|false|none|The details of the check for card payment. Only for orders with successful payments.|
 |authorisation_code|[Authorisation-Code](#schemaauthorisation-code)|false|none|The authorisation code (or auth code) is a short, alphanumeric code returned by the cardholder's issuing bank to the merchant's terminal or payment gateway.<br><br>It serves as confirmation that the transaction has been approved and funds are available.|
 |arn|[Arn](#schemaarn)|false|none|Acquirer Reference Number (ARN) of the payment.<br><br>:::note<br>Only returned for refund payments made by a card.<br>:::|
-|capture_deadline|[Capture-Deadline](#schemacapture-deadline)|false|none|The date and time by which the payment must be captured.<br><br>After this deadline, the authorised funds may be automatically released by the card issuer.|
+|capture_deadline|[Capture-Deadline](#schemacapture-deadline)|false|none|The date and time by which the payment must be captured. For pre-authorisation orders, this deadline is intentionally set one day before the card scheme's authorisation validity expires, to allow time for payment clearing.<br><br>After this deadline, the authorised funds may be automatically released by the card issuer.|
 |terminal_hardware_id|[Terminal-Hardware-Id](#schematerminal-hardware-id)|false|none|The hardware identifier of the Revolut Terminal device used to process the payment.<br><br>:::note<br>Only present for card-present transactions processed via Revolut Terminal.<br>:::|
 |fingerprint|[Fingerprint](#schemafingerprint)|false|none|A unique identifier for a payment method, always 44 characters long. This fingerprint can be used to uniquely identify various payment methods.<br><br>#### Fingerprint generation<br><br>\| Payment method \| Description \|<br>\| -------- \| ----------- \|<br>\| **All payment methods** \| A fingerprint is generated for all payment methods, including cards, Revolut Pay (card, account-to-account payments), Apple Pay, and Google Pay. \|<br>\| **Cards (Revolut Pay & Card Gateway)** \| For cards, the fingerprint is based on the PAN. Cards processed via Revolut Pay and our card gateway will share the same fingerprint. Renewed cards (new expiry/CVV) retain the same fingerprint for efficient blocking. \|<br>\| **Apple Pay & Google Pay** \| Since Apple Pay and Google Pay provide us Device PANs (DPAN), the fingerprint is based on the DPAN provided by Apple/Google, not the connected card's PAN. This means that a new DPAN (and fingerprint) is generated for cards in case they are re-added to the customer's digital wallet, or added to different devices. \|<br><br>#### Detecting duplicate payment methods<br><br>Fingerprints are a valuable tool for detecting duplicate payment methods by identifying if a payment method has been seen before. This capability, in turn, helps in preventing various types of misuse (e.g., exploitation of free trials, or association with known problematic accounts, which can be a form of fraud). To effectively use fingerprints for this purpose, you will need to create and maintain your own lists (e.g., blocklists of known problematic fingerprints, allowlists for trusted customers, or tracking frequently used fingerprints). <br><br>The ideal way to utilise fingerprints is by combining them with a manual capture process. While automatic capture with subsequent refunds for problematic payments is possible, manual capture based on fingerprint validation is recommended.<br><br>During your manual capture workflow, after a payment was authorised:<br>  <br>  - Check the fingerprint status by comparing it against your maintained lists and internal business rules.<br>  - If you decide to proceed with the payment (e.g., the fingerprint is not on a blocklist, or matches a trusted customer's previous payment method): [Capture the order](https://developer.revolut.com/docs/api/merchant#capture-order).<br>  - If you decide not to proceed with the payment (e.g., the fingerprint matches a known fraudulent fingerprint, or exhibits suspicious patterns): [Cancel the order](https://developer.revolut.com/docs/api/merchant#cancel-order).|
 |network_transaction_id|[Network-Transaction-Id](#schemanetwork-transaction-id)|false|none|The Network Transaction ID (NTI) is a unique identifier assigned by the card scheme (e.g., Visa or Mastercard) to a card transaction.<br><br>It can be used to trace the transaction across the payment network, link recurring or instalment payments to the original authorisation, and support dispute resolution.|
@@ -13558,11 +14027,11 @@ Object containing details of the card used for the payment.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|string(uuid)|false|none|ID of the saved payment method.<br><br>:::note<br>The `id` parameter is only returned when the payment method is saved.<br>:::|
+|id|[Saved-Payment-Method-Id](#schemasaved-payment-method-id)|false|none|ID of the saved payment method.<br><br>:::note<br>The `id` parameter is only returned when the payment method is saved.<br>:::|
 |type|[Payment-Method-Type](#schemapayment-method-type)|true|none|The type of payment method used to pay for the order.<br><br>Available values:<br><br>\| Payment method `type` \| Description \|<br>\| --------------------- \| ----------- \|<br>\| `apple_pay` \| The customer paid the order using Apple Pay. \|<br>\| `card` \| The customer paid the order using their credit or debit card. \|<br>\| `google_pay` \| The customer paid the order using Google Pay. \|<br>\| `revolut_pay_card` \| The customer paid the order via Revolut Pay using their credit or debit card. \|<br>\| `revolut_pay_account` \| The customer paid the order via Revolut Pay using their Revolut account. \|<br>\| `sepa_direct_debit` \| The customer paid the order using SEPA Direct Debit. \||
 |card_brand|string|false|none|The type of the card.|
 |funding|string|false|none|The type of card funding.|
-|commercial|boolean|false|none|Indicates whether the card is a commercial card.<br>The field is omitted when the classification is unavailable.|
+|commercial|[Payment-Method-Commercial](#schemapayment-method-commercial)|false|none|Indicates whether the customer paid with a commercial payment method, for example a business card or a commercial Revolut account.<br><br>:::note<br>If the commercial classification is unavailable, the field is omitted for card payments and returned as `false` for Revolut Pay account payments.<br>:::|
 |card_country_code|string|false|none|The 2-letter country code of the country where the card was issued.|
 |card_bin|string|false|none|The BIN of the card.|
 |card_last_four|string|false|none|The last four digits of the card number.|
@@ -13571,7 +14040,7 @@ Object containing details of the card used for the payment.
 |checks|[Card-Checks-v2](#schemacard-checks-v2)|false|none|The details of the check for card payment. Only for orders with successful payments.|
 |authorisation_code|[Authorisation-Code](#schemaauthorisation-code)|false|none|The authorisation code (or auth code) is a short, alphanumeric code returned by the cardholder's issuing bank to the merchant's terminal or payment gateway.<br><br>It serves as confirmation that the transaction has been approved and funds are available.|
 |arn|[Arn](#schemaarn)|false|none|Acquirer Reference Number (ARN) of the payment.<br><br>:::note<br>Only returned for refund payments made by a card.<br>:::|
-|capture_deadline|[Capture-Deadline](#schemacapture-deadline)|false|none|The date and time by which the payment must be captured.<br><br>After this deadline, the authorised funds may be automatically released by the card issuer.|
+|capture_deadline|[Capture-Deadline](#schemacapture-deadline)|false|none|The date and time by which the payment must be captured. For pre-authorisation orders, this deadline is intentionally set one day before the card scheme's authorisation validity expires, to allow time for payment clearing.<br><br>After this deadline, the authorised funds may be automatically released by the card issuer.|
 |terminal_hardware_id|[Terminal-Hardware-Id](#schematerminal-hardware-id)|false|none|The hardware identifier of the Revolut Terminal device used to process the payment.<br><br>:::note<br>Only present for card-present transactions processed via Revolut Terminal.<br>:::|
 |fingerprint|[Fingerprint](#schemafingerprint)|false|none|A unique identifier for a payment method, always 44 characters long. This fingerprint can be used to uniquely identify various payment methods.<br><br>#### Fingerprint generation<br><br>\| Payment method \| Description \|<br>\| -------- \| ----------- \|<br>\| **All payment methods** \| A fingerprint is generated for all payment methods, including cards, Revolut Pay (card, account-to-account payments), Apple Pay, and Google Pay. \|<br>\| **Cards (Revolut Pay & Card Gateway)** \| For cards, the fingerprint is based on the PAN. Cards processed via Revolut Pay and our card gateway will share the same fingerprint. Renewed cards (new expiry/CVV) retain the same fingerprint for efficient blocking. \|<br>\| **Apple Pay & Google Pay** \| Since Apple Pay and Google Pay provide us Device PANs (DPAN), the fingerprint is based on the DPAN provided by Apple/Google, not the connected card's PAN. This means that a new DPAN (and fingerprint) is generated for cards in case they are re-added to the customer's digital wallet, or added to different devices. \|<br><br>#### Detecting duplicate payment methods<br><br>Fingerprints are a valuable tool for detecting duplicate payment methods by identifying if a payment method has been seen before. This capability, in turn, helps in preventing various types of misuse (e.g., exploitation of free trials, or association with known problematic accounts, which can be a form of fraud). To effectively use fingerprints for this purpose, you will need to create and maintain your own lists (e.g., blocklists of known problematic fingerprints, allowlists for trusted customers, or tracking frequently used fingerprints). <br><br>The ideal way to utilise fingerprints is by combining them with a manual capture process. While automatic capture with subsequent refunds for problematic payments is possible, manual capture based on fingerprint validation is recommended.<br><br>During your manual capture workflow, after a payment was authorised:<br>  <br>  - Check the fingerprint status by comparing it against your maintained lists and internal business rules.<br>  - If you decide to proceed with the payment (e.g., the fingerprint is not on a blocklist, or matches a trusted customer's previous payment method): [Capture the order](https://developer.revolut.com/docs/api/merchant#capture-order).<br>  - If you decide not to proceed with the payment (e.g., the fingerprint matches a known fraudulent fingerprint, or exhibits suspicious patterns): [Cancel the order](https://developer.revolut.com/docs/api/merchant#cancel-order).|
 |network_transaction_id|[Network-Transaction-Id](#schemanetwork-transaction-id)|false|none|The Network Transaction ID (NTI) is a unique identifier assigned by the card scheme (e.g., Visa or Mastercard) to a card transaction.<br><br>It can be used to trace the transaction across the payment network, link recurring or instalment payments to the original authorisation, and support dispute resolution.|
@@ -13638,11 +14107,11 @@ Object containing details of a card used via Google Pay.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|string(uuid)|false|none|ID of the saved payment method.<br><br>:::note<br>The `id` parameter is only returned when the payment method is saved.<br>:::|
+|id|[Saved-Payment-Method-Id](#schemasaved-payment-method-id)|false|none|ID of the saved payment method.<br><br>:::note<br>The `id` parameter is only returned when the payment method is saved.<br>:::|
 |type|[Payment-Method-Type](#schemapayment-method-type)|true|none|The type of payment method used to pay for the order.<br><br>Available values:<br><br>\| Payment method `type` \| Description \|<br>\| --------------------- \| ----------- \|<br>\| `apple_pay` \| The customer paid the order using Apple Pay. \|<br>\| `card` \| The customer paid the order using their credit or debit card. \|<br>\| `google_pay` \| The customer paid the order using Google Pay. \|<br>\| `revolut_pay_card` \| The customer paid the order via Revolut Pay using their credit or debit card. \|<br>\| `revolut_pay_account` \| The customer paid the order via Revolut Pay using their Revolut account. \|<br>\| `sepa_direct_debit` \| The customer paid the order using SEPA Direct Debit. \||
 |card_brand|string|false|none|The type of the card.|
 |funding|string|false|none|The type of card funding.|
-|commercial|boolean|false|none|Indicates whether the card is a commercial card.<br>The field is omitted when the classification is unavailable.|
+|commercial|[Payment-Method-Commercial](#schemapayment-method-commercial)|false|none|Indicates whether the customer paid with a commercial payment method, for example a business card or a commercial Revolut account.<br><br>:::note<br>If the commercial classification is unavailable, the field is omitted for card payments and returned as `false` for Revolut Pay account payments.<br>:::|
 |card_country_code|string|false|none|The 2-letter country code of the country where the card was issued.|
 |card_bin|string|false|none|The BIN of the card.|
 |card_last_four|string|false|none|The last four digits of the card number.|
@@ -13651,7 +14120,7 @@ Object containing details of a card used via Google Pay.
 |checks|[Card-Checks-v2](#schemacard-checks-v2)|false|none|The details of the check for card payment. Only for orders with successful payments.|
 |authorisation_code|[Authorisation-Code](#schemaauthorisation-code)|false|none|The authorisation code (or auth code) is a short, alphanumeric code returned by the cardholder's issuing bank to the merchant's terminal or payment gateway.<br><br>It serves as confirmation that the transaction has been approved and funds are available.|
 |arn|[Arn](#schemaarn)|false|none|Acquirer Reference Number (ARN) of the payment.<br><br>:::note<br>Only returned for refund payments made by a card.<br>:::|
-|capture_deadline|[Capture-Deadline](#schemacapture-deadline)|false|none|The date and time by which the payment must be captured.<br><br>After this deadline, the authorised funds may be automatically released by the card issuer.|
+|capture_deadline|[Capture-Deadline](#schemacapture-deadline)|false|none|The date and time by which the payment must be captured. For pre-authorisation orders, this deadline is intentionally set one day before the card scheme's authorisation validity expires, to allow time for payment clearing.<br><br>After this deadline, the authorised funds may be automatically released by the card issuer.|
 |terminal_hardware_id|[Terminal-Hardware-Id](#schematerminal-hardware-id)|false|none|The hardware identifier of the Revolut Terminal device used to process the payment.<br><br>:::note<br>Only present for card-present transactions processed via Revolut Terminal.<br>:::|
 |fingerprint|[Fingerprint](#schemafingerprint)|false|none|A unique identifier for a payment method, always 44 characters long. This fingerprint can be used to uniquely identify various payment methods.<br><br>#### Fingerprint generation<br><br>\| Payment method \| Description \|<br>\| -------- \| ----------- \|<br>\| **All payment methods** \| A fingerprint is generated for all payment methods, including cards, Revolut Pay (card, account-to-account payments), Apple Pay, and Google Pay. \|<br>\| **Cards (Revolut Pay & Card Gateway)** \| For cards, the fingerprint is based on the PAN. Cards processed via Revolut Pay and our card gateway will share the same fingerprint. Renewed cards (new expiry/CVV) retain the same fingerprint for efficient blocking. \|<br>\| **Apple Pay & Google Pay** \| Since Apple Pay and Google Pay provide us Device PANs (DPAN), the fingerprint is based on the DPAN provided by Apple/Google, not the connected card's PAN. This means that a new DPAN (and fingerprint) is generated for cards in case they are re-added to the customer's digital wallet, or added to different devices. \|<br><br>#### Detecting duplicate payment methods<br><br>Fingerprints are a valuable tool for detecting duplicate payment methods by identifying if a payment method has been seen before. This capability, in turn, helps in preventing various types of misuse (e.g., exploitation of free trials, or association with known problematic accounts, which can be a form of fraud). To effectively use fingerprints for this purpose, you will need to create and maintain your own lists (e.g., blocklists of known problematic fingerprints, allowlists for trusted customers, or tracking frequently used fingerprints). <br><br>The ideal way to utilise fingerprints is by combining them with a manual capture process. While automatic capture with subsequent refunds for problematic payments is possible, manual capture based on fingerprint validation is recommended.<br><br>During your manual capture workflow, after a payment was authorised:<br>  <br>  - Check the fingerprint status by comparing it against your maintained lists and internal business rules.<br>  - If you decide to proceed with the payment (e.g., the fingerprint is not on a blocklist, or matches a trusted customer's previous payment method): [Capture the order](https://developer.revolut.com/docs/api/merchant#capture-order).<br>  - If you decide not to proceed with the payment (e.g., the fingerprint matches a known fraudulent fingerprint, or exhibits suspicious patterns): [Cancel the order](https://developer.revolut.com/docs/api/merchant#cancel-order).|
 |network_transaction_id|[Network-Transaction-Id](#schemanetwork-transaction-id)|false|none|The Network Transaction ID (NTI) is a unique identifier assigned by the card scheme (e.g., Visa or Mastercard) to a card transaction.<br><br>It can be used to trace the transaction across the payment network, link recurring or instalment payments to the original authorisation, and support dispute resolution.|
@@ -13718,11 +14187,11 @@ Object containing details of a card used via Revolut Pay.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|string(uuid)|false|none|ID of the saved payment method.<br><br>:::note<br>The `id` parameter is only returned when the payment method is saved.<br>:::|
+|id|[Saved-Payment-Method-Id](#schemasaved-payment-method-id)|false|none|ID of the saved payment method.<br><br>:::note<br>The `id` parameter is only returned when the payment method is saved.<br>:::|
 |type|[Payment-Method-Type](#schemapayment-method-type)|true|none|The type of payment method used to pay for the order.<br><br>Available values:<br><br>\| Payment method `type` \| Description \|<br>\| --------------------- \| ----------- \|<br>\| `apple_pay` \| The customer paid the order using Apple Pay. \|<br>\| `card` \| The customer paid the order using their credit or debit card. \|<br>\| `google_pay` \| The customer paid the order using Google Pay. \|<br>\| `revolut_pay_card` \| The customer paid the order via Revolut Pay using their credit or debit card. \|<br>\| `revolut_pay_account` \| The customer paid the order via Revolut Pay using their Revolut account. \|<br>\| `sepa_direct_debit` \| The customer paid the order using SEPA Direct Debit. \||
 |card_brand|string|false|none|The type of the card.|
 |funding|string|false|none|The type of card funding.|
-|commercial|boolean|false|none|Indicates whether the card is a commercial card.<br>The field is omitted when the classification is unavailable.|
+|commercial|[Payment-Method-Commercial](#schemapayment-method-commercial)|false|none|Indicates whether the customer paid with a commercial payment method, for example a business card or a commercial Revolut account.<br><br>:::note<br>If the commercial classification is unavailable, the field is omitted for card payments and returned as `false` for Revolut Pay account payments.<br>:::|
 |card_country_code|string|false|none|The 2-letter country code of the country where the card was issued.|
 |card_bin|string|false|none|The BIN of the card.|
 |card_last_four|string|false|none|The last four digits of the card number.|
@@ -13731,7 +14200,7 @@ Object containing details of a card used via Revolut Pay.
 |checks|[Card-Checks-v2](#schemacard-checks-v2)|false|none|The details of the check for card payment. Only for orders with successful payments.|
 |authorisation_code|[Authorisation-Code](#schemaauthorisation-code)|false|none|The authorisation code (or auth code) is a short, alphanumeric code returned by the cardholder's issuing bank to the merchant's terminal or payment gateway.<br><br>It serves as confirmation that the transaction has been approved and funds are available.|
 |arn|[Arn](#schemaarn)|false|none|Acquirer Reference Number (ARN) of the payment.<br><br>:::note<br>Only returned for refund payments made by a card.<br>:::|
-|capture_deadline|[Capture-Deadline](#schemacapture-deadline)|false|none|The date and time by which the payment must be captured.<br><br>After this deadline, the authorised funds may be automatically released by the card issuer.|
+|capture_deadline|[Capture-Deadline](#schemacapture-deadline)|false|none|The date and time by which the payment must be captured. For pre-authorisation orders, this deadline is intentionally set one day before the card scheme's authorisation validity expires, to allow time for payment clearing.<br><br>After this deadline, the authorised funds may be automatically released by the card issuer.|
 |terminal_hardware_id|[Terminal-Hardware-Id](#schematerminal-hardware-id)|false|none|The hardware identifier of the Revolut Terminal device used to process the payment.<br><br>:::note<br>Only present for card-present transactions processed via Revolut Terminal.<br>:::|
 |fingerprint|[Fingerprint](#schemafingerprint)|false|none|A unique identifier for a payment method, always 44 characters long. This fingerprint can be used to uniquely identify various payment methods.<br><br>#### Fingerprint generation<br><br>\| Payment method \| Description \|<br>\| -------- \| ----------- \|<br>\| **All payment methods** \| A fingerprint is generated for all payment methods, including cards, Revolut Pay (card, account-to-account payments), Apple Pay, and Google Pay. \|<br>\| **Cards (Revolut Pay & Card Gateway)** \| For cards, the fingerprint is based on the PAN. Cards processed via Revolut Pay and our card gateway will share the same fingerprint. Renewed cards (new expiry/CVV) retain the same fingerprint for efficient blocking. \|<br>\| **Apple Pay & Google Pay** \| Since Apple Pay and Google Pay provide us Device PANs (DPAN), the fingerprint is based on the DPAN provided by Apple/Google, not the connected card's PAN. This means that a new DPAN (and fingerprint) is generated for cards in case they are re-added to the customer's digital wallet, or added to different devices. \|<br><br>#### Detecting duplicate payment methods<br><br>Fingerprints are a valuable tool for detecting duplicate payment methods by identifying if a payment method has been seen before. This capability, in turn, helps in preventing various types of misuse (e.g., exploitation of free trials, or association with known problematic accounts, which can be a form of fraud). To effectively use fingerprints for this purpose, you will need to create and maintain your own lists (e.g., blocklists of known problematic fingerprints, allowlists for trusted customers, or tracking frequently used fingerprints). <br><br>The ideal way to utilise fingerprints is by combining them with a manual capture process. While automatic capture with subsequent refunds for problematic payments is possible, manual capture based on fingerprint validation is recommended.<br><br>During your manual capture workflow, after a payment was authorised:<br>  <br>  - Check the fingerprint status by comparing it against your maintained lists and internal business rules.<br>  - If you decide to proceed with the payment (e.g., the fingerprint is not on a blocklist, or matches a trusted customer's previous payment method): [Capture the order](https://developer.revolut.com/docs/api/merchant#capture-order).<br>  - If you decide not to proceed with the payment (e.g., the fingerprint matches a known fraudulent fingerprint, or exhibits suspicious patterns): [Cancel the order](https://developer.revolut.com/docs/api/merchant#cancel-order).|
 |network_transaction_id|[Network-Transaction-Id](#schemanetwork-transaction-id)|false|none|The Network Transaction ID (NTI) is a unique identifier assigned by the card scheme (e.g., Visa or Mastercard) to a card transaction.<br><br>It can be used to trace the transaction across the payment network, link recurring or instalment payments to the original authorisation, and support dispute resolution.|
@@ -13764,6 +14233,7 @@ Object containing details of a card used via Revolut Pay.
 {
   "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
   "type": "apple_pay",
+  "commercial": true,
   "fingerprint": "1JAllfQY4POhBV8DaddAQ4LC5RbMP8LMLvUdJW4s5JY="
 }
 ```
@@ -13774,8 +14244,9 @@ Revolut Pay account payment method details, including the saved payment method I
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|string(uuid)|false|none|ID of the saved payment method.<br><br>:::note<br>The `id` parameter is only returned when the payment method is saved.<br>:::|
+|id|[Saved-Payment-Method-Id](#schemasaved-payment-method-id)|false|none|ID of the saved payment method.<br><br>:::note<br>The `id` parameter is only returned when the payment method is saved.<br>:::|
 |type|[Payment-Method-Type](#schemapayment-method-type)|true|none|The type of payment method used to pay for the order.<br><br>Available values:<br><br>\| Payment method `type` \| Description \|<br>\| --------------------- \| ----------- \|<br>\| `apple_pay` \| The customer paid the order using Apple Pay. \|<br>\| `card` \| The customer paid the order using their credit or debit card. \|<br>\| `google_pay` \| The customer paid the order using Google Pay. \|<br>\| `revolut_pay_card` \| The customer paid the order via Revolut Pay using their credit or debit card. \|<br>\| `revolut_pay_account` \| The customer paid the order via Revolut Pay using their Revolut account. \|<br>\| `sepa_direct_debit` \| The customer paid the order using SEPA Direct Debit. \||
+|commercial|[Payment-Method-Commercial](#schemapayment-method-commercial)|false|none|Indicates whether the customer paid with a commercial payment method, for example a business card or a commercial Revolut account.<br><br>:::note<br>If the commercial classification is unavailable, the field is omitted for card payments and returned as `false` for Revolut Pay account payments.<br>:::|
 |fingerprint|[Fingerprint](#schemafingerprint)|false|none|A unique identifier for a payment method, always 44 characters long. This fingerprint can be used to uniquely identify various payment methods.<br><br>#### Fingerprint generation<br><br>\| Payment method \| Description \|<br>\| -------- \| ----------- \|<br>\| **All payment methods** \| A fingerprint is generated for all payment methods, including cards, Revolut Pay (card, account-to-account payments), Apple Pay, and Google Pay. \|<br>\| **Cards (Revolut Pay & Card Gateway)** \| For cards, the fingerprint is based on the PAN. Cards processed via Revolut Pay and our card gateway will share the same fingerprint. Renewed cards (new expiry/CVV) retain the same fingerprint for efficient blocking. \|<br>\| **Apple Pay & Google Pay** \| Since Apple Pay and Google Pay provide us Device PANs (DPAN), the fingerprint is based on the DPAN provided by Apple/Google, not the connected card's PAN. This means that a new DPAN (and fingerprint) is generated for cards in case they are re-added to the customer's digital wallet, or added to different devices. \|<br><br>#### Detecting duplicate payment methods<br><br>Fingerprints are a valuable tool for detecting duplicate payment methods by identifying if a payment method has been seen before. This capability, in turn, helps in preventing various types of misuse (e.g., exploitation of free trials, or association with known problematic accounts, which can be a form of fraud). To effectively use fingerprints for this purpose, you will need to create and maintain your own lists (e.g., blocklists of known problematic fingerprints, allowlists for trusted customers, or tracking frequently used fingerprints). <br><br>The ideal way to utilise fingerprints is by combining them with a manual capture process. While automatic capture with subsequent refunds for problematic payments is possible, manual capture based on fingerprint validation is recommended.<br><br>During your manual capture workflow, after a payment was authorised:<br>  <br>  - Check the fingerprint status by comparing it against your maintained lists and internal business rules.<br>  - If you decide to proceed with the payment (e.g., the fingerprint is not on a blocklist, or matches a trusted customer's previous payment method): [Capture the order](https://developer.revolut.com/docs/api/merchant#capture-order).<br>  - If you decide not to proceed with the payment (e.g., the fingerprint matches a known fraudulent fingerprint, or exhibits suspicious patterns): [Cancel the order](https://developer.revolut.com/docs/api/merchant#cancel-order).|
 
 #### Enumerated Values
@@ -13855,7 +14326,7 @@ For more information, see: [SEPA Direct Debit server-to-server integration](http
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|string(uuid)|false|none|ID of the saved payment method.<br><br>:::note<br>The `id` parameter is only returned when the payment method is saved for the merchant.<br>:::|
+|id|[Saved-Payment-Method-Id](#schemasaved-payment-method-id)|false|none|ID of the saved payment method.<br><br>:::note<br>The `id` parameter is only returned when the payment method is saved.<br>:::|
 |type|[Payment-Method-Type](#schemapayment-method-type)|true|none|The type of payment method used to pay for the order.<br><br>Available values:<br><br>\| Payment method `type` \| Description \|<br>\| --------------------- \| ----------- \|<br>\| `apple_pay` \| The customer paid the order using Apple Pay. \|<br>\| `card` \| The customer paid the order using their credit or debit card. \|<br>\| `google_pay` \| The customer paid the order using Google Pay. \|<br>\| `revolut_pay_card` \| The customer paid the order via Revolut Pay using their credit or debit card. \|<br>\| `revolut_pay_account` \| The customer paid the order via Revolut Pay using their Revolut account. \|<br>\| `sepa_direct_debit` \| The customer paid the order using SEPA Direct Debit. \||
 |debtor_iban_last_four|[Sepa-Direct-Debit-Debtor-Iban-Last-Four](#schemasepa-direct-debit-debtor-iban-last-four)|false|none|The last four digits of the debtor's IBAN.|
 |debtor_name|[Sepa-Direct-Debit-Debtor-Name](#schemasepa-direct-debit-debtor-name)|false|none|The full name of the debtor as provided in the mandate.|
@@ -14238,7 +14709,7 @@ For pre-authorised payments, the `authorised_amount` field tracks the currently 
 |created_at|[Payment-Created](#schemapayment-created)|true|none|The date and time the payment was created.|
 |updated_at|[Payment-Updated](#schemapayment-updated)|true|none|The date and time the payment was last updated.|
 |token|[Payment-Token](#schemapayment-token)|false|none|Temporary token of the payment used to fetch the reward offer during checkout and link user registrations to the given offers. <br><br>The token is only valid for a limited time.|
-|amount|[Payment-Amount](#schemapayment-amount)|true|none|The payment amount in minor units (e.g., cents). The value of this field depends on the payment type and state.<br><br>\| Payment type \| State \| Amount value \|<br>\|--------------\|-------\|--------------\|<br>\| Standard payment \| Any \| Total payment amount \|<br>\| Pre-authorised payment \| `authorisation_started` \| New amount being authorised (during increment processing) \|<br>\| Pre-authorised payment \| `authorised` \| Currently authorised amount (equals `authorised_amount`) \|<br><br>:::info<br>For pre-authorised payments, see the `authorised_amount` field for tracking the currently authorised amount separately.<br>:::|
+|amount|[Payment-Amount](#schemapayment-amount)|true|none|The payment amount in minor units (e.g., cents). The value of this field depends on the payment type and state.<br><br>\| Payment type \| State \| Amount value \|<br>\|--------------\|-------\|--------------\|<br>\| Standard payment \| Any \| Total payment amount \|<br>\| Pre-authorised payment \| `authorisation_started` \| New amount being authorised (during increment processing) \|<br>\| Pre-authorised payment \| `authorised` \| Currently authorised amount (equals `authorised_amount`) \|<br><br>:::note<br>For pre-authorised payments, see the `authorised_amount` field for tracking the currently authorised amount separately.<br>:::|
 |authorised_amount|[Payment-Authorised-Amount](#schemapayment-authorised-amount)|false|none|The currently authorised amount for this payment (in minor units).<br><br>For pre-authorised payments with incremental authorization:<br>- Initially equals the `amount` field<br>- Remains unchanged during increment processing<br>- Updates to new amount upon successful increment<br>- Remains at original amount if increment is declined<br><br>For standard payments, this field may not be present or will equal the `amount` field.|
 |currency|[Currency](#schemacurrency)|false|none|[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.<br><br>:::info<br>For more information about the supported currencies, see: [Help Center](https://help.revolut.com/business/help/merchant-accounts/payments/in-which-currencies-can-i-accept-payments/).<br>:::|
 |settled_amount|[Payment-Settled-Amount](#schemapayment-settled-amount)|false|none|The amount of the settled payment (minor currency unit). For example, `7034` stands for €70.34.|
@@ -14737,40 +15208,40 @@ Link to a checkout page hosted by Revolut.
 }
 ```
 
-To process the order from a credit or debit card, you create an `Order` object. You can then retrieve, capture, cancel, refund, or pay an order using its unique `id`. Alternatively, you can use its unique `token` to process a card payment with the Revolut Checkout Widget.
+An order object with its current state, amount, and payment details. Use its unique `id` to retrieve, capture, cancel, or refund the order.
 
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |id|[Order-Id](#schemaorder-id)|false|none|Permanent order ID used to retrieve, capture, cancel, or refund an order after authorization.|
-|token|[Order-Token](#schemaorder-token)|false|none|Temporary ID for the order, which expires when the payment is authorised.<br><br>The order `token` is used for [token-based initialisation](https://developer.revolut.com/docs/sdks/merchant-web-sdk/initialisation/token-based), and is returned by the `createOrder` callback in the following payment methods:<br><br>- [Embedded Checkout](https://developer.revolut.com/docs/sdks/merchant-web-sdk/payment-methods/embedded-checkout#embedded-checkout-options-interface)<br>- [Revolut Pay](https://developer.revolut.com/docs/sdks/merchant-web-sdk/payment-methods/revolut-pay#widget-payments-revolut-pay-options)<br>- [Apple Pay and Google Pay](https://developer.revolut.com/docs/sdks/merchant-web-sdk/payment-methods/apple-pay-google-pay#payment-request-options-interface)<br>- [Pay by Bank](https://developer.revolut.com/docs/sdks/merchant-web-sdk/payment-methods/pay-by-bank#pay-by-bank-options-interface)|
+|token|[Order-Token](#schemaorder-token)|false|none|Temporary ID for the order, which expires when the payment is authorised.<br><br>The order `token` is used for [token-based initialisation](https://developer.revolut.com/docs/sdks/merchant-web-sdk/initialisation/token-based), and is returned by the `createOrder` callback in the following payment methods:<br><br>- [Embedded Checkout](https://developer.revolut.com/docs/sdks/merchant-web-sdk/payment-methods/embedded-checkout#embeddedcheckoutoptions-interface)<br>- [Revolut Pay](https://developer.revolut.com/docs/sdks/merchant-web-sdk/payment-methods/revolut-pay#widgetpaymentsrevolutpayoptions)<br>- [Apple Pay and Google Pay](https://developer.revolut.com/docs/sdks/merchant-web-sdk/payment-methods/apple-pay-google-pay#paymentrequestoptions-interface)<br>- [Pay by Bank](https://developer.revolut.com/docs/sdks/merchant-web-sdk/payment-methods/pay-by-bank#paybybankoptions-interface)|
 |type|[Order-Type-v2](#schemaorder-type-v2)|false|none|The type of the order.|
 |state|[Order-State](#schemaorder-state)|false|none|The state of the order in its lifecycle.<br><br>\| State \| Description \|<br>\|-------\|-------------\|<br>\| `pending` \| Order created, awaiting payment \|<br>\| `processing` \| Payment is being processed \|<br>\| `authorised` \| Payment authorised but not yet captured (for manual capture) \|<br>\| `completed` \| Payment successfully captured and settled \|<br>\| `cancelled` \| Order was cancelled \|<br>\| `failed` \| Payment failed \|<br><br>:::info<br>For more information, see: [Order and payment lifecycle](https://developer.revolut.com/docs/guides/merchant/reference/order-lifecycle)<br>:::|
 |created_at|string(date-time)|false|none|The date and time the order was created.|
 |updated_at|string(date-time)|false|none|The date and time the order was last updated.|
 |description|[Order-Description](#schemaorder-description)|false|none|The description of the order.|
 |capture_mode|[Capture-Mode-v2](#schemacapture-mode-v2)|false|none|The capture mode of the order. `automatic` is used by default.<br><br>\| Parameter value \| Description \|<br>\| --------------- \| ----------- \|<br>\| `automatic` \| The order is captured automatically after payment authorisation. \|<br>\| `manual` \| The order is not captured automatically. You must manually capture the order later. \|<br><br>:::info<br>For more information, see [Capture an order](https://developer.revolut.com/docs/api/merchant#capture-order).<br>:::|
-|authorisation_type|[Authorisation-Type](#schemaauthorisation-type)|false|none|The type of authorisation for the order. Used with manual capture mode. If omitted, `final` is used by default.<br><br>### Pre-authorisation<br><br>Pre-authorisation allows you to reserve funds on a customer's card without immediately capturing them. This is useful for scenarios like:<br><br>- Hotel bookings where the final amount may vary<br>- Car rentals where additional charges may apply<br>- Deposits that need to be held temporarily<br><br>\| Parameter value \| Description \|<br>\| --------------- \| ----------- \|<br>\| `final` \| Standard authorisation for immediate or near-immediate capture. \|<br>\| `pre_authorisation` \| Reserve funds for later capture, used with manual capture mode. \|<br><br>:::note<br>Pre-authorisation must be used with `capture_mode: manual`. For more information, see [Capture an order](https://developer.revolut.com/docs/api/merchant#capture-order).<br>:::|
+|authorisation_type|[Authorisation-Type](#schemaauthorisation-type)|false|none|The type of authorisation for the order. Used with manual capture mode. If omitted, `final` is used by default.<br><br>### Pre-authorisation<br><br>Pre-authorisation allows you to reserve funds on a customer's card without immediately capturing them. This is useful for scenarios like:<br><br>- Hotel bookings where the final amount may vary<br>- Car rentals where additional charges may apply<br>- Deposits that need to be held temporarily<br><br>\| Parameter value \| Description \|<br>\| --------------- \| ----------- \|<br>\| `final` \| Standard authorisation for immediate or near-immediate capture. \|<br>\| `pre_authorisation` \| Reserve funds for later capture, used with manual capture mode. \|<br><br>:::info<br>Pre-authorisation must be used with `capture_mode: manual`. For more information, see [Capture an order](https://developer.revolut.com/docs/api/merchant#capture-order).<br>:::|
 |cancel_authorised_after|[Cancel-Authorised-After](#schemacancel-authorised-after)|false|none|Automatic cancellation period for uncaptured orders, specified in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format. <br><br>After this period, the authorised payment is automatically cancelled and the order is cancelled. Maximum: 7 days = `P7D`.<br><br>:::note<br>The following limitations apply:<br>  - Cannot be a negative value.<br>  - Cannot be updated if the new value is less than or equal to the elapsed time since authorisation. <br><br>    **Failing scenario:**<br>      - Original value: 7 days<br>      - Time since authorisation: 3 days<br>      - Update value: 2 days<br>      <br>    In this scenario, an error is returned.<br>    <br>    **Successful scenario:**<br>      - Original value: 7 days<br>      - Time since authorisation: 3 days<br>      - Update value: 4 days<br><br>    In this scenario, the parameter can be updated.<br><br>  - Cannot be updated if cancellation is ≤ 30 minutes away.<br><br>    **Failing scenario:**<br>      - Original value: 12 hours<br>      - Time since authorisation: 11 hours 40 minutes<br>                        <br>    In this scenario, an error is returned.<br>    <br>    **Successful scenario:** <br>      - Original value: 12 hours<br>      - Time since authorisation: 11 hours 20 minutes<br><br>    In this scenario, the parameter can be updated.<br>:::|
 |amount|[Order-Amount-v2](#schemaorder-amount-v2)|false|none|The order total expressed in minor currency units, according to the [ISO 4217 standard](https://en.wikipedia.org/wiki/ISO_4217). For example, `7034` in `EUR` corresponds to €70.34.<br><br>:::info<br>- Conversion between major and minor units varies by currency. For instance, `100` minor units equal £1.00 in `GBP`, whereas in `ISK` they represent 100 units. For more details, see the [ISO 4217 standard](https://en.wikipedia.org/wiki/ISO_4217).<br>- If `line_items` are provided, the order `amount` must equal the sum of all line items' `total_amount`.<br>- For card payments with a non-zero amount, the order `amount` must be at least **$0.005** (or equivalent in different currencies, calculated using Revolut's exchange rate on the payment date). Otherwise, card payments can't be performed.<br>:::|
 |outstanding_amount|[Outstanding-Amount](#schemaoutstanding-amount)|false|none|The amount not yet paid for a given order (in minor currency units). For example, `7034` represents €70.34. <br><br>The value in this field may differ from `amount` if there are partial payments associated with the order.|
 |refunded_amount|[Refunded-Amount](#schemarefunded-amount)|false|none|The amount that was refunded from the order (in minor currency units). For example, `7034` represents €70.34. <br><br>This applies to orders that have been refunded (i.e., orders of type `payment` that have a related `refund` order).|
 |currency|[Currency](#schemacurrency)|false|none|[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.<br><br>:::info<br>For more information about the supported currencies, see: [Help Center](https://help.revolut.com/business/help/merchant-accounts/payments/in-which-currencies-can-i-accept-payments/).<br>:::|
 |settlement_currency|[Settlement-Currency](#schemasettlement-currency)|false|none|[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case. <br><br>If `settlement_currency` is different from the value of `currency`, the money will be exchanged when the amount is settled to your merchant account. In case of a refund or chargeback, the money will be exchanged to the order's initial `currency`.<br><br>If `settlement_currency` is not specified, this value is taken from `currency`.<br><br>:::info<br>For more information about the supported currencies, see: [Help Center](https://help.revolut.com/business/help/merchant-accounts/payments/in-which-currencies-can-i-accept-payments/).<br>:::|
-|customer|[Customer-v2](#schemacustomer-v2)|false|none|Object containing information about a customer.<br><br>If you have it, we strongly advise providing at least either `id`, `phone`, or `email`.<br><br>Using the [Customers operations](https://developer.revolut.com/docs/api/merchant#tag-customers), you can manage customer instances.<br><br>The following behaviours apply to different use cases:<br><br>  \| Use case \| API behavior \|<br>  \| -------- \| ------------ \|<br>  \| Existing customer \| If `id` was provided, we ignore other customer details and associate the customer with the order.<br/><br/>If either `email`, `phone`, or `full_name` was provided (without an existing customer's `id`), we always create a new customer, irrespective of another, existing customer object having the same details. \|<br>  \| New customer \| If either `email`, `phone`, or `full_name` was provided, we create a new customer, irrespective of another customer object having the same details. <br/><br/>If `id` of a non-existent customer was provided, we return a `404` error, irrespective of other details provided. \|<br><br>:::note<br>To avoid unintentional duplication of customer records, search for an existing customer by email or phone using the [List customers](https://developer.revolut.com/docs/api/merchant#retrieve-customer-list) endpoint first, then provide `customer.id` in the order.<br>:::|
+|customer|[Customer-v2](#schemacustomer-v2)|false|none|Object containing information about a customer.<br><br>If you have it, we strongly advise providing at least either `id`, `phone`, or `email`.<br><br>Using the [Customers operations](https://developer.revolut.com/docs/api/merchant#tag-customers), you can manage customer instances.<br><br>The following behaviours apply to different use cases:<br><br>  \| Use case \| API behavior \|<br>  \| -------- \| ------------ \|<br>  \| Existing customer \| If `id` was provided, we ignore other customer details and associate the customer with the order.<br/><br/>If either `email`, `phone`, or `full_name` was provided (without an existing customer's `id`), we always create a new customer, irrespective of another, existing customer object having the same details. \|<br>  \| New customer \| If either `email`, `phone`, or `full_name` was provided, we create a new customer, irrespective of another customer object having the same details. <br/><br/>If `id` of a non-existent customer was provided, we return a `404` error, irrespective of other details provided. \|<br><br>:::info<br>To avoid unintentional duplication of customer records, search for an existing customer by email or phone using the [List customers](https://developer.revolut.com/docs/api/merchant#retrieve-customer-list) endpoint first, then provide `customer.id` in the order.<br>:::|
 |payments|[[Payment-v2](#schemapayment-v2)]|false|none|The details of all the payments that have been made towards this order (successful or unsuccessful).|
 |incremental_authorisations|[Incremental-Authorisations](#schemaincremental-authorisations)|false|none|History of incremental authorisation attempts for this order.<br><br>Only present for orders with `authorisation_type: pre_authorisation`.<br><br>Contains all increment attempts in chronological order.|
 |location_id|[Location-Id](#schemalocation-id)|false|none|Unique ID representing the location where merchants sells products.<br><br>:::info<br>For more information, see: [Locations](https://developer.revolut.com/docs/api/merchant#tag-locations).<br>:::        |
 |metadata|[Metadata](#schemametadata)|false|none|Additional information to track your orders in your system, by providing custom metadata using `"<key>" : "<value>"` pairs.<br><br>:::warning<br>**Restrictions:**<br><br>- Both keys and values must be `string`s<br>- Values cannot be `null`.<br>- Max number of key-value pairs: `50`<br>- Max length of values: `500` characters<br>- Format of keys: Must start with a letter and contain only letters, digits, and underscores. Max 40 characters. Pattern: `^[a-zA-Z][a-zA-Z\\d_]{0,39}$`<br>:::|
-|industry_data|[Industry-Data](#schemaindustry-data)|false|none|Object containing industry-specific information associated with the order.<br><br>:::info<br>In the following cases, industry-specific info is required. Omitting this information may trigger additional scrutiny and risk mitigation actions by the Revolut risk team.<br><br>  \| Transaction type \| Required for \| <br>  \| ---------------- \| ----------- \|<br>  \| `airline`        \| Airlines and Online Travel Agencies (OTAs). \|<br>  \| `crypto`         \| Crypto merchants. \|<br>  \| `marketplace`    \| Marketplace merchants. \|<br>  \| `event`          \| Event ticket sellers. \|<br>  \| `lodging`        \| Lodging providers and OTAs. \|<br>:::|
+|industry_data|[Industry-Data](#schemaindustry-data)|false|none|Object containing industry-specific information associated with the order.<br><br>:::note<br>In the following cases, industry-specific info is required. Omitting this information may trigger additional scrutiny and risk mitigation actions by the Revolut risk team.<br><br>  \| Transaction type \| Required for \| <br>  \| ---------------- \| ----------- \|<br>  \| `airline`        \| Airlines and Online Travel Agencies (OTAs). \|<br>  \| `crypto`         \| Crypto merchants. \|<br>  \| `marketplace`    \| Marketplace merchants. \|<br>  \| `event`          \| Event ticket sellers. \|<br>  \| `lodging`        \| Lodging providers and OTAs. \|<br>:::|
 |merchant_order_data|[Merchant-Order-Data](#schemamerchant-order-data)|false|none|Object for providing additional information stored in the merchant's order management system. |
 |upcoming_payment_data|[Upcoming-Payment](#schemaupcoming-payment)|false|none|Object containing information about upcoming payments associated with the order.|
 |checkout_url|[Checkout-Url](#schemacheckout-url)|false|none|Link to a checkout page hosted by Revolut.|
-|redirect_url|[Redirect-Url](#schemaredirect-url)|false|none|The URL your customer will be redirected to after completing a payment flow.<br><br>- **Hosted Checkout Page** (`checkout_url`): This is the post-success URL - the customer is redirected only after a successful payment.<br>- **Embedded Revolut Pay** (Revolut Checkout widget): This URL is used for all redirect outcomes - success, failure, and cancellation.<br><br>:::warning [Restrictions]<br>- Must be a valid URI as defined by [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)<br>- URI scheme is required and must be either `http` or `https`<br>- URI host is required and cannot be `localhost` or an IP address<br>- Max length: `2000`<br>- Reserved or invalid characters must be percent-encoded (for example, use `%20` instead of a space)<br>:::<br><br>:::note [Revolut Checkout]<br>- Revolut Pay will not appear in the widget on mobile devices unless redirect targets are configured - either via this `redirect_url` parameter or the SDK-level `revolutPayOptions.mobileRedirectUrls` option.<br>- If `redirect_url` is set on the order, it takes precedence over `revolutPayOptions.mobileRedirectUrls` and is used for all redirect outcomes (success, failure, cancel).<br>:::<br><br>:::info<br>For more information, see:<br>- [Hosted Checkout Page: Custom redirection](https://developer.revolut.com/docs/guides/merchant/accept-payments/online-payments/hosted-checkout-page/api#custom-post-payment-redirection-optional)<br>- [Revolut Checkout: Configure mobile redirects](https://developer.revolut.com/docs/guides/merchant/accept-payments/online-payments/revolut-checkout/web#35-configure-revolut-pay-mobile-redirects)<br>:::|
-|shipping|[Shipping](#schemashipping)|false|none|Details about the shipping related to the order, including address, contact information, and individual shipments.<br><br>:::info<br>Required for merchants shipping physical goods. Omitting this information may trigger additional scrutiny and risk mitigation actions by Revolut.<br>:::|
+|redirect_url|[Redirect-Url](#schemaredirect-url)|false|none|The URL your customer will be redirected to after completing a payment flow.<br><br>- **Hosted Checkout Page** (`checkout_url`): This is the post-success URL - the customer is redirected only after a successful payment.<br>- **Embedded Revolut Pay** (Revolut Checkout widget): This URL is used for all redirect outcomes - success, failure, and cancellation.<br><br>:::warning [Restrictions]<br>- Must be a valid URI as defined by [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)<br>- URI scheme is required and must be either `http` or `https`<br>- URI host is required and cannot be `localhost` or an IP address<br>- Max length: `2000`<br>- Reserved or invalid characters must be percent-encoded (for example, use `%20` instead of a space)<br>:::<br><br>:::note [Revolut Checkout]<br>- Revolut Pay will not appear in the widget on mobile devices unless redirect targets are configured - either via this `redirect_url` parameter or the SDK-level `revolutPayOptions.mobileRedirectUrls` option.<br>- If `redirect_url` is set on the order, it takes precedence over `revolutPayOptions.mobileRedirectUrls` and is used for all redirect outcomes (success, failure, cancel).<br>:::<br><br>:::info<br>For more information, see:<br>- [Hosted Checkout Page: Custom redirection](https://developer.revolut.com/docs/guides/merchant/accept-payments/online-payments/hosted-checkout-page/api#1-create-an-order)<br>- [Revolut Checkout: Configure mobile redirects](https://developer.revolut.com/docs/guides/merchant/accept-payments/online-payments/revolut-checkout/web#35-configure-revolut-pay-mobile-redirects)<br>:::|
+|shipping|[Shipping](#schemashipping)|false|none|Details about the shipping related to the order, including address, contact information, and individual shipments.<br><br>:::note<br>Required for merchants shipping physical goods. Omitting this information may trigger additional scrutiny and risk mitigation actions by Revolut.<br>:::|
 |enforce_challenge|[Enforce-Challenge-v2](#schemaenforce-challenge-v2)|false|none|The enforce challenge mode. `automatic` is used by default.<br><br>\| Parameter value \| Description \|<br>\| --------------- \| ----------- \|<br>\| `automatic` \| The payments created for an order will have challenge requirement calculated by our fraud mechanisms. Not all payments will trigger a 3DS challenge. \|<br>\| `forced` \| The payments created for an order will always require a 3DS challenge. Currently only supported for card payments. \||
-|line_items|[Line-Items](#schemaline-items)|false|none|An array of line items included in the order. Each line item represents an individual product or service, along with its quantity, price, taxes, and discounts.<br><br>:::info<br>Required for merchants collecting payment for one or multiple products/services in one transaction. Omitting this information may trigger additional scrutiny and risk mitigation actions by Revolut.<br>:::|
+|line_items|[Line-Items](#schemaline-items)|false|none|An array of line items included in the order. Each line item represents an individual product or service, along with its quantity, price, taxes, and discounts.<br><br>:::note<br>Required for merchants collecting payment for one or multiple products/services in one transaction. Omitting this information may trigger additional scrutiny and risk mitigation actions by Revolut.<br>:::|
 |statement_descriptor_suffix|[Statement-Descriptor-Suffix](#schemastatement-descriptor-suffix)|false|none|You can set a dynamic statement descriptor for your orders by providing a custom suffix. <br><br>A statement descriptor is the text shown on cardholders' bank or card statements, helping them recognise a transaction or merchant. This field can be used to send extra information with the statement descriptor for card transactions.<br><br>The complete descriptor is built using the following format: `{base}*{suffix}`, where:<br>  <br>  - **`{base}`** is the existing descriptor configured in the Revolut Business dashboard (**Settings > Business account > Merchant profile > Statement descriptor**).  <br>  - **`{suffix}`** is defined by the `statement_descriptor_suffix` field.<br><br>:::note<br>- If the combined descriptor's length (base + suffix) exceeds the character limits of card scheme providers, the final value will be truncated. For example if the limit is 22 characters, the base descriptor is `"base"` and the suffix is `"testdescriptorsuffix"`, the final descriptor becomes `"base*testdescriptorsuf"`.<br>- The final statement descriptor shown on a cardholder's statement may vary by issuing bank, as some banks apply their own custom formatting or truncation rules.<br>:::|
 |related_order_id|[Related-Order-Id](#schemarelated-order-id)|false|none|The unique ID of the original order that was refunded and this refund is associated with. You can use this ID to get more information about the related order using the [Retrieve an order](https://developer.revolut.com/docs/api/merchant#retrieve-order) operation.<br><br>:::note<br>This field is only returned for orders with `type: refund`.<br>:::|
 |subscription_data|[Subscription-Data](#schemasubscription-data)|false|none|Subscription details linked to the order. Use this object to match an order with its underlying subscription and understand the billing context in which the order was created.<br><br>Only present on orders created by a subscription.|
@@ -14932,17 +15403,17 @@ Object schema containing information about order update request.
 |currency|[Currency](#schemacurrency)|false|none|[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.<br><br>:::info<br>For more information about the supported currencies, see: [Help Center](https://help.revolut.com/business/help/merchant-accounts/payments/in-which-currencies-can-i-accept-payments/).<br>:::|
 |settlement_currency|[Settlement-Currency](#schemasettlement-currency)|false|none|[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case. <br><br>If `settlement_currency` is different from the value of `currency`, the money will be exchanged when the amount is settled to your merchant account. In case of a refund or chargeback, the money will be exchanged to the order's initial `currency`.<br><br>If `settlement_currency` is not specified, this value is taken from `currency`.<br><br>:::info<br>For more information about the supported currencies, see: [Help Center](https://help.revolut.com/business/help/merchant-accounts/payments/in-which-currencies-can-i-accept-payments/).<br>:::|
 |description|[Order-Description](#schemaorder-description)|false|none|The description of the order.|
-|customer|[Customer-v2](#schemacustomer-v2)|false|none|Object containing information about a customer.<br><br>If you have it, we strongly advise providing at least either `id`, `phone`, or `email`.<br><br>Using the [Customers operations](https://developer.revolut.com/docs/api/merchant#tag-customers), you can manage customer instances.<br><br>The following behaviours apply to different use cases:<br><br>  \| Use case \| API behavior \|<br>  \| -------- \| ------------ \|<br>  \| Existing customer \| If `id` was provided, we ignore other customer details and associate the customer with the order.<br/><br/>If either `email`, `phone`, or `full_name` was provided (without an existing customer's `id`), we always create a new customer, irrespective of another, existing customer object having the same details. \|<br>  \| New customer \| If either `email`, `phone`, or `full_name` was provided, we create a new customer, irrespective of another customer object having the same details. <br/><br/>If `id` of a non-existent customer was provided, we return a `404` error, irrespective of other details provided. \|<br><br>:::note<br>To avoid unintentional duplication of customer records, search for an existing customer by email or phone using the [List customers](https://developer.revolut.com/docs/api/merchant#retrieve-customer-list) endpoint first, then provide `customer.id` in the order.<br>:::|
-|shipping|[Shipping](#schemashipping)|false|none|Details about the shipping related to the order, including address, contact information, and individual shipments.<br><br>:::info<br>Required for merchants shipping physical goods. Omitting this information may trigger additional scrutiny and risk mitigation actions by Revolut.<br>:::|
+|customer|[Customer-v2](#schemacustomer-v2)|false|none|Object containing information about a customer.<br><br>If you have it, we strongly advise providing at least either `id`, `phone`, or `email`.<br><br>Using the [Customers operations](https://developer.revolut.com/docs/api/merchant#tag-customers), you can manage customer instances.<br><br>The following behaviours apply to different use cases:<br><br>  \| Use case \| API behavior \|<br>  \| -------- \| ------------ \|<br>  \| Existing customer \| If `id` was provided, we ignore other customer details and associate the customer with the order.<br/><br/>If either `email`, `phone`, or `full_name` was provided (without an existing customer's `id`), we always create a new customer, irrespective of another, existing customer object having the same details. \|<br>  \| New customer \| If either `email`, `phone`, or `full_name` was provided, we create a new customer, irrespective of another customer object having the same details. <br/><br/>If `id` of a non-existent customer was provided, we return a `404` error, irrespective of other details provided. \|<br><br>:::info<br>To avoid unintentional duplication of customer records, search for an existing customer by email or phone using the [List customers](https://developer.revolut.com/docs/api/merchant#retrieve-customer-list) endpoint first, then provide `customer.id` in the order.<br>:::|
+|shipping|[Shipping](#schemashipping)|false|none|Details about the shipping related to the order, including address, contact information, and individual shipments.<br><br>:::note<br>Required for merchants shipping physical goods. Omitting this information may trigger additional scrutiny and risk mitigation actions by Revolut.<br>:::|
 |enforce_challenge|[Enforce-Challenge-v2](#schemaenforce-challenge-v2)|false|none|The enforce challenge mode. `automatic` is used by default.<br><br>\| Parameter value \| Description \|<br>\| --------------- \| ----------- \|<br>\| `automatic` \| The payments created for an order will have challenge requirement calculated by our fraud mechanisms. Not all payments will trigger a 3DS challenge. \|<br>\| `forced` \| The payments created for an order will always require a 3DS challenge. Currently only supported for card payments. \||
-|line_items|[Line-Items](#schemaline-items)|false|none|An array of line items included in the order. Each line item represents an individual product or service, along with its quantity, price, taxes, and discounts.<br><br>:::info<br>Required for merchants collecting payment for one or multiple products/services in one transaction. Omitting this information may trigger additional scrutiny and risk mitigation actions by Revolut.<br>:::|
+|line_items|[Line-Items](#schemaline-items)|false|none|An array of line items included in the order. Each line item represents an individual product or service, along with its quantity, price, taxes, and discounts.<br><br>:::note<br>Required for merchants collecting payment for one or multiple products/services in one transaction. Omitting this information may trigger additional scrutiny and risk mitigation actions by Revolut.<br>:::|
 |capture_mode|[Capture-Mode-v2](#schemacapture-mode-v2)|false|none|The capture mode of the order. `automatic` is used by default.<br><br>\| Parameter value \| Description \|<br>\| --------------- \| ----------- \|<br>\| `automatic` \| The order is captured automatically after payment authorisation. \|<br>\| `manual` \| The order is not captured automatically. You must manually capture the order later. \|<br><br>:::info<br>For more information, see [Capture an order](https://developer.revolut.com/docs/api/merchant#capture-order).<br>:::|
 |cancel_authorised_after|[Cancel-Authorised-After](#schemacancel-authorised-after)|false|none|Automatic cancellation period for uncaptured orders, specified in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format. <br><br>After this period, the authorised payment is automatically cancelled and the order is cancelled. Maximum: 7 days = `P7D`.<br><br>:::note<br>The following limitations apply:<br>  - Cannot be a negative value.<br>  - Cannot be updated if the new value is less than or equal to the elapsed time since authorisation. <br><br>    **Failing scenario:**<br>      - Original value: 7 days<br>      - Time since authorisation: 3 days<br>      - Update value: 2 days<br>      <br>    In this scenario, an error is returned.<br>    <br>    **Successful scenario:**<br>      - Original value: 7 days<br>      - Time since authorisation: 3 days<br>      - Update value: 4 days<br><br>    In this scenario, the parameter can be updated.<br><br>  - Cannot be updated if cancellation is ≤ 30 minutes away.<br><br>    **Failing scenario:**<br>      - Original value: 12 hours<br>      - Time since authorisation: 11 hours 40 minutes<br>                        <br>    In this scenario, an error is returned.<br>    <br>    **Successful scenario:** <br>      - Original value: 12 hours<br>      - Time since authorisation: 11 hours 20 minutes<br><br>    In this scenario, the parameter can be updated.<br>:::|
 |metadata|[Metadata](#schemametadata)|false|none|Additional information to track your orders in your system, by providing custom metadata using `"<key>" : "<value>"` pairs.<br><br>:::warning<br>**Restrictions:**<br><br>- Both keys and values must be `string`s<br>- Values cannot be `null`.<br>- Max number of key-value pairs: `50`<br>- Max length of values: `500` characters<br>- Format of keys: Must start with a letter and contain only letters, digits, and underscores. Max 40 characters. Pattern: `^[a-zA-Z][a-zA-Z\\d_]{0,39}$`<br>:::|
-|industry_data|[Industry-Data](#schemaindustry-data)|false|none|Object containing industry-specific information associated with the order.<br><br>:::info<br>In the following cases, industry-specific info is required. Omitting this information may trigger additional scrutiny and risk mitigation actions by the Revolut risk team.<br><br>  \| Transaction type \| Required for \| <br>  \| ---------------- \| ----------- \|<br>  \| `airline`        \| Airlines and Online Travel Agencies (OTAs). \|<br>  \| `crypto`         \| Crypto merchants. \|<br>  \| `marketplace`    \| Marketplace merchants. \|<br>  \| `event`          \| Event ticket sellers. \|<br>  \| `lodging`        \| Lodging providers and OTAs. \|<br>:::|
+|industry_data|[Industry-Data](#schemaindustry-data)|false|none|Object containing industry-specific information associated with the order.<br><br>:::note<br>In the following cases, industry-specific info is required. Omitting this information may trigger additional scrutiny and risk mitigation actions by the Revolut risk team.<br><br>  \| Transaction type \| Required for \| <br>  \| ---------------- \| ----------- \|<br>  \| `airline`        \| Airlines and Online Travel Agencies (OTAs). \|<br>  \| `crypto`         \| Crypto merchants. \|<br>  \| `marketplace`    \| Marketplace merchants. \|<br>  \| `event`          \| Event ticket sellers. \|<br>  \| `lodging`        \| Lodging providers and OTAs. \|<br>:::|
 |merchant_order_data|[Merchant-Order-Data](#schemamerchant-order-data)|false|none|Object for providing additional information stored in the merchant's order management system. |
 |upcoming_payment_data|[Upcoming-Payment](#schemaupcoming-payment)|false|none|Object containing information about upcoming payments associated with the order.|
-|redirect_url|[Redirect-Url](#schemaredirect-url)|false|none|The URL your customer will be redirected to after completing a payment flow.<br><br>- **Hosted Checkout Page** (`checkout_url`): This is the post-success URL - the customer is redirected only after a successful payment.<br>- **Embedded Revolut Pay** (Revolut Checkout widget): This URL is used for all redirect outcomes - success, failure, and cancellation.<br><br>:::warning [Restrictions]<br>- Must be a valid URI as defined by [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)<br>- URI scheme is required and must be either `http` or `https`<br>- URI host is required and cannot be `localhost` or an IP address<br>- Max length: `2000`<br>- Reserved or invalid characters must be percent-encoded (for example, use `%20` instead of a space)<br>:::<br><br>:::note [Revolut Checkout]<br>- Revolut Pay will not appear in the widget on mobile devices unless redirect targets are configured - either via this `redirect_url` parameter or the SDK-level `revolutPayOptions.mobileRedirectUrls` option.<br>- If `redirect_url` is set on the order, it takes precedence over `revolutPayOptions.mobileRedirectUrls` and is used for all redirect outcomes (success, failure, cancel).<br>:::<br><br>:::info<br>For more information, see:<br>- [Hosted Checkout Page: Custom redirection](https://developer.revolut.com/docs/guides/merchant/accept-payments/online-payments/hosted-checkout-page/api#custom-post-payment-redirection-optional)<br>- [Revolut Checkout: Configure mobile redirects](https://developer.revolut.com/docs/guides/merchant/accept-payments/online-payments/revolut-checkout/web#35-configure-revolut-pay-mobile-redirects)<br>:::|
+|redirect_url|[Redirect-Url](#schemaredirect-url)|false|none|The URL your customer will be redirected to after completing a payment flow.<br><br>- **Hosted Checkout Page** (`checkout_url`): This is the post-success URL - the customer is redirected only after a successful payment.<br>- **Embedded Revolut Pay** (Revolut Checkout widget): This URL is used for all redirect outcomes - success, failure, and cancellation.<br><br>:::warning [Restrictions]<br>- Must be a valid URI as defined by [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)<br>- URI scheme is required and must be either `http` or `https`<br>- URI host is required and cannot be `localhost` or an IP address<br>- Max length: `2000`<br>- Reserved or invalid characters must be percent-encoded (for example, use `%20` instead of a space)<br>:::<br><br>:::note [Revolut Checkout]<br>- Revolut Pay will not appear in the widget on mobile devices unless redirect targets are configured - either via this `redirect_url` parameter or the SDK-level `revolutPayOptions.mobileRedirectUrls` option.<br>- If `redirect_url` is set on the order, it takes precedence over `revolutPayOptions.mobileRedirectUrls` and is used for all redirect outcomes (success, failure, cancel).<br>:::<br><br>:::info<br>For more information, see:<br>- [Hosted Checkout Page: Custom redirection](https://developer.revolut.com/docs/guides/merchant/accept-payments/online-payments/hosted-checkout-page/api#1-create-an-order)<br>- [Revolut Checkout: Configure mobile redirects](https://developer.revolut.com/docs/guides/merchant/accept-payments/online-payments/revolut-checkout/web#35-configure-revolut-pay-mobile-redirects)<br>:::|
 |statement_descriptor_suffix|[Statement-Descriptor-Suffix](#schemastatement-descriptor-suffix)|false|none|You can set a dynamic statement descriptor for your orders by providing a custom suffix. <br><br>A statement descriptor is the text shown on cardholders' bank or card statements, helping them recognise a transaction or merchant. This field can be used to send extra information with the statement descriptor for card transactions.<br><br>The complete descriptor is built using the following format: `{base}*{suffix}`, where:<br>  <br>  - **`{base}`** is the existing descriptor configured in the Revolut Business dashboard (**Settings > Business account > Merchant profile > Statement descriptor**).  <br>  - **`{suffix}`** is defined by the `statement_descriptor_suffix` field.<br><br>:::note<br>- If the combined descriptor's length (base + suffix) exceeds the character limits of card scheme providers, the final value will be truncated. For example if the limit is 22 characters, the base descriptor is `"base"` and the suffix is `"testdescriptorsuffix"`, the final descriptor becomes `"base*testdescriptorsuf"`.<br>- The final statement descriptor shown on a cardholder's statement may vary by issuing bank, as some banks apply their own custom formatting or truncation rules.<br>:::|
 
 #### Enumerated Values
@@ -15027,7 +15498,7 @@ Request body for incrementing an existing payment authorisation with additional 
 |---|---|---|---|---|
 |amount|[Increment-Amount](#schemaincrement-amount)|true|none|The new total amount to be authorised (in minor units, e.g., cents).<br><br>This should be the **full new amount**, not the increment value.<br>For example, if the current authorised amount is `500` and you want to add 100, pass `600`.<br><br>:::warning<br>- Must be greater than or equal to the current authorised amount (incrementing with same amount allowed to extend capture deadline for Mastercard)<br>- The sum of all increment amounts cannot exceed 5x the initial authorised amount (e.g., initial amount £100 allows up to £500 in total increments)<br>:::|
 |reference|[Increment-Reference](#schemaincrement-reference)|false|none|External reference for this incremental authorisation.<br><br>:::tip<br>Use your internal charge or invoice ID. This reference is returned in webhooks for easy matching to your system.<br>:::|
-|line_items|[Line-Items](#schemaline-items)|false|none|An array of line items included in the order. Each line item represents an individual product or service, along with its quantity, price, taxes, and discounts.<br><br>:::info<br>Required for merchants collecting payment for one or multiple products/services in one transaction. Omitting this information may trigger additional scrutiny and risk mitigation actions by Revolut.<br>:::|
+|line_items|[Line-Items](#schemaline-items)|false|none|An array of line items included in the order. Each line item represents an individual product or service, along with its quantity, price, taxes, and discounts.<br><br>:::note<br>Required for merchants collecting payment for one or multiple products/services in one transaction. Omitting this information may trigger additional scrutiny and risk mitigation actions by Revolut.<br>:::|
 
 <h2 id="tocS_Order-Capture-Amount">Order-Capture-Amount</h2>
 <!-- backwards compatibility -->
@@ -15104,7 +15575,7 @@ If you provide `line_items` when capturing, they will **overwrite** the original
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |amount|[Order-Capture-Amount](#schemaorder-capture-amount)|false|none|Specify an amount to capture, in minor currency units. The amount must not exceed the authorised amount.<br><br>An order can only be captured once. Partial capture is supported by sending an amount lower than the authorised amount. The uncaptured amount will be voided.<br><br>If you resend a capture request for an order that is already captured, no additional capture is performed. Resending with the same amount returns the current order state, while resending with a different amount returns an error.<br><br>If not provided, it defaults to the authorised amount (full capture will be executed).|
-|line_items|[Line-Items](#schemaline-items)|false|none|An array of line items included in the order. Each line item represents an individual product or service, along with its quantity, price, taxes, and discounts.<br><br>:::info<br>Required for merchants collecting payment for one or multiple products/services in one transaction. Omitting this information may trigger additional scrutiny and risk mitigation actions by Revolut.<br>:::|
+|line_items|[Line-Items](#schemaline-items)|false|none|An array of line items included in the order. Each line item represents an individual product or service, along with its quantity, price, taxes, and discounts.<br><br>:::note<br>Required for merchants collecting payment for one or multiple products/services in one transaction. Omitting this information may trigger additional scrutiny and risk mitigation actions by Revolut.<br>:::|
 
 <h2 id="tocS_Refund-Amount">Refund-Amount</h2>
 <!-- backwards compatibility -->
@@ -15196,7 +15667,7 @@ Revolut Pay account payment method details, used when the customer paid via thei
 |---|---|---|---|---|
 |type|string|true|none|The type of payment method used to pay for the order.|
 |subtype|string|true|none|Indicates whether the customer used their card or Revolut account via Revolut Pay.|
-|id|string(uuid)|false|none|ID of the saved payment method.<br><br>:::note<br>The `id` parameter is only returned if the payment method is saved.<br>:::|
+|id|[Saved-Payment-Method-Id](#schemasaved-payment-method-id)|false|none|ID of the saved payment method.<br><br>:::note<br>The `id` parameter is only returned when the payment method is saved.<br>:::|
 
 #### Enumerated Values
 
@@ -15232,7 +15703,7 @@ Revolut Pay card payment method details, used when the customer paid via a card 
 |---|---|---|---|---|
 |type|string|true|none|The type of payment method used to pay for the order.|
 |subtype|string|true|none|Indicates whether the customer used their card or Revolut account via Revolut Pay.|
-|id|string(uuid)|false|none|ID of the saved payment method.<br><br>:::note<br>The `id` parameter is only returned if the payment method is saved.<br>:::|
+|id|[Saved-Payment-Method-Id](#schemasaved-payment-method-id)|false|none|ID of the saved payment method.<br><br>:::note<br>The `id` parameter is only returned when the payment method is saved.<br>:::|
 |brand|string|false|none|The type of the card.|
 |last_four|string|false|none|The last four digits of the card number.|
 
@@ -15294,7 +15765,7 @@ Card payment method details returned in the payment retrieval response.
 |type|string|true|none|The type of payment method used to pay for the order.|
 |brand|string|false|none|The type of the card.|
 |last_four|string|false|none|The last four digits of the card number.|
-|id|string(uuid)|false|none|ID of the saved payment method.<br><br>:::note<br>The `id` parameter is only returned if the payment method is saved.<br>:::|
+|id|[Saved-Payment-Method-Id](#schemasaved-payment-method-id)|false|none|ID of the saved payment method.<br><br>:::note<br>The `id` parameter is only returned when the payment method is saved.<br>:::|
 
 #### Enumerated Values
 
@@ -15341,7 +15812,7 @@ A payment object retrieved from the API, including its method, amount, state, an
 |order_id|[Order-Id](#schemaorder-id)|true|none|Permanent order ID used to retrieve, capture, cancel, or refund an order after authorization.|
 |payment_method|object|true|none|The payment method used to pay for the order.|
 |token|[Payment-Token](#schemapayment-token)|false|none|Temporary token of the payment used to fetch the reward offer during checkout and link user registrations to the given offers. <br><br>The token is only valid for a limited time.|
-|amount|[Payment-Amount](#schemapayment-amount)|false|none|The payment amount in minor units (e.g., cents). The value of this field depends on the payment type and state.<br><br>\| Payment type \| State \| Amount value \|<br>\|--------------\|-------\|--------------\|<br>\| Standard payment \| Any \| Total payment amount \|<br>\| Pre-authorised payment \| `authorisation_started` \| New amount being authorised (during increment processing) \|<br>\| Pre-authorised payment \| `authorised` \| Currently authorised amount (equals `authorised_amount`) \|<br><br>:::info<br>For pre-authorised payments, see the `authorised_amount` field for tracking the currently authorised amount separately.<br>:::|
+|amount|[Payment-Amount](#schemapayment-amount)|false|none|The payment amount in minor units (e.g., cents). The value of this field depends on the payment type and state.<br><br>\| Payment type \| State \| Amount value \|<br>\|--------------\|-------\|--------------\|<br>\| Standard payment \| Any \| Total payment amount \|<br>\| Pre-authorised payment \| `authorisation_started` \| New amount being authorised (during increment processing) \|<br>\| Pre-authorised payment \| `authorised` \| Currently authorised amount (equals `authorised_amount`) \|<br><br>:::note<br>For pre-authorised payments, see the `authorised_amount` field for tracking the currently authorised amount separately.<br>:::|
 |currency|[Currency](#schemacurrency)|false|none|[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.<br><br>:::info<br>For more information about the supported currencies, see: [Help Center](https://help.revolut.com/business/help/merchant-accounts/payments/in-which-currencies-can-i-accept-payments/).<br>:::|
 |state|[Payment-State-v2](#schemapayment-state-v2)|false|none|The status of the payment.|
 |decline_reason|[Decline-Reason-v2](#schemadecline-reason-v2)|false|none|The reason for a `failed` or `declined` payment.<br><br>A failed or declined payment can result from multiple reasons. To learn more, check our [failure reasons](https://developer.revolut.com/docs/guides/merchant/reference/error-codes/decline-reasons).|
@@ -15545,7 +16016,7 @@ A saved payment method used to pay for an order, including type, ID, initiator, 
 <a id="tocsnext-page-token"></a>
 
 ```json
-"string"
+"497f6eca-6276-4993-bfeb-53cbbbba6f08"
 ```
 
 Token for retrieving the next page of results. Use this token as the value of the `page_token` query parameter in your next request to retrieve the next page.
@@ -15592,7 +16063,7 @@ A customer object.
 
 ```json
 {
-  "next_page_token": "string",
+  "next_page_token": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
   "customers": [
     {
       "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
@@ -15914,7 +16385,7 @@ The billing address associated with the payment method.
 
 A saved card payment method.
 
-:::info
+:::note
 The `checks` object (3DS, CVV, address verification) is not included as it is specific to the transactional payment context.
 :::
 
@@ -16101,7 +16572,7 @@ It differs from the `payment_method` object on a Payment, which is a transaction
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|*oneOf*|[Card-v2](#schemacard-v2)|false|none|A saved card payment method.<br><br>:::info<br>The `checks` object (3DS, CVV, address verification) is not included as it is specific to the transactional payment context.<br>:::|
+|*oneOf*|[Card-v2](#schemacard-v2)|false|none|A saved card payment method.<br><br>:::note<br>The `checks` object (3DS, CVV, address verification) is not included as it is specific to the transactional payment context.<br>:::|
 |*oneOf*|[Revolut-Pay-v2](#schemarevolut-pay-v2)|false|none|A saved Revolut Pay payment method on a customer profile.<br><br>Both Revolut Pay card-backed and account-to-account (A2A) variants are<br>represented by this single type at the saved payment method level.<br>No underlying card details are exposed here; use the order-level<br>`payments[].payment_method` object (types `revolut_pay_card` /<br>`revolut_pay_account`) for per-transaction details.|
 |*oneOf*|[Sepa-Direct-Debit-v2](#schemasepa-direct-debit-v2)|false|none|A saved SEPA Direct Debit payment method on a customer profile.<br><br>:::info<br>For more information, see: [SEPA Direct Debit server-to-server integration](https://developer.revolut.com/docs/guides/merchant/accept-payments/payment-methods/sepa-direct-debit/server-to-server)<br>:::|
 
@@ -17032,7 +17503,7 @@ For pre-authorised payments, the `authorised_amount` field tracks the currently 
 |created_at|[Payment-Created](#schemapayment-created)|true|none|The date and time the payment was created.|
 |updated_at|[Payment-Updated](#schemapayment-updated)|true|none|The date and time the payment was last updated.|
 |token|[Payment-Token](#schemapayment-token)|false|none|Temporary token of the payment used to fetch the reward offer during checkout and link user registrations to the given offers. <br><br>The token is only valid for a limited time.|
-|amount|[Payment-Amount](#schemapayment-amount)|true|none|The payment amount in minor units (e.g., cents). The value of this field depends on the payment type and state.<br><br>\| Payment type \| State \| Amount value \|<br>\|--------------\|-------\|--------------\|<br>\| Standard payment \| Any \| Total payment amount \|<br>\| Pre-authorised payment \| `authorisation_started` \| New amount being authorised (during increment processing) \|<br>\| Pre-authorised payment \| `authorised` \| Currently authorised amount (equals `authorised_amount`) \|<br><br>:::info<br>For pre-authorised payments, see the `authorised_amount` field for tracking the currently authorised amount separately.<br>:::|
+|amount|[Payment-Amount](#schemapayment-amount)|true|none|The payment amount in minor units (e.g., cents). The value of this field depends on the payment type and state.<br><br>\| Payment type \| State \| Amount value \|<br>\|--------------\|-------\|--------------\|<br>\| Standard payment \| Any \| Total payment amount \|<br>\| Pre-authorised payment \| `authorisation_started` \| New amount being authorised (during increment processing) \|<br>\| Pre-authorised payment \| `authorised` \| Currently authorised amount (equals `authorised_amount`) \|<br><br>:::note<br>For pre-authorised payments, see the `authorised_amount` field for tracking the currently authorised amount separately.<br>:::|
 |authorised_amount|[Payment-Authorised-Amount](#schemapayment-authorised-amount)|false|none|The currently authorised amount for this payment (in minor units).<br><br>For pre-authorised payments with incremental authorization:<br>- Initially equals the `amount` field<br>- Remains unchanged during increment processing<br>- Updates to new amount upon successful increment<br>- Remains at original amount if increment is declined<br><br>For standard payments, this field may not be present or will equal the `amount` field.|
 |currency|[Currency](#schemacurrency)|false|none|[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.<br><br>:::info<br>For more information about the supported currencies, see: [Help Center](https://help.revolut.com/business/help/merchant-accounts/payments/in-which-currencies-can-i-accept-payments/).<br>:::|
 |settled_amount|[Payment-Settled-Amount](#schemapayment-settled-amount)|false|none|The amount of the settled payment (minor currency unit). For example, `7034` stands for €70.34.|
@@ -18484,7 +18955,7 @@ A subscription, including its state, plan, customer, payment method, and current
 
 ```json
 {
-  "next_page_token": "string",
+  "next_page_token": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
   "subscriptions": [
     {
       "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
@@ -19030,7 +19501,7 @@ A recorded usage entry for a subscription item, including quantity, date, and me
 
 ```json
 {
-  "next_page_token": "string",
+  "next_page_token": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
   "subscription_usages": [
     {
       "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
@@ -20813,6 +21284,8 @@ Each event is related to status changes of a specific object in the Merchant API
   | `Subscription`  | <ul> <li>`SUBSCRIPTION_INITIATED`</li> <li>`SUBSCRIPTION_FINISHED`</li> <li>`SUBSCRIPTION_CANCELLED`</li> <li>`SUBSCRIPTION_OVERDUE`</li></ul> |
   | `Payout`  | <ul> <li>`PAYOUT_INITIATED`</li> <li>`PAYOUT_COMPLETED`</li> <li>`PAYOUT_FAILED`</li> </ul> |
   | `Dispute`  | <ul> <li>`DISPUTE_ACTION_REQUIRED`</li> <li>`DISPUTE_UNDER_REVIEW`</li> <li>`DISPUTE_WON`</li> <li>`DISPUTE_LOST`</li></ul> |
+  | `Disbursement`  | <ul> <li>`DISBURSEMENT_COMPLETED`</li> <li>`DISBURSEMENT_DECLINED`</li> </ul> |
+  | `Disbursement refund`  | <ul> <li>`DISBURSEMENT_REFUND_COMPLETED`</li> </ul> |
 
 <h2 id="tocS_Webhook-Signing-Secret">Webhook-Signing-Secret</h2>
 <!-- backwards compatibility -->
@@ -20855,7 +21328,7 @@ Unlike the legacy API, `signing_secret` is included in all webhook responses, no
 |---|---|---|---|---|
 |id|[Webhook-Id](#schemawebhook-id)|true|none|The ID of the webhook.|
 |url|[Webhook-Url](#schemawebhook-url)|true|none|Your webhook's URL to which event notifications will be sent. <br><br>Must be a valid HTTP or HTTPS URL, capable of receiving `POST` requests.<br><br>:::warning<br>Restrictions:<br>- Must be a valid URI as defined by [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)<br>- URI scheme is required and must be either `http` or `https`<br>- URI host is required and cannot be `localhost` or an IP address<br>- Max length: `2000`<br>- Reserved or invalid characters must be percent-encoded (for example, use `%20` instead of a space)<br>:::|
-|events|[Webhook-Events](#schemawebhook-events)|true|none|List of event types that the webhook is configured to listen to.<br><br>Each event is related to status changes of a specific object in the Merchant API:<br><br>  \| Object \| Event types \|<br>  \| --------- \| ----------- \|<br>  \| `Order`   \| <ul> <li>`ORDER_COMPLETED`</li> <li>`ORDER_AUTHORISED`</li> <li>`ORDER_CANCELLED`</li> <li>`ORDER_FAILED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_AUTHORISED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_DECLINED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_FAILED`</li> </ul> \|<br>  \| `Payment` \| <ul> <li>`ORDER_PAYMENT_AUTHENTICATION_CHALLENGED`</li> <li>`ORDER_PAYMENT_AUTHENTICATED`</li> <li>`ORDER_PAYMENT_AUTHORISATION_STARTED`</li> <li>`ORDER_PAYMENT_DECLINED`</li> <li>`ORDER_PAYMENT_FAILED`</li> </ul> \|<br>  \| `Subscription`  \| <ul> <li>`SUBSCRIPTION_INITIATED`</li> <li>`SUBSCRIPTION_FINISHED`</li> <li>`SUBSCRIPTION_CANCELLED`</li> <li>`SUBSCRIPTION_OVERDUE`</li></ul> \|<br>  \| `Payout`  \| <ul> <li>`PAYOUT_INITIATED`</li> <li>`PAYOUT_COMPLETED`</li> <li>`PAYOUT_FAILED`</li> </ul> \|<br>  \| `Dispute`  \| <ul> <li>`DISPUTE_ACTION_REQUIRED`</li> <li>`DISPUTE_UNDER_REVIEW`</li> <li>`DISPUTE_WON`</li> <li>`DISPUTE_LOST`</li></ul> \||
+|events|[Webhook-Events](#schemawebhook-events)|true|none|List of event types that the webhook is configured to listen to.<br><br>Each event is related to status changes of a specific object in the Merchant API:<br><br>  \| Object \| Event types \|<br>  \| --------- \| ----------- \|<br>  \| `Order`   \| <ul> <li>`ORDER_COMPLETED`</li> <li>`ORDER_AUTHORISED`</li> <li>`ORDER_CANCELLED`</li> <li>`ORDER_FAILED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_AUTHORISED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_DECLINED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_FAILED`</li> </ul> \|<br>  \| `Payment` \| <ul> <li>`ORDER_PAYMENT_AUTHENTICATION_CHALLENGED`</li> <li>`ORDER_PAYMENT_AUTHENTICATED`</li> <li>`ORDER_PAYMENT_AUTHORISATION_STARTED`</li> <li>`ORDER_PAYMENT_DECLINED`</li> <li>`ORDER_PAYMENT_FAILED`</li> </ul> \|<br>  \| `Subscription`  \| <ul> <li>`SUBSCRIPTION_INITIATED`</li> <li>`SUBSCRIPTION_FINISHED`</li> <li>`SUBSCRIPTION_CANCELLED`</li> <li>`SUBSCRIPTION_OVERDUE`</li></ul> \|<br>  \| `Payout`  \| <ul> <li>`PAYOUT_INITIATED`</li> <li>`PAYOUT_COMPLETED`</li> <li>`PAYOUT_FAILED`</li> </ul> \|<br>  \| `Dispute`  \| <ul> <li>`DISPUTE_ACTION_REQUIRED`</li> <li>`DISPUTE_UNDER_REVIEW`</li> <li>`DISPUTE_WON`</li> <li>`DISPUTE_LOST`</li></ul> \|<br>  \| `Disbursement`  \| <ul> <li>`DISBURSEMENT_COMPLETED`</li> <li>`DISBURSEMENT_DECLINED`</li> </ul> \|<br>  \| `Disbursement refund`  \| <ul> <li>`DISBURSEMENT_REFUND_COMPLETED`</li> </ul> \||
 |signing_secret|[Webhook-Signing-Secret](#schemawebhook-signing-secret)|true|none|The signing secret for the webhook. Use it to verify the signature for the webhook request's payload.|
 
 #### Enumerated Values
@@ -20885,6 +21358,9 @@ Unlike the legacy API, `signing_secret` is included in all webhook responses, no
 |events|DISPUTE_UNDER_REVIEW|
 |events|DISPUTE_WON|
 |events|DISPUTE_LOST|
+|events|DISBURSEMENT_COMPLETED|
+|events|DISBURSEMENT_DECLINED|
+|events|DISBURSEMENT_REFUND_COMPLETED|
 
 <h2 id="tocS_Webhooks">Webhooks</h2>
 <!-- backwards compatibility -->
@@ -20939,7 +21415,7 @@ Request body for creating or updating a webhook, including the endpoint URL and 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |url|[Webhook-Url](#schemawebhook-url)|true|none|Your webhook's URL to which event notifications will be sent. <br><br>Must be a valid HTTP or HTTPS URL, capable of receiving `POST` requests.<br><br>:::warning<br>Restrictions:<br>- Must be a valid URI as defined by [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)<br>- URI scheme is required and must be either `http` or `https`<br>- URI host is required and cannot be `localhost` or an IP address<br>- Max length: `2000`<br>- Reserved or invalid characters must be percent-encoded (for example, use `%20` instead of a space)<br>:::|
-|events|[Webhook-Events](#schemawebhook-events)|true|none|List of event types that the webhook is configured to listen to.<br><br>Each event is related to status changes of a specific object in the Merchant API:<br><br>  \| Object \| Event types \|<br>  \| --------- \| ----------- \|<br>  \| `Order`   \| <ul> <li>`ORDER_COMPLETED`</li> <li>`ORDER_AUTHORISED`</li> <li>`ORDER_CANCELLED`</li> <li>`ORDER_FAILED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_AUTHORISED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_DECLINED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_FAILED`</li> </ul> \|<br>  \| `Payment` \| <ul> <li>`ORDER_PAYMENT_AUTHENTICATION_CHALLENGED`</li> <li>`ORDER_PAYMENT_AUTHENTICATED`</li> <li>`ORDER_PAYMENT_AUTHORISATION_STARTED`</li> <li>`ORDER_PAYMENT_DECLINED`</li> <li>`ORDER_PAYMENT_FAILED`</li> </ul> \|<br>  \| `Subscription`  \| <ul> <li>`SUBSCRIPTION_INITIATED`</li> <li>`SUBSCRIPTION_FINISHED`</li> <li>`SUBSCRIPTION_CANCELLED`</li> <li>`SUBSCRIPTION_OVERDUE`</li></ul> \|<br>  \| `Payout`  \| <ul> <li>`PAYOUT_INITIATED`</li> <li>`PAYOUT_COMPLETED`</li> <li>`PAYOUT_FAILED`</li> </ul> \|<br>  \| `Dispute`  \| <ul> <li>`DISPUTE_ACTION_REQUIRED`</li> <li>`DISPUTE_UNDER_REVIEW`</li> <li>`DISPUTE_WON`</li> <li>`DISPUTE_LOST`</li></ul> \||
+|events|[Webhook-Events](#schemawebhook-events)|true|none|List of event types that the webhook is configured to listen to.<br><br>Each event is related to status changes of a specific object in the Merchant API:<br><br>  \| Object \| Event types \|<br>  \| --------- \| ----------- \|<br>  \| `Order`   \| <ul> <li>`ORDER_COMPLETED`</li> <li>`ORDER_AUTHORISED`</li> <li>`ORDER_CANCELLED`</li> <li>`ORDER_FAILED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_AUTHORISED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_DECLINED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_FAILED`</li> </ul> \|<br>  \| `Payment` \| <ul> <li>`ORDER_PAYMENT_AUTHENTICATION_CHALLENGED`</li> <li>`ORDER_PAYMENT_AUTHENTICATED`</li> <li>`ORDER_PAYMENT_AUTHORISATION_STARTED`</li> <li>`ORDER_PAYMENT_DECLINED`</li> <li>`ORDER_PAYMENT_FAILED`</li> </ul> \|<br>  \| `Subscription`  \| <ul> <li>`SUBSCRIPTION_INITIATED`</li> <li>`SUBSCRIPTION_FINISHED`</li> <li>`SUBSCRIPTION_CANCELLED`</li> <li>`SUBSCRIPTION_OVERDUE`</li></ul> \|<br>  \| `Payout`  \| <ul> <li>`PAYOUT_INITIATED`</li> <li>`PAYOUT_COMPLETED`</li> <li>`PAYOUT_FAILED`</li> </ul> \|<br>  \| `Dispute`  \| <ul> <li>`DISPUTE_ACTION_REQUIRED`</li> <li>`DISPUTE_UNDER_REVIEW`</li> <li>`DISPUTE_WON`</li> <li>`DISPUTE_LOST`</li></ul> \|<br>  \| `Disbursement`  \| <ul> <li>`DISBURSEMENT_COMPLETED`</li> <li>`DISBURSEMENT_DECLINED`</li> </ul> \|<br>  \| `Disbursement refund`  \| <ul> <li>`DISBURSEMENT_REFUND_COMPLETED`</li> </ul> \||
 
 #### Enumerated Values
 
@@ -20968,6 +21444,9 @@ Request body for creating or updating a webhook, including the endpoint URL and 
 |events|DISPUTE_UNDER_REVIEW|
 |events|DISPUTE_WON|
 |events|DISPUTE_LOST|
+|events|DISBURSEMENT_COMPLETED|
+|events|DISBURSEMENT_DECLINED|
+|events|DISBURSEMENT_REFUND_COMPLETED|
 
 <h2 id="tocS_Webhook-Update">Webhook-Update</h2>
 <!-- backwards compatibility -->
@@ -20994,7 +21473,7 @@ All fields are optional. Only the fields provided in the request will be updated
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |url|[Webhook-Url](#schemawebhook-url)|false|none|Your webhook's URL to which event notifications will be sent. <br><br>Must be a valid HTTP or HTTPS URL, capable of receiving `POST` requests.<br><br>:::warning<br>Restrictions:<br>- Must be a valid URI as defined by [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)<br>- URI scheme is required and must be either `http` or `https`<br>- URI host is required and cannot be `localhost` or an IP address<br>- Max length: `2000`<br>- Reserved or invalid characters must be percent-encoded (for example, use `%20` instead of a space)<br>:::|
-|events|[Webhook-Events](#schemawebhook-events)|false|none|List of event types that the webhook is configured to listen to.<br><br>Each event is related to status changes of a specific object in the Merchant API:<br><br>  \| Object \| Event types \|<br>  \| --------- \| ----------- \|<br>  \| `Order`   \| <ul> <li>`ORDER_COMPLETED`</li> <li>`ORDER_AUTHORISED`</li> <li>`ORDER_CANCELLED`</li> <li>`ORDER_FAILED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_AUTHORISED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_DECLINED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_FAILED`</li> </ul> \|<br>  \| `Payment` \| <ul> <li>`ORDER_PAYMENT_AUTHENTICATION_CHALLENGED`</li> <li>`ORDER_PAYMENT_AUTHENTICATED`</li> <li>`ORDER_PAYMENT_AUTHORISATION_STARTED`</li> <li>`ORDER_PAYMENT_DECLINED`</li> <li>`ORDER_PAYMENT_FAILED`</li> </ul> \|<br>  \| `Subscription`  \| <ul> <li>`SUBSCRIPTION_INITIATED`</li> <li>`SUBSCRIPTION_FINISHED`</li> <li>`SUBSCRIPTION_CANCELLED`</li> <li>`SUBSCRIPTION_OVERDUE`</li></ul> \|<br>  \| `Payout`  \| <ul> <li>`PAYOUT_INITIATED`</li> <li>`PAYOUT_COMPLETED`</li> <li>`PAYOUT_FAILED`</li> </ul> \|<br>  \| `Dispute`  \| <ul> <li>`DISPUTE_ACTION_REQUIRED`</li> <li>`DISPUTE_UNDER_REVIEW`</li> <li>`DISPUTE_WON`</li> <li>`DISPUTE_LOST`</li></ul> \||
+|events|[Webhook-Events](#schemawebhook-events)|false|none|List of event types that the webhook is configured to listen to.<br><br>Each event is related to status changes of a specific object in the Merchant API:<br><br>  \| Object \| Event types \|<br>  \| --------- \| ----------- \|<br>  \| `Order`   \| <ul> <li>`ORDER_COMPLETED`</li> <li>`ORDER_AUTHORISED`</li> <li>`ORDER_CANCELLED`</li> <li>`ORDER_FAILED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_AUTHORISED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_DECLINED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_FAILED`</li> </ul> \|<br>  \| `Payment` \| <ul> <li>`ORDER_PAYMENT_AUTHENTICATION_CHALLENGED`</li> <li>`ORDER_PAYMENT_AUTHENTICATED`</li> <li>`ORDER_PAYMENT_AUTHORISATION_STARTED`</li> <li>`ORDER_PAYMENT_DECLINED`</li> <li>`ORDER_PAYMENT_FAILED`</li> </ul> \|<br>  \| `Subscription`  \| <ul> <li>`SUBSCRIPTION_INITIATED`</li> <li>`SUBSCRIPTION_FINISHED`</li> <li>`SUBSCRIPTION_CANCELLED`</li> <li>`SUBSCRIPTION_OVERDUE`</li></ul> \|<br>  \| `Payout`  \| <ul> <li>`PAYOUT_INITIATED`</li> <li>`PAYOUT_COMPLETED`</li> <li>`PAYOUT_FAILED`</li> </ul> \|<br>  \| `Dispute`  \| <ul> <li>`DISPUTE_ACTION_REQUIRED`</li> <li>`DISPUTE_UNDER_REVIEW`</li> <li>`DISPUTE_WON`</li> <li>`DISPUTE_LOST`</li></ul> \|<br>  \| `Disbursement`  \| <ul> <li>`DISBURSEMENT_COMPLETED`</li> <li>`DISBURSEMENT_DECLINED`</li> </ul> \|<br>  \| `Disbursement refund`  \| <ul> <li>`DISBURSEMENT_REFUND_COMPLETED`</li> </ul> \||
 
 #### Enumerated Values
 
@@ -21023,6 +21502,9 @@ All fields are optional. Only the fields provided in the request will be updated
 |events|DISPUTE_UNDER_REVIEW|
 |events|DISPUTE_WON|
 |events|DISPUTE_LOST|
+|events|DISBURSEMENT_COMPLETED|
+|events|DISBURSEMENT_DECLINED|
+|events|DISBURSEMENT_REFUND_COMPLETED|
 
 <h2 id="tocS_Synchronous-Webhook">Synchronous-Webhook</h2>
 <!-- backwards compatibility -->
@@ -22091,6 +22573,8 @@ Each event is related to status changes of a specific object in the Merchant API
   | `Subscription`  | <ul> <li>`SUBSCRIPTION_INITIATED`</li> <li>`SUBSCRIPTION_FINISHED`</li> <li>`SUBSCRIPTION_CANCELLED`</li> <li>`SUBSCRIPTION_OVERDUE`</li></ul> |
   | `Payout`  | <ul> <li>`PAYOUT_INITIATED`</li> <li>`PAYOUT_COMPLETED`</li> <li>`PAYOUT_FAILED`</li> </ul> |
   | `Dispute`  | <ul> <li>`DISPUTE_ACTION_REQUIRED`</li> <li>`DISPUTE_UNDER_REVIEW`</li> <li>`DISPUTE_WON`</li> <li>`DISPUTE_LOST`</li></ul> |
+  | `Disbursement`  | <ul> <li>`DISBURSEMENT_COMPLETED`</li> <li>`DISBURSEMENT_DECLINED`</li> </ul> |
+  | `Disbursement refund`  | <ul> <li>`DISBURSEMENT_REFUND_COMPLETED`</li> </ul> |
 
 <h2 id="tocS_Webhook-Order-Event">Webhook-Order-Event</h2>
 <!-- backwards compatibility -->
@@ -22114,7 +22598,7 @@ A webhook event payload for order-related events, including the order ID and opt
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|event|[Webhook-Callback-Event](#schemawebhook-callback-event)|true|none|The event type of the webhook notification that's sent by Revolut to your webhook URL.<br><br>Each event is related to status changes of a specific object in the Merchant API:<br><br>  \| Object \| Event types \|<br>  \| --------- \| ----------- \|<br>  \| `Order`   \| <ul> <li>`ORDER_COMPLETED`</li> <li>`ORDER_AUTHORISED`</li> <li>`ORDER_CANCELLED`</li> <li>`ORDER_FAILED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_AUTHORISED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_DECLINED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_FAILED`</li> </ul> \|<br>  \| `Payment` \| <ul> <li>`ORDER_PAYMENT_AUTHENTICATION_CHALLENGED`</li> <li>`ORDER_PAYMENT_AUTHENTICATED`</li> <li>`ORDER_PAYMENT_AUTHORISATION_STARTED`</li> <li>`ORDER_PAYMENT_DECLINED`</li> <li>`ORDER_PAYMENT_FAILED`</li> </ul> \|<br>  \| `Subscription`  \| <ul> <li>`SUBSCRIPTION_INITIATED`</li> <li>`SUBSCRIPTION_FINISHED`</li> <li>`SUBSCRIPTION_CANCELLED`</li> <li>`SUBSCRIPTION_OVERDUE`</li></ul> \|<br>  \| `Payout`  \| <ul> <li>`PAYOUT_INITIATED`</li> <li>`PAYOUT_COMPLETED`</li> <li>`PAYOUT_FAILED`</li> </ul> \|<br>  \| `Dispute`  \| <ul> <li>`DISPUTE_ACTION_REQUIRED`</li> <li>`DISPUTE_UNDER_REVIEW`</li> <li>`DISPUTE_WON`</li> <li>`DISPUTE_LOST`</li></ul> \||
+|event|[Webhook-Callback-Event](#schemawebhook-callback-event)|true|none|The event type of the webhook notification that's sent by Revolut to your webhook URL.<br><br>Each event is related to status changes of a specific object in the Merchant API:<br><br>  \| Object \| Event types \|<br>  \| --------- \| ----------- \|<br>  \| `Order`   \| <ul> <li>`ORDER_COMPLETED`</li> <li>`ORDER_AUTHORISED`</li> <li>`ORDER_CANCELLED`</li> <li>`ORDER_FAILED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_AUTHORISED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_DECLINED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_FAILED`</li> </ul> \|<br>  \| `Payment` \| <ul> <li>`ORDER_PAYMENT_AUTHENTICATION_CHALLENGED`</li> <li>`ORDER_PAYMENT_AUTHENTICATED`</li> <li>`ORDER_PAYMENT_AUTHORISATION_STARTED`</li> <li>`ORDER_PAYMENT_DECLINED`</li> <li>`ORDER_PAYMENT_FAILED`</li> </ul> \|<br>  \| `Subscription`  \| <ul> <li>`SUBSCRIPTION_INITIATED`</li> <li>`SUBSCRIPTION_FINISHED`</li> <li>`SUBSCRIPTION_CANCELLED`</li> <li>`SUBSCRIPTION_OVERDUE`</li></ul> \|<br>  \| `Payout`  \| <ul> <li>`PAYOUT_INITIATED`</li> <li>`PAYOUT_COMPLETED`</li> <li>`PAYOUT_FAILED`</li> </ul> \|<br>  \| `Dispute`  \| <ul> <li>`DISPUTE_ACTION_REQUIRED`</li> <li>`DISPUTE_UNDER_REVIEW`</li> <li>`DISPUTE_WON`</li> <li>`DISPUTE_LOST`</li></ul> \|<br>  \| `Disbursement`  \| <ul> <li>`DISBURSEMENT_COMPLETED`</li> <li>`DISBURSEMENT_DECLINED`</li> </ul> \|<br>  \| `Disbursement refund`  \| <ul> <li>`DISBURSEMENT_REFUND_COMPLETED`</li> </ul> \||
 |order_id|string(uuid)|true|none|The ID of the order the event is related to.|
 |merchant_order_ext_ref|string|false|none|The information sent during order creation in the<br>`merchant_order_data.reference` field.|
 |incremental_authorisation_ext_reference|string|false|none|The reference sent in the `reference` field of the [Increment authorisation](https://developer.revolut.com/docs/api/merchant#increment-authorisation) request. Only present for incremental authorisation events.|
@@ -22146,6 +22630,9 @@ A webhook event payload for order-related events, including the order ID and opt
 |event|DISPUTE_UNDER_REVIEW|
 |event|DISPUTE_WON|
 |event|DISPUTE_LOST|
+|event|DISBURSEMENT_COMPLETED|
+|event|DISBURSEMENT_DECLINED|
+|event|DISBURSEMENT_REFUND_COMPLETED|
 
 <h2 id="tocS_Webhook-Subscription-Event">Webhook-Subscription-Event</h2>
 <!-- backwards compatibility -->
@@ -22168,7 +22655,7 @@ A webhook event payload for subscription-related events, including the subscript
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|event|[Webhook-Callback-Event](#schemawebhook-callback-event)|true|none|The event type of the webhook notification that's sent by Revolut to your webhook URL.<br><br>Each event is related to status changes of a specific object in the Merchant API:<br><br>  \| Object \| Event types \|<br>  \| --------- \| ----------- \|<br>  \| `Order`   \| <ul> <li>`ORDER_COMPLETED`</li> <li>`ORDER_AUTHORISED`</li> <li>`ORDER_CANCELLED`</li> <li>`ORDER_FAILED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_AUTHORISED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_DECLINED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_FAILED`</li> </ul> \|<br>  \| `Payment` \| <ul> <li>`ORDER_PAYMENT_AUTHENTICATION_CHALLENGED`</li> <li>`ORDER_PAYMENT_AUTHENTICATED`</li> <li>`ORDER_PAYMENT_AUTHORISATION_STARTED`</li> <li>`ORDER_PAYMENT_DECLINED`</li> <li>`ORDER_PAYMENT_FAILED`</li> </ul> \|<br>  \| `Subscription`  \| <ul> <li>`SUBSCRIPTION_INITIATED`</li> <li>`SUBSCRIPTION_FINISHED`</li> <li>`SUBSCRIPTION_CANCELLED`</li> <li>`SUBSCRIPTION_OVERDUE`</li></ul> \|<br>  \| `Payout`  \| <ul> <li>`PAYOUT_INITIATED`</li> <li>`PAYOUT_COMPLETED`</li> <li>`PAYOUT_FAILED`</li> </ul> \|<br>  \| `Dispute`  \| <ul> <li>`DISPUTE_ACTION_REQUIRED`</li> <li>`DISPUTE_UNDER_REVIEW`</li> <li>`DISPUTE_WON`</li> <li>`DISPUTE_LOST`</li></ul> \||
+|event|[Webhook-Callback-Event](#schemawebhook-callback-event)|true|none|The event type of the webhook notification that's sent by Revolut to your webhook URL.<br><br>Each event is related to status changes of a specific object in the Merchant API:<br><br>  \| Object \| Event types \|<br>  \| --------- \| ----------- \|<br>  \| `Order`   \| <ul> <li>`ORDER_COMPLETED`</li> <li>`ORDER_AUTHORISED`</li> <li>`ORDER_CANCELLED`</li> <li>`ORDER_FAILED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_AUTHORISED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_DECLINED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_FAILED`</li> </ul> \|<br>  \| `Payment` \| <ul> <li>`ORDER_PAYMENT_AUTHENTICATION_CHALLENGED`</li> <li>`ORDER_PAYMENT_AUTHENTICATED`</li> <li>`ORDER_PAYMENT_AUTHORISATION_STARTED`</li> <li>`ORDER_PAYMENT_DECLINED`</li> <li>`ORDER_PAYMENT_FAILED`</li> </ul> \|<br>  \| `Subscription`  \| <ul> <li>`SUBSCRIPTION_INITIATED`</li> <li>`SUBSCRIPTION_FINISHED`</li> <li>`SUBSCRIPTION_CANCELLED`</li> <li>`SUBSCRIPTION_OVERDUE`</li></ul> \|<br>  \| `Payout`  \| <ul> <li>`PAYOUT_INITIATED`</li> <li>`PAYOUT_COMPLETED`</li> <li>`PAYOUT_FAILED`</li> </ul> \|<br>  \| `Dispute`  \| <ul> <li>`DISPUTE_ACTION_REQUIRED`</li> <li>`DISPUTE_UNDER_REVIEW`</li> <li>`DISPUTE_WON`</li> <li>`DISPUTE_LOST`</li></ul> \|<br>  \| `Disbursement`  \| <ul> <li>`DISBURSEMENT_COMPLETED`</li> <li>`DISBURSEMENT_DECLINED`</li> </ul> \|<br>  \| `Disbursement refund`  \| <ul> <li>`DISBURSEMENT_REFUND_COMPLETED`</li> </ul> \||
 |subscription_id|string(uuid)|true|none|The ID of the subscription the event is related to.|
 |external_reference|string|false|none|The information sent in the `external_reference` field of the [Create a subscription](https://developer.revolut.com/docs/api/merchant#create-subscription) request.|
 
@@ -22199,6 +22686,9 @@ A webhook event payload for subscription-related events, including the subscript
 |event|DISPUTE_UNDER_REVIEW|
 |event|DISPUTE_WON|
 |event|DISPUTE_LOST|
+|event|DISBURSEMENT_COMPLETED|
+|event|DISBURSEMENT_DECLINED|
+|event|DISBURSEMENT_REFUND_COMPLETED|
 
 <h2 id="tocS_Webhook-Payout-Event">Webhook-Payout-Event</h2>
 <!-- backwards compatibility -->
@@ -22220,7 +22710,7 @@ A webhook event payload for payout-related events, including the payout ID.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|event|[Webhook-Callback-Event](#schemawebhook-callback-event)|true|none|The event type of the webhook notification that's sent by Revolut to your webhook URL.<br><br>Each event is related to status changes of a specific object in the Merchant API:<br><br>  \| Object \| Event types \|<br>  \| --------- \| ----------- \|<br>  \| `Order`   \| <ul> <li>`ORDER_COMPLETED`</li> <li>`ORDER_AUTHORISED`</li> <li>`ORDER_CANCELLED`</li> <li>`ORDER_FAILED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_AUTHORISED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_DECLINED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_FAILED`</li> </ul> \|<br>  \| `Payment` \| <ul> <li>`ORDER_PAYMENT_AUTHENTICATION_CHALLENGED`</li> <li>`ORDER_PAYMENT_AUTHENTICATED`</li> <li>`ORDER_PAYMENT_AUTHORISATION_STARTED`</li> <li>`ORDER_PAYMENT_DECLINED`</li> <li>`ORDER_PAYMENT_FAILED`</li> </ul> \|<br>  \| `Subscription`  \| <ul> <li>`SUBSCRIPTION_INITIATED`</li> <li>`SUBSCRIPTION_FINISHED`</li> <li>`SUBSCRIPTION_CANCELLED`</li> <li>`SUBSCRIPTION_OVERDUE`</li></ul> \|<br>  \| `Payout`  \| <ul> <li>`PAYOUT_INITIATED`</li> <li>`PAYOUT_COMPLETED`</li> <li>`PAYOUT_FAILED`</li> </ul> \|<br>  \| `Dispute`  \| <ul> <li>`DISPUTE_ACTION_REQUIRED`</li> <li>`DISPUTE_UNDER_REVIEW`</li> <li>`DISPUTE_WON`</li> <li>`DISPUTE_LOST`</li></ul> \||
+|event|[Webhook-Callback-Event](#schemawebhook-callback-event)|true|none|The event type of the webhook notification that's sent by Revolut to your webhook URL.<br><br>Each event is related to status changes of a specific object in the Merchant API:<br><br>  \| Object \| Event types \|<br>  \| --------- \| ----------- \|<br>  \| `Order`   \| <ul> <li>`ORDER_COMPLETED`</li> <li>`ORDER_AUTHORISED`</li> <li>`ORDER_CANCELLED`</li> <li>`ORDER_FAILED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_AUTHORISED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_DECLINED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_FAILED`</li> </ul> \|<br>  \| `Payment` \| <ul> <li>`ORDER_PAYMENT_AUTHENTICATION_CHALLENGED`</li> <li>`ORDER_PAYMENT_AUTHENTICATED`</li> <li>`ORDER_PAYMENT_AUTHORISATION_STARTED`</li> <li>`ORDER_PAYMENT_DECLINED`</li> <li>`ORDER_PAYMENT_FAILED`</li> </ul> \|<br>  \| `Subscription`  \| <ul> <li>`SUBSCRIPTION_INITIATED`</li> <li>`SUBSCRIPTION_FINISHED`</li> <li>`SUBSCRIPTION_CANCELLED`</li> <li>`SUBSCRIPTION_OVERDUE`</li></ul> \|<br>  \| `Payout`  \| <ul> <li>`PAYOUT_INITIATED`</li> <li>`PAYOUT_COMPLETED`</li> <li>`PAYOUT_FAILED`</li> </ul> \|<br>  \| `Dispute`  \| <ul> <li>`DISPUTE_ACTION_REQUIRED`</li> <li>`DISPUTE_UNDER_REVIEW`</li> <li>`DISPUTE_WON`</li> <li>`DISPUTE_LOST`</li></ul> \|<br>  \| `Disbursement`  \| <ul> <li>`DISBURSEMENT_COMPLETED`</li> <li>`DISBURSEMENT_DECLINED`</li> </ul> \|<br>  \| `Disbursement refund`  \| <ul> <li>`DISBURSEMENT_REFUND_COMPLETED`</li> </ul> \||
 |payout_id|string(uuid)|true|none|The ID of the payout the event is related to.|
 
 #### Enumerated Values
@@ -22250,6 +22740,9 @@ A webhook event payload for payout-related events, including the payout ID.
 |event|DISPUTE_UNDER_REVIEW|
 |event|DISPUTE_WON|
 |event|DISPUTE_LOST|
+|event|DISBURSEMENT_COMPLETED|
+|event|DISBURSEMENT_DECLINED|
+|event|DISBURSEMENT_REFUND_COMPLETED|
 
 <h2 id="tocS_Webhook-Dispute-Event">Webhook-Dispute-Event</h2>
 <!-- backwards compatibility -->
@@ -22271,7 +22764,7 @@ A webhook event payload for dispute-related events, including the dispute ID.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|event|[Webhook-Callback-Event](#schemawebhook-callback-event)|true|none|The event type of the webhook notification that's sent by Revolut to your webhook URL.<br><br>Each event is related to status changes of a specific object in the Merchant API:<br><br>  \| Object \| Event types \|<br>  \| --------- \| ----------- \|<br>  \| `Order`   \| <ul> <li>`ORDER_COMPLETED`</li> <li>`ORDER_AUTHORISED`</li> <li>`ORDER_CANCELLED`</li> <li>`ORDER_FAILED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_AUTHORISED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_DECLINED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_FAILED`</li> </ul> \|<br>  \| `Payment` \| <ul> <li>`ORDER_PAYMENT_AUTHENTICATION_CHALLENGED`</li> <li>`ORDER_PAYMENT_AUTHENTICATED`</li> <li>`ORDER_PAYMENT_AUTHORISATION_STARTED`</li> <li>`ORDER_PAYMENT_DECLINED`</li> <li>`ORDER_PAYMENT_FAILED`</li> </ul> \|<br>  \| `Subscription`  \| <ul> <li>`SUBSCRIPTION_INITIATED`</li> <li>`SUBSCRIPTION_FINISHED`</li> <li>`SUBSCRIPTION_CANCELLED`</li> <li>`SUBSCRIPTION_OVERDUE`</li></ul> \|<br>  \| `Payout`  \| <ul> <li>`PAYOUT_INITIATED`</li> <li>`PAYOUT_COMPLETED`</li> <li>`PAYOUT_FAILED`</li> </ul> \|<br>  \| `Dispute`  \| <ul> <li>`DISPUTE_ACTION_REQUIRED`</li> <li>`DISPUTE_UNDER_REVIEW`</li> <li>`DISPUTE_WON`</li> <li>`DISPUTE_LOST`</li></ul> \||
+|event|[Webhook-Callback-Event](#schemawebhook-callback-event)|true|none|The event type of the webhook notification that's sent by Revolut to your webhook URL.<br><br>Each event is related to status changes of a specific object in the Merchant API:<br><br>  \| Object \| Event types \|<br>  \| --------- \| ----------- \|<br>  \| `Order`   \| <ul> <li>`ORDER_COMPLETED`</li> <li>`ORDER_AUTHORISED`</li> <li>`ORDER_CANCELLED`</li> <li>`ORDER_FAILED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_AUTHORISED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_DECLINED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_FAILED`</li> </ul> \|<br>  \| `Payment` \| <ul> <li>`ORDER_PAYMENT_AUTHENTICATION_CHALLENGED`</li> <li>`ORDER_PAYMENT_AUTHENTICATED`</li> <li>`ORDER_PAYMENT_AUTHORISATION_STARTED`</li> <li>`ORDER_PAYMENT_DECLINED`</li> <li>`ORDER_PAYMENT_FAILED`</li> </ul> \|<br>  \| `Subscription`  \| <ul> <li>`SUBSCRIPTION_INITIATED`</li> <li>`SUBSCRIPTION_FINISHED`</li> <li>`SUBSCRIPTION_CANCELLED`</li> <li>`SUBSCRIPTION_OVERDUE`</li></ul> \|<br>  \| `Payout`  \| <ul> <li>`PAYOUT_INITIATED`</li> <li>`PAYOUT_COMPLETED`</li> <li>`PAYOUT_FAILED`</li> </ul> \|<br>  \| `Dispute`  \| <ul> <li>`DISPUTE_ACTION_REQUIRED`</li> <li>`DISPUTE_UNDER_REVIEW`</li> <li>`DISPUTE_WON`</li> <li>`DISPUTE_LOST`</li></ul> \|<br>  \| `Disbursement`  \| <ul> <li>`DISBURSEMENT_COMPLETED`</li> <li>`DISBURSEMENT_DECLINED`</li> </ul> \|<br>  \| `Disbursement refund`  \| <ul> <li>`DISBURSEMENT_REFUND_COMPLETED`</li> </ul> \||
 |dispute_id|string(uuid)|true|none|The ID of the dispute the event is related to.|
 
 #### Enumerated Values
@@ -22301,3 +22794,133 @@ A webhook event payload for dispute-related events, including the dispute ID.
 |event|DISPUTE_UNDER_REVIEW|
 |event|DISPUTE_WON|
 |event|DISPUTE_LOST|
+|event|DISBURSEMENT_COMPLETED|
+|event|DISBURSEMENT_DECLINED|
+|event|DISBURSEMENT_REFUND_COMPLETED|
+
+<h2 id="tocS_Disbursement-Reference">Disbursement-Reference</h2>
+<!-- backwards compatibility -->
+<a id="schemadisbursement-reference"></a>
+<a id="schema_Disbursement-Reference"></a>
+<a id="tocSdisbursement-reference"></a>
+<a id="tocsdisbursement-reference"></a>
+
+```json
+"string"
+```
+
+A custom reference for the disbursement, useful for reconciliation. For example, a withdrawal ID from your system.
+
+<h2 id="tocS_Webhook-Disbursement-Event">Webhook-Disbursement-Event</h2>
+<!-- backwards compatibility -->
+<a id="schemawebhook-disbursement-event"></a>
+<a id="schema_Webhook-Disbursement-Event"></a>
+<a id="tocSwebhook-disbursement-event"></a>
+<a id="tocswebhook-disbursement-event"></a>
+
+```json
+{
+  "event": "ORDER_COMPLETED",
+  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "reference": "string"
+}
+```
+
+A webhook event payload for disbursement-related events, including the disbursement ID.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|event|[Webhook-Callback-Event](#schemawebhook-callback-event)|true|none|The event type of the webhook notification that's sent by Revolut to your webhook URL.<br><br>Each event is related to status changes of a specific object in the Merchant API:<br><br>  \| Object \| Event types \|<br>  \| --------- \| ----------- \|<br>  \| `Order`   \| <ul> <li>`ORDER_COMPLETED`</li> <li>`ORDER_AUTHORISED`</li> <li>`ORDER_CANCELLED`</li> <li>`ORDER_FAILED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_AUTHORISED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_DECLINED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_FAILED`</li> </ul> \|<br>  \| `Payment` \| <ul> <li>`ORDER_PAYMENT_AUTHENTICATION_CHALLENGED`</li> <li>`ORDER_PAYMENT_AUTHENTICATED`</li> <li>`ORDER_PAYMENT_AUTHORISATION_STARTED`</li> <li>`ORDER_PAYMENT_DECLINED`</li> <li>`ORDER_PAYMENT_FAILED`</li> </ul> \|<br>  \| `Subscription`  \| <ul> <li>`SUBSCRIPTION_INITIATED`</li> <li>`SUBSCRIPTION_FINISHED`</li> <li>`SUBSCRIPTION_CANCELLED`</li> <li>`SUBSCRIPTION_OVERDUE`</li></ul> \|<br>  \| `Payout`  \| <ul> <li>`PAYOUT_INITIATED`</li> <li>`PAYOUT_COMPLETED`</li> <li>`PAYOUT_FAILED`</li> </ul> \|<br>  \| `Dispute`  \| <ul> <li>`DISPUTE_ACTION_REQUIRED`</li> <li>`DISPUTE_UNDER_REVIEW`</li> <li>`DISPUTE_WON`</li> <li>`DISPUTE_LOST`</li></ul> \|<br>  \| `Disbursement`  \| <ul> <li>`DISBURSEMENT_COMPLETED`</li> <li>`DISBURSEMENT_DECLINED`</li> </ul> \|<br>  \| `Disbursement refund`  \| <ul> <li>`DISBURSEMENT_REFUND_COMPLETED`</li> </ul> \||
+|id|string(uuid)|true|none|The ID of the disbursement the event is related to.|
+|reference|[Disbursement-Reference](#schemadisbursement-reference)|false|none|A custom reference for the disbursement, useful for reconciliation. For example, a withdrawal ID from your system.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|event|ORDER_COMPLETED|
+|event|ORDER_AUTHORISED|
+|event|ORDER_CANCELLED|
+|event|ORDER_FAILED|
+|event|ORDER_INCREMENTAL_AUTHORISATION_AUTHORISED|
+|event|ORDER_INCREMENTAL_AUTHORISATION_DECLINED|
+|event|ORDER_INCREMENTAL_AUTHORISATION_FAILED|
+|event|ORDER_PAYMENT_AUTHENTICATION_CHALLENGED|
+|event|ORDER_PAYMENT_AUTHENTICATED|
+|event|ORDER_PAYMENT_AUTHORISATION_STARTED|
+|event|ORDER_PAYMENT_DECLINED|
+|event|ORDER_PAYMENT_FAILED|
+|event|SUBSCRIPTION_INITIATED|
+|event|SUBSCRIPTION_FINISHED|
+|event|SUBSCRIPTION_CANCELLED|
+|event|SUBSCRIPTION_OVERDUE|
+|event|PAYOUT_INITIATED|
+|event|PAYOUT_COMPLETED|
+|event|PAYOUT_FAILED|
+|event|DISPUTE_ACTION_REQUIRED|
+|event|DISPUTE_UNDER_REVIEW|
+|event|DISPUTE_WON|
+|event|DISPUTE_LOST|
+|event|DISBURSEMENT_COMPLETED|
+|event|DISBURSEMENT_DECLINED|
+|event|DISBURSEMENT_REFUND_COMPLETED|
+
+<h2 id="tocS_Webhook-Disbursement-Refund-Event">Webhook-Disbursement-Refund-Event</h2>
+<!-- backwards compatibility -->
+<a id="schemawebhook-disbursement-refund-event"></a>
+<a id="schema_Webhook-Disbursement-Refund-Event"></a>
+<a id="tocSwebhook-disbursement-refund-event"></a>
+<a id="tocswebhook-disbursement-refund-event"></a>
+
+```json
+{
+  "event": "ORDER_COMPLETED",
+  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "original_disbursement_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "original_reference": "string"
+}
+```
+
+A webhook event payload for disbursement-refund-related events, including the disbursement refund ID.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|event|[Webhook-Callback-Event](#schemawebhook-callback-event)|true|none|The event type of the webhook notification that's sent by Revolut to your webhook URL.<br><br>Each event is related to status changes of a specific object in the Merchant API:<br><br>  \| Object \| Event types \|<br>  \| --------- \| ----------- \|<br>  \| `Order`   \| <ul> <li>`ORDER_COMPLETED`</li> <li>`ORDER_AUTHORISED`</li> <li>`ORDER_CANCELLED`</li> <li>`ORDER_FAILED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_AUTHORISED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_DECLINED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_FAILED`</li> </ul> \|<br>  \| `Payment` \| <ul> <li>`ORDER_PAYMENT_AUTHENTICATION_CHALLENGED`</li> <li>`ORDER_PAYMENT_AUTHENTICATED`</li> <li>`ORDER_PAYMENT_AUTHORISATION_STARTED`</li> <li>`ORDER_PAYMENT_DECLINED`</li> <li>`ORDER_PAYMENT_FAILED`</li> </ul> \|<br>  \| `Subscription`  \| <ul> <li>`SUBSCRIPTION_INITIATED`</li> <li>`SUBSCRIPTION_FINISHED`</li> <li>`SUBSCRIPTION_CANCELLED`</li> <li>`SUBSCRIPTION_OVERDUE`</li></ul> \|<br>  \| `Payout`  \| <ul> <li>`PAYOUT_INITIATED`</li> <li>`PAYOUT_COMPLETED`</li> <li>`PAYOUT_FAILED`</li> </ul> \|<br>  \| `Dispute`  \| <ul> <li>`DISPUTE_ACTION_REQUIRED`</li> <li>`DISPUTE_UNDER_REVIEW`</li> <li>`DISPUTE_WON`</li> <li>`DISPUTE_LOST`</li></ul> \|<br>  \| `Disbursement`  \| <ul> <li>`DISBURSEMENT_COMPLETED`</li> <li>`DISBURSEMENT_DECLINED`</li> </ul> \|<br>  \| `Disbursement refund`  \| <ul> <li>`DISBURSEMENT_REFUND_COMPLETED`</li> </ul> \||
+|id|string(uuid)|true|none|The ID of the disbursement refund the event is related to.|
+|original_disbursement_id|string(uuid)|true|none|The ID of the disbursement that was refunded.|
+|original_reference|[Disbursement-Reference](#schemadisbursement-reference)|false|none|A custom reference for the disbursement, useful for reconciliation. For example, a withdrawal ID from your system.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|event|ORDER_COMPLETED|
+|event|ORDER_AUTHORISED|
+|event|ORDER_CANCELLED|
+|event|ORDER_FAILED|
+|event|ORDER_INCREMENTAL_AUTHORISATION_AUTHORISED|
+|event|ORDER_INCREMENTAL_AUTHORISATION_DECLINED|
+|event|ORDER_INCREMENTAL_AUTHORISATION_FAILED|
+|event|ORDER_PAYMENT_AUTHENTICATION_CHALLENGED|
+|event|ORDER_PAYMENT_AUTHENTICATED|
+|event|ORDER_PAYMENT_AUTHORISATION_STARTED|
+|event|ORDER_PAYMENT_DECLINED|
+|event|ORDER_PAYMENT_FAILED|
+|event|SUBSCRIPTION_INITIATED|
+|event|SUBSCRIPTION_FINISHED|
+|event|SUBSCRIPTION_CANCELLED|
+|event|SUBSCRIPTION_OVERDUE|
+|event|PAYOUT_INITIATED|
+|event|PAYOUT_COMPLETED|
+|event|PAYOUT_FAILED|
+|event|DISPUTE_ACTION_REQUIRED|
+|event|DISPUTE_UNDER_REVIEW|
+|event|DISPUTE_WON|
+|event|DISPUTE_LOST|
+|event|DISBURSEMENT_COMPLETED|
+|event|DISBURSEMENT_DECLINED|
+|event|DISBURSEMENT_REFUND_COMPLETED|

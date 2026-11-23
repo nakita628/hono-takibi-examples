@@ -43,6 +43,9 @@ type JitListAccessResponseOutputType = {
 type ListProvidersResponseOutputType = {
   items: {
     id: string
+    domains?: { domain?: string; created_at?: string; updated_at?: string }[]
+    created_at?: string
+    updated_at?: string
     saml?: {
       entity_id: string
       metadata_url?: string
@@ -62,10 +65,8 @@ type ListProvidersResponseOutputType = {
         | 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
         | 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress'
         | 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
+      dedicated_scope?: boolean | null
     }
-    domains?: { domain?: string; created_at?: string; updated_at?: string }[]
-    created_at?: string
-    updated_at?: string
   }[]
 }
 
@@ -92,6 +93,7 @@ const BranchDetailResponseOutputSchema = z
       'PAUSE_FAILED',
       'RESIZING',
       'PROMOTING',
+      'RIGHTSIZING',
     ]),
     db_host: z.string(),
     db_port: z.int().positive().max(9007199254740991),
@@ -229,6 +231,7 @@ const BranchResponseOutputSchema = z
         'PAUSE_FAILED',
         'RESIZING',
         'PROMOTING',
+        'RIGHTSIZING',
       ])
       .exactOptional(),
   })
@@ -332,6 +335,7 @@ const V1ProjectWithDatabaseResponseOutputSchema = z
       'PAUSE_FAILED',
       'RESIZING',
       'PROMOTING',
+      'RIGHTSIZING',
     ]),
     database: z
       .object({
@@ -497,6 +501,51 @@ const V1CreateProjectBodySchema = z
       .openapi({
         description: '[Experimental] Whether to enable high availability for the project.',
       }),
+    db_sql: z
+      .string()
+      .max(1024)
+      .exactOptional()
+      .openapi({
+        description:
+          'Initial SQL to run on the database. Limited to 1024 characters (1 KiB). For complex database changes, please use migrations https://supabase.com/docs/guides/deployment/database-migrations',
+      }),
+    auth_site_url: z
+      .url()
+      .exactOptional()
+      .openapi({ description: 'URL of the authentication site.' }),
+    data_api_exposed_schemas: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Schemas exposed by the data API.' }),
+    data_api_use_api_schema: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether to use the API schema for the data API.' }),
+    data_api_revoke_default_privileges: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Force revoke default privileges for the data API. This flag will be ignored if the organization enforces `true` by default, and cannot be overridden.',
+      }),
+    github_installation_id: z
+      .int()
+      .positive()
+      .max(9007199254740991)
+      .exactOptional()
+      .openapi({
+        description:
+          'GitHub installation ID for linkage. Must first grant access to the repository on the Dashboard.',
+      }),
+    github_repository_id: z
+      .int()
+      .positive()
+      .max(9007199254740991)
+      .exactOptional()
+      .openapi({
+        description:
+          'GitHub repository ID for linkage. Must first grant access to the repository on the Dashboard.',
+      }),
   })
   .openapi({
     required: ['db_pass', 'name', 'organization_slug'],
@@ -544,6 +593,7 @@ const V1ProjectResponseOutputSchema = z
       'PAUSE_FAILED',
       'RESIZING',
       'PROMOTING',
+      'RIGHTSIZING',
     ]),
   })
   .openapi({
@@ -3306,6 +3356,50 @@ const AnalyticsResponseOutputSchema = z
   .openapi({ required: [] })
   .openapi('AnalyticsResponseOutput')
 
+const V1PostProjectLogsBodySchema = z
+  .strictObject({
+    sql: z
+      .string()
+      .exactOptional()
+      .openapi({
+        example: 'select event_message from edge_logs limit 10',
+        description:
+          'Custom SQL query to execute on the logs. See [querying logs](https://supabase.com/docs/guides/monitoring-and-debugging/logs#querying-with-the-logs-explorer) for more details.',
+      }),
+    lql: z
+      .string()
+      .exactOptional()
+      .openapi({
+        example: 's:event_message',
+        description:
+          'Custom LQL query to execute on the logs. See [querying logs](https://supabase.com/docs/guides/monitoring-and-debugging/logs#querying-with-the-logs-explorer) for more details.',
+      }),
+    iso_timestamp_start: z.iso
+      .datetime({ offset: true })
+      .regex(
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$/,
+      )
+      .exactOptional()
+      .openapi({ example: '2025-03-01T00:00:00Z' }),
+    iso_timestamp_end: z.iso
+      .datetime({ offset: true })
+      .regex(
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$/,
+      )
+      .exactOptional()
+      .openapi({ example: '2025-03-01T23:59:59Z' }),
+  })
+  .openapi({
+    description: 'Request body for searching project logs with POST body',
+    example: {
+      sql: 'select event_message from edge_logs limit 10',
+      iso_timestamp_start: '2025-03-01T00:00:00Z',
+      iso_timestamp_end: '2025-03-01T23:59:59Z',
+    },
+    required: [],
+  })
+  .openapi('V1PostProjectLogsBody')
+
 const V1GetUsageApiCountResponseOutputSchema = z
   .object({
     result: z
@@ -3486,16 +3580,42 @@ const V1RunQueryBodySchema = z
     query: z.string().min(1),
     parameters: z.array(z.any()).exactOptional(),
     read_only: z.boolean().exactOptional(),
+    disable_statement_timeout: z
+      .boolean()
+      .default(true)
+      .exactOptional()
+      .openapi({
+        description:
+          'Disable statement timeout for the query. Role-based or global timeout \n        still apply https://supabase.com/docs/guides/database/postgres/timeouts',
+      }),
   })
   .openapi({
     required: ['query'],
-    example: { query: 'select * from pg_stat_activity limit 1;', read_only: true },
+    example: {
+      query: 'select * from pg_stat_activity limit 1;',
+      read_only: true,
+      disable_statement_timeout: false,
+    },
   })
   .openapi('V1RunQueryBody')
 
 const V1ReadOnlyQueryBodySchema = z
-  .object({ query: z.string().min(1), parameters: z.array(z.any()).exactOptional() })
-  .openapi({ required: ['query'], example: { query: 'select * from pg_stat_activity limit 1;' } })
+  .object({
+    query: z.string().min(1),
+    parameters: z.array(z.any()).exactOptional(),
+    disable_statement_timeout: z
+      .boolean()
+      .default(true)
+      .exactOptional()
+      .openapi({
+        description:
+          'Disable statement timeout for the query. Role-based or global timeout \n        still apply https://supabase.com/docs/guides/database/postgres/timeouts',
+      }),
+  })
+  .openapi({
+    required: ['query'],
+    example: { query: 'select * from pg_stat_activity limit 1;', disable_statement_timeout: false },
+  })
   .openapi('V1ReadOnlyQueryBody')
 
 const GetProjectDbMetadataResponseOutputSchema = z
@@ -4925,6 +5045,13 @@ const CreateProviderBodySchema = z
         'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
       ])
       .exactOptional(),
+    dedicated_scope: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "When `true`, the provider's SAML ACS URL and entity ID are scoped to its own provider ID instead of the ones shared by all SAML providers in the project. The same signing key is still used. This cannot be changed once the provider is created.",
+      }),
   })
   .openapi({
     required: ['type'],
@@ -4946,6 +5073,19 @@ const CreateProviderBodySchema = z
 const CreateProviderResponseOutputSchema = z
   .object({
     id: z.string(),
+    domains: z
+      .array(
+        z
+          .object({
+            domain: z.string().exactOptional(),
+            created_at: z.string().exactOptional(),
+            updated_at: z.string().exactOptional(),
+          })
+          .openapi({ required: [] }),
+      )
+      .exactOptional(),
+    created_at: z.string().exactOptional(),
+    updated_at: z.string().exactOptional(),
     saml: z
       .object({
         entity_id: z.string(),
@@ -4977,22 +5117,10 @@ const CreateProviderResponseOutputSchema = z
             'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
           ])
           .exactOptional(),
+        dedicated_scope: z.boolean().nullable().exactOptional(),
       })
       .exactOptional()
       .openapi({ required: ['entity_id'] }),
-    domains: z
-      .array(
-        z
-          .object({
-            domain: z.string().exactOptional(),
-            created_at: z.string().exactOptional(),
-            updated_at: z.string().exactOptional(),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional(),
-    created_at: z.string().exactOptional(),
-    updated_at: z.string().exactOptional(),
   })
   .openapi({ required: ['id'] })
   .openapi('CreateProviderResponseOutput')
@@ -5003,6 +5131,19 @@ const ListProvidersResponseOutputSchema: z.ZodType<ListProvidersResponseOutputTy
       z
         .object({
           id: z.string(),
+          domains: z
+            .array(
+              z
+                .object({
+                  domain: z.string().exactOptional(),
+                  created_at: z.string().exactOptional(),
+                  updated_at: z.string().exactOptional(),
+                })
+                .openapi({ required: [] }),
+            )
+            .exactOptional(),
+          created_at: z.string().exactOptional(),
+          updated_at: z.string().exactOptional(),
           saml: z
             .object({
               entity_id: z.string(),
@@ -5034,22 +5175,10 @@ const ListProvidersResponseOutputSchema: z.ZodType<ListProvidersResponseOutputTy
                   'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
                 ])
                 .exactOptional(),
+              dedicated_scope: z.boolean().nullable().exactOptional(),
             })
             .exactOptional()
             .openapi({ required: ['entity_id'] }),
-          domains: z
-            .array(
-              z
-                .object({
-                  domain: z.string().exactOptional(),
-                  created_at: z.string().exactOptional(),
-                  updated_at: z.string().exactOptional(),
-                })
-                .openapi({ required: [] }),
-            )
-            .exactOptional(),
-          created_at: z.string().exactOptional(),
-          updated_at: z.string().exactOptional(),
         })
         .openapi({ required: ['id'] }),
     ),
@@ -5060,6 +5189,19 @@ const ListProvidersResponseOutputSchema: z.ZodType<ListProvidersResponseOutputTy
 const GetProviderResponseOutputSchema = z
   .object({
     id: z.string(),
+    domains: z
+      .array(
+        z
+          .object({
+            domain: z.string().exactOptional(),
+            created_at: z.string().exactOptional(),
+            updated_at: z.string().exactOptional(),
+          })
+          .openapi({ required: [] }),
+      )
+      .exactOptional(),
+    created_at: z.string().exactOptional(),
+    updated_at: z.string().exactOptional(),
     saml: z
       .object({
         entity_id: z.string(),
@@ -5091,22 +5233,10 @@ const GetProviderResponseOutputSchema = z
             'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
           ])
           .exactOptional(),
+        dedicated_scope: z.boolean().nullable().exactOptional(),
       })
       .exactOptional()
       .openapi({ required: ['entity_id'] }),
-    domains: z
-      .array(
-        z
-          .object({
-            domain: z.string().exactOptional(),
-            created_at: z.string().exactOptional(),
-            updated_at: z.string().exactOptional(),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional(),
-    created_at: z.string().exactOptional(),
-    updated_at: z.string().exactOptional(),
   })
   .openapi({ required: ['id'] })
   .openapi('GetProviderResponseOutput')
@@ -5155,6 +5285,19 @@ const UpdateProviderBodySchema = z
 const UpdateProviderResponseOutputSchema = z
   .object({
     id: z.string(),
+    domains: z
+      .array(
+        z
+          .object({
+            domain: z.string().exactOptional(),
+            created_at: z.string().exactOptional(),
+            updated_at: z.string().exactOptional(),
+          })
+          .openapi({ required: [] }),
+      )
+      .exactOptional(),
+    created_at: z.string().exactOptional(),
+    updated_at: z.string().exactOptional(),
     saml: z
       .object({
         entity_id: z.string(),
@@ -5189,19 +5332,6 @@ const UpdateProviderResponseOutputSchema = z
       })
       .exactOptional()
       .openapi({ required: ['entity_id'] }),
-    domains: z
-      .array(
-        z
-          .object({
-            domain: z.string().exactOptional(),
-            created_at: z.string().exactOptional(),
-            updated_at: z.string().exactOptional(),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional(),
-    created_at: z.string().exactOptional(),
-    updated_at: z.string().exactOptional(),
   })
   .openapi({ required: ['id'] })
   .openapi('UpdateProviderResponseOutput')
@@ -5209,6 +5339,19 @@ const UpdateProviderResponseOutputSchema = z
 const DeleteProviderResponseOutputSchema = z
   .object({
     id: z.string(),
+    domains: z
+      .array(
+        z
+          .object({
+            domain: z.string().exactOptional(),
+            created_at: z.string().exactOptional(),
+            updated_at: z.string().exactOptional(),
+          })
+          .openapi({ required: [] }),
+      )
+      .exactOptional(),
+    created_at: z.string().exactOptional(),
+    updated_at: z.string().exactOptional(),
     saml: z
       .object({
         entity_id: z.string(),
@@ -5240,22 +5383,10 @@ const DeleteProviderResponseOutputSchema = z
             'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
           ])
           .exactOptional(),
+        dedicated_scope: z.boolean().nullable().exactOptional(),
       })
       .exactOptional()
       .openapi({ required: ['entity_id'] }),
-    domains: z
-      .array(
-        z
-          .object({
-            domain: z.string().exactOptional(),
-            created_at: z.string().exactOptional(),
-            updated_at: z.string().exactOptional(),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional(),
-    created_at: z.string().exactOptional(),
-    updated_at: z.string().exactOptional(),
   })
   .openapi({ required: ['id'] })
   .openapi('DeleteProviderResponseOutput')
@@ -5592,6 +5723,7 @@ const OrganizationProjectsResponseOutputSchema = z
             'PAUSE_FAILED',
             'RESIZING',
             'PROMOTING',
+            'RIGHTSIZING',
           ]),
           inserted_at: z.string(),
           databases: z.array(
@@ -11307,7 +11439,7 @@ export const getV1ProjectsRefAnalyticsEndpointsLogsRoute = createRoute({
   tags: ['Analytics'],
   summary: "Gets all project's logs in a single log stream",
   description:
-    "Executes an SQL or LQL query on the project's unified logs stream.\n\nEither the `iso_timestamp_start` and `iso_timestamp_end` parameters must be provided.\nIf both are not provided, only the last 1 minute of logs will be queried.\nThe timestamp range must be no more than 24 hours and is rounded to the nearest minute. If the range is more than 24 hours, a validation error will be thrown.\n\nFilter by the `source` column to specify specific log sources, such as edge_logs, postgres_logs, etc.\n\nNote: SQL must be written in **ClickHouse SQL dialect**.\n",
+    "Executes an SQL or LQL query on the project's unified logs stream.\n\n  Either the `iso_timestamp_start` and `iso_timestamp_end` parameters must be provided.\n  If both are not provided, only the last 1 minute of logs will be queried.\n  The timestamp range must be no more than 24 hours and is rounded to the nearest minute. If the range is more than 24 hours, a validation error will be thrown.\n\n  Filter by the `source` column to specify specific log sources, such as edge_logs, postgres_logs, etc.\n\n  Note: SQL must be written in **ClickHouse SQL dialect**.\n",
   operationId: 'v1-get-project-logs',
   request: {
     params: z.object({
@@ -11346,6 +11478,20 @@ export const getV1ProjectsRefAnalyticsEndpointsLogsRoute = createRoute({
             schema: { example: 'select event_message from edge_logs limit 10', type: 'string' },
           },
           example: 'select event_message from edge_logs limit 10',
+        }),
+      lql: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'lql',
+            required: false,
+            in: 'query',
+            description:
+              'Custom LQL query to execute on the logs. See [querying logs](https://supabase.com/docs/guides/monitoring-and-debugging/logs#querying-with-the-logs-explorer) for more details.',
+            schema: { example: 's:event_message', type: 'string' },
+          },
+          example: 's:event_message',
         }),
       iso_timestamp_start: z.iso
         .datetime({ offset: true })
@@ -11390,6 +11536,55 @@ export const getV1ProjectsRefAnalyticsEndpointsLogsRoute = createRoute({
           example: '2025-03-01T23:59:59Z',
         }),
     }),
+  },
+  responses: {
+    200: {
+      description: '',
+      content: { 'application/json': { schema: AnalyticsResponseOutputSchema } },
+    },
+    401: { description: 'Unauthorized' },
+    402: { description: 'Usage exceeded. Enable additional usage to continue querying' },
+    403: { description: 'Forbidden action' },
+    429: { description: 'Rate limit exceeded' },
+  },
+  security: [{ bearer: [] }],
+})
+
+export const postV1ProjectsRefAnalyticsEndpointsLogsRoute = createRoute({
+  method: 'post',
+  path: '/v1/projects/{ref}/analytics/endpoints/logs',
+  tags: ['Analytics'],
+  summary: "Gets all project's logs in a single log stream",
+  description:
+    "Executes an SQL or LQL query on the project's unified logs stream.\n\n  Either the `iso_timestamp_start` and `iso_timestamp_end` parameters must be provided.\n  If both are not provided, only the last 1 minute of logs will be queried.\n  The timestamp range must be no more than 24 hours and is rounded to the nearest minute. If the range is more than 24 hours, a validation error will be thrown.\n\n  Filter by the `source` column to specify specific log sources, such as edge_logs, postgres_logs, etc.\n\n  Note: SQL must be written in **ClickHouse SQL dialect**.\n",
+  operationId: 'v1-post-project-logs',
+  request: {
+    params: z.object({
+      ref: z
+        .string()
+        .regex(/^[a-z]+$/)
+        .length(20)
+        .openapi({
+          param: {
+            name: 'ref',
+            required: true,
+            in: 'path',
+            description: 'Project ref',
+            schema: {
+              minLength: 20,
+              maxLength: 20,
+              pattern: '^[a-z]+$',
+              example: 'abcdefghijklmnopqrst',
+              type: 'string',
+            },
+          },
+          example: 'abcdefghijklmnopqrst',
+        }),
+    }),
+    body: {
+      content: { 'application/json': { schema: V1PostProjectLogsBodySchema } },
+      required: true,
+    },
   },
   responses: {
     200: {
@@ -12968,6 +13163,46 @@ export const postV1ProjectsRefFunctionsRoute = createRoute({
   security: [{ bearer: [] }],
 })
 
+export const deleteV1ProjectsRefFunctionsRoute = createRoute({
+  method: 'delete',
+  path: '/v1/projects/{ref}/functions',
+  tags: ['Edge Functions'],
+  summary: 'Deletes all Edge Functions from a project',
+  operationId: 'v1-delete-all-functions',
+  request: {
+    params: z.object({
+      ref: z
+        .string()
+        .regex(/^[a-z]+$/)
+        .length(20)
+        .openapi({
+          param: {
+            name: 'ref',
+            required: true,
+            in: 'path',
+            description: 'Project ref',
+            schema: {
+              minLength: 20,
+              maxLength: 20,
+              pattern: '^[a-z]+$',
+              example: 'abcdefghijklmnopqrst',
+              type: 'string',
+            },
+          },
+          example: 'abcdefghijklmnopqrst',
+        }),
+    }),
+  },
+  responses: {
+    204: { description: '' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden action' },
+    429: { description: 'Rate limit exceeded' },
+    500: { description: "Failed to delete project's functions" },
+  },
+  security: [{ bearer: [] }],
+})
+
 export const postV1ProjectsRefFunctionsDeployRoute = createRoute({
   method: 'post',
   path: '/v1/projects/{ref}/functions/deploy',
@@ -14185,6 +14420,10 @@ export const postV1ProjectsRefConfigAuthSsoProvidersRoute = createRoute({
       content: { 'application/json': { schema: CreateProviderResponseOutputSchema } },
     },
     401: { description: 'Unauthorized' },
+    402: {
+      description: 'This feature requires the Pro, Team, or Enterprise organization plan.',
+      content: { 'application/json': { schema: PlanGateErrorBodySchema } },
+    },
     403: { description: 'Forbidden action' },
     404: { description: 'SAML 2.0 support is not enabled for this project' },
     429: { description: 'Rate limit exceeded' },
@@ -14315,6 +14554,10 @@ export const putV1ProjectsRefConfigAuthSsoProvidersProviderIdRoute = createRoute
       content: { 'application/json': { schema: UpdateProviderResponseOutputSchema } },
     },
     401: { description: 'Unauthorized' },
+    402: {
+      description: 'This feature requires the Pro, Team, or Enterprise organization plan.',
+      content: { 'application/json': { schema: PlanGateErrorBodySchema } },
+    },
     403: { description: 'Forbidden action' },
     404: {
       description:

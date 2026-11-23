@@ -29,12 +29,7 @@ Base URLs:
 |crm.objects.custom.write||
 |crm.schemas.custom.read||
 |crm.schemas.custom.write||
-
-* API Key (private_apps)
-    - Parameter Name: **private-app**, in: header.
-
-* API Key (private_apps_legacy)
-    - Parameter Name: **private-app-legacy**, in: header.
+|oauth||
 
 <h1 id="schemas-advanced">Advanced</h1>
 
@@ -155,7 +150,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: crm.schemas.custom.read ), oauth2 ( Scopes: crm.objects.custom.sensitive.read.v2 ), oauth2 ( Scopes: crm.objects.custom.read ), oauth2 ( Scopes: crm.objects.custom.highly_sensitive.read.v2 )
+oauth2 ( Scopes: crm.schemas.custom.read ), oauth2 ( Scopes: crm.objects.custom.sensitive.read.v2 ), oauth2 ( Scopes: crm.objects.custom.highly_sensitive.read.v2 ), oauth2 ( Scopes: crm.objects.custom.read )
 </aside>
 
 ## Create a new custom object schema.
@@ -280,7 +275,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: crm.schemas.custom.read ), oauth2 ( Scopes: crm.objects.custom.sensitive.read.v2 ), oauth2 ( Scopes: crm.objects.custom.read ), oauth2 ( Scopes: crm.objects.custom.highly_sensitive.read.v2 )
+oauth2 ( Scopes: crm.schemas.custom.read ), oauth2 ( Scopes: crm.objects.custom.sensitive.read.v2 ), oauth2 ( Scopes: crm.objects.custom.highly_sensitive.read.v2 ), oauth2 ( Scopes: crm.objects.custom.read ), oauth2 ( Scopes: oauth )
 </aside>
 
 ## Delete the schema of a specified custom object.
@@ -496,7 +491,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: crm.schemas.custom.read ), oauth2 ( Scopes: crm.objects.custom.sensitive.read.v2 ), oauth2 ( Scopes: crm.objects.custom.read ), oauth2 ( Scopes: crm.objects.custom.highly_sensitive.read.v2 )
+oauth2 ( Scopes: crm.schemas.custom.read ), oauth2 ( Scopes: crm.objects.custom.sensitive.read.v2 ), oauth2 ( Scopes: crm.objects.custom.highly_sensitive.read.v2 ), oauth2 ( Scopes: crm.objects.custom.read ), oauth2 ( Scopes: oauth )
 </aside>
 
 # Schemas

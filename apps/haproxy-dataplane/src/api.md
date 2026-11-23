@@ -44444,6 +44444,7 @@ Returns an array of all configured defaults sections.
     "checkcache": "enabled",
     "clflog": true,
     "client_fin_timeout": 0,
+    "client_hs_timeout": 0,
     "client_timeout": 0,
     "clitcpka": "enabled",
     "clitcpka_cnt": 0,
@@ -44735,6 +44736,7 @@ Returns an array of all configured defaults sections.
     "log_tag": "string",
     "logasap": "enabled",
     "max_keep_alive_queue": 0,
+    "max_session_srv_conns": 0,
     "maxconn": 0,
     "metadata": {
       "property1": {},
@@ -44763,6 +44765,7 @@ Returns an array of all configured defaults sections.
     },
     "prefer_last_server": "enabled",
     "queue_timeout": 0,
+    "rate_limit_sessions": 0,
     "redispatch": {
       "enabled": "enabled",
       "interval": 0
@@ -44789,6 +44792,7 @@ Returns an array of all configured defaults sections.
     "splice_auto": "enabled",
     "splice_request": "enabled",
     "splice_response": "enabled",
+    "spop_check": "enabled",
     "srvtcpka": "enabled",
     "srvtcpka_cnt": 0,
     "srvtcpka_idle": 0,
@@ -44825,6 +44829,7 @@ Returns an array of all configured defaults sections.
       "stats_uri_prefix": "string"
     },
     "tarpit_timeout": 0,
+    "tcp_clflog": true,
     "tcp_smart_accept": "enabled",
     "tcp_smart_connect": "enabled",
     "tcpka": "enabled",
@@ -45086,6 +45091,7 @@ curl http://127.0.0.1:5555/v3/services/haproxy/configuration/defaults \
     "checkcache": "enabled",
     "clflog": true,
     "client_fin_timeout": 0,
+    "client_hs_timeout": 0,
     "client_timeout": 0,
     "clitcpka": "enabled",
     "clitcpka_cnt": 0,
@@ -45377,6 +45383,7 @@ curl http://127.0.0.1:5555/v3/services/haproxy/configuration/defaults \
     "log_tag": "string",
     "logasap": "enabled",
     "max_keep_alive_queue": 0,
+    "max_session_srv_conns": 0,
     "maxconn": 0,
     "metadata": {
       "property1": {},
@@ -45405,6 +45412,7 @@ curl http://127.0.0.1:5555/v3/services/haproxy/configuration/defaults \
     },
     "prefer_last_server": "enabled",
     "queue_timeout": 0,
+    "rate_limit_sessions": 0,
     "redispatch": {
       "enabled": "enabled",
       "interval": 0
@@ -45431,6 +45439,7 @@ curl http://127.0.0.1:5555/v3/services/haproxy/configuration/defaults \
     "splice_auto": "enabled",
     "splice_request": "enabled",
     "splice_response": "enabled",
+    "spop_check": "enabled",
     "srvtcpka": "enabled",
     "srvtcpka_cnt": 0,
     "srvtcpka_idle": 0,
@@ -45467,6 +45476,7 @@ curl http://127.0.0.1:5555/v3/services/haproxy/configuration/defaults \
       "stats_uri_prefix": "string"
     },
     "tarpit_timeout": 0,
+    "tcp_clflog": true,
     "tcp_smart_accept": "enabled",
     "tcp_smart_connect": "enabled",
     "tcpka": "enabled",
@@ -45696,6 +45706,7 @@ Adds a new defaults section to the configuration file.
   "checkcache": "enabled",
   "clflog": true,
   "client_fin_timeout": 0,
+  "client_hs_timeout": 0,
   "client_timeout": 0,
   "clitcpka": "enabled",
   "clitcpka_cnt": 0,
@@ -45987,6 +45998,7 @@ Adds a new defaults section to the configuration file.
   "log_tag": "string",
   "logasap": "enabled",
   "max_keep_alive_queue": 0,
+  "max_session_srv_conns": 0,
   "maxconn": 0,
   "metadata": {
     "property1": {},
@@ -46015,6 +46027,7 @@ Adds a new defaults section to the configuration file.
   },
   "prefer_last_server": "enabled",
   "queue_timeout": 0,
+  "rate_limit_sessions": 0,
   "redispatch": {
     "enabled": "enabled",
     "interval": 0
@@ -46041,6 +46054,7 @@ Adds a new defaults section to the configuration file.
   "splice_auto": "enabled",
   "splice_request": "enabled",
   "splice_response": "enabled",
+  "spop_check": "enabled",
   "srvtcpka": "enabled",
   "srvtcpka_cnt": 0,
   "srvtcpka_idle": 0,
@@ -46077,6 +46091,7 @@ Adds a new defaults section to the configuration file.
     "stats_uri_prefix": "string"
   },
   "tarpit_timeout": 0,
+  "tcp_clflog": true,
   "tcp_smart_accept": "enabled",
   "tcp_smart_connect": "enabled",
   "tcpka": "enabled",
@@ -46289,6 +46304,7 @@ Adds a new defaults section to the configuration file.
 |» checkcache|body|string|false|none|
 |» clflog|body|boolean|false|none|
 |» client_fin_timeout|body|integer \| null|false|none|
+|» client_hs_timeout|body|integer \| null|false|none|
 |» client_timeout|body|integer \| null|false|none|
 |» clitcpka|body|string|false|none|
 |» clitcpka_cnt|body|integer \| null|false|none|
@@ -46351,6 +46367,7 @@ Adds a new defaults section to the configuration file.
 |» log_tag|body|string|false|none|
 |» logasap|body|string|false|none|
 |» max_keep_alive_queue|body|integer \| null|false|Maximum server queue size for maintaining keep-alive connections|
+|» max_session_srv_conns|body|integer \| null|false|none|
 |» maxconn|body|integer \| null|false|none|
 |» metadata|body|object|false|none|
 |» » **additionalProperties**|body|object|false|none|
@@ -46365,6 +46382,7 @@ Adds a new defaults section to the configuration file.
 |» pgsql_check_params|body|[pgsql_check_params](#schemapgsql_check_params)|false|none|
 |» prefer_last_server|body|string|false|none|
 |» queue_timeout|body|integer \| null|false|none|
+|» rate_limit_sessions|body|integer \| null|false|none|
 |» redispatch|body|[redispatch](#schemaredispatch)|false|none|
 |» retries|body|integer \| null|false|none|
 |» retry_on|body|string|false|Specify when to attempt to automatically retry a failed request|
@@ -46376,12 +46394,14 @@ Adds a new defaults section to the configuration file.
 |» splice_auto|body|string|false|none|
 |» splice_request|body|string|false|none|
 |» splice_response|body|string|false|none|
+|» spop_check|body|string|false|none|
 |» srvtcpka|body|string|false|none|
 |» srvtcpka_cnt|body|integer \| null|false|none|
 |» srvtcpka_idle|body|integer \| null|false|none|
 |» srvtcpka_intvl|body|integer \| null|false|none|
 |» stats_options|body|[stats_options](#schemastats_options)|false|none|
 |» tarpit_timeout|body|integer \| null|false|none|
+|» tcp_clflog|body|boolean|false|none|
 |» tcp_smart_accept|body|string|false|none|
 |» tcp_smart_connect|body|string|false|none|
 |» tcpka|body|string|false|none|
@@ -46510,6 +46530,8 @@ Adds a new defaults section to the configuration file.
 |» splice_request|disabled|
 |» splice_response|enabled|
 |» splice_response|disabled|
+|» spop_check|enabled|
+|» spop_check|disabled|
 |» srvtcpka|enabled|
 |» srvtcpka|disabled|
 |» tcp_smart_accept|enabled|
@@ -46554,6 +46576,7 @@ Adds a new defaults section to the configuration file.
   "checkcache": "enabled",
   "clflog": true,
   "client_fin_timeout": 0,
+  "client_hs_timeout": 0,
   "client_timeout": 0,
   "clitcpka": "enabled",
   "clitcpka_cnt": 0,
@@ -46845,6 +46868,7 @@ Adds a new defaults section to the configuration file.
   "log_tag": "string",
   "logasap": "enabled",
   "max_keep_alive_queue": 0,
+  "max_session_srv_conns": 0,
   "maxconn": 0,
   "metadata": {
     "property1": {},
@@ -46873,6 +46897,7 @@ Adds a new defaults section to the configuration file.
   },
   "prefer_last_server": "enabled",
   "queue_timeout": 0,
+  "rate_limit_sessions": 0,
   "redispatch": {
     "enabled": "enabled",
     "interval": 0
@@ -46899,6 +46924,7 @@ Adds a new defaults section to the configuration file.
   "splice_auto": "enabled",
   "splice_request": "enabled",
   "splice_response": "enabled",
+  "spop_check": "enabled",
   "srvtcpka": "enabled",
   "srvtcpka_cnt": 0,
   "srvtcpka_idle": 0,
@@ -46935,6 +46961,7 @@ Adds a new defaults section to the configuration file.
     "stats_uri_prefix": "string"
   },
   "tarpit_timeout": 0,
+  "tcp_clflog": true,
   "tcp_smart_accept": "enabled",
   "tcp_smart_connect": "enabled",
   "tcpka": "enabled",
@@ -47156,6 +47183,7 @@ Adds a new defaults section to the configuration file.
   "checkcache": "enabled",
   "clflog": true,
   "client_fin_timeout": 0,
+  "client_hs_timeout": 0,
   "client_timeout": 0,
   "clitcpka": "enabled",
   "clitcpka_cnt": 0,
@@ -47447,6 +47475,7 @@ Adds a new defaults section to the configuration file.
   "log_tag": "string",
   "logasap": "enabled",
   "max_keep_alive_queue": 0,
+  "max_session_srv_conns": 0,
   "maxconn": 0,
   "metadata": {
     "property1": {},
@@ -47475,6 +47504,7 @@ Adds a new defaults section to the configuration file.
   },
   "prefer_last_server": "enabled",
   "queue_timeout": 0,
+  "rate_limit_sessions": 0,
   "redispatch": {
     "enabled": "enabled",
     "interval": 0
@@ -47501,6 +47531,7 @@ Adds a new defaults section to the configuration file.
   "splice_auto": "enabled",
   "splice_request": "enabled",
   "splice_response": "enabled",
+  "spop_check": "enabled",
   "srvtcpka": "enabled",
   "srvtcpka_cnt": 0,
   "srvtcpka_idle": 0,
@@ -47537,6 +47568,7 @@ Adds a new defaults section to the configuration file.
     "stats_uri_prefix": "string"
   },
   "tarpit_timeout": 0,
+  "tcp_clflog": true,
   "tcp_smart_accept": "enabled",
   "tcp_smart_connect": "enabled",
   "tcpka": "enabled",
@@ -47824,6 +47856,7 @@ curl http://127.0.0.1:5555/v3/services/haproxy/configuration/defaults \
     "checkcache": "enabled",
     "clflog": true,
     "client_fin_timeout": 0,
+    "client_hs_timeout": 0,
     "client_timeout": 0,
     "clitcpka": "enabled",
     "clitcpka_cnt": 0,
@@ -48115,6 +48148,7 @@ curl http://127.0.0.1:5555/v3/services/haproxy/configuration/defaults \
     "log_tag": "string",
     "logasap": "enabled",
     "max_keep_alive_queue": 0,
+    "max_session_srv_conns": 0,
     "maxconn": 0,
     "metadata": {
       "property1": {},
@@ -48143,6 +48177,7 @@ curl http://127.0.0.1:5555/v3/services/haproxy/configuration/defaults \
     },
     "prefer_last_server": "enabled",
     "queue_timeout": 0,
+    "rate_limit_sessions": 0,
     "redispatch": {
       "enabled": "enabled",
       "interval": 0
@@ -48169,6 +48204,7 @@ curl http://127.0.0.1:5555/v3/services/haproxy/configuration/defaults \
     "splice_auto": "enabled",
     "splice_request": "enabled",
     "splice_response": "enabled",
+    "spop_check": "enabled",
     "srvtcpka": "enabled",
     "srvtcpka_cnt": 0,
     "srvtcpka_idle": 0,
@@ -48205,6 +48241,7 @@ curl http://127.0.0.1:5555/v3/services/haproxy/configuration/defaults \
       "stats_uri_prefix": "string"
     },
     "tarpit_timeout": 0,
+    "tcp_clflog": true,
     "tcp_smart_accept": "enabled",
     "tcp_smart_connect": "enabled",
     "tcpka": "enabled",
@@ -48430,6 +48467,7 @@ Adds a new defaults section to the configuration file.
   "checkcache": "enabled",
   "clflog": true,
   "client_fin_timeout": 0,
+  "client_hs_timeout": 0,
   "client_timeout": 0,
   "clitcpka": "enabled",
   "clitcpka_cnt": 0,
@@ -48721,6 +48759,7 @@ Adds a new defaults section to the configuration file.
   "log_tag": "string",
   "logasap": "enabled",
   "max_keep_alive_queue": 0,
+  "max_session_srv_conns": 0,
   "maxconn": 0,
   "metadata": {
     "property1": {},
@@ -48749,6 +48788,7 @@ Adds a new defaults section to the configuration file.
   },
   "prefer_last_server": "enabled",
   "queue_timeout": 0,
+  "rate_limit_sessions": 0,
   "redispatch": {
     "enabled": "enabled",
     "interval": 0
@@ -48775,6 +48815,7 @@ Adds a new defaults section to the configuration file.
   "splice_auto": "enabled",
   "splice_request": "enabled",
   "splice_response": "enabled",
+  "spop_check": "enabled",
   "srvtcpka": "enabled",
   "srvtcpka_cnt": 0,
   "srvtcpka_idle": 0,
@@ -48811,6 +48852,7 @@ Adds a new defaults section to the configuration file.
     "stats_uri_prefix": "string"
   },
   "tarpit_timeout": 0,
+  "tcp_clflog": true,
   "tcp_smart_accept": "enabled",
   "tcp_smart_connect": "enabled",
   "tcpka": "enabled",
@@ -49023,6 +49065,7 @@ Adds a new defaults section to the configuration file.
 |» checkcache|body|string|false|none|
 |» clflog|body|boolean|false|none|
 |» client_fin_timeout|body|integer \| null|false|none|
+|» client_hs_timeout|body|integer \| null|false|none|
 |» client_timeout|body|integer \| null|false|none|
 |» clitcpka|body|string|false|none|
 |» clitcpka_cnt|body|integer \| null|false|none|
@@ -49085,6 +49128,7 @@ Adds a new defaults section to the configuration file.
 |» log_tag|body|string|false|none|
 |» logasap|body|string|false|none|
 |» max_keep_alive_queue|body|integer \| null|false|Maximum server queue size for maintaining keep-alive connections|
+|» max_session_srv_conns|body|integer \| null|false|none|
 |» maxconn|body|integer \| null|false|none|
 |» metadata|body|object|false|none|
 |» » **additionalProperties**|body|object|false|none|
@@ -49099,6 +49143,7 @@ Adds a new defaults section to the configuration file.
 |» pgsql_check_params|body|[pgsql_check_params](#schemapgsql_check_params)|false|none|
 |» prefer_last_server|body|string|false|none|
 |» queue_timeout|body|integer \| null|false|none|
+|» rate_limit_sessions|body|integer \| null|false|none|
 |» redispatch|body|[redispatch](#schemaredispatch)|false|none|
 |» retries|body|integer \| null|false|none|
 |» retry_on|body|string|false|Specify when to attempt to automatically retry a failed request|
@@ -49110,12 +49155,14 @@ Adds a new defaults section to the configuration file.
 |» splice_auto|body|string|false|none|
 |» splice_request|body|string|false|none|
 |» splice_response|body|string|false|none|
+|» spop_check|body|string|false|none|
 |» srvtcpka|body|string|false|none|
 |» srvtcpka_cnt|body|integer \| null|false|none|
 |» srvtcpka_idle|body|integer \| null|false|none|
 |» srvtcpka_intvl|body|integer \| null|false|none|
 |» stats_options|body|[stats_options](#schemastats_options)|false|none|
 |» tarpit_timeout|body|integer \| null|false|none|
+|» tcp_clflog|body|boolean|false|none|
 |» tcp_smart_accept|body|string|false|none|
 |» tcp_smart_connect|body|string|false|none|
 |» tcpka|body|string|false|none|
@@ -49244,6 +49291,8 @@ Adds a new defaults section to the configuration file.
 |» splice_request|disabled|
 |» splice_response|enabled|
 |» splice_response|disabled|
+|» spop_check|enabled|
+|» spop_check|disabled|
 |» srvtcpka|enabled|
 |» srvtcpka|disabled|
 |» tcp_smart_accept|enabled|
@@ -49288,6 +49337,7 @@ Adds a new defaults section to the configuration file.
   "checkcache": "enabled",
   "clflog": true,
   "client_fin_timeout": 0,
+  "client_hs_timeout": 0,
   "client_timeout": 0,
   "clitcpka": "enabled",
   "clitcpka_cnt": 0,
@@ -49579,6 +49629,7 @@ Adds a new defaults section to the configuration file.
   "log_tag": "string",
   "logasap": "enabled",
   "max_keep_alive_queue": 0,
+  "max_session_srv_conns": 0,
   "maxconn": 0,
   "metadata": {
     "property1": {},
@@ -49607,6 +49658,7 @@ Adds a new defaults section to the configuration file.
   },
   "prefer_last_server": "enabled",
   "queue_timeout": 0,
+  "rate_limit_sessions": 0,
   "redispatch": {
     "enabled": "enabled",
     "interval": 0
@@ -49633,6 +49685,7 @@ Adds a new defaults section to the configuration file.
   "splice_auto": "enabled",
   "splice_request": "enabled",
   "splice_response": "enabled",
+  "spop_check": "enabled",
   "srvtcpka": "enabled",
   "srvtcpka_cnt": 0,
   "srvtcpka_idle": 0,
@@ -49669,6 +49722,7 @@ Adds a new defaults section to the configuration file.
     "stats_uri_prefix": "string"
   },
   "tarpit_timeout": 0,
+  "tcp_clflog": true,
   "tcp_smart_accept": "enabled",
   "tcp_smart_connect": "enabled",
   "tcpka": "enabled",
@@ -49890,6 +49944,7 @@ Adds a new defaults section to the configuration file.
   "checkcache": "enabled",
   "clflog": true,
   "client_fin_timeout": 0,
+  "client_hs_timeout": 0,
   "client_timeout": 0,
   "clitcpka": "enabled",
   "clitcpka_cnt": 0,
@@ -50181,6 +50236,7 @@ Adds a new defaults section to the configuration file.
   "log_tag": "string",
   "logasap": "enabled",
   "max_keep_alive_queue": 0,
+  "max_session_srv_conns": 0,
   "maxconn": 0,
   "metadata": {
     "property1": {},
@@ -50209,6 +50265,7 @@ Adds a new defaults section to the configuration file.
   },
   "prefer_last_server": "enabled",
   "queue_timeout": 0,
+  "rate_limit_sessions": 0,
   "redispatch": {
     "enabled": "enabled",
     "interval": 0
@@ -50235,6 +50292,7 @@ Adds a new defaults section to the configuration file.
   "splice_auto": "enabled",
   "splice_request": "enabled",
   "splice_response": "enabled",
+  "spop_check": "enabled",
   "srvtcpka": "enabled",
   "srvtcpka_cnt": 0,
   "srvtcpka_idle": 0,
@@ -50271,6 +50329,7 @@ Adds a new defaults section to the configuration file.
     "stats_uri_prefix": "string"
   },
   "tarpit_timeout": 0,
+  "tcp_clflog": true,
   "tcp_smart_accept": "enabled",
   "tcp_smart_connect": "enabled",
   "tcpka": "enabled",
@@ -50575,6 +50634,7 @@ Returns one defaults section configuration by its name.
   "checkcache": "enabled",
   "clflog": true,
   "client_fin_timeout": 0,
+  "client_hs_timeout": 0,
   "client_timeout": 0,
   "clitcpka": "enabled",
   "clitcpka_cnt": 0,
@@ -50866,6 +50926,7 @@ Returns one defaults section configuration by its name.
   "log_tag": "string",
   "logasap": "enabled",
   "max_keep_alive_queue": 0,
+  "max_session_srv_conns": 0,
   "maxconn": 0,
   "metadata": {
     "property1": {},
@@ -50894,6 +50955,7 @@ Returns one defaults section configuration by its name.
   },
   "prefer_last_server": "enabled",
   "queue_timeout": 0,
+  "rate_limit_sessions": 0,
   "redispatch": {
     "enabled": "enabled",
     "interval": 0
@@ -50920,6 +50982,7 @@ Returns one defaults section configuration by its name.
   "splice_auto": "enabled",
   "splice_request": "enabled",
   "splice_response": "enabled",
+  "spop_check": "enabled",
   "srvtcpka": "enabled",
   "srvtcpka_cnt": 0,
   "srvtcpka_idle": 0,
@@ -50956,6 +51019,7 @@ Returns one defaults section configuration by its name.
     "stats_uri_prefix": "string"
   },
   "tarpit_timeout": 0,
+  "tcp_clflog": true,
   "tcp_smart_accept": "enabled",
   "tcp_smart_connect": "enabled",
   "tcpka": "enabled",
@@ -51229,6 +51293,7 @@ curl http://127.0.0.1:5555/v3/services/haproxy/configuration/defaults/string \
     "checkcache": "enabled",
     "clflog": true,
     "client_fin_timeout": 0,
+    "client_hs_timeout": 0,
     "client_timeout": 0,
     "clitcpka": "enabled",
     "clitcpka_cnt": 0,
@@ -51520,6 +51585,7 @@ curl http://127.0.0.1:5555/v3/services/haproxy/configuration/defaults/string \
     "log_tag": "string",
     "logasap": "enabled",
     "max_keep_alive_queue": 0,
+    "max_session_srv_conns": 0,
     "maxconn": 0,
     "metadata": {
       "property1": {},
@@ -51548,6 +51614,7 @@ curl http://127.0.0.1:5555/v3/services/haproxy/configuration/defaults/string \
     },
     "prefer_last_server": "enabled",
     "queue_timeout": 0,
+    "rate_limit_sessions": 0,
     "redispatch": {
       "enabled": "enabled",
       "interval": 0
@@ -51574,6 +51641,7 @@ curl http://127.0.0.1:5555/v3/services/haproxy/configuration/defaults/string \
     "splice_auto": "enabled",
     "splice_request": "enabled",
     "splice_response": "enabled",
+    "spop_check": "enabled",
     "srvtcpka": "enabled",
     "srvtcpka_cnt": 0,
     "srvtcpka_idle": 0,
@@ -51610,6 +51678,7 @@ curl http://127.0.0.1:5555/v3/services/haproxy/configuration/defaults/string \
       "stats_uri_prefix": "string"
     },
     "tarpit_timeout": 0,
+    "tcp_clflog": true,
     "tcp_smart_accept": "enabled",
     "tcp_smart_connect": "enabled",
     "tcpka": "enabled",
@@ -51835,6 +51904,7 @@ Replaces a defaults section configuration by its name.
   "checkcache": "enabled",
   "clflog": true,
   "client_fin_timeout": 0,
+  "client_hs_timeout": 0,
   "client_timeout": 0,
   "clitcpka": "enabled",
   "clitcpka_cnt": 0,
@@ -52126,6 +52196,7 @@ Replaces a defaults section configuration by its name.
   "log_tag": "string",
   "logasap": "enabled",
   "max_keep_alive_queue": 0,
+  "max_session_srv_conns": 0,
   "maxconn": 0,
   "metadata": {
     "property1": {},
@@ -52154,6 +52225,7 @@ Replaces a defaults section configuration by its name.
   },
   "prefer_last_server": "enabled",
   "queue_timeout": 0,
+  "rate_limit_sessions": 0,
   "redispatch": {
     "enabled": "enabled",
     "interval": 0
@@ -52180,6 +52252,7 @@ Replaces a defaults section configuration by its name.
   "splice_auto": "enabled",
   "splice_request": "enabled",
   "splice_response": "enabled",
+  "spop_check": "enabled",
   "srvtcpka": "enabled",
   "srvtcpka_cnt": 0,
   "srvtcpka_idle": 0,
@@ -52216,6 +52289,7 @@ Replaces a defaults section configuration by its name.
     "stats_uri_prefix": "string"
   },
   "tarpit_timeout": 0,
+  "tcp_clflog": true,
   "tcp_smart_accept": "enabled",
   "tcp_smart_connect": "enabled",
   "tcpka": "enabled",
@@ -52429,6 +52503,7 @@ Replaces a defaults section configuration by its name.
 |» checkcache|body|string|false|none|
 |» clflog|body|boolean|false|none|
 |» client_fin_timeout|body|integer \| null|false|none|
+|» client_hs_timeout|body|integer \| null|false|none|
 |» client_timeout|body|integer \| null|false|none|
 |» clitcpka|body|string|false|none|
 |» clitcpka_cnt|body|integer \| null|false|none|
@@ -52491,6 +52566,7 @@ Replaces a defaults section configuration by its name.
 |» log_tag|body|string|false|none|
 |» logasap|body|string|false|none|
 |» max_keep_alive_queue|body|integer \| null|false|Maximum server queue size for maintaining keep-alive connections|
+|» max_session_srv_conns|body|integer \| null|false|none|
 |» maxconn|body|integer \| null|false|none|
 |» metadata|body|object|false|none|
 |» » **additionalProperties**|body|object|false|none|
@@ -52505,6 +52581,7 @@ Replaces a defaults section configuration by its name.
 |» pgsql_check_params|body|[pgsql_check_params](#schemapgsql_check_params)|false|none|
 |» prefer_last_server|body|string|false|none|
 |» queue_timeout|body|integer \| null|false|none|
+|» rate_limit_sessions|body|integer \| null|false|none|
 |» redispatch|body|[redispatch](#schemaredispatch)|false|none|
 |» retries|body|integer \| null|false|none|
 |» retry_on|body|string|false|Specify when to attempt to automatically retry a failed request|
@@ -52516,12 +52593,14 @@ Replaces a defaults section configuration by its name.
 |» splice_auto|body|string|false|none|
 |» splice_request|body|string|false|none|
 |» splice_response|body|string|false|none|
+|» spop_check|body|string|false|none|
 |» srvtcpka|body|string|false|none|
 |» srvtcpka_cnt|body|integer \| null|false|none|
 |» srvtcpka_idle|body|integer \| null|false|none|
 |» srvtcpka_intvl|body|integer \| null|false|none|
 |» stats_options|body|[stats_options](#schemastats_options)|false|none|
 |» tarpit_timeout|body|integer \| null|false|none|
+|» tcp_clflog|body|boolean|false|none|
 |» tcp_smart_accept|body|string|false|none|
 |» tcp_smart_connect|body|string|false|none|
 |» tcpka|body|string|false|none|
@@ -52650,6 +52729,8 @@ Replaces a defaults section configuration by its name.
 |» splice_request|disabled|
 |» splice_response|enabled|
 |» splice_response|disabled|
+|» spop_check|enabled|
+|» spop_check|disabled|
 |» srvtcpka|enabled|
 |» srvtcpka|disabled|
 |» tcp_smart_accept|enabled|
@@ -52694,6 +52775,7 @@ Replaces a defaults section configuration by its name.
   "checkcache": "enabled",
   "clflog": true,
   "client_fin_timeout": 0,
+  "client_hs_timeout": 0,
   "client_timeout": 0,
   "clitcpka": "enabled",
   "clitcpka_cnt": 0,
@@ -52985,6 +53067,7 @@ Replaces a defaults section configuration by its name.
   "log_tag": "string",
   "logasap": "enabled",
   "max_keep_alive_queue": 0,
+  "max_session_srv_conns": 0,
   "maxconn": 0,
   "metadata": {
     "property1": {},
@@ -53013,6 +53096,7 @@ Replaces a defaults section configuration by its name.
   },
   "prefer_last_server": "enabled",
   "queue_timeout": 0,
+  "rate_limit_sessions": 0,
   "redispatch": {
     "enabled": "enabled",
     "interval": 0
@@ -53039,6 +53123,7 @@ Replaces a defaults section configuration by its name.
   "splice_auto": "enabled",
   "splice_request": "enabled",
   "splice_response": "enabled",
+  "spop_check": "enabled",
   "srvtcpka": "enabled",
   "srvtcpka_cnt": 0,
   "srvtcpka_idle": 0,
@@ -53075,6 +53160,7 @@ Replaces a defaults section configuration by its name.
     "stats_uri_prefix": "string"
   },
   "tarpit_timeout": 0,
+  "tcp_clflog": true,
   "tcp_smart_accept": "enabled",
   "tcp_smart_connect": "enabled",
   "tcpka": "enabled",
@@ -53296,6 +53382,7 @@ Replaces a defaults section configuration by its name.
   "checkcache": "enabled",
   "clflog": true,
   "client_fin_timeout": 0,
+  "client_hs_timeout": 0,
   "client_timeout": 0,
   "clitcpka": "enabled",
   "clitcpka_cnt": 0,
@@ -53587,6 +53674,7 @@ Replaces a defaults section configuration by its name.
   "log_tag": "string",
   "logasap": "enabled",
   "max_keep_alive_queue": 0,
+  "max_session_srv_conns": 0,
   "maxconn": 0,
   "metadata": {
     "property1": {},
@@ -53615,6 +53703,7 @@ Replaces a defaults section configuration by its name.
   },
   "prefer_last_server": "enabled",
   "queue_timeout": 0,
+  "rate_limit_sessions": 0,
   "redispatch": {
     "enabled": "enabled",
     "interval": 0
@@ -53641,6 +53730,7 @@ Replaces a defaults section configuration by its name.
   "splice_auto": "enabled",
   "splice_request": "enabled",
   "splice_response": "enabled",
+  "spop_check": "enabled",
   "srvtcpka": "enabled",
   "srvtcpka_cnt": 0,
   "srvtcpka_idle": 0,
@@ -53677,6 +53767,7 @@ Replaces a defaults section configuration by its name.
     "stats_uri_prefix": "string"
   },
   "tarpit_timeout": 0,
+  "tcp_clflog": true,
   "tcp_smart_accept": "enabled",
   "tcp_smart_connect": "enabled",
   "tcpka": "enabled",
@@ -54291,6 +54382,7 @@ Replaces a QUIC Initial Rule configuration by its index in the specified Default
 |body|body|[quic_initial_rule](#schemaquic_initial_rule)|true|none|
 |» cond|body|string|false|none|
 |» cond_test|body|string|false|none|
+|» log_profile|body|string|false|none|
 |» metadata|body|object|false|none|
 |» » **additionalProperties**|body|object|false|none|
 |» type|body|string|true|none|
@@ -54305,6 +54397,7 @@ Replaces a QUIC Initial Rule configuration by its index in the specified Default
 |» type|accept|
 |» type|send-retry|
 |» type|dgram-drop|
+|» type|do-log|
 
 > Example responses
 
@@ -54422,6 +54515,7 @@ Adds a new QUIC Initial Rule of the specified type in the specified Defaults.
 |body|body|[quic_initial_rule](#schemaquic_initial_rule)|true|none|
 |» cond|body|string|false|none|
 |» cond_test|body|string|false|none|
+|» log_profile|body|string|false|none|
 |» metadata|body|object|false|none|
 |» » **additionalProperties**|body|object|false|none|
 |» type|body|string|true|none|
@@ -54436,6 +54530,7 @@ Adds a new QUIC Initial Rule of the specified type in the specified Defaults.
 |» type|accept|
 |» type|send-retry|
 |» type|dgram-drop|
+|» type|do-log|
 
 > Example responses
 
@@ -54877,6 +54972,7 @@ Replaces a QUIC Initial Rule configuration by its index in the specified Fronten
 |body|body|[quic_initial_rule](#schemaquic_initial_rule)|true|none|
 |» cond|body|string|false|none|
 |» cond_test|body|string|false|none|
+|» log_profile|body|string|false|none|
 |» metadata|body|object|false|none|
 |» » **additionalProperties**|body|object|false|none|
 |» type|body|string|true|none|
@@ -54891,6 +54987,7 @@ Replaces a QUIC Initial Rule configuration by its index in the specified Fronten
 |» type|accept|
 |» type|send-retry|
 |» type|dgram-drop|
+|» type|do-log|
 
 > Example responses
 
@@ -55008,6 +55105,7 @@ Adds a new QUIC Initial Rule of the specified type in the specified Frontend.
 |body|body|[quic_initial_rule](#schemaquic_initial_rule)|true|none|
 |» cond|body|string|false|none|
 |» cond_test|body|string|false|none|
+|» log_profile|body|string|false|none|
 |» metadata|body|object|false|none|
 |» » **additionalProperties**|body|object|false|none|
 |» type|body|string|true|none|
@@ -55022,6 +55120,7 @@ Adds a new QUIC Initial Rule of the specified type in the specified Frontend.
 |» type|accept|
 |» type|send-retry|
 |» type|dgram-drop|
+|» type|do-log|
 
 > Example responses
 
@@ -57341,6 +57440,7 @@ Adds a new frontend to the configuration file.
 |» backlog|body|integer \| null|false|none|
 |» clflog|body|boolean|false|none|
 |» client_fin_timeout|body|integer \| null|false|none|
+|» client_hs_timeout|body|integer \| null|false|none|
 |» client_timeout|body|integer \| null|false|none|
 |» clitcpka|body|string|false|none|
 |» clitcpka_cnt|body|integer \| null|false|none|
@@ -57386,6 +57486,7 @@ Adds a new frontend to the configuration file.
 |» log_steps|body|[string]|false|none|
 |» log_tag|body|string|false|none|
 |» logasap|body|string|false|none|
+|» max_session_srv_conns|body|integer \| null|false|none|
 |» maxconn|body|integer \| null|false|none|
 |» metadata|body|object|false|none|
 |» » **additionalProperties**|body|object|false|none|
@@ -57395,6 +57496,7 @@ Adds a new frontend to the configuration file.
 |» name|body|string|true|none|
 |» nolinger|body|string|false|none|
 |» originalto|body|[originalto](#schemaoriginalto)|false|none|
+|» rate_limit_sessions|body|integer \| null|false|none|
 |» socket_stats|body|string|false|none|
 |» splice_auto|body|string|false|none|
 |» splice_request|body|string|false|none|
@@ -57402,6 +57504,7 @@ Adds a new frontend to the configuration file.
 |» stats_options|body|[stats_options](#schemastats_options)|false|none|
 |» stick_table|body|[config_stick_table](#schemaconfig_stick_table)|false|none|
 |» tarpit_timeout|body|integer \| null|false|none|
+|» tcp_clflog|body|boolean|false|none|
 |» tcp_smart_accept|body|string|false|none|
 |» tcpka|body|string|false|none|
 |» tcplog|body|boolean|false|none|
@@ -59431,6 +59534,7 @@ Replaces a frontend configuration by its name.
 |» backlog|body|integer \| null|false|none|
 |» clflog|body|boolean|false|none|
 |» client_fin_timeout|body|integer \| null|false|none|
+|» client_hs_timeout|body|integer \| null|false|none|
 |» client_timeout|body|integer \| null|false|none|
 |» clitcpka|body|string|false|none|
 |» clitcpka_cnt|body|integer \| null|false|none|
@@ -59476,6 +59580,7 @@ Replaces a frontend configuration by its name.
 |» log_steps|body|[string]|false|none|
 |» log_tag|body|string|false|none|
 |» logasap|body|string|false|none|
+|» max_session_srv_conns|body|integer \| null|false|none|
 |» maxconn|body|integer \| null|false|none|
 |» metadata|body|object|false|none|
 |» » **additionalProperties**|body|object|false|none|
@@ -59485,6 +59590,7 @@ Replaces a frontend configuration by its name.
 |» name|body|string|true|none|
 |» nolinger|body|string|false|none|
 |» originalto|body|[originalto](#schemaoriginalto)|false|none|
+|» rate_limit_sessions|body|integer \| null|false|none|
 |» socket_stats|body|string|false|none|
 |» splice_auto|body|string|false|none|
 |» splice_request|body|string|false|none|
@@ -59492,6 +59598,7 @@ Replaces a frontend configuration by its name.
 |» stats_options|body|[stats_options](#schemastats_options)|false|none|
 |» stick_table|body|[config_stick_table](#schemaconfig_stick_table)|false|none|
 |» tarpit_timeout|body|integer \| null|false|none|
+|» tcp_clflog|body|boolean|false|none|
 |» tcp_smart_accept|body|string|false|none|
 |» tcpka|body|string|false|none|
 |» tcplog|body|boolean|false|none|
@@ -68119,6 +68226,8 @@ Returns global part of configuration.
   "daemon": true,
   "debug_options": {
     "anonkey": 0,
+    "counters": "enabled",
+    "quick_exit": true,
     "quiet": true,
     "stress_level": 0,
     "zero_warning": true
@@ -68213,6 +68322,7 @@ Returns global part of configuration.
     "enabled": "enabled",
     "param": "string"
   },
+  "log_tag": "string",
   "lua_options": {
     "load_per_thread": "string",
     "loads": [
@@ -68413,6 +68523,7 @@ Returns global part of configuration.
       }
     ],
     "issuers_chain_path": "string",
+    "key_base": "string",
     "load_extra_del_ext": true,
     "load_extra_files": "string",
     "maxsslconn": 0,
@@ -68550,6 +68661,7 @@ Returns global part of configuration.
     "ctx_cache_size": 0,
     "default_dh_param": 0,
     "force_private_cache": true,
+    "hard_maxrecord": 0,
     "keylog": "enabled",
     "lifetime": 0,
     "maxrecord": 0,
@@ -68666,6 +68778,8 @@ curl http://127.0.0.1:5555/v3/services/haproxy/configuration/global \
     "daemon": true,
     "debug_options": {
       "anonkey": 0,
+      "counters": "enabled",
+      "quick_exit": true,
       "quiet": true,
       "stress_level": 0,
       "zero_warning": true
@@ -68760,6 +68874,7 @@ curl http://127.0.0.1:5555/v3/services/haproxy/configuration/global \
       "enabled": "enabled",
       "param": "string"
     },
+    "log_tag": "string",
     "lua_options": {
       "load_per_thread": "string",
       "loads": [
@@ -68960,6 +69075,7 @@ curl http://127.0.0.1:5555/v3/services/haproxy/configuration/global \
         }
       ],
       "issuers_chain_path": "string",
+      "key_base": "string",
       "load_extra_del_ext": true,
       "load_extra_files": "string",
       "maxsslconn": 0,
@@ -69097,6 +69213,7 @@ curl http://127.0.0.1:5555/v3/services/haproxy/configuration/global \
       "ctx_cache_size": 0,
       "default_dh_param": 0,
       "force_private_cache": true,
+      "hard_maxrecord": 0,
       "keylog": "enabled",
       "lifetime": 0,
       "maxrecord": 0,
@@ -69178,6 +69295,8 @@ Replace global part of config.
   "daemon": true,
   "debug_options": {
     "anonkey": 0,
+    "counters": "enabled",
+    "quick_exit": true,
     "quiet": true,
     "stress_level": 0,
     "zero_warning": true
@@ -69272,6 +69391,7 @@ Replace global part of config.
     "enabled": "enabled",
     "param": "string"
   },
+  "log_tag": "string",
   "lua_options": {
     "load_per_thread": "string",
     "loads": [
@@ -69472,6 +69592,7 @@ Replace global part of config.
       }
     ],
     "issuers_chain_path": "string",
+    "key_base": "string",
     "load_extra_del_ext": true,
     "load_extra_files": "string",
     "maxsslconn": 0,
@@ -69609,6 +69730,7 @@ Replace global part of config.
     "ctx_cache_size": 0,
     "default_dh_param": 0,
     "force_private_cache": true,
+    "hard_maxrecord": 0,
     "keylog": "enabled",
     "lifetime": 0,
     "maxrecord": 0,
@@ -69721,6 +69843,7 @@ Replace global part of config.
 |» log_send_hostname|body|object|false|none|
 |» » enabled|body|string|true|none|
 |» » param|body|string|false|none|
+|» log_tag|body|string|false|none|
 |» lua_options|body|[lua_options](#schemalua_options)|false|none|
 |» master-worker|body|boolean|false|none|
 |» max_threads_per_group|body|integer \| null|false|Defines the maximum number of threads in a thread group. The minimum value is<br>1 and the maximum value is 64 on 64-bit systems (32 on 32-bit systems).<br>|
@@ -69983,6 +70106,8 @@ Replace global part of config.
   "daemon": true,
   "debug_options": {
     "anonkey": 0,
+    "counters": "enabled",
+    "quick_exit": true,
     "quiet": true,
     "stress_level": 0,
     "zero_warning": true
@@ -70077,6 +70202,7 @@ Replace global part of config.
     "enabled": "enabled",
     "param": "string"
   },
+  "log_tag": "string",
   "lua_options": {
     "load_per_thread": "string",
     "loads": [
@@ -70277,6 +70403,7 @@ Replace global part of config.
       }
     ],
     "issuers_chain_path": "string",
+    "key_base": "string",
     "load_extra_del_ext": true,
     "load_extra_files": "string",
     "maxsslconn": 0,
@@ -70414,6 +70541,7 @@ Replace global part of config.
     "ctx_cache_size": 0,
     "default_dh_param": 0,
     "force_private_cache": true,
+    "hard_maxrecord": 0,
     "keylog": "enabled",
     "lifetime": 0,
     "maxrecord": 0,
@@ -70491,6 +70619,8 @@ Replace global part of config.
   "daemon": true,
   "debug_options": {
     "anonkey": 0,
+    "counters": "enabled",
+    "quick_exit": true,
     "quiet": true,
     "stress_level": 0,
     "zero_warning": true
@@ -70585,6 +70715,7 @@ Replace global part of config.
     "enabled": "enabled",
     "param": "string"
   },
+  "log_tag": "string",
   "lua_options": {
     "load_per_thread": "string",
     "loads": [
@@ -70785,6 +70916,7 @@ Replace global part of config.
       }
     ],
     "issuers_chain_path": "string",
+    "key_base": "string",
     "load_extra_del_ext": true,
     "load_extra_files": "string",
     "maxsslconn": 0,
@@ -70922,6 +71054,7 @@ Replace global part of config.
     "ctx_cache_size": 0,
     "default_dh_param": 0,
     "force_private_cache": true,
+    "hard_maxrecord": 0,
     "keylog": "enabled",
     "lifetime": 0,
     "maxrecord": 0,
@@ -72529,6 +72662,7 @@ Returns an array of all configured log forwards.
     "assume-rfc6587-ntf": true,
     "backlog": 0,
     "dont-parse-log": true,
+    "host": "append",
     "maxconn": 0,
     "metadata": {
       "property1": {},
@@ -72833,6 +72967,7 @@ curl http://127.0.0.1:5555/v3/services/haproxy/configuration/log_forwards \
     "assume-rfc6587-ntf": true,
     "backlog": 0,
     "dont-parse-log": true,
+    "host": "append",
     "maxconn": 0,
     "metadata": {
       "property1": {},
@@ -73101,6 +73236,7 @@ Adds a new log forward to the configuration file.
   "assume-rfc6587-ntf": true,
   "backlog": 0,
   "dont-parse-log": true,
+  "host": "append",
   "maxconn": 0,
   "metadata": {
     "property1": {},
@@ -73370,6 +73506,7 @@ Adds a new log forward to the configuration file.
 |» assume-rfc6587-ntf|body|boolean|false|none|
 |» backlog|body|integer \| null|false|none|
 |» dont-parse-log|body|boolean|false|none|
+|» host|body|string|false|How the host field is handled when forwarding logs|
 |» maxconn|body|integer \| null|false|none|
 |» metadata|body|object|false|none|
 |» » **additionalProperties**|body|object|false|none|
@@ -73381,6 +73518,15 @@ Adds a new log forward to the configuration file.
 |» » **additionalProperties**|body|[dgram_bind](#schemadgram_bind)|false|HAProxy log forward dgram bind configuration|
 |» log_target_list|body|[log_targets](#schemalog_targets)|false|HAProxy log target array (corresponds to log directives)|
 
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» host|append|
+|» host|fill|
+|» host|keep|
+|» host|replace|
+
 > Example responses
 
 > 201 Response
@@ -73390,6 +73536,7 @@ Adds a new log forward to the configuration file.
   "assume-rfc6587-ntf": true,
   "backlog": 0,
   "dont-parse-log": true,
+  "host": "append",
   "maxconn": 0,
   "metadata": {
     "property1": {},
@@ -73654,6 +73801,7 @@ Adds a new log forward to the configuration file.
   "assume-rfc6587-ntf": true,
   "backlog": 0,
   "dont-parse-log": true,
+  "host": "append",
   "maxconn": 0,
   "metadata": {
     "property1": {},
@@ -74001,6 +74149,7 @@ Returns one log forward configuration by its name.
   "assume-rfc6587-ntf": true,
   "backlog": 0,
   "dont-parse-log": true,
+  "host": "append",
   "maxconn": 0,
   "metadata": {
     "property1": {},
@@ -74317,6 +74466,7 @@ curl http://127.0.0.1:5555/v3/services/haproxy/configuration/log_forwards/string
     "assume-rfc6587-ntf": true,
     "backlog": 0,
     "dont-parse-log": true,
+    "host": "append",
     "maxconn": 0,
     "metadata": {
       "property1": {},
@@ -74585,6 +74735,7 @@ Replaces a log forward configuration by its name.
   "assume-rfc6587-ntf": true,
   "backlog": 0,
   "dont-parse-log": true,
+  "host": "append",
   "maxconn": 0,
   "metadata": {
     "property1": {},
@@ -74855,6 +75006,7 @@ Replaces a log forward configuration by its name.
 |» assume-rfc6587-ntf|body|boolean|false|none|
 |» backlog|body|integer \| null|false|none|
 |» dont-parse-log|body|boolean|false|none|
+|» host|body|string|false|How the host field is handled when forwarding logs|
 |» maxconn|body|integer \| null|false|none|
 |» metadata|body|object|false|none|
 |» » **additionalProperties**|body|object|false|none|
@@ -74866,6 +75018,15 @@ Replaces a log forward configuration by its name.
 |» » **additionalProperties**|body|[dgram_bind](#schemadgram_bind)|false|HAProxy log forward dgram bind configuration|
 |» log_target_list|body|[log_targets](#schemalog_targets)|false|HAProxy log target array (corresponds to log directives)|
 
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» host|append|
+|» host|fill|
+|» host|keep|
+|» host|replace|
+
 > Example responses
 
 > 200 Response
@@ -74875,6 +75036,7 @@ Replaces a log forward configuration by its name.
   "assume-rfc6587-ntf": true,
   "backlog": 0,
   "dont-parse-log": true,
+  "host": "append",
   "maxconn": 0,
   "metadata": {
     "property1": {},
@@ -75139,6 +75301,7 @@ Replaces a log forward configuration by its name.
   "assume-rfc6587-ntf": true,
   "backlog": 0,
   "dont-parse-log": true,
+  "host": "append",
   "maxconn": 0,
   "metadata": {
     "property1": {},
@@ -83963,6 +84126,7 @@ Returns an array of all configured rings.
 ```json
 [
   {
+    "backing_file": "string",
     "description": "string",
     "format": "iso",
     "maxlen": 0,
@@ -84033,6 +84197,7 @@ curl http://127.0.0.1:5555/v3/services/haproxy/configuration/rings \
   -H 'Accept: application/json' \
   -H "Authorization: Basic ${CREDENTIALS}" \
   -d '{
+    "backing_file": "string",
     "description": "string",
     "format": "iso",
     "maxlen": 0,
@@ -84067,6 +84232,7 @@ Adds a new ring to the configuration file.
 
 ```json
 {
+  "backing_file": "string",
   "description": "string",
   "format": "iso",
   "maxlen": 0,
@@ -84102,6 +84268,7 @@ Adds a new ring to the configuration file.
 |force_reload|query|boolean|false|If set, do a force reload, do not wait for the configured reload-delay. Cannot be used when transaction is specified, as changes in transaction are not applied directly to configuration.|
 |full_section|query|boolean|false|Indicates if the action affects the specified child resources as well|
 |body|body|[ring](#schemaring)|true|none|
+|» backing_file|body|string|false|Optional file used to persist the ring buffer|
 |» description|body|string|false|The description is an optional description string of the ring|
 |» format|body|string|false|Format used to store events into the ring buffer|
 |» maxlen|body|integer \| null|false|The maximum length of an event message stored into the ring|
@@ -84133,6 +84300,7 @@ Adds a new ring to the configuration file.
 
 ```json
 {
+  "backing_file": "string",
   "description": "string",
   "format": "iso",
   "maxlen": 0,
@@ -84163,6 +84331,7 @@ Adds a new ring to the configuration file.
 
 ```json
 {
+  "backing_file": "string",
   "description": "string",
   "format": "iso",
   "maxlen": 0,
@@ -84276,6 +84445,7 @@ Returns one ring configuration by its name.
 
 ```json
 {
+  "backing_file": "string",
   "description": "string",
   "format": "iso",
   "maxlen": 0,
@@ -84358,6 +84528,7 @@ curl http://127.0.0.1:5555/v3/services/haproxy/configuration/rings/string \
   -H 'Accept: application/json' \
   -H "Authorization: Basic ${CREDENTIALS}" \
   -d '{
+    "backing_file": "string",
     "description": "string",
     "format": "iso",
     "maxlen": 0,
@@ -84392,6 +84563,7 @@ Replaces a ring configuration by its name.
 
 ```json
 {
+  "backing_file": "string",
   "description": "string",
   "format": "iso",
   "maxlen": 0,
@@ -84428,6 +84600,7 @@ Replaces a ring configuration by its name.
 |force_reload|query|boolean|false|If set, do a force reload, do not wait for the configured reload-delay. Cannot be used when transaction is specified, as changes in transaction are not applied directly to configuration.|
 |full_section|query|boolean|false|Indicates if the action affects the specified child resources as well|
 |body|body|[ring](#schemaring)|true|none|
+|» backing_file|body|string|false|Optional file used to persist the ring buffer|
 |» description|body|string|false|The description is an optional description string of the ring|
 |» format|body|string|false|Format used to store events into the ring buffer|
 |» maxlen|body|integer \| null|false|The maximum length of an event message stored into the ring|
@@ -84459,6 +84632,7 @@ Replaces a ring configuration by its name.
 
 ```json
 {
+  "backing_file": "string",
   "description": "string",
   "format": "iso",
   "maxlen": 0,
@@ -84489,6 +84663,7 @@ Replaces a ring configuration by its name.
 
 ```json
 {
+  "backing_file": "string",
   "description": "string",
   "format": "iso",
   "maxlen": 0,
@@ -99501,6 +99676,8 @@ List of Certificate Stores
 ```json
 {
   "anonkey": 0,
+  "counters": "enabled",
+  "quick_exit": true,
   "quiet": true,
   "stress_level": 0,
   "zero_warning": true
@@ -99512,9 +99689,18 @@ List of Certificate Stores
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |anonkey|integer \| null|false|none|none|
+|counters|string|false|none|none|
+|quick_exit|boolean|false|none|none|
 |quiet|boolean|false|none|none|
 |stress_level|integer \| null|false|none|none|
 |zero_warning|boolean|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|counters|enabled|
+|counters|disabled|
 
 <h2 id="tocS_default_bind">default_bind</h2>
 <!-- backwards compatibility -->
@@ -100169,6 +100355,7 @@ HAProxy default bind configuration
   "checkcache": "enabled",
   "clflog": true,
   "client_fin_timeout": 0,
+  "client_hs_timeout": 0,
   "client_timeout": 0,
   "clitcpka": "enabled",
   "clitcpka_cnt": 0,
@@ -100460,6 +100647,7 @@ HAProxy default bind configuration
   "log_tag": "string",
   "logasap": "enabled",
   "max_keep_alive_queue": 0,
+  "max_session_srv_conns": 0,
   "maxconn": 0,
   "metadata": {
     "property1": {},
@@ -100488,6 +100676,7 @@ HAProxy default bind configuration
   },
   "prefer_last_server": "enabled",
   "queue_timeout": 0,
+  "rate_limit_sessions": 0,
   "redispatch": {
     "enabled": "enabled",
     "interval": 0
@@ -100514,6 +100703,7 @@ HAProxy default bind configuration
   "splice_auto": "enabled",
   "splice_request": "enabled",
   "splice_response": "enabled",
+  "spop_check": "enabled",
   "srvtcpka": "enabled",
   "srvtcpka_cnt": 0,
   "srvtcpka_idle": 0,
@@ -100550,6 +100740,7 @@ HAProxy default bind configuration
     "stats_uri_prefix": "string"
   },
   "tarpit_timeout": 0,
+  "tcp_clflog": true,
   "tcp_smart_accept": "enabled",
   "tcp_smart_connect": "enabled",
   "tcpka": "enabled",
@@ -100759,6 +100950,7 @@ Defaults with all its children resources
 |checkcache|string|false|none|none|
 |clflog|boolean|false|none|none|
 |client_fin_timeout|integer \| null|false|none|none|
+|client_hs_timeout|integer \| null|false|none|none|
 |client_timeout|integer \| null|false|none|none|
 |clitcpka|string|false|none|none|
 |clitcpka_cnt|integer \| null|false|none|none|
@@ -100821,6 +101013,7 @@ Defaults with all its children resources
 |log_tag|string|false|none|none|
 |logasap|string|false|none|none|
 |max_keep_alive_queue|integer \| null|false|none|Maximum server queue size for maintaining keep-alive connections|
+|max_session_srv_conns|integer \| null|false|none|none|
 |maxconn|integer \| null|false|none|none|
 |metadata|object|false|none|none|
 |mode|string|false|none|none|
@@ -100834,6 +101027,7 @@ Defaults with all its children resources
 |pgsql_check_params|[pgsql_check_params](#schemapgsql_check_params)|false|none|none|
 |prefer_last_server|string|false|none|none|
 |queue_timeout|integer \| null|false|none|none|
+|rate_limit_sessions|integer \| null|false|none|none|
 |redispatch|[redispatch](#schemaredispatch)|false|none|none|
 |retries|integer \| null|false|none|none|
 |retry_on|string|false|none|Specify when to attempt to automatically retry a failed request|
@@ -100845,12 +101039,14 @@ Defaults with all its children resources
 |splice_auto|string|false|none|none|
 |splice_request|string|false|none|none|
 |splice_response|string|false|none|none|
+|spop_check|string|false|none|none|
 |srvtcpka|string|false|none|none|
 |srvtcpka_cnt|integer \| null|false|none|none|
 |srvtcpka_idle|integer \| null|false|none|none|
 |srvtcpka_intvl|integer \| null|false|none|none|
 |stats_options|[stats_options](#schemastats_options)|false|none|none|
 |tarpit_timeout|integer \| null|false|none|none|
+|tcp_clflog|boolean|false|none|none|
 |tcp_smart_accept|string|false|none|none|
 |tcp_smart_connect|string|false|none|none|
 |tcpka|string|false|none|none|
@@ -100979,6 +101175,8 @@ Defaults with all its children resources
 |splice_request|disabled|
 |splice_response|enabled|
 |splice_response|disabled|
+|spop_check|enabled|
+|spop_check|disabled|
 |srvtcpka|enabled|
 |srvtcpka|disabled|
 |tcp_smart_accept|enabled|
@@ -101026,6 +101224,7 @@ Defaults with all its children resources
   "checkcache": "enabled",
   "clflog": true,
   "client_fin_timeout": 0,
+  "client_hs_timeout": 0,
   "client_timeout": 0,
   "clitcpka": "enabled",
   "clitcpka_cnt": 0,
@@ -101317,6 +101516,7 @@ Defaults with all its children resources
   "log_tag": "string",
   "logasap": "enabled",
   "max_keep_alive_queue": 0,
+  "max_session_srv_conns": 0,
   "maxconn": 0,
   "metadata": {
     "property1": {},
@@ -101345,6 +101545,7 @@ Defaults with all its children resources
   },
   "prefer_last_server": "enabled",
   "queue_timeout": 0,
+  "rate_limit_sessions": 0,
   "redispatch": {
     "enabled": "enabled",
     "interval": 0
@@ -101371,6 +101572,7 @@ Defaults with all its children resources
   "splice_auto": "enabled",
   "splice_request": "enabled",
   "splice_response": "enabled",
+  "spop_check": "enabled",
   "srvtcpka": "enabled",
   "srvtcpka_cnt": 0,
   "srvtcpka_idle": 0,
@@ -101407,6 +101609,7 @@ Defaults with all its children resources
     "stats_uri_prefix": "string"
   },
   "tarpit_timeout": 0,
+  "tcp_clflog": true,
   "tcp_smart_accept": "enabled",
   "tcp_smart_connect": "enabled",
   "tcpka": "enabled",
@@ -101443,6 +101646,7 @@ HAProxy defaults configuration
 |checkcache|string|false|none|none|
 |clflog|boolean|false|none|none|
 |client_fin_timeout|integer \| null|false|none|none|
+|client_hs_timeout|integer \| null|false|none|none|
 |client_timeout|integer \| null|false|none|none|
 |clitcpka|string|false|none|none|
 |clitcpka_cnt|integer \| null|false|none|none|
@@ -101505,6 +101709,7 @@ HAProxy defaults configuration
 |log_tag|string|false|none|none|
 |logasap|string|false|none|none|
 |max_keep_alive_queue|integer \| null|false|none|Maximum server queue size for maintaining keep-alive connections|
+|max_session_srv_conns|integer \| null|false|none|none|
 |maxconn|integer \| null|false|none|none|
 |metadata|object|false|none|none|
 |mode|string|false|none|none|
@@ -101518,6 +101723,7 @@ HAProxy defaults configuration
 |pgsql_check_params|[pgsql_check_params](#schemapgsql_check_params)|false|none|none|
 |prefer_last_server|string|false|none|none|
 |queue_timeout|integer \| null|false|none|none|
+|rate_limit_sessions|integer \| null|false|none|none|
 |redispatch|[redispatch](#schemaredispatch)|false|none|none|
 |retries|integer \| null|false|none|none|
 |retry_on|string|false|none|Specify when to attempt to automatically retry a failed request|
@@ -101529,12 +101735,14 @@ HAProxy defaults configuration
 |splice_auto|string|false|none|none|
 |splice_request|string|false|none|none|
 |splice_response|string|false|none|none|
+|spop_check|string|false|none|none|
 |srvtcpka|string|false|none|none|
 |srvtcpka_cnt|integer \| null|false|none|none|
 |srvtcpka_idle|integer \| null|false|none|none|
 |srvtcpka_intvl|integer \| null|false|none|none|
 |stats_options|[stats_options](#schemastats_options)|false|none|none|
 |tarpit_timeout|integer \| null|false|none|none|
+|tcp_clflog|boolean|false|none|none|
 |tcp_smart_accept|string|false|none|none|
 |tcp_smart_connect|string|false|none|none|
 |tcpka|string|false|none|none|
@@ -101652,6 +101860,8 @@ HAProxy defaults configuration
 |splice_request|disabled|
 |splice_response|enabled|
 |splice_response|disabled|
+|spop_check|enabled|
+|spop_check|disabled|
 |srvtcpka|enabled|
 |srvtcpka|disabled|
 |tcp_smart_accept|enabled|
@@ -101700,6 +101910,7 @@ HAProxy defaults configuration
     "checkcache": "enabled",
     "clflog": true,
     "client_fin_timeout": 0,
+    "client_hs_timeout": 0,
     "client_timeout": 0,
     "clitcpka": "enabled",
     "clitcpka_cnt": 0,
@@ -101991,6 +102202,7 @@ HAProxy defaults configuration
     "log_tag": "string",
     "logasap": "enabled",
     "max_keep_alive_queue": 0,
+    "max_session_srv_conns": 0,
     "maxconn": 0,
     "metadata": {
       "property1": {},
@@ -102019,6 +102231,7 @@ HAProxy defaults configuration
     },
     "prefer_last_server": "enabled",
     "queue_timeout": 0,
+    "rate_limit_sessions": 0,
     "redispatch": {
       "enabled": "enabled",
       "interval": 0
@@ -102045,6 +102258,7 @@ HAProxy defaults configuration
     "splice_auto": "enabled",
     "splice_request": "enabled",
     "splice_response": "enabled",
+    "spop_check": "enabled",
     "srvtcpka": "enabled",
     "srvtcpka_cnt": 0,
     "srvtcpka_idle": 0,
@@ -102081,6 +102295,7 @@ HAProxy defaults configuration
       "stats_uri_prefix": "string"
     },
     "tarpit_timeout": 0,
+    "tcp_clflog": true,
     "tcp_smart_accept": "enabled",
     "tcp_smart_connect": "enabled",
     "tcpka": "enabled",
@@ -103652,6 +103867,7 @@ Frontend with all its children resources
 |backlog|integer \| null|false|none|none|
 |clflog|boolean|false|none|none|
 |client_fin_timeout|integer \| null|false|none|none|
+|client_hs_timeout|integer \| null|false|none|none|
 |client_timeout|integer \| null|false|none|none|
 |clitcpka|string|false|none|none|
 |clitcpka_cnt|integer \| null|false|none|none|
@@ -103697,6 +103913,7 @@ Frontend with all its children resources
 |log_steps|[string]|false|none|none|
 |log_tag|string|false|none|none|
 |logasap|string|false|none|none|
+|max_session_srv_conns|integer \| null|false|none|none|
 |maxconn|integer \| null|false|none|none|
 |metadata|object|false|none|none|
 |mode|string|false|none|none|
@@ -103705,6 +103922,7 @@ Frontend with all its children resources
 |name|string|true|none|none|
 |nolinger|string|false|none|none|
 |originalto|[originalto](#schemaoriginalto)|false|none|none|
+|rate_limit_sessions|integer \| null|false|none|none|
 |socket_stats|string|false|none|none|
 |splice_auto|string|false|none|none|
 |splice_request|string|false|none|none|
@@ -103712,6 +103930,7 @@ Frontend with all its children resources
 |stats_options|[stats_options](#schemastats_options)|false|none|none|
 |stick_table|[config_stick_table](#schemaconfig_stick_table)|false|none|none|
 |tarpit_timeout|integer \| null|false|none|none|
+|tcp_clflog|boolean|false|none|none|
 |tcp_smart_accept|string|false|none|none|
 |tcpka|string|false|none|none|
 |tcplog|boolean|false|none|none|
@@ -103832,6 +104051,7 @@ HAProxy frontend configuration
 |backlog|integer \| null|false|none|none|
 |clflog|boolean|false|none|none|
 |client_fin_timeout|integer \| null|false|none|none|
+|client_hs_timeout|integer \| null|false|none|none|
 |client_timeout|integer \| null|false|none|none|
 |clitcpka|string|false|none|none|
 |clitcpka_cnt|integer \| null|false|none|none|
@@ -103877,6 +104097,7 @@ HAProxy frontend configuration
 |log_steps|[string]|false|none|none|
 |log_tag|string|false|none|none|
 |logasap|string|false|none|none|
+|max_session_srv_conns|integer \| null|false|none|none|
 |maxconn|integer \| null|false|none|none|
 |metadata|object|false|none|none|
 |mode|string|false|none|none|
@@ -103885,6 +104106,7 @@ HAProxy frontend configuration
 |name|string|true|none|none|
 |nolinger|string|false|none|none|
 |originalto|[originalto](#schemaoriginalto)|false|none|none|
+|rate_limit_sessions|integer \| null|false|none|none|
 |socket_stats|string|false|none|none|
 |splice_auto|string|false|none|none|
 |splice_request|string|false|none|none|
@@ -103892,6 +104114,7 @@ HAProxy frontend configuration
 |stats_options|[stats_options](#schemastats_options)|false|none|none|
 |stick_table|[config_stick_table](#schemaconfig_stick_table)|false|none|none|
 |tarpit_timeout|integer \| null|false|none|none|
+|tcp_clflog|boolean|false|none|none|
 |tcp_smart_accept|string|false|none|none|
 |tcpka|string|false|none|none|
 |tcplog|boolean|false|none|none|
@@ -104416,6 +104639,8 @@ Array of general use files
   "daemon": true,
   "debug_options": {
     "anonkey": 0,
+    "counters": "enabled",
+    "quick_exit": true,
     "quiet": true,
     "stress_level": 0,
     "zero_warning": true
@@ -104510,6 +104735,7 @@ Array of general use files
     "enabled": "enabled",
     "param": "string"
   },
+  "log_tag": "string",
   "lua_options": {
     "load_per_thread": "string",
     "loads": [
@@ -104710,6 +104936,7 @@ Array of general use files
       }
     ],
     "issuers_chain_path": "string",
+    "key_base": "string",
     "load_extra_del_ext": true,
     "load_extra_files": "string",
     "maxsslconn": 0,
@@ -104847,6 +105074,7 @@ Array of general use files
     "ctx_cache_size": 0,
     "default_dh_param": 0,
     "force_private_cache": true,
+    "hard_maxrecord": 0,
     "keylog": "enabled",
     "lifetime": 0,
     "maxrecord": 0,
@@ -104941,6 +105169,7 @@ Frontend with all its children resources
 |limited_quic|boolean|false|none|none|
 |localpeer|string|false|none|none|
 |log_send_hostname|object|false|none|none|
+|log_tag|string|false|none|none|
 |lua_options|[lua_options](#schemalua_options)|false|none|none|
 |master-worker|boolean|false|none|none|
 |max_threads_per_group|integer \| null|false|none|Defines the maximum number of threads in a thread group. The minimum value is<br>1 and the maximum value is 64 on 64-bit systems (32 on 32-bit systems).<br>|
@@ -105038,6 +105267,8 @@ Frontend with all its children resources
   "daemon": true,
   "debug_options": {
     "anonkey": 0,
+    "counters": "enabled",
+    "quick_exit": true,
     "quiet": true,
     "stress_level": 0,
     "zero_warning": true
@@ -105132,6 +105363,7 @@ Frontend with all its children resources
     "enabled": "enabled",
     "param": "string"
   },
+  "log_tag": "string",
   "lua_options": {
     "load_per_thread": "string",
     "loads": [
@@ -105332,6 +105564,7 @@ Frontend with all its children resources
       }
     ],
     "issuers_chain_path": "string",
+    "key_base": "string",
     "load_extra_del_ext": true,
     "load_extra_files": "string",
     "maxsslconn": 0,
@@ -105469,6 +105702,7 @@ Frontend with all its children resources
     "ctx_cache_size": 0,
     "default_dh_param": 0,
     "force_private_cache": true,
+    "hard_maxrecord": 0,
     "keylog": "enabled",
     "lifetime": 0,
     "maxrecord": 0,
@@ -105544,6 +105778,7 @@ HAProxy global configuration
 |limited_quic|boolean|false|none|none|
 |localpeer|string|false|none|none|
 |log_send_hostname|object|false|none|none|
+|log_tag|string|false|none|none|
 |lua_options|[lua_options](#schemalua_options)|false|none|none|
 |master-worker|boolean|false|none|none|
 |max_threads_per_group|integer \| null|false|none|Defines the maximum number of threads in a thread group. The minimum value is<br>1 and the maximum value is 64 on 64-bit systems (32 on 32-bit systems).<br>|
@@ -107126,6 +107361,7 @@ General API, OS and hardware information
   "assume-rfc6587-ntf": true,
   "backlog": 0,
   "dont-parse-log": true,
+  "host": "append",
   "maxconn": 0,
   "metadata": {
     "property1": {},
@@ -107392,6 +107628,7 @@ LogForward with all its children resources
 |assume-rfc6587-ntf|boolean|false|none|none|
 |backlog|integer \| null|false|none|none|
 |dont-parse-log|boolean|false|none|none|
+|host|string|false|none|How the host field is handled when forwarding logs|
 |maxconn|integer \| null|false|none|none|
 |metadata|object|false|none|none|
 |name|string|true|none|none|
@@ -107399,6 +107636,15 @@ LogForward with all its children resources
 |binds|object|false|none|none|
 |dgram_binds|object|false|none|none|
 |log_target_list|[log_targets](#schemalog_targets)|false|none|HAProxy log target array (corresponds to log directives)|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|host|append|
+|host|fill|
+|host|keep|
+|host|replace|
 
 <h2 id="tocS_log_forward_base">log_forward_base</h2>
 <!-- backwards compatibility -->
@@ -107412,6 +107658,7 @@ LogForward with all its children resources
   "assume-rfc6587-ntf": true,
   "backlog": 0,
   "dont-parse-log": true,
+  "host": "append",
   "maxconn": 0,
   "metadata": {
     "property1": {},
@@ -107431,10 +107678,20 @@ HAProxy log forward configuration
 |assume-rfc6587-ntf|boolean|false|none|none|
 |backlog|integer \| null|false|none|none|
 |dont-parse-log|boolean|false|none|none|
+|host|string|false|none|How the host field is handled when forwarding logs|
 |maxconn|integer \| null|false|none|none|
 |metadata|object|false|none|none|
 |name|string|true|none|none|
 |timeout_client|integer \| null|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|host|append|
+|host|fill|
+|host|keep|
+|host|replace|
 
 <h2 id="tocS_log_forwards">log_forwards</h2>
 <!-- backwards compatibility -->
@@ -107449,6 +107706,7 @@ HAProxy log forward configuration
     "assume-rfc6587-ntf": true,
     "backlog": 0,
     "dont-parse-log": true,
+    "host": "append",
     "maxconn": 0,
     "metadata": {
       "property1": {},
@@ -110544,6 +110802,7 @@ QUIC Initial configuration
 |---|---|---|---|---|
 |cond|string|false|none|none|
 |cond_test|string|false|none|none|
+|log_profile|string|false|none|none|
 |metadata|object|false|none|none|
 |type|string|true|none|none|
 
@@ -110557,6 +110816,7 @@ QUIC Initial configuration
 |type|accept|
 |type|send-retry|
 |type|dgram-drop|
+|type|do-log|
 
 <h2 id="tocS_quic_initial_rules">quic_initial_rules</h2>
 <!-- backwards compatibility -->
@@ -110835,6 +111095,7 @@ HAProxy resolvers array
 
 ```json
 {
+  "backing_file": "string",
   "description": "string",
   "format": "iso",
   "maxlen": 0,
@@ -110867,6 +111128,7 @@ Ring with all its children resources
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|backing_file|string|false|none|Optional file used to persist the ring buffer|
 |description|string|false|none|The description is an optional description string of the ring|
 |format|string|false|none|Format used to store events into the ring buffer|
 |maxlen|integer \| null|false|none|The maximum length of an event message stored into the ring|
@@ -110899,6 +111161,7 @@ Ring with all its children resources
 
 ```json
 {
+  "backing_file": "string",
   "description": "string",
   "format": "iso",
   "maxlen": 0,
@@ -110919,6 +111182,7 @@ HAProxy ring configuration
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|backing_file|string|false|none|Optional file used to persist the ring buffer|
 |description|string|false|none|The description is an optional description string of the ring|
 |format|string|false|none|Format used to store events into the ring buffer|
 |maxlen|integer \| null|false|none|The maximum length of an event message stored into the ring|
@@ -110951,6 +111215,7 @@ HAProxy ring configuration
 ```json
 [
   {
+    "backing_file": "string",
     "description": "string",
     "format": "iso",
     "maxlen": 0,
@@ -113487,6 +113752,7 @@ SSL OCSP Update
     }
   ],
   "issuers_chain_path": "string",
+  "key_base": "string",
   "load_extra_del_ext": true,
   "load_extra_files": "string",
   "maxsslconn": 0,
@@ -113524,6 +113790,7 @@ SSL OCSP Update
 |dh_param_file|string|false|none|none|
 |engines|[object]|false|none|none|
 |issuers_chain_path|string|false|none|none|
+|key_base|string|false|none|none|
 |load_extra_del_ext|boolean|false|none|Remove the certificate file extension before appending the extra file extension (foobar.crt loads foobar.key instead of foobar.crt.key)|
 |load_extra_files|string|false|none|none|
 |maxsslconn|integer|false|none|Maximum per-process number of concurrent SSL connections|
@@ -114931,6 +115198,7 @@ Configuration transactions array
   "ctx_cache_size": 0,
   "default_dh_param": 0,
   "force_private_cache": true,
+  "hard_maxrecord": 0,
   "keylog": "enabled",
   "lifetime": 0,
   "maxrecord": 0,
@@ -114949,6 +115217,7 @@ Configuration transactions array
 |ctx_cache_size|integer|false|none|none|
 |default_dh_param|integer|false|none|none|
 |force_private_cache|boolean|false|none|none|
+|hard_maxrecord|integer \| null|false|none|none|
 |keylog|string|false|none|none|
 |lifetime|integer \| null|false|none|none|
 |maxrecord|integer \| null|false|none|none|

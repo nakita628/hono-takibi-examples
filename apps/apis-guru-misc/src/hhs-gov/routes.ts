@@ -719,7 +719,7 @@ const VideoWrappedSchema = z
   .openapi({ required: [] })
   .openapi('VideoWrapped')
 
-const YoutubeMetadataSchema = z.object({}).openapi('YoutubeMetadata')
+const YoutubeMetadataSchema = z.looseObject({}).openapi('YoutubeMetadata')
 
 const YoutubeMetadataWrappedSchema = z
   .object({
@@ -2640,7 +2640,7 @@ export const getResourcesMediaIdPreviewJpgRoute = createRoute({
     200: {
       description:
         "Returns the JPG preview, where applicable, for the MediaItem identified by the 'id'.",
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     400: { description: 'Invalid ID' },
     500: { description: 'Internal Server Error' },
@@ -3032,7 +3032,7 @@ export const getResourcesMediaIdThumbnailJpgRoute = createRoute({
     200: {
       description:
         "Returns the JPG thumbnail, where applicable, for the MediaItem identified by the 'id'.",
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     400: { description: 'Invalid ID' },
     500: { description: 'Internal Server Error' },

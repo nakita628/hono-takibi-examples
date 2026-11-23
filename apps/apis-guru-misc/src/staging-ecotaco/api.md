@@ -1687,7 +1687,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl 'https://example.com/rides?page={page}&per_page={per_page}' \
+curl 'https://example.com/rides?page=string&per_page=string' \
   -X POST \
   -H 'Accept: application/json'
 ```
@@ -1700,6 +1700,8 @@ curl 'https://example.com/rides?page={page}&per_page={per_page}' \
 |---|---|---|---|---|
 |Accept|header|string|false|e.g. application/json|
 |Accept-Language|header|string|false|e.g. en|
+|page|path|string|true|none|
+|per_page|path|string|true|none|
 
 > Example responses
 

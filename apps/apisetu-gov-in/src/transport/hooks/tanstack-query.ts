@@ -1,0 +1,305 @@
+import { useMutation, mutationOptions } from '@tanstack/react-query'
+import type { UseMutationOptions, DefaultError, QueryClient } from '@tanstack/react-query'
+import type { ClientRequestOptions, InferRequestType } from 'hono/client'
+import { parseResponse } from 'hono/client'
+import { client } from '../client'
+
+export function getDrvlcKey() {
+  return ['drvlc'] as const
+}
+
+export function getFitcerKey() {
+  return ['fitcer'] as const
+}
+
+export function getRvcerKey() {
+  return ['rvcer'] as const
+}
+
+export function getVhinscKey() {
+  return ['vhinsc'] as const
+}
+
+export function getVhtaxKey() {
+  return ['vhtax'] as const
+}
+
+export function getPostDrvlcCertificateMutationKey() {
+  return ['drvlc', '/drvlc/certificate', 'POST'] as const
+}
+
+export function getPostDrvlcCertificateMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.drvlc.certificate.$post>>>>
+    >,
+    TError,
+    InferRequestType<typeof client.drvlc.certificate.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostDrvlcCertificateMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.drvlc.certificate.$post>) {
+      return parseResponse(client.drvlc.certificate.$post(args, options))
+    },
+  })
+}
+
+export function usePostDrvlcCertificate<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      UseMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<Awaited<ReturnType<typeof client.drvlc.certificate.$post>>>
+          >
+        >,
+        TError,
+        InferRequestType<typeof client.drvlc.certificate.$post>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostDrvlcCertificateMutationOptions<TError, TOnMutateResult>(
+    clientOptions,
+  )
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostFitcerCertificateMutationKey() {
+  return ['fitcer', '/fitcer/certificate', 'POST'] as const
+}
+
+export function getPostFitcerCertificateMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.fitcer.certificate.$post>>>>
+    >,
+    TError,
+    InferRequestType<typeof client.fitcer.certificate.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostFitcerCertificateMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.fitcer.certificate.$post>) {
+      return parseResponse(client.fitcer.certificate.$post(args, options))
+    },
+  })
+}
+
+export function usePostFitcerCertificate<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      UseMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<Awaited<ReturnType<typeof client.fitcer.certificate.$post>>>
+          >
+        >,
+        TError,
+        InferRequestType<typeof client.fitcer.certificate.$post>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostFitcerCertificateMutationOptions<TError, TOnMutateResult>(
+    clientOptions,
+  )
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostRvcerCertificateMutationKey() {
+  return ['rvcer', '/rvcer/certificate', 'POST'] as const
+}
+
+export function getPostRvcerCertificateMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.rvcer.certificate.$post>>>>
+    >,
+    TError,
+    InferRequestType<typeof client.rvcer.certificate.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostRvcerCertificateMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.rvcer.certificate.$post>) {
+      return parseResponse(client.rvcer.certificate.$post(args, options))
+    },
+  })
+}
+
+export function usePostRvcerCertificate<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      UseMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<Awaited<ReturnType<typeof client.rvcer.certificate.$post>>>
+          >
+        >,
+        TError,
+        InferRequestType<typeof client.rvcer.certificate.$post>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostRvcerCertificateMutationOptions<TError, TOnMutateResult>(
+    clientOptions,
+  )
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostVhinscCertificateMutationKey() {
+  return ['vhinsc', '/vhinsc/certificate', 'POST'] as const
+}
+
+export function getPostVhinscCertificateMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.vhinsc.certificate.$post>>>>
+    >,
+    TError,
+    InferRequestType<typeof client.vhinsc.certificate.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostVhinscCertificateMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.vhinsc.certificate.$post>) {
+      return parseResponse(client.vhinsc.certificate.$post(args, options))
+    },
+  })
+}
+
+export function usePostVhinscCertificate<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      UseMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<Awaited<ReturnType<typeof client.vhinsc.certificate.$post>>>
+          >
+        >,
+        TError,
+        InferRequestType<typeof client.vhinsc.certificate.$post>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostVhinscCertificateMutationOptions<TError, TOnMutateResult>(
+    clientOptions,
+  )
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostVhtaxCertificateMutationKey() {
+  return ['vhtax', '/vhtax/certificate', 'POST'] as const
+}
+
+export function getPostVhtaxCertificateMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.vhtax.certificate.$post>>>>
+    >,
+    TError,
+    InferRequestType<typeof client.vhtax.certificate.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostVhtaxCertificateMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.vhtax.certificate.$post>) {
+      return parseResponse(client.vhtax.certificate.$post(args, options))
+    },
+  })
+}
+
+export function usePostVhtaxCertificate<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      UseMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<Awaited<ReturnType<typeof client.vhtax.certificate.$post>>>
+          >
+        >,
+        TError,
+        InferRequestType<typeof client.vhtax.certificate.$post>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostVhtaxCertificateMutationOptions<TError, TOnMutateResult>(
+    clientOptions,
+  )
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}

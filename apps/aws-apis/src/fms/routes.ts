@@ -1,5 +1,11 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const PolicyIdSchema = z
+  .string()
+  .regex(/^[a-z0-9A-Z-]{36}$/)
+  .length(36)
+  .openapi('PolicyId')
+
 const AWSAccountIdSchema = z
   .string()
   .regex(/^[0-9]+$/)
@@ -7,16 +13,1514 @@ const AWSAccountIdSchema = z
   .max(1024)
   .openapi('AWSAccountId')
 
+const ResourceIdSchema = z
+  .string()
+  .regex(/^([\p{L}\p{Z}\p{N}_.:\/=+\-@]*)$/u)
+  .min(1)
+  .max(1024)
+  .openapi('ResourceId')
+
+const IdentifierSchema = z
+  .string()
+  .regex(/^([\p{L}\p{Z}\p{N}_.:\/=+\-@]*)$/u)
+  .min(1)
+  .max(2048)
+  .openapi('Identifier')
+
+type ResourceType = {
+  URI: z.infer<typeof IdentifierSchema> & unknown
+  AccountId?: z.infer<typeof AWSAccountIdSchema> & unknown
+}
+
+const ResourceTypeSchema = z
+  .string()
+  .regex(/^([\p{L}\p{Z}\p{N}_.:\/=+\-@]*)$/u)
+  .min(1)
+  .max(128)
+  .openapi('ResourceType')
+
+const ViolationTargetSchema = z.string().regex(/.*/).min(0).max(1024).openapi('ViolationTarget')
+
+const LengthBoundedStringSchema = z.string().min(0).max(1024).openapi('LengthBoundedString')
+
+const ReferenceRuleSchema = z.string().openapi('ReferenceRule')
+
+const TargetViolationReasonSchema = z
+  .string()
+  .regex(/\w+/)
+  .min(0)
+  .max(256)
+  .openapi('TargetViolationReason')
+
+const TargetViolationReasonsSchema = z
+  .array(TargetViolationReasonSchema)
+  .openapi('TargetViolationReasons')
+
+const PartialMatchSchema = z
+  .object({
+    Reference: ReferenceRuleSchema.exactOptional().openapi({
+      description:
+        'The reference rule from the primary security group of the Firewall Manager policy.',
+    }),
+    TargetViolationReasons: TargetViolationReasonsSchema.exactOptional().openapi({
+      description: 'The violation reason.',
+    }),
+  })
+  .openapi({
+    description:
+      'The reference rule that partially matches the <code>ViolationTarget</code> rule and violation reason.',
+    required: [],
+  })
+  .openapi('PartialMatch')
+
+const PartialMatchesSchema = z.array(PartialMatchSchema).openapi('PartialMatches')
+
+const RemediationActionTypeSchema = z.enum(['REMOVE', 'MODIFY']).openapi('RemediationActionType')
+
+const RemediationActionDescriptionSchema = z
+  .string()
+  .regex(/.*/)
+  .min(0)
+  .max(1024)
+  .openapi('RemediationActionDescription')
+
+const CIDRSchema = z
+  .string()
+  .regex(/[a-f0-9:.\/]+/)
+  .min(0)
+  .max(256)
+  .openapi('CIDR')
+
+const IPPortNumberSchema = z.int().min(0).max(65535).openapi('IPPortNumber')
+
+const SecurityGroupRuleDescriptionSchema = z
+  .object({
+    IPV4Range: CIDRSchema.exactOptional().openapi({
+      description: 'The IPv4 ranges for the security group rule.',
+    }),
+    IPV6Range: CIDRSchema.exactOptional().openapi({
+      description: 'The IPv6 ranges for the security group rule.',
+    }),
+    PrefixListId: ResourceIdSchema.exactOptional().openapi({
+      description: 'The ID of the prefix list for the security group rule.',
+    }),
+    Protocol: LengthBoundedStringSchema.exactOptional().openapi({
+      description:
+        'The IP protocol name (<code>tcp</code>, <code>udp</code>, <code>icmp</code>, <code>icmpv6</code>) or number.',
+    }),
+    FromPort: IPPortNumberSchema.exactOptional().openapi({
+      description:
+        'The start of the port range for the TCP and UDP protocols, or an ICMP/ICMPv6 type number. A value of <code>-1</code> indicates all ICMP/ICMPv6 types.',
+    }),
+    ToPort: IPPortNumberSchema.exactOptional().openapi({
+      description:
+        'The end of the port range for the TCP and UDP protocols, or an ICMP/ICMPv6 code. A value of <code>-1</code> indicates all ICMP/ICMPv6 codes.',
+    }),
+  })
+  .openapi({
+    description: 'Describes a set of permissions for a security group rule.',
+    required: [],
+  })
+  .openapi('SecurityGroupRuleDescription')
+
+const BooleanSchema = z.boolean().openapi('Boolean')
+
+const SecurityGroupRemediationActionSchema = z
+  .object({
+    RemediationActionType: RemediationActionTypeSchema.exactOptional().openapi({
+      description: 'The remediation action that will be performed.',
+    }),
+    Description: RemediationActionDescriptionSchema.exactOptional().openapi({
+      description: 'Brief description of the action that will be performed.',
+    }),
+    RemediationResult: SecurityGroupRuleDescriptionSchema.exactOptional().openapi({
+      description:
+        'The final state of the rule specified in the <code>ViolationTarget</code> after it is remediated.',
+    }),
+    IsDefaultAction: BooleanSchema.exactOptional().openapi({
+      description: 'Indicates if the current action is the default action.',
+    }),
+  })
+  .openapi({
+    description: 'Remediation option for the rule specified in the <code>ViolationTarget</code>.',
+    required: [],
+  })
+  .openapi('SecurityGroupRemediationAction')
+
+const SecurityGroupRemediationActionsSchema = z
+  .array(SecurityGroupRemediationActionSchema)
+  .openapi('SecurityGroupRemediationActions')
+
+const AwsVPCSecurityGroupViolationSchema = z
+  .object({
+    ViolationTarget: ViolationTargetSchema.exactOptional().openapi({
+      description: 'The security group rule that is being evaluated.',
+    }),
+    ViolationTargetDescription: LengthBoundedStringSchema.exactOptional().openapi({
+      description: 'A description of the security group that violates the policy.',
+    }),
+    PartialMatches: PartialMatchesSchema.exactOptional().openapi({
+      description:
+        'List of rules specified in the security group of the Firewall Manager policy that partially match the <code>ViolationTarget</code> rule.',
+    }),
+    PossibleSecurityGroupRemediationActions:
+      SecurityGroupRemediationActionsSchema.exactOptional().openapi({
+        description:
+          'Remediation options for the rule specified in the <code>ViolationTarget</code>.',
+      }),
+  })
+  .openapi({
+    description:
+      'Violation detail for the rule violation in a security group when compared to the primary security group of the Firewall Manager policy.',
+    required: [],
+  })
+  .openapi('AwsVPCSecurityGroupViolation')
+
+const ResourceIdListSchema = z.array(ResourceIdSchema).openapi('ResourceIdList')
+
+const AwsEc2NetworkInterfaceViolationSchema = z
+  .object({
+    ViolationTarget: ViolationTargetSchema.exactOptional().openapi({
+      description: 'The resource ID of the network interface.',
+    }),
+    ViolatingSecurityGroups: ResourceIdListSchema.exactOptional().openapi({
+      description:
+        'List of security groups that violate the rules specified in the primary security group of the Firewall Manager policy.',
+    }),
+  })
+  .openapi({
+    description: 'Violation detail for network interfaces associated with an EC2 instance.',
+    required: [],
+  })
+  .openapi('AwsEc2NetworkInterfaceViolation')
+
+const AwsEc2NetworkInterfaceViolationsSchema = z
+  .array(AwsEc2NetworkInterfaceViolationSchema)
+  .openapi('AwsEc2NetworkInterfaceViolations')
+
+const AwsEc2InstanceViolationSchema = z
+  .object({
+    ViolationTarget: ViolationTargetSchema.exactOptional().openapi({
+      description: 'The resource ID of the EC2 instance.',
+    }),
+    AwsEc2NetworkInterfaceViolations:
+      AwsEc2NetworkInterfaceViolationsSchema.exactOptional().openapi({
+        description: 'Violation detail for network interfaces associated with the EC2 instance.',
+      }),
+  })
+  .openapi({ description: 'Violation detail for an EC2 instance resource.', required: [] })
+  .openapi('AwsEc2InstanceViolation')
+
+const NetworkFirewallMissingFirewallViolationSchema = z
+  .object({
+    ViolationTarget: ViolationTargetSchema.exactOptional().openapi({
+      description: "The ID of the Network Firewall or VPC resource that's in violation.",
+    }),
+    VPC: ResourceIdSchema.exactOptional().openapi({
+      description: 'The resource ID of the VPC associated with a violating subnet.',
+    }),
+    AvailabilityZone: LengthBoundedStringSchema.exactOptional().openapi({
+      description: 'The Availability Zone of a violating subnet. ',
+    }),
+    TargetViolationReason: TargetViolationReasonSchema.exactOptional().openapi({
+      description: 'The reason the resource has this violation, if one is available. ',
+    }),
+  })
+  .openapi({
+    description:
+      "Violation detail for Network Firewall for a subnet that doesn't have a Firewall Manager managed firewall in its VPC. ",
+    required: [],
+  })
+  .openapi('NetworkFirewallMissingFirewallViolation')
+
+const NetworkFirewallMissingSubnetViolationSchema = z
+  .object({
+    ViolationTarget: ViolationTargetSchema.exactOptional().openapi({
+      description: "The ID of the Network Firewall or VPC resource that's in violation.",
+    }),
+    VPC: ResourceIdSchema.exactOptional().openapi({
+      description: 'The resource ID of the VPC associated with a violating subnet.',
+    }),
+    AvailabilityZone: LengthBoundedStringSchema.exactOptional().openapi({
+      description: 'The Availability Zone of a violating subnet. ',
+    }),
+    TargetViolationReason: TargetViolationReasonSchema.exactOptional().openapi({
+      description: 'The reason the resource has this violation, if one is available. ',
+    }),
+  })
+  .openapi({
+    description:
+      "Violation detail for Network Firewall for an Availability Zone that's missing the expected Firewall Manager managed subnet.",
+    required: [],
+  })
+  .openapi('NetworkFirewallMissingSubnetViolation')
+
+const NetworkFirewallMissingExpectedRTViolationSchema = z
+  .object({
+    ViolationTarget: ViolationTargetSchema.exactOptional().openapi({
+      description: "The ID of the Network Firewall or VPC resource that's in violation.",
+    }),
+    VPC: ResourceIdSchema.exactOptional().openapi({
+      description: 'The resource ID of the VPC associated with a violating subnet.',
+    }),
+    AvailabilityZone: LengthBoundedStringSchema.exactOptional().openapi({
+      description: 'The Availability Zone of a violating subnet. ',
+    }),
+    CurrentRouteTable: ResourceIdSchema.exactOptional().openapi({
+      description:
+        "The resource ID of the current route table that's associated with the subnet, if one is available.",
+    }),
+    ExpectedRouteTable: ResourceIdSchema.exactOptional().openapi({
+      description: 'The resource ID of the route table that should be associated with the subnet.',
+    }),
+  })
+  .openapi({
+    description:
+      "Violation detail for Network Firewall for a subnet that's not associated to the expected Firewall Manager managed route table.",
+    required: [],
+  })
+  .openapi('NetworkFirewallMissingExpectedRTViolation')
+
+const NetworkFirewallResourceNameSchema = z
+  .string()
+  .regex(/^[a-zA-Z0-9-]+$/)
+  .min(1)
+  .max(128)
+  .openapi('NetworkFirewallResourceName')
+
+const StatelessRuleGroupPrioritySchema = z
+  .int()
+  .min(1)
+  .max(65535)
+  .openapi('StatelessRuleGroupPriority')
+
+const StatelessRuleGroupSchema = z
+  .object({
+    RuleGroupName: NetworkFirewallResourceNameSchema.exactOptional().openapi({
+      description: 'The name of the rule group.',
+    }),
+    ResourceId: ResourceIdSchema.exactOptional().openapi({
+      description: 'The resource ID of the rule group.',
+    }),
+    Priority: StatelessRuleGroupPrioritySchema.exactOptional().openapi({
+      description:
+        'The priority of the rule group. Network Firewall evaluates the stateless rule groups in a firewall policy starting from the lowest priority setting. ',
+    }),
+  })
+  .openapi({
+    description:
+      'Network Firewall stateless rule group, used in a <a>NetworkFirewallPolicyDescription</a>. ',
+    required: [],
+  })
+  .openapi('StatelessRuleGroup')
+
+const StatelessRuleGroupListSchema = z
+  .array(StatelessRuleGroupSchema)
+  .openapi('StatelessRuleGroupList')
+
+const NetworkFirewallActionSchema = z
+  .string()
+  .regex(/^[a-zA-Z0-9]+$/)
+  .min(1)
+  .max(128)
+  .openapi('NetworkFirewallAction')
+
+const NetworkFirewallActionListSchema = z
+  .array(NetworkFirewallActionSchema)
+  .openapi('NetworkFirewallActionList')
+
+const PriorityNumberSchema = z.int().openapi('PriorityNumber')
+
+const NetworkFirewallOverrideActionSchema = z
+  .literal('DROP_TO_ALERT')
+  .openapi('NetworkFirewallOverrideAction')
+
+const NetworkFirewallStatefulRuleGroupOverrideSchema = z
+  .object({
+    Action: NetworkFirewallOverrideActionSchema.exactOptional().openapi({
+      description:
+        'The action that changes the rule group from <code>DROP</code> to <code>ALERT</code>. This only applies to managed rule groups.',
+    }),
+  })
+  .openapi({
+    description:
+      'The setting that allows the policy owner to change the behavior of the rule group within a policy.',
+    required: [],
+  })
+  .openapi('NetworkFirewallStatefulRuleGroupOverride')
+
+const StatefulRuleGroupSchema = z
+  .object({
+    RuleGroupName: NetworkFirewallResourceNameSchema.exactOptional().openapi({
+      description: 'The name of the rule group.',
+    }),
+    ResourceId: ResourceIdSchema.exactOptional().openapi({
+      description: 'The resource ID of the rule group.',
+    }),
+    Priority: PriorityNumberSchema.exactOptional().openapi({
+      description:
+        "<p>An integer setting that indicates the order in which to run the stateful rule groups in a single Network Firewall firewall policy. This setting only applies to firewall policies that specify the <code>STRICT_ORDER</code> rule order in the stateful engine options settings.</p> <p> Network Firewall evalutes each stateful rule group against a packet starting with the group that has the lowest priority setting. You must ensure that the priority settings are unique within each policy. For information about </p> <p> You can change the priority settings of your rule groups at any time. To make it easier to insert rule groups later, number them so there's a wide range in between, for example use 100, 200, and so on. </p>",
+    }),
+    Override: NetworkFirewallStatefulRuleGroupOverrideSchema.exactOptional().openapi({
+      description:
+        'The action that allows the policy owner to override the behavior of the rule group within a policy.',
+    }),
+  })
+  .openapi({
+    description:
+      'Network Firewall stateful rule group, used in a <a>NetworkFirewallPolicyDescription</a>. ',
+    required: [],
+  })
+  .openapi('StatefulRuleGroup')
+
+const StatefulRuleGroupListSchema = z
+  .array(StatefulRuleGroupSchema)
+  .openapi('StatefulRuleGroupList')
+
+const RuleOrderSchema = z.enum(['STRICT_ORDER', 'DEFAULT_ACTION_ORDER']).openapi('RuleOrder')
+
+const StatefulEngineOptionsSchema = z
+  .object({
+    RuleOrder: RuleOrderSchema.exactOptional().openapi({
+      description:
+        'Indicates how to manage the order of stateful rule evaluation for the policy. <code>DEFAULT_ACTION_ORDER</code> is the default behavior. Stateful rules are provided to the rule engine as Suricata compatible strings, and Suricata evaluates them based on certain settings. For more information, see <a href="https://docs.aws.amazon.com/network-firewall/latest/developerguide/suricata-rule-evaluation-order.html">Evaluation order for stateful rules</a> in the <i>Network Firewall Developer Guide</i>.',
+    }),
+  })
+  .openapi({
+    description:
+      'Configuration settings for the handling of the stateful rule groups in a Network Firewall firewall policy.',
+    required: [],
+  })
+  .openapi('StatefulEngineOptions')
+
+const NetworkFirewallPolicyDescriptionSchema = z
+  .object({
+    StatelessRuleGroups: StatelessRuleGroupListSchema.exactOptional().openapi({
+      description:
+        'The stateless rule groups that are used in the Network Firewall firewall policy. ',
+    }),
+    StatelessDefaultActions: NetworkFirewallActionListSchema.exactOptional().openapi({
+      description:
+        "The actions to take on packets that don't match any of the stateless rule groups. ",
+    }),
+    StatelessFragmentDefaultActions: NetworkFirewallActionListSchema.exactOptional().openapi({
+      description:
+        "The actions to take on packet fragments that don't match any of the stateless rule groups. ",
+    }),
+    StatelessCustomActions: NetworkFirewallActionListSchema.exactOptional().openapi({
+      description:
+        'Names of custom actions that are available for use in the stateless default actions settings.',
+    }),
+    StatefulRuleGroups: StatefulRuleGroupListSchema.exactOptional().openapi({
+      description:
+        'The stateful rule groups that are used in the Network Firewall firewall policy. ',
+    }),
+    StatefulDefaultActions: NetworkFirewallActionListSchema.exactOptional().openapi({
+      description:
+        "<p>The default actions to take on a packet that doesn't match any stateful rules. The stateful default action is optional, and is only valid when using the strict rule order.</p> <p> Valid values of the stateful default action: </p> <ul> <li> <p>aws:drop_strict</p> </li> <li> <p>aws:drop_established</p> </li> <li> <p>aws:alert_strict</p> </li> <li> <p>aws:alert_established</p> </li> </ul>",
+    }),
+    StatefulEngineOptions: StatefulEngineOptionsSchema.exactOptional().openapi({
+      description:
+        'Additional options governing how Network Firewall handles stateful rules. The stateful rule groups that you use in your policy must have stateful rule options settings that are compatible with these settings.',
+    }),
+  })
+  .openapi({ description: 'The definition of the Network Firewall firewall policy.', required: [] })
+  .openapi('NetworkFirewallPolicyDescription')
+
+const NetworkFirewallPolicyModifiedViolationSchema = z
+  .object({
+    ViolationTarget: ViolationTargetSchema.exactOptional().openapi({
+      description: "The ID of the Network Firewall or VPC resource that's in violation.",
+    }),
+    CurrentPolicyDescription: NetworkFirewallPolicyDescriptionSchema.exactOptional().openapi({
+      description: "The policy that's currently in use in the individual account. ",
+    }),
+    ExpectedPolicyDescription: NetworkFirewallPolicyDescriptionSchema.exactOptional().openapi({
+      description:
+        'The policy that should be in use in the individual account in order to be compliant. ',
+    }),
+  })
+  .openapi({
+    description:
+      'Violation detail for Network Firewall for a firewall policy that has a different <a>NetworkFirewallPolicyDescription</a> than is required by the Firewall Manager policy. ',
+    required: [],
+  })
+  .openapi('NetworkFirewallPolicyModifiedViolation')
+
+const DestinationTypeSchema = z.enum(['IPV4', 'IPV6', 'PREFIX_LIST']).openapi('DestinationType')
+
+const TargetTypeSchema = z
+  .enum([
+    'GATEWAY',
+    'CARRIER_GATEWAY',
+    'INSTANCE',
+    'LOCAL_GATEWAY',
+    'NAT_GATEWAY',
+    'NETWORK_INTERFACE',
+    'VPC_ENDPOINT',
+    'VPC_PEERING_CONNECTION',
+    'EGRESS_ONLY_INTERNET_GATEWAY',
+    'TRANSIT_GATEWAY',
+  ])
+  .openapi('TargetType')
+
+const RouteSchema = z
+  .object({
+    DestinationType: DestinationTypeSchema.exactOptional().openapi({
+      description: 'The type of destination for the route.',
+    }),
+    TargetType: TargetTypeSchema.exactOptional().openapi({
+      description: 'The type of target for the route.',
+    }),
+    Destination: LengthBoundedStringSchema.exactOptional().openapi({
+      description: 'The destination of the route.',
+    }),
+    Target: LengthBoundedStringSchema.exactOptional().openapi({
+      description: "The route's target.",
+    }),
+  })
+  .openapi({ description: 'Describes a route in a route table.', required: [] })
+  .openapi('Route')
+
+const RoutesSchema = z.array(RouteSchema).openapi('Routes')
+
+const LengthBoundedStringListSchema = z
+  .array(LengthBoundedStringSchema)
+  .openapi('LengthBoundedStringList')
+
+const ExpectedRouteSchema = z
+  .object({
+    IpV4Cidr: CIDRSchema.exactOptional().openapi({
+      description: 'Information about the IPv4 CIDR block.',
+    }),
+    PrefixListId: CIDRSchema.exactOptional().openapi({
+      description: 'Information about the ID of the prefix list for the route.',
+    }),
+    IpV6Cidr: CIDRSchema.exactOptional().openapi({
+      description: 'Information about the IPv6 CIDR block.',
+    }),
+    ContributingSubnets: ResourceIdListSchema.exactOptional().openapi({
+      description: 'Information about the contributing subnets.',
+    }),
+    AllowedTargets: LengthBoundedStringListSchema.exactOptional().openapi({
+      description: 'Information about the allowed targets.',
+    }),
+    RouteTableId: ResourceIdSchema.exactOptional().openapi({
+      description: 'Information about the route table ID.',
+    }),
+  })
+  .openapi({
+    description: 'Information about the expected route in the route table.',
+    required: [],
+  })
+  .openapi('ExpectedRoute')
+
+const ExpectedRoutesSchema = z.array(ExpectedRouteSchema).openapi('ExpectedRoutes')
+
+const NetworkFirewallInternetTrafficNotInspectedViolationSchema = z
+  .object({
+    SubnetId: ResourceIdSchema.exactOptional().openapi({ description: 'The subnet ID.' }),
+    SubnetAvailabilityZone: LengthBoundedStringSchema.exactOptional().openapi({
+      description: 'The subnet Availability Zone.',
+    }),
+    RouteTableId: ResourceIdSchema.exactOptional().openapi({
+      description: 'Information about the route table ID.',
+    }),
+    ViolatingRoutes: RoutesSchema.exactOptional().openapi({
+      description: 'The route or routes that are in violation.',
+    }),
+    IsRouteTableUsedInDifferentAZ: BooleanSchema.exactOptional().openapi({
+      description:
+        'Information about whether the route table is used in another Availability Zone.',
+    }),
+    CurrentFirewallSubnetRouteTable: ResourceIdSchema.exactOptional().openapi({
+      description: 'Information about the subnet route table for the current firewall.',
+    }),
+    ExpectedFirewallEndpoint: ResourceIdSchema.exactOptional().openapi({
+      description: 'The expected endpoint for the current firewall.',
+    }),
+    FirewallSubnetId: ResourceIdSchema.exactOptional().openapi({
+      description: 'The firewall subnet ID.',
+    }),
+    ExpectedFirewallSubnetRoutes: ExpectedRoutesSchema.exactOptional().openapi({
+      description: 'The firewall subnet routes that are expected.',
+    }),
+    ActualFirewallSubnetRoutes: RoutesSchema.exactOptional().openapi({
+      description: 'The actual firewall subnet routes.',
+    }),
+    InternetGatewayId: ResourceIdSchema.exactOptional().openapi({
+      description: 'The internet gateway ID.',
+    }),
+    CurrentInternetGatewayRouteTable: ResourceIdSchema.exactOptional().openapi({
+      description: 'The current route table for the internet gateway.',
+    }),
+    ExpectedInternetGatewayRoutes: ExpectedRoutesSchema.exactOptional().openapi({
+      description: 'The internet gateway routes that are expected.',
+    }),
+    ActualInternetGatewayRoutes: RoutesSchema.exactOptional().openapi({
+      description: 'The actual internet gateway routes.',
+    }),
+    VpcId: ResourceIdSchema.exactOptional().openapi({
+      description: 'Information about the VPC ID.',
+    }),
+  })
+  .openapi({
+    description:
+      "Violation detail for the subnet for which internet traffic that hasn't been inspected.",
+    required: [],
+  })
+  .openapi('NetworkFirewallInternetTrafficNotInspectedViolation')
+
+const NetworkFirewallInvalidRouteConfigurationViolationSchema = z
+  .object({
+    AffectedSubnets: ResourceIdListSchema.exactOptional().openapi({
+      description: 'The subnets that are affected.',
+    }),
+    RouteTableId: ResourceIdSchema.exactOptional().openapi({ description: 'The route table ID.' }),
+    IsRouteTableUsedInDifferentAZ: BooleanSchema.exactOptional().openapi({
+      description:
+        'Information about whether the route table is used in another Availability Zone.',
+    }),
+    ViolatingRoute: RouteSchema.exactOptional().openapi({
+      description: "The route that's in violation.",
+    }),
+    CurrentFirewallSubnetRouteTable: ResourceIdSchema.exactOptional().openapi({
+      description: 'The subnet route table for the current firewall.',
+    }),
+    ExpectedFirewallEndpoint: ResourceIdSchema.exactOptional().openapi({
+      description: "The firewall endpoint that's expected.",
+    }),
+    ActualFirewallEndpoint: ResourceIdSchema.exactOptional().openapi({
+      description: 'The actual firewall endpoint.',
+    }),
+    ExpectedFirewallSubnetId: ResourceIdSchema.exactOptional().openapi({
+      description: 'The expected subnet ID for the firewall.',
+    }),
+    ActualFirewallSubnetId: ResourceIdSchema.exactOptional().openapi({
+      description: 'The actual subnet ID for the firewall.',
+    }),
+    ExpectedFirewallSubnetRoutes: ExpectedRoutesSchema.exactOptional().openapi({
+      description: 'The firewall subnet routes that are expected.',
+    }),
+    ActualFirewallSubnetRoutes: RoutesSchema.exactOptional().openapi({
+      description: 'The actual firewall subnet routes that are expected.',
+    }),
+    InternetGatewayId: ResourceIdSchema.exactOptional().openapi({
+      description: 'The internet gateway ID.',
+    }),
+    CurrentInternetGatewayRouteTable: ResourceIdSchema.exactOptional().openapi({
+      description: 'The route table for the current internet gateway.',
+    }),
+    ExpectedInternetGatewayRoutes: ExpectedRoutesSchema.exactOptional().openapi({
+      description: 'The expected routes for the internet gateway.',
+    }),
+    ActualInternetGatewayRoutes: RoutesSchema.exactOptional().openapi({
+      description: 'The actual internet gateway routes.',
+    }),
+    VpcId: ResourceIdSchema.exactOptional().openapi({
+      description: 'Information about the VPC ID.',
+    }),
+  })
+  .openapi({
+    description:
+      "Violation detail for the improperly configured subnet route. It's possible there is a missing route table route, or a configuration that causes traffic to cross an Availability Zone boundary.",
+    required: [],
+  })
+  .openapi('NetworkFirewallInvalidRouteConfigurationViolation')
+
+const NetworkFirewallBlackHoleRouteDetectedViolationSchema = z
+  .object({
+    ViolationTarget: ViolationTargetSchema.exactOptional().openapi({
+      description: 'The subnet that has an inactive state.',
+    }),
+    RouteTableId: ResourceIdSchema.exactOptional().openapi({
+      description: 'Information about the route table ID.',
+    }),
+    VpcId: ResourceIdSchema.exactOptional().openapi({
+      description: 'Information about the VPC ID.',
+    }),
+    ViolatingRoutes: RoutesSchema.exactOptional().openapi({
+      description: 'Information about the route or routes that are in violation.',
+    }),
+  })
+  .openapi({
+    description:
+      'Violation detail for an internet gateway route with an inactive state in the customer subnet route table or Network Firewall subnet route table.',
+    required: [],
+  })
+  .openapi('NetworkFirewallBlackHoleRouteDetectedViolation')
+
+const NetworkFirewallUnexpectedFirewallRoutesViolationSchema = z
+  .object({
+    FirewallSubnetId: ResourceIdSchema.exactOptional().openapi({
+      description: 'The subnet ID for the firewall.',
+    }),
+    ViolatingRoutes: RoutesSchema.exactOptional().openapi({
+      description: 'The routes that are in violation.',
+    }),
+    RouteTableId: ResourceIdSchema.exactOptional().openapi({
+      description: 'The ID of the route table.',
+    }),
+    FirewallEndpoint: ResourceIdSchema.exactOptional().openapi({
+      description: 'The endpoint of the firewall.',
+    }),
+    VpcId: ResourceIdSchema.exactOptional().openapi({
+      description: 'Information about the VPC ID.',
+    }),
+  })
+  .openapi({
+    description: "Violation detail for an unexpected route that's present in a route table.",
+    required: [],
+  })
+  .openapi('NetworkFirewallUnexpectedFirewallRoutesViolation')
+
+const NetworkFirewallUnexpectedGatewayRoutesViolationSchema = z
+  .object({
+    GatewayId: ResourceIdSchema.exactOptional().openapi({
+      description: 'Information about the gateway ID.',
+    }),
+    ViolatingRoutes: RoutesSchema.exactOptional().openapi({
+      description: 'The routes that are in violation.',
+    }),
+    RouteTableId: ResourceIdSchema.exactOptional().openapi({
+      description: 'Information about the route table.',
+    }),
+    VpcId: ResourceIdSchema.exactOptional().openapi({
+      description: 'Information about the VPC ID.',
+    }),
+  })
+  .openapi({
+    description:
+      'Violation detail for an unexpected gateway route that’s present in a route table.',
+    required: [],
+  })
+  .openapi('NetworkFirewallUnexpectedGatewayRoutesViolation')
+
+const NetworkFirewallMissingExpectedRoutesViolationSchema = z
+  .object({
+    ViolationTarget: ViolationTargetSchema.exactOptional().openapi({
+      description: 'The target of the violation.',
+    }),
+    ExpectedRoutes: ExpectedRoutesSchema.exactOptional().openapi({
+      description: 'The expected routes.',
+    }),
+    VpcId: ResourceIdSchema.exactOptional().openapi({
+      description: 'Information about the VPC ID.',
+    }),
+  })
+  .openapi({
+    description: 'Violation detail for an expected route missing in Network Firewall.',
+    required: [],
+  })
+  .openapi('NetworkFirewallMissingExpectedRoutesViolation')
+
+const DnsRuleGroupPrioritySchema = z.int().min(0).max(10000).openapi('DnsRuleGroupPriority')
+
+const DnsRuleGroupPrioritiesSchema = z
+  .array(DnsRuleGroupPrioritySchema)
+  .openapi('DnsRuleGroupPriorities')
+
+const DnsRuleGroupPriorityConflictViolationSchema = z
+  .object({
+    ViolationTarget: ViolationTargetSchema.exactOptional().openapi({
+      description: 'Information about the VPC ID. ',
+    }),
+    ViolationTargetDescription: LengthBoundedStringSchema.exactOptional().openapi({
+      description:
+        "A description of the violation that specifies the VPC and the rule group that's already associated with it.",
+    }),
+    ConflictingPriority: DnsRuleGroupPrioritySchema.exactOptional().openapi({
+      description: 'The priority setting of the two conflicting rule groups.',
+    }),
+    ConflictingPolicyId: PolicyIdSchema.exactOptional().openapi({
+      description:
+        "The ID of the Firewall Manager DNS Firewall policy that was already applied to the VPC. This policy contains the rule group that's already associated with the VPC. ",
+    }),
+    UnavailablePriorities: DnsRuleGroupPrioritiesSchema.exactOptional().openapi({
+      description:
+        "The priorities of rule groups that are already associated with the VPC. To retry your operation, choose priority settings that aren't in this list for the rule groups in your new DNS Firewall policy. ",
+    }),
+  })
+  .openapi({
+    description:
+      "A rule group that Firewall Manager tried to associate with a VPC has the same priority as a rule group that's already associated. ",
+    required: [],
+  })
+  .openapi('DnsRuleGroupPriorityConflictViolation')
+
+const DnsDuplicateRuleGroupViolationSchema = z
+  .object({
+    ViolationTarget: ViolationTargetSchema.exactOptional().openapi({
+      description: 'Information about the VPC ID. ',
+    }),
+    ViolationTargetDescription: LengthBoundedStringSchema.exactOptional().openapi({
+      description: 'A description of the violation that specifies the rule group and VPC.',
+    }),
+  })
+  .openapi({
+    description:
+      "A DNS Firewall rule group that Firewall Manager tried to associate with a VPC is already associated with the VPC and can't be associated again. ",
+    required: [],
+  })
+  .openapi('DnsDuplicateRuleGroupViolation')
+
+const BasicIntegerSchema = z.int().min(-2147483648).max(2147483647).openapi('BasicInteger')
+
+const DnsRuleGroupLimitExceededViolationSchema = z
+  .object({
+    ViolationTarget: ViolationTargetSchema.exactOptional().openapi({
+      description: 'Information about the VPC ID. ',
+    }),
+    ViolationTargetDescription: LengthBoundedStringSchema.exactOptional().openapi({
+      description: 'A description of the violation that specifies the rule group and VPC.',
+    }),
+    NumberOfRuleGroupsAlreadyAssociated: BasicIntegerSchema.exactOptional().openapi({
+      description: 'The number of rule groups currently associated with the VPC. ',
+    }),
+  })
+  .openapi({
+    description:
+      'The VPC that Firewall Manager was applying a DNS Fireall policy to reached the limit for associated DNS Firewall rule groups. Firewall Manager tried to associate another rule group with the VPC and failed due to the limit. ',
+    required: [],
+  })
+  .openapi('DnsRuleGroupLimitExceededViolation')
+
+const ActionTargetSchema = z
+  .object({
+    ResourceId: ResourceIdSchema.exactOptional().openapi({
+      description: 'The ID of the remediation target.',
+    }),
+    Description: LengthBoundedStringSchema.exactOptional().openapi({
+      description: 'A description of the remediation action target.',
+    }),
+  })
+  .openapi({ description: 'Describes a remediation action target.', required: [] })
+  .openapi('ActionTarget')
+
+const EC2CreateRouteActionSchema = z
+  .object({
+    Description: LengthBoundedStringSchema.exactOptional().openapi({
+      description: 'A description of CreateRoute action in Amazon EC2.',
+    }),
+    DestinationCidrBlock: CIDRSchema.exactOptional().openapi({
+      description: 'Information about the IPv4 CIDR address block used for the destination match.',
+    }),
+    DestinationPrefixListId: ResourceIdSchema.exactOptional().openapi({
+      description: 'Information about the ID of a prefix list used for the destination match.',
+    }),
+    DestinationIpv6CidrBlock: CIDRSchema.exactOptional().openapi({
+      description: 'Information about the IPv6 CIDR block destination.',
+    }),
+    VpcEndpointId: ActionTargetSchema.exactOptional().openapi({
+      description:
+        'Information about the ID of a VPC endpoint. Supported for Gateway Load Balancer endpoints only.',
+    }),
+    GatewayId: ActionTargetSchema.exactOptional().openapi({
+      description:
+        'Information about the ID of an internet gateway or virtual private gateway attached to your VPC.',
+    }),
+    RouteTableId: ActionTargetSchema.openapi({
+      description: 'Information about the ID of the route table for the route.',
+    }),
+  })
+  .openapi({
+    required: ['RouteTableId'],
+    description: 'Information about the CreateRoute action in Amazon EC2.',
+  })
+  .openapi('EC2CreateRouteAction')
+
+const EC2ReplaceRouteActionSchema = z
+  .object({
+    Description: LengthBoundedStringSchema.exactOptional().openapi({
+      description: 'A description of the ReplaceRoute action in Amazon EC2.',
+    }),
+    DestinationCidrBlock: CIDRSchema.exactOptional().openapi({
+      description:
+        'Information about the IPv4 CIDR address block used for the destination match. The value that you provide must match the CIDR of an existing route in the table.',
+    }),
+    DestinationPrefixListId: ResourceIdSchema.exactOptional().openapi({
+      description: 'Information about the ID of the prefix list for the route.',
+    }),
+    DestinationIpv6CidrBlock: CIDRSchema.exactOptional().openapi({
+      description:
+        'Information about the IPv6 CIDR address block used for the destination match. The value that you provide must match the CIDR of an existing route in the table.',
+    }),
+    GatewayId: ActionTargetSchema.exactOptional().openapi({
+      description: 'Information about the ID of an internet gateway or virtual private gateway.',
+    }),
+    RouteTableId: ActionTargetSchema.openapi({
+      description: 'Information about the ID of the route table.',
+    }),
+  })
+  .openapi({
+    required: ['RouteTableId'],
+    description: 'Information about the ReplaceRoute action in Amazon EC2.',
+  })
+  .openapi('EC2ReplaceRouteAction')
+
+const EC2DeleteRouteActionSchema = z
+  .object({
+    Description: LengthBoundedStringSchema.exactOptional().openapi({
+      description: 'A description of the DeleteRoute action.',
+    }),
+    DestinationCidrBlock: CIDRSchema.exactOptional().openapi({
+      description:
+        'Information about the IPv4 CIDR range for the route. The value you specify must match the CIDR for the route exactly.',
+    }),
+    DestinationPrefixListId: ResourceIdSchema.exactOptional().openapi({
+      description: 'Information about the ID of the prefix list for the route.',
+    }),
+    DestinationIpv6CidrBlock: CIDRSchema.exactOptional().openapi({
+      description:
+        'Information about the IPv6 CIDR range for the route. The value you specify must match the CIDR for the route exactly.',
+    }),
+    RouteTableId: ActionTargetSchema.openapi({
+      description: 'Information about the ID of the route table.',
+    }),
+  })
+  .openapi({
+    required: ['RouteTableId'],
+    description: 'Information about the DeleteRoute action in Amazon EC2.',
+  })
+  .openapi('EC2DeleteRouteAction')
+
+const EC2CopyRouteTableActionSchema = z
+  .object({
+    Description: LengthBoundedStringSchema.exactOptional().openapi({
+      description:
+        'A description of the copied EC2 route table that is associated with the remediation action.',
+    }),
+    VpcId: ActionTargetSchema.openapi({
+      description:
+        'The VPC ID of the copied EC2 route table that is associated with the remediation action.',
+    }),
+    RouteTableId: ActionTargetSchema.openapi({
+      description:
+        'The ID of the copied EC2 route table that is associated with the remediation action.',
+    }),
+  })
+  .openapi({
+    required: ['VpcId', 'RouteTableId'],
+    description: 'An action that copies the EC2 route table for use in remediation.',
+  })
+  .openapi('EC2CopyRouteTableAction')
+
+const EC2ReplaceRouteTableAssociationActionSchema = z
+  .object({
+    Description: LengthBoundedStringSchema.exactOptional().openapi({
+      description: 'A description of the ReplaceRouteTableAssociation action in Amazon EC2.',
+    }),
+    AssociationId: ActionTargetSchema.openapi({
+      description: 'Information about the association ID.',
+    }),
+    RouteTableId: ActionTargetSchema.openapi({
+      description: 'Information about the ID of the new route table to associate with the subnet.',
+    }),
+  })
+  .openapi({
+    required: ['AssociationId', 'RouteTableId'],
+    description: 'Information about the ReplaceRouteTableAssociation action in Amazon EC2.',
+  })
+  .openapi('EC2ReplaceRouteTableAssociationAction')
+
+const EC2AssociateRouteTableActionSchema = z
+  .object({
+    Description: LengthBoundedStringSchema.exactOptional().openapi({
+      description:
+        'A description of the EC2 route table that is associated with the remediation action.',
+    }),
+    RouteTableId: ActionTargetSchema.openapi({
+      description: 'The ID of the EC2 route table that is associated with the remediation action.',
+    }),
+    SubnetId: ActionTargetSchema.exactOptional().openapi({
+      description:
+        'The ID of the subnet for the EC2 route table that is associated with the remediation action.',
+    }),
+    GatewayId: ActionTargetSchema.exactOptional().openapi({
+      description:
+        'The ID of the gateway to be used with the EC2 route table that is associated with the remediation action.',
+    }),
+  })
+  .openapi({
+    required: ['RouteTableId'],
+    description:
+      'The action of associating an EC2 resource, such as a subnet or internet gateway, with a route table.',
+  })
+  .openapi('EC2AssociateRouteTableAction')
+
+const EC2CreateRouteTableActionSchema = z
+  .object({
+    Description: LengthBoundedStringSchema.exactOptional().openapi({
+      description: 'A description of the CreateRouteTable action.',
+    }),
+    VpcId: ActionTargetSchema.openapi({ description: 'Information about the ID of a VPC.' }),
+  })
+  .openapi({
+    required: ['VpcId'],
+    description: 'Information about the CreateRouteTable action in Amazon EC2.',
+  })
+  .openapi('EC2CreateRouteTableAction')
+
+const ManagedServiceDataSchema = z
+  .string()
+  .regex(/^((?!\\[nr]).)+/)
+  .min(1)
+  .max(10000)
+  .openapi('ManagedServiceData')
+
+const FMSPolicyUpdateFirewallCreationConfigActionSchema = z
+  .object({
+    Description: LengthBoundedStringSchema.exactOptional().openapi({
+      description: 'Describes the remedial action.',
+    }),
+    FirewallCreationConfig: ManagedServiceDataSchema.exactOptional().openapi({
+      description:
+        'A <code>FirewallCreationConfig</code> that you can copy into your current policy\'s <a href="https://docs.aws.amazon.com/fms/2018-01-01/APIReference/API_SecurityServicePolicyData.html">SecurityServiceData</a> in order to remedy scope violations.',
+    }),
+  })
+  .openapi({
+    description:
+      "Contains information about the actions that you can take to remediate scope violations caused by your policy's <code>FirewallCreationConfig</code>. <code>FirewallCreationConfig</code> is an optional configuration that you can use to choose which Availability Zones Firewall Manager creates Network Firewall endpoints in.",
+    required: [],
+  })
+  .openapi('FMSPolicyUpdateFirewallCreationConfigAction')
+
+const RemediationActionSchema = z
+  .object({
+    Description: LengthBoundedStringSchema.exactOptional().openapi({
+      description: 'A description of a remediation action.',
+    }),
+    EC2CreateRouteAction: EC2CreateRouteActionSchema.exactOptional().openapi({
+      description: 'Information about the CreateRoute action in the Amazon EC2 API.',
+    }),
+    EC2ReplaceRouteAction: EC2ReplaceRouteActionSchema.exactOptional().openapi({
+      description: 'Information about the ReplaceRoute action in the Amazon EC2 API.',
+    }),
+    EC2DeleteRouteAction: EC2DeleteRouteActionSchema.exactOptional().openapi({
+      description: 'Information about the DeleteRoute action in the Amazon EC2 API.',
+    }),
+    EC2CopyRouteTableAction: EC2CopyRouteTableActionSchema.exactOptional().openapi({
+      description: 'Information about the CopyRouteTable action in the Amazon EC2 API.',
+    }),
+    EC2ReplaceRouteTableAssociationAction:
+      EC2ReplaceRouteTableAssociationActionSchema.exactOptional().openapi({
+        description:
+          'Information about the ReplaceRouteTableAssociation action in the Amazon EC2 API.',
+      }),
+    EC2AssociateRouteTableAction: EC2AssociateRouteTableActionSchema.exactOptional().openapi({
+      description: 'Information about the AssociateRouteTable action in the Amazon EC2 API.',
+    }),
+    EC2CreateRouteTableAction: EC2CreateRouteTableActionSchema.exactOptional().openapi({
+      description: 'Information about the CreateRouteTable action in the Amazon EC2 API.',
+    }),
+    FMSPolicyUpdateFirewallCreationConfigAction:
+      FMSPolicyUpdateFirewallCreationConfigActionSchema.exactOptional().openapi({
+        description: 'The remedial action to take when updating a firewall configuration.',
+      }),
+  })
+  .openapi({
+    description: 'Information about an individual action you can take to remediate a violation.',
+    required: [],
+  })
+  .openapi('RemediationAction')
+
+const RemediationActionWithOrderSchema = z
+  .object({
+    RemediationAction: RemediationActionSchema.exactOptional().openapi({
+      description: 'Information about an action you can take to remediate a violation.',
+    }),
+    Order: BasicIntegerSchema.exactOptional().openapi({
+      description: 'The order of the remediation actions in the list.',
+    }),
+  })
+  .openapi({
+    description: 'An ordered list of actions you can take to remediate a violation.',
+    required: [],
+  })
+  .openapi('RemediationActionWithOrder')
+
+const OrderedRemediationActionsSchema = z
+  .array(RemediationActionWithOrderSchema)
+  .openapi('OrderedRemediationActions')
+
+const PossibleRemediationActionSchema = z
+  .object({
+    Description: LengthBoundedStringSchema.exactOptional().openapi({
+      description: 'A description of the list of remediation actions.',
+    }),
+    OrderedRemediationActions: OrderedRemediationActionsSchema.openapi({
+      description: 'The ordered list of remediation actions.',
+    }),
+    IsDefaultAction: BooleanSchema.exactOptional().openapi({
+      description: 'Information about whether an action is taken by default.',
+    }),
+  })
+  .openapi({
+    required: ['OrderedRemediationActions'],
+    description: 'A list of remediation actions.',
+  })
+  .openapi('PossibleRemediationAction')
+
+const PossibleRemediationActionListSchema = z
+  .array(PossibleRemediationActionSchema)
+  .openapi('PossibleRemediationActionList')
+
+type PossibleRemediationActionsType = {
+  Description?: z.infer<typeof LengthBoundedStringSchema> & unknown
+  Actions?: z.infer<typeof PossibleRemediationActionListSchema> & unknown
+}
+
+const PossibleRemediationActionsSchema: z.ZodType<PossibleRemediationActionsType> = z
+  .object({
+    Description: LengthBoundedStringSchema.exactOptional().openapi({
+      description: 'A description of the possible remediation actions list.',
+    }),
+    Actions: PossibleRemediationActionListSchema.exactOptional().openapi({
+      description: 'Information about the actions.',
+    }),
+  })
+  .openapi({
+    description:
+      'A list of possible remediation action lists. Each individual possible remediation action is a list of individual remediation actions.',
+    required: [],
+  })
+  .openapi('PossibleRemediationActions')
+
+const FirewallSubnetIsOutOfScopeViolationSchema = z
+  .object({
+    FirewallSubnetId: ResourceIdSchema.exactOptional().openapi({
+      description: 'The ID of the firewall subnet that violates the policy scope.',
+    }),
+    VpcId: ResourceIdSchema.exactOptional().openapi({
+      description: 'The VPC ID of the firewall subnet that violates the policy scope.',
+    }),
+    SubnetAvailabilityZone: LengthBoundedStringSchema.exactOptional().openapi({
+      description: 'The Availability Zone of the firewall subnet that violates the policy scope.',
+    }),
+    SubnetAvailabilityZoneId: LengthBoundedStringSchema.exactOptional().openapi({
+      description:
+        'The Availability Zone ID of the firewall subnet that violates the policy scope.',
+    }),
+    VpcEndpointId: ResourceIdSchema.exactOptional().openapi({
+      description: 'The VPC endpoint ID of the firewall subnet that violates the policy scope.',
+    }),
+  })
+  .openapi({
+    description: 'Contains details about the firewall subnet that violates the policy scope.',
+    required: [],
+  })
+  .openapi('FirewallSubnetIsOutOfScopeViolation')
+
+const RouteHasOutOfScopeEndpointViolationSchema = z
+  .object({
+    SubnetId: ResourceIdSchema.exactOptional().openapi({
+      description: 'The ID of the subnet associated with the route that violates the policy scope.',
+    }),
+    VpcId: ResourceIdSchema.exactOptional().openapi({
+      description: 'The VPC ID of the route that violates the policy scope.',
+    }),
+    RouteTableId: ResourceIdSchema.exactOptional().openapi({
+      description: 'The ID of the route table.',
+    }),
+    ViolatingRoutes: RoutesSchema.exactOptional().openapi({
+      description: 'The list of routes that violate the route table.',
+    }),
+    SubnetAvailabilityZone: LengthBoundedStringSchema.exactOptional().openapi({
+      description: "The subnet's Availability Zone.",
+    }),
+    SubnetAvailabilityZoneId: LengthBoundedStringSchema.exactOptional().openapi({
+      description: "The ID of the subnet's Availability Zone.",
+    }),
+    CurrentFirewallSubnetRouteTable: ResourceIdSchema.exactOptional().openapi({
+      description: 'The route table associated with the current firewall subnet.',
+    }),
+    FirewallSubnetId: ResourceIdSchema.exactOptional().openapi({
+      description: 'The ID of the firewall subnet.',
+    }),
+    FirewallSubnetRoutes: RoutesSchema.exactOptional().openapi({
+      description: 'The list of firewall subnet routes.',
+    }),
+    InternetGatewayId: ResourceIdSchema.exactOptional().openapi({
+      description: 'The ID of the Internet Gateway.',
+    }),
+    CurrentInternetGatewayRouteTable: ResourceIdSchema.exactOptional().openapi({
+      description: 'The current route table associated with the Internet Gateway.',
+    }),
+    InternetGatewayRoutes: RoutesSchema.exactOptional().openapi({
+      description: 'The routes in the route table associated with the Internet Gateway.',
+    }),
+  })
+  .openapi({
+    description: 'Contains details about the route endpoint that violates the policy scope.',
+    required: [],
+  })
+  .openapi('RouteHasOutOfScopeEndpointViolation')
+
+const ThirdPartyFirewallMissingFirewallViolationSchema = z
+  .object({
+    ViolationTarget: ViolationTargetSchema.exactOptional().openapi({
+      description: "The ID of the third-party firewall that's causing the violation.",
+    }),
+    VPC: ResourceIdSchema.exactOptional().openapi({
+      description: 'The resource ID of the VPC associated with a third-party firewall.',
+    }),
+    AvailabilityZone: LengthBoundedStringSchema.exactOptional().openapi({
+      description:
+        "The Availability Zone of the third-party firewall that's causing the violation.",
+    }),
+    TargetViolationReason: TargetViolationReasonSchema.exactOptional().openapi({
+      description: 'The reason the resource is causing this violation, if a reason is available.',
+    }),
+  })
+  .openapi({
+    description:
+      "The violation details about a third-party firewall's subnet that doesn't have a Firewall Manager managed firewall in its VPC.",
+    required: [],
+  })
+  .openapi('ThirdPartyFirewallMissingFirewallViolation')
+
+const ThirdPartyFirewallMissingSubnetViolationSchema = z
+  .object({
+    ViolationTarget: ViolationTargetSchema.exactOptional().openapi({
+      description:
+        "The ID of the third-party firewall or VPC resource that's causing the violation.",
+    }),
+    VPC: ResourceIdSchema.exactOptional().openapi({
+      description:
+        "The resource ID of the VPC associated with a subnet that's causing the violation.",
+    }),
+    AvailabilityZone: LengthBoundedStringSchema.exactOptional().openapi({
+      description: "The Availability Zone of a subnet that's causing the violation.",
+    }),
+    TargetViolationReason: TargetViolationReasonSchema.exactOptional().openapi({
+      description: 'The reason the resource is causing the violation, if a reason is available.',
+    }),
+  })
+  .openapi({
+    description:
+      "The violation details for a third-party firewall for an Availability Zone that's missing the Firewall Manager managed subnet.",
+    required: [],
+  })
+  .openapi('ThirdPartyFirewallMissingSubnetViolation')
+
+const ThirdPartyFirewallMissingExpectedRouteTableViolationSchema = z
+  .object({
+    ViolationTarget: ViolationTargetSchema.exactOptional().openapi({
+      description:
+        "The ID of the third-party firewall or VPC resource that's causing the violation.",
+    }),
+    VPC: ResourceIdSchema.exactOptional().openapi({
+      description:
+        "The resource ID of the VPC associated with a fireawll subnet that's causing the violation.",
+    }),
+    AvailabilityZone: LengthBoundedStringSchema.exactOptional().openapi({
+      description: "The Availability Zone of the firewall subnet that's causing the violation.",
+    }),
+    CurrentRouteTable: ResourceIdSchema.exactOptional().openapi({
+      description:
+        "The resource ID of the current route table that's associated with the subnet, if one is available.",
+    }),
+    ExpectedRouteTable: ResourceIdSchema.exactOptional().openapi({
+      description: 'The resource ID of the route table that should be associated with the subnet.',
+    }),
+  })
+  .openapi({
+    description:
+      "The violation details for a third-party firewall that's not associated with an Firewall Manager managed route table.",
+    required: [],
+  })
+  .openapi('ThirdPartyFirewallMissingExpectedRouteTableViolation')
+
+const FirewallSubnetMissingVPCEndpointViolationSchema = z
+  .object({
+    FirewallSubnetId: ResourceIdSchema.exactOptional().openapi({
+      description: 'The ID of the firewall that this VPC endpoint is associated with.',
+    }),
+    VpcId: ResourceIdSchema.exactOptional().openapi({
+      description: 'The resource ID of the VPC associated with the deleted VPC subnet.',
+    }),
+    SubnetAvailabilityZone: LengthBoundedStringSchema.exactOptional().openapi({
+      description: 'The name of the Availability Zone of the deleted VPC subnet.',
+    }),
+    SubnetAvailabilityZoneId: LengthBoundedStringSchema.exactOptional().openapi({
+      description: 'The ID of the Availability Zone of the deleted VPC subnet.',
+    }),
+  })
+  .openapi({
+    description:
+      "The violation details for a firewall subnet's VPC endpoint that's deleted or missing.",
+    required: [],
+  })
+  .openapi('FirewallSubnetMissingVPCEndpointViolation')
+
+type ResourceViolationType = {
+  AwsVPCSecurityGroupViolation?: z.infer<typeof AwsVPCSecurityGroupViolationSchema> & unknown
+  AwsEc2NetworkInterfaceViolation?: z.infer<typeof AwsEc2NetworkInterfaceViolationSchema> & unknown
+  AwsEc2InstanceViolation?: z.infer<typeof AwsEc2InstanceViolationSchema> & unknown
+  NetworkFirewallMissingFirewallViolation?: z.infer<
+    typeof NetworkFirewallMissingFirewallViolationSchema
+  > &
+    unknown
+  NetworkFirewallMissingSubnetViolation?: z.infer<
+    typeof NetworkFirewallMissingSubnetViolationSchema
+  > &
+    unknown
+  NetworkFirewallMissingExpectedRTViolation?: z.infer<
+    typeof NetworkFirewallMissingExpectedRTViolationSchema
+  > &
+    unknown
+  NetworkFirewallPolicyModifiedViolation?: z.infer<
+    typeof NetworkFirewallPolicyModifiedViolationSchema
+  > &
+    unknown
+  NetworkFirewallInternetTrafficNotInspectedViolation?: z.infer<
+    typeof NetworkFirewallInternetTrafficNotInspectedViolationSchema
+  > &
+    unknown
+  NetworkFirewallInvalidRouteConfigurationViolation?: z.infer<
+    typeof NetworkFirewallInvalidRouteConfigurationViolationSchema
+  > &
+    unknown
+  NetworkFirewallBlackHoleRouteDetectedViolation?: z.infer<
+    typeof NetworkFirewallBlackHoleRouteDetectedViolationSchema
+  >
+  NetworkFirewallUnexpectedFirewallRoutesViolation?: z.infer<
+    typeof NetworkFirewallUnexpectedFirewallRoutesViolationSchema
+  > &
+    unknown
+  NetworkFirewallUnexpectedGatewayRoutesViolation?: z.infer<
+    typeof NetworkFirewallUnexpectedGatewayRoutesViolationSchema
+  > &
+    unknown
+  NetworkFirewallMissingExpectedRoutesViolation?: z.infer<
+    typeof NetworkFirewallMissingExpectedRoutesViolationSchema
+  > &
+    unknown
+  DnsRuleGroupPriorityConflictViolation?: z.infer<
+    typeof DnsRuleGroupPriorityConflictViolationSchema
+  > &
+    unknown
+  DnsDuplicateRuleGroupViolation?: z.infer<typeof DnsDuplicateRuleGroupViolationSchema> & unknown
+  DnsRuleGroupLimitExceededViolation?: z.infer<typeof DnsRuleGroupLimitExceededViolationSchema> &
+    unknown
+  PossibleRemediationActions?: z.infer<typeof PossibleRemediationActionsSchema> & unknown
+  FirewallSubnetIsOutOfScopeViolation?: z.infer<typeof FirewallSubnetIsOutOfScopeViolationSchema> &
+    unknown
+  RouteHasOutOfScopeEndpointViolation?: z.infer<typeof RouteHasOutOfScopeEndpointViolationSchema> &
+    unknown
+  ThirdPartyFirewallMissingFirewallViolation?: z.infer<
+    typeof ThirdPartyFirewallMissingFirewallViolationSchema
+  > &
+    unknown
+  ThirdPartyFirewallMissingSubnetViolation?: z.infer<
+    typeof ThirdPartyFirewallMissingSubnetViolationSchema
+  > &
+    unknown
+  ThirdPartyFirewallMissingExpectedRouteTableViolation?: z.infer<
+    typeof ThirdPartyFirewallMissingExpectedRouteTableViolationSchema
+  > &
+    unknown
+  FirewallSubnetMissingVPCEndpointViolation?: z.infer<
+    typeof FirewallSubnetMissingVPCEndpointViolationSchema
+  > &
+    unknown
+}
+
+const ResourceViolationSchema: z.ZodType<ResourceViolationType> = z
+  .object({
+    AwsVPCSecurityGroupViolation: AwsVPCSecurityGroupViolationSchema.exactOptional().openapi({
+      description: 'Violation detail for security groups.',
+    }),
+    AwsEc2NetworkInterfaceViolation: AwsEc2NetworkInterfaceViolationSchema.exactOptional().openapi({
+      description: 'Violation detail for a network interface.',
+    }),
+    AwsEc2InstanceViolation: AwsEc2InstanceViolationSchema.exactOptional().openapi({
+      description: 'Violation detail for an EC2 instance.',
+    }),
+    NetworkFirewallMissingFirewallViolation:
+      NetworkFirewallMissingFirewallViolationSchema.exactOptional().openapi({
+        description:
+          'Violation detail for an Network Firewall policy that indicates that a subnet has no Firewall Manager managed firewall in its VPC. ',
+      }),
+    NetworkFirewallMissingSubnetViolation:
+      NetworkFirewallMissingSubnetViolationSchema.exactOptional().openapi({
+        description:
+          'Violation detail for an Network Firewall policy that indicates that an Availability Zone is missing the expected Firewall Manager managed subnet.',
+      }),
+    NetworkFirewallMissingExpectedRTViolation:
+      NetworkFirewallMissingExpectedRTViolationSchema.exactOptional().openapi({
+        description:
+          'Violation detail for an Network Firewall policy that indicates that a subnet is not associated with the expected Firewall Manager managed route table. ',
+      }),
+    NetworkFirewallPolicyModifiedViolation:
+      NetworkFirewallPolicyModifiedViolationSchema.exactOptional().openapi({
+        description:
+          'Violation detail for an Network Firewall policy that indicates that a firewall policy in an individual account has been modified in a way that makes it noncompliant. For example, the individual account owner might have deleted a rule group, changed the priority of a stateless rule group, or changed a policy default action.',
+      }),
+    NetworkFirewallInternetTrafficNotInspectedViolation:
+      NetworkFirewallInternetTrafficNotInspectedViolationSchema.exactOptional().openapi({
+        description:
+          "Violation detail for the subnet for which internet traffic hasn't been inspected.",
+      }),
+    NetworkFirewallInvalidRouteConfigurationViolation:
+      NetworkFirewallInvalidRouteConfigurationViolationSchema.exactOptional().openapi({
+        description: 'The route configuration is invalid.',
+      }),
+    NetworkFirewallBlackHoleRouteDetectedViolation:
+      NetworkFirewallBlackHoleRouteDetectedViolationSchema.exactOptional(),
+    NetworkFirewallUnexpectedFirewallRoutesViolation:
+      NetworkFirewallUnexpectedFirewallRoutesViolationSchema.exactOptional().openapi({
+        description: "There's an unexpected firewall route.",
+      }),
+    NetworkFirewallUnexpectedGatewayRoutesViolation:
+      NetworkFirewallUnexpectedGatewayRoutesViolationSchema.exactOptional().openapi({
+        description: "There's an unexpected gateway route.",
+      }),
+    NetworkFirewallMissingExpectedRoutesViolation:
+      NetworkFirewallMissingExpectedRoutesViolationSchema.exactOptional().openapi({
+        description: 'Expected routes are missing from Network Firewall.',
+      }),
+    DnsRuleGroupPriorityConflictViolation:
+      DnsRuleGroupPriorityConflictViolationSchema.exactOptional().openapi({
+        description:
+          "Violation detail for a DNS Firewall policy that indicates that a rule group that Firewall Manager tried to associate with a VPC has the same priority as a rule group that's already associated. ",
+      }),
+    DnsDuplicateRuleGroupViolation: DnsDuplicateRuleGroupViolationSchema.exactOptional().openapi({
+      description:
+        "Violation detail for a DNS Firewall policy that indicates that a rule group that Firewall Manager tried to associate with a VPC is already associated with the VPC and can't be associated again. ",
+    }),
+    DnsRuleGroupLimitExceededViolation:
+      DnsRuleGroupLimitExceededViolationSchema.exactOptional().openapi({
+        description:
+          'Violation detail for a DNS Firewall policy that indicates that the VPC reached the limit for associated DNS Firewall rule groups. Firewall Manager tried to associate another rule group with the VPC and failed. ',
+      }),
+    PossibleRemediationActions: PossibleRemediationActionsSchema.exactOptional().openapi({
+      description:
+        'A list of possible remediation action lists. Each individual possible remediation action is a list of individual remediation actions.',
+    }),
+    FirewallSubnetIsOutOfScopeViolation:
+      FirewallSubnetIsOutOfScopeViolationSchema.exactOptional().openapi({
+        description: 'Contains details about the firewall subnet that violates the policy scope.',
+      }),
+    RouteHasOutOfScopeEndpointViolation:
+      RouteHasOutOfScopeEndpointViolationSchema.exactOptional().openapi({
+        description: 'Contains details about the route endpoint that violates the policy scope.',
+      }),
+    ThirdPartyFirewallMissingFirewallViolation:
+      ThirdPartyFirewallMissingFirewallViolationSchema.exactOptional().openapi({
+        description: "The violation details for a third-party firewall that's been deleted.",
+      }),
+    ThirdPartyFirewallMissingSubnetViolation:
+      ThirdPartyFirewallMissingSubnetViolationSchema.exactOptional().openapi({
+        description:
+          "The violation details for a third-party firewall's subnet that's been deleted.",
+      }),
+    ThirdPartyFirewallMissingExpectedRouteTableViolation:
+      ThirdPartyFirewallMissingExpectedRouteTableViolationSchema.exactOptional().openapi({
+        description:
+          'The violation details for a third-party firewall that has the Firewall Manager managed route table that was associated with the third-party firewall has been deleted.',
+      }),
+    FirewallSubnetMissingVPCEndpointViolation:
+      FirewallSubnetMissingVPCEndpointViolationSchema.exactOptional().openapi({
+        description:
+          "The violation details for a third-party firewall's VPC endpoint subnet that was deleted.",
+      }),
+  })
+  .openapi({ description: 'Violation detail based on resource type.', required: [] })
+  .openapi('ResourceViolation')
+
+type ResourceViolationsType = z.infer<typeof ResourceViolationSchema>[]
+
+const ResourceViolationsSchema: z.ZodType<ResourceViolationsType> = z
+  .array(ResourceViolationSchema)
+  .openapi('ResourceViolations')
+
+const TagKeySchema = z
+  .string()
+  .regex(/^([\p{L}\p{Z}\p{N}_.:\/=+\-@]*)$/u)
+  .min(1)
+  .max(128)
+  .openapi('TagKey')
+
+const TagValueSchema = z
+  .string()
+  .regex(/^([\p{L}\p{Z}\p{N}_.:\/=+\-@]*)$/u)
+  .min(0)
+  .max(256)
+  .openapi('TagValue')
+
+const TagSchema = z
+  .object({
+    Key: TagKeySchema.openapi({
+      description:
+        'Part of the key:value pair that defines a tag. You can use a tag key to describe a category of information, such as "customer." Tag keys are case-sensitive.',
+    }),
+    Value: TagValueSchema.openapi({
+      description:
+        'Part of the key:value pair that defines a tag. You can use a tag value to describe a specific value within a category, such as "companyA" or "companyB." Tag values are case-sensitive. ',
+    }),
+  })
+  .openapi({
+    required: ['Key', 'Value'],
+    description:
+      'A collection of key:value pairs associated with an Amazon Web Services resource. The key:value pair can be anything you define. Typically, the tag key represents a category (such as "environment") and the tag value represents a specific value within that category (such as "test," "development," or "production"). You can add up to 50 tags to each Amazon Web Services resource. ',
+  })
+  .openapi('Tag')
+
+const TagListSchema = z.array(TagSchema).min(0).max(200).openapi('TagList')
+
+type ViolationDetailType = {
+  PolicyId: z.infer<typeof PolicyIdSchema> & unknown
+  MemberAccount: z.infer<typeof AWSAccountIdSchema> & unknown
+  ResourceId: z.infer<typeof ResourceIdSchema> & unknown
+  ResourceType: z.infer<typeof ResourceTypeSchema> & unknown
+  ResourceViolations: z.infer<typeof ResourceViolationsSchema> & unknown
+  ResourceTags?: z.infer<typeof TagListSchema> & unknown
+  ResourceDescription?: z.infer<typeof LengthBoundedStringSchema> & unknown
+}
+
+const ViolationDetailSchema: z.ZodType<ViolationDetailType> = z
+  .object({
+    PolicyId: PolicyIdSchema.openapi({
+      description:
+        'The ID of the Firewall Manager policy that the violation details were requested for.',
+    }),
+    MemberAccount: AWSAccountIdSchema.openapi({
+      description: 'The Amazon Web Services account that the violation details were requested for.',
+    }),
+    ResourceId: ResourceIdSchema.openapi({
+      description: 'The resource ID that the violation details were requested for.',
+    }),
+    ResourceType: ResourceTypeSchema.openapi({
+      description: 'The resource type that the violation details were requested for.',
+    }),
+    ResourceViolations: ResourceViolationsSchema.openapi({
+      description: 'List of violations for the requested resource.',
+    }),
+    ResourceTags: TagListSchema.exactOptional().openapi({
+      description: 'The <code>ResourceTag</code> objects associated with the resource.',
+    }),
+    ResourceDescription: LengthBoundedStringSchema.exactOptional().openapi({
+      description: 'Brief description for the requested resource.',
+    }),
+  })
+  .openapi({
+    required: ['PolicyId', 'MemberAccount', 'ResourceId', 'ResourceType', 'ResourceViolations'],
+    description:
+      'Violations for a resource based on the specified Firewall Manager policy and Amazon Web Services account.',
+  })
+  .openapi('ViolationDetail')
+
+type GetViolationDetailsResponseType = {
+  ViolationDetail?: z.infer<typeof ViolationDetailSchema> & unknown
+}
+
 const AssociateAdminAccountRequestSchema = z
   .object({
-    AdminAccount: AWSAccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID to associate with Firewall Manager as the Firewall Manager default administrator account. This account must be a member account of the organization in Organizations whose resources you want to protect. For more information about Organizations, see <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_accounts.html">Managing the Amazon Web Services Accounts in Your Organization</a>. ',
-        }),
-    ),
+    AdminAccount: AWSAccountIdSchema.openapi({
+      description:
+        'The Amazon Web Services account ID to associate with Firewall Manager as the Firewall Manager default administrator account. This account must be a member account of the organization in Organizations whose resources you want to protect. For more information about Organizations, see <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_accounts.html">Managing the Amazon Web Services Accounts in Your Organization</a>. ',
+    }),
   })
   .openapi({ required: ['AdminAccount'], title: 'AssociateAdminAccountRequest' })
   .openapi('AssociateAdminAccountRequest')
@@ -37,14 +1541,10 @@ const ThirdPartyFirewallAssociationStatusSchema = z
 
 const AssociateThirdPartyFirewallResponseSchema = z
   .object({
-    ThirdPartyFirewallStatus: ThirdPartyFirewallAssociationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The current status for setting a Firewall Manager policy administrator's account as an administrator of the third-party firewall tenant.</p> <ul> <li> <p> <code>ONBOARDING</code> - The Firewall Manager policy administrator is being designated as a tenant administrator.</p> </li> <li> <p> <code>ONBOARD_COMPLETE</code> - The Firewall Manager policy administrator is designated as a tenant administrator.</p> </li> <li> <p> <code>OFFBOARDING</code> - The Firewall Manager policy administrator is being removed as a tenant administrator.</p> </li> <li> <p> <code>OFFBOARD_COMPLETE</code> - The Firewall Manager policy administrator has been removed as a tenant administrator.</p> </li> <li> <p> <code>NOT_EXIST</code> - The Firewall Manager policy administrator doesn't exist as a tenant administrator.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
+    ThirdPartyFirewallStatus: ThirdPartyFirewallAssociationStatusSchema.exactOptional().openapi({
+      description:
+        "<p>The current status for setting a Firewall Manager policy administrator's account as an administrator of the third-party firewall tenant.</p> <ul> <li> <p> <code>ONBOARDING</code> - The Firewall Manager policy administrator is being designated as a tenant administrator.</p> </li> <li> <p> <code>ONBOARD_COMPLETE</code> - The Firewall Manager policy administrator is designated as a tenant administrator.</p> </li> <li> <p> <code>OFFBOARDING</code> - The Firewall Manager policy administrator is being removed as a tenant administrator.</p> </li> <li> <p> <code>OFFBOARD_COMPLETE</code> - The Firewall Manager policy administrator has been removed as a tenant administrator.</p> </li> <li> <p> <code>NOT_EXIST</code> - The Firewall Manager policy administrator doesn't exist as a tenant administrator.</p> </li> </ul>",
+    }),
   })
   .openapi({ required: [] })
   .openapi('AssociateThirdPartyFirewallResponse')
@@ -55,19 +1555,12 @@ const ThirdPartyFirewallSchema = z
 
 const AssociateThirdPartyFirewallRequestSchema = z
   .object({
-    ThirdPartyFirewall: ThirdPartyFirewallSchema.and(
-      z.any().openapi({ description: 'The name of the third-party firewall vendor.' }),
-    ),
+    ThirdPartyFirewall: ThirdPartyFirewallSchema.openapi({
+      description: 'The name of the third-party firewall vendor.',
+    }),
   })
   .openapi({ required: ['ThirdPartyFirewall'], title: 'AssociateThirdPartyFirewallRequest' })
   .openapi('AssociateThirdPartyFirewallRequest')
-
-const IdentifierSchema = z
-  .string()
-  .regex(/^([\p{L}\p{Z}\p{N}_.:\/=+\-@]*)$/u)
-  .min(1)
-  .max(2048)
-  .openapi('Identifier')
 
 const FailedItemReasonSchema = z
   .enum([
@@ -82,18 +1575,12 @@ const FailedItemReasonSchema = z
 
 const FailedItemSchema = z
   .object({
-    URI: IdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The univeral resource indicator (URI) of the resource that failed.',
-        }),
-    ).exactOptional(),
-    Reason: FailedItemReasonSchema.and(
-      z
-        .any()
-        .openapi({ description: "The reason the resource's association could not be updated." }),
-    ).exactOptional(),
+    URI: IdentifierSchema.exactOptional().openapi({
+      description: 'The univeral resource indicator (URI) of the resource that failed.',
+    }),
+    Reason: FailedItemReasonSchema.exactOptional().openapi({
+      description: "The reason the resource's association could not be updated.",
+    }),
   })
   .openapi({
     description:
@@ -106,19 +1593,13 @@ const FailedItemListSchema = z.array(FailedItemSchema).openapi('FailedItemList')
 
 const BatchAssociateResourceResponseSchema = z
   .object({
-    ResourceSetIdentifier: IdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the resource set, used in a request to refer to the resource set.',
-        }),
-    ),
-    FailedItems: FailedItemListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The resources that failed to associate to the resource set.' }),
-    ),
+    ResourceSetIdentifier: IdentifierSchema.openapi({
+      description:
+        'A unique identifier for the resource set, used in a request to refer to the resource set.',
+    }),
+    FailedItems: FailedItemListSchema.openapi({
+      description: 'The resources that failed to associate to the resource set.',
+    }),
   })
   .openapi({ required: ['ResourceSetIdentifier', 'FailedItems'] })
   .openapi('BatchAssociateResourceResponse')
@@ -127,65 +1608,41 @@ const IdentifierListSchema = z.array(IdentifierSchema).openapi('IdentifierList')
 
 const BatchAssociateResourceRequestSchema = z
   .object({
-    ResourceSetIdentifier: IdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the resource set, used in a request to refer to the resource set.',
-        }),
-    ),
-    Items: IdentifierListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The uniform resource identifiers (URIs) of resources that should be associated to the resource set. The URIs must be Amazon Resource Names (ARNs).',
-        }),
-    ),
+    ResourceSetIdentifier: IdentifierSchema.openapi({
+      description:
+        'A unique identifier for the resource set, used in a request to refer to the resource set.',
+    }),
+    Items: IdentifierListSchema.openapi({
+      description:
+        'The uniform resource identifiers (URIs) of resources that should be associated to the resource set. The URIs must be Amazon Resource Names (ARNs).',
+    }),
   })
   .openapi({ required: ['ResourceSetIdentifier', 'Items'], title: 'BatchAssociateResourceRequest' })
   .openapi('BatchAssociateResourceRequest')
 
 const BatchDisassociateResourceResponseSchema = z
   .object({
-    ResourceSetIdentifier: IdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the resource set, used in a request to refer to the resource set.',
-        }),
-    ),
-    FailedItems: FailedItemListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The resources that failed to disassociate from the resource set.',
-        }),
-    ),
+    ResourceSetIdentifier: IdentifierSchema.openapi({
+      description:
+        'A unique identifier for the resource set, used in a request to refer to the resource set.',
+    }),
+    FailedItems: FailedItemListSchema.openapi({
+      description: 'The resources that failed to disassociate from the resource set.',
+    }),
   })
   .openapi({ required: ['ResourceSetIdentifier', 'FailedItems'] })
   .openapi('BatchDisassociateResourceResponse')
 
 const BatchDisassociateResourceRequestSchema = z
   .object({
-    ResourceSetIdentifier: IdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the resource set, used in a request to refer to the resource set.',
-        }),
-    ),
-    Items: IdentifierListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The uniform resource identifiers (URI) of resources that should be disassociated from the resource set. The URIs must be Amazon Resource Names (ARNs).',
-        }),
-    ),
+    ResourceSetIdentifier: IdentifierSchema.openapi({
+      description:
+        'A unique identifier for the resource set, used in a request to refer to the resource set.',
+    }),
+    Items: IdentifierListSchema.openapi({
+      description:
+        'The uniform resource identifiers (URI) of resources that should be disassociated from the resource set. The URIs must be Amazon Resource Names (ARNs).',
+    }),
   })
   .openapi({
     required: ['ResourceSetIdentifier', 'Items'],
@@ -201,63 +1658,39 @@ const ListIdSchema = z
 
 const DeleteAppsListRequestSchema = z
   .object({
-    ListId: ListIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the applications list that you want to delete. You can retrieve this ID from <code>PutAppsList</code>, <code>ListAppsLists</code>, and <code>GetAppsList</code>.',
-        }),
-    ),
+    ListId: ListIdSchema.openapi({
+      description:
+        'The ID of the applications list that you want to delete. You can retrieve this ID from <code>PutAppsList</code>, <code>ListAppsLists</code>, and <code>GetAppsList</code>.',
+    }),
   })
   .openapi({ required: ['ListId'], title: 'DeleteAppsListRequest' })
   .openapi('DeleteAppsListRequest')
 
 const DeleteNotificationChannelRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteNotificationChannelRequest' })
   .openapi('DeleteNotificationChannelRequest')
 
-const PolicyIdSchema = z
-  .string()
-  .regex(/^[a-z0-9A-Z-]{36}$/)
-  .length(36)
-  .openapi('PolicyId')
-
-const BooleanSchema = z.boolean().openapi('Boolean')
-
 const DeletePolicyRequestSchema = z
   .object({
-    PolicyId: PolicyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the policy that you want to delete. You can retrieve this ID from <code>PutPolicy</code> and <code>ListPolicies</code>.',
-        }),
-    ),
-    DeleteAllPolicyResources: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>If <code>True</code>, the request performs cleanup according to the policy type. </p> <p>For WAF and Shield Advanced policies, the cleanup does the following:</p> <ul> <li> <p>Deletes rule groups created by Firewall Manager</p> </li> <li> <p>Removes web ACLs from in-scope resources</p> </li> <li> <p>Deletes web ACLs that contain no rules or rule groups</p> </li> </ul> <p>For security group policies, the cleanup does the following for each security group in the policy:</p> <ul> <li> <p>Disassociates the security group from in-scope resources </p> </li> <li> <p>Deletes the security group if it was created through Firewall Manager and if it's no longer associated with any resources through another policy</p> </li> </ul> <p>After the cleanup, in-scope resources are no longer protected by web ACLs in this policy. Protection of out-of-scope resources remains unchanged. Scope is determined by tags that you create and accounts that you associate with the policy. When creating the policy, if you specify that only resources in specific accounts or with specific tags are in scope of the policy, those accounts and resources are handled by the policy. All others are out of scope. If you don't specify tags or accounts, all resources are in scope. </p>",
-        }),
-    ).exactOptional(),
+    PolicyId: PolicyIdSchema.openapi({
+      description:
+        'The ID of the policy that you want to delete. You can retrieve this ID from <code>PutPolicy</code> and <code>ListPolicies</code>.',
+    }),
+    DeleteAllPolicyResources: BooleanSchema.exactOptional().openapi({
+      description:
+        "<p>If <code>True</code>, the request performs cleanup according to the policy type. </p> <p>For WAF and Shield Advanced policies, the cleanup does the following:</p> <ul> <li> <p>Deletes rule groups created by Firewall Manager</p> </li> <li> <p>Removes web ACLs from in-scope resources</p> </li> <li> <p>Deletes web ACLs that contain no rules or rule groups</p> </li> </ul> <p>For security group policies, the cleanup does the following for each security group in the policy:</p> <ul> <li> <p>Disassociates the security group from in-scope resources </p> </li> <li> <p>Deletes the security group if it was created through Firewall Manager and if it's no longer associated with any resources through another policy</p> </li> </ul> <p>After the cleanup, in-scope resources are no longer protected by web ACLs in this policy. Protection of out-of-scope resources remains unchanged. Scope is determined by tags that you create and accounts that you associate with the policy. When creating the policy, if you specify that only resources in specific accounts or with specific tags are in scope of the policy, those accounts and resources are handled by the policy. All others are out of scope. If you don't specify tags or accounts, all resources are in scope. </p>",
+    }),
   })
   .openapi({ required: ['PolicyId'], title: 'DeletePolicyRequest' })
   .openapi('DeletePolicyRequest')
 
 const DeleteProtocolsListRequestSchema = z
   .object({
-    ListId: ListIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the protocols list that you want to delete. You can retrieve this ID from <code>PutProtocolsList</code>, <code>ListProtocolsLists</code>, and <code>GetProtocolsLost</code>.',
-        }),
-    ),
+    ListId: ListIdSchema.openapi({
+      description:
+        'The ID of the protocols list that you want to delete. You can retrieve this ID from <code>PutProtocolsList</code>, <code>ListProtocolsLists</code>, and <code>GetProtocolsLost</code>.',
+    }),
   })
   .openapi({ required: ['ListId'], title: 'DeleteProtocolsListRequest' })
   .openapi('DeleteProtocolsListRequest')
@@ -270,42 +1703,34 @@ const Base62IdSchema = z
 
 const DeleteResourceSetRequestSchema = z
   .object({
-    Identifier: Base62IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the resource set, used in a request to refer to the resource set.',
-        }),
-    ),
+    Identifier: Base62IdSchema.openapi({
+      description:
+        'A unique identifier for the resource set, used in a request to refer to the resource set.',
+    }),
   })
   .openapi({ required: ['Identifier'], title: 'DeleteResourceSetRequest' })
   .openapi('DeleteResourceSetRequest')
 
 const DisassociateAdminAccountRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DisassociateAdminAccountRequest' })
   .openapi('DisassociateAdminAccountRequest')
 
 const DisassociateThirdPartyFirewallResponseSchema = z
   .object({
-    ThirdPartyFirewallStatus: ThirdPartyFirewallAssociationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The current status for the disassociation of a Firewall Manager administrators account with a third-party firewall.',
-        }),
-    ).exactOptional(),
+    ThirdPartyFirewallStatus: ThirdPartyFirewallAssociationStatusSchema.exactOptional().openapi({
+      description:
+        'The current status for the disassociation of a Firewall Manager administrators account with a third-party firewall.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DisassociateThirdPartyFirewallResponse')
 
 const DisassociateThirdPartyFirewallRequestSchema = z
   .object({
-    ThirdPartyFirewall: ThirdPartyFirewallSchema.and(
-      z.any().openapi({ description: 'The name of the third-party firewall vendor.' }),
-    ),
+    ThirdPartyFirewall: ThirdPartyFirewallSchema.openapi({
+      description: 'The name of the third-party firewall vendor.',
+    }),
   })
   .openapi({ required: ['ThirdPartyFirewall'], title: 'DisassociateThirdPartyFirewallRequest' })
   .openapi('DisassociateThirdPartyFirewallRequest')
@@ -316,27 +1741,19 @@ const AccountRoleStatusSchema = z
 
 const GetAdminAccountResponseSchema = z
   .object({
-    AdminAccount: AWSAccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The account that is set as the Firewall Manager default administrator.',
-        }),
-    ).exactOptional(),
-    RoleStatus: AccountRoleStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the account that you set as the Firewall Manager default administrator.',
-        }),
-    ).exactOptional(),
+    AdminAccount: AWSAccountIdSchema.exactOptional().openapi({
+      description: 'The account that is set as the Firewall Manager default administrator.',
+    }),
+    RoleStatus: AccountRoleStatusSchema.exactOptional().openapi({
+      description:
+        'The status of the account that you set as the Firewall Manager default administrator.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetAdminAccountResponse')
 
 const GetAdminAccountRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetAdminAccountRequest' })
   .openapi('GetAdminAccountRequest')
 
@@ -344,30 +1761,18 @@ const AccountIdListSchema = z.array(AWSAccountIdSchema).openapi('AccountIdList')
 
 const AccountScopeSchema = z
   .object({
-    Accounts: AccountIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of accounts within the organization that the specified Firewall Manager administrator either can or cannot apply policies to, based on the value of <code>ExcludeSpecifiedAccounts</code>. If <code>ExcludeSpecifiedAccounts</code> is set to <code>true</code>, then the Firewall Manager administrator can apply policies to all members of the organization except for the accounts in this list. If <code>ExcludeSpecifiedAccounts</code> is set to <code>false</code>, then the Firewall Manager administrator can only apply policies to the accounts in this list.',
-        }),
-    ).exactOptional(),
-    AllAccountsEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A boolean value that indicates if the administrator can apply policies to all accounts within an organization. If true, the administrator can apply policies to all accounts within the organization. You can either enable management of all accounts through this operation, or you can specify a list of accounts to manage in <code>AccountScope$Accounts</code>. You cannot specify both.',
-        }),
-    ).exactOptional(),
-    ExcludeSpecifiedAccounts: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A boolean value that excludes the accounts in <code>AccountScope$Accounts</code> from the administrator's scope. If true, the Firewall Manager administrator can apply policies to all members of the organization except for the accounts listed in <code>AccountScope$Accounts</code>. You can either specify a list of accounts to exclude by <code>AccountScope$Accounts</code>, or you can enable management of all accounts by <code>AccountScope$AllAccountsEnabled</code>. You cannot specify both.",
-        }),
-    ).exactOptional(),
+    Accounts: AccountIdListSchema.exactOptional().openapi({
+      description:
+        'The list of accounts within the organization that the specified Firewall Manager administrator either can or cannot apply policies to, based on the value of <code>ExcludeSpecifiedAccounts</code>. If <code>ExcludeSpecifiedAccounts</code> is set to <code>true</code>, then the Firewall Manager administrator can apply policies to all members of the organization except for the accounts in this list. If <code>ExcludeSpecifiedAccounts</code> is set to <code>false</code>, then the Firewall Manager administrator can only apply policies to the accounts in this list.',
+    }),
+    AllAccountsEnabled: BooleanSchema.exactOptional().openapi({
+      description:
+        'A boolean value that indicates if the administrator can apply policies to all accounts within an organization. If true, the administrator can apply policies to all accounts within the organization. You can either enable management of all accounts through this operation, or you can specify a list of accounts to manage in <code>AccountScope$Accounts</code>. You cannot specify both.',
+    }),
+    ExcludeSpecifiedAccounts: BooleanSchema.exactOptional().openapi({
+      description:
+        "A boolean value that excludes the accounts in <code>AccountScope$Accounts</code> from the administrator's scope. If true, the Firewall Manager administrator can apply policies to all members of the organization except for the accounts listed in <code>AccountScope$Accounts</code>. You can either specify a list of accounts to exclude by <code>AccountScope$Accounts</code>, or you can enable management of all accounts by <code>AccountScope$AllAccountsEnabled</code>. You cannot specify both.",
+    }),
   })
   .openapi({
     description:
@@ -389,30 +1794,18 @@ const OrganizationalUnitIdListSchema = z
 
 const OrganizationalUnitScopeSchema = z
   .object({
-    OrganizationalUnits: OrganizationalUnitIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of OUs within the organization that the specified Firewall Manager administrator either can or cannot apply policies to, based on the value of <code>OrganizationalUnitScope$ExcludeSpecifiedOrganizationalUnits</code>. If <code>OrganizationalUnitScope$ExcludeSpecifiedOrganizationalUnits</code> is set to <code>true</code>, then the Firewall Manager administrator can apply policies to all OUs in the organization except for the OUs in this list. If <code>OrganizationalUnitScope$ExcludeSpecifiedOrganizationalUnits</code> is set to <code>false</code>, then the Firewall Manager administrator can only apply policies to the OUs in this list.',
-        }),
-    ).exactOptional(),
-    AllOrganizationalUnitsEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A boolean value that indicates if the administrator can apply policies to all OUs within an organization. If true, the administrator can manage all OUs within the organization. You can either enable management of all OUs through this operation, or you can specify OUs to manage in <code>OrganizationalUnitScope$OrganizationalUnits</code>. You cannot specify both.',
-        }),
-    ).exactOptional(),
-    ExcludeSpecifiedOrganizationalUnits: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A boolean value that excludes the OUs in <code>OrganizationalUnitScope$OrganizationalUnits</code> from the administrator's scope. If true, the Firewall Manager administrator can apply policies to all OUs in the organization except for the OUs listed in <code>OrganizationalUnitScope$OrganizationalUnits</code>. You can either specify a list of OUs to exclude by <code>OrganizationalUnitScope$OrganizationalUnits</code>, or you can enable management of all OUs by <code>OrganizationalUnitScope$AllOrganizationalUnitsEnabled</code>. You cannot specify both.",
-        }),
-    ).exactOptional(),
+    OrganizationalUnits: OrganizationalUnitIdListSchema.exactOptional().openapi({
+      description:
+        'The list of OUs within the organization that the specified Firewall Manager administrator either can or cannot apply policies to, based on the value of <code>OrganizationalUnitScope$ExcludeSpecifiedOrganizationalUnits</code>. If <code>OrganizationalUnitScope$ExcludeSpecifiedOrganizationalUnits</code> is set to <code>true</code>, then the Firewall Manager administrator can apply policies to all OUs in the organization except for the OUs in this list. If <code>OrganizationalUnitScope$ExcludeSpecifiedOrganizationalUnits</code> is set to <code>false</code>, then the Firewall Manager administrator can only apply policies to the OUs in this list.',
+    }),
+    AllOrganizationalUnitsEnabled: BooleanSchema.exactOptional().openapi({
+      description:
+        'A boolean value that indicates if the administrator can apply policies to all OUs within an organization. If true, the administrator can manage all OUs within the organization. You can either enable management of all OUs through this operation, or you can specify OUs to manage in <code>OrganizationalUnitScope$OrganizationalUnits</code>. You cannot specify both.',
+    }),
+    ExcludeSpecifiedOrganizationalUnits: BooleanSchema.exactOptional().openapi({
+      description:
+        "A boolean value that excludes the OUs in <code>OrganizationalUnitScope$OrganizationalUnits</code> from the administrator's scope. If true, the Firewall Manager administrator can apply policies to all OUs in the organization except for the OUs listed in <code>OrganizationalUnitScope$OrganizationalUnits</code>. You can either specify a list of OUs to exclude by <code>OrganizationalUnitScope$OrganizationalUnits</code>, or you can enable management of all OUs by <code>OrganizationalUnitScope$AllOrganizationalUnitsEnabled</code>. You cannot specify both.",
+    }),
   })
   .openapi({
     description:
@@ -432,22 +1825,14 @@ const AWSRegionListSchema = z.array(AWSRegionSchema).min(0).max(64).openapi('AWS
 
 const RegionScopeSchema = z
   .object({
-    Regions: AWSRegionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services Regions that the specified Firewall Manager administrator can perform actions in.',
-        }),
-    ).exactOptional(),
-    AllRegionsEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Allows the specified Firewall Manager administrator to manage all Amazon Web Services Regions.',
-        }),
-    ).exactOptional(),
+    Regions: AWSRegionListSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services Regions that the specified Firewall Manager administrator can perform actions in.',
+    }),
+    AllRegionsEnabled: BooleanSchema.exactOptional().openapi({
+      description:
+        'Allows the specified Firewall Manager administrator to manage all Amazon Web Services Regions.',
+    }),
   })
   .openapi({
     description:
@@ -479,22 +1864,14 @@ const SecurityServiceTypeListSchema = z
 
 const PolicyTypeScopeSchema = z
   .object({
-    PolicyTypes: SecurityServiceTypeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of policy types that the specified Firewall Manager administrator can manage.',
-        }),
-    ).exactOptional(),
-    AllPolicyTypesEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Allows the specified Firewall Manager administrator to manage all Firewall Manager policy types, except for third-party policy types. Third-party policy types can only be managed by the Firewall Manager default administrator.',
-        }),
-    ).exactOptional(),
+    PolicyTypes: SecurityServiceTypeListSchema.exactOptional().openapi({
+      description:
+        'The list of policy types that the specified Firewall Manager administrator can manage.',
+    }),
+    AllPolicyTypesEnabled: BooleanSchema.exactOptional().openapi({
+      description:
+        'Allows the specified Firewall Manager administrator to manage all Firewall Manager policy types, except for third-party policy types. Third-party policy types can only be managed by the Firewall Manager default administrator.',
+    }),
   })
   .openapi({
     description:
@@ -505,38 +1882,22 @@ const PolicyTypeScopeSchema = z
 
 const AdminScopeSchema = z
   .object({
-    AccountScope: AccountScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Defines the accounts that the specified Firewall Manager administrator can apply policies to.',
-        }),
-    ).exactOptional(),
-    OrganizationalUnitScope: OrganizationalUnitScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Defines the Organizations organizational units that the specified Firewall Manager administrator can apply policies to. For more information about OUs in Organizations, see <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_ous.html">Managing organizational units (OUs) </a> in the <i>Organizations User Guide</i>.',
-        }),
-    ).exactOptional(),
-    RegionScope: RegionScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Defines the Amazon Web Services Regions that the specified Firewall Manager administrator can perform actions in.',
-        }),
-    ).exactOptional(),
-    PolicyTypeScope: PolicyTypeScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Defines the Firewall Manager policy types that the specified Firewall Manager administrator can create and manage.',
-        }),
-    ).exactOptional(),
+    AccountScope: AccountScopeSchema.exactOptional().openapi({
+      description:
+        'Defines the accounts that the specified Firewall Manager administrator can apply policies to.',
+    }),
+    OrganizationalUnitScope: OrganizationalUnitScopeSchema.exactOptional().openapi({
+      description:
+        'Defines the Organizations organizational units that the specified Firewall Manager administrator can apply policies to. For more information about OUs in Organizations, see <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_ous.html">Managing organizational units (OUs) </a> in the <i>Organizations User Guide</i>.',
+    }),
+    RegionScope: RegionScopeSchema.exactOptional().openapi({
+      description:
+        'Defines the Amazon Web Services Regions that the specified Firewall Manager administrator can perform actions in.',
+    }),
+    PolicyTypeScope: PolicyTypeScopeSchema.exactOptional().openapi({
+      description:
+        'Defines the Firewall Manager policy types that the specified Firewall Manager administrator can create and manage.',
+    }),
   })
   .openapi({
     description:
@@ -551,32 +1912,22 @@ const OrganizationStatusSchema = z
 
 const GetAdminScopeResponseSchema = z
   .object({
-    AdminScope: AdminScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains details about the administrative scope of the requested account.',
-        }),
-    ).exactOptional(),
-    Status: OrganizationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The current status of the request to onboard a member account as an Firewall Manager administator.</p> <ul> <li> <p> <code>ONBOARDING</code> - The account is onboarding to Firewall Manager as an administrator.</p> </li> <li> <p> <code>ONBOARDING_COMPLETE</code> - Firewall Manager The account is onboarded to Firewall Manager as an administrator, and can perform actions on the resources defined in their <a>AdminScope</a>.</p> </li> <li> <p> <code>OFFBOARDING</code> - The account is being removed as an Firewall Manager administrator.</p> </li> <li> <p> <code>OFFBOARDING_COMPLETE</code> - The account has been removed as an Firewall Manager administrator.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    AdminScope: AdminScopeSchema.exactOptional().openapi({
+      description: 'Contains details about the administrative scope of the requested account.',
+    }),
+    Status: OrganizationStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The current status of the request to onboard a member account as an Firewall Manager administator.</p> <ul> <li> <p> <code>ONBOARDING</code> - The account is onboarding to Firewall Manager as an administrator.</p> </li> <li> <p> <code>ONBOARDING_COMPLETE</code> - Firewall Manager The account is onboarded to Firewall Manager as an administrator, and can perform actions on the resources defined in their <a>AdminScope</a>.</p> </li> <li> <p> <code>OFFBOARDING</code> - The account is being removed as an Firewall Manager administrator.</p> </li> <li> <p> <code>OFFBOARDING_COMPLETE</code> - The account has been removed as an Firewall Manager administrator.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetAdminScopeResponse')
 
 const GetAdminScopeRequestSchema = z
   .object({
-    AdminAccount: AWSAccountIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The administator account that you want to get the details for.' }),
-    ),
+    AdminAccount: AWSAccountIdSchema.openapi({
+      description: 'The administator account that you want to get the details for.',
+    }),
   })
   .openapi({ required: ['AdminAccount'], title: 'GetAdminScopeRequest' })
   .openapi('GetAdminScopeRequest')
@@ -604,24 +1955,16 @@ const ProtocolSchema = z
   .max(20)
   .openapi('Protocol')
 
-const IPPortNumberSchema = z.int().min(0).max(65535).openapi('IPPortNumber')
-
 const AppSchema = z
   .object({
-    AppName: ResourceNameSchema.and(z.any().openapi({ description: "The application's name." })),
-    Protocol: ProtocolSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IP protocol name or number. The name can be one of <code>tcp</code>, <code>udp</code>, or <code>icmp</code>. For information on possible numbers, see <a href="https://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml">Protocol Numbers</a>.',
-        }),
-    ),
-    Port: IPPortNumberSchema.and(
-      z
-        .any()
-        .openapi({ description: "The application's port number, for example <code>80</code>." }),
-    ),
+    AppName: ResourceNameSchema.openapi({ description: "The application's name." }),
+    Protocol: ProtocolSchema.openapi({
+      description:
+        'The IP protocol name or number. The name can be one of <code>tcp</code>, <code>udp</code>, or <code>icmp</code>. For information on possible numbers, see <a href="https://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml">Protocol Numbers</a>.',
+    }),
+    Port: IPPortNumberSchema.openapi({
+      description: "The application's port number, for example <code>80</code>.",
+    }),
   })
   .openapi({
     required: ['AppName', 'Protocol', 'Port'],
@@ -635,49 +1978,29 @@ const PreviousAppsListSchema = z.record(z.string(), AppsListSchema).openapi('Pre
 
 const AppsListDataSchema = z
   .object({
-    ListId: ListIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Firewall Manager applications list.' }),
-    ).exactOptional(),
-    ListName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the Firewall Manager applications list.' }),
-    ),
-    ListUpdateToken: UpdateTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for each update to the list. When you update the list, the update token must match the token of the current version of the application list. You can retrieve the update token by getting the list. ',
-        }),
-    ).exactOptional(),
-    CreateTime: TimeStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time that the Firewall Manager applications list was created.',
-        }),
-    ).exactOptional(),
-    LastUpdateTime: TimeStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time that the Firewall Manager applications list was last updated.',
-        }),
-    ).exactOptional(),
-    AppsList: AppsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array of applications in the Firewall Manager applications list.',
-        }),
-    ),
-    PreviousAppsList: PreviousAppsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A map of previous version numbers to their corresponding <code>App</code> object arrays.',
-        }),
-    ).exactOptional(),
+    ListId: ListIdSchema.exactOptional().openapi({
+      description: 'The ID of the Firewall Manager applications list.',
+    }),
+    ListName: ResourceNameSchema.openapi({
+      description: 'The name of the Firewall Manager applications list.',
+    }),
+    ListUpdateToken: UpdateTokenSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for each update to the list. When you update the list, the update token must match the token of the current version of the application list. You can retrieve the update token by getting the list. ',
+    }),
+    CreateTime: TimeStampSchema.exactOptional().openapi({
+      description: 'The time that the Firewall Manager applications list was created.',
+    }),
+    LastUpdateTime: TimeStampSchema.exactOptional().openapi({
+      description: 'The time that the Firewall Manager applications list was last updated.',
+    }),
+    AppsList: AppsListSchema.openapi({
+      description: 'An array of applications in the Firewall Manager applications list.',
+    }),
+    PreviousAppsList: PreviousAppsListSchema.exactOptional().openapi({
+      description:
+        'A map of previous version numbers to their corresponding <code>App</code> object arrays.',
+    }),
   })
   .openapi({
     required: ['ListName', 'AppsList'],
@@ -694,48 +2017,29 @@ const ResourceArnSchema = z
 
 const GetAppsListResponseSchema = z
   .object({
-    AppsList: AppsListDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the specified Firewall Manager applications list.',
-        }),
-    ).exactOptional(),
-    AppsListArn: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the applications list.' }),
-    ).exactOptional(),
+    AppsList: AppsListDataSchema.exactOptional().openapi({
+      description: 'Information about the specified Firewall Manager applications list.',
+    }),
+    AppsListArn: ResourceArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the applications list.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetAppsListResponse')
 
 const GetAppsListRequestSchema = z
   .object({
-    ListId: ListIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the Firewall Manager applications list that you want the details for.',
-        }),
-    ),
-    DefaultList: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the list to retrieve is a default list owned by Firewall Manager.',
-        }),
-    ).exactOptional(),
+    ListId: ListIdSchema.openapi({
+      description:
+        'The ID of the Firewall Manager applications list that you want the details for.',
+    }),
+    DefaultList: BooleanSchema.exactOptional().openapi({
+      description:
+        'Specifies whether the list to retrieve is a default list owned by Firewall Manager.',
+    }),
   })
   .openapi({ required: ['ListId'], title: 'GetAppsListRequest' })
   .openapi('GetAppsListRequest')
-
-const ResourceIdSchema = z
-  .string()
-  .regex(/^([\p{L}\p{Z}\p{N}_.:\/=+\-@]*)$/u)
-  .min(1)
-  .max(1024)
-  .openapi('ResourceId')
 
 const ViolationReasonSchema = z
   .enum([
@@ -770,44 +2074,23 @@ const ViolationReasonSchema = z
   ])
   .openapi('ViolationReason')
 
-const ResourceTypeSchema = z
-  .string()
-  .regex(/^([\p{L}\p{Z}\p{N}_.:\/=+\-@]*)$/u)
-  .min(1)
-  .max(128)
-  .openapi('ResourceType')
-
-const LengthBoundedStringSchema = z.string().min(0).max(1024).openapi('LengthBoundedString')
-
 const ComplianceViolatorMetadataSchema = z
   .record(z.string(), LengthBoundedStringSchema)
   .openapi('ComplianceViolatorMetadata')
 
 const ComplianceViolatorSchema = z
   .object({
-    ResourceId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The resource ID.' }),
-    ).exactOptional(),
-    ViolationReason: ViolationReasonSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The reason that the resource is not protected by the policy.' }),
-    ).exactOptional(),
-    ResourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The resource type. This is in the format shown in the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html">Amazon Web Services Resource Types Reference</a>. For example: <code>AWS::ElasticLoadBalancingV2::LoadBalancer</code>, <code>AWS::CloudFront::Distribution</code>, or <code>AWS::NetworkFirewall::FirewallPolicy</code>.',
-        }),
-    ).exactOptional(),
-    Metadata: ComplianceViolatorMetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "Metadata about the resource that doesn't comply with the policy scope.",
-        }),
-    ).exactOptional(),
+    ResourceId: ResourceIdSchema.exactOptional().openapi({ description: 'The resource ID.' }),
+    ViolationReason: ViolationReasonSchema.exactOptional().openapi({
+      description: 'The reason that the resource is not protected by the policy.',
+    }),
+    ResourceType: ResourceTypeSchema.exactOptional().openapi({
+      description:
+        'The resource type. This is in the format shown in the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html">Amazon Web Services Resource Types Reference</a>. For example: <code>AWS::ElasticLoadBalancingV2::LoadBalancer</code>, <code>AWS::CloudFront::Distribution</code>, or <code>AWS::NetworkFirewall::FirewallPolicy</code>.',
+    }),
+    Metadata: ComplianceViolatorMetadataSchema.exactOptional().openapi({
+      description: "Metadata about the resource that doesn't comply with the policy scope.",
+    }),
   })
   .openapi({
     description: 'Details of the resource that is not protected by the policy.',
@@ -828,51 +2111,31 @@ const IssueInfoMapSchema = z.record(z.string(), DetailedInfoSchema).openapi('Iss
 
 const PolicyComplianceDetailSchema = z
   .object({
-    PolicyOwner: AWSAccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Web Services account that created the Firewall Manager policy.',
-        }),
-    ).exactOptional(),
-    PolicyId: PolicyIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Firewall Manager policy.' }),
-    ).exactOptional(),
-    MemberAccount: AWSAccountIdSchema.and(
-      z.any().openapi({ description: 'The Amazon Web Services account ID.' }),
-    ).exactOptional(),
-    Violators: ComplianceViolatorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An array of resources that aren't protected by the WAF or Shield Advanced policy or that aren't in compliance with the security group policy.",
-        }),
-    ).exactOptional(),
-    EvaluationLimitExceeded: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates if over 100 resources are noncompliant with the Firewall Manager policy.',
-        }),
-    ).exactOptional(),
-    ExpiredAt: TimeStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A timestamp that indicates when the returned information should be considered out of date.',
-        }),
-    ).exactOptional(),
-    IssueInfoMap: IssueInfoMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Details about problems with dependent services, such as WAF or Config, and the error message received that indicates the problem with the service.',
-        }),
-    ).exactOptional(),
+    PolicyOwner: AWSAccountIdSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services account that created the Firewall Manager policy.',
+    }),
+    PolicyId: PolicyIdSchema.exactOptional().openapi({
+      description: 'The ID of the Firewall Manager policy.',
+    }),
+    MemberAccount: AWSAccountIdSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services account ID.',
+    }),
+    Violators: ComplianceViolatorsSchema.exactOptional().openapi({
+      description:
+        "An array of resources that aren't protected by the WAF or Shield Advanced policy or that aren't in compliance with the security group policy.",
+    }),
+    EvaluationLimitExceeded: BooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates if over 100 resources are noncompliant with the Firewall Manager policy.',
+    }),
+    ExpiredAt: TimeStampSchema.exactOptional().openapi({
+      description:
+        'A timestamp that indicates when the returned information should be considered out of date.',
+    }),
+    IssueInfoMap: IssueInfoMapSchema.exactOptional().openapi({
+      description:
+        'Details about problems with dependent services, such as WAF or Config, and the error message received that indicates the problem with the service.',
+    }),
   })
   .openapi({
     description:
@@ -883,58 +2146,42 @@ const PolicyComplianceDetailSchema = z
 
 const GetComplianceDetailResponseSchema = z
   .object({
-    PolicyComplianceDetail: PolicyComplianceDetailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the resources and the policy that you specified in the <code>GetComplianceDetail</code> request.',
-        }),
-    ).exactOptional(),
+    PolicyComplianceDetail: PolicyComplianceDetailSchema.exactOptional().openapi({
+      description:
+        'Information about the resources and the policy that you specified in the <code>GetComplianceDetail</code> request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetComplianceDetailResponse')
 
 const GetComplianceDetailRequestSchema = z
   .object({
-    PolicyId: PolicyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the policy that you want to get the details for. <code>PolicyId</code> is returned by <code>PutPolicy</code> and by <code>ListPolicies</code>.',
-        }),
-    ),
-    MemberAccount: AWSAccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account that owns the resources that you want to get the details for.',
-        }),
-    ),
+    PolicyId: PolicyIdSchema.openapi({
+      description:
+        'The ID of the policy that you want to get the details for. <code>PolicyId</code> is returned by <code>PutPolicy</code> and by <code>ListPolicies</code>.',
+    }),
+    MemberAccount: AWSAccountIdSchema.openapi({
+      description:
+        'The Amazon Web Services account that owns the resources that you want to get the details for.',
+    }),
   })
   .openapi({ required: ['PolicyId', 'MemberAccount'], title: 'GetComplianceDetailRequest' })
   .openapi('GetComplianceDetailRequest')
 
 const GetNotificationChannelResponseSchema = z
   .object({
-    SnsTopicArn: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The SNS topic that records Firewall Manager activity. ' }),
-    ).exactOptional(),
-    SnsRoleName: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The IAM role that is used by Firewall Manager to record activity to SNS.',
-        }),
-    ).exactOptional(),
+    SnsTopicArn: ResourceArnSchema.exactOptional().openapi({
+      description: 'The SNS topic that records Firewall Manager activity. ',
+    }),
+    SnsRoleName: ResourceArnSchema.exactOptional().openapi({
+      description: 'The IAM role that is used by Firewall Manager to record activity to SNS.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetNotificationChannelResponse')
 
 const GetNotificationChannelRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetNotificationChannelRequest' })
   .openapi('GetNotificationChannelRequest')
 
@@ -945,27 +2192,16 @@ const PolicyUpdateTokenSchema = z
   .max(1024)
   .openapi('PolicyUpdateToken')
 
-const ManagedServiceDataSchema = z
-  .string()
-  .regex(/^((?!\\[nr]).)+/)
-  .min(1)
-  .max(10000)
-  .openapi('ManagedServiceData')
-
 const FirewallDeploymentModelSchema = z
   .enum(['CENTRALIZED', 'DISTRIBUTED'])
   .openapi('FirewallDeploymentModel')
 
 const NetworkFirewallPolicySchema = z
   .object({
-    FirewallDeploymentModel: FirewallDeploymentModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Defines the deployment model to use for the firewall policy. To use a distributed model, set <a href="https://docs.aws.amazon.com/fms/2018-01-01/APIReference/API_PolicyOption.html">PolicyOption</a> to <code>NULL</code>.',
-        }),
-    ).exactOptional(),
+    FirewallDeploymentModel: FirewallDeploymentModelSchema.exactOptional().openapi({
+      description:
+        'Defines the deployment model to use for the firewall policy. To use a distributed model, set <a href="https://docs.aws.amazon.com/fms/2018-01-01/APIReference/API_PolicyOption.html">PolicyOption</a> to <code>NULL</code>.',
+    }),
   })
   .openapi({
     description:
@@ -976,13 +2212,9 @@ const NetworkFirewallPolicySchema = z
 
 const ThirdPartyFirewallPolicySchema = z
   .object({
-    FirewallDeploymentModel: FirewallDeploymentModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Defines the deployment model to use for the third-party firewall policy.',
-        }),
-    ).exactOptional(),
+    FirewallDeploymentModel: FirewallDeploymentModelSchema.exactOptional().openapi({
+      description: 'Defines the deployment model to use for the third-party firewall policy.',
+    }),
   })
   .openapi({
     description: 'Configures the deployment model for the third-party firewall.',
@@ -992,16 +2224,12 @@ const ThirdPartyFirewallPolicySchema = z
 
 const PolicyOptionSchema = z
   .object({
-    NetworkFirewallPolicy: NetworkFirewallPolicySchema.and(
-      z
-        .any()
-        .openapi({ description: 'Defines the deployment model to use for the firewall policy.' }),
-    ).exactOptional(),
-    ThirdPartyFirewallPolicy: ThirdPartyFirewallPolicySchema.and(
-      z
-        .any()
-        .openapi({ description: 'Defines the policy options for a third-party firewall policy.' }),
-    ).exactOptional(),
+    NetworkFirewallPolicy: NetworkFirewallPolicySchema.exactOptional().openapi({
+      description: 'Defines the deployment model to use for the firewall policy.',
+    }),
+    ThirdPartyFirewallPolicy: ThirdPartyFirewallPolicySchema.exactOptional().openapi({
+      description: 'Defines the policy options for a third-party firewall policy.',
+    }),
   })
   .openapi({
     description:
@@ -1012,30 +2240,18 @@ const PolicyOptionSchema = z
 
 const SecurityServicePolicyDataSchema = z
   .object({
-    Type: SecurityServiceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The service that the policy is using to protect the resources. This specifies the type of policy that is created, either an WAF policy, a Shield Advanced policy, or a security group policy. For security group policies, Firewall Manager supports one security group for each common policy and for each content audit policy. This is an adjustable limit that you can increase by contacting Amazon Web Services Support.',
-        }),
-    ),
-    ManagedServiceData: ManagedServiceDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Details about the service that are specific to the service type, in JSON format. </p> <ul> <li> <p>Example: <code>DNS_FIREWALL</code> </p> <p> <code>"{\\"type\\":\\"DNS_FIREWALL\\",\\"preProcessRuleGroups\\":[{\\"ruleGroupId\\":\\"rslvr-frg-1\\",\\"priority\\":10}],\\"postProcessRuleGroups\\":[{\\"ruleGroupId\\":\\"rslvr-frg-2\\",\\"priority\\":9911}]}"</code> </p> <note> <p>Valid values for <code>preProcessRuleGroups</code> are between 1 and 99. Valid values for <code>postProcessRuleGroups</code> are between 9901 and 10000.</p> </note> </li> <li> <p>Example: <code>IMPORT_NETWORK_FIREWALL</code> <code>"{\\"type\\":\\"IMPORT_NETWORK_FIREWALL\\",\\"awsNetworkFirewallConfig\\":{\\"networkFirewallStatelessRuleGroupReferences\\":[{\\"resourceARN\\":\\"arn:aws:network-firewall:us-west-2:000000000000:stateless-rulegroup\\/rg1\\",\\"priority\\":1}],\\"networkFirewallStatelessDefaultActions\\":[\\"aws:drop\\"],\\"networkFirewallStatelessFragmentDefaultActions\\":[\\"aws:pass\\"],\\"networkFirewallStatelessCustomActions\\":[],\\"networkFirewallStatefulRuleGroupReferences\\":[{\\"resourceARN\\":\\"arn:aws:network-firewall:us-west-2:aws-managed:stateful-rulegroup\\/ThreatSignaturesEmergingEventsStrictOrder\\",\\"priority\\":8}],\\"networkFirewallStatefulEngineOptions\\":{\\"ruleOrder\\":\\"STRICT_ORDER\\"},\\"networkFirewallStatefulDefaultActions\\":[\\"aws:drop_strict\\"]}}"</code> </p> <p> <code>"{\\"type\\":\\"DNS_FIREWALL\\",\\"preProcessRuleGroups\\":[{\\"ruleGroupId\\":\\"rslvr-frg-1\\",\\"priority\\":10}],\\"postProcessRuleGroups\\":[{\\"ruleGroupId\\":\\"rslvr-frg-2\\",\\"priority\\":9911}]}"</code> </p> <note> <p>Valid values for <code>preProcessRuleGroups</code> are between 1 and 99. Valid values for <code>postProcessRuleGroups</code> are between 9901 and 10000.</p> </note> </li> <li> <p>Example: <code>NETWORK_FIREWALL</code> - Centralized deployment model</p> <p> <code>"{\\"type\\":\\"NETWORK_FIREWALL\\",\\"awsNetworkFirewallConfig\\":{\\"networkFirewallStatelessRuleGroupReferences\\":[{\\"resourceARN\\":\\"arn:aws:network-firewall:us-east-1:123456789011:stateless-rulegroup/test\\",\\"priority\\":1}],\\"networkFirewallStatelessDefaultActions\\":[\\"aws:forward_to_sfe\\",\\"customActionName\\"],\\"networkFirewallStatelessFragmentDefaultActions\\":[\\"aws:forward_to_sfe\\",\\"customActionName\\"],\\"networkFirewallStatelessCustomActions\\":[{\\"actionName\\":\\"customActionName\\",\\"actionDefinition\\":{\\"publishMetricAction\\":{\\"dimensions\\":[{\\"value\\":\\"metricdimensionvalue\\"}]}}}],\\"networkFirewallStatefulRuleGroupReferences\\":[{\\"resourceARN\\":\\"arn:aws:network-firewall:us-east-1:123456789011:stateful-rulegroup/test\\"}],\\"networkFirewallLoggingConfiguration\\":{\\"logDestinationConfigs\\":[{\\"logDestinationType\\":\\"S3\\",\\"logType\\":\\"ALERT\\",\\"logDestination\\":{\\"bucketName\\":\\"s3-bucket-name\\"}},{\\"logDestinationType\\":\\"S3\\",\\"logType\\":\\"FLOW\\",\\"logDestination\\":{\\"bucketName\\":\\"s3-bucket-name\\"}}],\\"overrideExistingConfig\\":true}},\\"firewallDeploymentModel\\":{\\"centralizedFirewallDeploymentModel\\":{\\"centralizedFirewallOrchestrationConfig\\":{\\"inspectionVpcIds\\":[{\\"resourceId\\":\\"vpc-1234\\",\\"accountId\\":\\"123456789011\\"}],\\"firewallCreationConfig\\":{\\"endpointLocation\\":{\\"availabilityZoneConfigList\\":[{\\"availabilityZoneId\\":null,\\"availabilityZoneName\\":\\"us-east-1a\\",\\"allowedIPV4CidrList\\":[\\"10.0.0.0/28\\"]}]}},\\"allowedIPV4CidrList\\":[]}}}}"</code> </p> <p> To use the centralized deployment model, you must set <a href="https://docs.aws.amazon.com/fms/2018-01-01/APIReference/API_PolicyOption.html">PolicyOption</a> to <code>CENTRALIZED</code>. </p> </li> <li> <p>Example: <code>NETWORK_FIREWALL</code> - Distributed deployment model with automatic Availability Zone configuration</p> <p> <code> "{\\"type\\":\\"NETWORK_FIREWALL\\",\\"networkFirewallStatelessRuleGroupReferences\\":[{\\"resourceARN\\":\\"arn:aws:network-firewall:us-east-1:123456789011:stateless-rulegroup/test\\",\\"priority\\":1}],\\"networkFirewallStatelessDefaultActions\\":[\\"aws:forward_to_sfe\\",\\"customActionName\\"],\\"networkFirewallStatelessFragmentDefaultActions\\":[\\"aws:forward_to_sfe\\",\\"customActionName\\"],\\"networkFirewallStatelessCustomActions\\":[{\\"actionName\\":\\"customActionName\\",\\"actionDefinition\\":{\\"publishMetricAction\\":{\\"dimensions\\":[{\\"value\\":\\"metricdimensionvalue\\"}]}}}],\\"networkFirewallStatefulRuleGroupReferences\\":[{\\"resourceARN\\":\\"arn:aws:network-firewall:us-east-1:123456789011:stateful-rulegroup/test\\"}],\\"networkFirewallOrchestrationConfig\\":{\\"singleFirewallEndpointPerVPC\\":false,\\"allowedIPV4CidrList\\":[\\"10.0.0.0/28\\",\\"192.168.0.0/28\\"],\\"routeManagementAction\\":\\"OFF\\"},\\"networkFirewallLoggingConfiguration\\":{\\"logDestinationConfigs\\":[{\\"logDestinationType\\":\\"S3\\",\\"logType\\":\\"ALERT\\",\\"logDestination\\":{\\"bucketName\\":\\"s3-bucket-name\\"}},{\\"logDestinationType\\":\\"S3\\",\\"logType\\":\\"FLOW\\",\\"logDestination\\":{\\"bucketName\\":\\"s3-bucket-name\\"}}],\\"overrideExistingConfig\\":true}}" </code> </p> <p> With automatic Availbility Zone configuration, Firewall Manager chooses which Availability Zones to create the endpoints in. To use the distributed deployment model, you must set <a href="https://docs.aws.amazon.com/fms/2018-01-01/APIReference/API_PolicyOption.html">PolicyOption</a> to <code>NULL</code>. </p> </li> <li> <p>Example: <code>NETWORK_FIREWALL</code> - Distributed deployment model with automatic Availability Zone configuration and route management</p> <p> <code> "{\\"type\\":\\"NETWORK_FIREWALL\\",\\"networkFirewallStatelessRuleGroupReferences\\":[{\\"resourceARN\\":\\"arn:aws:network-firewall:us-east-1:123456789011:stateless-rulegroup/test\\",\\"priority\\":1}],\\"networkFirewallStatelessDefaultActions\\":[\\"aws:forward_to_sfe\\",\\"customActionName\\"],\\"networkFirewallStatelessFragmentDefaultActions\\":[\\"aws:forward_to_sfe\\",\\"customActionName\\"],\\"networkFirewallStatelessCustomActions\\":[{\\"actionName\\":\\"customActionName\\",\\"actionDefinition\\":{\\"publishMetricAction\\":{\\"dimensions\\":[{\\"value\\":\\"metricdimensionvalue\\"}]}}}],\\"networkFirewallStatefulRuleGroupReferences\\":[{\\"resourceARN\\":\\"arn:aws:network-firewall:us-east-1:123456789011:stateful-rulegroup/test\\"}],\\"networkFirewallOrchestrationConfig\\":{\\"singleFirewallEndpointPerVPC\\":false,\\"allowedIPV4CidrList\\":[\\"10.0.0.0/28\\",\\"192.168.0.0/28\\"],\\"routeManagementAction\\":\\"MONITOR\\",\\"routeManagementTargetTypes\\":[\\"InternetGateway\\"]},\\"networkFirewallLoggingConfiguration\\":{\\"logDestinationConfigs\\":[{\\"logDestinationType\\":\\"S3\\",\\"logType\\":\\"ALERT\\",\\"logDestination\\":{\\"bucketName\\":\\"s3-bucket-name\\"}},{\\"logDestinationType\\":\\"S3\\",\\"logType\\": \\"FLOW\\",\\"logDestination\\":{\\"bucketName\\":\\"s3-bucket-name\\"}}],\\"overrideExistingConfig\\":true}}" </code> </p> <p>To use the distributed deployment model, you must set <a href="https://docs.aws.amazon.com/fms/2018-01-01/APIReference/API_PolicyOption.html">PolicyOption</a> to <code>NULL</code>. </p> </li> <li> <p>Example: <code>NETWORK_FIREWALL</code> - Distributed deployment model with custom Availability Zone configuration</p> <p> <code>"{\\"type\\":\\"NETWORK_FIREWALL\\",\\"networkFirewallStatelessRuleGroupReferences\\":[{\\"resourceARN\\":\\"arn:aws:network-firewall:us-east-1:123456789011:stateless-rulegroup/test\\",\\"priority\\":1}],\\"networkFirewallStatelessDefaultActions\\":[\\"aws:forward_to_sfe\\",\\"customActionName\\"],\\"networkFirewallStatelessFragmentDefaultActions\\":[\\"aws:forward_to_sfe\\",\\"fragmentcustomactionname\\"],\\"networkFirewallStatelessCustomActions\\":[{\\"actionName\\":\\"customActionName\\", \\"actionDefinition\\":{\\"publishMetricAction\\":{\\"dimensions\\":[{\\"value\\":\\"metricdimensionvalue\\"}]}}},{\\"actionName\\":\\"fragmentcustomactionname\\",\\"actionDefinition\\":{\\"publishMetricAction\\":{\\"dimensions\\":[{\\"value\\":\\"fragmentmetricdimensionvalue\\"}]}}}],\\"networkFirewallStatefulRuleGroupReferences\\":[{\\"resourceARN\\":\\"arn:aws:network-firewall:us-east-1:123456789011:stateful-rulegroup/test\\"}],\\"networkFirewallOrchestrationConfig\\":{\\"firewallCreationConfig\\":{ \\"endpointLocation\\":{\\"availabilityZoneConfigList\\":[{\\"availabilityZoneName\\":\\"us-east-1a\\",\\"allowedIPV4CidrList\\":[\\"10.0.0.0/28\\"]},{\\"availabilityZoneName\\":\\"us-east-1b\\",\\"allowedIPV4CidrList\\":[ \\"10.0.0.0/28\\"]}]} },\\"singleFirewallEndpointPerVPC\\":false,\\"allowedIPV4CidrList\\":null,\\"routeManagementAction\\":\\"OFF\\",\\"networkFirewallLoggingConfiguration\\":{\\"logDestinationConfigs\\":[{\\"logDestinationType\\":\\"S3\\",\\"logType\\":\\"ALERT\\",\\"logDestination\\":{\\"bucketName\\":\\"s3-bucket-name\\"}},{\\"logDestinationType\\":\\"S3\\",\\"logType\\":\\"FLOW\\",\\"logDestination\\":{\\"bucketName\\":\\"s3-bucket-name\\"}}],\\"overrideExistingConfig\\":boolean}}" </code> </p> <p> With custom Availability Zone configuration, you define which specific Availability Zones to create endpoints in by configuring <code>firewallCreationConfig</code>. To configure the Availability Zones in <code>firewallCreationConfig</code>, specify either the <code>availabilityZoneName</code> or <code>availabilityZoneId</code> parameter, not both parameters. </p> <p>To use the distributed deployment model, you must set <a href="https://docs.aws.amazon.com/fms/2018-01-01/APIReference/API_PolicyOption.html">PolicyOption</a> to <code>NULL</code>. </p> </li> <li> <p>Example: <code>NETWORK_FIREWALL</code> - Distributed deployment model with custom Availability Zone configuration and route management</p> <p> <code>"{\\"type\\":\\"NETWORK_FIREWALL\\",\\"networkFirewallStatelessRuleGroupReferences\\":[{\\"resourceARN\\":\\"arn:aws:network-firewall:us-east-1:123456789011:stateless-rulegroup/test\\",\\"priority\\":1}],\\"networkFirewallStatelessDefaultActions\\":[\\"aws:forward_to_sfe\\",\\"customActionName\\"],\\"networkFirewallStatelessFragmentDefaultActions\\":[\\"aws:forward_to_sfe\\",\\"fragmentcustomactionname\\"],\\"networkFirewallStatelessCustomActions\\":[{\\"actionName\\":\\"customActionName\\",\\"actionDefinition\\":{\\"publishMetricAction\\":{\\"dimensions\\":[{\\"value\\":\\"metricdimensionvalue\\"}]}}},{\\"actionName\\":\\"fragmentcustomactionname\\",\\"actionDefinition\\":{\\"publishMetricAction\\":{\\"dimensions\\":[{\\"value\\":\\"fragmentmetricdimensionvalue\\"}]}}}],\\"networkFirewallStatefulRuleGroupReferences\\":[{\\"resourceARN\\":\\"arn:aws:network-firewall:us-east-1:123456789011:stateful-rulegroup/test\\"}],\\"networkFirewallOrchestrationConfig\\":{\\"firewallCreationConfig\\":{\\"endpointLocation\\":{\\"availabilityZoneConfigList\\":[{\\"availabilityZoneName\\":\\"us-east-1a\\",\\"allowedIPV4CidrList\\":[\\"10.0.0.0/28\\"]},{\\"availabilityZoneName\\":\\"us-east-1b\\",\\"allowedIPV4CidrList\\":[\\"10.0.0.0/28\\"]}]}},\\"singleFirewallEndpointPerVPC\\":false,\\"allowedIPV4CidrList\\":null,\\"routeManagementAction\\":\\"MONITOR\\",\\"routeManagementTargetTypes\\":[\\"InternetGateway\\"],\\"routeManagementConfig\\":{\\"allowCrossAZTrafficIfNoEndpoint\\":true}},\\"networkFirewallLoggingConfiguration\\":{\\"logDestinationConfigs\\":[{\\"logDestinationType\\":\\"S3\\",\\"logType\\":\\"ALERT\\",\\"logDestination\\":{\\"bucketName\\":\\"s3-bucket-name\\"}},{\\"logDestinationType\\":\\"S3\\",\\"logType\\":\\"FLOW\\",\\"logDestination\\":{\\"bucketName\\":\\"s3-bucket-name\\"}}],\\"overrideExistingConfig\\":boolean}}" </code> </p> <p>To use the distributed deployment model, you must set <a href="https://docs.aws.amazon.com/fms/2018-01-01/APIReference/API_PolicyOption.html">PolicyOption</a> to <code>NULL</code>. </p> </li> <li> <p>Example: <code>THIRD_PARTY_FIREWALL</code> </p> <p> <code>"{ "type":"THIRD_PARTY_FIREWALL", "thirdPartyFirewall":"PALO_ALTO_NETWORKS_CLOUD_NGFW", "thirdPartyFirewallConfig":{ "thirdPartyFirewallPolicyList":["global-1"] }, "firewallDeploymentModel":{ "distributedFirewallDeploymentModel":{ "distributedFirewallOrchestrationConfig":{ "firewallCreationConfig":{ "endpointLocation":{ "availabilityZoneConfigList":[ { "availabilityZoneName":"${AvailabilityZone}" } ] } }, "allowedIPV4CidrList":[ ] } } } }"</code> </p> </li> <li> <p>Example: <code>SECURITY_GROUPS_COMMON</code> </p> <p> <code>"{\\"type\\":\\"SECURITY_GROUPS_COMMON\\",\\"revertManualSecurityGroupChanges\\":false,\\"exclusiveResourceSecurityGroupManagement\\":false, \\"applyToAllEC2InstanceENIs\\":false,\\"securityGroups\\":[{\\"id\\":\\" sg-000e55995d61a06bd\\"}]}"</code> </p> </li> <li> <p>Example: <code>SECURITY_GROUPS_COMMON</code> - Security group tag distribution </p> <p> <code>""{\\"type\\":\\"SECURITY_GROUPS_COMMON\\",\\"securityGroups\\":[{\\"id\\":\\"sg-000e55995d61a06bd\\"}],\\"revertManualSecurityGroupChanges\\":true,\\"exclusiveResourceSecurityGroupManagement\\":false,\\"applyToAllEC2InstanceENIs\\":false,\\"includeSharedVPC\\":false,\\"enableTagDistribution\\":true}""</code> </p> <p> Firewall Manager automatically distributes tags from the primary group to the security groups created by this policy. To use security group tag distribution, you must also set <code>revertManualSecurityGroupChanges</code> to <code>true</code>, otherwise Firewall Manager won\'t be able to create the policy. When you enable <code>revertManualSecurityGroupChanges</code>, Firewall Manager identifies and reports when the security groups created by this policy become non-compliant. </p> <p> Firewall Manager won\'t distrubute system tags added by Amazon Web Services services into the replica security groups. System tags begin with the <code>aws:</code> prefix. </p> </li> <li> <p>Example: Shared VPCs. Apply the preceding policy to resources in shared VPCs as well as to those in VPCs that the account owns </p> <p> <code>"{\\"type\\":\\"SECURITY_GROUPS_COMMON\\",\\"revertManualSecurityGroupChanges\\":false,\\"exclusiveResourceSecurityGroupManagement\\":false, \\"applyToAllEC2InstanceENIs\\":false,\\"includeSharedVPC\\":true,\\"securityGroups\\":[{\\"id\\":\\" sg-000e55995d61a06bd\\"}]}"</code> </p> </li> <li> <p>Example: <code>SECURITY_GROUPS_CONTENT_AUDIT</code> </p> <p> <code>"{\\"type\\":\\"SECURITY_GROUPS_CONTENT_AUDIT\\",\\"securityGroups\\":[{\\"id\\":\\"sg-000e55995d61a06bd\\"}],\\"securityGroupAction\\":{\\"type\\":\\"ALLOW\\"}}"</code> </p> <p>The security group action for content audit can be <code>ALLOW</code> or <code>DENY</code>. For <code>ALLOW</code>, all in-scope security group rules must be within the allowed range of the policy\'s security group rules. For <code>DENY</code>, all in-scope security group rules must not contain a value or a range that matches a rule value or range in the policy security group.</p> </li> <li> <p>Example: <code>SECURITY_GROUPS_USAGE_AUDIT</code> </p> <p> <code>"{\\"type\\":\\"SECURITY_GROUPS_USAGE_AUDIT\\",\\"deleteUnusedSecurityGroups\\":true,\\"coalesceRedundantSecurityGroups\\":true}"</code> </p> </li> <li> <p>Specification for <code>SHIELD_ADVANCED</code> for Amazon CloudFront distributions </p> <p> <code>"{\\"type\\":\\"SHIELD_ADVANCED\\",\\"automaticResponseConfiguration\\": {\\"automaticResponseStatus\\":\\"ENABLED|IGNORED|DISABLED\\", \\"automaticResponseAction\\":\\"BLOCK|COUNT\\"}, \\"overrideCustomerWebaclClassic\\":true|false}"</code> </p> <p>For example: <code>"{\\"type\\":\\"SHIELD_ADVANCED\\",\\"automaticResponseConfiguration\\": {\\"automaticResponseStatus\\":\\"ENABLED\\", \\"automaticResponseAction\\":\\"COUNT\\"}}"</code> </p> <p>The default value for <code>automaticResponseStatus</code> is <code>IGNORED</code>. The value for <code>automaticResponseAction</code> is only required when <code>automaticResponseStatus</code> is set to <code>ENABLED</code>. The default value for <code>overrideCustomerWebaclClassic</code> is <code>false</code>.</p> <p>For other resource types that you can protect with a Shield Advanced policy, this <code>ManagedServiceData</code> configuration is an empty string.</p> </li> <li> <p>Example: <code>WAFV2</code> - Account takeover prevention and Bot Control managed rule groups, and rule action override </p> <p> <code>"{\\"type\\":\\"WAFV2\\",\\"preProcessRuleGroups\\":[{\\"ruleGroupArn\\":null,\\"overrideAction\\":{\\"type\\":\\"NONE\\"},\\"managedRuleGroupIdentifier\\":{\\"versionEnabled\\":null,\\"version\\":null,\\"vendorName\\":\\"AWS\\",\\"managedRuleGroupName\\":\\"AWSManagedRulesATPRuleSet\\",\\"managedRuleGroupConfigs\\":[{\\"awsmanagedRulesATPRuleSet\\":{\\"loginPath\\":\\"/loginpath\\",\\"requestInspection\\":{\\"payloadType\\":\\"FORM_ENCODED|JSON\\",\\"usernameField\\":{\\"identifier\\":\\"/form/username\\"},\\"passwordField\\":{\\"identifier\\":\\"/form/password\\"}}}}]},\\"ruleGroupType\\":\\"ManagedRuleGroup\\",\\"excludeRules\\":[],\\"sampledRequestsEnabled\\":true},{\\"ruleGroupArn\\":null,\\"overrideAction\\":{\\"type\\":\\"NONE\\"},\\"managedRuleGroupIdentifier\\":{\\"versionEnabled\\":null,\\"version\\":null,\\"vendorName\\":\\"AWS\\",\\"managedRuleGroupName\\":\\"AWSManagedRulesBotControlRuleSet\\",\\"managedRuleGroupConfigs\\":[{\\"awsmanagedRulesBotControlRuleSet\\":{\\"inspectionLevel\\":\\"TARGETED|COMMON\\"}}]},\\"ruleGroupType\\":\\"ManagedRuleGroup\\",\\"excludeRules\\":[],\\"sampledRequestsEnabled\\":true,\\"ruleActionOverrides\\":[{\\"name\\":\\"Rule1\\",\\"actionToUse\\":{\\"allow|block|count|captcha|challenge\\":{}}},{\\"name\\":\\"Rule2\\",\\"actionToUse\\":{\\"allow|block|count|captcha|challenge\\":{}}}]}],\\"postProcessRuleGroups\\":[],\\"defaultAction\\":{\\"type\\":\\"ALLOW\\"},\\"customRequestHandling\\":null,\\"customResponse\\":null,\\"overrideCustomerWebACLAssociation\\":false,\\"loggingConfiguration\\":null,\\"sampledRequestsEnabledForDefaultActions\\":true}"</code> </p> <ul> <li> <p>Fraud Control account takeover prevention (ATP) - For information about the properties available for <code>AWSManagedRulesATPRuleSet</code> managed rule groups, see <a href="https://docs.aws.amazon.com/waf/latest/APIReference/API_AWSManagedRulesATPRuleSet.html">AWSManagedRulesATPRuleSet</a> in the <i>WAF API Reference</i>.</p> </li> <li> <p>Bot Control - For information about <code>AWSManagedRulesBotControlRuleSet</code> managed rule groups, see <a href="https://docs.aws.amazon.com/waf/latest/APIReference/API_AWSManagedRulesBotControlRuleSet.html">AWSManagedRulesBotControlRuleSet</a> in the <i>WAF API Reference</i>.</p> </li> <li> <p>Rule action overrides - Firewall Manager supports rule action overrides only for managed rule groups. To configure a <code>RuleActionOverrides</code> add the <code>Name</code> of the rule to override, and <code>ActionToUse</code>, which is the new action to use for the rule. For information about using rule action override, see <a href="https://docs.aws.amazon.com/waf/latest/APIReference/API_RuleActionOverride.html">RuleActionOverride</a> in the <i>WAF API Reference</i>.</p> </li> </ul> </li> <li> <p>Example: <code>WAFV2</code> - <code>CAPTCHA</code> and <code>Challenge</code> configs </p> <p> <code>"{\\"type\\":\\"WAFV2\\",\\"preProcessRuleGroups\\":[{\\"ruleGroupArn\\":null,\\"overrideAction\\":{\\"type\\":\\"NONE\\"},\\"managedRuleGroupIdentifier\\":{\\"versionEnabled\\":null,\\"version\\":null,\\"vendorName\\":\\"AWS\\",\\"managedRuleGroupName\\":\\"AWSManagedRulesAdminProtectionRuleSet\\"},\\"ruleGroupType\\":\\"ManagedRuleGroup\\",\\"excludeRules\\":[],\\"sampledRequestsEnabled\\":true}],\\"postProcessRuleGroups\\":[],\\"defaultAction\\":{\\"type\\":\\"ALLOW\\"},\\"customRequestHandling\\":null,\\"customResponse\\":null,\\"overrideCustomerWebACLAssociation\\":false,\\"loggingConfiguration\\":null,\\"sampledRequestsEnabledForDefaultActions\\":true,\\"captchaConfig\\":{\\"immunityTimeProperty\\":{\\"immunityTime\\":500}},\\"challengeConfig\\":{\\"immunityTimeProperty\\":{\\"immunityTime\\":800}},\\"tokenDomains\\":[\\"google.com\\",\\"amazon.com\\"]}"</code> </p> <p>If you update the policy\'s values for <code>captchaConfig</code>, <code>challengeConfig</code>, or <code>tokenDomains</code>, Firewall Manager will overwrite your local web ACLs to contain the new value(s). However, if you don\'t update the policy\'s <code>captchaConfig</code>, <code>challengeConfig</code>, or <code>tokenDomains</code> values, the values in your local web ACLs will remain unchanged. For information about CAPTCHA and Challenge configs, see <a href="https://docs.aws.amazon.com/waf/latest/APIReference/API_CaptchaConfig.html">CaptchaConfig</a> and <a href="https://docs.aws.amazon.com/waf/latest/APIReference/API_ChallengeConfig.html">ChallengeConfig</a> in the <i>WAF API Reference</i>.</p> </li> <li> <p>Example: <code>WAFV2</code> - Firewall Manager support for WAF managed rule group versioning </p> <p> <code>"{\\"type\\":\\"WAFV2\\",\\"preProcessRuleGroups\\":[{\\"ruleGroupArn\\":null,\\"overrideAction\\":{\\"type\\":\\"NONE\\"},\\"managedRuleGroupIdentifier\\":{\\"versionEnabled\\":true,\\"version\\":\\"Version_2.0\\",\\"vendorName\\":\\"AWS\\",\\"managedRuleGroupName\\":\\"AWSManagedRulesCommonRuleSet\\"},\\"ruleGroupType\\":\\"ManagedRuleGroup\\",\\"excludeRules\\":[{\\"name\\":\\"NoUserAgent_HEADER\\"}]}],\\"postProcessRuleGroups\\":[],\\"defaultAction\\":{\\"type\\":\\"ALLOW\\"},\\"overrideCustomerWebACLAssociation\\":false,\\"loggingConfiguration\\":{\\"logDestinationConfigs\\":[\\"arn:aws:firehose:us-west-2:12345678912:deliverystream/aws-waf-logs-fms-admin-destination\\"],\\"redactedFields\\":[{\\"redactedFieldType\\":\\"SingleHeader\\",\\"redactedFieldValue\\":\\"Cookies\\"},{\\"redactedFieldType\\":\\"Method\\"}]}}"</code> </p> <p> To use a specific version of a WAF managed rule group in your Firewall Manager policy, you must set <code>versionEnabled</code> to <code>true</code>, and set <code>version</code> to the version you\'d like to use. If you don\'t set <code>versionEnabled</code> to <code>true</code>, or if you omit <code>versionEnabled</code>, then Firewall Manager uses the default version of the WAF managed rule group. </p> </li> <li> <p>Example: <code>WAFV2</code> - Logging configurations </p> <p> <code>"{\\"type\\":\\"WAFV2\\",\\"preProcessRuleGroups\\":[{\\"ruleGroupArn\\":null, \\"overrideAction\\":{\\"type\\":\\"NONE\\"},\\"managedRuleGroupIdentifier\\": {\\"versionEnabled\\":null,\\"version\\":null,\\"vendorName\\":\\"AWS\\", \\"managedRuleGroupName\\":\\"AWSManagedRulesAdminProtectionRuleSet\\"} ,\\"ruleGroupType\\":\\"ManagedRuleGroup\\",\\"excludeRules\\":[], \\"sampledRequestsEnabled\\":true}],\\"postProcessRuleGroups\\":[], \\"defaultAction\\":{\\"type\\":\\"ALLOW\\"},\\"customRequestHandling\\" :null,\\"customResponse\\":null,\\"overrideCustomerWebACLAssociation\\" :false,\\"loggingConfiguration\\":{\\"logDestinationConfigs\\": [\\"arn:aws:s3:::aws-waf-logs-example-bucket\\"] ,\\"redactedFields\\":[],\\"loggingFilterConfigs\\":{\\"defaultBehavior\\":\\"KEEP\\", \\"filters\\":[{\\"behavior\\":\\"KEEP\\",\\"requirement\\":\\"MEETS_ALL\\", \\"conditions\\":[{\\"actionCondition\\":\\"CAPTCHA\\"},{\\"actionCondition\\": \\"CHALLENGE\\"}, {\\"actionCondition\\":\\"EXCLUDED_AS_COUNT\\"}]}]}},\\"sampledRequestsEnabledForDefaultActions\\":true}"</code> </p> <p>Firewall Manager supports Amazon Kinesis Data Firehose and Amazon S3 as the <code>logDestinationConfigs</code> in your <code>loggingConfiguration</code>. For information about WAF logging configurations, see <a href="https://docs.aws.amazon.com/waf/latest/APIReference/API_LoggingConfiguration.html">LoggingConfiguration</a> in the <i>WAF API Reference</i> </p> <p>In the <code>loggingConfiguration</code>, you can specify one <code>logDestinationConfigs</code>. Optionally provide as many as 20 <code>redactedFields</code>. The <code>RedactedFieldType</code> must be one of <code>URI</code>, <code>QUERY_STRING</code>, <code>HEADER</code>, or <code>METHOD</code>.</p> </li> <li> <p>Example: <code>WAF Classic</code> </p> <p> <code>"{\\"type\\": \\"WAF\\", \\"ruleGroups\\": [{\\"id\\":\\"12345678-1bcd-9012-efga-0987654321ab\\", \\"overrideAction\\" : {\\"type\\": \\"COUNT\\"}}], \\"defaultAction\\": {\\"type\\": \\"BLOCK\\"}}"</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    PolicyOption: PolicyOptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains the Network Firewall firewall policy options to configure a centralized deployment model.',
-        }),
-    ).exactOptional(),
+    Type: SecurityServiceTypeSchema.openapi({
+      description:
+        'The service that the policy is using to protect the resources. This specifies the type of policy that is created, either an WAF policy, a Shield Advanced policy, or a security group policy. For security group policies, Firewall Manager supports one security group for each common policy and for each content audit policy. This is an adjustable limit that you can increase by contacting Amazon Web Services Support.',
+    }),
+    ManagedServiceData: ManagedServiceDataSchema.exactOptional().openapi({
+      description:
+        '<p>Details about the service that are specific to the service type, in JSON format. </p> <ul> <li> <p>Example: <code>DNS_FIREWALL</code> </p> <p> <code>"{\\"type\\":\\"DNS_FIREWALL\\",\\"preProcessRuleGroups\\":[{\\"ruleGroupId\\":\\"rslvr-frg-1\\",\\"priority\\":10}],\\"postProcessRuleGroups\\":[{\\"ruleGroupId\\":\\"rslvr-frg-2\\",\\"priority\\":9911}]}"</code> </p> <note> <p>Valid values for <code>preProcessRuleGroups</code> are between 1 and 99. Valid values for <code>postProcessRuleGroups</code> are between 9901 and 10000.</p> </note> </li> <li> <p>Example: <code>IMPORT_NETWORK_FIREWALL</code> <code>"{\\"type\\":\\"IMPORT_NETWORK_FIREWALL\\",\\"awsNetworkFirewallConfig\\":{\\"networkFirewallStatelessRuleGroupReferences\\":[{\\"resourceARN\\":\\"arn:aws:network-firewall:us-west-2:000000000000:stateless-rulegroup\\/rg1\\",\\"priority\\":1}],\\"networkFirewallStatelessDefaultActions\\":[\\"aws:drop\\"],\\"networkFirewallStatelessFragmentDefaultActions\\":[\\"aws:pass\\"],\\"networkFirewallStatelessCustomActions\\":[],\\"networkFirewallStatefulRuleGroupReferences\\":[{\\"resourceARN\\":\\"arn:aws:network-firewall:us-west-2:aws-managed:stateful-rulegroup\\/ThreatSignaturesEmergingEventsStrictOrder\\",\\"priority\\":8}],\\"networkFirewallStatefulEngineOptions\\":{\\"ruleOrder\\":\\"STRICT_ORDER\\"},\\"networkFirewallStatefulDefaultActions\\":[\\"aws:drop_strict\\"]}}"</code> </p> <p> <code>"{\\"type\\":\\"DNS_FIREWALL\\",\\"preProcessRuleGroups\\":[{\\"ruleGroupId\\":\\"rslvr-frg-1\\",\\"priority\\":10}],\\"postProcessRuleGroups\\":[{\\"ruleGroupId\\":\\"rslvr-frg-2\\",\\"priority\\":9911}]}"</code> </p> <note> <p>Valid values for <code>preProcessRuleGroups</code> are between 1 and 99. Valid values for <code>postProcessRuleGroups</code> are between 9901 and 10000.</p> </note> </li> <li> <p>Example: <code>NETWORK_FIREWALL</code> - Centralized deployment model</p> <p> <code>"{\\"type\\":\\"NETWORK_FIREWALL\\",\\"awsNetworkFirewallConfig\\":{\\"networkFirewallStatelessRuleGroupReferences\\":[{\\"resourceARN\\":\\"arn:aws:network-firewall:us-east-1:123456789011:stateless-rulegroup/test\\",\\"priority\\":1}],\\"networkFirewallStatelessDefaultActions\\":[\\"aws:forward_to_sfe\\",\\"customActionName\\"],\\"networkFirewallStatelessFragmentDefaultActions\\":[\\"aws:forward_to_sfe\\",\\"customActionName\\"],\\"networkFirewallStatelessCustomActions\\":[{\\"actionName\\":\\"customActionName\\",\\"actionDefinition\\":{\\"publishMetricAction\\":{\\"dimensions\\":[{\\"value\\":\\"metricdimensionvalue\\"}]}}}],\\"networkFirewallStatefulRuleGroupReferences\\":[{\\"resourceARN\\":\\"arn:aws:network-firewall:us-east-1:123456789011:stateful-rulegroup/test\\"}],\\"networkFirewallLoggingConfiguration\\":{\\"logDestinationConfigs\\":[{\\"logDestinationType\\":\\"S3\\",\\"logType\\":\\"ALERT\\",\\"logDestination\\":{\\"bucketName\\":\\"s3-bucket-name\\"}},{\\"logDestinationType\\":\\"S3\\",\\"logType\\":\\"FLOW\\",\\"logDestination\\":{\\"bucketName\\":\\"s3-bucket-name\\"}}],\\"overrideExistingConfig\\":true}},\\"firewallDeploymentModel\\":{\\"centralizedFirewallDeploymentModel\\":{\\"centralizedFirewallOrchestrationConfig\\":{\\"inspectionVpcIds\\":[{\\"resourceId\\":\\"vpc-1234\\",\\"accountId\\":\\"123456789011\\"}],\\"firewallCreationConfig\\":{\\"endpointLocation\\":{\\"availabilityZoneConfigList\\":[{\\"availabilityZoneId\\":null,\\"availabilityZoneName\\":\\"us-east-1a\\",\\"allowedIPV4CidrList\\":[\\"10.0.0.0/28\\"]}]}},\\"allowedIPV4CidrList\\":[]}}}}"</code> </p> <p> To use the centralized deployment model, you must set <a href="https://docs.aws.amazon.com/fms/2018-01-01/APIReference/API_PolicyOption.html">PolicyOption</a> to <code>CENTRALIZED</code>. </p> </li> <li> <p>Example: <code>NETWORK_FIREWALL</code> - Distributed deployment model with automatic Availability Zone configuration</p> <p> <code> "{\\"type\\":\\"NETWORK_FIREWALL\\",\\"networkFirewallStatelessRuleGroupReferences\\":[{\\"resourceARN\\":\\"arn:aws:network-firewall:us-east-1:123456789011:stateless-rulegroup/test\\",\\"priority\\":1}],\\"networkFirewallStatelessDefaultActions\\":[\\"aws:forward_to_sfe\\",\\"customActionName\\"],\\"networkFirewallStatelessFragmentDefaultActions\\":[\\"aws:forward_to_sfe\\",\\"customActionName\\"],\\"networkFirewallStatelessCustomActions\\":[{\\"actionName\\":\\"customActionName\\",\\"actionDefinition\\":{\\"publishMetricAction\\":{\\"dimensions\\":[{\\"value\\":\\"metricdimensionvalue\\"}]}}}],\\"networkFirewallStatefulRuleGroupReferences\\":[{\\"resourceARN\\":\\"arn:aws:network-firewall:us-east-1:123456789011:stateful-rulegroup/test\\"}],\\"networkFirewallOrchestrationConfig\\":{\\"singleFirewallEndpointPerVPC\\":false,\\"allowedIPV4CidrList\\":[\\"10.0.0.0/28\\",\\"192.168.0.0/28\\"],\\"routeManagementAction\\":\\"OFF\\"},\\"networkFirewallLoggingConfiguration\\":{\\"logDestinationConfigs\\":[{\\"logDestinationType\\":\\"S3\\",\\"logType\\":\\"ALERT\\",\\"logDestination\\":{\\"bucketName\\":\\"s3-bucket-name\\"}},{\\"logDestinationType\\":\\"S3\\",\\"logType\\":\\"FLOW\\",\\"logDestination\\":{\\"bucketName\\":\\"s3-bucket-name\\"}}],\\"overrideExistingConfig\\":true}}" </code> </p> <p> With automatic Availbility Zone configuration, Firewall Manager chooses which Availability Zones to create the endpoints in. To use the distributed deployment model, you must set <a href="https://docs.aws.amazon.com/fms/2018-01-01/APIReference/API_PolicyOption.html">PolicyOption</a> to <code>NULL</code>. </p> </li> <li> <p>Example: <code>NETWORK_FIREWALL</code> - Distributed deployment model with automatic Availability Zone configuration and route management</p> <p> <code> "{\\"type\\":\\"NETWORK_FIREWALL\\",\\"networkFirewallStatelessRuleGroupReferences\\":[{\\"resourceARN\\":\\"arn:aws:network-firewall:us-east-1:123456789011:stateless-rulegroup/test\\",\\"priority\\":1}],\\"networkFirewallStatelessDefaultActions\\":[\\"aws:forward_to_sfe\\",\\"customActionName\\"],\\"networkFirewallStatelessFragmentDefaultActions\\":[\\"aws:forward_to_sfe\\",\\"customActionName\\"],\\"networkFirewallStatelessCustomActions\\":[{\\"actionName\\":\\"customActionName\\",\\"actionDefinition\\":{\\"publishMetricAction\\":{\\"dimensions\\":[{\\"value\\":\\"metricdimensionvalue\\"}]}}}],\\"networkFirewallStatefulRuleGroupReferences\\":[{\\"resourceARN\\":\\"arn:aws:network-firewall:us-east-1:123456789011:stateful-rulegroup/test\\"}],\\"networkFirewallOrchestrationConfig\\":{\\"singleFirewallEndpointPerVPC\\":false,\\"allowedIPV4CidrList\\":[\\"10.0.0.0/28\\",\\"192.168.0.0/28\\"],\\"routeManagementAction\\":\\"MONITOR\\",\\"routeManagementTargetTypes\\":[\\"InternetGateway\\"]},\\"networkFirewallLoggingConfiguration\\":{\\"logDestinationConfigs\\":[{\\"logDestinationType\\":\\"S3\\",\\"logType\\":\\"ALERT\\",\\"logDestination\\":{\\"bucketName\\":\\"s3-bucket-name\\"}},{\\"logDestinationType\\":\\"S3\\",\\"logType\\": \\"FLOW\\",\\"logDestination\\":{\\"bucketName\\":\\"s3-bucket-name\\"}}],\\"overrideExistingConfig\\":true}}" </code> </p> <p>To use the distributed deployment model, you must set <a href="https://docs.aws.amazon.com/fms/2018-01-01/APIReference/API_PolicyOption.html">PolicyOption</a> to <code>NULL</code>. </p> </li> <li> <p>Example: <code>NETWORK_FIREWALL</code> - Distributed deployment model with custom Availability Zone configuration</p> <p> <code>"{\\"type\\":\\"NETWORK_FIREWALL\\",\\"networkFirewallStatelessRuleGroupReferences\\":[{\\"resourceARN\\":\\"arn:aws:network-firewall:us-east-1:123456789011:stateless-rulegroup/test\\",\\"priority\\":1}],\\"networkFirewallStatelessDefaultActions\\":[\\"aws:forward_to_sfe\\",\\"customActionName\\"],\\"networkFirewallStatelessFragmentDefaultActions\\":[\\"aws:forward_to_sfe\\",\\"fragmentcustomactionname\\"],\\"networkFirewallStatelessCustomActions\\":[{\\"actionName\\":\\"customActionName\\", \\"actionDefinition\\":{\\"publishMetricAction\\":{\\"dimensions\\":[{\\"value\\":\\"metricdimensionvalue\\"}]}}},{\\"actionName\\":\\"fragmentcustomactionname\\",\\"actionDefinition\\":{\\"publishMetricAction\\":{\\"dimensions\\":[{\\"value\\":\\"fragmentmetricdimensionvalue\\"}]}}}],\\"networkFirewallStatefulRuleGroupReferences\\":[{\\"resourceARN\\":\\"arn:aws:network-firewall:us-east-1:123456789011:stateful-rulegroup/test\\"}],\\"networkFirewallOrchestrationConfig\\":{\\"firewallCreationConfig\\":{ \\"endpointLocation\\":{\\"availabilityZoneConfigList\\":[{\\"availabilityZoneName\\":\\"us-east-1a\\",\\"allowedIPV4CidrList\\":[\\"10.0.0.0/28\\"]},{\\"availabilityZoneName\\":\\"us-east-1b\\",\\"allowedIPV4CidrList\\":[ \\"10.0.0.0/28\\"]}]} },\\"singleFirewallEndpointPerVPC\\":false,\\"allowedIPV4CidrList\\":null,\\"routeManagementAction\\":\\"OFF\\",\\"networkFirewallLoggingConfiguration\\":{\\"logDestinationConfigs\\":[{\\"logDestinationType\\":\\"S3\\",\\"logType\\":\\"ALERT\\",\\"logDestination\\":{\\"bucketName\\":\\"s3-bucket-name\\"}},{\\"logDestinationType\\":\\"S3\\",\\"logType\\":\\"FLOW\\",\\"logDestination\\":{\\"bucketName\\":\\"s3-bucket-name\\"}}],\\"overrideExistingConfig\\":boolean}}" </code> </p> <p> With custom Availability Zone configuration, you define which specific Availability Zones to create endpoints in by configuring <code>firewallCreationConfig</code>. To configure the Availability Zones in <code>firewallCreationConfig</code>, specify either the <code>availabilityZoneName</code> or <code>availabilityZoneId</code> parameter, not both parameters. </p> <p>To use the distributed deployment model, you must set <a href="https://docs.aws.amazon.com/fms/2018-01-01/APIReference/API_PolicyOption.html">PolicyOption</a> to <code>NULL</code>. </p> </li> <li> <p>Example: <code>NETWORK_FIREWALL</code> - Distributed deployment model with custom Availability Zone configuration and route management</p> <p> <code>"{\\"type\\":\\"NETWORK_FIREWALL\\",\\"networkFirewallStatelessRuleGroupReferences\\":[{\\"resourceARN\\":\\"arn:aws:network-firewall:us-east-1:123456789011:stateless-rulegroup/test\\",\\"priority\\":1}],\\"networkFirewallStatelessDefaultActions\\":[\\"aws:forward_to_sfe\\",\\"customActionName\\"],\\"networkFirewallStatelessFragmentDefaultActions\\":[\\"aws:forward_to_sfe\\",\\"fragmentcustomactionname\\"],\\"networkFirewallStatelessCustomActions\\":[{\\"actionName\\":\\"customActionName\\",\\"actionDefinition\\":{\\"publishMetricAction\\":{\\"dimensions\\":[{\\"value\\":\\"metricdimensionvalue\\"}]}}},{\\"actionName\\":\\"fragmentcustomactionname\\",\\"actionDefinition\\":{\\"publishMetricAction\\":{\\"dimensions\\":[{\\"value\\":\\"fragmentmetricdimensionvalue\\"}]}}}],\\"networkFirewallStatefulRuleGroupReferences\\":[{\\"resourceARN\\":\\"arn:aws:network-firewall:us-east-1:123456789011:stateful-rulegroup/test\\"}],\\"networkFirewallOrchestrationConfig\\":{\\"firewallCreationConfig\\":{\\"endpointLocation\\":{\\"availabilityZoneConfigList\\":[{\\"availabilityZoneName\\":\\"us-east-1a\\",\\"allowedIPV4CidrList\\":[\\"10.0.0.0/28\\"]},{\\"availabilityZoneName\\":\\"us-east-1b\\",\\"allowedIPV4CidrList\\":[\\"10.0.0.0/28\\"]}]}},\\"singleFirewallEndpointPerVPC\\":false,\\"allowedIPV4CidrList\\":null,\\"routeManagementAction\\":\\"MONITOR\\",\\"routeManagementTargetTypes\\":[\\"InternetGateway\\"],\\"routeManagementConfig\\":{\\"allowCrossAZTrafficIfNoEndpoint\\":true}},\\"networkFirewallLoggingConfiguration\\":{\\"logDestinationConfigs\\":[{\\"logDestinationType\\":\\"S3\\",\\"logType\\":\\"ALERT\\",\\"logDestination\\":{\\"bucketName\\":\\"s3-bucket-name\\"}},{\\"logDestinationType\\":\\"S3\\",\\"logType\\":\\"FLOW\\",\\"logDestination\\":{\\"bucketName\\":\\"s3-bucket-name\\"}}],\\"overrideExistingConfig\\":boolean}}" </code> </p> <p>To use the distributed deployment model, you must set <a href="https://docs.aws.amazon.com/fms/2018-01-01/APIReference/API_PolicyOption.html">PolicyOption</a> to <code>NULL</code>. </p> </li> <li> <p>Example: <code>THIRD_PARTY_FIREWALL</code> </p> <p> <code>"{ "type":"THIRD_PARTY_FIREWALL", "thirdPartyFirewall":"PALO_ALTO_NETWORKS_CLOUD_NGFW", "thirdPartyFirewallConfig":{ "thirdPartyFirewallPolicyList":["global-1"] }, "firewallDeploymentModel":{ "distributedFirewallDeploymentModel":{ "distributedFirewallOrchestrationConfig":{ "firewallCreationConfig":{ "endpointLocation":{ "availabilityZoneConfigList":[ { "availabilityZoneName":"${AvailabilityZone}" } ] } }, "allowedIPV4CidrList":[ ] } } } }"</code> </p> </li> <li> <p>Example: <code>SECURITY_GROUPS_COMMON</code> </p> <p> <code>"{\\"type\\":\\"SECURITY_GROUPS_COMMON\\",\\"revertManualSecurityGroupChanges\\":false,\\"exclusiveResourceSecurityGroupManagement\\":false, \\"applyToAllEC2InstanceENIs\\":false,\\"securityGroups\\":[{\\"id\\":\\" sg-000e55995d61a06bd\\"}]}"</code> </p> </li> <li> <p>Example: <code>SECURITY_GROUPS_COMMON</code> - Security group tag distribution </p> <p> <code>""{\\"type\\":\\"SECURITY_GROUPS_COMMON\\",\\"securityGroups\\":[{\\"id\\":\\"sg-000e55995d61a06bd\\"}],\\"revertManualSecurityGroupChanges\\":true,\\"exclusiveResourceSecurityGroupManagement\\":false,\\"applyToAllEC2InstanceENIs\\":false,\\"includeSharedVPC\\":false,\\"enableTagDistribution\\":true}""</code> </p> <p> Firewall Manager automatically distributes tags from the primary group to the security groups created by this policy. To use security group tag distribution, you must also set <code>revertManualSecurityGroupChanges</code> to <code>true</code>, otherwise Firewall Manager won\'t be able to create the policy. When you enable <code>revertManualSecurityGroupChanges</code>, Firewall Manager identifies and reports when the security groups created by this policy become non-compliant. </p> <p> Firewall Manager won\'t distrubute system tags added by Amazon Web Services services into the replica security groups. System tags begin with the <code>aws:</code> prefix. </p> </li> <li> <p>Example: Shared VPCs. Apply the preceding policy to resources in shared VPCs as well as to those in VPCs that the account owns </p> <p> <code>"{\\"type\\":\\"SECURITY_GROUPS_COMMON\\",\\"revertManualSecurityGroupChanges\\":false,\\"exclusiveResourceSecurityGroupManagement\\":false, \\"applyToAllEC2InstanceENIs\\":false,\\"includeSharedVPC\\":true,\\"securityGroups\\":[{\\"id\\":\\" sg-000e55995d61a06bd\\"}]}"</code> </p> </li> <li> <p>Example: <code>SECURITY_GROUPS_CONTENT_AUDIT</code> </p> <p> <code>"{\\"type\\":\\"SECURITY_GROUPS_CONTENT_AUDIT\\",\\"securityGroups\\":[{\\"id\\":\\"sg-000e55995d61a06bd\\"}],\\"securityGroupAction\\":{\\"type\\":\\"ALLOW\\"}}"</code> </p> <p>The security group action for content audit can be <code>ALLOW</code> or <code>DENY</code>. For <code>ALLOW</code>, all in-scope security group rules must be within the allowed range of the policy\'s security group rules. For <code>DENY</code>, all in-scope security group rules must not contain a value or a range that matches a rule value or range in the policy security group.</p> </li> <li> <p>Example: <code>SECURITY_GROUPS_USAGE_AUDIT</code> </p> <p> <code>"{\\"type\\":\\"SECURITY_GROUPS_USAGE_AUDIT\\",\\"deleteUnusedSecurityGroups\\":true,\\"coalesceRedundantSecurityGroups\\":true}"</code> </p> </li> <li> <p>Specification for <code>SHIELD_ADVANCED</code> for Amazon CloudFront distributions </p> <p> <code>"{\\"type\\":\\"SHIELD_ADVANCED\\",\\"automaticResponseConfiguration\\": {\\"automaticResponseStatus\\":\\"ENABLED|IGNORED|DISABLED\\", \\"automaticResponseAction\\":\\"BLOCK|COUNT\\"}, \\"overrideCustomerWebaclClassic\\":true|false}"</code> </p> <p>For example: <code>"{\\"type\\":\\"SHIELD_ADVANCED\\",\\"automaticResponseConfiguration\\": {\\"automaticResponseStatus\\":\\"ENABLED\\", \\"automaticResponseAction\\":\\"COUNT\\"}}"</code> </p> <p>The default value for <code>automaticResponseStatus</code> is <code>IGNORED</code>. The value for <code>automaticResponseAction</code> is only required when <code>automaticResponseStatus</code> is set to <code>ENABLED</code>. The default value for <code>overrideCustomerWebaclClassic</code> is <code>false</code>.</p> <p>For other resource types that you can protect with a Shield Advanced policy, this <code>ManagedServiceData</code> configuration is an empty string.</p> </li> <li> <p>Example: <code>WAFV2</code> - Account takeover prevention and Bot Control managed rule groups, and rule action override </p> <p> <code>"{\\"type\\":\\"WAFV2\\",\\"preProcessRuleGroups\\":[{\\"ruleGroupArn\\":null,\\"overrideAction\\":{\\"type\\":\\"NONE\\"},\\"managedRuleGroupIdentifier\\":{\\"versionEnabled\\":null,\\"version\\":null,\\"vendorName\\":\\"AWS\\",\\"managedRuleGroupName\\":\\"AWSManagedRulesATPRuleSet\\",\\"managedRuleGroupConfigs\\":[{\\"awsmanagedRulesATPRuleSet\\":{\\"loginPath\\":\\"/loginpath\\",\\"requestInspection\\":{\\"payloadType\\":\\"FORM_ENCODED|JSON\\",\\"usernameField\\":{\\"identifier\\":\\"/form/username\\"},\\"passwordField\\":{\\"identifier\\":\\"/form/password\\"}}}}]},\\"ruleGroupType\\":\\"ManagedRuleGroup\\",\\"excludeRules\\":[],\\"sampledRequestsEnabled\\":true},{\\"ruleGroupArn\\":null,\\"overrideAction\\":{\\"type\\":\\"NONE\\"},\\"managedRuleGroupIdentifier\\":{\\"versionEnabled\\":null,\\"version\\":null,\\"vendorName\\":\\"AWS\\",\\"managedRuleGroupName\\":\\"AWSManagedRulesBotControlRuleSet\\",\\"managedRuleGroupConfigs\\":[{\\"awsmanagedRulesBotControlRuleSet\\":{\\"inspectionLevel\\":\\"TARGETED|COMMON\\"}}]},\\"ruleGroupType\\":\\"ManagedRuleGroup\\",\\"excludeRules\\":[],\\"sampledRequestsEnabled\\":true,\\"ruleActionOverrides\\":[{\\"name\\":\\"Rule1\\",\\"actionToUse\\":{\\"allow|block|count|captcha|challenge\\":{}}},{\\"name\\":\\"Rule2\\",\\"actionToUse\\":{\\"allow|block|count|captcha|challenge\\":{}}}]}],\\"postProcessRuleGroups\\":[],\\"defaultAction\\":{\\"type\\":\\"ALLOW\\"},\\"customRequestHandling\\":null,\\"customResponse\\":null,\\"overrideCustomerWebACLAssociation\\":false,\\"loggingConfiguration\\":null,\\"sampledRequestsEnabledForDefaultActions\\":true}"</code> </p> <ul> <li> <p>Fraud Control account takeover prevention (ATP) - For information about the properties available for <code>AWSManagedRulesATPRuleSet</code> managed rule groups, see <a href="https://docs.aws.amazon.com/waf/latest/APIReference/API_AWSManagedRulesATPRuleSet.html">AWSManagedRulesATPRuleSet</a> in the <i>WAF API Reference</i>.</p> </li> <li> <p>Bot Control - For information about <code>AWSManagedRulesBotControlRuleSet</code> managed rule groups, see <a href="https://docs.aws.amazon.com/waf/latest/APIReference/API_AWSManagedRulesBotControlRuleSet.html">AWSManagedRulesBotControlRuleSet</a> in the <i>WAF API Reference</i>.</p> </li> <li> <p>Rule action overrides - Firewall Manager supports rule action overrides only for managed rule groups. To configure a <code>RuleActionOverrides</code> add the <code>Name</code> of the rule to override, and <code>ActionToUse</code>, which is the new action to use for the rule. For information about using rule action override, see <a href="https://docs.aws.amazon.com/waf/latest/APIReference/API_RuleActionOverride.html">RuleActionOverride</a> in the <i>WAF API Reference</i>.</p> </li> </ul> </li> <li> <p>Example: <code>WAFV2</code> - <code>CAPTCHA</code> and <code>Challenge</code> configs </p> <p> <code>"{\\"type\\":\\"WAFV2\\",\\"preProcessRuleGroups\\":[{\\"ruleGroupArn\\":null,\\"overrideAction\\":{\\"type\\":\\"NONE\\"},\\"managedRuleGroupIdentifier\\":{\\"versionEnabled\\":null,\\"version\\":null,\\"vendorName\\":\\"AWS\\",\\"managedRuleGroupName\\":\\"AWSManagedRulesAdminProtectionRuleSet\\"},\\"ruleGroupType\\":\\"ManagedRuleGroup\\",\\"excludeRules\\":[],\\"sampledRequestsEnabled\\":true}],\\"postProcessRuleGroups\\":[],\\"defaultAction\\":{\\"type\\":\\"ALLOW\\"},\\"customRequestHandling\\":null,\\"customResponse\\":null,\\"overrideCustomerWebACLAssociation\\":false,\\"loggingConfiguration\\":null,\\"sampledRequestsEnabledForDefaultActions\\":true,\\"captchaConfig\\":{\\"immunityTimeProperty\\":{\\"immunityTime\\":500}},\\"challengeConfig\\":{\\"immunityTimeProperty\\":{\\"immunityTime\\":800}},\\"tokenDomains\\":[\\"google.com\\",\\"amazon.com\\"]}"</code> </p> <p>If you update the policy\'s values for <code>captchaConfig</code>, <code>challengeConfig</code>, or <code>tokenDomains</code>, Firewall Manager will overwrite your local web ACLs to contain the new value(s). However, if you don\'t update the policy\'s <code>captchaConfig</code>, <code>challengeConfig</code>, or <code>tokenDomains</code> values, the values in your local web ACLs will remain unchanged. For information about CAPTCHA and Challenge configs, see <a href="https://docs.aws.amazon.com/waf/latest/APIReference/API_CaptchaConfig.html">CaptchaConfig</a> and <a href="https://docs.aws.amazon.com/waf/latest/APIReference/API_ChallengeConfig.html">ChallengeConfig</a> in the <i>WAF API Reference</i>.</p> </li> <li> <p>Example: <code>WAFV2</code> - Firewall Manager support for WAF managed rule group versioning </p> <p> <code>"{\\"type\\":\\"WAFV2\\",\\"preProcessRuleGroups\\":[{\\"ruleGroupArn\\":null,\\"overrideAction\\":{\\"type\\":\\"NONE\\"},\\"managedRuleGroupIdentifier\\":{\\"versionEnabled\\":true,\\"version\\":\\"Version_2.0\\",\\"vendorName\\":\\"AWS\\",\\"managedRuleGroupName\\":\\"AWSManagedRulesCommonRuleSet\\"},\\"ruleGroupType\\":\\"ManagedRuleGroup\\",\\"excludeRules\\":[{\\"name\\":\\"NoUserAgent_HEADER\\"}]}],\\"postProcessRuleGroups\\":[],\\"defaultAction\\":{\\"type\\":\\"ALLOW\\"},\\"overrideCustomerWebACLAssociation\\":false,\\"loggingConfiguration\\":{\\"logDestinationConfigs\\":[\\"arn:aws:firehose:us-west-2:12345678912:deliverystream/aws-waf-logs-fms-admin-destination\\"],\\"redactedFields\\":[{\\"redactedFieldType\\":\\"SingleHeader\\",\\"redactedFieldValue\\":\\"Cookies\\"},{\\"redactedFieldType\\":\\"Method\\"}]}}"</code> </p> <p> To use a specific version of a WAF managed rule group in your Firewall Manager policy, you must set <code>versionEnabled</code> to <code>true</code>, and set <code>version</code> to the version you\'d like to use. If you don\'t set <code>versionEnabled</code> to <code>true</code>, or if you omit <code>versionEnabled</code>, then Firewall Manager uses the default version of the WAF managed rule group. </p> </li> <li> <p>Example: <code>WAFV2</code> - Logging configurations </p> <p> <code>"{\\"type\\":\\"WAFV2\\",\\"preProcessRuleGroups\\":[{\\"ruleGroupArn\\":null, \\"overrideAction\\":{\\"type\\":\\"NONE\\"},\\"managedRuleGroupIdentifier\\": {\\"versionEnabled\\":null,\\"version\\":null,\\"vendorName\\":\\"AWS\\", \\"managedRuleGroupName\\":\\"AWSManagedRulesAdminProtectionRuleSet\\"} ,\\"ruleGroupType\\":\\"ManagedRuleGroup\\",\\"excludeRules\\":[], \\"sampledRequestsEnabled\\":true}],\\"postProcessRuleGroups\\":[], \\"defaultAction\\":{\\"type\\":\\"ALLOW\\"},\\"customRequestHandling\\" :null,\\"customResponse\\":null,\\"overrideCustomerWebACLAssociation\\" :false,\\"loggingConfiguration\\":{\\"logDestinationConfigs\\": [\\"arn:aws:s3:::aws-waf-logs-example-bucket\\"] ,\\"redactedFields\\":[],\\"loggingFilterConfigs\\":{\\"defaultBehavior\\":\\"KEEP\\", \\"filters\\":[{\\"behavior\\":\\"KEEP\\",\\"requirement\\":\\"MEETS_ALL\\", \\"conditions\\":[{\\"actionCondition\\":\\"CAPTCHA\\"},{\\"actionCondition\\": \\"CHALLENGE\\"}, {\\"actionCondition\\":\\"EXCLUDED_AS_COUNT\\"}]}]}},\\"sampledRequestsEnabledForDefaultActions\\":true}"</code> </p> <p>Firewall Manager supports Amazon Kinesis Data Firehose and Amazon S3 as the <code>logDestinationConfigs</code> in your <code>loggingConfiguration</code>. For information about WAF logging configurations, see <a href="https://docs.aws.amazon.com/waf/latest/APIReference/API_LoggingConfiguration.html">LoggingConfiguration</a> in the <i>WAF API Reference</i> </p> <p>In the <code>loggingConfiguration</code>, you can specify one <code>logDestinationConfigs</code>. Optionally provide as many as 20 <code>redactedFields</code>. The <code>RedactedFieldType</code> must be one of <code>URI</code>, <code>QUERY_STRING</code>, <code>HEADER</code>, or <code>METHOD</code>.</p> </li> <li> <p>Example: <code>WAF Classic</code> </p> <p> <code>"{\\"type\\": \\"WAF\\", \\"ruleGroups\\": [{\\"id\\":\\"12345678-1bcd-9012-efga-0987654321ab\\", \\"overrideAction\\" : {\\"type\\": \\"COUNT\\"}}], \\"defaultAction\\": {\\"type\\": \\"BLOCK\\"}}"</code> </p> </li> </ul>',
+    }),
+    PolicyOption: PolicyOptionSchema.exactOptional().openapi({
+      description:
+        'Contains the Network Firewall firewall policy options to configure a centralized deployment model.',
+    }),
   })
   .openapi({
     required: ['Type'],
@@ -1060,10 +2276,10 @@ const ResourceTagValueSchema = z
 
 const ResourceTagSchema = z
   .object({
-    Key: ResourceTagKeySchema.and(z.any().openapi({ description: 'The resource tag key.' })),
-    Value: ResourceTagValueSchema.and(
-      z.any().openapi({ description: 'The resource tag value.' }),
-    ).exactOptional(),
+    Key: ResourceTagKeySchema.openapi({ description: 'The resource tag key.' }),
+    Value: ResourceTagValueSchema.exactOptional().openapi({
+      description: 'The resource tag value.',
+    }),
   })
   .openapi({
     required: ['Key'],
@@ -1103,104 +2319,60 @@ const CustomerPolicyStatusSchema = z
 
 const PolicySchema = z
   .object({
-    PolicyId: PolicyIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Firewall Manager policy.' }),
-    ).exactOptional(),
-    PolicyName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the Firewall Manager policy.' }),
-    ),
-    PolicyUpdateToken: PolicyUpdateTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for each update to the policy. When issuing a <code>PutPolicy</code> request, the <code>PolicyUpdateToken</code> in the request must match the <code>PolicyUpdateToken</code> of the current policy version. To get the <code>PolicyUpdateToken</code> of the current policy version, use a <code>GetPolicy</code> request.',
-        }),
-    ).exactOptional(),
-    SecurityServicePolicyData: SecurityServicePolicyDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Details about the security service that is being used to protect the resources.',
-        }),
-    ),
-    ResourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of resource protected by or in scope of the policy. This is in the format shown in the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html">Amazon Web Services Resource Types Reference</a>. To apply this policy to multiple resource types, specify a resource type of <code>ResourceTypeList</code> and then specify the resource types in a <code>ResourceTypeList</code>.</p> <p>For WAF and Shield Advanced, resource types include <code>AWS::ElasticLoadBalancingV2::LoadBalancer</code>, <code>AWS::ElasticLoadBalancing::LoadBalancer</code>, <code>AWS::EC2::EIP</code>, and <code>AWS::CloudFront::Distribution</code>. For a security group common policy, valid values are <code>AWS::EC2::NetworkInterface</code> and <code>AWS::EC2::Instance</code>. For a security group content audit policy, valid values are <code>AWS::EC2::SecurityGroup</code>, <code>AWS::EC2::NetworkInterface</code>, and <code>AWS::EC2::Instance</code>. For a security group usage audit policy, the value is <code>AWS::EC2::SecurityGroup</code>. For an Network Firewall policy or DNS Firewall policy, the value is <code>AWS::EC2::VPC</code>.</p>',
-        }),
-    ),
-    ResourceTypeList: ResourceTypeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of <code>ResourceType</code> objects. Use this only to specify multiple resource types. To specify a single resource type, use <code>ResourceType</code>.',
-        }),
-    ).exactOptional(),
-    ResourceTags: ResourceTagsSchema.and(
-      z.any().openapi({ description: 'An array of <code>ResourceTag</code> objects.' }),
-    ).exactOptional(),
-    ExcludeResourceTags: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If set to <code>True</code>, resources with the tags that are specified in the <code>ResourceTag</code> array are not in scope of the policy. If set to <code>False</code>, and the <code>ResourceTag</code> array is not null, only resources with the specified tags are in scope of the policy.',
-        }),
-    ),
-    RemediationEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates if the policy should be automatically applied to new resources.',
-        }),
-    ),
-    DeleteUnusedFMManagedResources: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Indicates whether Firewall Manager should automatically remove protections from resources that leave the policy scope and clean up resources that Firewall Manager is managing for accounts when those accounts leave policy scope. For example, Firewall Manager will disassociate a Firewall Manager managed web ACL from a protected customer resource when the customer resource leaves policy scope. </p> <p>By default, Firewall Manager doesn't remove protections or delete Firewall Manager managed resources. </p> <p>This option is not available for Shield Advanced or WAF Classic policies.</p>",
-        }),
-    ).exactOptional(),
-    IncludeMap: CustomerPolicyScopeMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the Amazon Web Services account IDs and Organizations organizational units (OUs) to include in the policy. Specifying an OU is the equivalent of specifying all accounts in the OU and in any of its child OUs, including any child OUs and accounts that are added at a later time.</p> <p>You can specify inclusions or exclusions, but not both. If you specify an <code>IncludeMap</code>, Firewall Manager applies the policy to all accounts specified by the <code>IncludeMap</code>, and does not evaluate any <code>ExcludeMap</code> specifications. If you do not specify an <code>IncludeMap</code>, then Firewall Manager applies the policy to all accounts except for those specified by the <code>ExcludeMap</code>.</p> <p>You can specify account IDs, OUs, or a combination: </p> <ul> <li> <p>Specify account IDs by setting the key to <code>ACCOUNT</code>. For example, the following is a valid map: <code>{“ACCOUNT” : [“accountID1”, “accountID2”]}</code>.</p> </li> <li> <p>Specify OUs by setting the key to <code>ORG_UNIT</code>. For example, the following is a valid map: <code>{“ORG_UNIT” : [“ouid111”, “ouid112”]}</code>.</p> </li> <li> <p>Specify accounts and OUs together in a single map, separated with a comma. For example, the following is a valid map: <code>{“ACCOUNT” : [“accountID1”, “accountID2”], “ORG_UNIT” : [“ouid111”, “ouid112”]}</code>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ExcludeMap: CustomerPolicyScopeMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the Amazon Web Services account IDs and Organizations organizational units (OUs) to exclude from the policy. Specifying an OU is the equivalent of specifying all accounts in the OU and in any of its child OUs, including any child OUs and accounts that are added at a later time.</p> <p>You can specify inclusions or exclusions, but not both. If you specify an <code>IncludeMap</code>, Firewall Manager applies the policy to all accounts specified by the <code>IncludeMap</code>, and does not evaluate any <code>ExcludeMap</code> specifications. If you do not specify an <code>IncludeMap</code>, then Firewall Manager applies the policy to all accounts except for those specified by the <code>ExcludeMap</code>.</p> <p>You can specify account IDs, OUs, or a combination: </p> <ul> <li> <p>Specify account IDs by setting the key to <code>ACCOUNT</code>. For example, the following is a valid map: <code>{“ACCOUNT” : [“accountID1”, “accountID2”]}</code>.</p> </li> <li> <p>Specify OUs by setting the key to <code>ORG_UNIT</code>. For example, the following is a valid map: <code>{“ORG_UNIT” : [“ouid111”, “ouid112”]}</code>.</p> </li> <li> <p>Specify accounts and OUs together in a single map, separated with a comma. For example, the following is a valid map: <code>{“ACCOUNT” : [“accountID1”, “accountID2”], “ORG_UNIT” : [“ouid111”, “ouid112”]}</code>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ResourceSetIds: ResourceSetIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The unique identifiers of the resource sets used by the policy.',
-        }),
-    ).exactOptional(),
-    PolicyDescription: ResourceDescriptionSchema.and(
-      z.any().openapi({ description: 'The definition of the Network Firewall firewall policy.' }),
-    ).exactOptional(),
-    PolicyStatus: CustomerPolicyStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Indicates whether the policy is in or out of an admin's policy or Region scope.</p> <ul> <li> <p> <code>ACTIVE</code> - The administrator can manage and delete the policy.</p> </li> <li> <p> <code>OUT_OF_ADMIN_SCOPE</code> - The administrator can view the policy, but they can't edit or delete the policy. Existing policy protections stay in place. Any new resources that come into scope of the policy won't be protected.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
+    PolicyId: PolicyIdSchema.exactOptional().openapi({
+      description: 'The ID of the Firewall Manager policy.',
+    }),
+    PolicyName: ResourceNameSchema.openapi({
+      description: 'The name of the Firewall Manager policy.',
+    }),
+    PolicyUpdateToken: PolicyUpdateTokenSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for each update to the policy. When issuing a <code>PutPolicy</code> request, the <code>PolicyUpdateToken</code> in the request must match the <code>PolicyUpdateToken</code> of the current policy version. To get the <code>PolicyUpdateToken</code> of the current policy version, use a <code>GetPolicy</code> request.',
+    }),
+    SecurityServicePolicyData: SecurityServicePolicyDataSchema.openapi({
+      description:
+        'Details about the security service that is being used to protect the resources.',
+    }),
+    ResourceType: ResourceTypeSchema.openapi({
+      description:
+        '<p>The type of resource protected by or in scope of the policy. This is in the format shown in the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html">Amazon Web Services Resource Types Reference</a>. To apply this policy to multiple resource types, specify a resource type of <code>ResourceTypeList</code> and then specify the resource types in a <code>ResourceTypeList</code>.</p> <p>For WAF and Shield Advanced, resource types include <code>AWS::ElasticLoadBalancingV2::LoadBalancer</code>, <code>AWS::ElasticLoadBalancing::LoadBalancer</code>, <code>AWS::EC2::EIP</code>, and <code>AWS::CloudFront::Distribution</code>. For a security group common policy, valid values are <code>AWS::EC2::NetworkInterface</code> and <code>AWS::EC2::Instance</code>. For a security group content audit policy, valid values are <code>AWS::EC2::SecurityGroup</code>, <code>AWS::EC2::NetworkInterface</code>, and <code>AWS::EC2::Instance</code>. For a security group usage audit policy, the value is <code>AWS::EC2::SecurityGroup</code>. For an Network Firewall policy or DNS Firewall policy, the value is <code>AWS::EC2::VPC</code>.</p>',
+    }),
+    ResourceTypeList: ResourceTypeListSchema.exactOptional().openapi({
+      description:
+        'An array of <code>ResourceType</code> objects. Use this only to specify multiple resource types. To specify a single resource type, use <code>ResourceType</code>.',
+    }),
+    ResourceTags: ResourceTagsSchema.exactOptional().openapi({
+      description: 'An array of <code>ResourceTag</code> objects.',
+    }),
+    ExcludeResourceTags: BooleanSchema.openapi({
+      description:
+        'If set to <code>True</code>, resources with the tags that are specified in the <code>ResourceTag</code> array are not in scope of the policy. If set to <code>False</code>, and the <code>ResourceTag</code> array is not null, only resources with the specified tags are in scope of the policy.',
+    }),
+    RemediationEnabled: BooleanSchema.openapi({
+      description: 'Indicates if the policy should be automatically applied to new resources.',
+    }),
+    DeleteUnusedFMManagedResources: BooleanSchema.exactOptional().openapi({
+      description:
+        "<p>Indicates whether Firewall Manager should automatically remove protections from resources that leave the policy scope and clean up resources that Firewall Manager is managing for accounts when those accounts leave policy scope. For example, Firewall Manager will disassociate a Firewall Manager managed web ACL from a protected customer resource when the customer resource leaves policy scope. </p> <p>By default, Firewall Manager doesn't remove protections or delete Firewall Manager managed resources. </p> <p>This option is not available for Shield Advanced or WAF Classic policies.</p>",
+    }),
+    IncludeMap: CustomerPolicyScopeMapSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the Amazon Web Services account IDs and Organizations organizational units (OUs) to include in the policy. Specifying an OU is the equivalent of specifying all accounts in the OU and in any of its child OUs, including any child OUs and accounts that are added at a later time.</p> <p>You can specify inclusions or exclusions, but not both. If you specify an <code>IncludeMap</code>, Firewall Manager applies the policy to all accounts specified by the <code>IncludeMap</code>, and does not evaluate any <code>ExcludeMap</code> specifications. If you do not specify an <code>IncludeMap</code>, then Firewall Manager applies the policy to all accounts except for those specified by the <code>ExcludeMap</code>.</p> <p>You can specify account IDs, OUs, or a combination: </p> <ul> <li> <p>Specify account IDs by setting the key to <code>ACCOUNT</code>. For example, the following is a valid map: <code>{“ACCOUNT” : [“accountID1”, “accountID2”]}</code>.</p> </li> <li> <p>Specify OUs by setting the key to <code>ORG_UNIT</code>. For example, the following is a valid map: <code>{“ORG_UNIT” : [“ouid111”, “ouid112”]}</code>.</p> </li> <li> <p>Specify accounts and OUs together in a single map, separated with a comma. For example, the following is a valid map: <code>{“ACCOUNT” : [“accountID1”, “accountID2”], “ORG_UNIT” : [“ouid111”, “ouid112”]}</code>.</p> </li> </ul>',
+    }),
+    ExcludeMap: CustomerPolicyScopeMapSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the Amazon Web Services account IDs and Organizations organizational units (OUs) to exclude from the policy. Specifying an OU is the equivalent of specifying all accounts in the OU and in any of its child OUs, including any child OUs and accounts that are added at a later time.</p> <p>You can specify inclusions or exclusions, but not both. If you specify an <code>IncludeMap</code>, Firewall Manager applies the policy to all accounts specified by the <code>IncludeMap</code>, and does not evaluate any <code>ExcludeMap</code> specifications. If you do not specify an <code>IncludeMap</code>, then Firewall Manager applies the policy to all accounts except for those specified by the <code>ExcludeMap</code>.</p> <p>You can specify account IDs, OUs, or a combination: </p> <ul> <li> <p>Specify account IDs by setting the key to <code>ACCOUNT</code>. For example, the following is a valid map: <code>{“ACCOUNT” : [“accountID1”, “accountID2”]}</code>.</p> </li> <li> <p>Specify OUs by setting the key to <code>ORG_UNIT</code>. For example, the following is a valid map: <code>{“ORG_UNIT” : [“ouid111”, “ouid112”]}</code>.</p> </li> <li> <p>Specify accounts and OUs together in a single map, separated with a comma. For example, the following is a valid map: <code>{“ACCOUNT” : [“accountID1”, “accountID2”], “ORG_UNIT” : [“ouid111”, “ouid112”]}</code>.</p> </li> </ul>',
+    }),
+    ResourceSetIds: ResourceSetIdsSchema.exactOptional().openapi({
+      description: 'The unique identifiers of the resource sets used by the policy.',
+    }),
+    PolicyDescription: ResourceDescriptionSchema.exactOptional().openapi({
+      description: 'The definition of the Network Firewall firewall policy.',
+    }),
+    PolicyStatus: CustomerPolicyStatusSchema.exactOptional().openapi({
+      description:
+        "<p>Indicates whether the policy is in or out of an admin's policy or Region scope.</p> <ul> <li> <p> <code>ACTIVE</code> - The administrator can manage and delete the policy.</p> </li> <li> <p> <code>OUT_OF_ADMIN_SCOPE</code> - The administrator can view the policy, but they can't edit or delete the policy. Existing policy protections stay in place. Any new resources that come into scope of the policy won't be protected.</p> </li> </ul>",
+    }),
   })
   .openapi({
     required: [
@@ -1216,25 +2388,21 @@ const PolicySchema = z
 
 const GetPolicyResponseSchema = z
   .object({
-    Policy: PolicySchema.and(
-      z.any().openapi({ description: 'Information about the specified Firewall Manager policy.' }),
-    ).exactOptional(),
-    PolicyArn: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the specified policy.' }),
-    ).exactOptional(),
+    Policy: PolicySchema.exactOptional().openapi({
+      description: 'Information about the specified Firewall Manager policy.',
+    }),
+    PolicyArn: ResourceArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the specified policy.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetPolicyResponse')
 
 const GetPolicyRequestSchema = z
   .object({
-    PolicyId: PolicyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the Firewall Manager policy that you want the details for.',
-        }),
-    ),
+    PolicyId: PolicyIdSchema.openapi({
+      description: 'The ID of the Firewall Manager policy that you want the details for.',
+    }),
   })
   .openapi({ required: ['PolicyId'], title: 'GetPolicyRequest' })
   .openapi('GetPolicyRequest')
@@ -1252,37 +2420,21 @@ const PaginationTokenSchema = z
 
 const GetProtectionStatusResponseSchema = z
   .object({
-    AdminAccountId: AWSAccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the Firewall Manager administrator account for this policy.',
-        }),
-    ).exactOptional(),
-    ServiceType: SecurityServiceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The service type that is protected by the policy. Currently, this is always <code>SHIELD_ADVANCED</code>.',
-        }),
-    ).exactOptional(),
-    Data: ProtectionDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Details about the attack, including the following:</p> <ul> <li> <p>Attack type</p> </li> <li> <p>Account ID</p> </li> <li> <p>ARN of the resource attacked</p> </li> <li> <p>Start time of the attack</p> </li> <li> <p>End time of the attack (ongoing attacks will not have an end time)</p> </li> </ul> <p>The details are in JSON format. </p>',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If you have more objects than the number that you specified for <code>MaxResults</code> in the request, the response includes a <code>NextToken</code> value. To list more objects, submit another <code>GetProtectionStatus</code> request, and specify the <code>NextToken</code> value from the response in the <code>NextToken</code> value in the next request.</p> <p>Amazon Web Services SDKs provide auto-pagination that identify <code>NextToken</code> in a response and make subsequent request calls automatically on your behalf. However, this feature is not supported by <code>GetProtectionStatus</code>. You must submit subsequent requests with <code>NextToken</code> using your own processes. </p>',
-        }),
-    ).exactOptional(),
+    AdminAccountId: AWSAccountIdSchema.exactOptional().openapi({
+      description: 'The ID of the Firewall Manager administrator account for this policy.',
+    }),
+    ServiceType: SecurityServiceTypeSchema.exactOptional().openapi({
+      description:
+        'The service type that is protected by the policy. Currently, this is always <code>SHIELD_ADVANCED</code>.',
+    }),
+    Data: ProtectionDataSchema.exactOptional().openapi({
+      description:
+        '<p>Details about the attack, including the following:</p> <ul> <li> <p>Attack type</p> </li> <li> <p>Account ID</p> </li> <li> <p>ARN of the resource attacked</p> </li> <li> <p>Start time of the attack</p> </li> <li> <p>End time of the attack (ongoing attacks will not have an end time)</p> </li> </ul> <p>The details are in JSON format. </p>',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        '<p>If you have more objects than the number that you specified for <code>MaxResults</code> in the request, the response includes a <code>NextToken</code> value. To list more objects, submit another <code>GetProtectionStatus</code> request, and specify the <code>NextToken</code> value from the response in the <code>NextToken</code> value in the next request.</p> <p>Amazon Web Services SDKs provide auto-pagination that identify <code>NextToken</code> in a response and make subsequent request calls automatically on your behalf. However, this feature is not supported by <code>GetProtectionStatus</code>. You must submit subsequent requests with <code>NextToken</code> using your own processes. </p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetProtectionStatusResponse')
@@ -1291,53 +2443,29 @@ const PaginationMaxResultsSchema = z.int().min(1).max(100).openapi('PaginationMa
 
 const GetProtectionStatusRequestSchema = z
   .object({
-    PolicyId: PolicyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the policy for which you want to get the attack information.',
-        }),
-    ),
-    MemberAccountId: AWSAccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account that is in scope of the policy that you want to get the details for.',
-        }),
-    ).exactOptional(),
-    StartTime: TimeStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The start of the time period to query for the attacks. This is a <code>timestamp</code> type. The request syntax listing indicates a <code>number</code> type because the default used by Firewall Manager is Unix time in seconds. However, any valid <code>timestamp</code> format is allowed.',
-        }),
-    ).exactOptional(),
-    EndTime: TimeStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The end of the time period to query for the attacks. This is a <code>timestamp</code> type. The request syntax listing indicates a <code>number</code> type because the default used by Firewall Manager is Unix time in seconds. However, any valid <code>timestamp</code> format is allowed.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you specify a value for <code>MaxResults</code> and you have more objects than the number that you specify for <code>MaxResults</code>, Firewall Manager returns a <code>NextToken</code> value in the response, which you can use to retrieve another group of objects. For the second and subsequent <code>GetProtectionStatus</code> requests, specify the value of <code>NextToken</code> from the previous response to get information about another batch of objects.',
-        }),
-    ).exactOptional(),
-    MaxResults: PaginationMaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the number of objects that you want Firewall Manager to return for this request. If you have more objects than the number that you specify for <code>MaxResults</code>, the response includes a <code>NextToken</code> value that you can use to get another batch of objects.',
-        }),
-    ).exactOptional(),
+    PolicyId: PolicyIdSchema.openapi({
+      description: 'The ID of the policy for which you want to get the attack information.',
+    }),
+    MemberAccountId: AWSAccountIdSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account that is in scope of the policy that you want to get the details for.',
+    }),
+    StartTime: TimeStampSchema.exactOptional().openapi({
+      description:
+        'The start of the time period to query for the attacks. This is a <code>timestamp</code> type. The request syntax listing indicates a <code>number</code> type because the default used by Firewall Manager is Unix time in seconds. However, any valid <code>timestamp</code> format is allowed.',
+    }),
+    EndTime: TimeStampSchema.exactOptional().openapi({
+      description:
+        'The end of the time period to query for the attacks. This is a <code>timestamp</code> type. The request syntax listing indicates a <code>number</code> type because the default used by Firewall Manager is Unix time in seconds. However, any valid <code>timestamp</code> format is allowed.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If you specify a value for <code>MaxResults</code> and you have more objects than the number that you specify for <code>MaxResults</code>, Firewall Manager returns a <code>NextToken</code> value in the response, which you can use to retrieve another group of objects. For the second and subsequent <code>GetProtectionStatus</code> requests, specify the value of <code>NextToken</code> from the previous response to get information about another batch of objects.',
+    }),
+    MaxResults: PaginationMaxResultsSchema.exactOptional().openapi({
+      description:
+        'Specifies the number of objects that you want Firewall Manager to return for this request. If you have more objects than the number that you specify for <code>MaxResults</code>, the response includes a <code>NextToken</code> value that you can use to get another batch of objects.',
+    }),
   })
   .openapi({ required: ['PolicyId'], title: 'GetProtectionStatusRequest' })
   .openapi('GetProtectionStatusRequest')
@@ -1350,44 +2478,28 @@ const PreviousProtocolsListSchema = z
 
 const ProtocolsListDataSchema = z
   .object({
-    ListId: ListIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Firewall Manager protocols list.' }),
-    ).exactOptional(),
-    ListName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the Firewall Manager protocols list.' }),
-    ),
-    ListUpdateToken: UpdateTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for each update to the list. When you update the list, the update token must match the token of the current version of the application list. You can retrieve the update token by getting the list. ',
-        }),
-    ).exactOptional(),
-    CreateTime: TimeStampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time that the Firewall Manager protocols list was created.' }),
-    ).exactOptional(),
-    LastUpdateTime: TimeStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time that the Firewall Manager protocols list was last updated.',
-        }),
-    ).exactOptional(),
-    ProtocolsList: ProtocolsListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An array of protocols in the Firewall Manager protocols list.' }),
-    ),
-    PreviousProtocolsList: PreviousProtocolsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A map of previous version numbers to their corresponding protocol arrays.',
-        }),
-    ).exactOptional(),
+    ListId: ListIdSchema.exactOptional().openapi({
+      description: 'The ID of the Firewall Manager protocols list.',
+    }),
+    ListName: ResourceNameSchema.openapi({
+      description: 'The name of the Firewall Manager protocols list.',
+    }),
+    ListUpdateToken: UpdateTokenSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for each update to the list. When you update the list, the update token must match the token of the current version of the application list. You can retrieve the update token by getting the list. ',
+    }),
+    CreateTime: TimeStampSchema.exactOptional().openapi({
+      description: 'The time that the Firewall Manager protocols list was created.',
+    }),
+    LastUpdateTime: TimeStampSchema.exactOptional().openapi({
+      description: 'The time that the Firewall Manager protocols list was last updated.',
+    }),
+    ProtocolsList: ProtocolsListSchema.openapi({
+      description: 'An array of protocols in the Firewall Manager protocols list.',
+    }),
+    PreviousProtocolsList: PreviousProtocolsListSchema.exactOptional().openapi({
+      description: 'A map of previous version numbers to their corresponding protocol arrays.',
+    }),
   })
   .openapi({
     required: ['ListName', 'ProtocolsList'],
@@ -1397,42 +2509,25 @@ const ProtocolsListDataSchema = z
 
 const GetProtocolsListResponseSchema = z
   .object({
-    ProtocolsList: ProtocolsListDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the specified Firewall Manager protocols list.',
-        }),
-    ).exactOptional(),
-    ProtocolsListArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the specified protocols list.',
-        }),
-    ).exactOptional(),
+    ProtocolsList: ProtocolsListDataSchema.exactOptional().openapi({
+      description: 'Information about the specified Firewall Manager protocols list.',
+    }),
+    ProtocolsListArn: ResourceArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the specified protocols list.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetProtocolsListResponse')
 
 const GetProtocolsListRequestSchema = z
   .object({
-    ListId: ListIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the Firewall Manager protocols list that you want the details for.',
-        }),
-    ),
-    DefaultList: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the list to retrieve is a default list owned by Firewall Manager.',
-        }),
-    ).exactOptional(),
+    ListId: ListIdSchema.openapi({
+      description: 'The ID of the Firewall Manager protocols list that you want the details for.',
+    }),
+    DefaultList: BooleanSchema.exactOptional().openapi({
+      description:
+        'Specifies whether the list to retrieve is a default list owned by Firewall Manager.',
+    }),
   })
   .openapi({ required: ['ListId'], title: 'GetProtocolsListRequest' })
   .openapi('GetProtocolsListRequest')
@@ -1456,52 +2551,32 @@ const ResourceSetStatusSchema = z
 
 const ResourceSetSchema = z
   .object({
-    Id: Base62IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the resource set. This ID is returned in the responses to create and list commands. You provide it to operations like update and delete.',
-        }),
-    ).exactOptional(),
-    Name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The descriptive name of the resource set. You can't change the name of a resource set after you create it.",
-        }),
-    ),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the resource set.' }),
-    ).exactOptional(),
-    UpdateToken: UpdateTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>An optional token that you can use for optimistic locking. Firewall Manager returns a token to your requests that access the resource set. The token marks the state of the resource set resource at the time of the request. Update tokens are not allowed when creating a resource set. After creation, each subsequent update call to the resource set requires the update token. </p> <p>To make an unconditional change to the resource set, omit the token in your update request. Without the token, Firewall Manager performs your updates regardless of whether the resource set has changed since you last retrieved it.</p> <p>To make a conditional change to the resource set, provide the token in your update request. Firewall Manager uses the token to ensure that the resource set hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the resource set again to get a current copy of it with a new token. Reapply your changes as needed, then try the operation again using the new token. </p>",
-        }),
-    ).exactOptional(),
-    ResourceTypeList: ResourceTypeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Determines the resources that can be associated to the resource set. Depending on your setting for max results and the number of resource sets, a single call might not return the full list.',
-        }),
-    ),
-    LastUpdateTime: TimeStampSchema.and(
-      z.any().openapi({ description: 'The last time that the resource set was changed.' }),
-    ).exactOptional(),
-    ResourceSetStatus: ResourceSetStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Indicates whether the resource set is in or out of an admin's Region scope.</p> <ul> <li> <p> <code>ACTIVE</code> - The administrator can manage and delete the resource set.</p> </li> <li> <p> <code>OUT_OF_ADMIN_SCOPE</code> - The administrator can view the resource set, but they can't edit or delete the resource set. Existing protections stay in place. Any new resource that come into scope of the resource set won't be protected.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
+    Id: Base62IdSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the resource set. This ID is returned in the responses to create and list commands. You provide it to operations like update and delete.',
+    }),
+    Name: NameSchema.openapi({
+      description:
+        "The descriptive name of the resource set. You can't change the name of a resource set after you create it.",
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of the resource set.',
+    }),
+    UpdateToken: UpdateTokenSchema.exactOptional().openapi({
+      description:
+        "<p>An optional token that you can use for optimistic locking. Firewall Manager returns a token to your requests that access the resource set. The token marks the state of the resource set resource at the time of the request. Update tokens are not allowed when creating a resource set. After creation, each subsequent update call to the resource set requires the update token. </p> <p>To make an unconditional change to the resource set, omit the token in your update request. Without the token, Firewall Manager performs your updates regardless of whether the resource set has changed since you last retrieved it.</p> <p>To make a conditional change to the resource set, provide the token in your update request. Firewall Manager uses the token to ensure that the resource set hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the resource set again to get a current copy of it with a new token. Reapply your changes as needed, then try the operation again using the new token. </p>",
+    }),
+    ResourceTypeList: ResourceTypeListSchema.openapi({
+      description:
+        'Determines the resources that can be associated to the resource set. Depending on your setting for max results and the number of resource sets, a single call might not return the full list.',
+    }),
+    LastUpdateTime: TimeStampSchema.exactOptional().openapi({
+      description: 'The last time that the resource set was changed.',
+    }),
+    ResourceSetStatus: ResourceSetStatusSchema.exactOptional().openapi({
+      description:
+        "<p>Indicates whether the resource set is in or out of an admin's Region scope.</p> <ul> <li> <p> <code>ACTIVE</code> - The administrator can manage and delete the resource set.</p> </li> <li> <p> <code>OUT_OF_ADMIN_SCOPE</code> - The administrator can view the resource set, but they can't edit or delete the resource set. Existing protections stay in place. Any new resource that come into scope of the resource set won't be protected.</p> </li> </ul>",
+    }),
   })
   .openapi({
     required: ['Name', 'ResourceTypeList'],
@@ -1511,26 +2586,22 @@ const ResourceSetSchema = z
 
 const GetResourceSetResponseSchema = z
   .object({
-    ResourceSet: ResourceSetSchema.and(
-      z.any().openapi({ description: 'Information about the specified resource set.' }),
-    ),
-    ResourceSetArn: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the resource set.' }),
-    ),
+    ResourceSet: ResourceSetSchema.openapi({
+      description: 'Information about the specified resource set.',
+    }),
+    ResourceSetArn: ResourceArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the resource set.',
+    }),
   })
   .openapi({ required: ['ResourceSet', 'ResourceSetArn'] })
   .openapi('GetResourceSetResponse')
 
 const GetResourceSetRequestSchema = z
   .object({
-    Identifier: Base62IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the resource set, used in a request to refer to the resource set.',
-        }),
-    ),
+    Identifier: Base62IdSchema.openapi({
+      description:
+        'A unique identifier for the resource set, used in a request to refer to the resource set.',
+    }),
   })
   .openapi({ required: ['Identifier'], title: 'GetResourceSetRequest' })
   .openapi('GetResourceSetRequest')
@@ -1541,31 +2612,24 @@ const MarketplaceSubscriptionOnboardingStatusSchema = z
 
 const GetThirdPartyFirewallAssociationStatusResponseSchema = z
   .object({
-    ThirdPartyFirewallStatus: ThirdPartyFirewallAssociationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The current status for setting a Firewall Manager policy administrators account as an administrator of the third-party firewall tenant.</p> <ul> <li> <p> <code>ONBOARDING</code> - The Firewall Manager policy administrator is being designated as a tenant administrator.</p> </li> <li> <p> <code>ONBOARD_COMPLETE</code> - The Firewall Manager policy administrator is designated as a tenant administrator.</p> </li> <li> <p> <code>OFFBOARDING</code> - The Firewall Manager policy administrator is being removed as a tenant administrator.</p> </li> <li> <p> <code>OFFBOARD_COMPLETE</code> - The Firewall Manager policy administrator has been removed as a tenant administrator.</p> </li> <li> <p> <code>NOT_EXIST</code> - The Firewall Manager policy administrator doesn't exist as a tenant administrator.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    MarketplaceOnboardingStatus: MarketplaceSubscriptionOnboardingStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The status for subscribing to the third-party firewall vendor in the Amazon Web Services Marketplace.</p> <ul> <li> <p> <code>NO_SUBSCRIPTION</code> - The Firewall Manager policy administrator isn't subscribed to the third-party firewall service in the Amazon Web Services Marketplace.</p> </li> <li> <p> <code>NOT_COMPLETE</code> - The Firewall Manager policy administrator is in the process of subscribing to the third-party firewall service in the Amazon Web Services Marketplace, but doesn't yet have an active subscription.</p> </li> <li> <p> <code>COMPLETE</code> - The Firewall Manager policy administrator has an active subscription to the third-party firewall service in the Amazon Web Services Marketplace.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
+    ThirdPartyFirewallStatus: ThirdPartyFirewallAssociationStatusSchema.exactOptional().openapi({
+      description:
+        "<p>The current status for setting a Firewall Manager policy administrators account as an administrator of the third-party firewall tenant.</p> <ul> <li> <p> <code>ONBOARDING</code> - The Firewall Manager policy administrator is being designated as a tenant administrator.</p> </li> <li> <p> <code>ONBOARD_COMPLETE</code> - The Firewall Manager policy administrator is designated as a tenant administrator.</p> </li> <li> <p> <code>OFFBOARDING</code> - The Firewall Manager policy administrator is being removed as a tenant administrator.</p> </li> <li> <p> <code>OFFBOARD_COMPLETE</code> - The Firewall Manager policy administrator has been removed as a tenant administrator.</p> </li> <li> <p> <code>NOT_EXIST</code> - The Firewall Manager policy administrator doesn't exist as a tenant administrator.</p> </li> </ul>",
+    }),
+    MarketplaceOnboardingStatus:
+      MarketplaceSubscriptionOnboardingStatusSchema.exactOptional().openapi({
+        description:
+          "<p>The status for subscribing to the third-party firewall vendor in the Amazon Web Services Marketplace.</p> <ul> <li> <p> <code>NO_SUBSCRIPTION</code> - The Firewall Manager policy administrator isn't subscribed to the third-party firewall service in the Amazon Web Services Marketplace.</p> </li> <li> <p> <code>NOT_COMPLETE</code> - The Firewall Manager policy administrator is in the process of subscribing to the third-party firewall service in the Amazon Web Services Marketplace, but doesn't yet have an active subscription.</p> </li> <li> <p> <code>COMPLETE</code> - The Firewall Manager policy administrator has an active subscription to the third-party firewall service in the Amazon Web Services Marketplace.</p> </li> </ul>",
+      }),
   })
   .openapi({ required: [] })
   .openapi('GetThirdPartyFirewallAssociationStatusResponse')
 
 const GetThirdPartyFirewallAssociationStatusRequestSchema = z
   .object({
-    ThirdPartyFirewall: ThirdPartyFirewallSchema.and(
-      z.any().openapi({ description: 'The name of the third-party firewall vendor.' }),
-    ),
+    ThirdPartyFirewall: ThirdPartyFirewallSchema.openapi({
+      description: 'The name of the third-party firewall vendor.',
+    }),
   })
   .openapi({
     required: ['ThirdPartyFirewall'],
@@ -1573,1880 +2637,31 @@ const GetThirdPartyFirewallAssociationStatusRequestSchema = z
   })
   .openapi('GetThirdPartyFirewallAssociationStatusRequest')
 
-const ViolationTargetSchema = z.string().regex(/.*/).min(0).max(1024).openapi('ViolationTarget')
-
-const ReferenceRuleSchema = z.string().openapi('ReferenceRule')
-
-const TargetViolationReasonSchema = z
-  .string()
-  .regex(/\w+/)
-  .min(0)
-  .max(256)
-  .openapi('TargetViolationReason')
-
-const TargetViolationReasonsSchema = z
-  .array(TargetViolationReasonSchema)
-  .openapi('TargetViolationReasons')
-
-const PartialMatchSchema = z
+const GetViolationDetailsResponseSchema: z.ZodType<GetViolationDetailsResponseType> = z
   .object({
-    Reference: ReferenceRuleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The reference rule from the primary security group of the Firewall Manager policy.',
-        }),
-    ).exactOptional(),
-    TargetViolationReasons: TargetViolationReasonsSchema.and(
-      z.any().openapi({ description: 'The violation reason.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'The reference rule that partially matches the <code>ViolationTarget</code> rule and violation reason.',
-    required: [],
-  })
-  .openapi('PartialMatch')
-
-const PartialMatchesSchema = z.array(PartialMatchSchema).openapi('PartialMatches')
-
-const RemediationActionTypeSchema = z.enum(['REMOVE', 'MODIFY']).openapi('RemediationActionType')
-
-const RemediationActionDescriptionSchema = z
-  .string()
-  .regex(/.*/)
-  .min(0)
-  .max(1024)
-  .openapi('RemediationActionDescription')
-
-const CIDRSchema = z
-  .string()
-  .regex(/[a-f0-9:.\/]+/)
-  .min(0)
-  .max(256)
-  .openapi('CIDR')
-
-const SecurityGroupRuleDescriptionSchema = z
-  .object({
-    IPV4Range: CIDRSchema.and(
-      z.any().openapi({ description: 'The IPv4 ranges for the security group rule.' }),
-    ).exactOptional(),
-    IPV6Range: CIDRSchema.and(
-      z.any().openapi({ description: 'The IPv6 ranges for the security group rule.' }),
-    ).exactOptional(),
-    PrefixListId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the prefix list for the security group rule.' }),
-    ).exactOptional(),
-    Protocol: LengthBoundedStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IP protocol name (<code>tcp</code>, <code>udp</code>, <code>icmp</code>, <code>icmpv6</code>) or number.',
-        }),
-    ).exactOptional(),
-    FromPort: IPPortNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The start of the port range for the TCP and UDP protocols, or an ICMP/ICMPv6 type number. A value of <code>-1</code> indicates all ICMP/ICMPv6 types.',
-        }),
-    ).exactOptional(),
-    ToPort: IPPortNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The end of the port range for the TCP and UDP protocols, or an ICMP/ICMPv6 code. A value of <code>-1</code> indicates all ICMP/ICMPv6 codes.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Describes a set of permissions for a security group rule.',
-    required: [],
-  })
-  .openapi('SecurityGroupRuleDescription')
-
-const SecurityGroupRemediationActionSchema = z
-  .object({
-    RemediationActionType: RemediationActionTypeSchema.and(
-      z.any().openapi({ description: 'The remediation action that will be performed.' }),
-    ).exactOptional(),
-    Description: RemediationActionDescriptionSchema.and(
-      z.any().openapi({ description: 'Brief description of the action that will be performed.' }),
-    ).exactOptional(),
-    RemediationResult: SecurityGroupRuleDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The final state of the rule specified in the <code>ViolationTarget</code> after it is remediated.',
-        }),
-    ).exactOptional(),
-    IsDefaultAction: BooleanSchema.and(
-      z.any().openapi({ description: 'Indicates if the current action is the default action.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Remediation option for the rule specified in the <code>ViolationTarget</code>.',
-    required: [],
-  })
-  .openapi('SecurityGroupRemediationAction')
-
-const SecurityGroupRemediationActionsSchema = z
-  .array(SecurityGroupRemediationActionSchema)
-  .openapi('SecurityGroupRemediationActions')
-
-const AwsVPCSecurityGroupViolationSchema = z
-  .object({
-    ViolationTarget: ViolationTargetSchema.and(
-      z.any().openapi({ description: 'The security group rule that is being evaluated.' }),
-    ).exactOptional(),
-    ViolationTargetDescription: LengthBoundedStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A description of the security group that violates the policy.' }),
-    ).exactOptional(),
-    PartialMatches: PartialMatchesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'List of rules specified in the security group of the Firewall Manager policy that partially match the <code>ViolationTarget</code> rule.',
-        }),
-    ).exactOptional(),
-    PossibleSecurityGroupRemediationActions: SecurityGroupRemediationActionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Remediation options for the rule specified in the <code>ViolationTarget</code>.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Violation detail for the rule violation in a security group when compared to the primary security group of the Firewall Manager policy.',
-    required: [],
-  })
-  .openapi('AwsVPCSecurityGroupViolation')
-
-const ResourceIdListSchema = z.array(ResourceIdSchema).openapi('ResourceIdList')
-
-const AwsEc2NetworkInterfaceViolationSchema = z
-  .object({
-    ViolationTarget: ViolationTargetSchema.and(
-      z.any().openapi({ description: 'The resource ID of the network interface.' }),
-    ).exactOptional(),
-    ViolatingSecurityGroups: ResourceIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'List of security groups that violate the rules specified in the primary security group of the Firewall Manager policy.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Violation detail for network interfaces associated with an EC2 instance.',
-    required: [],
-  })
-  .openapi('AwsEc2NetworkInterfaceViolation')
-
-const AwsEc2NetworkInterfaceViolationsSchema = z
-  .array(AwsEc2NetworkInterfaceViolationSchema)
-  .openapi('AwsEc2NetworkInterfaceViolations')
-
-const AwsEc2InstanceViolationSchema = z
-  .object({
-    ViolationTarget: ViolationTargetSchema.and(
-      z.any().openapi({ description: 'The resource ID of the EC2 instance.' }),
-    ).exactOptional(),
-    AwsEc2NetworkInterfaceViolations: AwsEc2NetworkInterfaceViolationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Violation detail for network interfaces associated with the EC2 instance.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Violation detail for an EC2 instance resource.', required: [] })
-  .openapi('AwsEc2InstanceViolation')
-
-const NetworkFirewallMissingFirewallViolationSchema = z
-  .object({
-    ViolationTarget: ViolationTargetSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The ID of the Network Firewall or VPC resource that's in violation.",
-        }),
-    ).exactOptional(),
-    VPC: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The resource ID of the VPC associated with a violating subnet.' }),
-    ).exactOptional(),
-    AvailabilityZone: LengthBoundedStringSchema.and(
-      z.any().openapi({ description: 'The Availability Zone of a violating subnet. ' }),
-    ).exactOptional(),
-    TargetViolationReason: TargetViolationReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The reason the resource has this violation, if one is available. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      "Violation detail for Network Firewall for a subnet that doesn't have a Firewall Manager managed firewall in its VPC. ",
-    required: [],
-  })
-  .openapi('NetworkFirewallMissingFirewallViolation')
-
-const NetworkFirewallMissingSubnetViolationSchema = z
-  .object({
-    ViolationTarget: ViolationTargetSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The ID of the Network Firewall or VPC resource that's in violation.",
-        }),
-    ).exactOptional(),
-    VPC: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The resource ID of the VPC associated with a violating subnet.' }),
-    ).exactOptional(),
-    AvailabilityZone: LengthBoundedStringSchema.and(
-      z.any().openapi({ description: 'The Availability Zone of a violating subnet. ' }),
-    ).exactOptional(),
-    TargetViolationReason: TargetViolationReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The reason the resource has this violation, if one is available. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      "Violation detail for Network Firewall for an Availability Zone that's missing the expected Firewall Manager managed subnet.",
-    required: [],
-  })
-  .openapi('NetworkFirewallMissingSubnetViolation')
-
-const NetworkFirewallMissingExpectedRTViolationSchema = z
-  .object({
-    ViolationTarget: ViolationTargetSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The ID of the Network Firewall or VPC resource that's in violation.",
-        }),
-    ).exactOptional(),
-    VPC: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The resource ID of the VPC associated with a violating subnet.' }),
-    ).exactOptional(),
-    AvailabilityZone: LengthBoundedStringSchema.and(
-      z.any().openapi({ description: 'The Availability Zone of a violating subnet. ' }),
-    ).exactOptional(),
-    CurrentRouteTable: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The resource ID of the current route table that's associated with the subnet, if one is available.",
-        }),
-    ).exactOptional(),
-    ExpectedRouteTable: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The resource ID of the route table that should be associated with the subnet.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      "Violation detail for Network Firewall for a subnet that's not associated to the expected Firewall Manager managed route table.",
-    required: [],
-  })
-  .openapi('NetworkFirewallMissingExpectedRTViolation')
-
-const NetworkFirewallResourceNameSchema = z
-  .string()
-  .regex(/^[a-zA-Z0-9-]+$/)
-  .min(1)
-  .max(128)
-  .openapi('NetworkFirewallResourceName')
-
-const StatelessRuleGroupPrioritySchema = z
-  .int()
-  .min(1)
-  .max(65535)
-  .openapi('StatelessRuleGroupPriority')
-
-const StatelessRuleGroupSchema = z
-  .object({
-    RuleGroupName: NetworkFirewallResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the rule group.' }),
-    ).exactOptional(),
-    ResourceId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The resource ID of the rule group.' }),
-    ).exactOptional(),
-    Priority: StatelessRuleGroupPrioritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The priority of the rule group. Network Firewall evaluates the stateless rule groups in a firewall policy starting from the lowest priority setting. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Network Firewall stateless rule group, used in a <a>NetworkFirewallPolicyDescription</a>. ',
-    required: [],
-  })
-  .openapi('StatelessRuleGroup')
-
-const StatelessRuleGroupListSchema = z
-  .array(StatelessRuleGroupSchema)
-  .openapi('StatelessRuleGroupList')
-
-const NetworkFirewallActionSchema = z
-  .string()
-  .regex(/^[a-zA-Z0-9]+$/)
-  .min(1)
-  .max(128)
-  .openapi('NetworkFirewallAction')
-
-const NetworkFirewallActionListSchema = z
-  .array(NetworkFirewallActionSchema)
-  .openapi('NetworkFirewallActionList')
-
-const PriorityNumberSchema = z.int().openapi('PriorityNumber')
-
-const NetworkFirewallOverrideActionSchema = z
-  .literal('DROP_TO_ALERT')
-  .openapi('NetworkFirewallOverrideAction')
-
-const NetworkFirewallStatefulRuleGroupOverrideSchema = z
-  .object({
-    Action: NetworkFirewallOverrideActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The action that changes the rule group from <code>DROP</code> to <code>ALERT</code>. This only applies to managed rule groups.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'The setting that allows the policy owner to change the behavior of the rule group within a policy.',
-    required: [],
-  })
-  .openapi('NetworkFirewallStatefulRuleGroupOverride')
-
-const StatefulRuleGroupSchema = z
-  .object({
-    RuleGroupName: NetworkFirewallResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the rule group.' }),
-    ).exactOptional(),
-    ResourceId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The resource ID of the rule group.' }),
-    ).exactOptional(),
-    Priority: PriorityNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>An integer setting that indicates the order in which to run the stateful rule groups in a single Network Firewall firewall policy. This setting only applies to firewall policies that specify the <code>STRICT_ORDER</code> rule order in the stateful engine options settings.</p> <p> Network Firewall evalutes each stateful rule group against a packet starting with the group that has the lowest priority setting. You must ensure that the priority settings are unique within each policy. For information about </p> <p> You can change the priority settings of your rule groups at any time. To make it easier to insert rule groups later, number them so there's a wide range in between, for example use 100, 200, and so on. </p>",
-        }),
-    ).exactOptional(),
-    Override: NetworkFirewallStatefulRuleGroupOverrideSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The action that allows the policy owner to override the behavior of the rule group within a policy.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Network Firewall stateful rule group, used in a <a>NetworkFirewallPolicyDescription</a>. ',
-    required: [],
-  })
-  .openapi('StatefulRuleGroup')
-
-const StatefulRuleGroupListSchema = z
-  .array(StatefulRuleGroupSchema)
-  .openapi('StatefulRuleGroupList')
-
-const RuleOrderSchema = z.enum(['STRICT_ORDER', 'DEFAULT_ACTION_ORDER']).openapi('RuleOrder')
-
-const StatefulEngineOptionsSchema = z
-  .object({
-    RuleOrder: RuleOrderSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates how to manage the order of stateful rule evaluation for the policy. <code>DEFAULT_ACTION_ORDER</code> is the default behavior. Stateful rules are provided to the rule engine as Suricata compatible strings, and Suricata evaluates them based on certain settings. For more information, see <a href="https://docs.aws.amazon.com/network-firewall/latest/developerguide/suricata-rule-evaluation-order.html">Evaluation order for stateful rules</a> in the <i>Network Firewall Developer Guide</i>.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Configuration settings for the handling of the stateful rule groups in a Network Firewall firewall policy.',
-    required: [],
-  })
-  .openapi('StatefulEngineOptions')
-
-const NetworkFirewallPolicyDescriptionSchema = z
-  .object({
-    StatelessRuleGroups: StatelessRuleGroupListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The stateless rule groups that are used in the Network Firewall firewall policy. ',
-        }),
-    ).exactOptional(),
-    StatelessDefaultActions: NetworkFirewallActionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The actions to take on packets that don't match any of the stateless rule groups. ",
-        }),
-    ).exactOptional(),
-    StatelessFragmentDefaultActions: NetworkFirewallActionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The actions to take on packet fragments that don't match any of the stateless rule groups. ",
-        }),
-    ).exactOptional(),
-    StatelessCustomActions: NetworkFirewallActionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Names of custom actions that are available for use in the stateless default actions settings.',
-        }),
-    ).exactOptional(),
-    StatefulRuleGroups: StatefulRuleGroupListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The stateful rule groups that are used in the Network Firewall firewall policy. ',
-        }),
-    ).exactOptional(),
-    StatefulDefaultActions: NetworkFirewallActionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The default actions to take on a packet that doesn't match any stateful rules. The stateful default action is optional, and is only valid when using the strict rule order.</p> <p> Valid values of the stateful default action: </p> <ul> <li> <p>aws:drop_strict</p> </li> <li> <p>aws:drop_established</p> </li> <li> <p>aws:alert_strict</p> </li> <li> <p>aws:alert_established</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    StatefulEngineOptions: StatefulEngineOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Additional options governing how Network Firewall handles stateful rules. The stateful rule groups that you use in your policy must have stateful rule options settings that are compatible with these settings.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'The definition of the Network Firewall firewall policy.', required: [] })
-  .openapi('NetworkFirewallPolicyDescription')
-
-const NetworkFirewallPolicyModifiedViolationSchema = z
-  .object({
-    ViolationTarget: ViolationTargetSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The ID of the Network Firewall or VPC resource that's in violation.",
-        }),
-    ).exactOptional(),
-    CurrentPolicyDescription: NetworkFirewallPolicyDescriptionSchema.and(
-      z
-        .any()
-        .openapi({ description: "The policy that's currently in use in the individual account. " }),
-    ).exactOptional(),
-    ExpectedPolicyDescription: NetworkFirewallPolicyDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The policy that should be in use in the individual account in order to be compliant. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Violation detail for Network Firewall for a firewall policy that has a different <a>NetworkFirewallPolicyDescription</a> than is required by the Firewall Manager policy. ',
-    required: [],
-  })
-  .openapi('NetworkFirewallPolicyModifiedViolation')
-
-const DestinationTypeSchema = z.enum(['IPV4', 'IPV6', 'PREFIX_LIST']).openapi('DestinationType')
-
-const TargetTypeSchema = z
-  .enum([
-    'GATEWAY',
-    'CARRIER_GATEWAY',
-    'INSTANCE',
-    'LOCAL_GATEWAY',
-    'NAT_GATEWAY',
-    'NETWORK_INTERFACE',
-    'VPC_ENDPOINT',
-    'VPC_PEERING_CONNECTION',
-    'EGRESS_ONLY_INTERNET_GATEWAY',
-    'TRANSIT_GATEWAY',
-  ])
-  .openapi('TargetType')
-
-const RouteSchema = z
-  .object({
-    DestinationType: DestinationTypeSchema.and(
-      z.any().openapi({ description: 'The type of destination for the route.' }),
-    ).exactOptional(),
-    TargetType: TargetTypeSchema.and(
-      z.any().openapi({ description: 'The type of target for the route.' }),
-    ).exactOptional(),
-    Destination: LengthBoundedStringSchema.and(
-      z.any().openapi({ description: 'The destination of the route.' }),
-    ).exactOptional(),
-    Target: LengthBoundedStringSchema.and(
-      z.any().openapi({ description: "The route's target." }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Describes a route in a route table.', required: [] })
-  .openapi('Route')
-
-const RoutesSchema = z.array(RouteSchema).openapi('Routes')
-
-const LengthBoundedStringListSchema = z
-  .array(LengthBoundedStringSchema)
-  .openapi('LengthBoundedStringList')
-
-const ExpectedRouteSchema = z
-  .object({
-    IpV4Cidr: CIDRSchema.and(
-      z.any().openapi({ description: 'Information about the IPv4 CIDR block.' }),
-    ).exactOptional(),
-    PrefixListId: CIDRSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Information about the ID of the prefix list for the route.' }),
-    ).exactOptional(),
-    IpV6Cidr: CIDRSchema.and(
-      z.any().openapi({ description: 'Information about the IPv6 CIDR block.' }),
-    ).exactOptional(),
-    ContributingSubnets: ResourceIdListSchema.and(
-      z.any().openapi({ description: 'Information about the contributing subnets.' }),
-    ).exactOptional(),
-    AllowedTargets: LengthBoundedStringListSchema.and(
-      z.any().openapi({ description: 'Information about the allowed targets.' }),
-    ).exactOptional(),
-    RouteTableId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'Information about the route table ID.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Information about the expected route in the route table.',
-    required: [],
-  })
-  .openapi('ExpectedRoute')
-
-const ExpectedRoutesSchema = z.array(ExpectedRouteSchema).openapi('ExpectedRoutes')
-
-const NetworkFirewallInternetTrafficNotInspectedViolationSchema = z
-  .object({
-    SubnetId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The subnet ID.' }),
-    ).exactOptional(),
-    SubnetAvailabilityZone: LengthBoundedStringSchema.and(
-      z.any().openapi({ description: 'The subnet Availability Zone.' }),
-    ).exactOptional(),
-    RouteTableId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'Information about the route table ID.' }),
-    ).exactOptional(),
-    ViolatingRoutes: RoutesSchema.and(
-      z.any().openapi({ description: 'The route or routes that are in violation.' }),
-    ).exactOptional(),
-    IsRouteTableUsedInDifferentAZ: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about whether the route table is used in another Availability Zone.',
-        }),
-    ).exactOptional(),
-    CurrentFirewallSubnetRouteTable: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the subnet route table for the current firewall.',
-        }),
-    ).exactOptional(),
-    ExpectedFirewallEndpoint: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The expected endpoint for the current firewall.' }),
-    ).exactOptional(),
-    FirewallSubnetId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The firewall subnet ID.' }),
-    ).exactOptional(),
-    ExpectedFirewallSubnetRoutes: ExpectedRoutesSchema.and(
-      z.any().openapi({ description: 'The firewall subnet routes that are expected.' }),
-    ).exactOptional(),
-    ActualFirewallSubnetRoutes: RoutesSchema.and(
-      z.any().openapi({ description: 'The actual firewall subnet routes.' }),
-    ).exactOptional(),
-    InternetGatewayId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The internet gateway ID.' }),
-    ).exactOptional(),
-    CurrentInternetGatewayRouteTable: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The current route table for the internet gateway.' }),
-    ).exactOptional(),
-    ExpectedInternetGatewayRoutes: ExpectedRoutesSchema.and(
-      z.any().openapi({ description: 'The internet gateway routes that are expected.' }),
-    ).exactOptional(),
-    ActualInternetGatewayRoutes: RoutesSchema.and(
-      z.any().openapi({ description: 'The actual internet gateway routes.' }),
-    ).exactOptional(),
-    VpcId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'Information about the VPC ID.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      "Violation detail for the subnet for which internet traffic that hasn't been inspected.",
-    required: [],
-  })
-  .openapi('NetworkFirewallInternetTrafficNotInspectedViolation')
-
-const NetworkFirewallInvalidRouteConfigurationViolationSchema = z
-  .object({
-    AffectedSubnets: ResourceIdListSchema.and(
-      z.any().openapi({ description: 'The subnets that are affected.' }),
-    ).exactOptional(),
-    RouteTableId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The route table ID.' }),
-    ).exactOptional(),
-    IsRouteTableUsedInDifferentAZ: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about whether the route table is used in another Availability Zone.',
-        }),
-    ).exactOptional(),
-    ViolatingRoute: RouteSchema.and(
-      z.any().openapi({ description: "The route that's in violation." }),
-    ).exactOptional(),
-    CurrentFirewallSubnetRouteTable: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The subnet route table for the current firewall.' }),
-    ).exactOptional(),
-    ExpectedFirewallEndpoint: ResourceIdSchema.and(
-      z.any().openapi({ description: "The firewall endpoint that's expected." }),
-    ).exactOptional(),
-    ActualFirewallEndpoint: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The actual firewall endpoint.' }),
-    ).exactOptional(),
-    ExpectedFirewallSubnetId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The expected subnet ID for the firewall.' }),
-    ).exactOptional(),
-    ActualFirewallSubnetId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The actual subnet ID for the firewall.' }),
-    ).exactOptional(),
-    ExpectedFirewallSubnetRoutes: ExpectedRoutesSchema.and(
-      z.any().openapi({ description: 'The firewall subnet routes that are expected.' }),
-    ).exactOptional(),
-    ActualFirewallSubnetRoutes: RoutesSchema.and(
-      z.any().openapi({ description: 'The actual firewall subnet routes that are expected.' }),
-    ).exactOptional(),
-    InternetGatewayId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The internet gateway ID.' }),
-    ).exactOptional(),
-    CurrentInternetGatewayRouteTable: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The route table for the current internet gateway.' }),
-    ).exactOptional(),
-    ExpectedInternetGatewayRoutes: ExpectedRoutesSchema.and(
-      z.any().openapi({ description: 'The expected routes for the internet gateway.' }),
-    ).exactOptional(),
-    ActualInternetGatewayRoutes: RoutesSchema.and(
-      z.any().openapi({ description: 'The actual internet gateway routes.' }),
-    ).exactOptional(),
-    VpcId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'Information about the VPC ID.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      "Violation detail for the improperly configured subnet route. It's possible there is a missing route table route, or a configuration that causes traffic to cross an Availability Zone boundary.",
-    required: [],
-  })
-  .openapi('NetworkFirewallInvalidRouteConfigurationViolation')
-
-const NetworkFirewallBlackHoleRouteDetectedViolationSchema = z
-  .object({
-    ViolationTarget: ViolationTargetSchema.and(
-      z.any().openapi({ description: 'The subnet that has an inactive state.' }),
-    ).exactOptional(),
-    RouteTableId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'Information about the route table ID.' }),
-    ).exactOptional(),
-    VpcId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'Information about the VPC ID.' }),
-    ).exactOptional(),
-    ViolatingRoutes: RoutesSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Information about the route or routes that are in violation.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Violation detail for an internet gateway route with an inactive state in the customer subnet route table or Network Firewall subnet route table.',
-    required: [],
-  })
-  .openapi('NetworkFirewallBlackHoleRouteDetectedViolation')
-
-const NetworkFirewallUnexpectedFirewallRoutesViolationSchema = z
-  .object({
-    FirewallSubnetId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The subnet ID for the firewall.' }),
-    ).exactOptional(),
-    ViolatingRoutes: RoutesSchema.and(
-      z.any().openapi({ description: 'The routes that are in violation.' }),
-    ).exactOptional(),
-    RouteTableId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the route table.' }),
-    ).exactOptional(),
-    FirewallEndpoint: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The endpoint of the firewall.' }),
-    ).exactOptional(),
-    VpcId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'Information about the VPC ID.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: "Violation detail for an unexpected route that's present in a route table.",
-    required: [],
-  })
-  .openapi('NetworkFirewallUnexpectedFirewallRoutesViolation')
-
-const NetworkFirewallUnexpectedGatewayRoutesViolationSchema = z
-  .object({
-    GatewayId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'Information about the gateway ID.' }),
-    ).exactOptional(),
-    ViolatingRoutes: RoutesSchema.and(
-      z.any().openapi({ description: 'The routes that are in violation.' }),
-    ).exactOptional(),
-    RouteTableId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'Information about the route table.' }),
-    ).exactOptional(),
-    VpcId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'Information about the VPC ID.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Violation detail for an unexpected gateway route that’s present in a route table.',
-    required: [],
-  })
-  .openapi('NetworkFirewallUnexpectedGatewayRoutesViolation')
-
-const NetworkFirewallMissingExpectedRoutesViolationSchema = z
-  .object({
-    ViolationTarget: ViolationTargetSchema.and(
-      z.any().openapi({ description: 'The target of the violation.' }),
-    ).exactOptional(),
-    ExpectedRoutes: ExpectedRoutesSchema.and(
-      z.any().openapi({ description: 'The expected routes.' }),
-    ).exactOptional(),
-    VpcId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'Information about the VPC ID.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Violation detail for an expected route missing in Network Firewall.',
-    required: [],
-  })
-  .openapi('NetworkFirewallMissingExpectedRoutesViolation')
-
-const DnsRuleGroupPrioritySchema = z.int().min(0).max(10000).openapi('DnsRuleGroupPriority')
-
-const DnsRuleGroupPrioritiesSchema = z
-  .array(DnsRuleGroupPrioritySchema)
-  .openapi('DnsRuleGroupPriorities')
-
-const DnsRuleGroupPriorityConflictViolationSchema = z
-  .object({
-    ViolationTarget: ViolationTargetSchema.and(
-      z.any().openapi({ description: 'Information about the VPC ID. ' }),
-    ).exactOptional(),
-    ViolationTargetDescription: LengthBoundedStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A description of the violation that specifies the VPC and the rule group that's already associated with it.",
-        }),
-    ).exactOptional(),
-    ConflictingPriority: DnsRuleGroupPrioritySchema.and(
-      z.any().openapi({ description: 'The priority setting of the two conflicting rule groups.' }),
-    ).exactOptional(),
-    ConflictingPolicyId: PolicyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The ID of the Firewall Manager DNS Firewall policy that was already applied to the VPC. This policy contains the rule group that's already associated with the VPC. ",
-        }),
-    ).exactOptional(),
-    UnavailablePriorities: DnsRuleGroupPrioritiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The priorities of rule groups that are already associated with the VPC. To retry your operation, choose priority settings that aren't in this list for the rule groups in your new DNS Firewall policy. ",
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      "A rule group that Firewall Manager tried to associate with a VPC has the same priority as a rule group that's already associated. ",
-    required: [],
-  })
-  .openapi('DnsRuleGroupPriorityConflictViolation')
-
-const DnsDuplicateRuleGroupViolationSchema = z
-  .object({
-    ViolationTarget: ViolationTargetSchema.and(
-      z.any().openapi({ description: 'Information about the VPC ID. ' }),
-    ).exactOptional(),
-    ViolationTargetDescription: LengthBoundedStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A description of the violation that specifies the rule group and VPC.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      "A DNS Firewall rule group that Firewall Manager tried to associate with a VPC is already associated with the VPC and can't be associated again. ",
-    required: [],
-  })
-  .openapi('DnsDuplicateRuleGroupViolation')
-
-const BasicIntegerSchema = z.int().min(-2147483648).max(2147483647).openapi('BasicInteger')
-
-const DnsRuleGroupLimitExceededViolationSchema = z
-  .object({
-    ViolationTarget: ViolationTargetSchema.and(
-      z.any().openapi({ description: 'Information about the VPC ID. ' }),
-    ).exactOptional(),
-    ViolationTargetDescription: LengthBoundedStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A description of the violation that specifies the rule group and VPC.',
-        }),
-    ).exactOptional(),
-    NumberOfRuleGroupsAlreadyAssociated: BasicIntegerSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The number of rule groups currently associated with the VPC. ' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'The VPC that Firewall Manager was applying a DNS Fireall policy to reached the limit for associated DNS Firewall rule groups. Firewall Manager tried to associate another rule group with the VPC and failed due to the limit. ',
-    required: [],
-  })
-  .openapi('DnsRuleGroupLimitExceededViolation')
-
-const ActionTargetSchema = z
-  .object({
-    ResourceId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the remediation target.' }),
-    ).exactOptional(),
-    Description: LengthBoundedStringSchema.and(
-      z.any().openapi({ description: 'A description of the remediation action target.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Describes a remediation action target.', required: [] })
-  .openapi('ActionTarget')
-
-const EC2CreateRouteActionSchema = z
-  .object({
-    Description: LengthBoundedStringSchema.and(
-      z.any().openapi({ description: 'A description of CreateRoute action in Amazon EC2.' }),
-    ).exactOptional(),
-    DestinationCidrBlock: CIDRSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the IPv4 CIDR address block used for the destination match.',
-        }),
-    ).exactOptional(),
-    DestinationPrefixListId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the ID of a prefix list used for the destination match.',
-        }),
-    ).exactOptional(),
-    DestinationIpv6CidrBlock: CIDRSchema.and(
-      z.any().openapi({ description: 'Information about the IPv6 CIDR block destination.' }),
-    ).exactOptional(),
-    VpcEndpointId: ActionTargetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the ID of a VPC endpoint. Supported for Gateway Load Balancer endpoints only.',
-        }),
-    ).exactOptional(),
-    GatewayId: ActionTargetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the ID of an internet gateway or virtual private gateway attached to your VPC.',
-        }),
-    ).exactOptional(),
-    RouteTableId: ActionTargetSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Information about the ID of the route table for the route.' }),
-    ),
-  })
-  .openapi({
-    required: ['RouteTableId'],
-    description: 'Information about the CreateRoute action in Amazon EC2.',
-  })
-  .openapi('EC2CreateRouteAction')
-
-const EC2ReplaceRouteActionSchema = z
-  .object({
-    Description: LengthBoundedStringSchema.and(
-      z.any().openapi({ description: 'A description of the ReplaceRoute action in Amazon EC2.' }),
-    ).exactOptional(),
-    DestinationCidrBlock: CIDRSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the IPv4 CIDR address block used for the destination match. The value that you provide must match the CIDR of an existing route in the table.',
-        }),
-    ).exactOptional(),
-    DestinationPrefixListId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Information about the ID of the prefix list for the route.' }),
-    ).exactOptional(),
-    DestinationIpv6CidrBlock: CIDRSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the IPv6 CIDR address block used for the destination match. The value that you provide must match the CIDR of an existing route in the table.',
-        }),
-    ).exactOptional(),
-    GatewayId: ActionTargetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the ID of an internet gateway or virtual private gateway.',
-        }),
-    ).exactOptional(),
-    RouteTableId: ActionTargetSchema.and(
-      z.any().openapi({ description: 'Information about the ID of the route table.' }),
-    ),
-  })
-  .openapi({
-    required: ['RouteTableId'],
-    description: 'Information about the ReplaceRoute action in Amazon EC2.',
-  })
-  .openapi('EC2ReplaceRouteAction')
-
-const EC2DeleteRouteActionSchema = z
-  .object({
-    Description: LengthBoundedStringSchema.and(
-      z.any().openapi({ description: 'A description of the DeleteRoute action.' }),
-    ).exactOptional(),
-    DestinationCidrBlock: CIDRSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the IPv4 CIDR range for the route. The value you specify must match the CIDR for the route exactly.',
-        }),
-    ).exactOptional(),
-    DestinationPrefixListId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Information about the ID of the prefix list for the route.' }),
-    ).exactOptional(),
-    DestinationIpv6CidrBlock: CIDRSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the IPv6 CIDR range for the route. The value you specify must match the CIDR for the route exactly.',
-        }),
-    ).exactOptional(),
-    RouteTableId: ActionTargetSchema.and(
-      z.any().openapi({ description: 'Information about the ID of the route table.' }),
-    ),
-  })
-  .openapi({
-    required: ['RouteTableId'],
-    description: 'Information about the DeleteRoute action in Amazon EC2.',
-  })
-  .openapi('EC2DeleteRouteAction')
-
-const EC2CopyRouteTableActionSchema = z
-  .object({
-    Description: LengthBoundedStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A description of the copied EC2 route table that is associated with the remediation action.',
-        }),
-    ).exactOptional(),
-    VpcId: ActionTargetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The VPC ID of the copied EC2 route table that is associated with the remediation action.',
-        }),
-    ),
-    RouteTableId: ActionTargetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the copied EC2 route table that is associated with the remediation action.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['VpcId', 'RouteTableId'],
-    description: 'An action that copies the EC2 route table for use in remediation.',
-  })
-  .openapi('EC2CopyRouteTableAction')
-
-const EC2ReplaceRouteTableAssociationActionSchema = z
-  .object({
-    Description: LengthBoundedStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A description of the ReplaceRouteTableAssociation action in Amazon EC2.',
-        }),
-    ).exactOptional(),
-    AssociationId: ActionTargetSchema.and(
-      z.any().openapi({ description: 'Information about the association ID.' }),
-    ),
-    RouteTableId: ActionTargetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the ID of the new route table to associate with the subnet.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['AssociationId', 'RouteTableId'],
-    description: 'Information about the ReplaceRouteTableAssociation action in Amazon EC2.',
-  })
-  .openapi('EC2ReplaceRouteTableAssociationAction')
-
-const EC2AssociateRouteTableActionSchema = z
-  .object({
-    Description: LengthBoundedStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A description of the EC2 route table that is associated with the remediation action.',
-        }),
-    ).exactOptional(),
-    RouteTableId: ActionTargetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the EC2 route table that is associated with the remediation action.',
-        }),
-    ),
-    SubnetId: ActionTargetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the subnet for the EC2 route table that is associated with the remediation action.',
-        }),
-    ).exactOptional(),
-    GatewayId: ActionTargetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the gateway to be used with the EC2 route table that is associated with the remediation action.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['RouteTableId'],
-    description:
-      'The action of associating an EC2 resource, such as a subnet or internet gateway, with a route table.',
-  })
-  .openapi('EC2AssociateRouteTableAction')
-
-const EC2CreateRouteTableActionSchema = z
-  .object({
-    Description: LengthBoundedStringSchema.and(
-      z.any().openapi({ description: 'A description of the CreateRouteTable action.' }),
-    ).exactOptional(),
-    VpcId: ActionTargetSchema.and(
-      z.any().openapi({ description: 'Information about the ID of a VPC.' }),
-    ),
-  })
-  .openapi({
-    required: ['VpcId'],
-    description: 'Information about the CreateRouteTable action in Amazon EC2.',
-  })
-  .openapi('EC2CreateRouteTableAction')
-
-const FMSPolicyUpdateFirewallCreationConfigActionSchema = z
-  .object({
-    Description: LengthBoundedStringSchema.and(
-      z.any().openapi({ description: 'Describes the remedial action.' }),
-    ).exactOptional(),
-    FirewallCreationConfig: ManagedServiceDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>FirewallCreationConfig</code> that you can copy into your current policy\'s <a href="https://docs.aws.amazon.com/fms/2018-01-01/APIReference/API_SecurityServicePolicyData.html">SecurityServiceData</a> in order to remedy scope violations.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      "Contains information about the actions that you can take to remediate scope violations caused by your policy's <code>FirewallCreationConfig</code>. <code>FirewallCreationConfig</code> is an optional configuration that you can use to choose which Availability Zones Firewall Manager creates Network Firewall endpoints in.",
-    required: [],
-  })
-  .openapi('FMSPolicyUpdateFirewallCreationConfigAction')
-
-const RemediationActionSchema = z
-  .object({
-    Description: LengthBoundedStringSchema.and(
-      z.any().openapi({ description: 'A description of a remediation action.' }),
-    ).exactOptional(),
-    EC2CreateRouteAction: EC2CreateRouteActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the CreateRoute action in the Amazon EC2 API.',
-        }),
-    ).exactOptional(),
-    EC2ReplaceRouteAction: EC2ReplaceRouteActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the ReplaceRoute action in the Amazon EC2 API.',
-        }),
-    ).exactOptional(),
-    EC2DeleteRouteAction: EC2DeleteRouteActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the DeleteRoute action in the Amazon EC2 API.',
-        }),
-    ).exactOptional(),
-    EC2CopyRouteTableAction: EC2CopyRouteTableActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the CopyRouteTable action in the Amazon EC2 API.',
-        }),
-    ).exactOptional(),
-    EC2ReplaceRouteTableAssociationAction: EC2ReplaceRouteTableAssociationActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the ReplaceRouteTableAssociation action in the Amazon EC2 API.',
-        }),
-    ).exactOptional(),
-    EC2AssociateRouteTableAction: EC2AssociateRouteTableActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the AssociateRouteTable action in the Amazon EC2 API.',
-        }),
-    ).exactOptional(),
-    EC2CreateRouteTableAction: EC2CreateRouteTableActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the CreateRouteTable action in the Amazon EC2 API.',
-        }),
-    ).exactOptional(),
-    FMSPolicyUpdateFirewallCreationConfigAction:
-      FMSPolicyUpdateFirewallCreationConfigActionSchema.and(
-        z
-          .any()
-          .openapi({
-            description: 'The remedial action to take when updating a firewall configuration.',
-          }),
-      ).exactOptional(),
-  })
-  .openapi({
-    description: 'Information about an individual action you can take to remediate a violation.',
-    required: [],
-  })
-  .openapi('RemediationAction')
-
-const RemediationActionWithOrderSchema = z
-  .object({
-    RemediationAction: RemediationActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about an action you can take to remediate a violation.',
-        }),
-    ).exactOptional(),
-    Order: BasicIntegerSchema.and(
-      z.any().openapi({ description: 'The order of the remediation actions in the list.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'An ordered list of actions you can take to remediate a violation.',
-    required: [],
-  })
-  .openapi('RemediationActionWithOrder')
-
-const OrderedRemediationActionsSchema = z
-  .array(RemediationActionWithOrderSchema)
-  .openapi('OrderedRemediationActions')
-
-const PossibleRemediationActionSchema = z
-  .object({
-    Description: LengthBoundedStringSchema.and(
-      z.any().openapi({ description: 'A description of the list of remediation actions.' }),
-    ).exactOptional(),
-    OrderedRemediationActions: OrderedRemediationActionsSchema.and(
-      z.any().openapi({ description: 'The ordered list of remediation actions.' }),
-    ),
-    IsDefaultAction: BooleanSchema.and(
-      z.any().openapi({ description: 'Information about whether an action is taken by default.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['OrderedRemediationActions'],
-    description: 'A list of remediation actions.',
-  })
-  .openapi('PossibleRemediationAction')
-
-const PossibleRemediationActionListSchema = z
-  .array(PossibleRemediationActionSchema)
-  .openapi('PossibleRemediationActionList')
-
-const PossibleRemediationActionsSchema = z
-  .object({
-    Description: LengthBoundedStringSchema.and(
-      z.any().openapi({ description: 'A description of the possible remediation actions list.' }),
-    ).exactOptional(),
-    Actions: PossibleRemediationActionListSchema.and(
-      z.any().openapi({ description: 'Information about the actions.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'A list of possible remediation action lists. Each individual possible remediation action is a list of individual remediation actions.',
-    required: [],
-  })
-  .openapi('PossibleRemediationActions')
-
-const FirewallSubnetIsOutOfScopeViolationSchema = z
-  .object({
-    FirewallSubnetId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the firewall subnet that violates the policy scope.' }),
-    ).exactOptional(),
-    VpcId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The VPC ID of the firewall subnet that violates the policy scope.',
-        }),
-    ).exactOptional(),
-    SubnetAvailabilityZone: LengthBoundedStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Availability Zone of the firewall subnet that violates the policy scope.',
-        }),
-    ).exactOptional(),
-    SubnetAvailabilityZoneId: LengthBoundedStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Availability Zone ID of the firewall subnet that violates the policy scope.',
-        }),
-    ).exactOptional(),
-    VpcEndpointId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The VPC endpoint ID of the firewall subnet that violates the policy scope.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Contains details about the firewall subnet that violates the policy scope.',
-    required: [],
-  })
-  .openapi('FirewallSubnetIsOutOfScopeViolation')
-
-const RouteHasOutOfScopeEndpointViolationSchema = z
-  .object({
-    SubnetId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the subnet associated with the route that violates the policy scope.',
-        }),
-    ).exactOptional(),
-    VpcId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The VPC ID of the route that violates the policy scope.' }),
-    ).exactOptional(),
-    RouteTableId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the route table.' }),
-    ).exactOptional(),
-    ViolatingRoutes: RoutesSchema.and(
-      z.any().openapi({ description: 'The list of routes that violate the route table.' }),
-    ).exactOptional(),
-    SubnetAvailabilityZone: LengthBoundedStringSchema.and(
-      z.any().openapi({ description: "The subnet's Availability Zone." }),
-    ).exactOptional(),
-    SubnetAvailabilityZoneId: LengthBoundedStringSchema.and(
-      z.any().openapi({ description: "The ID of the subnet's Availability Zone." }),
-    ).exactOptional(),
-    CurrentFirewallSubnetRouteTable: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The route table associated with the current firewall subnet.' }),
-    ).exactOptional(),
-    FirewallSubnetId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the firewall subnet.' }),
-    ).exactOptional(),
-    FirewallSubnetRoutes: RoutesSchema.and(
-      z.any().openapi({ description: 'The list of firewall subnet routes.' }),
-    ).exactOptional(),
-    InternetGatewayId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Internet Gateway.' }),
-    ).exactOptional(),
-    CurrentInternetGatewayRouteTable: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The current route table associated with the Internet Gateway.' }),
-    ).exactOptional(),
-    InternetGatewayRoutes: RoutesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The routes in the route table associated with the Internet Gateway.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Contains details about the route endpoint that violates the policy scope.',
-    required: [],
-  })
-  .openapi('RouteHasOutOfScopeEndpointViolation')
-
-const ThirdPartyFirewallMissingFirewallViolationSchema = z
-  .object({
-    ViolationTarget: ViolationTargetSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The ID of the third-party firewall that's causing the violation.",
-        }),
-    ).exactOptional(),
-    VPC: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The resource ID of the VPC associated with a third-party firewall.',
-        }),
-    ).exactOptional(),
-    AvailabilityZone: LengthBoundedStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The Availability Zone of the third-party firewall that's causing the violation.",
-        }),
-    ).exactOptional(),
-    TargetViolationReason: TargetViolationReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The reason the resource is causing this violation, if a reason is available.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      "The violation details about a third-party firewall's subnet that doesn't have a Firewall Manager managed firewall in its VPC.",
-    required: [],
-  })
-  .openapi('ThirdPartyFirewallMissingFirewallViolation')
-
-const ThirdPartyFirewallMissingSubnetViolationSchema = z
-  .object({
-    ViolationTarget: ViolationTargetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The ID of the third-party firewall or VPC resource that's causing the violation.",
-        }),
-    ).exactOptional(),
-    VPC: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The resource ID of the VPC associated with a subnet that's causing the violation.",
-        }),
-    ).exactOptional(),
-    AvailabilityZone: LengthBoundedStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The Availability Zone of a subnet that's causing the violation.",
-        }),
-    ).exactOptional(),
-    TargetViolationReason: TargetViolationReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The reason the resource is causing the violation, if a reason is available.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      "The violation details for a third-party firewall for an Availability Zone that's missing the Firewall Manager managed subnet.",
-    required: [],
-  })
-  .openapi('ThirdPartyFirewallMissingSubnetViolation')
-
-const ThirdPartyFirewallMissingExpectedRouteTableViolationSchema = z
-  .object({
-    ViolationTarget: ViolationTargetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The ID of the third-party firewall or VPC resource that's causing the violation.",
-        }),
-    ).exactOptional(),
-    VPC: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The resource ID of the VPC associated with a fireawll subnet that's causing the violation.",
-        }),
-    ).exactOptional(),
-    AvailabilityZone: LengthBoundedStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The Availability Zone of the firewall subnet that's causing the violation.",
-        }),
-    ).exactOptional(),
-    CurrentRouteTable: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The resource ID of the current route table that's associated with the subnet, if one is available.",
-        }),
-    ).exactOptional(),
-    ExpectedRouteTable: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The resource ID of the route table that should be associated with the subnet.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      "The violation details for a third-party firewall that's not associated with an Firewall Manager managed route table.",
-    required: [],
-  })
-  .openapi('ThirdPartyFirewallMissingExpectedRouteTableViolation')
-
-const FirewallSubnetMissingVPCEndpointViolationSchema = z
-  .object({
-    FirewallSubnetId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the firewall that this VPC endpoint is associated with.',
-        }),
-    ).exactOptional(),
-    VpcId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The resource ID of the VPC associated with the deleted VPC subnet.',
-        }),
-    ).exactOptional(),
-    SubnetAvailabilityZone: LengthBoundedStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the Availability Zone of the deleted VPC subnet.' }),
-    ).exactOptional(),
-    SubnetAvailabilityZoneId: LengthBoundedStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the Availability Zone of the deleted VPC subnet.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      "The violation details for a firewall subnet's VPC endpoint that's deleted or missing.",
-    required: [],
-  })
-  .openapi('FirewallSubnetMissingVPCEndpointViolation')
-
-const ResourceViolationSchema = z
-  .object({
-    AwsVPCSecurityGroupViolation: AwsVPCSecurityGroupViolationSchema.and(
-      z.any().openapi({ description: 'Violation detail for security groups.' }),
-    ).exactOptional(),
-    AwsEc2NetworkInterfaceViolation: AwsEc2NetworkInterfaceViolationSchema.and(
-      z.any().openapi({ description: 'Violation detail for a network interface.' }),
-    ).exactOptional(),
-    AwsEc2InstanceViolation: AwsEc2InstanceViolationSchema.and(
-      z.any().openapi({ description: 'Violation detail for an EC2 instance.' }),
-    ).exactOptional(),
-    NetworkFirewallMissingFirewallViolation: NetworkFirewallMissingFirewallViolationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Violation detail for an Network Firewall policy that indicates that a subnet has no Firewall Manager managed firewall in its VPC. ',
-        }),
-    ).exactOptional(),
-    NetworkFirewallMissingSubnetViolation: NetworkFirewallMissingSubnetViolationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Violation detail for an Network Firewall policy that indicates that an Availability Zone is missing the expected Firewall Manager managed subnet.',
-        }),
-    ).exactOptional(),
-    NetworkFirewallMissingExpectedRTViolation: NetworkFirewallMissingExpectedRTViolationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Violation detail for an Network Firewall policy that indicates that a subnet is not associated with the expected Firewall Manager managed route table. ',
-        }),
-    ).exactOptional(),
-    NetworkFirewallPolicyModifiedViolation: NetworkFirewallPolicyModifiedViolationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Violation detail for an Network Firewall policy that indicates that a firewall policy in an individual account has been modified in a way that makes it noncompliant. For example, the individual account owner might have deleted a rule group, changed the priority of a stateless rule group, or changed a policy default action.',
-        }),
-    ).exactOptional(),
-    NetworkFirewallInternetTrafficNotInspectedViolation:
-      NetworkFirewallInternetTrafficNotInspectedViolationSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              "Violation detail for the subnet for which internet traffic hasn't been inspected.",
-          }),
-      ).exactOptional(),
-    NetworkFirewallInvalidRouteConfigurationViolation:
-      NetworkFirewallInvalidRouteConfigurationViolationSchema.and(
-        z.any().openapi({ description: 'The route configuration is invalid.' }),
-      ).exactOptional(),
-    NetworkFirewallBlackHoleRouteDetectedViolation:
-      NetworkFirewallBlackHoleRouteDetectedViolationSchema.exactOptional(),
-    NetworkFirewallUnexpectedFirewallRoutesViolation:
-      NetworkFirewallUnexpectedFirewallRoutesViolationSchema.and(
-        z.any().openapi({ description: "There's an unexpected firewall route." }),
-      ).exactOptional(),
-    NetworkFirewallUnexpectedGatewayRoutesViolation:
-      NetworkFirewallUnexpectedGatewayRoutesViolationSchema.and(
-        z.any().openapi({ description: "There's an unexpected gateway route." }),
-      ).exactOptional(),
-    NetworkFirewallMissingExpectedRoutesViolation:
-      NetworkFirewallMissingExpectedRoutesViolationSchema.and(
-        z.any().openapi({ description: 'Expected routes are missing from Network Firewall.' }),
-      ).exactOptional(),
-    DnsRuleGroupPriorityConflictViolation: DnsRuleGroupPriorityConflictViolationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Violation detail for a DNS Firewall policy that indicates that a rule group that Firewall Manager tried to associate with a VPC has the same priority as a rule group that's already associated. ",
-        }),
-    ).exactOptional(),
-    DnsDuplicateRuleGroupViolation: DnsDuplicateRuleGroupViolationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Violation detail for a DNS Firewall policy that indicates that a rule group that Firewall Manager tried to associate with a VPC is already associated with the VPC and can't be associated again. ",
-        }),
-    ).exactOptional(),
-    DnsRuleGroupLimitExceededViolation: DnsRuleGroupLimitExceededViolationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Violation detail for a DNS Firewall policy that indicates that the VPC reached the limit for associated DNS Firewall rule groups. Firewall Manager tried to associate another rule group with the VPC and failed. ',
-        }),
-    ).exactOptional(),
-    PossibleRemediationActions: PossibleRemediationActionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of possible remediation action lists. Each individual possible remediation action is a list of individual remediation actions.',
-        }),
-    ).exactOptional(),
-    FirewallSubnetIsOutOfScopeViolation: FirewallSubnetIsOutOfScopeViolationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains details about the firewall subnet that violates the policy scope.',
-        }),
-    ).exactOptional(),
-    RouteHasOutOfScopeEndpointViolation: RouteHasOutOfScopeEndpointViolationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains details about the route endpoint that violates the policy scope.',
-        }),
-    ).exactOptional(),
-    ThirdPartyFirewallMissingFirewallViolation:
-      ThirdPartyFirewallMissingFirewallViolationSchema.and(
-        z
-          .any()
-          .openapi({
-            description: "The violation details for a third-party firewall that's been deleted.",
-          }),
-      ).exactOptional(),
-    ThirdPartyFirewallMissingSubnetViolation: ThirdPartyFirewallMissingSubnetViolationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The violation details for a third-party firewall's subnet that's been deleted.",
-        }),
-    ).exactOptional(),
-    ThirdPartyFirewallMissingExpectedRouteTableViolation:
-      ThirdPartyFirewallMissingExpectedRouteTableViolationSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              'The violation details for a third-party firewall that has the Firewall Manager managed route table that was associated with the third-party firewall has been deleted.',
-          }),
-      ).exactOptional(),
-    FirewallSubnetMissingVPCEndpointViolation: FirewallSubnetMissingVPCEndpointViolationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The violation details for a third-party firewall's VPC endpoint subnet that was deleted.",
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Violation detail based on resource type.', required: [] })
-  .openapi('ResourceViolation')
-
-const ResourceViolationsSchema = z.array(ResourceViolationSchema).openapi('ResourceViolations')
-
-const TagKeySchema = z
-  .string()
-  .regex(/^([\p{L}\p{Z}\p{N}_.:\/=+\-@]*)$/u)
-  .min(1)
-  .max(128)
-  .openapi('TagKey')
-
-const TagValueSchema = z
-  .string()
-  .regex(/^([\p{L}\p{Z}\p{N}_.:\/=+\-@]*)$/u)
-  .min(0)
-  .max(256)
-  .openapi('TagValue')
-
-const TagSchema = z
-  .object({
-    Key: TagKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Part of the key:value pair that defines a tag. You can use a tag key to describe a category of information, such as "customer." Tag keys are case-sensitive.',
-        }),
-    ),
-    Value: TagValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Part of the key:value pair that defines a tag. You can use a tag value to describe a specific value within a category, such as "companyA" or "companyB." Tag values are case-sensitive. ',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['Key', 'Value'],
-    description:
-      'A collection of key:value pairs associated with an Amazon Web Services resource. The key:value pair can be anything you define. Typically, the tag key represents a category (such as "environment") and the tag value represents a specific value within that category (such as "test," "development," or "production"). You can add up to 50 tags to each Amazon Web Services resource. ',
-  })
-  .openapi('Tag')
-
-const TagListSchema = z.array(TagSchema).min(0).max(200).openapi('TagList')
-
-const ViolationDetailSchema = z
-  .object({
-    PolicyId: PolicyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the Firewall Manager policy that the violation details were requested for.',
-        }),
-    ),
-    MemberAccount: AWSAccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account that the violation details were requested for.',
-        }),
-    ),
-    ResourceId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The resource ID that the violation details were requested for.' }),
-    ),
-    ResourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The resource type that the violation details were requested for.',
-        }),
-    ),
-    ResourceViolations: ResourceViolationsSchema.and(
-      z.any().openapi({ description: 'List of violations for the requested resource.' }),
-    ),
-    ResourceTags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The <code>ResourceTag</code> objects associated with the resource.',
-        }),
-    ).exactOptional(),
-    ResourceDescription: LengthBoundedStringSchema.and(
-      z.any().openapi({ description: 'Brief description for the requested resource.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['PolicyId', 'MemberAccount', 'ResourceId', 'ResourceType', 'ResourceViolations'],
-    description:
-      'Violations for a resource based on the specified Firewall Manager policy and Amazon Web Services account.',
-  })
-  .openapi('ViolationDetail')
-
-const GetViolationDetailsResponseSchema = z
-  .object({
-    ViolationDetail: ViolationDetailSchema.and(
-      z.any().openapi({ description: 'Violation detail for a resource.' }),
-    ).exactOptional(),
+    ViolationDetail: ViolationDetailSchema.exactOptional().openapi({
+      description: 'Violation detail for a resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetViolationDetailsResponse')
 
 const GetViolationDetailsRequestSchema = z
   .object({
-    PolicyId: PolicyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the Firewall Manager policy that you want the details for. This currently only supports security group content audit policies.',
-        }),
-    ),
-    MemberAccount: AWSAccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Web Services account ID that you want the details for.',
-        }),
-    ),
-    ResourceId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the resource that has violations.' }),
-    ),
-    ResourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The resource type. This is in the format shown in the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html">Amazon Web Services Resource Types Reference</a>. Supported resource types are: <code>AWS::EC2::Instance</code>, <code>AWS::EC2::NetworkInterface</code>, <code>AWS::EC2::SecurityGroup</code>, <code>AWS::NetworkFirewall::FirewallPolicy</code>, and <code>AWS::EC2::Subnet</code>. ',
-        }),
-    ),
+    PolicyId: PolicyIdSchema.openapi({
+      description:
+        'The ID of the Firewall Manager policy that you want the details for. This currently only supports security group content audit policies.',
+    }),
+    MemberAccount: AWSAccountIdSchema.openapi({
+      description: 'The Amazon Web Services account ID that you want the details for.',
+    }),
+    ResourceId: ResourceIdSchema.openapi({
+      description: 'The ID of the resource that has violations.',
+    }),
+    ResourceType: ResourceTypeSchema.openapi({
+      description:
+        'The resource type. This is in the format shown in the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html">Amazon Web Services Resource Types Reference</a>. Supported resource types are: <code>AWS::EC2::Instance</code>, <code>AWS::EC2::NetworkInterface</code>, <code>AWS::EC2::SecurityGroup</code>, <code>AWS::NetworkFirewall::FirewallPolicy</code>, and <code>AWS::EC2::Subnet</code>. ',
+    }),
   })
   .openapi({
     required: ['PolicyId', 'MemberAccount', 'ResourceId', 'ResourceType'],
@@ -3456,30 +2671,18 @@ const GetViolationDetailsRequestSchema = z
 
 const AdminAccountSummarySchema = z
   .object({
-    AdminAccount: AWSAccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The Amazon Web Services account ID of the Firewall Manager administrator's account.",
-        }),
-    ).exactOptional(),
-    DefaultAdmin: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A boolean value that indicates if the administrator is the default administrator. If true, then this is the default administrator account. The default administrator can manage third-party firewalls and has full administrative scope. There is only one default administrator account per organization. For information about Firewall Manager default administrator accounts, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/fms-administrators.html">Managing Firewall Manager administrators</a> in the <i>Firewall Manager Developer Guide</i>.',
-        }),
-    ).exactOptional(),
-    Status: OrganizationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The current status of the request to onboard a member account as an Firewall Manager administator.</p> <ul> <li> <p> <code>ONBOARDING</code> - The account is onboarding to Firewall Manager as an administrator.</p> </li> <li> <p> <code>ONBOARDING_COMPLETE</code> - Firewall Manager The account is onboarded to Firewall Manager as an administrator, and can perform actions on the resources defined in their <a>AdminScope</a>.</p> </li> <li> <p> <code>OFFBOARDING</code> - The account is being removed as an Firewall Manager administrator.</p> </li> <li> <p> <code>OFFBOARDING_COMPLETE</code> - The account has been removed as an Firewall Manager administrator.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    AdminAccount: AWSAccountIdSchema.exactOptional().openapi({
+      description:
+        "The Amazon Web Services account ID of the Firewall Manager administrator's account.",
+    }),
+    DefaultAdmin: BooleanSchema.exactOptional().openapi({
+      description:
+        'A boolean value that indicates if the administrator is the default administrator. If true, then this is the default administrator account. The default administrator can manage third-party firewalls and has full administrative scope. There is only one default administrator account per organization. For information about Firewall Manager default administrator accounts, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/fms-administrators.html">Managing Firewall Manager administrators</a> in the <i>Firewall Manager Developer Guide</i>.',
+    }),
+    Status: OrganizationStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The current status of the request to onboard a member account as an Firewall Manager administator.</p> <ul> <li> <p> <code>ONBOARDING</code> - The account is onboarding to Firewall Manager as an administrator.</p> </li> <li> <p> <code>ONBOARDING_COMPLETE</code> - Firewall Manager The account is onboarded to Firewall Manager as an administrator, and can perform actions on the resources defined in their <a>AdminScope</a>.</p> </li> <li> <p> <code>OFFBOARDING</code> - The account is being removed as an Firewall Manager administrator.</p> </li> <li> <p> <code>OFFBOARDING_COMPLETE</code> - The account has been removed as an Firewall Manager administrator.</p> </li> </ul>',
+    }),
   })
   .openapi({
     description:
@@ -3494,111 +2697,75 @@ const AdminAccountSummaryListSchema = z
 
 const ListAdminAccountsForOrganizationResponseSchema = z
   .object({
-    AdminAccounts: AdminAccountSummaryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of Firewall Manager administrator accounts within the organization that were onboarded as administrators by <a>AssociateAdminAccount</a> or <a>PutAdminAccount</a>.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When you request a list of objects with a <code>MaxResults</code> setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Firewall Manager returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.',
-        }),
-    ).exactOptional(),
+    AdminAccounts: AdminAccountSummaryListSchema.exactOptional().openapi({
+      description:
+        'A list of Firewall Manager administrator accounts within the organization that were onboarded as administrators by <a>AssociateAdminAccount</a> or <a>PutAdminAccount</a>.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'When you request a list of objects with a <code>MaxResults</code> setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Firewall Manager returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAdminAccountsForOrganizationResponse')
 
 const ListAdminAccountsForOrganizationRequestSchema = z
   .object({
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When you request a list of objects with a <code>MaxResults</code> setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Firewall Manager returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.',
-        }),
-    ).exactOptional(),
-    MaxResults: PaginationMaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of objects that you want Firewall Manager to return for this request. If more objects are available, in the response, Firewall Manager provides a <code>NextToken</code> value that you can use in a subsequent call to get the next batch of objects.',
-        }),
-    ).exactOptional(),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'When you request a list of objects with a <code>MaxResults</code> setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Firewall Manager returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.',
+    }),
+    MaxResults: PaginationMaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of objects that you want Firewall Manager to return for this request. If more objects are available, in the response, Firewall Manager provides a <code>NextToken</code> value that you can use in a subsequent call to get the next batch of objects.',
+    }),
   })
   .openapi({ title: 'ListAdminAccountsForOrganizationRequest', required: [] })
   .openapi('ListAdminAccountsForOrganizationRequest')
 
 const ListAdminsManagingAccountResponseSchema = z
   .object({
-    AdminAccounts: AccountIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of accounts who manage member accounts within their <a>AdminScope</a>.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When you request a list of objects with a <code>MaxResults</code> setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Firewall Manager returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.',
-        }),
-    ).exactOptional(),
+    AdminAccounts: AccountIdListSchema.exactOptional().openapi({
+      description:
+        'The list of accounts who manage member accounts within their <a>AdminScope</a>.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'When you request a list of objects with a <code>MaxResults</code> setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Firewall Manager returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAdminsManagingAccountResponse')
 
 const ListAdminsManagingAccountRequestSchema = z
   .object({
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When you request a list of objects with a <code>MaxResults</code> setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Firewall Manager returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.',
-        }),
-    ).exactOptional(),
-    MaxResults: PaginationMaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of objects that you want Firewall Manager to return for this request. If more objects are available, in the response, Firewall Manager provides a <code>NextToken</code> value that you can use in a subsequent call to get the next batch of objects.',
-        }),
-    ).exactOptional(),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'When you request a list of objects with a <code>MaxResults</code> setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Firewall Manager returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.',
+    }),
+    MaxResults: PaginationMaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of objects that you want Firewall Manager to return for this request. If more objects are available, in the response, Firewall Manager provides a <code>NextToken</code> value that you can use in a subsequent call to get the next batch of objects.',
+    }),
   })
   .openapi({ title: 'ListAdminsManagingAccountRequest', required: [] })
   .openapi('ListAdminsManagingAccountRequest')
 
 const AppsListDataSummarySchema = z
   .object({
-    ListArn: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the applications list.' }),
-    ).exactOptional(),
-    ListId: ListIdSchema.and(
-      z.any().openapi({ description: 'The ID of the applications list.' }),
-    ).exactOptional(),
-    ListName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the applications list.' }),
-    ).exactOptional(),
-    AppsList: AppsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of <code>App</code> objects in the Firewall Manager applications list.',
-        }),
-    ).exactOptional(),
+    ListArn: ResourceArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the applications list.',
+    }),
+    ListId: ListIdSchema.exactOptional().openapi({
+      description: 'The ID of the applications list.',
+    }),
+    ListName: ResourceNameSchema.exactOptional().openapi({
+      description: 'The name of the applications list.',
+    }),
+    AppsList: AppsListSchema.exactOptional().openapi({
+      description:
+        'An array of <code>App</code> objects in the Firewall Manager applications list.',
+    }),
   })
   .openapi({ description: 'Details of the Firewall Manager applications list.', required: [] })
   .openapi('AppsListDataSummary')
@@ -3607,47 +2774,31 @@ const AppsListsDataSchema = z.array(AppsListDataSummarySchema).openapi('AppsList
 
 const ListAppsListsResponseSchema = z
   .object({
-    AppsLists: AppsListsDataSchema.and(
-      z.any().openapi({ description: 'An array of <code>AppsListDataSummary</code> objects.' }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you specify a value for <code>MaxResults</code> in your list request, and you have more objects than the maximum, Firewall Manager returns this token in the response. You can use this token in subsequent requests to retrieve the next batch of objects.',
-        }),
-    ).exactOptional(),
+    AppsLists: AppsListsDataSchema.exactOptional().openapi({
+      description: 'An array of <code>AppsListDataSummary</code> objects.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If you specify a value for <code>MaxResults</code> in your list request, and you have more objects than the maximum, Firewall Manager returns this token in the response. You can use this token in subsequent requests to retrieve the next batch of objects.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAppsListsResponse')
 
 const ListAppsListsRequestSchema = z
   .object({
-    DefaultLists: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the lists to retrieve are default lists owned by Firewall Manager.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you specify a value for <code>MaxResults</code> in your list request, and you have more objects than the maximum, Firewall Manager returns this token in the response. For all but the first request, you provide the token returned by the prior request in the request parameters, to retrieve the next batch of objects.',
-        }),
-    ).exactOptional(),
-    MaxResults: PaginationMaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The maximum number of objects that you want Firewall Manager to return for this request. If more objects are available, in the response, Firewall Manager provides a <code>NextToken</code> value that you can use in a subsequent call to get the next batch of objects.</p> <p>If you don't specify this, Firewall Manager returns all available objects.</p>",
-        }),
-    ),
+    DefaultLists: BooleanSchema.exactOptional().openapi({
+      description:
+        'Specifies whether the lists to retrieve are default lists owned by Firewall Manager.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If you specify a value for <code>MaxResults</code> in your list request, and you have more objects than the maximum, Firewall Manager returns this token in the response. For all but the first request, you provide the token returned by the prior request in the request parameters, to retrieve the next batch of objects.',
+    }),
+    MaxResults: PaginationMaxResultsSchema.openapi({
+      description:
+        "<p>The maximum number of objects that you want Firewall Manager to return for this request. If more objects are available, in the response, Firewall Manager provides a <code>NextToken</code> value that you can use in a subsequent call to get the next batch of objects.</p> <p>If you don't specify this, Firewall Manager returns all available objects.</p>",
+    }),
   })
   .openapi({ required: ['MaxResults'], title: 'ListAppsListsRequest' })
   .openapi('ListAppsListsRequest')
@@ -3660,30 +2811,18 @@ const ResourceCountSchema = z.int().min(0).openapi('ResourceCount')
 
 const EvaluationResultSchema = z
   .object({
-    ComplianceStatus: PolicyComplianceStatusTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Describes an Amazon Web Services account's compliance with the Firewall Manager policy.",
-        }),
-    ).exactOptional(),
-    ViolatorCount: ResourceCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The number of resources that are noncompliant with the specified policy. For WAF and Shield Advanced policies, a resource is considered noncompliant if it is not associated with the policy. For security group policies, a resource is considered noncompliant if it doesn't comply with the rules of the policy and remediation is disabled or not possible.",
-        }),
-    ).exactOptional(),
-    EvaluationLimitExceeded: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates that over 100 resources are noncompliant with the Firewall Manager policy.',
-        }),
-    ).exactOptional(),
+    ComplianceStatus: PolicyComplianceStatusTypeSchema.exactOptional().openapi({
+      description:
+        "Describes an Amazon Web Services account's compliance with the Firewall Manager policy.",
+    }),
+    ViolatorCount: ResourceCountSchema.exactOptional().openapi({
+      description:
+        "The number of resources that are noncompliant with the specified policy. For WAF and Shield Advanced policies, a resource is considered noncompliant if it is not associated with the policy. For security group policies, a resource is considered noncompliant if it doesn't comply with the rules of the policy and remediation is disabled or not possible.",
+    }),
+    EvaluationLimitExceeded: BooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates that over 100 resources are noncompliant with the Firewall Manager policy.',
+    }),
   })
   .openapi({
     description:
@@ -3696,40 +2835,28 @@ const EvaluationResultsSchema = z.array(EvaluationResultSchema).openapi('Evaluat
 
 const PolicyComplianceStatusSchema = z
   .object({
-    PolicyOwner: AWSAccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Web Services account that created the Firewall Manager policy.',
-        }),
-    ).exactOptional(),
-    PolicyId: PolicyIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Firewall Manager policy.' }),
-    ).exactOptional(),
-    PolicyName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the Firewall Manager policy.' }),
-    ).exactOptional(),
-    MemberAccount: AWSAccountIdSchema.and(
-      z.any().openapi({ description: 'The member account ID.' }),
-    ).exactOptional(),
-    EvaluationResults: EvaluationResultsSchema.and(
-      z.any().openapi({ description: 'An array of <code>EvaluationResult</code> objects.' }),
-    ).exactOptional(),
-    LastUpdated: TimeStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Timestamp of the last update to the <code>EvaluationResult</code> objects.',
-        }),
-    ).exactOptional(),
-    IssueInfoMap: IssueInfoMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Details about problems with dependent services, such as WAF or Config, and the error message received that indicates the problem with the service.',
-        }),
-    ).exactOptional(),
+    PolicyOwner: AWSAccountIdSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services account that created the Firewall Manager policy.',
+    }),
+    PolicyId: PolicyIdSchema.exactOptional().openapi({
+      description: 'The ID of the Firewall Manager policy.',
+    }),
+    PolicyName: ResourceNameSchema.exactOptional().openapi({
+      description: 'The name of the Firewall Manager policy.',
+    }),
+    MemberAccount: AWSAccountIdSchema.exactOptional().openapi({
+      description: 'The member account ID.',
+    }),
+    EvaluationResults: EvaluationResultsSchema.exactOptional().openapi({
+      description: 'An array of <code>EvaluationResult</code> objects.',
+    }),
+    LastUpdated: TimeStampSchema.exactOptional().openapi({
+      description: 'Timestamp of the last update to the <code>EvaluationResult</code> objects.',
+    }),
+    IssueInfoMap: IssueInfoMapSchema.exactOptional().openapi({
+      description:
+        'Details about problems with dependent services, such as WAF or Config, and the error message received that indicates the problem with the service.',
+    }),
   })
   .openapi({
     description:
@@ -3744,73 +2871,48 @@ const PolicyComplianceStatusListSchema = z
 
 const ListComplianceStatusResponseSchema = z
   .object({
-    PolicyComplianceStatusList: PolicyComplianceStatusListSchema.and(
-      z.any().openapi({ description: 'An array of <code>PolicyComplianceStatus</code> objects.' }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you have more <code>PolicyComplianceStatus</code> objects than the number that you specified for <code>MaxResults</code> in the request, the response includes a <code>NextToken</code> value. To list more <code>PolicyComplianceStatus</code> objects, submit another <code>ListComplianceStatus</code> request, and specify the <code>NextToken</code> value from the response in the <code>NextToken</code> value in the next request.',
-        }),
-    ).exactOptional(),
+    PolicyComplianceStatusList: PolicyComplianceStatusListSchema.exactOptional().openapi({
+      description: 'An array of <code>PolicyComplianceStatus</code> objects.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If you have more <code>PolicyComplianceStatus</code> objects than the number that you specified for <code>MaxResults</code> in the request, the response includes a <code>NextToken</code> value. To list more <code>PolicyComplianceStatus</code> objects, submit another <code>ListComplianceStatus</code> request, and specify the <code>NextToken</code> value from the response in the <code>NextToken</code> value in the next request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListComplianceStatusResponse')
 
 const ListComplianceStatusRequestSchema = z
   .object({
-    PolicyId: PolicyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the Firewall Manager policy that you want the details for.',
-        }),
-    ),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you specify a value for <code>MaxResults</code> and you have more <code>PolicyComplianceStatus</code> objects than the number that you specify for <code>MaxResults</code>, Firewall Manager returns a <code>NextToken</code> value in the response that allows you to list another group of <code>PolicyComplianceStatus</code> objects. For the second and subsequent <code>ListComplianceStatus</code> requests, specify the value of <code>NextToken</code> from the previous response to get information about another batch of <code>PolicyComplianceStatus</code> objects.',
-        }),
-    ).exactOptional(),
-    MaxResults: PaginationMaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the number of <code>PolicyComplianceStatus</code> objects that you want Firewall Manager to return for this request. If you have more <code>PolicyComplianceStatus</code> objects than the number that you specify for <code>MaxResults</code>, the response includes a <code>NextToken</code> value that you can use to get another batch of <code>PolicyComplianceStatus</code> objects.',
-        }),
-    ).exactOptional(),
+    PolicyId: PolicyIdSchema.openapi({
+      description: 'The ID of the Firewall Manager policy that you want the details for.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If you specify a value for <code>MaxResults</code> and you have more <code>PolicyComplianceStatus</code> objects than the number that you specify for <code>MaxResults</code>, Firewall Manager returns a <code>NextToken</code> value in the response that allows you to list another group of <code>PolicyComplianceStatus</code> objects. For the second and subsequent <code>ListComplianceStatus</code> requests, specify the value of <code>NextToken</code> from the previous response to get information about another batch of <code>PolicyComplianceStatus</code> objects.',
+    }),
+    MaxResults: PaginationMaxResultsSchema.exactOptional().openapi({
+      description:
+        'Specifies the number of <code>PolicyComplianceStatus</code> objects that you want Firewall Manager to return for this request. If you have more <code>PolicyComplianceStatus</code> objects than the number that you specify for <code>MaxResults</code>, the response includes a <code>NextToken</code> value that you can use to get another batch of <code>PolicyComplianceStatus</code> objects.',
+    }),
   })
   .openapi({ required: ['PolicyId'], title: 'ListComplianceStatusRequest' })
   .openapi('ListComplianceStatusRequest')
 
 const DiscoveredResourceSchema = z
   .object({
-    URI: IdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The universal resource identifier (URI) of the discovered resource.',
-        }),
-    ).exactOptional(),
-    AccountId: AWSAccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID associated with the discovered resource.',
-        }),
-    ).exactOptional(),
-    Type: ResourceTypeSchema.and(
-      z.any().openapi({ description: 'The type of the discovered resource.' }),
-    ).exactOptional(),
-    Name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the discovered resource.' }),
-    ).exactOptional(),
+    URI: IdentifierSchema.exactOptional().openapi({
+      description: 'The universal resource identifier (URI) of the discovered resource.',
+    }),
+    AccountId: AWSAccountIdSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services account ID associated with the discovered resource.',
+    }),
+    Type: ResourceTypeSchema.exactOptional().openapi({
+      description: 'The type of the discovered resource.',
+    }),
+    Name: ResourceNameSchema.exactOptional().openapi({
+      description: 'The name of the discovered resource.',
+    }),
   })
   .openapi({
     description:
@@ -3825,17 +2927,13 @@ const DiscoveredResourceListSchema = z
 
 const ListDiscoveredResourcesResponseSchema = z
   .object({
-    Items: DiscoveredResourceListSchema.and(
-      z.any().openapi({ description: 'Details of the resources that were discovered.' }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When you request a list of objects with a <code>MaxResults</code> setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Firewall Manager returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.',
-        }),
-    ).exactOptional(),
+    Items: DiscoveredResourceListSchema.exactOptional().openapi({
+      description: 'Details of the resources that were discovered.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'When you request a list of objects with a <code>MaxResults</code> setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Firewall Manager returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDiscoveredResourcesResponse')
@@ -3844,33 +2942,19 @@ const AWSAccountIdListSchema = z.array(AWSAccountIdSchema).openapi('AWSAccountId
 
 const ListDiscoveredResourcesRequestSchema = z
   .object({
-    MemberAccountIds: AWSAccountIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account IDs to discover resources in. Only one account is supported per request. The account must be a member of your organization.',
-        }),
-    ),
-    ResourceType: ResourceTypeSchema.and(
-      z.any().openapi({ description: 'The type of resources to discover.' }),
-    ),
-    MaxResults: PaginationMaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of objects that you want Firewall Manager to return for this request. If more objects are available, in the response, Firewall Manager provides a <code>NextToken</code> value that you can use in a subsequent call to get the next batch of objects.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When you request a list of objects with a <code>MaxResults</code> setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Firewall Manager returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.',
-        }),
-    ).exactOptional(),
+    MemberAccountIds: AWSAccountIdListSchema.openapi({
+      description:
+        'The Amazon Web Services account IDs to discover resources in. Only one account is supported per request. The account must be a member of your organization.',
+    }),
+    ResourceType: ResourceTypeSchema.openapi({ description: 'The type of resources to discover.' }),
+    MaxResults: PaginationMaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of objects that you want Firewall Manager to return for this request. If more objects are available, in the response, Firewall Manager provides a <code>NextToken</code> value that you can use in a subsequent call to get the next batch of objects.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'When you request a list of objects with a <code>MaxResults</code> setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Firewall Manager returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.',
+    }),
   })
   .openapi({
     required: ['MemberAccountIds', 'ResourceType'],
@@ -3882,93 +2966,61 @@ const MemberAccountsSchema = z.array(AWSAccountIdSchema).openapi('MemberAccounts
 
 const ListMemberAccountsResponseSchema = z
   .object({
-    MemberAccounts: MemberAccountsSchema.and(
-      z.any().openapi({ description: 'An array of account IDs.' }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you have more member account IDs than the number that you specified for <code>MaxResults</code> in the request, the response includes a <code>NextToken</code> value. To list more IDs, submit another <code>ListMemberAccounts</code> request, and specify the <code>NextToken</code> value from the response in the <code>NextToken</code> value in the next request.',
-        }),
-    ).exactOptional(),
+    MemberAccounts: MemberAccountsSchema.exactOptional().openapi({
+      description: 'An array of account IDs.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If you have more member account IDs than the number that you specified for <code>MaxResults</code> in the request, the response includes a <code>NextToken</code> value. To list more IDs, submit another <code>ListMemberAccounts</code> request, and specify the <code>NextToken</code> value from the response in the <code>NextToken</code> value in the next request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListMemberAccountsResponse')
 
 const ListMemberAccountsRequestSchema = z
   .object({
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you specify a value for <code>MaxResults</code> and you have more account IDs than the number that you specify for <code>MaxResults</code>, Firewall Manager returns a <code>NextToken</code> value in the response that allows you to list another group of IDs. For the second and subsequent <code>ListMemberAccountsRequest</code> requests, specify the value of <code>NextToken</code> from the previous response to get information about another batch of member account IDs.',
-        }),
-    ).exactOptional(),
-    MaxResults: PaginationMaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the number of member account IDs that you want Firewall Manager to return for this request. If you have more IDs than the number that you specify for <code>MaxResults</code>, the response includes a <code>NextToken</code> value that you can use to get another batch of member account IDs.',
-        }),
-    ).exactOptional(),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If you specify a value for <code>MaxResults</code> and you have more account IDs than the number that you specify for <code>MaxResults</code>, Firewall Manager returns a <code>NextToken</code> value in the response that allows you to list another group of IDs. For the second and subsequent <code>ListMemberAccountsRequest</code> requests, specify the value of <code>NextToken</code> from the previous response to get information about another batch of member account IDs.',
+    }),
+    MaxResults: PaginationMaxResultsSchema.exactOptional().openapi({
+      description:
+        'Specifies the number of member account IDs that you want Firewall Manager to return for this request. If you have more IDs than the number that you specify for <code>MaxResults</code>, the response includes a <code>NextToken</code> value that you can use to get another batch of member account IDs.',
+    }),
   })
   .openapi({ title: 'ListMemberAccountsRequest', required: [] })
   .openapi('ListMemberAccountsRequest')
 
 const PolicySummarySchema = z
   .object({
-    PolicyArn: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the specified policy.' }),
-    ).exactOptional(),
-    PolicyId: PolicyIdSchema.and(
-      z.any().openapi({ description: 'The ID of the specified policy.' }),
-    ).exactOptional(),
-    PolicyName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the specified policy.' }),
-    ).exactOptional(),
-    ResourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of resource protected by or in scope of the policy. This is in the format shown in the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html">Amazon Web Services Resource Types Reference</a>. For WAF and Shield Advanced, examples include <code>AWS::ElasticLoadBalancingV2::LoadBalancer</code> and <code>AWS::CloudFront::Distribution</code>. For a security group common policy, valid values are <code>AWS::EC2::NetworkInterface</code> and <code>AWS::EC2::Instance</code>. For a security group content audit policy, valid values are <code>AWS::EC2::SecurityGroup</code>, <code>AWS::EC2::NetworkInterface</code>, and <code>AWS::EC2::Instance</code>. For a security group usage audit policy, the value is <code>AWS::EC2::SecurityGroup</code>. For an Network Firewall policy or DNS Firewall policy, the value is <code>AWS::EC2::VPC</code>.',
-        }),
-    ).exactOptional(),
-    SecurityServiceType: SecurityServiceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The service that the policy is using to protect the resources. This specifies the type of policy that is created, either an WAF policy, a Shield Advanced policy, or a security group policy.',
-        }),
-    ).exactOptional(),
-    RemediationEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates if the policy should be automatically applied to new resources.',
-        }),
-    ).exactOptional(),
-    DeleteUnusedFMManagedResources: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Indicates whether Firewall Manager should automatically remove protections from resources that leave the policy scope and clean up resources that Firewall Manager is managing for accounts when those accounts leave policy scope. For example, Firewall Manager will disassociate a Firewall Manager managed web ACL from a protected customer resource when the customer resource leaves policy scope. </p> <p>By default, Firewall Manager doesn't remove protections or delete Firewall Manager managed resources. </p> <p>This option is not available for Shield Advanced or WAF Classic policies.</p>",
-        }),
-    ).exactOptional(),
-    PolicyStatus: CustomerPolicyStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Indicates whether the policy is in or out of an admin's policy or Region scope.</p> <ul> <li> <p> <code>ACTIVE</code> - The administrator can manage and delete the policy.</p> </li> <li> <p> <code>OUT_OF_ADMIN_SCOPE</code> - The administrator can view the policy, but they can't edit or delete the policy. Existing policy protections stay in place. Any new resources that come into scope of the policy won't be protected.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
+    PolicyArn: ResourceArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the specified policy.',
+    }),
+    PolicyId: PolicyIdSchema.exactOptional().openapi({
+      description: 'The ID of the specified policy.',
+    }),
+    PolicyName: ResourceNameSchema.exactOptional().openapi({
+      description: 'The name of the specified policy.',
+    }),
+    ResourceType: ResourceTypeSchema.exactOptional().openapi({
+      description:
+        'The type of resource protected by or in scope of the policy. This is in the format shown in the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html">Amazon Web Services Resource Types Reference</a>. For WAF and Shield Advanced, examples include <code>AWS::ElasticLoadBalancingV2::LoadBalancer</code> and <code>AWS::CloudFront::Distribution</code>. For a security group common policy, valid values are <code>AWS::EC2::NetworkInterface</code> and <code>AWS::EC2::Instance</code>. For a security group content audit policy, valid values are <code>AWS::EC2::SecurityGroup</code>, <code>AWS::EC2::NetworkInterface</code>, and <code>AWS::EC2::Instance</code>. For a security group usage audit policy, the value is <code>AWS::EC2::SecurityGroup</code>. For an Network Firewall policy or DNS Firewall policy, the value is <code>AWS::EC2::VPC</code>.',
+    }),
+    SecurityServiceType: SecurityServiceTypeSchema.exactOptional().openapi({
+      description:
+        'The service that the policy is using to protect the resources. This specifies the type of policy that is created, either an WAF policy, a Shield Advanced policy, or a security group policy.',
+    }),
+    RemediationEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Indicates if the policy should be automatically applied to new resources.',
+    }),
+    DeleteUnusedFMManagedResources: BooleanSchema.exactOptional().openapi({
+      description:
+        "<p>Indicates whether Firewall Manager should automatically remove protections from resources that leave the policy scope and clean up resources that Firewall Manager is managing for accounts when those accounts leave policy scope. For example, Firewall Manager will disassociate a Firewall Manager managed web ACL from a protected customer resource when the customer resource leaves policy scope. </p> <p>By default, Firewall Manager doesn't remove protections or delete Firewall Manager managed resources. </p> <p>This option is not available for Shield Advanced or WAF Classic policies.</p>",
+    }),
+    PolicyStatus: CustomerPolicyStatusSchema.exactOptional().openapi({
+      description:
+        "<p>Indicates whether the policy is in or out of an admin's policy or Region scope.</p> <ul> <li> <p> <code>ACTIVE</code> - The administrator can manage and delete the policy.</p> </li> <li> <p> <code>OUT_OF_ADMIN_SCOPE</code> - The administrator can view the policy, but they can't edit or delete the policy. Existing policy protections stay in place. Any new resources that come into scope of the policy won't be protected.</p> </li> </ul>",
+    }),
   })
   .openapi({ description: 'Details of the Firewall Manager policy. ', required: [] })
   .openapi('PolicySummary')
@@ -3977,63 +3029,45 @@ const PolicySummaryListSchema = z.array(PolicySummarySchema).openapi('PolicySumm
 
 const ListPoliciesResponseSchema = z
   .object({
-    PolicyList: PolicySummaryListSchema.and(
-      z.any().openapi({ description: 'An array of <code>PolicySummary</code> objects.' }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you have more <code>PolicySummary</code> objects than the number that you specified for <code>MaxResults</code> in the request, the response includes a <code>NextToken</code> value. To list more <code>PolicySummary</code> objects, submit another <code>ListPolicies</code> request, and specify the <code>NextToken</code> value from the response in the <code>NextToken</code> value in the next request.',
-        }),
-    ).exactOptional(),
+    PolicyList: PolicySummaryListSchema.exactOptional().openapi({
+      description: 'An array of <code>PolicySummary</code> objects.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If you have more <code>PolicySummary</code> objects than the number that you specified for <code>MaxResults</code> in the request, the response includes a <code>NextToken</code> value. To list more <code>PolicySummary</code> objects, submit another <code>ListPolicies</code> request, and specify the <code>NextToken</code> value from the response in the <code>NextToken</code> value in the next request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListPoliciesResponse')
 
 const ListPoliciesRequestSchema = z
   .object({
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you specify a value for <code>MaxResults</code> and you have more <code>PolicySummary</code> objects than the number that you specify for <code>MaxResults</code>, Firewall Manager returns a <code>NextToken</code> value in the response that allows you to list another group of <code>PolicySummary</code> objects. For the second and subsequent <code>ListPolicies</code> requests, specify the value of <code>NextToken</code> from the previous response to get information about another batch of <code>PolicySummary</code> objects.',
-        }),
-    ).exactOptional(),
-    MaxResults: PaginationMaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the number of <code>PolicySummary</code> objects that you want Firewall Manager to return for this request. If you have more <code>PolicySummary</code> objects than the number that you specify for <code>MaxResults</code>, the response includes a <code>NextToken</code> value that you can use to get another batch of <code>PolicySummary</code> objects.',
-        }),
-    ).exactOptional(),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If you specify a value for <code>MaxResults</code> and you have more <code>PolicySummary</code> objects than the number that you specify for <code>MaxResults</code>, Firewall Manager returns a <code>NextToken</code> value in the response that allows you to list another group of <code>PolicySummary</code> objects. For the second and subsequent <code>ListPolicies</code> requests, specify the value of <code>NextToken</code> from the previous response to get information about another batch of <code>PolicySummary</code> objects.',
+    }),
+    MaxResults: PaginationMaxResultsSchema.exactOptional().openapi({
+      description:
+        'Specifies the number of <code>PolicySummary</code> objects that you want Firewall Manager to return for this request. If you have more <code>PolicySummary</code> objects than the number that you specify for <code>MaxResults</code>, the response includes a <code>NextToken</code> value that you can use to get another batch of <code>PolicySummary</code> objects.',
+    }),
   })
   .openapi({ title: 'ListPoliciesRequest', required: [] })
   .openapi('ListPoliciesRequest')
 
 const ProtocolsListDataSummarySchema = z
   .object({
-    ListArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the specified protocols list.',
-        }),
-    ).exactOptional(),
-    ListId: ListIdSchema.and(
-      z.any().openapi({ description: 'The ID of the specified protocols list.' }),
-    ).exactOptional(),
-    ListName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the specified protocols list.' }),
-    ).exactOptional(),
-    ProtocolsList: ProtocolsListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An array of protocols in the Firewall Manager protocols list.' }),
-    ).exactOptional(),
+    ListArn: ResourceArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the specified protocols list.',
+    }),
+    ListId: ListIdSchema.exactOptional().openapi({
+      description: 'The ID of the specified protocols list.',
+    }),
+    ListName: ResourceNameSchema.exactOptional().openapi({
+      description: 'The name of the specified protocols list.',
+    }),
+    ProtocolsList: ProtocolsListSchema.exactOptional().openapi({
+      description: 'An array of protocols in the Firewall Manager protocols list.',
+    }),
   })
   .openapi({ description: 'Details of the Firewall Manager protocols list.', required: [] })
   .openapi('ProtocolsListDataSummary')
@@ -4044,66 +3078,43 @@ const ProtocolsListsDataSchema = z
 
 const ListProtocolsListsResponseSchema = z
   .object({
-    ProtocolsLists: ProtocolsListsDataSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An array of <code>ProtocolsListDataSummary</code> objects.' }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you specify a value for <code>MaxResults</code> in your list request, and you have more objects than the maximum, Firewall Manager returns this token in the response. You can use this token in subsequent requests to retrieve the next batch of objects.',
-        }),
-    ).exactOptional(),
+    ProtocolsLists: ProtocolsListsDataSchema.exactOptional().openapi({
+      description: 'An array of <code>ProtocolsListDataSummary</code> objects.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If you specify a value for <code>MaxResults</code> in your list request, and you have more objects than the maximum, Firewall Manager returns this token in the response. You can use this token in subsequent requests to retrieve the next batch of objects.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListProtocolsListsResponse')
 
 const ListProtocolsListsRequestSchema = z
   .object({
-    DefaultLists: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the lists to retrieve are default lists owned by Firewall Manager.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you specify a value for <code>MaxResults</code> in your list request, and you have more objects than the maximum, Firewall Manager returns this token in the response. For all but the first request, you provide the token returned by the prior request in the request parameters, to retrieve the next batch of objects.',
-        }),
-    ).exactOptional(),
-    MaxResults: PaginationMaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The maximum number of objects that you want Firewall Manager to return for this request. If more objects are available, in the response, Firewall Manager provides a <code>NextToken</code> value that you can use in a subsequent call to get the next batch of objects.</p> <p>If you don't specify this, Firewall Manager returns all available objects.</p>",
-        }),
-    ),
+    DefaultLists: BooleanSchema.exactOptional().openapi({
+      description:
+        'Specifies whether the lists to retrieve are default lists owned by Firewall Manager.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If you specify a value for <code>MaxResults</code> in your list request, and you have more objects than the maximum, Firewall Manager returns this token in the response. For all but the first request, you provide the token returned by the prior request in the request parameters, to retrieve the next batch of objects.',
+    }),
+    MaxResults: PaginationMaxResultsSchema.openapi({
+      description:
+        "<p>The maximum number of objects that you want Firewall Manager to return for this request. If more objects are available, in the response, Firewall Manager provides a <code>NextToken</code> value that you can use in a subsequent call to get the next batch of objects.</p> <p>If you don't specify this, Firewall Manager returns all available objects.</p>",
+    }),
   })
   .openapi({ required: ['MaxResults'], title: 'ListProtocolsListsRequest' })
   .openapi('ListProtocolsListsRequest')
 
 const ResourceSchema = z
   .object({
-    URI: IdentifierSchema.and(
-      z.any().openapi({ description: "The resource's universal resource indicator (URI)." }),
-    ),
-    AccountId: AWSAccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID that the associated resource belongs to.',
-        }),
-    ).exactOptional(),
+    URI: IdentifierSchema.openapi({
+      description: "The resource's universal resource indicator (URI).",
+    }),
+    AccountId: AWSAccountIdSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services account ID that the associated resource belongs to.',
+    }),
   })
   .openapi({
     required: ['URI'],
@@ -4115,87 +3126,55 @@ const ResourceListSchema = z.array(ResourceSchema).openapi('ResourceList')
 
 const ListResourceSetResourcesResponseSchema = z
   .object({
-    Items: ResourceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "An array of the associated resources' uniform resource identifiers (URI).",
-        }),
-    ),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When you request a list of objects with a <code>MaxResults</code> setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Firewall Manager returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.',
-        }),
-    ).exactOptional(),
+    Items: ResourceListSchema.openapi({
+      description: "An array of the associated resources' uniform resource identifiers (URI).",
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'When you request a list of objects with a <code>MaxResults</code> setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Firewall Manager returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.',
+    }),
   })
   .openapi({ required: ['Items'] })
   .openapi('ListResourceSetResourcesResponse')
 
 const ListResourceSetResourcesRequestSchema = z
   .object({
-    Identifier: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the resource set, used in a request to refer to the resource set.',
-        }),
-    ),
-    MaxResults: PaginationMaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of objects that you want Firewall Manager to return for this request. If more objects are available, in the response, Firewall Manager provides a <code>NextToken</code> value that you can use in a subsequent call to get the next batch of objects.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When you request a list of objects with a <code>MaxResults</code> setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Firewall Manager returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.',
-        }),
-    ).exactOptional(),
+    Identifier: ResourceIdSchema.openapi({
+      description:
+        'A unique identifier for the resource set, used in a request to refer to the resource set.',
+    }),
+    MaxResults: PaginationMaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of objects that you want Firewall Manager to return for this request. If more objects are available, in the response, Firewall Manager provides a <code>NextToken</code> value that you can use in a subsequent call to get the next batch of objects.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'When you request a list of objects with a <code>MaxResults</code> setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Firewall Manager returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.',
+    }),
   })
   .openapi({ required: ['Identifier'], title: 'ListResourceSetResourcesRequest' })
   .openapi('ListResourceSetResourcesRequest')
 
 const ResourceSetSummarySchema = z
   .object({
-    Id: Base62IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the resource set. This ID is returned in the responses to create and list commands. You provide it to operations like update and delete.',
-        }),
-    ).exactOptional(),
-    Name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The descriptive name of the resource set. You can't change the name of a resource set after you create it.",
-        }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the resource set.' }),
-    ).exactOptional(),
-    LastUpdateTime: TimeStampSchema.and(
-      z.any().openapi({ description: 'The last time that the resource set was changed.' }),
-    ).exactOptional(),
-    ResourceSetStatus: ResourceSetStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Indicates whether the resource set is in or out of an admin's Region scope.</p> <ul> <li> <p> <code>ACTIVE</code> - The administrator can manage and delete the resource set.</p> </li> <li> <p> <code>OUT_OF_ADMIN_SCOPE</code> - The administrator can view the resource set, but they can't edit or delete the resource set. Existing protections stay in place. Any new resource that come into scope of the resource set won't be protected.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
+    Id: Base62IdSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the resource set. This ID is returned in the responses to create and list commands. You provide it to operations like update and delete.',
+    }),
+    Name: NameSchema.exactOptional().openapi({
+      description:
+        "The descriptive name of the resource set. You can't change the name of a resource set after you create it.",
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of the resource set.',
+    }),
+    LastUpdateTime: TimeStampSchema.exactOptional().openapi({
+      description: 'The last time that the resource set was changed.',
+    }),
+    ResourceSetStatus: ResourceSetStatusSchema.exactOptional().openapi({
+      description:
+        "<p>Indicates whether the resource set is in or out of an admin's Region scope.</p> <ul> <li> <p> <code>ACTIVE</code> - The administrator can manage and delete the resource set.</p> </li> <li> <p> <code>OUT_OF_ADMIN_SCOPE</code> - The administrator can view the resource set, but they can't edit or delete the resource set. Existing protections stay in place. Any new resource that come into scope of the resource set won't be protected.</p> </li> </ul>",
+    }),
   })
   .openapi({ description: 'Summarizes the resource sets used in a policy.', required: [] })
   .openapi('ResourceSetSummary')
@@ -4206,62 +3185,46 @@ const ResourceSetSummaryListSchema = z
 
 const ListResourceSetsResponseSchema = z
   .object({
-    ResourceSets: ResourceSetSummaryListSchema.and(
-      z.any().openapi({ description: 'An array of <code>ResourceSetSummary</code> objects.' }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When you request a list of objects with a <code>MaxResults</code> setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Firewall Manager returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.',
-        }),
-    ).exactOptional(),
+    ResourceSets: ResourceSetSummaryListSchema.exactOptional().openapi({
+      description: 'An array of <code>ResourceSetSummary</code> objects.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'When you request a list of objects with a <code>MaxResults</code> setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Firewall Manager returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListResourceSetsResponse')
 
 const ListResourceSetsRequestSchema = z
   .object({
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When you request a list of objects with a <code>MaxResults</code> setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Firewall Manager returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.',
-        }),
-    ).exactOptional(),
-    MaxResults: PaginationMaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of objects that you want Firewall Manager to return for this request. If more objects are available, in the response, Firewall Manager provides a <code>NextToken</code> value that you can use in a subsequent call to get the next batch of objects.',
-        }),
-    ).exactOptional(),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'When you request a list of objects with a <code>MaxResults</code> setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Firewall Manager returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.',
+    }),
+    MaxResults: PaginationMaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of objects that you want Firewall Manager to return for this request. If more objects are available, in the response, Firewall Manager provides a <code>NextToken</code> value that you can use in a subsequent call to get the next batch of objects.',
+    }),
   })
   .openapi({ title: 'ListResourceSetsRequest', required: [] })
   .openapi('ListResourceSetsRequest')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    TagList: TagListSchema.and(
-      z.any().openapi({ description: 'The tags associated with the resource.' }),
-    ).exactOptional(),
+    TagList: TagListSchema.exactOptional().openapi({
+      description: 'The tags associated with the resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
 
 const ListTagsForResourceRequestSchema = z
   .object({
-    ResourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the resource to return tags for. The Firewall Manager resources that support tagging are policies, applications lists, and protocols lists. ',
-        }),
-    ),
+    ResourceArn: ResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the resource to return tags for. The Firewall Manager resources that support tagging are policies, applications lists, and protocols lists. ',
+    }),
   })
   .openapi({ required: ['ResourceArn'], title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
@@ -4282,12 +3245,12 @@ const FirewallPolicyNameSchema = z
 
 const ThirdPartyFirewallFirewallPolicySchema = z
   .object({
-    FirewallPolicyId: FirewallPolicyIdSchema.and(
-      z.any().openapi({ description: 'The ID of the specified firewall policy.' }),
-    ).exactOptional(),
-    FirewallPolicyName: FirewallPolicyNameSchema.and(
-      z.any().openapi({ description: 'The name of the specified firewall policy.' }),
-    ).exactOptional(),
+    FirewallPolicyId: FirewallPolicyIdSchema.exactOptional().openapi({
+      description: 'The ID of the specified firewall policy.',
+    }),
+    FirewallPolicyName: FirewallPolicyNameSchema.exactOptional().openapi({
+      description: 'The name of the specified firewall policy.',
+    }),
   })
   .openapi({ description: "Configures the third-party firewall's firewall policy.", required: [] })
   .openapi('ThirdPartyFirewallFirewallPolicy')
@@ -4298,47 +3261,32 @@ const ThirdPartyFirewallFirewallPoliciesSchema = z
 
 const ListThirdPartyFirewallFirewallPoliciesResponseSchema = z
   .object({
-    ThirdPartyFirewallFirewallPolicies: ThirdPartyFirewallFirewallPoliciesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list that contains one <code>ThirdPartyFirewallFirewallPolicies</code> element for each third-party firewall policies that the specified third-party firewall vendor is associated with. Each <code>ThirdPartyFirewallFirewallPolicies</code> element contains the firewall policy name and ID.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value that you will use for <code>NextToken</code> in the next <code>ListThirdPartyFirewallFirewallPolicies</code> request.',
-        }),
-    ).exactOptional(),
+    ThirdPartyFirewallFirewallPolicies:
+      ThirdPartyFirewallFirewallPoliciesSchema.exactOptional().openapi({
+        description:
+          'A list that contains one <code>ThirdPartyFirewallFirewallPolicies</code> element for each third-party firewall policies that the specified third-party firewall vendor is associated with. Each <code>ThirdPartyFirewallFirewallPolicies</code> element contains the firewall policy name and ID.',
+      }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'The value that you will use for <code>NextToken</code> in the next <code>ListThirdPartyFirewallFirewallPolicies</code> request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListThirdPartyFirewallFirewallPoliciesResponse')
 
 const ListThirdPartyFirewallFirewallPoliciesRequestSchema = z
   .object({
-    ThirdPartyFirewall: ThirdPartyFirewallSchema.and(
-      z.any().openapi({ description: 'The name of the third-party firewall vendor.' }),
-    ),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>If the previous response included a <code>NextToken</code> element, the specified third-party firewall vendor is associated with more third-party firewall policies. To get more third-party firewall policies, submit another <code>ListThirdPartyFirewallFirewallPoliciesRequest</code> request.</p> <p> For the value of <code>NextToken</code>, specify the value of <code>NextToken</code> from the previous response. If the previous response didn't include a <code>NextToken</code> element, there are no more third-party firewall policies to get. </p>",
-        }),
-    ).exactOptional(),
-    MaxResults: PaginationMaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of third-party firewall policies that you want Firewall Manager to return. If the specified third-party firewall vendor is associated with more than <code>MaxResults</code> firewall policies, the response includes a <code>NextToken</code> element. <code>NextToken</code> contains an encrypted token that identifies the first third-party firewall policies that Firewall Manager will return if you submit another request.',
-        }),
-    ),
+    ThirdPartyFirewall: ThirdPartyFirewallSchema.openapi({
+      description: 'The name of the third-party firewall vendor.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        "<p>If the previous response included a <code>NextToken</code> element, the specified third-party firewall vendor is associated with more third-party firewall policies. To get more third-party firewall policies, submit another <code>ListThirdPartyFirewallFirewallPoliciesRequest</code> request.</p> <p> For the value of <code>NextToken</code>, specify the value of <code>NextToken</code> from the previous response. If the previous response didn't include a <code>NextToken</code> element, there are no more third-party firewall policies to get. </p>",
+    }),
+    MaxResults: PaginationMaxResultsSchema.openapi({
+      description:
+        'The maximum number of third-party firewall policies that you want Firewall Manager to return. If the specified third-party firewall vendor is associated with more than <code>MaxResults</code> firewall policies, the response includes a <code>NextToken</code> element. <code>NextToken</code> contains an encrypted token that identifies the first third-party firewall policies that Firewall Manager will return if you submit another request.',
+    }),
   })
   .openapi({
     required: ['ThirdPartyFirewall', 'MaxResults'],
@@ -4348,195 +3296,153 @@ const ListThirdPartyFirewallFirewallPoliciesRequestSchema = z
 
 const PutAdminAccountRequestSchema = z
   .object({
-    AdminAccount: AWSAccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID to add as an Firewall Manager administrator account. The account must be a member of the organization that was onboarded to Firewall Manager by <a>AssociateAdminAccount</a>. For more information about Organizations, see <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_accounts.html">Managing the Amazon Web Services Accounts in Your Organization</a>.',
-        }),
-    ),
-    AdminScope: AdminScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configures the resources that the specified Firewall Manager administrator can manage. As a best practice, set the administrative scope according to the principles of least privilege. Only grant the administrator the specific resources or permissions that they need to perform the duties of their role.',
-        }),
-    ).exactOptional(),
+    AdminAccount: AWSAccountIdSchema.openapi({
+      description:
+        'The Amazon Web Services account ID to add as an Firewall Manager administrator account. The account must be a member of the organization that was onboarded to Firewall Manager by <a>AssociateAdminAccount</a>. For more information about Organizations, see <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_accounts.html">Managing the Amazon Web Services Accounts in Your Organization</a>.',
+    }),
+    AdminScope: AdminScopeSchema.exactOptional().openapi({
+      description:
+        'Configures the resources that the specified Firewall Manager administrator can manage. As a best practice, set the administrative scope according to the principles of least privilege. Only grant the administrator the specific resources or permissions that they need to perform the duties of their role.',
+    }),
   })
   .openapi({ required: ['AdminAccount'], title: 'PutAdminAccountRequest' })
   .openapi('PutAdminAccountRequest')
 
 const PutAppsListResponseSchema = z
   .object({
-    AppsList: AppsListDataSchema.and(
-      z.any().openapi({ description: 'The details of the Firewall Manager applications list.' }),
-    ).exactOptional(),
-    AppsListArn: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the applications list.' }),
-    ).exactOptional(),
+    AppsList: AppsListDataSchema.exactOptional().openapi({
+      description: 'The details of the Firewall Manager applications list.',
+    }),
+    AppsListArn: ResourceArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the applications list.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutAppsListResponse')
 
 const PutAppsListRequestSchema = z
   .object({
-    AppsList: AppsListDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The details of the Firewall Manager applications list to be created.',
-        }),
-    ),
-    TagList: TagListSchema.and(
-      z.any().openapi({ description: 'The tags associated with the resource.' }),
-    ).exactOptional(),
+    AppsList: AppsListDataSchema.openapi({
+      description: 'The details of the Firewall Manager applications list to be created.',
+    }),
+    TagList: TagListSchema.exactOptional().openapi({
+      description: 'The tags associated with the resource.',
+    }),
   })
   .openapi({ required: ['AppsList'], title: 'PutAppsListRequest' })
   .openapi('PutAppsListRequest')
 
 const PutNotificationChannelRequestSchema = z
   .object({
-    SnsTopicArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the SNS topic that collects notifications from Firewall Manager.',
-        }),
-    ),
-    SnsRoleName: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM role that allows Amazon SNS to record Firewall Manager activity. ',
-        }),
-    ),
+    SnsTopicArn: ResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the SNS topic that collects notifications from Firewall Manager.',
+    }),
+    SnsRoleName: ResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM role that allows Amazon SNS to record Firewall Manager activity. ',
+    }),
   })
   .openapi({ required: ['SnsTopicArn', 'SnsRoleName'], title: 'PutNotificationChannelRequest' })
   .openapi('PutNotificationChannelRequest')
 
 const PutPolicyResponseSchema = z
   .object({
-    Policy: PolicySchema.and(
-      z.any().openapi({ description: 'The details of the Firewall Manager policy.' }),
-    ).exactOptional(),
-    PolicyArn: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the policy.' }),
-    ).exactOptional(),
+    Policy: PolicySchema.exactOptional().openapi({
+      description: 'The details of the Firewall Manager policy.',
+    }),
+    PolicyArn: ResourceArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the policy.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutPolicyResponse')
 
 const PutPolicyRequestSchema = z
   .object({
-    Policy: PolicySchema.and(
-      z.any().openapi({ description: 'The details of the Firewall Manager policy to be created.' }),
-    ),
-    TagList: TagListSchema.and(
-      z.any().openapi({ description: 'The tags to add to the Amazon Web Services resource.' }),
-    ).exactOptional(),
+    Policy: PolicySchema.openapi({
+      description: 'The details of the Firewall Manager policy to be created.',
+    }),
+    TagList: TagListSchema.exactOptional().openapi({
+      description: 'The tags to add to the Amazon Web Services resource.',
+    }),
   })
   .openapi({ required: ['Policy'], title: 'PutPolicyRequest' })
   .openapi('PutPolicyRequest')
 
 const PutProtocolsListResponseSchema = z
   .object({
-    ProtocolsList: ProtocolsListDataSchema.and(
-      z.any().openapi({ description: 'The details of the Firewall Manager protocols list.' }),
-    ).exactOptional(),
-    ProtocolsListArn: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the protocols list.' }),
-    ).exactOptional(),
+    ProtocolsList: ProtocolsListDataSchema.exactOptional().openapi({
+      description: 'The details of the Firewall Manager protocols list.',
+    }),
+    ProtocolsListArn: ResourceArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the protocols list.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutProtocolsListResponse')
 
 const PutProtocolsListRequestSchema = z
   .object({
-    ProtocolsList: ProtocolsListDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The details of the Firewall Manager protocols list to be created.',
-        }),
-    ),
-    TagList: TagListSchema.and(
-      z.any().openapi({ description: 'The tags associated with the resource.' }),
-    ).exactOptional(),
+    ProtocolsList: ProtocolsListDataSchema.openapi({
+      description: 'The details of the Firewall Manager protocols list to be created.',
+    }),
+    TagList: TagListSchema.exactOptional().openapi({
+      description: 'The tags associated with the resource.',
+    }),
   })
   .openapi({ required: ['ProtocolsList'], title: 'PutProtocolsListRequest' })
   .openapi('PutProtocolsListRequest')
 
 const PutResourceSetResponseSchema = z
   .object({
-    ResourceSet: ResourceSetSchema.and(
-      z.any().openapi({ description: 'Details about the resource set.' }),
-    ),
-    ResourceSetArn: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the resource set.' }),
-    ),
+    ResourceSet: ResourceSetSchema.openapi({ description: 'Details about the resource set.' }),
+    ResourceSetArn: ResourceArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the resource set.',
+    }),
   })
   .openapi({ required: ['ResourceSet', 'ResourceSetArn'] })
   .openapi('PutResourceSetResponse')
 
 const PutResourceSetRequestSchema = z
   .object({
-    ResourceSet: ResourceSetSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Details about the resource set to be created or updated.&gt;' }),
-    ),
-    TagList: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Retrieves the tags associated with the specified resource set. Tags are key:value pairs that you can use to categorize and manage your resources, for purposes like billing. For example, you might set the tag key to "customer" and the value to the customer name or ID. You can specify one or more tags to add to each Amazon Web Services resource, up to 50 tags for a resource.',
-        }),
-    ).exactOptional(),
+    ResourceSet: ResourceSetSchema.openapi({
+      description: 'Details about the resource set to be created or updated.&gt;',
+    }),
+    TagList: TagListSchema.exactOptional().openapi({
+      description:
+        'Retrieves the tags associated with the specified resource set. Tags are key:value pairs that you can use to categorize and manage your resources, for purposes like billing. For example, you might set the tag key to "customer" and the value to the customer name or ID. You can specify one or more tags to add to each Amazon Web Services resource, up to 50 tags for a resource.',
+    }),
   })
   .openapi({ required: ['ResourceSet'], title: 'PutResourceSetRequest' })
   .openapi('PutResourceSetRequest')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
 const TagResourceRequestSchema = z
   .object({
-    ResourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the resource to return tags for. The Firewall Manager resources that support tagging are policies, applications lists, and protocols lists. ',
-        }),
-    ),
-    TagList: TagListSchema.and(
-      z.any().openapi({ description: 'The tags to add to the resource.' }),
-    ),
+    ResourceArn: ResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the resource to return tags for. The Firewall Manager resources that support tagging are policies, applications lists, and protocols lists. ',
+    }),
+    TagList: TagListSchema.openapi({ description: 'The tags to add to the resource.' }),
   })
   .openapi({ required: ['ResourceArn', 'TagList'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeyListSchema = z.array(TagKeySchema).min(0).max(200).openapi('TagKeyList')
 
 const UntagResourceRequestSchema = z
   .object({
-    ResourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the resource to return tags for. The Firewall Manager resources that support tagging are policies, applications lists, and protocols lists. ',
-        }),
-    ),
-    TagKeys: TagKeyListSchema.and(
-      z.any().openapi({ description: 'The keys of the tags to remove from the resource. ' }),
-    ),
+    ResourceArn: ResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the resource to return tags for. The Firewall Manager resources that support tagging are policies, applications lists, and protocols lists. ',
+    }),
+    TagKeys: TagKeyListSchema.openapi({
+      description: 'The keys of the tags to remove from the resource. ',
+    }),
   })
   .openapi({ required: ['ResourceArn', 'TagKeys'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')

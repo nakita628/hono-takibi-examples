@@ -94,9 +94,9 @@ The Business Registries API supports API Key authentication.
 
 Base URLs:
 
-* <a href="https://api.apis.guru//api.abr.ato.gov.au/">https://api.apis.guru//api.abr.ato.gov.au/</a> - Production API Server
+* <a href="//api.abr.ato.gov.au/">//api.abr.ato.gov.au/</a> - Production API Server
 
-* <a href="https://api.apis.guru//api.sandbox.abr.ato.gov.au/">https://api.apis.guru//api.sandbox.abr.ato.gov.au/</a> - Sandbox API Server
+* <a href="//api.sandbox.abr.ato.gov.au/">//api.sandbox.abr.ato.gov.au/</a> - Sandbox API Server
 
 <a href="https://ato.gov.au/terms-of-service/">Terms of service</a>
 License: <a href="https://creativecommons.org/licenses/by/3.0/au/">Creative Commons Attribution 3.0 Australia</a>

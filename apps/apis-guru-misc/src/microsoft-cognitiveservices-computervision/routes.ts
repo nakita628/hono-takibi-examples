@@ -350,7 +350,7 @@ const DomainModelResultsSchema = z
       .exactOptional()
       .openapi({ description: 'Id of the REST API request.' }),
     result: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Model-specific response.', 'x-ms-client-flatten': true }),
   })
@@ -1119,8 +1119,8 @@ const SuccessfulTagImageRequestExample = {
 const AnalyzeImageInStreamImageRequestBody = {
   description: 'An image stream.',
   content: {
-    'application/octet-stream': { schema: z.object({}) },
-    'multipart/form-data': { schema: z.object({}) },
+    'application/octet-stream': { schema: z.looseObject({}) },
+    'multipart/form-data': { schema: z.looseObject({}) },
   },
   required: true,
 }

@@ -626,10 +626,6 @@ const Oauth2SecurityScheme = {
   },
 }
 
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
-
 export const postOauth202609TokenRoute = createRoute({
   method: 'post',
   path: '/oauth/2026-09/token',
@@ -735,5 +731,5 @@ export const postOauth202609TokenRevokeRoute = createRoute({
       },
     },
   },
-  responses: { default: ErrorResponse },
+  responses: { 200: { description: 'successful operation', content: {} }, default: ErrorResponse },
 })

@@ -1,0 +1,7 @@
+export * from './x-amz-target-macie-service-associate-member-account'
+export * from './x-amz-target-macie-service-associate-s3-resources'
+export * from './x-amz-target-macie-service-disassociate-member-account'
+export * from './x-amz-target-macie-service-disassociate-s3-resources'
+export * from './x-amz-target-macie-service-list-member-accounts'
+export * from './x-amz-target-macie-service-list-s3-resources'
+export * from './x-amz-target-macie-service-update-s3-resources'

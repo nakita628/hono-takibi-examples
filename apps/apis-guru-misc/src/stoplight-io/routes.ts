@@ -42,7 +42,7 @@ export const postVersionsPublishAnonRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              specData: z.xor([z.object({}), z.string()]).exactOptional(),
+              specData: z.xor([z.looseObject({}), z.string()]).exactOptional(),
               url: z.string().exactOptional(),
             })
             .openapi({ required: [] }),
@@ -127,7 +127,7 @@ export const getVersionsVersionIdExportFormatRoute = createRoute({
       content: {
         'text/yaml': {
           schema: z
-            .xor([z.object({}), z.string()])
+            .xor([z.looseObject({}), z.string()])
             .openapi({
               description: 'The specification. Returned as a string when YAML, object when JSON.',
             }),
@@ -187,7 +187,7 @@ export const putVersionsVersionIdImportRoute = createRoute({
                 })
                 .exactOptional()
                 .openapi({ required: [] }),
-              specData: z.xor([z.object({}), z.string()]).exactOptional(),
+              specData: z.xor([z.looseObject({}), z.string()]).exactOptional(),
               url: z.string().exactOptional(),
             })
             .openapi({
@@ -319,7 +319,7 @@ export const putVersionsVersionIdUnpublishRoute = createRoute({
       description: '',
       content: {
         'application/json': {
-          schema: z.object({ data: z.object({}).exactOptional() }).openapi({ required: [] }),
+          schema: z.object({ data: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
           examples: { response: { value: { data: {} } } },
         },
       },

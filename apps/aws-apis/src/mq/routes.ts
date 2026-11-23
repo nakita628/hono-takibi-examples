@@ -4,22 +4,14 @@ const StringSchema = z.string().openapi('String')
 
 const CreateBrokerResponseSchema = z
   .object({
-    BrokerArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'brokerArn' },
-          description: "The broker's Amazon Resource Name (ARN).",
-        }),
-    ).exactOptional(),
-    BrokerId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'brokerId' },
-          description: 'The unique ID that Amazon MQ generates for the broker.',
-        }),
-    ).exactOptional(),
+    BrokerArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'brokerArn' },
+      description: "The broker's Amazon Resource Name (ARN).",
+    }),
+    BrokerId: StringSchema.exactOptional().openapi({
+      xml: { name: 'brokerId' },
+      description: 'The unique ID that Amazon MQ generates for the broker.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateBrokerResponse')
@@ -36,50 +28,30 @@ const DayOfWeekSchema = z
 
 const UserSchema = z
   .object({
-    ConsoleAccess: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'consoleAccess' },
-          description:
-            'Enables access to the ActiveMQ Web Console for the ActiveMQ user. Does not apply to RabbitMQ brokers.',
-        }),
-    ).exactOptional(),
-    Groups: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'groups' },
-          description:
-            'The list of groups (20 maximum) to which the ActiveMQ user belongs. This value can contain only alphanumeric characters, dashes, periods, underscores, and tildes (- . _ ~). This value must be 2-100 characters long. Does not apply to RabbitMQ brokers.',
-        }),
-    ).exactOptional(),
-    Password: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'password' },
-          description:
-            'Required. The password of the user. This value must be at least 12 characters long, must contain at least 4 unique characters, and must not contain commas, colons, or equal signs (,:=).',
-        }),
-    ),
-    Username: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'username' },
-          description:
-            '<p>The username of the broker user. The following restrictions apply to broker usernames:</p> <ul><li><p>For Amazon MQ for ActiveMQ brokers, this value can contain only alphanumeric characters, dashes, periods, underscores, and tildes (- . _ ~). This value must be 2-100 characters long.</p></li> <li><p>para>For Amazon MQ for RabbitMQ brokers, this value can contain only alphanumeric characters, dashes, periods, underscores (- . _). This value must not contain a tilde (~) character. Amazon MQ prohibts using guest as a valid usename. This value must be 2-100 characters long.</p></para></li></ul> <important><p>Do not add personally identifiable information (PII) or other confidential or sensitive information in broker usernames. Broker usernames are accessible to other Amazon Web Services services, including CloudWatch Logs. Broker usernames are not intended to be used for private or sensitive data.</p></important>',
-        }),
-    ),
-    ReplicationUser: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'replicationUser' },
-          description: 'Defines if this user is intended for CRDR replication purposes.',
-        }),
-    ).exactOptional(),
+    ConsoleAccess: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'consoleAccess' },
+      description:
+        'Enables access to the ActiveMQ Web Console for the ActiveMQ user. Does not apply to RabbitMQ brokers.',
+    }),
+    Groups: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'groups' },
+      description:
+        'The list of groups (20 maximum) to which the ActiveMQ user belongs. This value can contain only alphanumeric characters, dashes, periods, underscores, and tildes (- . _ ~). This value must be 2-100 characters long. Does not apply to RabbitMQ brokers.',
+    }),
+    Password: StringSchema.openapi({
+      xml: { name: 'password' },
+      description:
+        'Required. The password of the user. This value must be at least 12 characters long, must contain at least 4 unique characters, and must not contain commas, colons, or equal signs (,:=).',
+    }),
+    Username: StringSchema.openapi({
+      xml: { name: 'username' },
+      description:
+        '<p>The username of the broker user. The following restrictions apply to broker usernames:</p> <ul><li><p>For Amazon MQ for ActiveMQ brokers, this value can contain only alphanumeric characters, dashes, periods, underscores, and tildes (- . _ ~). This value must be 2-100 characters long.</p></li> <li><p>para>For Amazon MQ for RabbitMQ brokers, this value can contain only alphanumeric characters, dashes, periods, underscores (- . _). This value must not contain a tilde (~) character. Amazon MQ prohibts using guest as a valid usename. This value must be 2-100 characters long.</p></para></li></ul> <important><p>Do not add personally identifiable information (PII) or other confidential or sensitive information in broker usernames. Broker usernames are accessible to other Amazon Web Services services, including CloudWatch Logs. Broker usernames are not intended to be used for private or sensitive data.</p></important>',
+    }),
+    ReplicationUser: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'replicationUser' },
+      description: 'Defines if this user is intended for CRDR replication purposes.',
+    }),
   })
   .openapi({
     required: ['Username', 'Password'],
@@ -110,30 +82,18 @@ const TimestampIso8601Schema = z.iso.datetime({ offset: true }).openapi('Timesta
 
 const ConfigurationRevisionSchema = z
   .object({
-    Created: TimestampIso8601Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'created' },
-          description: 'Required. The date and time of the configuration revision.',
-        }),
-    ),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description: 'The description of the configuration revision.',
-        }),
-    ).exactOptional(),
-    Revision: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'revision' },
-          description: 'Required. The revision number of the configuration.',
-        }),
-    ),
+    Created: TimestampIso8601Schema.openapi({
+      xml: { name: 'created' },
+      description: 'Required. The date and time of the configuration revision.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'The description of the configuration revision.',
+    }),
+    Revision: IntegerSchema.openapi({
+      xml: { name: 'revision' },
+      description: 'Required. The revision number of the configuration.',
+    }),
   })
   .openapi({
     required: ['Revision', 'Created'],
@@ -143,99 +103,63 @@ const ConfigurationRevisionSchema = z
 
 const CreateConfigurationResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'arn' },
-          description: 'Required. The Amazon Resource Name (ARN) of the configuration.',
-        }),
-    ).exactOptional(),
-    AuthenticationStrategy: AuthenticationStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authenticationStrategy' },
-          description:
-            'Optional. The authentication strategy associated with the configuration. The default is SIMPLE.',
-        }),
-    ).exactOptional(),
-    Created: TimestampIso8601Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'created' },
-          description: 'Required. The date and time of the configuration.',
-        }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'id' },
-          description: 'Required. The unique ID that Amazon MQ generates for the configuration.',
-        }),
-    ).exactOptional(),
-    LatestRevision: ConfigurationRevisionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'latestRevision' },
-          description: 'The latest revision of the configuration.',
-        }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'name' },
-          description:
-            'Required. The name of the configuration. This value can contain only alphanumeric characters, dashes, periods, underscores, and tildes (- . _ ~). This value must be 1-150 characters long.',
-        }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({
+      xml: { name: 'arn' },
+      description: 'Required. The Amazon Resource Name (ARN) of the configuration.',
+    }),
+    AuthenticationStrategy: AuthenticationStrategySchema.exactOptional().openapi({
+      xml: { name: 'authenticationStrategy' },
+      description:
+        'Optional. The authentication strategy associated with the configuration. The default is SIMPLE.',
+    }),
+    Created: TimestampIso8601Schema.exactOptional().openapi({
+      xml: { name: 'created' },
+      description: 'Required. The date and time of the configuration.',
+    }),
+    Id: StringSchema.exactOptional().openapi({
+      xml: { name: 'id' },
+      description: 'Required. The unique ID that Amazon MQ generates for the configuration.',
+    }),
+    LatestRevision: ConfigurationRevisionSchema.exactOptional().openapi({
+      xml: { name: 'latestRevision' },
+      description: 'The latest revision of the configuration.',
+    }),
+    Name: StringSchema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description:
+        'Required. The name of the configuration. This value can contain only alphanumeric characters, dashes, periods, underscores, and tildes (- . _ ~). This value must be 1-150 characters long.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateConfigurationResponse')
 
 const NotFoundExceptionSchema = z.any().openapi('NotFoundException')
 
-const CreateUserResponseSchema = z.object({}).openapi('CreateUserResponse')
+const CreateUserResponseSchema = z.looseObject({}).openapi('CreateUserResponse')
 
 const DeleteBrokerResponseSchema = z
   .object({
-    BrokerId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'brokerId' },
-          description: 'The unique ID that Amazon MQ generates for the broker.',
-        }),
-    ).exactOptional(),
+    BrokerId: StringSchema.exactOptional().openapi({
+      xml: { name: 'brokerId' },
+      description: 'The unique ID that Amazon MQ generates for the broker.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteBrokerResponse')
 
-const DeleteUserResponseSchema = z.object({}).openapi('DeleteUserResponse')
+const DeleteUserResponseSchema = z.looseObject({}).openapi('DeleteUserResponse')
 
 const ActionRequiredSchema = z
   .object({
-    ActionRequiredCode: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'actionRequiredCode' },
-          description:
-            'The code you can use to find instructions on the action required to resolve your broker issue.',
-        }),
-    ).exactOptional(),
-    ActionRequiredInfo: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'actionRequiredInfo' },
-          description: 'Information about the action required to resolve your broker issue.',
-        }),
-    ).exactOptional(),
+    ActionRequiredCode: StringSchema.exactOptional().openapi({
+      xml: { name: 'actionRequiredCode' },
+      description:
+        'The code you can use to find instructions on the action required to resolve your broker issue.',
+    }),
+    ActionRequiredInfo: StringSchema.exactOptional().openapi({
+      xml: { name: 'actionRequiredInfo' },
+      description: 'Information about the action required to resolve your broker issue.',
+    }),
   })
   .openapi({ description: 'Action required for a broker.', required: [] })
   .openapi('ActionRequired')
@@ -244,26 +168,19 @@ const ListOfActionRequiredSchema = z.array(ActionRequiredSchema).openapi('ListOf
 
 const BrokerInstanceSchema = z
   .object({
-    ConsoleURL: StringSchema.and(
-      z.any().openapi({ xml: { name: 'consoleURL' }, description: 'The brokers web console URL.' }),
-    ).exactOptional(),
-    Endpoints: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'endpoints' },
-          description: "The broker's wire-level protocol endpoints.",
-        }),
-    ).exactOptional(),
-    IpAddress: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'ipAddress' },
-          description:
-            'The IP address of the Elastic Network Interface (ENI) attached to the broker. Does not apply to RabbitMQ brokers.',
-        }),
-    ).exactOptional(),
+    ConsoleURL: StringSchema.exactOptional().openapi({
+      xml: { name: 'consoleURL' },
+      description: 'The brokers web console URL.',
+    }),
+    Endpoints: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'endpoints' },
+      description: "The broker's wire-level protocol endpoints.",
+    }),
+    IpAddress: StringSchema.exactOptional().openapi({
+      xml: { name: 'ipAddress' },
+      description:
+        'The IP address of the Elastic Network Interface (ENI) attached to the broker. Does not apply to RabbitMQ brokers.',
+    }),
   })
   .openapi({ description: 'Returns information about all brokers.', required: [] })
   .openapi('BrokerInstance')
@@ -285,22 +202,14 @@ const BrokerStateSchema = z
 
 const ConfigurationIdSchema = z
   .object({
-    Id: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'id' },
-          description: 'Required. The unique ID that Amazon MQ generates for the configuration.',
-        }),
-    ),
-    Revision: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'revision' },
-          description: 'The revision number of the configuration.',
-        }),
-    ).exactOptional(),
+    Id: StringSchema.openapi({
+      xml: { name: 'id' },
+      description: 'Required. The unique ID that Amazon MQ generates for the configuration.',
+    }),
+    Revision: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'revision' },
+      description: 'The revision number of the configuration.',
+    }),
   })
   .openapi({ required: ['Id'], description: 'A list of information about the configuration.' })
   .openapi('ConfigurationId')
@@ -309,24 +218,18 @@ const ListOfConfigurationIdSchema = z.array(ConfigurationIdSchema).openapi('List
 
 const ConfigurationsSchema = z
   .object({
-    Current: ConfigurationIdSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'current' }, description: "The broker's current configuration." }),
-    ).exactOptional(),
-    History: ListOfConfigurationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'history' },
-          description: 'The history of configurations applied to the broker.',
-        }),
-    ).exactOptional(),
-    Pending: ConfigurationIdSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'pending' }, description: "The broker's pending configuration." }),
-    ).exactOptional(),
+    Current: ConfigurationIdSchema.exactOptional().openapi({
+      xml: { name: 'current' },
+      description: "The broker's current configuration.",
+    }),
+    History: ListOfConfigurationIdSchema.exactOptional().openapi({
+      xml: { name: 'history' },
+      description: 'The history of configurations applied to the broker.',
+    }),
+    Pending: ConfigurationIdSchema.exactOptional().openapi({
+      xml: { name: 'pending' },
+      description: "The broker's pending configuration.",
+    }),
   })
   .openapi({ description: 'Broker configuration information', required: [] })
   .openapi('Configurations')
@@ -338,24 +241,16 @@ const DeploymentModeSchema = z
 
 const EncryptionOptionsSchema = z
   .object({
-    KmsKeyId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'kmsKeyId' },
-          description:
-            'The customer master key (CMK) to use for the A KMS (KMS). This key is used to encrypt your data at rest. If not provided, Amazon MQ will use a default CMK to encrypt your data.',
-        }),
-    ).exactOptional(),
-    UseAwsOwnedKey: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'useAwsOwnedKey' },
-          description:
-            'Enables the use of an Amazon Web Services owned CMK using KMS (KMS). Set to true by default, if no value is provided, for example, for RabbitMQ brokers.',
-        }),
-    ),
+    KmsKeyId: StringSchema.exactOptional().openapi({
+      xml: { name: 'kmsKeyId' },
+      description:
+        'The customer master key (CMK) to use for the A KMS (KMS). This key is used to encrypt your data at rest. If not provided, Amazon MQ will use a default CMK to encrypt your data.',
+    }),
+    UseAwsOwnedKey: BooleanSchema.openapi({
+      xml: { name: 'useAwsOwnedKey' },
+      description:
+        'Enables the use of an Amazon Web Services owned CMK using KMS (KMS). Set to true by default, if no value is provided, for example, for RabbitMQ brokers.',
+    }),
   })
   .openapi({ required: ['UseAwsOwnedKey'], description: 'Encryption options for the broker.' })
   .openapi('EncryptionOptions')
@@ -367,95 +262,55 @@ const EngineTypeSchema = z
 
 const LdapServerMetadataOutputSchema = z
   .object({
-    Hosts: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'hosts' },
-          description:
-            'Specifies the location of the LDAP server such as Directory Service for Microsoft Active Directory. Optional failover server.',
-        }),
-    ),
-    RoleBase: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'roleBase' },
-          description:
-            'The distinguished name of the node in the directory information tree (DIT) to search for roles or groups. For example, ou=group, ou=corp, dc=corp,\n                  dc=example, dc=com.',
-        }),
-    ),
-    RoleName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'roleName' },
-          description:
-            'Specifies the LDAP attribute that identifies the group name attribute in the object returned from the group membership query.',
-        }),
-    ).exactOptional(),
-    RoleSearchMatching: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'roleSearchMatching' },
-          description:
-            "The LDAP search filter used to find roles within the roleBase. The distinguished name of the user matched by userSearchMatching is substituted into the {0} placeholder in the search filter. The client's username is substituted into the {1} placeholder. For example, if you set this option to (member=uid={1})for the user janedoe, the search filter becomes (member=uid=janedoe) after string substitution. It matches all role entries that have a member attribute equal to uid=janedoe under the subtree selected by the roleBase.",
-        }),
-    ),
-    RoleSearchSubtree: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'roleSearchSubtree' },
-          description:
-            'The directory search scope for the role. If set to true, scope is to search the entire subtree.',
-        }),
-    ).exactOptional(),
-    ServiceAccountUsername: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'serviceAccountUsername' },
-          description:
-            'Service account username. A service account is an account in your LDAP server that has access to initiate a connection. For example, cn=admin,dc=corp, dc=example,\n                  dc=com.',
-        }),
-    ),
-    UserBase: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'userBase' },
-          description:
-            'Select a particular subtree of the directory information tree (DIT) to search for user entries. The subtree is specified by a DN, which specifies the base node of the subtree. For example, by setting this option to ou=Users,ou=corp, dc=corp,\n                  dc=example, dc=com, the search for user entries is restricted to the subtree beneath ou=Users, ou=corp, dc=corp, dc=example, dc=com.',
-        }),
-    ),
-    UserRoleName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'userRoleName' },
-          description: 'Specifies the name of the LDAP attribute for the user group membership.',
-        }),
-    ).exactOptional(),
-    UserSearchMatching: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'userSearchMatching' },
-          description:
-            "The LDAP search filter used to find users within the userBase. The client's username is substituted into the {0} placeholder in the search filter. For example, if this option is set to (uid={0}) and the received username is janedoe, the search filter becomes (uid=janedoe) after string substitution. It will result in matching an entry like uid=janedoe, ou=Users,ou=corp, dc=corp, dc=example,\n               dc=com.",
-        }),
-    ),
-    UserSearchSubtree: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'userSearchSubtree' },
-          description:
-            'The directory search scope for the user. If set to true, scope is to search the entire subtree.',
-        }),
-    ).exactOptional(),
+    Hosts: ListOfStringSchema.openapi({
+      xml: { name: 'hosts' },
+      description:
+        'Specifies the location of the LDAP server such as Directory Service for Microsoft Active Directory. Optional failover server.',
+    }),
+    RoleBase: StringSchema.openapi({
+      xml: { name: 'roleBase' },
+      description:
+        'The distinguished name of the node in the directory information tree (DIT) to search for roles or groups. For example, ou=group, ou=corp, dc=corp,\n                  dc=example, dc=com.',
+    }),
+    RoleName: StringSchema.exactOptional().openapi({
+      xml: { name: 'roleName' },
+      description:
+        'Specifies the LDAP attribute that identifies the group name attribute in the object returned from the group membership query.',
+    }),
+    RoleSearchMatching: StringSchema.openapi({
+      xml: { name: 'roleSearchMatching' },
+      description:
+        "The LDAP search filter used to find roles within the roleBase. The distinguished name of the user matched by userSearchMatching is substituted into the {0} placeholder in the search filter. The client's username is substituted into the {1} placeholder. For example, if you set this option to (member=uid={1})for the user janedoe, the search filter becomes (member=uid=janedoe) after string substitution. It matches all role entries that have a member attribute equal to uid=janedoe under the subtree selected by the roleBase.",
+    }),
+    RoleSearchSubtree: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'roleSearchSubtree' },
+      description:
+        'The directory search scope for the role. If set to true, scope is to search the entire subtree.',
+    }),
+    ServiceAccountUsername: StringSchema.openapi({
+      xml: { name: 'serviceAccountUsername' },
+      description:
+        'Service account username. A service account is an account in your LDAP server that has access to initiate a connection. For example, cn=admin,dc=corp, dc=example,\n                  dc=com.',
+    }),
+    UserBase: StringSchema.openapi({
+      xml: { name: 'userBase' },
+      description:
+        'Select a particular subtree of the directory information tree (DIT) to search for user entries. The subtree is specified by a DN, which specifies the base node of the subtree. For example, by setting this option to ou=Users,ou=corp, dc=corp,\n                  dc=example, dc=com, the search for user entries is restricted to the subtree beneath ou=Users, ou=corp, dc=corp, dc=example, dc=com.',
+    }),
+    UserRoleName: StringSchema.exactOptional().openapi({
+      xml: { name: 'userRoleName' },
+      description: 'Specifies the name of the LDAP attribute for the user group membership.',
+    }),
+    UserSearchMatching: StringSchema.openapi({
+      xml: { name: 'userSearchMatching' },
+      description:
+        "The LDAP search filter used to find users within the userBase. The client's username is substituted into the {0} placeholder in the search filter. For example, if this option is set to (uid={0}) and the received username is janedoe, the search filter becomes (uid=janedoe) after string substitution. It will result in matching an entry like uid=janedoe, ou=Users,ou=corp, dc=corp, dc=example,\n               dc=com.",
+    }),
+    UserSearchSubtree: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'userSearchSubtree' },
+      description:
+        'The directory search scope for the user. If set to true, scope is to search the entire subtree.',
+    }),
   })
   .openapi({
     required: [
@@ -473,18 +328,15 @@ const LdapServerMetadataOutputSchema = z
 
 const PendingLogsSchema = z
   .object({
-    Audit: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'audit' },
-          description:
-            'Enables audit logging. Every user management action made using JMX or the ActiveMQ Web Console is logged.',
-        }),
-    ).exactOptional(),
-    General: BooleanSchema.and(
-      z.any().openapi({ xml: { name: 'general' }, description: 'Enables general logging.' }),
-    ).exactOptional(),
+    Audit: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'audit' },
+      description:
+        'Enables audit logging. Every user management action made using JMX or the ActiveMQ Web Console is logged.',
+    }),
+    General: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'general' },
+      description: 'Enables general logging.',
+    }),
   })
   .openapi({
     description: 'The list of information about logs to be enabled for the specified broker.',
@@ -494,43 +346,28 @@ const PendingLogsSchema = z
 
 const LogsSummarySchema = z
   .object({
-    Audit: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'audit' },
-          description:
-            'Enables audit logging. Every user management action made using JMX or the ActiveMQ Web Console is logged.',
-        }),
-    ).exactOptional(),
-    AuditLogGroup: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'auditLogGroup' },
-          description: 'The location of the CloudWatch Logs log group where audit logs are sent.',
-        }),
-    ).exactOptional(),
-    General: BooleanSchema.and(
-      z.any().openapi({ xml: { name: 'general' }, description: 'Enables general logging.' }),
-    ),
-    GeneralLogGroup: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'generalLogGroup' },
-          description: 'The location of the CloudWatch Logs log group where general logs are sent.',
-        }),
-    ),
-    Pending: PendingLogsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'pending' },
-          description:
-            'The list of information about logs pending to be deployed for the specified broker.',
-        }),
-    ).exactOptional(),
+    Audit: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'audit' },
+      description:
+        'Enables audit logging. Every user management action made using JMX or the ActiveMQ Web Console is logged.',
+    }),
+    AuditLogGroup: StringSchema.exactOptional().openapi({
+      xml: { name: 'auditLogGroup' },
+      description: 'The location of the CloudWatch Logs log group where audit logs are sent.',
+    }),
+    General: BooleanSchema.openapi({
+      xml: { name: 'general' },
+      description: 'Enables general logging.',
+    }),
+    GeneralLogGroup: StringSchema.openapi({
+      xml: { name: 'generalLogGroup' },
+      description: 'The location of the CloudWatch Logs log group where general logs are sent.',
+    }),
+    Pending: PendingLogsSchema.exactOptional().openapi({
+      xml: { name: 'pending' },
+      description:
+        'The list of information about logs pending to be deployed for the specified broker.',
+    }),
   })
   .openapi({
     required: ['GeneralLogGroup', 'General'],
@@ -541,28 +378,19 @@ const LogsSummarySchema = z
 
 const WeeklyStartTimeSchema = z
   .object({
-    DayOfWeek: DayOfWeekSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'dayOfWeek' }, description: 'Required. The day of the week.' }),
-    ),
-    TimeOfDay: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'timeOfDay' },
-          description: 'Required. The time, in 24-hour format.',
-        }),
-    ),
-    TimeZone: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'timeZone' },
-          description:
-            'The time zone, UTC by default, in either the Country/City format, or the UTC offset format.',
-        }),
-    ).exactOptional(),
+    DayOfWeek: DayOfWeekSchema.openapi({
+      xml: { name: 'dayOfWeek' },
+      description: 'Required. The day of the week.',
+    }),
+    TimeOfDay: StringSchema.openapi({
+      xml: { name: 'timeOfDay' },
+      description: 'Required. The time, in 24-hour format.',
+    }),
+    TimeZone: StringSchema.exactOptional().openapi({
+      xml: { name: 'timeZone' },
+      description:
+        'The time zone, UTC by default, in either the Country/City format, or the UTC offset format.',
+    }),
   })
   .openapi({
     required: ['TimeOfDay', 'DayOfWeek'],
@@ -588,23 +416,15 @@ const ChangeTypeSchema = z
 
 const UserSummarySchema = z
   .object({
-    PendingChange: ChangeTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'pendingChange' },
-          description: 'The type of change pending for the broker user.',
-        }),
-    ).exactOptional(),
-    Username: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'username' },
-          description:
-            'Required. The username of the broker user. This value can contain only alphanumeric characters, dashes, periods, underscores, and tildes (- . _ ~). This value must be 2-100 characters long.',
-        }),
-    ),
+    PendingChange: ChangeTypeSchema.exactOptional().openapi({
+      xml: { name: 'pendingChange' },
+      description: 'The type of change pending for the broker user.',
+    }),
+    Username: StringSchema.openapi({
+      xml: { name: 'username' },
+      description:
+        'Required. The username of the broker user. This value can contain only alphanumeric characters, dashes, periods, underscores, and tildes (- . _ ~). This value must be 2-100 characters long.',
+    }),
   })
   .openapi({
     required: ['Username'],
@@ -616,19 +436,14 @@ const ListOfUserSummarySchema = z.array(UserSummarySchema).openapi('ListOfUserSu
 
 const DataReplicationCounterpartSchema = z
   .object({
-    BrokerId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'brokerId' },
-          description: 'Required. The unique broker id generated by Amazon MQ.',
-        }),
-    ),
-    Region: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'region' }, description: 'Required. The region of the broker.' }),
-    ),
+    BrokerId: StringSchema.openapi({
+      xml: { name: 'brokerId' },
+      description: 'Required. The unique broker id generated by Amazon MQ.',
+    }),
+    Region: StringSchema.openapi({
+      xml: { name: 'region' },
+      description: 'Required. The region of the broker.',
+    }),
   })
   .openapi({
     required: ['BrokerId', 'Region'],
@@ -638,24 +453,16 @@ const DataReplicationCounterpartSchema = z
 
 const DataReplicationMetadataOutputSchema = z
   .object({
-    DataReplicationCounterpart: DataReplicationCounterpartSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'dataReplicationCounterpart' },
-          description:
-            "Describes the replica/primary broker. Only returned if this broker is currently set as a primary or replica in the broker's dataReplicationRole property.",
-        }),
-    ).exactOptional(),
-    DataReplicationRole: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'dataReplicationRole' },
-          description:
-            'Defines the role of this broker in a data replication pair. When a replica broker is promoted to primary, this role is interchanged.',
-        }),
-    ),
+    DataReplicationCounterpart: DataReplicationCounterpartSchema.exactOptional().openapi({
+      xml: { name: 'dataReplicationCounterpart' },
+      description:
+        "Describes the replica/primary broker. Only returned if this broker is currently set as a primary or replica in the broker's dataReplicationRole property.",
+    }),
+    DataReplicationRole: StringSchema.openapi({
+      xml: { name: 'dataReplicationRole' },
+      description:
+        'Defines the role of this broker in a data replication pair. When a replica broker is promoted to primary, this role is interchanged.',
+    }),
   })
   .openapi({
     required: ['DataReplicationRole'],
@@ -671,280 +478,164 @@ const DataReplicationModeSchema = z
 
 const DescribeBrokerResponseSchema = z
   .object({
-    ActionsRequired: ListOfActionRequiredSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'actionsRequired' },
-          description: 'Actions required for a broker.',
-        }),
-    ).exactOptional(),
-    AuthenticationStrategy: AuthenticationStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authenticationStrategy' },
-          description:
-            'The authentication strategy used to secure the broker. The default is SIMPLE.',
-        }),
-    ).exactOptional(),
-    AutoMinorVersionUpgrade: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'autoMinorVersionUpgrade' },
-          description:
-            'Enables automatic upgrades to new minor versions for brokers, as new versions are released and supported by Amazon MQ. Automatic upgrades occur during the scheduled maintenance window of the broker or after a manual broker reboot.',
-        }),
-    ).exactOptional(),
-    BrokerArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'brokerArn' },
-          description: "The broker's Amazon Resource Name (ARN).",
-        }),
-    ).exactOptional(),
-    BrokerId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'brokerId' },
-          description: 'The unique ID that Amazon MQ generates for the broker.',
-        }),
-    ).exactOptional(),
-    BrokerInstances: ListOfBrokerInstanceSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'brokerInstances' },
-          description: 'A list of information about allocated brokers.',
-        }),
-    ).exactOptional(),
-    BrokerName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'brokerName' },
-          description:
-            "The broker's name. This value must be unique in your Amazon Web Services account account, 1-50 characters long, must contain only letters, numbers, dashes, and underscores, and must not contain white spaces, brackets, wildcard characters, or special characters.",
-        }),
-    ).exactOptional(),
-    BrokerState: BrokerStateSchema.and(
-      z.any().openapi({ xml: { name: 'brokerState' }, description: "The broker's status." }),
-    ).exactOptional(),
-    Configurations: ConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'configurations' },
-          description: 'The list of all revisions for the specified configuration.',
-        }),
-    ).exactOptional(),
-    Created: TimestampIso8601Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'created' },
-          description: 'The time when the broker was created.',
-        }),
-    ).exactOptional(),
-    DeploymentMode: DeploymentModeSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'deploymentMode' }, description: "The broker's deployment mode." }),
-    ).exactOptional(),
-    EncryptionOptions: EncryptionOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'encryptionOptions' },
-          description: 'Encryption options for the broker.',
-        }),
-    ).exactOptional(),
-    EngineType: EngineTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'engineType' },
-          description:
-            'The type of broker engine. Currently, Amazon MQ supports ACTIVEMQ and RABBITMQ.',
-        }),
-    ).exactOptional(),
-    EngineVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'engineVersion' },
-          description:
-            'The broker engine\'s version. For a list of supported engine versions, see <a href="https://docs.aws.amazon.com//amazon-mq/latest/developer-guide/broker-engine.html">Supported engines</a>.',
-        }),
-    ).exactOptional(),
-    HostInstanceType: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'hostInstanceType' }, description: "The broker's instance type." }),
-    ).exactOptional(),
-    LdapServerMetadata: LdapServerMetadataOutputSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'ldapServerMetadata' },
-          description:
-            'The metadata of the LDAP server used to authenticate and authorize connections to the broker.',
-        }),
-    ).exactOptional(),
-    Logs: LogsSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'logs' },
-          description:
-            'The list of information about logs currently enabled and pending to be deployed for the specified broker.',
-        }),
-    ).exactOptional(),
-    MaintenanceWindowStartTime: WeeklyStartTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maintenanceWindowStartTime' },
-          description: 'The parameters that determine the WeeklyStartTime.',
-        }),
-    ).exactOptional(),
-    PendingAuthenticationStrategy: AuthenticationStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'pendingAuthenticationStrategy' },
-          description:
-            'The authentication strategy that will be applied when the broker is rebooted. The default is SIMPLE.',
-        }),
-    ).exactOptional(),
-    PendingEngineVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'pendingEngineVersion' },
-          description:
-            'The broker engine version to upgrade to. For a list of supported engine versions, see <a href="https://docs.aws.amazon.com//amazon-mq/latest/developer-guide/broker-engine.html">Supported engines</a>.',
-        }),
-    ).exactOptional(),
-    PendingHostInstanceType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'pendingHostInstanceType' },
-          description:
-            'The broker\'s host instance type to upgrade to. For a list of supported instance types, see <a href="https://docs.aws.amazon.com//amazon-mq/latest/developer-guide/broker.html#broker-instance-types">Broker instance types</a>.',
-        }),
-    ).exactOptional(),
-    PendingLdapServerMetadata: LdapServerMetadataOutputSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'pendingLdapServerMetadata' },
-          description:
-            'The metadata of the LDAP server that will be used to authenticate and authorize connections to the broker after it is rebooted.',
-        }),
-    ).exactOptional(),
-    PendingSecurityGroups: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'pendingSecurityGroups' },
-          description: 'The list of pending security groups to authorize connections to brokers.',
-        }),
-    ).exactOptional(),
-    PubliclyAccessible: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'publiclyAccessible' },
-          description:
-            "Enables connections from applications outside of the VPC that hosts the broker's subnets.",
-        }),
-    ).exactOptional(),
-    SecurityGroups: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'securityGroups' },
-          description:
-            'The list of rules (1 minimum, 125 maximum) that authorize connections to brokers.',
-        }),
-    ).exactOptional(),
-    StorageType: BrokerStorageTypeSchema.and(
-      z.any().openapi({ xml: { name: 'storageType' }, description: "The broker's storage type." }),
-    ).exactOptional(),
-    SubnetIds: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'subnetIds' },
-          description:
-            'The list of groups that define which subnets and IP ranges the broker can use from different Availability Zones.',
-        }),
-    ).exactOptional(),
-    Tags: MapOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description: 'The list of all tags associated with this broker.',
-        }),
-    ).exactOptional(),
-    Users: ListOfUserSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'users' },
-          description: 'The list of all broker usernames for the specified broker.',
-        }),
-    ).exactOptional(),
-    DataReplicationMetadata: DataReplicationMetadataOutputSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'dataReplicationMetadata' },
-          description:
-            'The replication details of the data replication-enabled broker. Only returned if dataReplicationMode is set to CRDR.',
-        }),
-    ).exactOptional(),
-    DataReplicationMode: DataReplicationModeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'dataReplicationMode' },
-          description: 'Describes whether this broker is a part of a data replication pair.',
-        }),
-    ).exactOptional(),
-    PendingDataReplicationMetadata: DataReplicationMetadataOutputSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'pendingDataReplicationMetadata' },
-          description:
-            'The pending replication details of the data replication-enabled broker. Only returned if pendingDataReplicationMode is set to CRDR.',
-        }),
-    ).exactOptional(),
-    PendingDataReplicationMode: DataReplicationModeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'pendingDataReplicationMode' },
-          description:
-            'Describes whether this broker will be a part of a data replication pair after reboot.',
-        }),
-    ).exactOptional(),
+    ActionsRequired: ListOfActionRequiredSchema.exactOptional().openapi({
+      xml: { name: 'actionsRequired' },
+      description: 'Actions required for a broker.',
+    }),
+    AuthenticationStrategy: AuthenticationStrategySchema.exactOptional().openapi({
+      xml: { name: 'authenticationStrategy' },
+      description: 'The authentication strategy used to secure the broker. The default is SIMPLE.',
+    }),
+    AutoMinorVersionUpgrade: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'autoMinorVersionUpgrade' },
+      description:
+        'Enables automatic upgrades to new minor versions for brokers, as new versions are released and supported by Amazon MQ. Automatic upgrades occur during the scheduled maintenance window of the broker or after a manual broker reboot.',
+    }),
+    BrokerArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'brokerArn' },
+      description: "The broker's Amazon Resource Name (ARN).",
+    }),
+    BrokerId: StringSchema.exactOptional().openapi({
+      xml: { name: 'brokerId' },
+      description: 'The unique ID that Amazon MQ generates for the broker.',
+    }),
+    BrokerInstances: ListOfBrokerInstanceSchema.exactOptional().openapi({
+      xml: { name: 'brokerInstances' },
+      description: 'A list of information about allocated brokers.',
+    }),
+    BrokerName: StringSchema.exactOptional().openapi({
+      xml: { name: 'brokerName' },
+      description:
+        "The broker's name. This value must be unique in your Amazon Web Services account account, 1-50 characters long, must contain only letters, numbers, dashes, and underscores, and must not contain white spaces, brackets, wildcard characters, or special characters.",
+    }),
+    BrokerState: BrokerStateSchema.exactOptional().openapi({
+      xml: { name: 'brokerState' },
+      description: "The broker's status.",
+    }),
+    Configurations: ConfigurationsSchema.exactOptional().openapi({
+      xml: { name: 'configurations' },
+      description: 'The list of all revisions for the specified configuration.',
+    }),
+    Created: TimestampIso8601Schema.exactOptional().openapi({
+      xml: { name: 'created' },
+      description: 'The time when the broker was created.',
+    }),
+    DeploymentMode: DeploymentModeSchema.exactOptional().openapi({
+      xml: { name: 'deploymentMode' },
+      description: "The broker's deployment mode.",
+    }),
+    EncryptionOptions: EncryptionOptionsSchema.exactOptional().openapi({
+      xml: { name: 'encryptionOptions' },
+      description: 'Encryption options for the broker.',
+    }),
+    EngineType: EngineTypeSchema.exactOptional().openapi({
+      xml: { name: 'engineType' },
+      description:
+        'The type of broker engine. Currently, Amazon MQ supports ACTIVEMQ and RABBITMQ.',
+    }),
+    EngineVersion: StringSchema.exactOptional().openapi({
+      xml: { name: 'engineVersion' },
+      description:
+        'The broker engine\'s version. For a list of supported engine versions, see <a href="https://docs.aws.amazon.com//amazon-mq/latest/developer-guide/broker-engine.html">Supported engines</a>.',
+    }),
+    HostInstanceType: StringSchema.exactOptional().openapi({
+      xml: { name: 'hostInstanceType' },
+      description: "The broker's instance type.",
+    }),
+    LdapServerMetadata: LdapServerMetadataOutputSchema.exactOptional().openapi({
+      xml: { name: 'ldapServerMetadata' },
+      description:
+        'The metadata of the LDAP server used to authenticate and authorize connections to the broker.',
+    }),
+    Logs: LogsSummarySchema.exactOptional().openapi({
+      xml: { name: 'logs' },
+      description:
+        'The list of information about logs currently enabled and pending to be deployed for the specified broker.',
+    }),
+    MaintenanceWindowStartTime: WeeklyStartTimeSchema.exactOptional().openapi({
+      xml: { name: 'maintenanceWindowStartTime' },
+      description: 'The parameters that determine the WeeklyStartTime.',
+    }),
+    PendingAuthenticationStrategy: AuthenticationStrategySchema.exactOptional().openapi({
+      xml: { name: 'pendingAuthenticationStrategy' },
+      description:
+        'The authentication strategy that will be applied when the broker is rebooted. The default is SIMPLE.',
+    }),
+    PendingEngineVersion: StringSchema.exactOptional().openapi({
+      xml: { name: 'pendingEngineVersion' },
+      description:
+        'The broker engine version to upgrade to. For a list of supported engine versions, see <a href="https://docs.aws.amazon.com//amazon-mq/latest/developer-guide/broker-engine.html">Supported engines</a>.',
+    }),
+    PendingHostInstanceType: StringSchema.exactOptional().openapi({
+      xml: { name: 'pendingHostInstanceType' },
+      description:
+        'The broker\'s host instance type to upgrade to. For a list of supported instance types, see <a href="https://docs.aws.amazon.com//amazon-mq/latest/developer-guide/broker.html#broker-instance-types">Broker instance types</a>.',
+    }),
+    PendingLdapServerMetadata: LdapServerMetadataOutputSchema.exactOptional().openapi({
+      xml: { name: 'pendingLdapServerMetadata' },
+      description:
+        'The metadata of the LDAP server that will be used to authenticate and authorize connections to the broker after it is rebooted.',
+    }),
+    PendingSecurityGroups: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'pendingSecurityGroups' },
+      description: 'The list of pending security groups to authorize connections to brokers.',
+    }),
+    PubliclyAccessible: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'publiclyAccessible' },
+      description:
+        "Enables connections from applications outside of the VPC that hosts the broker's subnets.",
+    }),
+    SecurityGroups: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'securityGroups' },
+      description:
+        'The list of rules (1 minimum, 125 maximum) that authorize connections to brokers.',
+    }),
+    StorageType: BrokerStorageTypeSchema.exactOptional().openapi({
+      xml: { name: 'storageType' },
+      description: "The broker's storage type.",
+    }),
+    SubnetIds: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'subnetIds' },
+      description:
+        'The list of groups that define which subnets and IP ranges the broker can use from different Availability Zones.',
+    }),
+    Tags: MapOfStringSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'The list of all tags associated with this broker.',
+    }),
+    Users: ListOfUserSummarySchema.exactOptional().openapi({
+      xml: { name: 'users' },
+      description: 'The list of all broker usernames for the specified broker.',
+    }),
+    DataReplicationMetadata: DataReplicationMetadataOutputSchema.exactOptional().openapi({
+      xml: { name: 'dataReplicationMetadata' },
+      description:
+        'The replication details of the data replication-enabled broker. Only returned if dataReplicationMode is set to CRDR.',
+    }),
+    DataReplicationMode: DataReplicationModeSchema.exactOptional().openapi({
+      xml: { name: 'dataReplicationMode' },
+      description: 'Describes whether this broker is a part of a data replication pair.',
+    }),
+    PendingDataReplicationMetadata: DataReplicationMetadataOutputSchema.exactOptional().openapi({
+      xml: { name: 'pendingDataReplicationMetadata' },
+      description:
+        'The pending replication details of the data replication-enabled broker. Only returned if pendingDataReplicationMode is set to CRDR.',
+    }),
+    PendingDataReplicationMode: DataReplicationModeSchema.exactOptional().openapi({
+      xml: { name: 'pendingDataReplicationMode' },
+      description:
+        'Describes whether this broker will be a part of a data replication pair after reboot.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeBrokerResponse')
 
 const EngineVersionSchema = z
   .object({
-    Name: StringSchema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'Id for the version.' }),
-    ).exactOptional(),
+    Name: StringSchema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description: 'Id for the version.',
+    }),
   })
   .openapi({ description: 'Id of the engine version.', required: [] })
   .openapi('EngineVersion')
@@ -953,14 +644,14 @@ const ListOfEngineVersionSchema = z.array(EngineVersionSchema).openapi('ListOfEn
 
 const BrokerEngineTypeSchema = z
   .object({
-    EngineType: EngineTypeSchema.and(
-      z.any().openapi({ xml: { name: 'engineType' }, description: "The broker's engine type." }),
-    ).exactOptional(),
-    EngineVersions: ListOfEngineVersionSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'engineVersions' }, description: 'The list of engine versions.' }),
-    ).exactOptional(),
+    EngineType: EngineTypeSchema.exactOptional().openapi({
+      xml: { name: 'engineType' },
+      description: "The broker's engine type.",
+    }),
+    EngineVersions: ListOfEngineVersionSchema.exactOptional().openapi({
+      xml: { name: 'engineVersions' },
+      description: 'The list of engine versions.',
+    }),
   })
   .openapi({ description: 'Types of broker engines.', required: [] })
   .openapi('BrokerEngineType')
@@ -973,41 +664,30 @@ const IntegerMin5Max100Schema = z.int().min(5).max(100).openapi('IntegerMin5Max1
 
 const DescribeBrokerEngineTypesResponseSchema = z
   .object({
-    BrokerEngineTypes: ListOfBrokerEngineTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'brokerEngineTypes' },
-          description: 'List of available engine types and versions.',
-        }),
-    ).exactOptional(),
-    MaxResults: IntegerMin5Max100Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maxResults' },
-          description:
-            'Required. The maximum number of engine types that can be returned per page (20 by default). This value must be an integer from 5 to 100.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'The token that specifies the next page of results Amazon MQ should return. To request the first page, leave nextToken empty.',
-        }),
-    ).exactOptional(),
+    BrokerEngineTypes: ListOfBrokerEngineTypeSchema.exactOptional().openapi({
+      xml: { name: 'brokerEngineTypes' },
+      description: 'List of available engine types and versions.',
+    }),
+    MaxResults: IntegerMin5Max100Schema.exactOptional().openapi({
+      xml: { name: 'maxResults' },
+      description:
+        'Required. The maximum number of engine types that can be returned per page (20 by default). This value must be an integer from 5 to 100.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description:
+        'The token that specifies the next page of results Amazon MQ should return. To request the first page, leave nextToken empty.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeBrokerEngineTypesResponse')
 
 const AvailabilityZoneSchema = z
   .object({
-    Name: StringSchema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'Id for the availability zone.' }),
-    ).exactOptional(),
+    Name: StringSchema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description: 'Id for the availability zone.',
+    }),
   })
   .openapi({ description: 'Name of the availability zone.', required: [] })
   .openapi('AvailabilityZone')
@@ -1020,38 +700,30 @@ const ListOfDeploymentModeSchema = z.array(DeploymentModeSchema).openapi('ListOf
 
 const BrokerInstanceOptionSchema = z
   .object({
-    AvailabilityZones: ListOfAvailabilityZoneSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'availabilityZones' }, description: 'The list of available az.' }),
-    ).exactOptional(),
-    EngineType: EngineTypeSchema.and(
-      z.any().openapi({ xml: { name: 'engineType' }, description: "The broker's engine type." }),
-    ).exactOptional(),
-    HostInstanceType: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'hostInstanceType' }, description: "The broker's instance type." }),
-    ).exactOptional(),
-    StorageType: BrokerStorageTypeSchema.and(
-      z.any().openapi({ xml: { name: 'storageType' }, description: "The broker's storage type." }),
-    ).exactOptional(),
-    SupportedDeploymentModes: ListOfDeploymentModeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'supportedDeploymentModes' },
-          description: 'The list of supported deployment modes.',
-        }),
-    ).exactOptional(),
-    SupportedEngineVersions: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'supportedEngineVersions' },
-          description: 'The list of supported engine versions.',
-        }),
-    ).exactOptional(),
+    AvailabilityZones: ListOfAvailabilityZoneSchema.exactOptional().openapi({
+      xml: { name: 'availabilityZones' },
+      description: 'The list of available az.',
+    }),
+    EngineType: EngineTypeSchema.exactOptional().openapi({
+      xml: { name: 'engineType' },
+      description: "The broker's engine type.",
+    }),
+    HostInstanceType: StringSchema.exactOptional().openapi({
+      xml: { name: 'hostInstanceType' },
+      description: "The broker's instance type.",
+    }),
+    StorageType: BrokerStorageTypeSchema.exactOptional().openapi({
+      xml: { name: 'storageType' },
+      description: "The broker's storage type.",
+    }),
+    SupportedDeploymentModes: ListOfDeploymentModeSchema.exactOptional().openapi({
+      xml: { name: 'supportedDeploymentModes' },
+      description: 'The list of supported deployment modes.',
+    }),
+    SupportedEngineVersions: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'supportedEngineVersions' },
+      description: 'The list of supported engine versions.',
+    }),
   })
   .openapi({ description: 'Option for host instance type.', required: [] })
   .openapi('BrokerInstanceOption')
@@ -1062,189 +734,112 @@ const ListOfBrokerInstanceOptionSchema = z
 
 const DescribeBrokerInstanceOptionsResponseSchema = z
   .object({
-    BrokerInstanceOptions: ListOfBrokerInstanceOptionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'brokerInstanceOptions' },
-          description: 'List of available broker instance options.',
-        }),
-    ).exactOptional(),
-    MaxResults: IntegerMin5Max100Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maxResults' },
-          description:
-            'Required. The maximum number of instance options that can be returned per page (20 by default). This value must be an integer from 5 to 100.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'The token that specifies the next page of results Amazon MQ should return. To request the first page, leave nextToken empty.',
-        }),
-    ).exactOptional(),
+    BrokerInstanceOptions: ListOfBrokerInstanceOptionSchema.exactOptional().openapi({
+      xml: { name: 'brokerInstanceOptions' },
+      description: 'List of available broker instance options.',
+    }),
+    MaxResults: IntegerMin5Max100Schema.exactOptional().openapi({
+      xml: { name: 'maxResults' },
+      description:
+        'Required. The maximum number of instance options that can be returned per page (20 by default). This value must be an integer from 5 to 100.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description:
+        'The token that specifies the next page of results Amazon MQ should return. To request the first page, leave nextToken empty.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeBrokerInstanceOptionsResponse')
 
 const DescribeConfigurationResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'arn' }, description: 'Required. The ARN of the configuration.' }),
-    ).exactOptional(),
-    AuthenticationStrategy: AuthenticationStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authenticationStrategy' },
-          description:
-            'Optional. The authentication strategy associated with the configuration. The default is SIMPLE.',
-        }),
-    ).exactOptional(),
-    Created: TimestampIso8601Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'created' },
-          description: 'Required. The date and time of the configuration revision.',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description: 'Required. The description of the configuration.',
-        }),
-    ).exactOptional(),
-    EngineType: EngineTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'engineType' },
-          description:
-            'Required. The type of broker engine. Currently, Amazon MQ supports ACTIVEMQ and RABBITMQ.',
-        }),
-    ).exactOptional(),
-    EngineVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'engineVersion' },
-          description:
-            'Required. The broker engine\'s version. For a list of supported engine versions, see, <a href="https://docs.aws.amazon.com//amazon-mq/latest/developer-guide/broker-engine.html">Supported engines</a>.',
-        }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'id' },
-          description: 'Required. The unique ID that Amazon MQ generates for the configuration.',
-        }),
-    ).exactOptional(),
-    LatestRevision: ConfigurationRevisionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'latestRevision' },
-          description: 'Required. The latest revision of the configuration.',
-        }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'name' },
-          description:
-            'Required. The name of the configuration. This value can contain only alphanumeric characters, dashes, periods, underscores, and tildes (- . _ ~). This value must be 1-150 characters long.',
-        }),
-    ).exactOptional(),
-    Tags: MapOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description: 'The list of all tags associated with this configuration.',
-        }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({
+      xml: { name: 'arn' },
+      description: 'Required. The ARN of the configuration.',
+    }),
+    AuthenticationStrategy: AuthenticationStrategySchema.exactOptional().openapi({
+      xml: { name: 'authenticationStrategy' },
+      description:
+        'Optional. The authentication strategy associated with the configuration. The default is SIMPLE.',
+    }),
+    Created: TimestampIso8601Schema.exactOptional().openapi({
+      xml: { name: 'created' },
+      description: 'Required. The date and time of the configuration revision.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'Required. The description of the configuration.',
+    }),
+    EngineType: EngineTypeSchema.exactOptional().openapi({
+      xml: { name: 'engineType' },
+      description:
+        'Required. The type of broker engine. Currently, Amazon MQ supports ACTIVEMQ and RABBITMQ.',
+    }),
+    EngineVersion: StringSchema.exactOptional().openapi({
+      xml: { name: 'engineVersion' },
+      description:
+        'Required. The broker engine\'s version. For a list of supported engine versions, see, <a href="https://docs.aws.amazon.com//amazon-mq/latest/developer-guide/broker-engine.html">Supported engines</a>.',
+    }),
+    Id: StringSchema.exactOptional().openapi({
+      xml: { name: 'id' },
+      description: 'Required. The unique ID that Amazon MQ generates for the configuration.',
+    }),
+    LatestRevision: ConfigurationRevisionSchema.exactOptional().openapi({
+      xml: { name: 'latestRevision' },
+      description: 'Required. The latest revision of the configuration.',
+    }),
+    Name: StringSchema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description:
+        'Required. The name of the configuration. This value can contain only alphanumeric characters, dashes, periods, underscores, and tildes (- . _ ~). This value must be 1-150 characters long.',
+    }),
+    Tags: MapOfStringSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'The list of all tags associated with this configuration.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeConfigurationResponse')
 
 const DescribeConfigurationRevisionResponseSchema = z
   .object({
-    ConfigurationId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'configurationId' },
-          description: 'Required. The unique ID that Amazon MQ generates for the configuration.',
-        }),
-    ).exactOptional(),
-    Created: TimestampIso8601Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'created' },
-          description: 'Required. The date and time of the configuration.',
-        }),
-    ).exactOptional(),
-    Data: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'data' },
-          description:
-            'Amazon MQ for ActiveMQ: the base64-encoded XML configuration. Amazon MQ for RabbitMQ: base64-encoded Cuttlefish.',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description: 'The description of the configuration.',
-        }),
-    ).exactOptional(),
+    ConfigurationId: StringSchema.exactOptional().openapi({
+      xml: { name: 'configurationId' },
+      description: 'Required. The unique ID that Amazon MQ generates for the configuration.',
+    }),
+    Created: TimestampIso8601Schema.exactOptional().openapi({
+      xml: { name: 'created' },
+      description: 'Required. The date and time of the configuration.',
+    }),
+    Data: StringSchema.exactOptional().openapi({
+      xml: { name: 'data' },
+      description:
+        'Amazon MQ for ActiveMQ: the base64-encoded XML configuration. Amazon MQ for RabbitMQ: base64-encoded Cuttlefish.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'The description of the configuration.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeConfigurationRevisionResponse')
 
 const UserPendingChangesSchema = z
   .object({
-    ConsoleAccess: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'consoleAccess' },
-          description: 'Enables access to the the ActiveMQ Web Console for the ActiveMQ user.',
-        }),
-    ).exactOptional(),
-    Groups: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'groups' },
-          description:
-            'The list of groups (20 maximum) to which the ActiveMQ user belongs. This value can contain only alphanumeric characters, dashes, periods, underscores, and tildes (- . _ ~). This value must be 2-100 characters long.',
-        }),
-    ).exactOptional(),
-    PendingChange: ChangeTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'pendingChange' },
-          description: 'Required. The type of change pending for the ActiveMQ user.',
-        }),
-    ),
+    ConsoleAccess: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'consoleAccess' },
+      description: 'Enables access to the the ActiveMQ Web Console for the ActiveMQ user.',
+    }),
+    Groups: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'groups' },
+      description:
+        'The list of groups (20 maximum) to which the ActiveMQ user belongs. This value can contain only alphanumeric characters, dashes, periods, underscores, and tildes (- . _ ~). This value must be 2-100 characters long.',
+    }),
+    PendingChange: ChangeTypeSchema.openapi({
+      xml: { name: 'pendingChange' },
+      description: 'Required. The type of change pending for the ActiveMQ user.',
+    }),
   })
   .openapi({
     required: ['PendingChange'],
@@ -1255,111 +850,71 @@ const UserPendingChangesSchema = z
 
 const DescribeUserResponseSchema = z
   .object({
-    BrokerId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'brokerId' },
-          description: 'Required. The unique ID that Amazon MQ generates for the broker.',
-        }),
-    ).exactOptional(),
-    ConsoleAccess: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'consoleAccess' },
-          description: 'Enables access to the the ActiveMQ Web Console for the ActiveMQ user.',
-        }),
-    ).exactOptional(),
-    Groups: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'groups' },
-          description:
-            'The list of groups (20 maximum) to which the ActiveMQ user belongs. This value can contain only alphanumeric characters, dashes, periods, underscores, and tildes (- . _ ~). This value must be 2-100 characters long.',
-        }),
-    ).exactOptional(),
-    Pending: UserPendingChangesSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'pending' },
-          description: 'The status of the changes pending for the ActiveMQ user.',
-        }),
-    ).exactOptional(),
-    Username: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'username' },
-          description:
-            'Required. The username of the ActiveMQ user. This value can contain only alphanumeric characters, dashes, periods, underscores, and tildes (- . _ ~). This value must be 2-100 characters long.',
-        }),
-    ).exactOptional(),
-    ReplicationUser: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'replicationUser' },
-          description: 'Describes whether the user is intended for data replication',
-        }),
-    ).exactOptional(),
+    BrokerId: StringSchema.exactOptional().openapi({
+      xml: { name: 'brokerId' },
+      description: 'Required. The unique ID that Amazon MQ generates for the broker.',
+    }),
+    ConsoleAccess: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'consoleAccess' },
+      description: 'Enables access to the the ActiveMQ Web Console for the ActiveMQ user.',
+    }),
+    Groups: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'groups' },
+      description:
+        'The list of groups (20 maximum) to which the ActiveMQ user belongs. This value can contain only alphanumeric characters, dashes, periods, underscores, and tildes (- . _ ~). This value must be 2-100 characters long.',
+    }),
+    Pending: UserPendingChangesSchema.exactOptional().openapi({
+      xml: { name: 'pending' },
+      description: 'The status of the changes pending for the ActiveMQ user.',
+    }),
+    Username: StringSchema.exactOptional().openapi({
+      xml: { name: 'username' },
+      description:
+        'Required. The username of the ActiveMQ user. This value can contain only alphanumeric characters, dashes, periods, underscores, and tildes (- . _ ~). This value must be 2-100 characters long.',
+    }),
+    ReplicationUser: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'replicationUser' },
+      description: 'Describes whether the user is intended for data replication',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeUserResponse')
 
 const BrokerSummarySchema = z
   .object({
-    BrokerArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'brokerArn' },
-          description: "The broker's Amazon Resource Name (ARN).",
-        }),
-    ).exactOptional(),
-    BrokerId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'brokerId' },
-          description: 'The unique ID that Amazon MQ generates for the broker.',
-        }),
-    ).exactOptional(),
-    BrokerName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'brokerName' },
-          description:
-            "The broker's name. This value is unique in your Amazon Web Services account, 1-50 characters long, and containing only letters, numbers, dashes, and underscores, and must not contain white spaces, brackets, wildcard characters, or special characters.",
-        }),
-    ).exactOptional(),
-    BrokerState: BrokerStateSchema.and(
-      z.any().openapi({ xml: { name: 'brokerState' }, description: "The broker's status." }),
-    ).exactOptional(),
-    Created: TimestampIso8601Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'created' },
-          description: 'The time when the broker was created.',
-        }),
-    ).exactOptional(),
-    DeploymentMode: DeploymentModeSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'deploymentMode' }, description: "The broker's deployment mode." }),
-    ),
-    EngineType: EngineTypeSchema.and(
-      z.any().openapi({ xml: { name: 'engineType' }, description: 'The type of broker engine.' }),
-    ),
-    HostInstanceType: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'hostInstanceType' }, description: "The broker's instance type." }),
-    ).exactOptional(),
+    BrokerArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'brokerArn' },
+      description: "The broker's Amazon Resource Name (ARN).",
+    }),
+    BrokerId: StringSchema.exactOptional().openapi({
+      xml: { name: 'brokerId' },
+      description: 'The unique ID that Amazon MQ generates for the broker.',
+    }),
+    BrokerName: StringSchema.exactOptional().openapi({
+      xml: { name: 'brokerName' },
+      description:
+        "The broker's name. This value is unique in your Amazon Web Services account, 1-50 characters long, and containing only letters, numbers, dashes, and underscores, and must not contain white spaces, brackets, wildcard characters, or special characters.",
+    }),
+    BrokerState: BrokerStateSchema.exactOptional().openapi({
+      xml: { name: 'brokerState' },
+      description: "The broker's status.",
+    }),
+    Created: TimestampIso8601Schema.exactOptional().openapi({
+      xml: { name: 'created' },
+      description: 'The time when the broker was created.',
+    }),
+    DeploymentMode: DeploymentModeSchema.openapi({
+      xml: { name: 'deploymentMode' },
+      description: "The broker's deployment mode.",
+    }),
+    EngineType: EngineTypeSchema.openapi({
+      xml: { name: 'engineType' },
+      description: 'The type of broker engine.',
+    }),
+    HostInstanceType: StringSchema.exactOptional().openapi({
+      xml: { name: 'hostInstanceType' },
+      description: "The broker's instance type.",
+    }),
   })
   .openapi({
     required: ['DeploymentMode', 'EngineType'],
@@ -1371,23 +926,15 @@ const ListOfBrokerSummarySchema = z.array(BrokerSummarySchema).openapi('ListOfBr
 
 const ListBrokersResponseSchema = z
   .object({
-    BrokerSummaries: ListOfBrokerSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'brokerSummaries' },
-          description: 'A list of information about all brokers.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'The token that specifies the next page of results Amazon MQ should return. To request the first page, leave nextToken empty.',
-        }),
-    ).exactOptional(),
+    BrokerSummaries: ListOfBrokerSummarySchema.exactOptional().openapi({
+      xml: { name: 'brokerSummaries' },
+      description: 'A list of information about all brokers.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description:
+        'The token that specifies the next page of results Amazon MQ should return. To request the first page, leave nextToken empty.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListBrokersResponse')
@@ -1398,127 +945,74 @@ const ListOfConfigurationRevisionSchema = z
 
 const ListConfigurationRevisionsResponseSchema = z
   .object({
-    ConfigurationId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'configurationId' },
-          description: 'The unique ID that Amazon MQ generates for the configuration.',
-        }),
-    ).exactOptional(),
-    MaxResults: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maxResults' },
-          description:
-            'The maximum number of configuration revisions that can be returned per page (20 by default). This value must be an integer from 5 to 100.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'The token that specifies the next page of results Amazon MQ should return. To request the first page, leave nextToken empty.',
-        }),
-    ).exactOptional(),
-    Revisions: ListOfConfigurationRevisionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'revisions' },
-          description: 'The list of all revisions for the specified configuration.',
-        }),
-    ).exactOptional(),
+    ConfigurationId: StringSchema.exactOptional().openapi({
+      xml: { name: 'configurationId' },
+      description: 'The unique ID that Amazon MQ generates for the configuration.',
+    }),
+    MaxResults: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'maxResults' },
+      description:
+        'The maximum number of configuration revisions that can be returned per page (20 by default). This value must be an integer from 5 to 100.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description:
+        'The token that specifies the next page of results Amazon MQ should return. To request the first page, leave nextToken empty.',
+    }),
+    Revisions: ListOfConfigurationRevisionSchema.exactOptional().openapi({
+      xml: { name: 'revisions' },
+      description: 'The list of all revisions for the specified configuration.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListConfigurationRevisionsResponse')
 
 const ConfigurationSchema = z
   .object({
-    Arn: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'arn' }, description: 'Required. The ARN of the configuration.' }),
-    ),
-    AuthenticationStrategy: AuthenticationStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authenticationStrategy' },
-          description:
-            'Optional. The authentication strategy associated with the configuration. The default is SIMPLE.',
-        }),
-    ),
-    Created: TimestampIso8601Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'created' },
-          description: 'Required. The date and time of the configuration revision.',
-        }),
-    ),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description: 'Required. The description of the configuration.',
-        }),
-    ),
-    EngineType: EngineTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'engineType' },
-          description:
-            'Required. The type of broker engine. Currently, Amazon MQ supports ACTIVEMQ and RABBITMQ.',
-        }),
-    ),
-    EngineVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'engineVersion' },
-          description:
-            'Required. The broker engine\'s version. For a list of supported engine versions, see, <a href="https://docs.aws.amazon.com//amazon-mq/latest/developer-guide/broker-engine.html">Supported engines</a>.',
-        }),
-    ),
-    Id: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'id' },
-          description: 'Required. The unique ID that Amazon MQ generates for the configuration.',
-        }),
-    ),
-    LatestRevision: ConfigurationRevisionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'latestRevision' },
-          description: 'Required. The latest revision of the configuration.',
-        }),
-    ),
-    Name: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'name' },
-          description:
-            'Required. The name of the configuration. This value can contain only alphanumeric characters, dashes, periods, underscores, and tildes (- . _ ~). This value must be 1-150 characters long.',
-        }),
-    ),
-    Tags: MapOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description: 'The list of all tags associated with this configuration.',
-        }),
-    ).exactOptional(),
+    Arn: StringSchema.openapi({
+      xml: { name: 'arn' },
+      description: 'Required. The ARN of the configuration.',
+    }),
+    AuthenticationStrategy: AuthenticationStrategySchema.openapi({
+      xml: { name: 'authenticationStrategy' },
+      description:
+        'Optional. The authentication strategy associated with the configuration. The default is SIMPLE.',
+    }),
+    Created: TimestampIso8601Schema.openapi({
+      xml: { name: 'created' },
+      description: 'Required. The date and time of the configuration revision.',
+    }),
+    Description: StringSchema.openapi({
+      xml: { name: 'description' },
+      description: 'Required. The description of the configuration.',
+    }),
+    EngineType: EngineTypeSchema.openapi({
+      xml: { name: 'engineType' },
+      description:
+        'Required. The type of broker engine. Currently, Amazon MQ supports ACTIVEMQ and RABBITMQ.',
+    }),
+    EngineVersion: StringSchema.openapi({
+      xml: { name: 'engineVersion' },
+      description:
+        'Required. The broker engine\'s version. For a list of supported engine versions, see, <a href="https://docs.aws.amazon.com//amazon-mq/latest/developer-guide/broker-engine.html">Supported engines</a>.',
+    }),
+    Id: StringSchema.openapi({
+      xml: { name: 'id' },
+      description: 'Required. The unique ID that Amazon MQ generates for the configuration.',
+    }),
+    LatestRevision: ConfigurationRevisionSchema.openapi({
+      xml: { name: 'latestRevision' },
+      description: 'Required. The latest revision of the configuration.',
+    }),
+    Name: StringSchema.openapi({
+      xml: { name: 'name' },
+      description:
+        'Required. The name of the configuration. This value can contain only alphanumeric characters, dashes, periods, underscores, and tildes (- . _ ~). This value must be 1-150 characters long.',
+    }),
+    Tags: MapOfStringSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'The list of all tags associated with this configuration.',
+    }),
   })
   .openapi({
     required: [
@@ -1540,121 +1034,82 @@ const ListOfConfigurationSchema = z.array(ConfigurationSchema).openapi('ListOfCo
 
 const ListConfigurationsResponseSchema = z
   .object({
-    Configurations: ListOfConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'configurations' },
-          description: 'The list of all revisions for the specified configuration.',
-        }),
-    ).exactOptional(),
-    MaxResults: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maxResults' },
-          description:
-            'The maximum number of configurations that Amazon MQ can return per page (20 by default). This value must be an integer from 5 to 100.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'The token that specifies the next page of results Amazon MQ should return. To request the first page, leave nextToken empty.',
-        }),
-    ).exactOptional(),
+    Configurations: ListOfConfigurationSchema.exactOptional().openapi({
+      xml: { name: 'configurations' },
+      description: 'The list of all revisions for the specified configuration.',
+    }),
+    MaxResults: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'maxResults' },
+      description:
+        'The maximum number of configurations that Amazon MQ can return per page (20 by default). This value must be an integer from 5 to 100.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description:
+        'The token that specifies the next page of results Amazon MQ should return. To request the first page, leave nextToken empty.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListConfigurationsResponse')
 
 const ListTagsResponseSchema = z
   .object({
-    Tags: MapOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description: 'The key-value pair for the resource tag.',
-        }),
-    ).exactOptional(),
+    Tags: MapOfStringSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'The key-value pair for the resource tag.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsResponse')
 
 const ListUsersResponseSchema = z
   .object({
-    BrokerId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'brokerId' },
-          description: 'Required. The unique ID that Amazon MQ generates for the broker.',
-        }),
-    ).exactOptional(),
-    MaxResults: IntegerMin5Max100Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maxResults' },
-          description:
-            'Required. The maximum number of ActiveMQ users that can be returned per page (20 by default). This value must be an integer from 5 to 100.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'The token that specifies the next page of results Amazon MQ should return. To request the first page, leave nextToken empty.',
-        }),
-    ).exactOptional(),
-    Users: ListOfUserSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'users' },
-          description:
-            'Required. The list of all ActiveMQ usernames for the specified broker. Does not apply to RabbitMQ brokers.',
-        }),
-    ).exactOptional(),
+    BrokerId: StringSchema.exactOptional().openapi({
+      xml: { name: 'brokerId' },
+      description: 'Required. The unique ID that Amazon MQ generates for the broker.',
+    }),
+    MaxResults: IntegerMin5Max100Schema.exactOptional().openapi({
+      xml: { name: 'maxResults' },
+      description:
+        'Required. The maximum number of ActiveMQ users that can be returned per page (20 by default). This value must be an integer from 5 to 100.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description:
+        'The token that specifies the next page of results Amazon MQ should return. To request the first page, leave nextToken empty.',
+    }),
+    Users: ListOfUserSummarySchema.exactOptional().openapi({
+      xml: { name: 'users' },
+      description:
+        'Required. The list of all ActiveMQ usernames for the specified broker. Does not apply to RabbitMQ brokers.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListUsersResponse')
 
 const PromoteResponseSchema = z
   .object({
-    BrokerId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'brokerId' },
-          description: 'The unique ID that Amazon MQ generates for the broker.',
-        }),
-    ).exactOptional(),
+    BrokerId: StringSchema.exactOptional().openapi({
+      xml: { name: 'brokerId' },
+      description: 'The unique ID that Amazon MQ generates for the broker.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PromoteResponse')
 
-const RebootBrokerResponseSchema = z.object({}).openapi('RebootBrokerResponse')
+const RebootBrokerResponseSchema = z.looseObject({}).openapi('RebootBrokerResponse')
 
 const LogsSchema = z
   .object({
-    Audit: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'audit' },
-          description:
-            'Enables audit logging. Every user management action made using JMX or the ActiveMQ Web Console is logged. Does not apply to RabbitMQ brokers.',
-        }),
-    ).exactOptional(),
-    General: BooleanSchema.and(
-      z.any().openapi({ xml: { name: 'general' }, description: 'Enables general logging.' }),
-    ).exactOptional(),
+    Audit: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'audit' },
+      description:
+        'Enables audit logging. Every user management action made using JMX or the ActiveMQ Web Console is logged. Does not apply to RabbitMQ brokers.',
+    }),
+    General: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'general' },
+      description: 'Enables general logging.',
+    }),
   })
   .openapi({
     description: 'The list of information about logs to be enabled for the specified broker.',
@@ -1664,127 +1119,71 @@ const LogsSchema = z
 
 const UpdateBrokerResponseSchema = z
   .object({
-    AuthenticationStrategy: AuthenticationStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authenticationStrategy' },
-          description:
-            'Optional. The authentication strategy used to secure the broker. The default is SIMPLE.',
-        }),
-    ).exactOptional(),
-    AutoMinorVersionUpgrade: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'autoMinorVersionUpgrade' },
-          description:
-            'The new boolean value that specifies whether broker engines automatically upgrade to new minor versions as new versions are released and supported by Amazon MQ.',
-        }),
-    ).exactOptional(),
-    BrokerId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'brokerId' },
-          description: 'Required. The unique ID that Amazon MQ generates for the broker.',
-        }),
-    ).exactOptional(),
-    Configuration: ConfigurationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'configuration' },
-          description: 'The ID of the updated configuration.',
-        }),
-    ).exactOptional(),
-    EngineVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'engineVersion' },
-          description:
-            'The broker engine version to upgrade to. For a list of supported engine versions, see <a href="https://docs.aws.amazon.com//amazon-mq/latest/developer-guide/broker-engine.html">Supported engines</a>.',
-        }),
-    ).exactOptional(),
-    HostInstanceType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'hostInstanceType' },
-          description:
-            'The broker\'s host instance type to upgrade to. For a list of supported instance types, see <a href="https://docs.aws.amazon.com//amazon-mq/latest/developer-guide/broker.html#broker-instance-types">Broker instance types</a>.',
-        }),
-    ).exactOptional(),
-    LdapServerMetadata: LdapServerMetadataOutputSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'ldapServerMetadata' },
-          description:
-            'Optional. The metadata of the LDAP server used to authenticate and authorize connections to the broker. Does not apply to RabbitMQ brokers.',
-        }),
-    ).exactOptional(),
-    Logs: LogsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'logs' },
-          description: 'The list of information about logs to be enabled for the specified broker.',
-        }),
-    ).exactOptional(),
-    MaintenanceWindowStartTime: WeeklyStartTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maintenanceWindowStartTime' },
-          description: 'The parameters that determine the WeeklyStartTime.',
-        }),
-    ).exactOptional(),
-    SecurityGroups: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'securityGroups' },
-          description:
-            'The list of security groups (1 minimum, 5 maximum) that authorizes connections to brokers.',
-        }),
-    ).exactOptional(),
-    DataReplicationMetadata: DataReplicationMetadataOutputSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'dataReplicationMetadata' },
-          description:
-            'The replication details of the data replication-enabled broker. Only returned if dataReplicationMode is set to CRDR.',
-        }),
-    ).exactOptional(),
-    DataReplicationMode: DataReplicationModeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'dataReplicationMode' },
-          description: 'Describes whether this broker is a part of a data replication pair.',
-        }),
-    ).exactOptional(),
-    PendingDataReplicationMetadata: DataReplicationMetadataOutputSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'pendingDataReplicationMetadata' },
-          description:
-            'The pending replication details of the data replication-enabled broker. Only returned if pendingDataReplicationMode is set to CRDR.',
-        }),
-    ).exactOptional(),
-    PendingDataReplicationMode: DataReplicationModeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'pendingDataReplicationMode' },
-          description:
-            'Describes whether this broker will be a part of a data replication pair after reboot.',
-        }),
-    ).exactOptional(),
+    AuthenticationStrategy: AuthenticationStrategySchema.exactOptional().openapi({
+      xml: { name: 'authenticationStrategy' },
+      description:
+        'Optional. The authentication strategy used to secure the broker. The default is SIMPLE.',
+    }),
+    AutoMinorVersionUpgrade: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'autoMinorVersionUpgrade' },
+      description:
+        'The new boolean value that specifies whether broker engines automatically upgrade to new minor versions as new versions are released and supported by Amazon MQ.',
+    }),
+    BrokerId: StringSchema.exactOptional().openapi({
+      xml: { name: 'brokerId' },
+      description: 'Required. The unique ID that Amazon MQ generates for the broker.',
+    }),
+    Configuration: ConfigurationIdSchema.exactOptional().openapi({
+      xml: { name: 'configuration' },
+      description: 'The ID of the updated configuration.',
+    }),
+    EngineVersion: StringSchema.exactOptional().openapi({
+      xml: { name: 'engineVersion' },
+      description:
+        'The broker engine version to upgrade to. For a list of supported engine versions, see <a href="https://docs.aws.amazon.com//amazon-mq/latest/developer-guide/broker-engine.html">Supported engines</a>.',
+    }),
+    HostInstanceType: StringSchema.exactOptional().openapi({
+      xml: { name: 'hostInstanceType' },
+      description:
+        'The broker\'s host instance type to upgrade to. For a list of supported instance types, see <a href="https://docs.aws.amazon.com//amazon-mq/latest/developer-guide/broker.html#broker-instance-types">Broker instance types</a>.',
+    }),
+    LdapServerMetadata: LdapServerMetadataOutputSchema.exactOptional().openapi({
+      xml: { name: 'ldapServerMetadata' },
+      description:
+        'Optional. The metadata of the LDAP server used to authenticate and authorize connections to the broker. Does not apply to RabbitMQ brokers.',
+    }),
+    Logs: LogsSchema.exactOptional().openapi({
+      xml: { name: 'logs' },
+      description: 'The list of information about logs to be enabled for the specified broker.',
+    }),
+    MaintenanceWindowStartTime: WeeklyStartTimeSchema.exactOptional().openapi({
+      xml: { name: 'maintenanceWindowStartTime' },
+      description: 'The parameters that determine the WeeklyStartTime.',
+    }),
+    SecurityGroups: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'securityGroups' },
+      description:
+        'The list of security groups (1 minimum, 5 maximum) that authorizes connections to brokers.',
+    }),
+    DataReplicationMetadata: DataReplicationMetadataOutputSchema.exactOptional().openapi({
+      xml: { name: 'dataReplicationMetadata' },
+      description:
+        'The replication details of the data replication-enabled broker. Only returned if dataReplicationMode is set to CRDR.',
+    }),
+    DataReplicationMode: DataReplicationModeSchema.exactOptional().openapi({
+      xml: { name: 'dataReplicationMode' },
+      description: 'Describes whether this broker is a part of a data replication pair.',
+    }),
+    PendingDataReplicationMetadata: DataReplicationMetadataOutputSchema.exactOptional().openapi({
+      xml: { name: 'pendingDataReplicationMetadata' },
+      description:
+        'The pending replication details of the data replication-enabled broker. Only returned if pendingDataReplicationMode is set to CRDR.',
+    }),
+    PendingDataReplicationMode: DataReplicationModeSchema.exactOptional().openapi({
+      xml: { name: 'pendingDataReplicationMode' },
+      description:
+        'Describes whether this broker will be a part of a data replication pair after reboot.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateBrokerResponse')
@@ -1802,31 +1201,18 @@ const SanitizationWarningReasonSchema = z
 
 const SanitizationWarningSchema = z
   .object({
-    AttributeName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'attributeName' },
-          description: 'The name of the configuration attribute that has been sanitized.',
-        }),
-    ).exactOptional(),
-    ElementName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'elementName' },
-          description: 'The name of the configuration element that has been sanitized.',
-        }),
-    ).exactOptional(),
-    Reason: SanitizationWarningReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'reason' },
-          description:
-            'The reason for which the configuration elements or attributes were sanitized.',
-        }),
-    ),
+    AttributeName: StringSchema.exactOptional().openapi({
+      xml: { name: 'attributeName' },
+      description: 'The name of the configuration attribute that has been sanitized.',
+    }),
+    ElementName: StringSchema.exactOptional().openapi({
+      xml: { name: 'elementName' },
+      description: 'The name of the configuration element that has been sanitized.',
+    }),
+    Reason: SanitizationWarningReasonSchema.openapi({
+      xml: { name: 'reason' },
+      description: 'The reason for which the configuration elements or attributes were sanitized.',
+    }),
   })
   .openapi({
     required: ['Reason'],
@@ -1841,162 +1227,94 @@ const ListOfSanitizationWarningSchema = z
 
 const UpdateConfigurationResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'arn' },
-          description: 'The Amazon Resource Name (ARN) of the configuration.',
-        }),
-    ).exactOptional(),
-    Created: TimestampIso8601Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'created' },
-          description: 'Required. The date and time of the configuration.',
-        }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'id' },
-          description: 'The unique ID that Amazon MQ generates for the configuration.',
-        }),
-    ).exactOptional(),
-    LatestRevision: ConfigurationRevisionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'latestRevision' },
-          description: 'The latest revision of the configuration.',
-        }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'name' },
-          description:
-            'The name of the configuration. This value can contain only alphanumeric characters, dashes, periods, underscores, and tildes (- . _ ~). This value must be 1-150 characters long.',
-        }),
-    ).exactOptional(),
-    Warnings: ListOfSanitizationWarningSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'warnings' },
-          description:
-            'The list of the first 20 warnings about the configuration elements or attributes that were sanitized.',
-        }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({
+      xml: { name: 'arn' },
+      description: 'The Amazon Resource Name (ARN) of the configuration.',
+    }),
+    Created: TimestampIso8601Schema.exactOptional().openapi({
+      xml: { name: 'created' },
+      description: 'Required. The date and time of the configuration.',
+    }),
+    Id: StringSchema.exactOptional().openapi({
+      xml: { name: 'id' },
+      description: 'The unique ID that Amazon MQ generates for the configuration.',
+    }),
+    LatestRevision: ConfigurationRevisionSchema.exactOptional().openapi({
+      xml: { name: 'latestRevision' },
+      description: 'The latest revision of the configuration.',
+    }),
+    Name: StringSchema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description:
+        'The name of the configuration. This value can contain only alphanumeric characters, dashes, periods, underscores, and tildes (- . _ ~). This value must be 1-150 characters long.',
+    }),
+    Warnings: ListOfSanitizationWarningSchema.exactOptional().openapi({
+      xml: { name: 'warnings' },
+      description:
+        'The list of the first 20 warnings about the configuration elements or attributes that were sanitized.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateConfigurationResponse')
 
-const UpdateUserResponseSchema = z.object({}).openapi('UpdateUserResponse')
+const UpdateUserResponseSchema = z.looseObject({}).openapi('UpdateUserResponse')
 
 const LdapServerMetadataInputSchema = z
   .object({
-    Hosts: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'hosts' },
-          description:
-            'Specifies the location of the LDAP server such as Directory Service for Microsoft Active Directory. Optional failover server.',
-        }),
-    ),
-    RoleBase: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'roleBase' },
-          description:
-            'The distinguished name of the node in the directory information tree (DIT) to search for roles or groups. For example, ou=group, ou=corp, dc=corp,\n                  dc=example, dc=com.',
-        }),
-    ),
-    RoleName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'roleName' },
-          description:
-            'Specifies the LDAP attribute that identifies the group name attribute in the object returned from the group membership query.',
-        }),
-    ).exactOptional(),
-    RoleSearchMatching: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'roleSearchMatching' },
-          description:
-            "The LDAP search filter used to find roles within the roleBase. The distinguished name of the user matched by userSearchMatching is substituted into the {0} placeholder in the search filter. The client's username is substituted into the {1} placeholder. For example, if you set this option to (member=uid={1})for the user janedoe, the search filter becomes (member=uid=janedoe) after string substitution. It matches all role entries that have a member attribute equal to uid=janedoe under the subtree selected by the roleBase.",
-        }),
-    ),
-    RoleSearchSubtree: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'roleSearchSubtree' },
-          description:
-            'The directory search scope for the role. If set to true, scope is to search the entire subtree.',
-        }),
-    ).exactOptional(),
-    ServiceAccountPassword: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'serviceAccountPassword' },
-          description:
-            'Service account password. A service account is an account in your LDAP server that has access to initiate a connection. For example, cn=admin,dc=corp, dc=example,\n                  dc=com.',
-        }),
-    ),
-    ServiceAccountUsername: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'serviceAccountUsername' },
-          description:
-            'Service account username. A service account is an account in your LDAP server that has access to initiate a connection. For example, cn=admin,dc=corp, dc=example,\n                  dc=com.',
-        }),
-    ),
-    UserBase: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'userBase' },
-          description:
-            'Select a particular subtree of the directory information tree (DIT) to search for user entries. The subtree is specified by a DN, which specifies the base node of the subtree. For example, by setting this option to ou=Users,ou=corp, dc=corp,\n                  dc=example, dc=com, the search for user entries is restricted to the subtree beneath ou=Users, ou=corp, dc=corp, dc=example, dc=com.',
-        }),
-    ),
-    UserRoleName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'userRoleName' },
-          description: 'Specifies the name of the LDAP attribute for the user group membership.',
-        }),
-    ).exactOptional(),
-    UserSearchMatching: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'userSearchMatching' },
-          description:
-            "The LDAP search filter used to find users within the userBase. The client's username is substituted into the {0} placeholder in the search filter. For example, if this option is set to (uid={0}) and the received username is janedoe, the search filter becomes (uid=janedoe) after string substitution. It will result in matching an entry like uid=janedoe, ou=Users,ou=corp, dc=corp, dc=example,\n                  dc=com.",
-        }),
-    ),
-    UserSearchSubtree: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'userSearchSubtree' },
-          description:
-            'The directory search scope for the user. If set to true, scope is to search the entire subtree.',
-        }),
-    ).exactOptional(),
+    Hosts: ListOfStringSchema.openapi({
+      xml: { name: 'hosts' },
+      description:
+        'Specifies the location of the LDAP server such as Directory Service for Microsoft Active Directory. Optional failover server.',
+    }),
+    RoleBase: StringSchema.openapi({
+      xml: { name: 'roleBase' },
+      description:
+        'The distinguished name of the node in the directory information tree (DIT) to search for roles or groups. For example, ou=group, ou=corp, dc=corp,\n                  dc=example, dc=com.',
+    }),
+    RoleName: StringSchema.exactOptional().openapi({
+      xml: { name: 'roleName' },
+      description:
+        'Specifies the LDAP attribute that identifies the group name attribute in the object returned from the group membership query.',
+    }),
+    RoleSearchMatching: StringSchema.openapi({
+      xml: { name: 'roleSearchMatching' },
+      description:
+        "The LDAP search filter used to find roles within the roleBase. The distinguished name of the user matched by userSearchMatching is substituted into the {0} placeholder in the search filter. The client's username is substituted into the {1} placeholder. For example, if you set this option to (member=uid={1})for the user janedoe, the search filter becomes (member=uid=janedoe) after string substitution. It matches all role entries that have a member attribute equal to uid=janedoe under the subtree selected by the roleBase.",
+    }),
+    RoleSearchSubtree: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'roleSearchSubtree' },
+      description:
+        'The directory search scope for the role. If set to true, scope is to search the entire subtree.',
+    }),
+    ServiceAccountPassword: StringSchema.openapi({
+      xml: { name: 'serviceAccountPassword' },
+      description:
+        'Service account password. A service account is an account in your LDAP server that has access to initiate a connection. For example, cn=admin,dc=corp, dc=example,\n                  dc=com.',
+    }),
+    ServiceAccountUsername: StringSchema.openapi({
+      xml: { name: 'serviceAccountUsername' },
+      description:
+        'Service account username. A service account is an account in your LDAP server that has access to initiate a connection. For example, cn=admin,dc=corp, dc=example,\n                  dc=com.',
+    }),
+    UserBase: StringSchema.openapi({
+      xml: { name: 'userBase' },
+      description:
+        'Select a particular subtree of the directory information tree (DIT) to search for user entries. The subtree is specified by a DN, which specifies the base node of the subtree. For example, by setting this option to ou=Users,ou=corp, dc=corp,\n                  dc=example, dc=com, the search for user entries is restricted to the subtree beneath ou=Users, ou=corp, dc=corp, dc=example, dc=com.',
+    }),
+    UserRoleName: StringSchema.exactOptional().openapi({
+      xml: { name: 'userRoleName' },
+      description: 'Specifies the name of the LDAP attribute for the user group membership.',
+    }),
+    UserSearchMatching: StringSchema.openapi({
+      xml: { name: 'userSearchMatching' },
+      description:
+        "The LDAP search filter used to find users within the userBase. The client's username is substituted into the {0} placeholder in the search filter. For example, if this option is set to (uid={0}) and the received username is janedoe, the search filter becomes (uid=janedoe) after string substitution. It will result in matching an entry like uid=janedoe, ou=Users,ou=corp, dc=corp, dc=example,\n                  dc=com.",
+    }),
+    UserSearchSubtree: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'userSearchSubtree' },
+      description:
+        'The directory search scope for the user. If set to true, scope is to search the entire subtree.',
+    }),
   })
   .openapi({
     required: [
@@ -2017,178 +1335,102 @@ const ListOfUserSchema = z.array(UserSchema).openapi('ListOfUser')
 
 const CreateBrokerRequestSchema = z
   .object({
-    AuthenticationStrategy: AuthenticationStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authenticationStrategy' },
-          description:
-            'Optional. The authentication strategy used to secure the broker. The default is SIMPLE.',
-        }),
-    ).exactOptional(),
-    AutoMinorVersionUpgrade: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'autoMinorVersionUpgrade' },
-          description:
-            'Enables automatic upgrades to new minor versions for brokers, as new versions are released and supported by Amazon MQ. Automatic upgrades occur during the scheduled maintenance window of the broker or after a manual broker reboot. Set to true by default, if no value is specified.',
-        }),
-    ),
-    BrokerName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'brokerName' },
-          description:
-            "<p>Required. The broker's name. This value must be unique in your Amazon Web Services account, 1-50 characters long, must contain only letters, numbers, dashes, and underscores, and must not contain white spaces, brackets, wildcard characters, or special characters.</p> <important><p>Do not add personally identifiable information (PII) or other confidential or sensitive information in broker names. Broker names are accessible to other Amazon Web Services services, including CloudWatch Logs. Broker names are not intended to be used for private or sensitive data.</p></important>",
-        }),
-    ),
-    Configuration: ConfigurationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'configuration' },
-          description: 'A list of information about the configuration.',
-        }),
-    ).exactOptional(),
-    CreatorRequestId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'creatorRequestId' },
-          description:
-            "<p>The unique ID that the requester receives for the created broker. Amazon MQ passes your ID with the API action.</p> <note><p>We recommend using a Universally Unique Identifier (UUID) for the creatorRequestId. You may omit the creatorRequestId if your application doesn't require idempotency.</p></note>",
-        }),
-    ).exactOptional(),
-    DeploymentMode: DeploymentModeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'deploymentMode' },
-          description: "Required. The broker's deployment mode.",
-        }),
-    ),
-    EncryptionOptions: EncryptionOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'encryptionOptions' },
-          description: 'Encryption options for the broker.',
-        }),
-    ).exactOptional(),
-    EngineType: EngineTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'engineType' },
-          description:
-            'Required. The type of broker engine. Currently, Amazon MQ supports ACTIVEMQ and RABBITMQ.',
-        }),
-    ),
-    EngineVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'engineVersion' },
-          description:
-            'Required. The broker engine\'s version. For a list of supported engine versions, see <a href="https://docs.aws.amazon.com//amazon-mq/latest/developer-guide/broker-engine.html">Supported engines</a>.',
-        }),
-    ),
-    HostInstanceType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'hostInstanceType' },
-          description: "Required. The broker's instance type.",
-        }),
-    ),
-    LdapServerMetadata: LdapServerMetadataInputSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'ldapServerMetadata' },
-          description:
-            'Optional. The metadata of the LDAP server used to authenticate and authorize connections to the broker. Does not apply to RabbitMQ brokers.',
-        }),
-    ).exactOptional(),
-    Logs: LogsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'logs' },
-          description: 'Enables Amazon CloudWatch logging for brokers.',
-        }),
-    ).exactOptional(),
-    MaintenanceWindowStartTime: WeeklyStartTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maintenanceWindowStartTime' },
-          description: 'The parameters that determine the WeeklyStartTime.',
-        }),
-    ).exactOptional(),
-    PubliclyAccessible: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'publiclyAccessible' },
-          description:
-            "Enables connections from applications outside of the VPC that hosts the broker's subnets. Set to false by default, if no value is provided.",
-        }),
-    ),
-    SecurityGroups: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'securityGroups' },
-          description:
-            'The list of rules (1 minimum, 125 maximum) that authorize connections to brokers.',
-        }),
-    ).exactOptional(),
-    StorageType: BrokerStorageTypeSchema.and(
-      z.any().openapi({ xml: { name: 'storageType' }, description: "The broker's storage type." }),
-    ).exactOptional(),
-    SubnetIds: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'subnetIds' },
-          description:
-            '<p>The list of groups that define which subnets and IP ranges the broker can use from different Availability Zones. If you specify more than one subnet, the subnets must be in different Availability Zones. Amazon MQ will not be able to create VPC endpoints for your broker with multiple subnets in the same Availability Zone. A SINGLE_INSTANCE deployment requires one subnet (for example, the default subnet). An ACTIVE_STANDBY_MULTI_AZ Amazon MQ for ActiveMQ deployment requires two subnets. A CLUSTER_MULTI_AZ Amazon MQ for RabbitMQ deployment has no subnet requirements when deployed with public accessibility. Deployment without public accessibility requires at least one subnet.</p> <important><p>If you specify subnets in a <a href="https://docs.aws.amazon.com/vpc/latest/userguide/vpc-sharing.html">shared VPC</a> for a RabbitMQ broker, the associated VPC to which the specified subnets belong must be owned by your Amazon Web Services account. Amazon MQ will not be able to create VPC endpoints in VPCs that are not owned by your Amazon Web Services account.</p></important>',
-        }),
-    ).exactOptional(),
-    Tags: MapOfStringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'tags' }, description: 'Create tags when creating the broker.' }),
-    ).exactOptional(),
-    Users: ListOfUserSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'users' },
-          description:
-            'The list of broker users (persons or applications) who can access queues and topics. For Amazon MQ for RabbitMQ brokers, one and only one administrative user is accepted and created when a broker is first provisioned. All subsequent broker users are created by making RabbitMQ API calls directly to brokers or via the RabbitMQ web console.',
-        }),
-    ),
-    DataReplicationMode: DataReplicationModeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'dataReplicationMode' },
-          description: 'Defines whether this broker is a part of a data replication pair.',
-        }),
-    ).exactOptional(),
-    DataReplicationPrimaryBrokerArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'dataReplicationPrimaryBrokerArn' },
-          description:
-            'The Amazon Resource Name (ARN) of the primary broker that is used to replicate data from in a data replication pair, and is applied to the replica broker. Must be set when dataReplicationMode is set to CRDR.',
-        }),
-    ).exactOptional(),
+    AuthenticationStrategy: AuthenticationStrategySchema.exactOptional().openapi({
+      xml: { name: 'authenticationStrategy' },
+      description:
+        'Optional. The authentication strategy used to secure the broker. The default is SIMPLE.',
+    }),
+    AutoMinorVersionUpgrade: BooleanSchema.openapi({
+      xml: { name: 'autoMinorVersionUpgrade' },
+      description:
+        'Enables automatic upgrades to new minor versions for brokers, as new versions are released and supported by Amazon MQ. Automatic upgrades occur during the scheduled maintenance window of the broker or after a manual broker reboot. Set to true by default, if no value is specified.',
+    }),
+    BrokerName: StringSchema.openapi({
+      xml: { name: 'brokerName' },
+      description:
+        "<p>Required. The broker's name. This value must be unique in your Amazon Web Services account, 1-50 characters long, must contain only letters, numbers, dashes, and underscores, and must not contain white spaces, brackets, wildcard characters, or special characters.</p> <important><p>Do not add personally identifiable information (PII) or other confidential or sensitive information in broker names. Broker names are accessible to other Amazon Web Services services, including CloudWatch Logs. Broker names are not intended to be used for private or sensitive data.</p></important>",
+    }),
+    Configuration: ConfigurationIdSchema.exactOptional().openapi({
+      xml: { name: 'configuration' },
+      description: 'A list of information about the configuration.',
+    }),
+    CreatorRequestId: StringSchema.exactOptional().openapi({
+      xml: { name: 'creatorRequestId' },
+      description:
+        "<p>The unique ID that the requester receives for the created broker. Amazon MQ passes your ID with the API action.</p> <note><p>We recommend using a Universally Unique Identifier (UUID) for the creatorRequestId. You may omit the creatorRequestId if your application doesn't require idempotency.</p></note>",
+    }),
+    DeploymentMode: DeploymentModeSchema.openapi({
+      xml: { name: 'deploymentMode' },
+      description: "Required. The broker's deployment mode.",
+    }),
+    EncryptionOptions: EncryptionOptionsSchema.exactOptional().openapi({
+      xml: { name: 'encryptionOptions' },
+      description: 'Encryption options for the broker.',
+    }),
+    EngineType: EngineTypeSchema.openapi({
+      xml: { name: 'engineType' },
+      description:
+        'Required. The type of broker engine. Currently, Amazon MQ supports ACTIVEMQ and RABBITMQ.',
+    }),
+    EngineVersion: StringSchema.openapi({
+      xml: { name: 'engineVersion' },
+      description:
+        'Required. The broker engine\'s version. For a list of supported engine versions, see <a href="https://docs.aws.amazon.com//amazon-mq/latest/developer-guide/broker-engine.html">Supported engines</a>.',
+    }),
+    HostInstanceType: StringSchema.openapi({
+      xml: { name: 'hostInstanceType' },
+      description: "Required. The broker's instance type.",
+    }),
+    LdapServerMetadata: LdapServerMetadataInputSchema.exactOptional().openapi({
+      xml: { name: 'ldapServerMetadata' },
+      description:
+        'Optional. The metadata of the LDAP server used to authenticate and authorize connections to the broker. Does not apply to RabbitMQ brokers.',
+    }),
+    Logs: LogsSchema.exactOptional().openapi({
+      xml: { name: 'logs' },
+      description: 'Enables Amazon CloudWatch logging for brokers.',
+    }),
+    MaintenanceWindowStartTime: WeeklyStartTimeSchema.exactOptional().openapi({
+      xml: { name: 'maintenanceWindowStartTime' },
+      description: 'The parameters that determine the WeeklyStartTime.',
+    }),
+    PubliclyAccessible: BooleanSchema.openapi({
+      xml: { name: 'publiclyAccessible' },
+      description:
+        "Enables connections from applications outside of the VPC that hosts the broker's subnets. Set to false by default, if no value is provided.",
+    }),
+    SecurityGroups: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'securityGroups' },
+      description:
+        'The list of rules (1 minimum, 125 maximum) that authorize connections to brokers.',
+    }),
+    StorageType: BrokerStorageTypeSchema.exactOptional().openapi({
+      xml: { name: 'storageType' },
+      description: "The broker's storage type.",
+    }),
+    SubnetIds: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'subnetIds' },
+      description:
+        '<p>The list of groups that define which subnets and IP ranges the broker can use from different Availability Zones. If you specify more than one subnet, the subnets must be in different Availability Zones. Amazon MQ will not be able to create VPC endpoints for your broker with multiple subnets in the same Availability Zone. A SINGLE_INSTANCE deployment requires one subnet (for example, the default subnet). An ACTIVE_STANDBY_MULTI_AZ Amazon MQ for ActiveMQ deployment requires two subnets. A CLUSTER_MULTI_AZ Amazon MQ for RabbitMQ deployment has no subnet requirements when deployed with public accessibility. Deployment without public accessibility requires at least one subnet.</p> <important><p>If you specify subnets in a <a href="https://docs.aws.amazon.com/vpc/latest/userguide/vpc-sharing.html">shared VPC</a> for a RabbitMQ broker, the associated VPC to which the specified subnets belong must be owned by your Amazon Web Services account. Amazon MQ will not be able to create VPC endpoints in VPCs that are not owned by your Amazon Web Services account.</p></important>',
+    }),
+    Tags: MapOfStringSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'Create tags when creating the broker.',
+    }),
+    Users: ListOfUserSchema.openapi({
+      xml: { name: 'users' },
+      description:
+        'The list of broker users (persons or applications) who can access queues and topics. For Amazon MQ for RabbitMQ brokers, one and only one administrative user is accepted and created when a broker is first provisioned. All subsequent broker users are created by making RabbitMQ API calls directly to brokers or via the RabbitMQ web console.',
+    }),
+    DataReplicationMode: DataReplicationModeSchema.exactOptional().openapi({
+      xml: { name: 'dataReplicationMode' },
+      description: 'Defines whether this broker is a part of a data replication pair.',
+    }),
+    DataReplicationPrimaryBrokerArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'dataReplicationPrimaryBrokerArn' },
+      description:
+        'The Amazon Resource Name (ARN) of the primary broker that is used to replicate data from in a data replication pair, and is applied to the replica broker. Must be set when dataReplicationMode is set to CRDR.',
+    }),
   })
   .openapi({
     required: [
@@ -2208,50 +1450,30 @@ const CreateBrokerRequestSchema = z
 
 const CreateConfigurationRequestSchema = z
   .object({
-    AuthenticationStrategy: AuthenticationStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authenticationStrategy' },
-          description:
-            'Optional. The authentication strategy associated with the configuration. The default is SIMPLE.',
-        }),
-    ).exactOptional(),
-    EngineType: EngineTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'engineType' },
-          description:
-            'Required. The type of broker engine. Currently, Amazon MQ supports ACTIVEMQ and RABBITMQ.',
-        }),
-    ),
-    EngineVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'engineVersion' },
-          description:
-            'Required. The broker engine\'s version. For a list of supported engine versions, see <a href="https://docs.aws.amazon.com//amazon-mq/latest/developer-guide/broker-engine.html">Supported engines</a>.',
-        }),
-    ),
-    Name: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'name' },
-          description:
-            'Required. The name of the configuration. This value can contain only alphanumeric characters, dashes, periods, underscores, and tildes (- . _ ~). This value must be 1-150 characters long.',
-        }),
-    ),
-    Tags: MapOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description: 'Create tags when creating the configuration.',
-        }),
-    ).exactOptional(),
+    AuthenticationStrategy: AuthenticationStrategySchema.exactOptional().openapi({
+      xml: { name: 'authenticationStrategy' },
+      description:
+        'Optional. The authentication strategy associated with the configuration. The default is SIMPLE.',
+    }),
+    EngineType: EngineTypeSchema.openapi({
+      xml: { name: 'engineType' },
+      description:
+        'Required. The type of broker engine. Currently, Amazon MQ supports ACTIVEMQ and RABBITMQ.',
+    }),
+    EngineVersion: StringSchema.openapi({
+      xml: { name: 'engineVersion' },
+      description:
+        'Required. The broker engine\'s version. For a list of supported engine versions, see <a href="https://docs.aws.amazon.com//amazon-mq/latest/developer-guide/broker-engine.html">Supported engines</a>.',
+    }),
+    Name: StringSchema.openapi({
+      xml: { name: 'name' },
+      description:
+        'Required. The name of the configuration. This value can contain only alphanumeric characters, dashes, periods, underscores, and tildes (- . _ ~). This value must be 1-150 characters long.',
+    }),
+    Tags: MapOfStringSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'Create tags when creating the configuration.',
+    }),
   })
   .openapi({
     required: ['EngineVersion', 'EngineType', 'Name'],
@@ -2263,14 +1485,10 @@ const CreateConfigurationRequestSchema = z
 
 const CreateTagsRequestSchema = z
   .object({
-    Tags: MapOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description: 'The key-value pair for the resource tag.',
-        }),
-    ).exactOptional(),
+    Tags: MapOfStringSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'The key-value pair for the resource tag.',
+    }),
   })
   .openapi({
     title: 'CreateTagsRequest',
@@ -2281,40 +1499,24 @@ const CreateTagsRequestSchema = z
 
 const CreateUserRequestSchema = z
   .object({
-    ConsoleAccess: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'consoleAccess' },
-          description: 'Enables access to the ActiveMQ Web Console for the ActiveMQ user.',
-        }),
-    ).exactOptional(),
-    Groups: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'groups' },
-          description:
-            'The list of groups (20 maximum) to which the ActiveMQ user belongs. This value can contain only alphanumeric characters, dashes, periods, underscores, and tildes (- . _ ~). This value must be 2-100 characters long.',
-        }),
-    ).exactOptional(),
-    Password: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'password' },
-          description:
-            'Required. The password of the user. This value must be at least 12 characters long, must contain at least 4 unique characters, and must not contain commas, colons, or equal signs (,:=).',
-        }),
-    ),
-    ReplicationUser: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'replicationUser' },
-          description: 'Defines if this user is intended for CRDR replication purposes.',
-        }),
-    ).exactOptional(),
+    ConsoleAccess: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'consoleAccess' },
+      description: 'Enables access to the ActiveMQ Web Console for the ActiveMQ user.',
+    }),
+    Groups: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'groups' },
+      description:
+        'The list of groups (20 maximum) to which the ActiveMQ user belongs. This value can contain only alphanumeric characters, dashes, periods, underscores, and tildes (- . _ ~). This value must be 2-100 characters long.',
+    }),
+    Password: StringSchema.openapi({
+      xml: { name: 'password' },
+      description:
+        'Required. The password of the user. This value must be at least 12 characters long, must contain at least 4 unique characters, and must not contain commas, colons, or equal signs (,:=).',
+    }),
+    ReplicationUser: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'replicationUser' },
+      description: 'Defines if this user is intended for CRDR replication purposes.',
+    }),
   })
   .openapi({
     required: ['Password'],
@@ -2324,74 +1526,74 @@ const CreateUserRequestSchema = z
   .openapi('CreateUserRequest')
 
 const DeleteBrokerRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteBrokerRequest' })
   .openapi('DeleteBrokerRequest')
 
 const DeleteTagsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteTagsRequest' })
   .openapi('DeleteTagsRequest')
 
 const DeleteUserRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteUserRequest' })
   .openapi('DeleteUserRequest')
 
 const MaxResultsSchema = z.int().min(1).max(100).openapi('MaxResults')
 
 const DescribeBrokerEngineTypesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeBrokerEngineTypesRequest' })
   .openapi('DescribeBrokerEngineTypesRequest')
 
 const DescribeBrokerInstanceOptionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeBrokerInstanceOptionsRequest' })
   .openapi('DescribeBrokerInstanceOptionsRequest')
 
 const DescribeBrokerRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeBrokerRequest' })
   .openapi('DescribeBrokerRequest')
 
 const DescribeConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeConfigurationRequest' })
   .openapi('DescribeConfigurationRequest')
 
 const DescribeConfigurationRevisionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeConfigurationRevisionRequest' })
   .openapi('DescribeConfigurationRevisionRequest')
 
 const DescribeUserRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeUserRequest' })
   .openapi('DescribeUserRequest')
 
 const ListBrokersRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListBrokersRequest' })
   .openapi('ListBrokersRequest')
 
 const ListConfigurationRevisionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListConfigurationRevisionsRequest' })
   .openapi('ListConfigurationRevisionsRequest')
 
 const ListConfigurationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListConfigurationsRequest' })
   .openapi('ListConfigurationsRequest')
 
 const ListTagsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsRequest' })
   .openapi('ListTagsRequest')
 
 const ListUsersRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListUsersRequest' })
   .openapi('ListUsersRequest')
 
@@ -2402,15 +1604,11 @@ const PromoteModeSchema = z
 
 const PromoteRequestSchema = z
   .object({
-    Mode: PromoteModeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'mode' },
-          description:
-            'The Promote mode requested. Note: Valid values for the parameter are SWITCHOVER, FAILOVER.',
-        }),
-    ),
+    Mode: PromoteModeSchema.openapi({
+      xml: { name: 'mode' },
+      description:
+        'The Promote mode requested. Note: Valid values for the parameter are SWITCHOVER, FAILOVER.',
+    }),
   })
   .openapi({
     required: ['Mode'],
@@ -2420,98 +1618,58 @@ const PromoteRequestSchema = z
   .openapi('PromoteRequest')
 
 const RebootBrokerRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'RebootBrokerRequest' })
   .openapi('RebootBrokerRequest')
 
 const UpdateBrokerRequestSchema = z
   .object({
-    AuthenticationStrategy: AuthenticationStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authenticationStrategy' },
-          description:
-            'Optional. The authentication strategy used to secure the broker. The default is SIMPLE.',
-        }),
-    ).exactOptional(),
-    AutoMinorVersionUpgrade: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'autoMinorVersionUpgrade' },
-          description:
-            'Enables automatic upgrades to new minor versions for brokers, as new versions are released and supported by Amazon MQ. Automatic upgrades occur during the scheduled maintenance window of the broker or after a manual broker reboot.',
-        }),
-    ).exactOptional(),
-    Configuration: ConfigurationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'configuration' },
-          description: 'A list of information about the configuration.',
-        }),
-    ).exactOptional(),
-    EngineVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'engineVersion' },
-          description:
-            'The broker engine version. For a list of supported engine versions, see <a href="https://docs.aws.amazon.com//amazon-mq/latest/developer-guide/broker-engine.html">Supported engines</a>.',
-        }),
-    ).exactOptional(),
-    HostInstanceType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'hostInstanceType' },
-          description:
-            'The broker\'s host instance type to upgrade to. For a list of supported instance types, see <a href="https://docs.aws.amazon.com//amazon-mq/latest/developer-guide/broker.html#broker-instance-types">Broker instance types</a>.',
-        }),
-    ).exactOptional(),
-    LdapServerMetadata: LdapServerMetadataInputSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'ldapServerMetadata' },
-          description:
-            'Optional. The metadata of the LDAP server used to authenticate and authorize connections to the broker. Does not apply to RabbitMQ brokers.',
-        }),
-    ).exactOptional(),
-    Logs: LogsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'logs' },
-          description: 'Enables Amazon CloudWatch logging for brokers.',
-        }),
-    ).exactOptional(),
-    MaintenanceWindowStartTime: WeeklyStartTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maintenanceWindowStartTime' },
-          description: 'The parameters that determine the WeeklyStartTime.',
-        }),
-    ).exactOptional(),
-    SecurityGroups: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'securityGroups' },
-          description:
-            'The list of security groups (1 minimum, 5 maximum) that authorizes connections to brokers.',
-        }),
-    ).exactOptional(),
-    DataReplicationMode: DataReplicationModeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'dataReplicationMode' },
-          description: 'Defines whether this broker is a part of a data replication pair.',
-        }),
-    ).exactOptional(),
+    AuthenticationStrategy: AuthenticationStrategySchema.exactOptional().openapi({
+      xml: { name: 'authenticationStrategy' },
+      description:
+        'Optional. The authentication strategy used to secure the broker. The default is SIMPLE.',
+    }),
+    AutoMinorVersionUpgrade: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'autoMinorVersionUpgrade' },
+      description:
+        'Enables automatic upgrades to new minor versions for brokers, as new versions are released and supported by Amazon MQ. Automatic upgrades occur during the scheduled maintenance window of the broker or after a manual broker reboot.',
+    }),
+    Configuration: ConfigurationIdSchema.exactOptional().openapi({
+      xml: { name: 'configuration' },
+      description: 'A list of information about the configuration.',
+    }),
+    EngineVersion: StringSchema.exactOptional().openapi({
+      xml: { name: 'engineVersion' },
+      description:
+        'The broker engine version. For a list of supported engine versions, see <a href="https://docs.aws.amazon.com//amazon-mq/latest/developer-guide/broker-engine.html">Supported engines</a>.',
+    }),
+    HostInstanceType: StringSchema.exactOptional().openapi({
+      xml: { name: 'hostInstanceType' },
+      description:
+        'The broker\'s host instance type to upgrade to. For a list of supported instance types, see <a href="https://docs.aws.amazon.com//amazon-mq/latest/developer-guide/broker.html#broker-instance-types">Broker instance types</a>.',
+    }),
+    LdapServerMetadata: LdapServerMetadataInputSchema.exactOptional().openapi({
+      xml: { name: 'ldapServerMetadata' },
+      description:
+        'Optional. The metadata of the LDAP server used to authenticate and authorize connections to the broker. Does not apply to RabbitMQ brokers.',
+    }),
+    Logs: LogsSchema.exactOptional().openapi({
+      xml: { name: 'logs' },
+      description: 'Enables Amazon CloudWatch logging for brokers.',
+    }),
+    MaintenanceWindowStartTime: WeeklyStartTimeSchema.exactOptional().openapi({
+      xml: { name: 'maintenanceWindowStartTime' },
+      description: 'The parameters that determine the WeeklyStartTime.',
+    }),
+    SecurityGroups: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'securityGroups' },
+      description:
+        'The list of security groups (1 minimum, 5 maximum) that authorizes connections to brokers.',
+    }),
+    DataReplicationMode: DataReplicationModeSchema.exactOptional().openapi({
+      xml: { name: 'dataReplicationMode' },
+      description: 'Defines whether this broker is a part of a data replication pair.',
+    }),
   })
   .openapi({
     title: 'UpdateBrokerRequest',
@@ -2522,23 +1680,15 @@ const UpdateBrokerRequestSchema = z
 
 const UpdateConfigurationRequestSchema = z
   .object({
-    Data: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'data' },
-          description:
-            'Amazon MQ for Active MQ: The base64-encoded XML configuration. Amazon MQ for RabbitMQ: the base64-encoded Cuttlefish configuration.',
-        }),
-    ),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description: 'The description of the configuration.',
-        }),
-    ).exactOptional(),
+    Data: StringSchema.openapi({
+      xml: { name: 'data' },
+      description:
+        'Amazon MQ for Active MQ: The base64-encoded XML configuration. Amazon MQ for RabbitMQ: the base64-encoded Cuttlefish configuration.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'The description of the configuration.',
+    }),
   })
   .openapi({
     required: ['Data'],
@@ -2549,40 +1699,24 @@ const UpdateConfigurationRequestSchema = z
 
 const UpdateUserRequestSchema = z
   .object({
-    ConsoleAccess: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'consoleAccess' },
-          description: 'Enables access to the the ActiveMQ Web Console for the ActiveMQ user.',
-        }),
-    ).exactOptional(),
-    Groups: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'groups' },
-          description:
-            'The list of groups (20 maximum) to which the ActiveMQ user belongs. This value can contain only alphanumeric characters, dashes, periods, underscores, and tildes (- . _ ~). This value must be 2-100 characters long.',
-        }),
-    ).exactOptional(),
-    Password: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'password' },
-          description:
-            'The password of the user. This value must be at least 12 characters long, must contain at least 4 unique characters, and must not contain commas, colons, or equal signs (,:=).',
-        }),
-    ).exactOptional(),
-    ReplicationUser: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'replicationUser' },
-          description: 'Defines whether the user is intended for data replication.',
-        }),
-    ).exactOptional(),
+    ConsoleAccess: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'consoleAccess' },
+      description: 'Enables access to the the ActiveMQ Web Console for the ActiveMQ user.',
+    }),
+    Groups: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'groups' },
+      description:
+        'The list of groups (20 maximum) to which the ActiveMQ user belongs. This value can contain only alphanumeric characters, dashes, periods, underscores, and tildes (- . _ ~). This value must be 2-100 characters long.',
+    }),
+    Password: StringSchema.exactOptional().openapi({
+      xml: { name: 'password' },
+      description:
+        'The password of the user. This value must be at least 12 characters long, must contain at least 4 unique characters, and must not contain commas, colons, or equal signs (,:=).',
+    }),
+    ReplicationUser: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'replicationUser' },
+      description: 'Defines whether the user is intended for data replication.',
+    }),
   })
   .openapi({
     title: 'UpdateUserRequest',
@@ -2801,23 +1935,15 @@ export const postV1BrokersRoute = createRoute({
                 }),
               configuration: z
                 .object({
-                  Id: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'id' },
-                        description:
-                          'Required. The unique ID that Amazon MQ generates for the configuration.',
-                      }),
-                  ).exactOptional(),
-                  Revision: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'revision' },
-                        description: 'The revision number of the configuration.',
-                      }),
-                  ).exactOptional(),
+                  Id: StringSchema.exactOptional().openapi({
+                    xml: { name: 'id' },
+                    description:
+                      'Required. The unique ID that Amazon MQ generates for the configuration.',
+                  }),
+                  Revision: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'revision' },
+                    description: 'The revision number of the configuration.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -2836,24 +1962,16 @@ export const postV1BrokersRoute = createRoute({
                 .openapi({ description: "The broker's deployment mode." }),
               encryptionOptions: z
                 .object({
-                  KmsKeyId: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'kmsKeyId' },
-                        description:
-                          'The customer master key (CMK) to use for the A KMS (KMS). This key is used to encrypt your data at rest. If not provided, Amazon MQ will use a default CMK to encrypt your data.',
-                      }),
-                  ).exactOptional(),
-                  UseAwsOwnedKey: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'useAwsOwnedKey' },
-                        description:
-                          'Enables the use of an Amazon Web Services owned CMK using KMS (KMS). Set to true by default, if no value is provided, for example, for RabbitMQ brokers.',
-                      }),
-                  ).exactOptional(),
+                  KmsKeyId: StringSchema.exactOptional().openapi({
+                    xml: { name: 'kmsKeyId' },
+                    description:
+                      'The customer master key (CMK) to use for the A KMS (KMS). This key is used to encrypt your data at rest. If not provided, Amazon MQ will use a default CMK to encrypt your data.',
+                  }),
+                  UseAwsOwnedKey: BooleanSchema.exactOptional().openapi({
+                    xml: { name: 'useAwsOwnedKey' },
+                    description:
+                      'Enables the use of an Amazon Web Services owned CMK using KMS (KMS). Set to true by default, if no value is provided, for example, for RabbitMQ brokers.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'Encryption options for the broker.', required: [] }),
@@ -2874,105 +1992,61 @@ export const postV1BrokersRoute = createRoute({
                 .openapi({ description: "Required. The broker's instance type." }),
               ldapServerMetadata: z
                 .object({
-                  Hosts: ListOfStringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'hosts' },
-                        description:
-                          'Specifies the location of the LDAP server such as Directory Service for Microsoft Active Directory. Optional failover server.',
-                      }),
-                  ).exactOptional(),
-                  RoleBase: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'roleBase' },
-                        description:
-                          'The distinguished name of the node in the directory information tree (DIT) to search for roles or groups. For example, ou=group, ou=corp, dc=corp,\n                  dc=example, dc=com.',
-                      }),
-                  ).exactOptional(),
-                  RoleName: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'roleName' },
-                        description:
-                          'Specifies the LDAP attribute that identifies the group name attribute in the object returned from the group membership query.',
-                      }),
-                  ).exactOptional(),
-                  RoleSearchMatching: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'roleSearchMatching' },
-                        description:
-                          "The LDAP search filter used to find roles within the roleBase. The distinguished name of the user matched by userSearchMatching is substituted into the {0} placeholder in the search filter. The client's username is substituted into the {1} placeholder. For example, if you set this option to (member=uid={1})for the user janedoe, the search filter becomes (member=uid=janedoe) after string substitution. It matches all role entries that have a member attribute equal to uid=janedoe under the subtree selected by the roleBase.",
-                      }),
-                  ).exactOptional(),
-                  RoleSearchSubtree: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'roleSearchSubtree' },
-                        description:
-                          'The directory search scope for the role. If set to true, scope is to search the entire subtree.',
-                      }),
-                  ).exactOptional(),
-                  ServiceAccountPassword: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'serviceAccountPassword' },
-                        description:
-                          'Service account password. A service account is an account in your LDAP server that has access to initiate a connection. For example, cn=admin,dc=corp, dc=example,\n                  dc=com.',
-                      }),
-                  ).exactOptional(),
-                  ServiceAccountUsername: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'serviceAccountUsername' },
-                        description:
-                          'Service account username. A service account is an account in your LDAP server that has access to initiate a connection. For example, cn=admin,dc=corp, dc=example,\n                  dc=com.',
-                      }),
-                  ).exactOptional(),
-                  UserBase: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'userBase' },
-                        description:
-                          'Select a particular subtree of the directory information tree (DIT) to search for user entries. The subtree is specified by a DN, which specifies the base node of the subtree. For example, by setting this option to ou=Users,ou=corp, dc=corp,\n                  dc=example, dc=com, the search for user entries is restricted to the subtree beneath ou=Users, ou=corp, dc=corp, dc=example, dc=com.',
-                      }),
-                  ).exactOptional(),
-                  UserRoleName: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'userRoleName' },
-                        description:
-                          'Specifies the name of the LDAP attribute for the user group membership.',
-                      }),
-                  ).exactOptional(),
-                  UserSearchMatching: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'userSearchMatching' },
-                        description:
-                          "The LDAP search filter used to find users within the userBase. The client's username is substituted into the {0} placeholder in the search filter. For example, if this option is set to (uid={0}) and the received username is janedoe, the search filter becomes (uid=janedoe) after string substitution. It will result in matching an entry like uid=janedoe, ou=Users,ou=corp, dc=corp, dc=example,\n                  dc=com.",
-                      }),
-                  ).exactOptional(),
-                  UserSearchSubtree: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'userSearchSubtree' },
-                        description:
-                          'The directory search scope for the user. If set to true, scope is to search the entire subtree.',
-                      }),
-                  ).exactOptional(),
+                  Hosts: ListOfStringSchema.exactOptional().openapi({
+                    xml: { name: 'hosts' },
+                    description:
+                      'Specifies the location of the LDAP server such as Directory Service for Microsoft Active Directory. Optional failover server.',
+                  }),
+                  RoleBase: StringSchema.exactOptional().openapi({
+                    xml: { name: 'roleBase' },
+                    description:
+                      'The distinguished name of the node in the directory information tree (DIT) to search for roles or groups. For example, ou=group, ou=corp, dc=corp,\n                  dc=example, dc=com.',
+                  }),
+                  RoleName: StringSchema.exactOptional().openapi({
+                    xml: { name: 'roleName' },
+                    description:
+                      'Specifies the LDAP attribute that identifies the group name attribute in the object returned from the group membership query.',
+                  }),
+                  RoleSearchMatching: StringSchema.exactOptional().openapi({
+                    xml: { name: 'roleSearchMatching' },
+                    description:
+                      "The LDAP search filter used to find roles within the roleBase. The distinguished name of the user matched by userSearchMatching is substituted into the {0} placeholder in the search filter. The client's username is substituted into the {1} placeholder. For example, if you set this option to (member=uid={1})for the user janedoe, the search filter becomes (member=uid=janedoe) after string substitution. It matches all role entries that have a member attribute equal to uid=janedoe under the subtree selected by the roleBase.",
+                  }),
+                  RoleSearchSubtree: BooleanSchema.exactOptional().openapi({
+                    xml: { name: 'roleSearchSubtree' },
+                    description:
+                      'The directory search scope for the role. If set to true, scope is to search the entire subtree.',
+                  }),
+                  ServiceAccountPassword: StringSchema.exactOptional().openapi({
+                    xml: { name: 'serviceAccountPassword' },
+                    description:
+                      'Service account password. A service account is an account in your LDAP server that has access to initiate a connection. For example, cn=admin,dc=corp, dc=example,\n                  dc=com.',
+                  }),
+                  ServiceAccountUsername: StringSchema.exactOptional().openapi({
+                    xml: { name: 'serviceAccountUsername' },
+                    description:
+                      'Service account username. A service account is an account in your LDAP server that has access to initiate a connection. For example, cn=admin,dc=corp, dc=example,\n                  dc=com.',
+                  }),
+                  UserBase: StringSchema.exactOptional().openapi({
+                    xml: { name: 'userBase' },
+                    description:
+                      'Select a particular subtree of the directory information tree (DIT) to search for user entries. The subtree is specified by a DN, which specifies the base node of the subtree. For example, by setting this option to ou=Users,ou=corp, dc=corp,\n                  dc=example, dc=com, the search for user entries is restricted to the subtree beneath ou=Users, ou=corp, dc=corp, dc=example, dc=com.',
+                  }),
+                  UserRoleName: StringSchema.exactOptional().openapi({
+                    xml: { name: 'userRoleName' },
+                    description:
+                      'Specifies the name of the LDAP attribute for the user group membership.',
+                  }),
+                  UserSearchMatching: StringSchema.exactOptional().openapi({
+                    xml: { name: 'userSearchMatching' },
+                    description:
+                      "The LDAP search filter used to find users within the userBase. The client's username is substituted into the {0} placeholder in the search filter. For example, if this option is set to (uid={0}) and the received username is janedoe, the search filter becomes (uid=janedoe) after string substitution. It will result in matching an entry like uid=janedoe, ou=Users,ou=corp, dc=corp, dc=example,\n                  dc=com.",
+                  }),
+                  UserSearchSubtree: BooleanSchema.exactOptional().openapi({
+                    xml: { name: 'userSearchSubtree' },
+                    description:
+                      'The directory search scope for the user. If set to true, scope is to search the entire subtree.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -2982,23 +2056,15 @@ export const postV1BrokersRoute = createRoute({
                 }),
               logs: z
                 .object({
-                  Audit: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'audit' },
-                        description:
-                          'Enables audit logging. Every user management action made using JMX or the ActiveMQ Web Console is logged. Does not apply to RabbitMQ brokers.',
-                      }),
-                  ).exactOptional(),
-                  General: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'general' },
-                        description: 'Enables general logging.',
-                      }),
-                  ).exactOptional(),
+                  Audit: BooleanSchema.exactOptional().openapi({
+                    xml: { name: 'audit' },
+                    description:
+                      'Enables audit logging. Every user management action made using JMX or the ActiveMQ Web Console is logged. Does not apply to RabbitMQ brokers.',
+                  }),
+                  General: BooleanSchema.exactOptional().openapi({
+                    xml: { name: 'general' },
+                    description: 'Enables general logging.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -3008,31 +2074,19 @@ export const postV1BrokersRoute = createRoute({
                 }),
               maintenanceWindowStartTime: z
                 .object({
-                  DayOfWeek: DayOfWeekSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'dayOfWeek' },
-                        description: 'Required. The day of the week.',
-                      }),
-                  ).exactOptional(),
-                  TimeOfDay: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'timeOfDay' },
-                        description: 'Required. The time, in 24-hour format.',
-                      }),
-                  ).exactOptional(),
-                  TimeZone: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'timeZone' },
-                        description:
-                          'The time zone, UTC by default, in either the Country/City format, or the UTC offset format.',
-                      }),
-                  ).exactOptional(),
+                  DayOfWeek: DayOfWeekSchema.exactOptional().openapi({
+                    xml: { name: 'dayOfWeek' },
+                    description: 'Required. The day of the week.',
+                  }),
+                  TimeOfDay: StringSchema.exactOptional().openapi({
+                    xml: { name: 'timeOfDay' },
+                    description: 'Required. The time, in 24-hour format.',
+                  }),
+                  TimeZone: StringSchema.exactOptional().openapi({
+                    xml: { name: 'timeZone' },
+                    description:
+                      'The time zone, UTC by default, in either the Country/City format, or the UTC offset format.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -3852,23 +2906,15 @@ export const putV1BrokersBrokerIdRoute = createRoute({
                 }),
               configuration: z
                 .object({
-                  Id: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'id' },
-                        description:
-                          'Required. The unique ID that Amazon MQ generates for the configuration.',
-                      }),
-                  ).exactOptional(),
-                  Revision: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'revision' },
-                        description: 'The revision number of the configuration.',
-                      }),
-                  ).exactOptional(),
+                  Id: StringSchema.exactOptional().openapi({
+                    xml: { name: 'id' },
+                    description:
+                      'Required. The unique ID that Amazon MQ generates for the configuration.',
+                  }),
+                  Revision: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'revision' },
+                    description: 'The revision number of the configuration.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -3891,105 +2937,61 @@ export const putV1BrokersBrokerIdRoute = createRoute({
                 }),
               ldapServerMetadata: z
                 .object({
-                  Hosts: ListOfStringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'hosts' },
-                        description:
-                          'Specifies the location of the LDAP server such as Directory Service for Microsoft Active Directory. Optional failover server.',
-                      }),
-                  ).exactOptional(),
-                  RoleBase: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'roleBase' },
-                        description:
-                          'The distinguished name of the node in the directory information tree (DIT) to search for roles or groups. For example, ou=group, ou=corp, dc=corp,\n                  dc=example, dc=com.',
-                      }),
-                  ).exactOptional(),
-                  RoleName: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'roleName' },
-                        description:
-                          'Specifies the LDAP attribute that identifies the group name attribute in the object returned from the group membership query.',
-                      }),
-                  ).exactOptional(),
-                  RoleSearchMatching: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'roleSearchMatching' },
-                        description:
-                          "The LDAP search filter used to find roles within the roleBase. The distinguished name of the user matched by userSearchMatching is substituted into the {0} placeholder in the search filter. The client's username is substituted into the {1} placeholder. For example, if you set this option to (member=uid={1})for the user janedoe, the search filter becomes (member=uid=janedoe) after string substitution. It matches all role entries that have a member attribute equal to uid=janedoe under the subtree selected by the roleBase.",
-                      }),
-                  ).exactOptional(),
-                  RoleSearchSubtree: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'roleSearchSubtree' },
-                        description:
-                          'The directory search scope for the role. If set to true, scope is to search the entire subtree.',
-                      }),
-                  ).exactOptional(),
-                  ServiceAccountPassword: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'serviceAccountPassword' },
-                        description:
-                          'Service account password. A service account is an account in your LDAP server that has access to initiate a connection. For example, cn=admin,dc=corp, dc=example,\n                  dc=com.',
-                      }),
-                  ).exactOptional(),
-                  ServiceAccountUsername: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'serviceAccountUsername' },
-                        description:
-                          'Service account username. A service account is an account in your LDAP server that has access to initiate a connection. For example, cn=admin,dc=corp, dc=example,\n                  dc=com.',
-                      }),
-                  ).exactOptional(),
-                  UserBase: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'userBase' },
-                        description:
-                          'Select a particular subtree of the directory information tree (DIT) to search for user entries. The subtree is specified by a DN, which specifies the base node of the subtree. For example, by setting this option to ou=Users,ou=corp, dc=corp,\n                  dc=example, dc=com, the search for user entries is restricted to the subtree beneath ou=Users, ou=corp, dc=corp, dc=example, dc=com.',
-                      }),
-                  ).exactOptional(),
-                  UserRoleName: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'userRoleName' },
-                        description:
-                          'Specifies the name of the LDAP attribute for the user group membership.',
-                      }),
-                  ).exactOptional(),
-                  UserSearchMatching: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'userSearchMatching' },
-                        description:
-                          "The LDAP search filter used to find users within the userBase. The client's username is substituted into the {0} placeholder in the search filter. For example, if this option is set to (uid={0}) and the received username is janedoe, the search filter becomes (uid=janedoe) after string substitution. It will result in matching an entry like uid=janedoe, ou=Users,ou=corp, dc=corp, dc=example,\n                  dc=com.",
-                      }),
-                  ).exactOptional(),
-                  UserSearchSubtree: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'userSearchSubtree' },
-                        description:
-                          'The directory search scope for the user. If set to true, scope is to search the entire subtree.',
-                      }),
-                  ).exactOptional(),
+                  Hosts: ListOfStringSchema.exactOptional().openapi({
+                    xml: { name: 'hosts' },
+                    description:
+                      'Specifies the location of the LDAP server such as Directory Service for Microsoft Active Directory. Optional failover server.',
+                  }),
+                  RoleBase: StringSchema.exactOptional().openapi({
+                    xml: { name: 'roleBase' },
+                    description:
+                      'The distinguished name of the node in the directory information tree (DIT) to search for roles or groups. For example, ou=group, ou=corp, dc=corp,\n                  dc=example, dc=com.',
+                  }),
+                  RoleName: StringSchema.exactOptional().openapi({
+                    xml: { name: 'roleName' },
+                    description:
+                      'Specifies the LDAP attribute that identifies the group name attribute in the object returned from the group membership query.',
+                  }),
+                  RoleSearchMatching: StringSchema.exactOptional().openapi({
+                    xml: { name: 'roleSearchMatching' },
+                    description:
+                      "The LDAP search filter used to find roles within the roleBase. The distinguished name of the user matched by userSearchMatching is substituted into the {0} placeholder in the search filter. The client's username is substituted into the {1} placeholder. For example, if you set this option to (member=uid={1})for the user janedoe, the search filter becomes (member=uid=janedoe) after string substitution. It matches all role entries that have a member attribute equal to uid=janedoe under the subtree selected by the roleBase.",
+                  }),
+                  RoleSearchSubtree: BooleanSchema.exactOptional().openapi({
+                    xml: { name: 'roleSearchSubtree' },
+                    description:
+                      'The directory search scope for the role. If set to true, scope is to search the entire subtree.',
+                  }),
+                  ServiceAccountPassword: StringSchema.exactOptional().openapi({
+                    xml: { name: 'serviceAccountPassword' },
+                    description:
+                      'Service account password. A service account is an account in your LDAP server that has access to initiate a connection. For example, cn=admin,dc=corp, dc=example,\n                  dc=com.',
+                  }),
+                  ServiceAccountUsername: StringSchema.exactOptional().openapi({
+                    xml: { name: 'serviceAccountUsername' },
+                    description:
+                      'Service account username. A service account is an account in your LDAP server that has access to initiate a connection. For example, cn=admin,dc=corp, dc=example,\n                  dc=com.',
+                  }),
+                  UserBase: StringSchema.exactOptional().openapi({
+                    xml: { name: 'userBase' },
+                    description:
+                      'Select a particular subtree of the directory information tree (DIT) to search for user entries. The subtree is specified by a DN, which specifies the base node of the subtree. For example, by setting this option to ou=Users,ou=corp, dc=corp,\n                  dc=example, dc=com, the search for user entries is restricted to the subtree beneath ou=Users, ou=corp, dc=corp, dc=example, dc=com.',
+                  }),
+                  UserRoleName: StringSchema.exactOptional().openapi({
+                    xml: { name: 'userRoleName' },
+                    description:
+                      'Specifies the name of the LDAP attribute for the user group membership.',
+                  }),
+                  UserSearchMatching: StringSchema.exactOptional().openapi({
+                    xml: { name: 'userSearchMatching' },
+                    description:
+                      "The LDAP search filter used to find users within the userBase. The client's username is substituted into the {0} placeholder in the search filter. For example, if this option is set to (uid={0}) and the received username is janedoe, the search filter becomes (uid=janedoe) after string substitution. It will result in matching an entry like uid=janedoe, ou=Users,ou=corp, dc=corp, dc=example,\n                  dc=com.",
+                  }),
+                  UserSearchSubtree: BooleanSchema.exactOptional().openapi({
+                    xml: { name: 'userSearchSubtree' },
+                    description:
+                      'The directory search scope for the user. If set to true, scope is to search the entire subtree.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -3999,23 +3001,15 @@ export const putV1BrokersBrokerIdRoute = createRoute({
                 }),
               logs: z
                 .object({
-                  Audit: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'audit' },
-                        description:
-                          'Enables audit logging. Every user management action made using JMX or the ActiveMQ Web Console is logged. Does not apply to RabbitMQ brokers.',
-                      }),
-                  ).exactOptional(),
-                  General: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'general' },
-                        description: 'Enables general logging.',
-                      }),
-                  ).exactOptional(),
+                  Audit: BooleanSchema.exactOptional().openapi({
+                    xml: { name: 'audit' },
+                    description:
+                      'Enables audit logging. Every user management action made using JMX or the ActiveMQ Web Console is logged. Does not apply to RabbitMQ brokers.',
+                  }),
+                  General: BooleanSchema.exactOptional().openapi({
+                    xml: { name: 'general' },
+                    description: 'Enables general logging.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -4025,31 +3019,19 @@ export const putV1BrokersBrokerIdRoute = createRoute({
                 }),
               maintenanceWindowStartTime: z
                 .object({
-                  DayOfWeek: DayOfWeekSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'dayOfWeek' },
-                        description: 'Required. The day of the week.',
-                      }),
-                  ).exactOptional(),
-                  TimeOfDay: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'timeOfDay' },
-                        description: 'Required. The time, in 24-hour format.',
-                      }),
-                  ).exactOptional(),
-                  TimeZone: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'timeZone' },
-                        description:
-                          'The time zone, UTC by default, in either the Country/City format, or the UTC offset format.',
-                      }),
-                  ).exactOptional(),
+                  DayOfWeek: DayOfWeekSchema.exactOptional().openapi({
+                    xml: { name: 'dayOfWeek' },
+                    description: 'Required. The day of the week.',
+                  }),
+                  TimeOfDay: StringSchema.exactOptional().openapi({
+                    xml: { name: 'timeOfDay' },
+                    description: 'Required. The time, in 24-hour format.',
+                  }),
+                  TimeZone: StringSchema.exactOptional().openapi({
+                    xml: { name: 'timeZone' },
+                    description:
+                      'The time zone, UTC by default, in either the Country/City format, or the UTC offset format.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({

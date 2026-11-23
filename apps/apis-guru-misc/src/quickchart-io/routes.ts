@@ -114,7 +114,7 @@ export const postChartRoute = createRoute({
                 .exactOptional()
                 .openapi({ description: 'The background color of the chart.' }),
               chart: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ description: 'The chart configuration in JSON format.' }),
               format: z

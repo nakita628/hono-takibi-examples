@@ -10,7 +10,7 @@ Using the `GET` button, open your selected endpoint and read the introduction. Y
 
 Base URLs:
 
-* <a href="https://api.apis.guru/api/v1/premium">https://api.apis.guru/api/v1/premium</a>
+* <a href="/api/v1/premium">/api/v1/premium</a>
 
 # Authentication
 

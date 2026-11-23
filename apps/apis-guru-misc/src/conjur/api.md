@@ -8,7 +8,7 @@ Base URLs:
 
 * <a href="http://conjur.local">http://conjur.local</a>
 
-* <a href="https://api.apis.guru/">https://api.apis.guru/</a>
+* <a href="/">/</a>
 
 Email: <a href="mailto:conj_maintainers@cyberark.com">conj_maintainers@cyberark.com</a> 
 License: <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache 2.0</a>

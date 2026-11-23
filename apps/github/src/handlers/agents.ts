@@ -1,127 +1,87 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  deleteOrgsOrgAgentsSecretsSecretNameRepositoriesRepositoryIdRoute,
-  deleteOrgsOrgAgentsSecretsSecretNameRoute,
-  deleteOrgsOrgAgentsVariablesNameRepositoriesRepositoryIdRoute,
-  deleteOrgsOrgAgentsVariablesNameRoute,
-  deleteReposOwnerRepoAgentsSecretsSecretNameRoute,
-  deleteReposOwnerRepoAgentsVariablesNameRoute,
-  getOrgsOrgAgentsSecretsPublicKeyRoute,
-  getOrgsOrgAgentsSecretsRoute,
-  getOrgsOrgAgentsSecretsSecretNameRepositoriesRoute,
-  getOrgsOrgAgentsSecretsSecretNameRoute,
-  getOrgsOrgAgentsVariablesNameRepositoriesRoute,
-  getOrgsOrgAgentsVariablesNameRoute,
-  getOrgsOrgAgentsVariablesRoute,
-  getReposOwnerRepoAgentsOrganizationSecretsRoute,
-  getReposOwnerRepoAgentsOrganizationVariablesRoute,
-  getReposOwnerRepoAgentsSecretsPublicKeyRoute,
-  getReposOwnerRepoAgentsSecretsRoute,
-  getReposOwnerRepoAgentsSecretsSecretNameRoute,
-  getReposOwnerRepoAgentsVariablesNameRoute,
-  getReposOwnerRepoAgentsVariablesRoute,
-  patchOrgsOrgAgentsVariablesNameRoute,
-  patchReposOwnerRepoAgentsVariablesNameRoute,
-  postOrgsOrgAgentsVariablesRoute,
-  postReposOwnerRepoAgentsVariablesRoute,
-  putOrgsOrgAgentsSecretsSecretNameRepositoriesRepositoryIdRoute,
-  putOrgsOrgAgentsSecretsSecretNameRepositoriesRoute,
-  putOrgsOrgAgentsSecretsSecretNameRoute,
-  putOrgsOrgAgentsVariablesNameRepositoriesRepositoryIdRoute,
-  putOrgsOrgAgentsVariablesNameRepositoriesRoute,
-  putReposOwnerRepoAgentsSecretsSecretNameRoute,
+  deleteAgentsReposOwnerRepoAutomationsAutomationIdRoute,
+  deleteAgentsReposOwnerRepoPullsPullNumberAgentMergeRoute,
+  getAgentsAutomationsRoute,
+  getAgentsReposOwnerRepoAutomationsAutomationIdRevisionsRevisionIdRoute,
+  getAgentsReposOwnerRepoAutomationsAutomationIdRevisionsRoute,
+  getAgentsReposOwnerRepoAutomationsAutomationIdRoute,
+  getAgentsReposOwnerRepoAutomationsAutomationIdTasksRoute,
+  getAgentsReposOwnerRepoAutomationsAvailableToolsRoute,
+  getAgentsReposOwnerRepoAutomationsAvailableTriggersRoute,
+  getAgentsReposOwnerRepoAutomationsRoute,
+  getAgentsReposOwnerRepoPullsPullNumberAgentMergeRoute,
+  getAgentsReposOwnerRepoTasksRoute,
+  getAgentsReposOwnerRepoTasksTaskIdRoute,
+  getAgentsTasksRoute,
+  getAgentsTasksTaskIdRoute,
+  patchAgentsReposOwnerRepoAutomationsAutomationIdRoute,
+  postAgentsReposOwnerRepoAutomationsAutomationIdTasksRoute,
+  postAgentsReposOwnerRepoAutomationsRoute,
+  postAgentsReposOwnerRepoTasksRoute,
+  putAgentsReposOwnerRepoPullsPullNumberAgentMergeRoute,
 } from '../routes'
 
 const app = new OpenAPIHono()
 
 export const agentsHandler = app
-  .openapi(getOrgsOrgAgentsSecretsRoute, (c) => {
+  .openapi(getAgentsAutomationsRoute, (c) => {
     throw new Error('Not implemented')
   })
-  .openapi(getOrgsOrgAgentsSecretsPublicKeyRoute, (c) => {
+  .openapi(getAgentsReposOwnerRepoAutomationsRoute, (c) => {
     throw new Error('Not implemented')
   })
-  .openapi(getOrgsOrgAgentsSecretsSecretNameRoute, (c) => {
+  .openapi(postAgentsReposOwnerRepoAutomationsRoute, (c) => {
     throw new Error('Not implemented')
   })
-  .openapi(putOrgsOrgAgentsSecretsSecretNameRoute, (c) => {
+  .openapi(getAgentsReposOwnerRepoAutomationsAvailableToolsRoute, (c) => {
     throw new Error('Not implemented')
   })
-  .openapi(deleteOrgsOrgAgentsSecretsSecretNameRoute, (c) => {
+  .openapi(getAgentsReposOwnerRepoAutomationsAvailableTriggersRoute, (c) => {
     throw new Error('Not implemented')
   })
-  .openapi(getOrgsOrgAgentsSecretsSecretNameRepositoriesRoute, (c) => {
+  .openapi(getAgentsReposOwnerRepoAutomationsAutomationIdRoute, (c) => {
     throw new Error('Not implemented')
   })
-  .openapi(putOrgsOrgAgentsSecretsSecretNameRepositoriesRoute, (c) => {
+  .openapi(patchAgentsReposOwnerRepoAutomationsAutomationIdRoute, (c) => {
     throw new Error('Not implemented')
   })
-  .openapi(putOrgsOrgAgentsSecretsSecretNameRepositoriesRepositoryIdRoute, (c) => {
+  .openapi(deleteAgentsReposOwnerRepoAutomationsAutomationIdRoute, (c) => {
     throw new Error('Not implemented')
   })
-  .openapi(deleteOrgsOrgAgentsSecretsSecretNameRepositoriesRepositoryIdRoute, (c) => {
+  .openapi(getAgentsReposOwnerRepoAutomationsAutomationIdRevisionsRoute, (c) => {
     throw new Error('Not implemented')
   })
-  .openapi(getOrgsOrgAgentsVariablesRoute, (c) => {
+  .openapi(getAgentsReposOwnerRepoAutomationsAutomationIdRevisionsRevisionIdRoute, (c) => {
     throw new Error('Not implemented')
   })
-  .openapi(postOrgsOrgAgentsVariablesRoute, (c) => {
+  .openapi(getAgentsReposOwnerRepoAutomationsAutomationIdTasksRoute, (c) => {
     throw new Error('Not implemented')
   })
-  .openapi(getOrgsOrgAgentsVariablesNameRoute, (c) => {
+  .openapi(postAgentsReposOwnerRepoAutomationsAutomationIdTasksRoute, (c) => {
     throw new Error('Not implemented')
   })
-  .openapi(patchOrgsOrgAgentsVariablesNameRoute, (c) => {
+  .openapi(getAgentsReposOwnerRepoPullsPullNumberAgentMergeRoute, (c) => {
     throw new Error('Not implemented')
   })
-  .openapi(deleteOrgsOrgAgentsVariablesNameRoute, (c) => {
+  .openapi(putAgentsReposOwnerRepoPullsPullNumberAgentMergeRoute, (c) => {
     throw new Error('Not implemented')
   })
-  .openapi(getOrgsOrgAgentsVariablesNameRepositoriesRoute, (c) => {
+  .openapi(deleteAgentsReposOwnerRepoPullsPullNumberAgentMergeRoute, (c) => {
     throw new Error('Not implemented')
   })
-  .openapi(putOrgsOrgAgentsVariablesNameRepositoriesRoute, (c) => {
+  .openapi(getAgentsReposOwnerRepoTasksRoute, (c) => {
     throw new Error('Not implemented')
   })
-  .openapi(putOrgsOrgAgentsVariablesNameRepositoriesRepositoryIdRoute, (c) => {
+  .openapi(postAgentsReposOwnerRepoTasksRoute, (c) => {
     throw new Error('Not implemented')
   })
-  .openapi(deleteOrgsOrgAgentsVariablesNameRepositoriesRepositoryIdRoute, (c) => {
+  .openapi(getAgentsReposOwnerRepoTasksTaskIdRoute, (c) => {
     throw new Error('Not implemented')
   })
-  .openapi(getReposOwnerRepoAgentsOrganizationSecretsRoute, (c) => {
+  .openapi(getAgentsTasksRoute, (c) => {
     throw new Error('Not implemented')
   })
-  .openapi(getReposOwnerRepoAgentsOrganizationVariablesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReposOwnerRepoAgentsSecretsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReposOwnerRepoAgentsSecretsPublicKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReposOwnerRepoAgentsSecretsSecretNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putReposOwnerRepoAgentsSecretsSecretNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteReposOwnerRepoAgentsSecretsSecretNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReposOwnerRepoAgentsVariablesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postReposOwnerRepoAgentsVariablesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReposOwnerRepoAgentsVariablesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchReposOwnerRepoAgentsVariablesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteReposOwnerRepoAgentsVariablesNameRoute, (c) => {
+  .openapi(getAgentsTasksTaskIdRoute, (c) => {
     throw new Error('Not implemented')
   })

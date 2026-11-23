@@ -830,15 +830,6 @@ Sends one or more records to a given topic, optionally specifying a partition, k
 }
 ```
 
-> 404 Response
-
-```json
-{
-  "error_code": 404,
-  "message": "The specified topic was not found."
-}
-```
-
 > 422 Response
 
 ```json
@@ -852,8 +843,7 @@ Sends one or more records to a given topic, optionally specifying a partition, k
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|Records sent successfully.|[OffsetRecordSentList](#schemaoffsetrecordsentlist)|
-|404|Not Found|The specified topic was not found.|[Error](#schemaerror)|
+|200|OK|Records sent. The response is returned with this status code even if some records failed to be delivered. Check each entry in the offsets array: a delivered record has partition and offset properties, and a record that failed to be delivered has error_code and message properties.|[OffsetRecordSentList](#schemaoffsetrecordsentlist)|
 |422|Unprocessable Entity|The record list is not valid.|[Error](#schemaerror)|
 
 <aside class="success">
@@ -1126,15 +1116,6 @@ Sends one or more records to a given topic partition, optionally specifying a ke
 }
 ```
 
-> 404 Response
-
-```json
-{
-  "error_code": 404,
-  "message": "The specified topic partition was not found."
-}
-```
-
 > 422 Response
 
 ```json
@@ -1148,8 +1129,7 @@ Sends one or more records to a given topic partition, optionally specifying a ke
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|Records sent successfully.|[OffsetRecordSentList](#schemaoffsetrecordsentlist)|
-|404|Not Found|The specified topic partition was not found.|[Error](#schemaerror)|
+|200|OK|Records sent. The response is returned with this status code even if some records failed to be delivered. Check each entry in the offsets array: a delivered record has partition and offset properties, and a record that failed to be delivered has error_code and message properties.|[OffsetRecordSentList](#schemaoffsetrecordsentlist)|
 |422|Unprocessable Entity|The record is not valid.|[Error](#schemaerror)|
 
 <aside class="success">

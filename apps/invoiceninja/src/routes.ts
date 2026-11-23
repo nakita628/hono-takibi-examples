@@ -56,7 +56,7 @@ const GroupSettingSchema = z
       .exactOptional()
       .openapi({ description: 'The name of the group', example: 'A groupies group' }),
     settings: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'The settings object', example: {} }),
   })
@@ -496,7 +496,7 @@ const PaginationSchema = z
       .exactOptional()
       .openapi({ description: 'The total number of pages', example: 1, readOnly: true }),
     links: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'The pagination links', readOnly: true }),
   })
@@ -1634,7 +1634,7 @@ const ClientSettingsSchema = z
       .exactOptional()
       .openapi({ description: 'The company name', example: 'Acme Co' }),
     company_logo: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'The company logo file', example: {} }),
     website: z
@@ -2692,7 +2692,7 @@ const CompanySettingsSchema = z
         example: true,
       }),
     translations: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'JSON payload of customized translations', example: {} }),
     task_number_pattern: z
@@ -5241,7 +5241,7 @@ const CompanySchema = z
         example: true,
       }),
     custom_fields: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -5492,7 +5492,7 @@ const CompanySchema = z
         example: true,
       }),
     client_registration_fields: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'The client registration fields for the company' }),
     stop_on_unpaid_recurring: z
@@ -5608,7 +5608,10 @@ const CompanySchema = z
         description: 'A flag determining whether to calculate taxes for the company',
         example: true,
       }),
-    tax_data: z.object({}).exactOptional().openapi({ description: 'The tax data for the company' }),
+    tax_data: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'The tax data for the company' }),
     e_invoice_certificate: z
       .string()
       .exactOptional()
@@ -5624,7 +5627,7 @@ const CompanySchema = z
         example: 'secret',
       }),
     origin_tax_data: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'The origin tax data for the company' }),
     invoice_task_project_header: z
@@ -5900,7 +5903,7 @@ const RecurringInvoiceSchema = z
       .exactOptional()
       .openapi({ description: 'The total taxes for the invoice', example: 10 }),
     line_items: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'An array of objects which define the line items of the invoice',
@@ -8245,7 +8248,7 @@ const RecurringQuoteSchema = z
       .exactOptional()
       .openapi({ description: 'The total taxes for the quote', example: 10 }),
     line_items: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'An array of objects which define the line items of the quote',
@@ -8391,7 +8394,7 @@ const SystemLogSchema = z
       .openapi({ description: 'The Category Type ID', example: 1 }),
     type_id: z.int().exactOptional().openapi({ description: 'The Type Type ID', example: 1 }),
     log: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'The json object of the error', example: {} }),
     updated_at: z.string().exactOptional().openapi({ description: 'Timestamp', example: '2' }),
@@ -8999,7 +9002,7 @@ const CompanyUserRefSchema = z
         example: 'create_invoice,create_client,view_client',
       }),
     settings: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -9007,7 +9010,7 @@ const CompanyUserRefSchema = z
         readOnly: true,
       }),
     react_settings: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'Dedicated settings object for the react web application',
@@ -10056,7 +10059,7 @@ const CompanyUserSchema = z
         example: 'create_invoice,create_client,view_client',
       }),
     settings: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -10064,7 +10067,7 @@ const CompanyUserSchema = z
         readOnly: true,
       }),
     react_settings: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'Dedicated settings object for the react web application',
@@ -11710,7 +11713,7 @@ export const postApiV1ActivitiesEntityRoute = createRoute({
       'X-API-TOKEN': XAPITOKENParamsSchema,
       'X-Requested-With': XRequestedWithParamsSchema,
     }),
-    body: { content: { 'application/json': { schema: z.object({}) } }, required: true },
+    body: { content: { 'application/json': { schema: z.looseObject({}) } }, required: true },
   },
   responses: {
     200: {
@@ -11740,7 +11743,7 @@ export const postApiV1ActivitiesNotesRoute = createRoute({
       'X-API-TOKEN': XAPITOKENParamsSchema,
       'X-Requested-With': XRequestedWithParamsSchema,
     }),
-    body: { content: { 'application/json': { schema: z.object({}) } }, required: true },
+    body: { content: { 'application/json': { schema: z.looseObject({}) } }, required: true },
   },
   responses: {
     200: {
@@ -13284,7 +13287,7 @@ export const postApiV1ChartsTotalsV2Route = createRoute({
       'X-API-TOKEN': XAPITOKENParamsSchema,
       'X-Requested-With': XRequestedWithParamsSchema,
     }),
-    body: { content: { 'application/json': { schema: z.object({}) } }, required: true },
+    body: { content: { 'application/json': { schema: z.looseObject({}) } }, required: true },
   },
   responses: {
     200: {
@@ -13313,7 +13316,7 @@ export const postApiV1ChartsChartSummaryV2Route = createRoute({
       'X-API-TOKEN': XAPITOKENParamsSchema,
       'X-Requested-With': XRequestedWithParamsSchema,
     }),
-    body: { content: { 'application/json': { schema: z.object({}) } }, required: true },
+    body: { content: { 'application/json': { schema: z.looseObject({}) } }, required: true },
   },
   responses: {
     200: {
@@ -13342,7 +13345,7 @@ export const postApiV1ChartsCalculatedFieldsRoute = createRoute({
       'X-API-TOKEN': XAPITOKENParamsSchema,
       'X-Requested-With': XRequestedWithParamsSchema,
     }),
-    body: { content: { 'application/json': { schema: z.object({}) } }, required: true },
+    body: { content: { 'application/json': { schema: z.looseObject({}) } }, required: true },
   },
   responses: {
     200: {
@@ -16661,7 +16664,7 @@ export const postApiV1MigrationStartRoute = createRoute({
     }),
     query: z.object({
       migration: z
-        .object({})
+        .looseObject({})
         .openapi({
           param: {
             name: 'migration',
@@ -18776,7 +18779,7 @@ export const postApiV1ReportsPreviewHashRoute = createRoute({
           },
         }),
     }),
-    body: { content: { 'application/json': { schema: z.object({}) } }, required: true },
+    body: { content: { 'application/json': { schema: z.looseObject({}) } }, required: true },
   },
   responses: {
     200: {
@@ -18819,7 +18822,7 @@ export const postApiV1ExportsPreviewHashRoute = createRoute({
           },
         }),
     }),
-    body: { content: { 'application/json': { schema: z.object({}) } }, required: true },
+    body: { content: { 'application/json': { schema: z.looseObject({}) } }, required: true },
   },
   responses: {
     200: {
@@ -19290,15 +19293,7 @@ export const postApiV1SupportMessagesSendRoute = createRoute({
     }),
     body: {
       description: 'The message',
-      content: {
-        'application/json': {
-          schema: z
-            .object({
-              message: z.string().exactOptional().openapi({ description: 'The support message' }),
-            })
-            .openapi({ required: [] }),
-        },
-      },
+      content: { 'application/json': { schema: z.string() } },
       required: true,
     },
   },
@@ -20366,7 +20361,7 @@ export const postApiV1TemplatesPreviewHashRoute = createRoute({
           },
         }),
     }),
-    body: { content: { 'application/json': { schema: z.object({}) } }, required: true },
+    body: { content: { 'application/json': { schema: z.looseObject({}) } }, required: true },
   },
   responses: {
     200: {
@@ -20396,7 +20391,7 @@ export const postApiV1SearchRoute = createRoute({
       'X-API-TOKEN': XAPITOKENParamsSchema,
       'X-Requested-With': XRequestedWithParamsSchema,
     }),
-    body: { content: { 'application/json': { schema: z.object({}) } }, required: true },
+    body: { content: { 'application/json': { schema: z.looseObject({}) } }, required: true },
   },
   responses: {
     200: {

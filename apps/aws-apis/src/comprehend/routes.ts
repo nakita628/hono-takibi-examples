@@ -2,136 +2,7 @@ import { createRoute, z } from '@hono/zod-openapi'
 
 const IntegerSchema = z.int().openapi('Integer')
 
-const StringSchema = z.string().min(1).openapi('String')
-
 const FloatSchema = z.float32().openapi('Float')
-
-const DominantLanguageSchema = z
-  .object({
-    LanguageCode: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The RFC 5646 language code for the dominant language. For more information about RFC 5646, see <a href="https://tools.ietf.org/html/rfc5646">Tags for Identifying Languages</a> on the <i>IETF Tools</i> web site.',
-        }),
-    ).exactOptional(),
-    Score: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The level of confidence that Amazon Comprehend has in the accuracy of the detection.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Returns the code for the dominant language in the input text and the level of confidence that Amazon Comprehend has in the accuracy of the detection.',
-    required: [],
-  })
-  .openapi('DominantLanguage')
-
-const ListOfDominantLanguagesSchema = z
-  .array(DominantLanguageSchema)
-  .openapi('ListOfDominantLanguages')
-
-const BatchDetectDominantLanguageItemResultSchema = z
-  .object({
-    Index: IntegerSchema.and(
-      z.any().openapi({ description: 'The zero-based index of the document in the input list.' }),
-    ).exactOptional(),
-    Languages: ListOfDominantLanguagesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One or more <a>DominantLanguage</a> objects describing the dominant languages in the document.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'The result of calling the operation. The operation returns one object for each document that is successfully processed by the operation.',
-    required: [],
-  })
-  .openapi('BatchDetectDominantLanguageItemResult')
-
-const ListOfDetectDominantLanguageResultSchema = z
-  .array(BatchDetectDominantLanguageItemResultSchema)
-  .openapi('ListOfDetectDominantLanguageResult')
-
-const BatchItemErrorSchema = z
-  .object({
-    Index: IntegerSchema.and(
-      z.any().openapi({ description: 'The zero-based index of the document in the input list.' }),
-    ).exactOptional(),
-    ErrorCode: StringSchema.and(
-      z.any().openapi({ description: 'The numeric error code of the error.' }),
-    ).exactOptional(),
-    ErrorMessage: StringSchema.and(
-      z.any().openapi({ description: 'A text description of the error.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Describes an error that occurred while processing a document in a batch. The operation returns on <code>BatchItemError</code> object for each document that contained an error.',
-    required: [],
-  })
-  .openapi('BatchItemError')
-
-const BatchItemErrorListSchema = z.array(BatchItemErrorSchema).openapi('BatchItemErrorList')
-
-const BatchDetectDominantLanguageResponseSchema = z
-  .object({
-    ResultList: ListOfDetectDominantLanguageResultSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of objects containing the results of the operation. The results are sorted in ascending order by the <code>Index</code> field and match the order of the documents in the input list. If all of the documents contain an error, the <code>ResultList</code> is empty.',
-        }),
-    ),
-    ErrorList: BatchItemErrorListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list containing one object for each document that contained an error. The results are sorted in ascending order by the <code>Index</code> field and match the order of the documents in the input list. If there are no errors in the batch, the <code>ErrorList</code> is empty.',
-        }),
-    ),
-  })
-  .openapi({ required: ['ResultList', 'ErrorList'] })
-  .openapi('BatchDetectDominantLanguageResponse')
-
-const CustomerInputStringSchema = z.string().min(1).openapi('CustomerInputString')
-
-const CustomerInputStringListSchema = z
-  .array(CustomerInputStringSchema)
-  .min(1)
-  .openapi('CustomerInputStringList')
-
-const BatchDetectDominantLanguageRequestSchema = z
-  .object({
-    TextList: CustomerInputStringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list containing the UTF-8 encoded text of the input documents. The list can contain a maximum of 25 documents. Each document should contain at least 20 characters. The maximum size of each document is 5 KB.',
-        }),
-    ),
-  })
-  .openapi({ required: ['TextList'], title: 'BatchDetectDominantLanguageRequest' })
-  .openapi('BatchDetectDominantLanguageRequest')
-
-const InvalidRequestExceptionSchema = z.any().openapi('InvalidRequestException')
-
-const TextSizeLimitExceededExceptionSchema = z.any().openapi('TextSizeLimitExceededException')
-
-const BatchSizeLimitExceededExceptionSchema = z.any().openapi('BatchSizeLimitExceededException')
-
-const InternalServerExceptionSchema = z.any().openapi('InternalServerException')
 
 const EntityTypeSchema = z
   .enum([
@@ -147,23 +18,19 @@ const EntityTypeSchema = z
   ])
   .openapi('EntityType')
 
+const StringSchema = z.string().min(1).openapi('String')
+
 const ChildBlockSchema = z
   .object({
-    ChildBlockId: StringSchema.and(
-      z.any().openapi({ description: 'Unique identifier for the child block.' }),
-    ).exactOptional(),
-    BeginOffset: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Offset of the start of the child block within its parent block.',
-        }),
-    ).exactOptional(),
-    EndOffset: IntegerSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Offset of the end of the child block within its parent block.' }),
-    ).exactOptional(),
+    ChildBlockId: StringSchema.exactOptional().openapi({
+      description: 'Unique identifier for the child block.',
+    }),
+    BeginOffset: IntegerSchema.exactOptional().openapi({
+      description: 'Offset of the start of the child block within its parent block.',
+    }),
+    EndOffset: IntegerSchema.exactOptional().openapi({
+      description: 'Offset of the end of the child block within its parent block.',
+    }),
   })
   .openapi({ description: 'Nested block contained within a block.', required: [] })
   .openapi('ChildBlock')
@@ -172,18 +39,18 @@ const ListOfChildBlocksSchema = z.array(ChildBlockSchema).openapi('ListOfChildBl
 
 const BlockReferenceSchema = z
   .object({
-    BlockId: StringSchema.and(
-      z.any().openapi({ description: 'Unique identifier for the block.' }),
-    ).exactOptional(),
-    BeginOffset: IntegerSchema.and(
-      z.any().openapi({ description: 'Offset of the start of the block within its parent block.' }),
-    ).exactOptional(),
-    EndOffset: IntegerSchema.and(
-      z.any().openapi({ description: 'Offset of the end of the block within its parent block.' }),
-    ).exactOptional(),
-    ChildBlocks: ListOfChildBlocksSchema.and(
-      z.any().openapi({ description: 'List of child blocks within this block.' }),
-    ).exactOptional(),
+    BlockId: StringSchema.exactOptional().openapi({
+      description: 'Unique identifier for the block.',
+    }),
+    BeginOffset: IntegerSchema.exactOptional().openapi({
+      description: 'Offset of the start of the block within its parent block.',
+    }),
+    EndOffset: IntegerSchema.exactOptional().openapi({
+      description: 'Offset of the end of the block within its parent block.',
+    }),
+    ChildBlocks: ListOfChildBlocksSchema.exactOptional().openapi({
+      description: 'List of child blocks within this block.',
+    }),
   })
   .openapi({ description: 'A reference to a block. ', required: [] })
   .openapi('BlockReference')
@@ -192,49 +59,27 @@ const ListOfBlockReferencesSchema = z.array(BlockReferenceSchema).openapi('ListO
 
 const EntitySchema = z
   .object({
-    Score: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The level of confidence that Amazon Comprehend has in the accuracy of the detection.',
-        }),
-    ).exactOptional(),
-    Type: EntityTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The entity type. For entity detection using the built-in model, this field contains one of the standard entity types listed below.</p> <p>For custom entity detection, this field contains one of the entity types that you specified when you trained your custom model.</p>',
-        }),
-    ).exactOptional(),
-    Text: StringSchema.and(
-      z.any().openapi({ description: 'The text of the entity.' }),
-    ).exactOptional(),
-    BeginOffset: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The zero-based offset from the beginning of the source text to the first character in the entity.</p> <p>This field is empty for non-text input.</p>',
-        }),
-    ).exactOptional(),
-    EndOffset: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The zero-based offset from the beginning of the source text to the last character in the entity.</p> <p>This field is empty for non-text input.</p>',
-        }),
-    ).exactOptional(),
-    BlockReferences: ListOfBlockReferencesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A reference to each block for this entity. This field is empty for plain-text input.',
-        }),
-    ).exactOptional(),
+    Score: FloatSchema.exactOptional().openapi({
+      description:
+        'The level of confidence that Amazon Comprehend has in the accuracy of the detection.',
+    }),
+    Type: EntityTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The entity type. For entity detection using the built-in model, this field contains one of the standard entity types listed below.</p> <p>For custom entity detection, this field contains one of the entity types that you specified when you trained your custom model.</p>',
+    }),
+    Text: StringSchema.exactOptional().openapi({ description: 'The text of the entity.' }),
+    BeginOffset: IntegerSchema.exactOptional().openapi({
+      description:
+        '<p>The zero-based offset from the beginning of the source text to the first character in the entity.</p> <p>This field is empty for non-text input.</p>',
+    }),
+    EndOffset: IntegerSchema.exactOptional().openapi({
+      description:
+        '<p>The zero-based offset from the beginning of the source text to the last character in the entity.</p> <p>This field is empty for non-text input.</p>',
+    }),
+    BlockReferences: ListOfBlockReferencesSchema.exactOptional().openapi({
+      description:
+        'A reference to each block for this entity. This field is empty for plain-text input.',
+    }),
   })
   .openapi({ description: '<p>Provides information about an entity. </p> <p> </p>', required: [] })
   .openapi('Entity')
@@ -243,17 +88,13 @@ const ListOfEntitiesSchema = z.array(EntitySchema).openapi('ListOfEntities')
 
 const BatchDetectEntitiesItemResultSchema = z
   .object({
-    Index: IntegerSchema.and(
-      z.any().openapi({ description: 'The zero-based index of the document in the input list.' }),
-    ).exactOptional(),
-    Entities: ListOfEntitiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One or more <a>Entity</a> objects, one for each entity detected in the document.',
-        }),
-    ).exactOptional(),
+    Index: IntegerSchema.exactOptional().openapi({
+      description: 'The zero-based index of the document in the input list.',
+    }),
+    Entities: ListOfEntitiesSchema.exactOptional().openapi({
+      description:
+        'One or more <a>Entity</a> objects, one for each entity detected in the document.',
+    }),
   })
   .openapi({
     description:
@@ -262,28 +103,284 @@ const BatchDetectEntitiesItemResultSchema = z
   })
   .openapi('BatchDetectEntitiesItemResult')
 
-const ListOfDetectEntitiesResultSchema = z
+type ListOfDetectEntitiesResultType = z.infer<typeof BatchDetectEntitiesItemResultSchema>[]
+
+const ListOfDetectEntitiesResultSchema: z.ZodType<ListOfDetectEntitiesResultType> = z
   .array(BatchDetectEntitiesItemResultSchema)
   .openapi('ListOfDetectEntitiesResult')
 
-const BatchDetectEntitiesResponseSchema = z
+const BatchItemErrorSchema = z
   .object({
-    ResultList: ListOfDetectEntitiesResultSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of objects containing the results of the operation. The results are sorted in ascending order by the <code>Index</code> field and match the order of the documents in the input list. If all of the documents contain an error, the <code>ResultList</code> is empty.',
-        }),
-    ),
-    ErrorList: BatchItemErrorListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list containing one object for each document that contained an error. The results are sorted in ascending order by the <code>Index</code> field and match the order of the documents in the input list. If there are no errors in the batch, the <code>ErrorList</code> is empty.',
-        }),
-    ),
+    Index: IntegerSchema.exactOptional().openapi({
+      description: 'The zero-based index of the document in the input list.',
+    }),
+    ErrorCode: StringSchema.exactOptional().openapi({
+      description: 'The numeric error code of the error.',
+    }),
+    ErrorMessage: StringSchema.exactOptional().openapi({
+      description: 'A text description of the error.',
+    }),
+  })
+  .openapi({
+    description:
+      'Describes an error that occurred while processing a document in a batch. The operation returns on <code>BatchItemError</code> object for each document that contained an error.',
+    required: [],
+  })
+  .openapi('BatchItemError')
+
+const BatchItemErrorListSchema = z.array(BatchItemErrorSchema).openapi('BatchItemErrorList')
+
+type BatchDetectEntitiesResponseType = {
+  ResultList: z.infer<typeof ListOfDetectEntitiesResultSchema> & unknown
+  ErrorList: z.infer<typeof BatchItemErrorListSchema> & unknown
+}
+
+const ListOfDescriptiveMentionIndicesSchema = z
+  .array(IntegerSchema)
+  .openapi('ListOfDescriptiveMentionIndices')
+
+const TargetedSentimentEntityTypeSchema = z
+  .enum([
+    'PERSON',
+    'LOCATION',
+    'ORGANIZATION',
+    'FACILITY',
+    'BRAND',
+    'COMMERCIAL_ITEM',
+    'MOVIE',
+    'MUSIC',
+    'BOOK',
+    'SOFTWARE',
+    'GAME',
+    'PERSONAL_TITLE',
+    'EVENT',
+    'DATE',
+    'QUANTITY',
+    'ATTRIBUTE',
+    'OTHER',
+  ])
+  .openapi('TargetedSentimentEntityType')
+
+const SentimentTypeSchema = z
+  .enum(['POSITIVE', 'NEGATIVE', 'NEUTRAL', 'MIXED'])
+  .openapi('SentimentType')
+
+const SentimentScoreSchema = z
+  .object({
+    Positive: FloatSchema.exactOptional().openapi({
+      description:
+        'The level of confidence that Amazon Comprehend has in the accuracy of its detection of the <code>POSITIVE</code> sentiment.',
+    }),
+    Negative: FloatSchema.exactOptional().openapi({
+      description:
+        'The level of confidence that Amazon Comprehend has in the accuracy of its detection of the <code>NEGATIVE</code> sentiment.',
+    }),
+    Neutral: FloatSchema.exactOptional().openapi({
+      description:
+        'The level of confidence that Amazon Comprehend has in the accuracy of its detection of the <code>NEUTRAL</code> sentiment.',
+    }),
+    Mixed: FloatSchema.exactOptional().openapi({
+      description:
+        'The level of confidence that Amazon Comprehend has in the accuracy of its detection of the <code>MIXED</code> sentiment.',
+    }),
+  })
+  .openapi({
+    description:
+      'Describes the level of confidence that Amazon Comprehend has in the accuracy of its detection of sentiments.',
+    required: [],
+  })
+  .openapi('SentimentScore')
+
+const MentionSentimentSchema = z
+  .object({
+    Sentiment: SentimentTypeSchema.exactOptional().openapi({
+      description: 'The sentiment of the mention. ',
+    }),
+    SentimentScore: SentimentScoreSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      '<p>Contains the sentiment and sentiment score for one mention of an entity.</p> <p>For more information about targeted sentiment, see <a href="https://docs.aws.amazon.com/comprehend/latest/dg/how-targeted-sentiment.html">Targeted sentiment</a>.</p>',
+    required: [],
+  })
+  .openapi('MentionSentiment')
+
+const TargetedSentimentMentionSchema = z
+  .object({
+    Score: FloatSchema.exactOptional().openapi({
+      description:
+        'Model confidence that the entity is relevant. Value range is zero to one, where one is highest confidence.',
+    }),
+    GroupScore: FloatSchema.exactOptional().openapi({
+      description:
+        'The confidence that all the entities mentioned in the group relate to the same entity.',
+    }),
+    Text: StringSchema.exactOptional().openapi({
+      description: 'The text in the document that identifies the entity.',
+    }),
+    Type: TargetedSentimentEntityTypeSchema.exactOptional().openapi({
+      description:
+        'The type of the entity. Amazon Comprehend supports a variety of <a href="https://docs.aws.amazon.com/comprehend/latest/dg/how-targeted-sentiment.html#how-targeted-sentiment-entities">entity types</a>.',
+    }),
+    MentionSentiment: MentionSentimentSchema.exactOptional().openapi({
+      description: 'Contains the sentiment and sentiment score for the mention.',
+    }),
+    BeginOffset: IntegerSchema.exactOptional().openapi({
+      description: 'The offset into the document text where the mention begins.',
+    }),
+    EndOffset: IntegerSchema.exactOptional().openapi({
+      description: 'The offset into the document text where the mention ends.',
+    }),
+  })
+  .openapi({
+    description:
+      '<p>Information about one mention of an entity. The mention information includes the location of the mention in the text and the sentiment of the mention.</p> <p>For more information about targeted sentiment, see <a href="https://docs.aws.amazon.com/comprehend/latest/dg/how-targeted-sentiment.html">Targeted sentiment</a>.</p>',
+    required: [],
+  })
+  .openapi('TargetedSentimentMention')
+
+const ListOfMentionsSchema = z.array(TargetedSentimentMentionSchema).openapi('ListOfMentions')
+
+const TargetedSentimentEntitySchema = z
+  .object({
+    DescriptiveMentionIndex: ListOfDescriptiveMentionIndicesSchema.exactOptional().openapi({
+      description:
+        'One or more index into the Mentions array that provides the best name for the entity group.',
+    }),
+    Mentions: ListOfMentionsSchema.exactOptional().openapi({
+      description:
+        'An array of mentions of the entity in the document. The array represents a co-reference group. See <a href="https://docs.aws.amazon.com/comprehend/latest/dg/how-targeted-sentiment.html#how-targeted-sentiment-values"> Co-reference group</a> for an example. ',
+    }),
+  })
+  .openapi({
+    description:
+      '<p>Information about one of the entities found by targeted sentiment analysis.</p> <p>For more information about targeted sentiment, see <a href="https://docs.aws.amazon.com/comprehend/latest/dg/how-targeted-sentiment.html">Targeted sentiment</a>.</p>',
+    required: [],
+  })
+  .openapi('TargetedSentimentEntity')
+
+const ListOfTargetedSentimentEntitiesSchema = z
+  .array(TargetedSentimentEntitySchema)
+  .openapi('ListOfTargetedSentimentEntities')
+
+const BatchDetectTargetedSentimentItemResultSchema = z
+  .object({
+    Index: IntegerSchema.exactOptional().openapi({
+      description: 'The zero-based index of this result in the input list.',
+    }),
+    Entities: ListOfTargetedSentimentEntitiesSchema.exactOptional().openapi({
+      description: 'An array of targeted sentiment entities.',
+    }),
+  })
+  .openapi({ description: 'Analysis results for one of the documents in the batch.', required: [] })
+  .openapi('BatchDetectTargetedSentimentItemResult')
+
+type ListOfDetectTargetedSentimentResultType = z.infer<
+  typeof BatchDetectTargetedSentimentItemResultSchema
+>[]
+
+const ListOfDetectTargetedSentimentResultSchema: z.ZodType<ListOfDetectTargetedSentimentResultType> =
+  z
+    .array(BatchDetectTargetedSentimentItemResultSchema)
+    .openapi('ListOfDetectTargetedSentimentResult')
+
+type BatchDetectTargetedSentimentResponseType = {
+  ResultList: z.infer<typeof ListOfDetectTargetedSentimentResultSchema> & unknown
+  ErrorList: z.infer<typeof BatchItemErrorListSchema> & unknown
+}
+
+const DominantLanguageSchema = z
+  .object({
+    LanguageCode: StringSchema.exactOptional().openapi({
+      description:
+        'The RFC 5646 language code for the dominant language. For more information about RFC 5646, see <a href="https://tools.ietf.org/html/rfc5646">Tags for Identifying Languages</a> on the <i>IETF Tools</i> web site.',
+    }),
+    Score: FloatSchema.exactOptional().openapi({
+      description:
+        'The level of confidence that Amazon Comprehend has in the accuracy of the detection.',
+    }),
+  })
+  .openapi({
+    description:
+      'Returns the code for the dominant language in the input text and the level of confidence that Amazon Comprehend has in the accuracy of the detection.',
+    required: [],
+  })
+  .openapi('DominantLanguage')
+
+const ListOfDominantLanguagesSchema = z
+  .array(DominantLanguageSchema)
+  .openapi('ListOfDominantLanguages')
+
+const BatchDetectDominantLanguageItemResultSchema = z
+  .object({
+    Index: IntegerSchema.exactOptional().openapi({
+      description: 'The zero-based index of the document in the input list.',
+    }),
+    Languages: ListOfDominantLanguagesSchema.exactOptional().openapi({
+      description:
+        'One or more <a>DominantLanguage</a> objects describing the dominant languages in the document.',
+    }),
+  })
+  .openapi({
+    description:
+      'The result of calling the operation. The operation returns one object for each document that is successfully processed by the operation.',
+    required: [],
+  })
+  .openapi('BatchDetectDominantLanguageItemResult')
+
+const ListOfDetectDominantLanguageResultSchema = z
+  .array(BatchDetectDominantLanguageItemResultSchema)
+  .openapi('ListOfDetectDominantLanguageResult')
+
+const BatchDetectDominantLanguageResponseSchema = z
+  .object({
+    ResultList: ListOfDetectDominantLanguageResultSchema.openapi({
+      description:
+        'A list of objects containing the results of the operation. The results are sorted in ascending order by the <code>Index</code> field and match the order of the documents in the input list. If all of the documents contain an error, the <code>ResultList</code> is empty.',
+    }),
+    ErrorList: BatchItemErrorListSchema.openapi({
+      description:
+        'A list containing one object for each document that contained an error. The results are sorted in ascending order by the <code>Index</code> field and match the order of the documents in the input list. If there are no errors in the batch, the <code>ErrorList</code> is empty.',
+    }),
+  })
+  .openapi({ required: ['ResultList', 'ErrorList'] })
+  .openapi('BatchDetectDominantLanguageResponse')
+
+const CustomerInputStringSchema = z.string().min(1).openapi('CustomerInputString')
+
+const CustomerInputStringListSchema = z
+  .array(CustomerInputStringSchema)
+  .min(1)
+  .openapi('CustomerInputStringList')
+
+const BatchDetectDominantLanguageRequestSchema = z
+  .object({
+    TextList: CustomerInputStringListSchema.openapi({
+      description:
+        'A list containing the UTF-8 encoded text of the input documents. The list can contain a maximum of 25 documents. Each document should contain at least 20 characters. The maximum size of each document is 5 KB.',
+    }),
+  })
+  .openapi({ required: ['TextList'], title: 'BatchDetectDominantLanguageRequest' })
+  .openapi('BatchDetectDominantLanguageRequest')
+
+const InvalidRequestExceptionSchema = z.any().openapi('InvalidRequestException')
+
+const TextSizeLimitExceededExceptionSchema = z.any().openapi('TextSizeLimitExceededException')
+
+const BatchSizeLimitExceededExceptionSchema = z.any().openapi('BatchSizeLimitExceededException')
+
+const InternalServerExceptionSchema = z.any().openapi('InternalServerException')
+
+const BatchDetectEntitiesResponseSchema: z.ZodType<BatchDetectEntitiesResponseType> = z
+  .object({
+    ResultList: ListOfDetectEntitiesResultSchema.openapi({
+      description:
+        'A list of objects containing the results of the operation. The results are sorted in ascending order by the <code>Index</code> field and match the order of the documents in the input list. If all of the documents contain an error, the <code>ResultList</code> is empty.',
+    }),
+    ErrorList: BatchItemErrorListSchema.openapi({
+      description:
+        'A list containing one object for each document that contained an error. The results are sorted in ascending order by the <code>Index</code> field and match the order of the documents in the input list. If there are no errors in the batch, the <code>ErrorList</code> is empty.',
+    }),
   })
   .openapi({ required: ['ResultList', 'ErrorList'] })
   .openapi('BatchDetectEntitiesResponse')
@@ -294,22 +391,14 @@ const LanguageCodeSchema = z
 
 const BatchDetectEntitiesRequestSchema = z
   .object({
-    TextList: CustomerInputStringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list containing the UTF-8 encoded text of the input documents. The list can contain a maximum of 25 documents. The maximum size of each document is 5 KB.',
-        }),
-    ),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language of the input documents. You can specify any of the primary languages supported by Amazon Comprehend. All documents must be in the same language.',
-        }),
-    ),
+    TextList: CustomerInputStringListSchema.openapi({
+      description:
+        'A list containing the UTF-8 encoded text of the input documents. The list can contain a maximum of 25 documents. The maximum size of each document is 5 KB.',
+    }),
+    LanguageCode: LanguageCodeSchema.openapi({
+      description:
+        'The language of the input documents. You can specify any of the primary languages supported by Amazon Comprehend. All documents must be in the same language.',
+    }),
   })
   .openapi({ required: ['TextList', 'LanguageCode'], title: 'BatchDetectEntitiesRequest' })
   .openapi('BatchDetectEntitiesRequest')
@@ -318,33 +407,19 @@ const UnsupportedLanguageExceptionSchema = z.any().openapi('UnsupportedLanguageE
 
 const KeyPhraseSchema = z
   .object({
-    Score: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The level of confidence that Amazon Comprehend has in the accuracy of the detection.',
-        }),
-    ).exactOptional(),
-    Text: StringSchema.and(
-      z.any().openapi({ description: 'The text of a key noun phrase.' }),
-    ).exactOptional(),
-    BeginOffset: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The zero-based offset from the beginning of the source text to the first character in the key phrase.',
-        }),
-    ).exactOptional(),
-    EndOffset: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The zero-based offset from the beginning of the source text to the last character in the key phrase.',
-        }),
-    ).exactOptional(),
+    Score: FloatSchema.exactOptional().openapi({
+      description:
+        'The level of confidence that Amazon Comprehend has in the accuracy of the detection.',
+    }),
+    Text: StringSchema.exactOptional().openapi({ description: 'The text of a key noun phrase.' }),
+    BeginOffset: IntegerSchema.exactOptional().openapi({
+      description:
+        'The zero-based offset from the beginning of the source text to the first character in the key phrase.',
+    }),
+    EndOffset: IntegerSchema.exactOptional().openapi({
+      description:
+        'The zero-based offset from the beginning of the source text to the last character in the key phrase.',
+    }),
   })
   .openapi({ description: 'Describes a key noun phrase.', required: [] })
   .openapi('KeyPhrase')
@@ -353,17 +428,13 @@ const ListOfKeyPhrasesSchema = z.array(KeyPhraseSchema).openapi('ListOfKeyPhrase
 
 const BatchDetectKeyPhrasesItemResultSchema = z
   .object({
-    Index: IntegerSchema.and(
-      z.any().openapi({ description: 'The zero-based index of the document in the input list.' }),
-    ).exactOptional(),
-    KeyPhrases: ListOfKeyPhrasesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One or more <a>KeyPhrase</a> objects, one for each key phrase detected in the document.',
-        }),
-    ).exactOptional(),
+    Index: IntegerSchema.exactOptional().openapi({
+      description: 'The zero-based index of the document in the input list.',
+    }),
+    KeyPhrases: ListOfKeyPhrasesSchema.exactOptional().openapi({
+      description:
+        'One or more <a>KeyPhrase</a> objects, one for each key phrase detected in the document.',
+    }),
   })
   .openapi({
     description:
@@ -378,110 +449,44 @@ const ListOfDetectKeyPhrasesResultSchema = z
 
 const BatchDetectKeyPhrasesResponseSchema = z
   .object({
-    ResultList: ListOfDetectKeyPhrasesResultSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of objects containing the results of the operation. The results are sorted in ascending order by the <code>Index</code> field and match the order of the documents in the input list. If all of the documents contain an error, the <code>ResultList</code> is empty.',
-        }),
-    ),
-    ErrorList: BatchItemErrorListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list containing one object for each document that contained an error. The results are sorted in ascending order by the <code>Index</code> field and match the order of the documents in the input list. If there are no errors in the batch, the <code>ErrorList</code> is empty.',
-        }),
-    ),
+    ResultList: ListOfDetectKeyPhrasesResultSchema.openapi({
+      description:
+        'A list of objects containing the results of the operation. The results are sorted in ascending order by the <code>Index</code> field and match the order of the documents in the input list. If all of the documents contain an error, the <code>ResultList</code> is empty.',
+    }),
+    ErrorList: BatchItemErrorListSchema.openapi({
+      description:
+        'A list containing one object for each document that contained an error. The results are sorted in ascending order by the <code>Index</code> field and match the order of the documents in the input list. If there are no errors in the batch, the <code>ErrorList</code> is empty.',
+    }),
   })
   .openapi({ required: ['ResultList', 'ErrorList'] })
   .openapi('BatchDetectKeyPhrasesResponse')
 
 const BatchDetectKeyPhrasesRequestSchema = z
   .object({
-    TextList: CustomerInputStringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list containing the UTF-8 encoded text of the input documents. The list can contain a maximum of 25 documents. The maximum size of each document is 5 KB.',
-        }),
-    ),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language of the input documents. You can specify any of the primary languages supported by Amazon Comprehend. All documents must be in the same language.',
-        }),
-    ),
+    TextList: CustomerInputStringListSchema.openapi({
+      description:
+        'A list containing the UTF-8 encoded text of the input documents. The list can contain a maximum of 25 documents. The maximum size of each document is 5 KB.',
+    }),
+    LanguageCode: LanguageCodeSchema.openapi({
+      description:
+        'The language of the input documents. You can specify any of the primary languages supported by Amazon Comprehend. All documents must be in the same language.',
+    }),
   })
   .openapi({ required: ['TextList', 'LanguageCode'], title: 'BatchDetectKeyPhrasesRequest' })
   .openapi('BatchDetectKeyPhrasesRequest')
 
-const SentimentTypeSchema = z
-  .enum(['POSITIVE', 'NEGATIVE', 'NEUTRAL', 'MIXED'])
-  .openapi('SentimentType')
-
-const SentimentScoreSchema = z
-  .object({
-    Positive: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The level of confidence that Amazon Comprehend has in the accuracy of its detection of the <code>POSITIVE</code> sentiment.',
-        }),
-    ).exactOptional(),
-    Negative: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The level of confidence that Amazon Comprehend has in the accuracy of its detection of the <code>NEGATIVE</code> sentiment.',
-        }),
-    ).exactOptional(),
-    Neutral: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The level of confidence that Amazon Comprehend has in the accuracy of its detection of the <code>NEUTRAL</code> sentiment.',
-        }),
-    ).exactOptional(),
-    Mixed: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The level of confidence that Amazon Comprehend has in the accuracy of its detection of the <code>MIXED</code> sentiment.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Describes the level of confidence that Amazon Comprehend has in the accuracy of its detection of sentiments.',
-    required: [],
-  })
-  .openapi('SentimentScore')
-
 const BatchDetectSentimentItemResultSchema = z
   .object({
-    Index: IntegerSchema.and(
-      z.any().openapi({ description: 'The zero-based index of the document in the input list.' }),
-    ).exactOptional(),
-    Sentiment: SentimentTypeSchema.and(
-      z.any().openapi({ description: 'The sentiment detected in the document.' }),
-    ).exactOptional(),
-    SentimentScore: SentimentScoreSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The level of confidence that Amazon Comprehend has in the accuracy of its sentiment detection.',
-        }),
-    ).exactOptional(),
+    Index: IntegerSchema.exactOptional().openapi({
+      description: 'The zero-based index of the document in the input list.',
+    }),
+    Sentiment: SentimentTypeSchema.exactOptional().openapi({
+      description: 'The sentiment detected in the document.',
+    }),
+    SentimentScore: SentimentScoreSchema.exactOptional().openapi({
+      description:
+        'The level of confidence that Amazon Comprehend has in the accuracy of its sentiment detection.',
+    }),
   })
   .openapi({
     description:
@@ -496,44 +501,28 @@ const ListOfDetectSentimentResultSchema = z
 
 const BatchDetectSentimentResponseSchema = z
   .object({
-    ResultList: ListOfDetectSentimentResultSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of objects containing the results of the operation. The results are sorted in ascending order by the <code>Index</code> field and match the order of the documents in the input list. If all of the documents contain an error, the <code>ResultList</code> is empty.',
-        }),
-    ),
-    ErrorList: BatchItemErrorListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list containing one object for each document that contained an error. The results are sorted in ascending order by the <code>Index</code> field and match the order of the documents in the input list. If there are no errors in the batch, the <code>ErrorList</code> is empty.',
-        }),
-    ),
+    ResultList: ListOfDetectSentimentResultSchema.openapi({
+      description:
+        'A list of objects containing the results of the operation. The results are sorted in ascending order by the <code>Index</code> field and match the order of the documents in the input list. If all of the documents contain an error, the <code>ResultList</code> is empty.',
+    }),
+    ErrorList: BatchItemErrorListSchema.openapi({
+      description:
+        'A list containing one object for each document that contained an error. The results are sorted in ascending order by the <code>Index</code> field and match the order of the documents in the input list. If there are no errors in the batch, the <code>ErrorList</code> is empty.',
+    }),
   })
   .openapi({ required: ['ResultList', 'ErrorList'] })
   .openapi('BatchDetectSentimentResponse')
 
 const BatchDetectSentimentRequestSchema = z
   .object({
-    TextList: CustomerInputStringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list containing the UTF-8 encoded text of the input documents. The list can contain a maximum of 25 documents. The maximum size of each document is 5 KB. ',
-        }),
-    ),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language of the input documents. You can specify any of the primary languages supported by Amazon Comprehend. All documents must be in the same language.',
-        }),
-    ),
+    TextList: CustomerInputStringListSchema.openapi({
+      description:
+        'A list containing the UTF-8 encoded text of the input documents. The list can contain a maximum of 25 documents. The maximum size of each document is 5 KB. ',
+    }),
+    LanguageCode: LanguageCodeSchema.openapi({
+      description:
+        'The language of the input documents. You can specify any of the primary languages supported by Amazon Comprehend. All documents must be in the same language.',
+    }),
   })
   .openapi({ required: ['TextList', 'LanguageCode'], title: 'BatchDetectSentimentRequest' })
   .openapi('BatchDetectSentimentRequest')
@@ -563,17 +552,13 @@ const PartOfSpeechTagTypeSchema = z
 
 const PartOfSpeechTagSchema = z
   .object({
-    Tag: PartOfSpeechTagTypeSchema.and(
-      z.any().openapi({ description: 'Identifies the part of speech that the token represents.' }),
-    ).exactOptional(),
-    Score: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The confidence that Amazon Comprehend has that the part of speech was correctly identified.',
-        }),
-    ).exactOptional(),
+    Tag: PartOfSpeechTagTypeSchema.exactOptional().openapi({
+      description: 'Identifies the part of speech that the token represents.',
+    }),
+    Score: FloatSchema.exactOptional().openapi({
+      description:
+        'The confidence that Amazon Comprehend has that the part of speech was correctly identified.',
+    }),
   })
   .openapi({
     description:
@@ -584,36 +569,24 @@ const PartOfSpeechTagSchema = z
 
 const SyntaxTokenSchema = z
   .object({
-    TokenId: IntegerSchema.and(
-      z.any().openapi({ description: 'A unique identifier for a token.' }),
-    ).exactOptional(),
-    Text: StringSchema.and(
-      z.any().openapi({ description: 'The word that was recognized in the source text.' }),
-    ).exactOptional(),
-    BeginOffset: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The zero-based offset from the beginning of the source text to the first character in the word.',
-        }),
-    ).exactOptional(),
-    EndOffset: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The zero-based offset from the beginning of the source text to the last character in the word.',
-        }),
-    ).exactOptional(),
-    PartOfSpeech: PartOfSpeechTagSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides the part of speech label and the confidence level that Amazon Comprehend has that the part of speech was correctly identified. For more information, see <a href="https://docs.aws.amazon.com/comprehend/latest/dg/how-syntax.html">Syntax</a> in the Comprehend Developer Guide. ',
-        }),
-    ).exactOptional(),
+    TokenId: IntegerSchema.exactOptional().openapi({
+      description: 'A unique identifier for a token.',
+    }),
+    Text: StringSchema.exactOptional().openapi({
+      description: 'The word that was recognized in the source text.',
+    }),
+    BeginOffset: IntegerSchema.exactOptional().openapi({
+      description:
+        'The zero-based offset from the beginning of the source text to the first character in the word.',
+    }),
+    EndOffset: IntegerSchema.exactOptional().openapi({
+      description:
+        'The zero-based offset from the beginning of the source text to the last character in the word.',
+    }),
+    PartOfSpeech: PartOfSpeechTagSchema.exactOptional().openapi({
+      description:
+        'Provides the part of speech label and the confidence level that Amazon Comprehend has that the part of speech was correctly identified. For more information, see <a href="https://docs.aws.amazon.com/comprehend/latest/dg/how-syntax.html">Syntax</a> in the Comprehend Developer Guide. ',
+    }),
   })
   .openapi({
     description:
@@ -626,16 +599,12 @@ const ListOfSyntaxTokensSchema = z.array(SyntaxTokenSchema).openapi('ListOfSynta
 
 const BatchDetectSyntaxItemResultSchema = z
   .object({
-    Index: IntegerSchema.and(
-      z.any().openapi({ description: 'The zero-based index of the document in the input list.' }),
-    ).exactOptional(),
-    SyntaxTokens: ListOfSyntaxTokensSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The syntax tokens for the words in the document, one token for each word.',
-        }),
-    ).exactOptional(),
+    Index: IntegerSchema.exactOptional().openapi({
+      description: 'The zero-based index of the document in the input list.',
+    }),
+    SyntaxTokens: ListOfSyntaxTokensSchema.exactOptional().openapi({
+      description: 'The syntax tokens for the words in the document, one token for each word.',
+    }),
   })
   .openapi({
     description:
@@ -650,22 +619,14 @@ const ListOfDetectSyntaxResultSchema = z
 
 const BatchDetectSyntaxResponseSchema = z
   .object({
-    ResultList: ListOfDetectSyntaxResultSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of objects containing the results of the operation. The results are sorted in ascending order by the <code>Index</code> field and match the order of the documents in the input list. If all of the documents contain an error, the <code>ResultList</code> is empty.',
-        }),
-    ),
-    ErrorList: BatchItemErrorListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list containing one object for each document that contained an error. The results are sorted in ascending order by the <code>Index</code> field and match the order of the documents in the input list. If there are no errors in the batch, the <code>ErrorList</code> is empty.',
-        }),
-    ),
+    ResultList: ListOfDetectSyntaxResultSchema.openapi({
+      description:
+        'A list of objects containing the results of the operation. The results are sorted in ascending order by the <code>Index</code> field and match the order of the documents in the input list. If all of the documents contain an error, the <code>ResultList</code> is empty.',
+    }),
+    ErrorList: BatchItemErrorListSchema.openapi({
+      description:
+        'A list containing one object for each document that contained an error. The results are sorted in ascending order by the <code>Index</code> field and match the order of the documents in the input list. If there are no errors in the batch, the <code>ErrorList</code> is empty.',
+    }),
   })
   .openapi({ required: ['ResultList', 'ErrorList'] })
   .openapi('BatchDetectSyntaxResponse')
@@ -676,224 +637,57 @@ const SyntaxLanguageCodeSchema = z
 
 const BatchDetectSyntaxRequestSchema = z
   .object({
-    TextList: CustomerInputStringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list containing the UTF-8 encoded text of the input documents. The list can contain a maximum of 25 documents. The maximum size for each document is 5 KB.',
-        }),
-    ),
-    LanguageCode: SyntaxLanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language of the input documents. You can specify any of the following languages supported by Amazon Comprehend: German ("de"), English ("en"), Spanish ("es"), French ("fr"), Italian ("it"), or Portuguese ("pt"). All documents must be in the same language.',
-        }),
-    ),
+    TextList: CustomerInputStringListSchema.openapi({
+      description:
+        'A list containing the UTF-8 encoded text of the input documents. The list can contain a maximum of 25 documents. The maximum size for each document is 5 KB.',
+    }),
+    LanguageCode: SyntaxLanguageCodeSchema.openapi({
+      description:
+        'The language of the input documents. You can specify any of the following languages supported by Amazon Comprehend: German ("de"), English ("en"), Spanish ("es"), French ("fr"), Italian ("it"), or Portuguese ("pt"). All documents must be in the same language.',
+    }),
   })
   .openapi({ required: ['TextList', 'LanguageCode'], title: 'BatchDetectSyntaxRequest' })
   .openapi('BatchDetectSyntaxRequest')
 
-const ListOfDescriptiveMentionIndicesSchema = z
-  .array(IntegerSchema)
-  .openapi('ListOfDescriptiveMentionIndices')
-
-const TargetedSentimentEntityTypeSchema = z
-  .enum([
-    'PERSON',
-    'LOCATION',
-    'ORGANIZATION',
-    'FACILITY',
-    'BRAND',
-    'COMMERCIAL_ITEM',
-    'MOVIE',
-    'MUSIC',
-    'BOOK',
-    'SOFTWARE',
-    'GAME',
-    'PERSONAL_TITLE',
-    'EVENT',
-    'DATE',
-    'QUANTITY',
-    'ATTRIBUTE',
-    'OTHER',
-  ])
-  .openapi('TargetedSentimentEntityType')
-
-const MentionSentimentSchema = z
-  .object({
-    Sentiment: SentimentTypeSchema.and(
-      z.any().openapi({ description: 'The sentiment of the mention. ' }),
-    ).exactOptional(),
-    SentimentScore: SentimentScoreSchema.exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>Contains the sentiment and sentiment score for one mention of an entity.</p> <p>For more information about targeted sentiment, see <a href="https://docs.aws.amazon.com/comprehend/latest/dg/how-targeted-sentiment.html">Targeted sentiment</a>.</p>',
-    required: [],
-  })
-  .openapi('MentionSentiment')
-
-const TargetedSentimentMentionSchema = z
-  .object({
-    Score: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Model confidence that the entity is relevant. Value range is zero to one, where one is highest confidence.',
-        }),
-    ).exactOptional(),
-    GroupScore: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The confidence that all the entities mentioned in the group relate to the same entity.',
-        }),
-    ).exactOptional(),
-    Text: StringSchema.and(
-      z.any().openapi({ description: 'The text in the document that identifies the entity.' }),
-    ).exactOptional(),
-    Type: TargetedSentimentEntityTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of the entity. Amazon Comprehend supports a variety of <a href="https://docs.aws.amazon.com/comprehend/latest/dg/how-targeted-sentiment.html#how-targeted-sentiment-entities">entity types</a>.',
-        }),
-    ).exactOptional(),
-    MentionSentiment: MentionSentimentSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Contains the sentiment and sentiment score for the mention.' }),
-    ).exactOptional(),
-    BeginOffset: IntegerSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The offset into the document text where the mention begins.' }),
-    ).exactOptional(),
-    EndOffset: IntegerSchema.and(
-      z.any().openapi({ description: 'The offset into the document text where the mention ends.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>Information about one mention of an entity. The mention information includes the location of the mention in the text and the sentiment of the mention.</p> <p>For more information about targeted sentiment, see <a href="https://docs.aws.amazon.com/comprehend/latest/dg/how-targeted-sentiment.html">Targeted sentiment</a>.</p>',
-    required: [],
-  })
-  .openapi('TargetedSentimentMention')
-
-const ListOfMentionsSchema = z.array(TargetedSentimentMentionSchema).openapi('ListOfMentions')
-
-const TargetedSentimentEntitySchema = z
-  .object({
-    DescriptiveMentionIndex: ListOfDescriptiveMentionIndicesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One or more index into the Mentions array that provides the best name for the entity group.',
-        }),
-    ).exactOptional(),
-    Mentions: ListOfMentionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of mentions of the entity in the document. The array represents a co-reference group. See <a href="https://docs.aws.amazon.com/comprehend/latest/dg/how-targeted-sentiment.html#how-targeted-sentiment-values"> Co-reference group</a> for an example. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>Information about one of the entities found by targeted sentiment analysis.</p> <p>For more information about targeted sentiment, see <a href="https://docs.aws.amazon.com/comprehend/latest/dg/how-targeted-sentiment.html">Targeted sentiment</a>.</p>',
-    required: [],
-  })
-  .openapi('TargetedSentimentEntity')
-
-const ListOfTargetedSentimentEntitiesSchema = z
-  .array(TargetedSentimentEntitySchema)
-  .openapi('ListOfTargetedSentimentEntities')
-
-const BatchDetectTargetedSentimentItemResultSchema = z
-  .object({
-    Index: IntegerSchema.and(
-      z.any().openapi({ description: 'The zero-based index of this result in the input list.' }),
-    ).exactOptional(),
-    Entities: ListOfTargetedSentimentEntitiesSchema.and(
-      z.any().openapi({ description: 'An array of targeted sentiment entities.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Analysis results for one of the documents in the batch.', required: [] })
-  .openapi('BatchDetectTargetedSentimentItemResult')
-
-const ListOfDetectTargetedSentimentResultSchema = z
-  .array(BatchDetectTargetedSentimentItemResultSchema)
-  .openapi('ListOfDetectTargetedSentimentResult')
-
-const BatchDetectTargetedSentimentResponseSchema = z
-  .object({
-    ResultList: ListOfDetectTargetedSentimentResultSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of objects containing the results of the operation. The results are sorted in ascending order by the <code>Index</code> field and match the order of the documents in the input list. If all of the documents contain an error, the <code>ResultList</code> is empty.',
-        }),
-    ),
-    ErrorList: BatchItemErrorListSchema.and(
-      z.any().openapi({ description: 'List of errors that the operation can return.' }),
-    ),
-  })
-  .openapi({ required: ['ResultList', 'ErrorList'] })
-  .openapi('BatchDetectTargetedSentimentResponse')
+const BatchDetectTargetedSentimentResponseSchema: z.ZodType<BatchDetectTargetedSentimentResponseType> =
+  z
+    .object({
+      ResultList: ListOfDetectTargetedSentimentResultSchema.openapi({
+        description:
+          'A list of objects containing the results of the operation. The results are sorted in ascending order by the <code>Index</code> field and match the order of the documents in the input list. If all of the documents contain an error, the <code>ResultList</code> is empty.',
+      }),
+      ErrorList: BatchItemErrorListSchema.openapi({
+        description: 'List of errors that the operation can return.',
+      }),
+    })
+    .openapi({ required: ['ResultList', 'ErrorList'] })
+    .openapi('BatchDetectTargetedSentimentResponse')
 
 const BatchDetectTargetedSentimentRequestSchema = z
   .object({
-    TextList: CustomerInputStringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list containing the UTF-8 encoded text of the input documents. The list can contain a maximum of 25 documents. The maximum size of each document is 5 KB.',
-        }),
-    ),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language of the input documents. Currently, English is the only supported language.',
-        }),
-    ),
+    TextList: CustomerInputStringListSchema.openapi({
+      description:
+        'A list containing the UTF-8 encoded text of the input documents. The list can contain a maximum of 25 documents. The maximum size of each document is 5 KB.',
+    }),
+    LanguageCode: LanguageCodeSchema.openapi({
+      description:
+        'The language of the input documents. Currently, English is the only supported language.',
+    }),
   })
   .openapi({ required: ['TextList', 'LanguageCode'], title: 'BatchDetectTargetedSentimentRequest' })
   .openapi('BatchDetectTargetedSentimentRequest')
 
 const DocumentClassSchema = z
   .object({
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the class.' }),
-    ).exactOptional(),
-    Score: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The confidence score that Amazon Comprehend has this class correctly attributed.',
-        }),
-    ).exactOptional(),
-    Page: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Page number in the input document. This field is present in the response only if your request includes the <code>Byte</code> parameter. ',
-        }),
-    ).exactOptional(),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the class.' }),
+    Score: FloatSchema.exactOptional().openapi({
+      description:
+        'The confidence score that Amazon Comprehend has this class correctly attributed.',
+    }),
+    Page: IntegerSchema.exactOptional().openapi({
+      description:
+        'Page number in the input document. This field is present in the response only if your request includes the <code>Byte</code> parameter. ',
+    }),
   })
   .openapi({
     description: 'Specifies the class that categorizes the document being analyzed',
@@ -905,25 +699,15 @@ const ListOfClassesSchema = z.array(DocumentClassSchema).openapi('ListOfClasses'
 
 const DocumentLabelSchema = z
   .object({
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the label.' }),
-    ).exactOptional(),
-    Score: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The confidence score that Amazon Comprehend has this label correctly attributed.',
-        }),
-    ).exactOptional(),
-    Page: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Page number where the label occurs. This field is present in the response only if your request includes the <code>Byte</code> parameter. ',
-        }),
-    ).exactOptional(),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the label.' }),
+    Score: FloatSchema.exactOptional().openapi({
+      description:
+        'The confidence score that Amazon Comprehend has this label correctly attributed.',
+    }),
+    Page: IntegerSchema.exactOptional().openapi({
+      description:
+        'Page number where the label occurs. This field is present in the response only if your request includes the <code>Byte</code> parameter. ',
+    }),
   })
   .openapi({
     description:
@@ -936,10 +720,10 @@ const ListOfLabelsSchema = z.array(DocumentLabelSchema).openapi('ListOfLabels')
 
 const ExtractedCharactersListItemSchema = z
   .object({
-    Page: IntegerSchema.and(z.any().openapi({ description: 'Page number.' })).exactOptional(),
-    Count: IntegerSchema.and(
-      z.any().openapi({ description: 'Number of characters extracted from each page.' }),
-    ).exactOptional(),
+    Page: IntegerSchema.exactOptional().openapi({ description: 'Page number.' }),
+    Count: IntegerSchema.exactOptional().openapi({
+      description: 'Number of characters extracted from each page.',
+    }),
   })
   .openapi({
     description: 'Array of the number of characters extracted from each page.',
@@ -953,17 +737,13 @@ const ListOfExtractedCharactersSchema = z
 
 const DocumentMetadataSchema = z
   .object({
-    Pages: IntegerSchema.and(
-      z.any().openapi({ description: 'Number of pages in the document.' }),
-    ).exactOptional(),
-    ExtractedCharacters: ListOfExtractedCharactersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'List of pages in the document, with the number of characters extracted from each page.',
-        }),
-    ).exactOptional(),
+    Pages: IntegerSchema.exactOptional().openapi({
+      description: 'Number of pages in the document.',
+    }),
+    ExtractedCharacters: ListOfExtractedCharactersSchema.exactOptional().openapi({
+      description:
+        'List of pages in the document, with the number of characters extracted from each page.',
+    }),
   })
   .openapi({
     description: 'Information about the document, discovered during text extraction.',
@@ -985,10 +765,8 @@ const DocumentTypeSchema = z
 
 const DocumentTypeListItemSchema = z
   .object({
-    Page: IntegerSchema.and(z.any().openapi({ description: 'Page number.' })).exactOptional(),
-    Type: DocumentTypeSchema.and(
-      z.any().openapi({ description: 'Document type.' }),
-    ).exactOptional(),
+    Page: IntegerSchema.exactOptional().openapi({ description: 'Page number.' }),
+    Type: DocumentTypeSchema.exactOptional().openapi({ description: 'Document type.' }),
   })
   .openapi({ description: 'Document type for each page in the document.', required: [] })
   .openapi('DocumentTypeListItem')
@@ -1007,15 +785,15 @@ const PageBasedErrorCodeSchema = z
 
 const ErrorsListItemSchema = z
   .object({
-    Page: IntegerSchema.and(
-      z.any().openapi({ description: 'Page number where the error occurred.' }),
-    ).exactOptional(),
-    ErrorCode: PageBasedErrorCodeSchema.and(
-      z.any().openapi({ description: 'Error code for the cause of the error.' }),
-    ).exactOptional(),
-    ErrorMessage: StringSchema.and(
-      z.any().openapi({ description: 'Text message explaining the reason for the error.' }),
-    ).exactOptional(),
+    Page: IntegerSchema.exactOptional().openapi({
+      description: 'Page number where the error occurred.',
+    }),
+    ErrorCode: PageBasedErrorCodeSchema.exactOptional().openapi({
+      description: 'Error code for the cause of the error.',
+    }),
+    ErrorMessage: StringSchema.exactOptional().openapi({
+      description: 'Text message explaining the reason for the error.',
+    }),
   })
   .openapi({
     description:
@@ -1035,15 +813,15 @@ const PageBasedWarningCodeSchema = z
 
 const WarningsListItemSchema = z
   .object({
-    Page: IntegerSchema.and(
-      z.any().openapi({ description: 'Page number in the input document.' }),
-    ).exactOptional(),
-    WarnCode: PageBasedWarningCodeSchema.and(
-      z.any().openapi({ description: 'The type of warning.' }),
-    ).exactOptional(),
-    WarnMessage: StringSchema.and(
-      z.any().openapi({ description: 'Text message associated with the warning.' }),
-    ).exactOptional(),
+    Page: IntegerSchema.exactOptional().openapi({
+      description: 'Page number in the input document.',
+    }),
+    WarnCode: PageBasedWarningCodeSchema.exactOptional().openapi({
+      description: 'The type of warning.',
+    }),
+    WarnMessage: StringSchema.exactOptional().openapi({
+      description: 'Text message associated with the warning.',
+    }),
   })
   .openapi({
     description:
@@ -1056,54 +834,30 @@ const ListOfWarningsSchema = z.array(WarningsListItemSchema).openapi('ListOfWarn
 
 const ClassifyDocumentResponseSchema = z
   .object({
-    Classes: ListOfClassesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The classes used by the document being analyzed. These are used for multi-class trained models. Individual classes are mutually exclusive and each document is expected to have only a single class assigned to it. For example, an animal can be a dog or a cat, but not both at the same time. ',
-        }),
-    ).exactOptional(),
-    Labels: ListOfLabelsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The labels used the document being analyzed. These are used for multi-label trained models. Individual labels represent different categories that are related in some manner and are not mutually exclusive. For example, a movie can be just an action movie, or it can be an action movie, a science fiction movie, and a comedy, all at the same time. ',
-        }),
-    ).exactOptional(),
-    DocumentMetadata: DocumentMetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Extraction information about the document. This field is present in the response only if your request includes the <code>Byte</code> parameter. ',
-        }),
-    ).exactOptional(),
-    DocumentType: ListOfDocumentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The document type for each page in the input document. This field is present in the response only if your request includes the <code>Byte</code> parameter. ',
-        }),
-    ).exactOptional(),
-    Errors: ListOfErrorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Page-level errors that the system detected while processing the input document. The field is empty if the system encountered no errors.',
-        }),
-    ).exactOptional(),
-    Warnings: ListOfWarningsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Warnings detected while processing the input document. The response includes a warning if there is a mismatch between the input document type and the model type associated with the endpoint that you specified. The response can also include warnings for individual pages that have a mismatch. </p> <p>The field is empty if the system generated no warnings.</p>',
-        }),
-    ).exactOptional(),
+    Classes: ListOfClassesSchema.exactOptional().openapi({
+      description:
+        'The classes used by the document being analyzed. These are used for multi-class trained models. Individual classes are mutually exclusive and each document is expected to have only a single class assigned to it. For example, an animal can be a dog or a cat, but not both at the same time. ',
+    }),
+    Labels: ListOfLabelsSchema.exactOptional().openapi({
+      description:
+        'The labels used the document being analyzed. These are used for multi-label trained models. Individual labels represent different categories that are related in some manner and are not mutually exclusive. For example, a movie can be just an action movie, or it can be an action movie, a science fiction movie, and a comedy, all at the same time. ',
+    }),
+    DocumentMetadata: DocumentMetadataSchema.exactOptional().openapi({
+      description:
+        'Extraction information about the document. This field is present in the response only if your request includes the <code>Byte</code> parameter. ',
+    }),
+    DocumentType: ListOfDocumentTypeSchema.exactOptional().openapi({
+      description:
+        'The document type for each page in the input document. This field is present in the response only if your request includes the <code>Byte</code> parameter. ',
+    }),
+    Errors: ListOfErrorsSchema.exactOptional().openapi({
+      description:
+        'Page-level errors that the system detected while processing the input document. The field is empty if the system encountered no errors.',
+    }),
+    Warnings: ListOfWarningsSchema.exactOptional().openapi({
+      description:
+        '<p>Warnings detected while processing the input document. The response includes a warning if there is a mismatch between the input document type and the model type associated with the endpoint that you specified. The response can also include warnings for individual pages that have a mismatch. </p> <p>The field is empty if the system generated no warnings.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ClassifyDocumentResponse')
@@ -1142,30 +896,18 @@ const ListOfDocumentReadFeatureTypesSchema = z
 
 const DocumentReaderConfigSchema = z
   .object({
-    DocumentReadAction: DocumentReadActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>This field defines the Amazon Textract API operation that Amazon Comprehend uses to extract text from PDF files and image files. Enter one of the following values:</p> <ul> <li> <p> <code>TEXTRACT_DETECT_DOCUMENT_TEXT</code> - The Amazon Comprehend service uses the <code>DetectDocumentText</code> API operation. </p> </li> <li> <p> <code>TEXTRACT_ANALYZE_DOCUMENT</code> - The Amazon Comprehend service uses the <code>AnalyzeDocument</code> API operation. </p> </li> </ul>',
-        }),
-    ),
-    DocumentReadMode: DocumentReadModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Determines the text extraction actions for PDF files. Enter one of the following values:</p> <ul> <li> <p> <code>SERVICE_DEFAULT</code> - use the Amazon Comprehend service defaults for PDF files.</p> </li> <li> <p> <code>FORCE_DOCUMENT_READ_ACTION</code> - Amazon Comprehend uses the Textract API specified by DocumentReadAction for all PDF files, including digital PDF files. </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    FeatureTypes: ListOfDocumentReadFeatureTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the type of Amazon Textract features to apply. If you chose <code>TEXTRACT_ANALYZE_DOCUMENT</code> as the read action, you must specify one or both of the following values:</p> <ul> <li> <p> <code>TABLES</code> - Returns information about any tables that are detected in the input document. </p> </li> <li> <p> <code>FORMS</code> - Returns information and the data from any forms that are detected in the input document. </p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    DocumentReadAction: DocumentReadActionSchema.openapi({
+      description:
+        '<p>This field defines the Amazon Textract API operation that Amazon Comprehend uses to extract text from PDF files and image files. Enter one of the following values:</p> <ul> <li> <p> <code>TEXTRACT_DETECT_DOCUMENT_TEXT</code> - The Amazon Comprehend service uses the <code>DetectDocumentText</code> API operation. </p> </li> <li> <p> <code>TEXTRACT_ANALYZE_DOCUMENT</code> - The Amazon Comprehend service uses the <code>AnalyzeDocument</code> API operation. </p> </li> </ul>',
+    }),
+    DocumentReadMode: DocumentReadModeSchema.exactOptional().openapi({
+      description:
+        '<p>Determines the text extraction actions for PDF files. Enter one of the following values:</p> <ul> <li> <p> <code>SERVICE_DEFAULT</code> - use the Amazon Comprehend service defaults for PDF files.</p> </li> <li> <p> <code>FORCE_DOCUMENT_READ_ACTION</code> - Amazon Comprehend uses the Textract API specified by DocumentReadAction for all PDF files, including digital PDF files. </p> </li> </ul>',
+    }),
+    FeatureTypes: ListOfDocumentReadFeatureTypesSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the type of Amazon Textract features to apply. If you chose <code>TEXTRACT_ANALYZE_DOCUMENT</code> as the read action, you must specify one or both of the following values:</p> <ul> <li> <p> <code>TABLES</code> - Returns information about any tables that are detected in the input document. </p> </li> <li> <p> <code>FORMS</code> - Returns information and the data from any forms that are detected in the input document. </p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['DocumentReadAction'],
@@ -1176,38 +918,22 @@ const DocumentReaderConfigSchema = z
 
 const ClassifyDocumentRequestSchema = z
   .object({
-    Text: CustomerInputStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The document text to be analyzed. If you enter text using this parameter, do not use the <code>Bytes</code> parameter.',
-        }),
-    ).exactOptional(),
-    EndpointArn: DocumentClassifierEndpointArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Number (ARN) of the endpoint. For information about endpoints, see <a href="https://docs.aws.amazon.com/comprehend/latest/dg/manage-endpoints.html">Managing endpoints</a>.',
-        }),
-    ),
-    Bytes: SemiStructuredDocumentBlobSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use the <code>Bytes</code> parameter to input a text, PDF, Word or image file. You can also use the <code>Bytes</code> parameter to input an Amazon Textract <code>DetectDocumentText</code> or <code>AnalyzeDocument</code> output file.</p> <p>Provide the input document as a sequence of base64-encoded bytes. If your code uses an Amazon Web Services SDK to classify documents, the SDK may encode the document file bytes for you. </p> <p>The maximum length of this field depends on the input document type. For details, see <a href="https://docs.aws.amazon.com/comprehend/latest/dg/idp-inputs-sync.html"> Inputs for real-time custom analysis</a> in the Comprehend Developer Guide. </p> <p>If you use the <code>Bytes</code> parameter, do not use the <code>Text</code> parameter.</p>',
-        }),
-    ).exactOptional(),
-    DocumentReaderConfig: DocumentReaderConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides configuration parameters to override the default actions for extracting text from PDF documents and image files.',
-        }),
-    ).exactOptional(),
+    Text: CustomerInputStringSchema.exactOptional().openapi({
+      description:
+        'The document text to be analyzed. If you enter text using this parameter, do not use the <code>Bytes</code> parameter.',
+    }),
+    EndpointArn: DocumentClassifierEndpointArnSchema.openapi({
+      description:
+        'The Amazon Resource Number (ARN) of the endpoint. For information about endpoints, see <a href="https://docs.aws.amazon.com/comprehend/latest/dg/manage-endpoints.html">Managing endpoints</a>.',
+    }),
+    Bytes: SemiStructuredDocumentBlobSchema.exactOptional().openapi({
+      description:
+        '<p>Use the <code>Bytes</code> parameter to input a text, PDF, Word or image file. You can also use the <code>Bytes</code> parameter to input an Amazon Textract <code>DetectDocumentText</code> or <code>AnalyzeDocument</code> output file.</p> <p>Provide the input document as a sequence of base64-encoded bytes. If your code uses an Amazon Web Services SDK to classify documents, the SDK may encode the document file bytes for you. </p> <p>The maximum length of this field depends on the input document type. For details, see <a href="https://docs.aws.amazon.com/comprehend/latest/dg/idp-inputs-sync.html"> Inputs for real-time custom analysis</a> in the Comprehend Developer Guide. </p> <p>If you use the <code>Bytes</code> parameter, do not use the <code>Text</code> parameter.</p>',
+    }),
+    DocumentReaderConfig: DocumentReaderConfigSchema.exactOptional().openapi({
+      description:
+        'Provides configuration parameters to override the default actions for extracting text from PDF documents and image files.',
+    }),
   })
   .openapi({ required: ['EndpointArn'], title: 'ClassifyDocumentRequest' })
   .openapi('ClassifyDocumentRequest')
@@ -1258,17 +984,11 @@ const PiiEntityTypeSchema = z
 
 const EntityLabelSchema = z
   .object({
-    Name: PiiEntityTypeSchema.and(
-      z.any().openapi({ description: 'The name of the label.' }),
-    ).exactOptional(),
-    Score: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The level of confidence that Amazon Comprehend has in the accuracy of the detection.',
-        }),
-    ).exactOptional(),
+    Name: PiiEntityTypeSchema.exactOptional().openapi({ description: 'The name of the label.' }),
+    Score: FloatSchema.exactOptional().openapi({
+      description:
+        'The level of confidence that Amazon Comprehend has in the accuracy of the detection.',
+    }),
   })
   .openapi({
     description:
@@ -1281,31 +1001,23 @@ const ListOfEntityLabelsSchema = z.array(EntityLabelSchema).openapi('ListOfEntit
 
 const ContainsPiiEntitiesResponseSchema = z
   .object({
-    Labels: ListOfEntityLabelsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The labels used in the document being analyzed. Individual labels represent personally identifiable information (PII) entity types.',
-        }),
-    ).exactOptional(),
+    Labels: ListOfEntityLabelsSchema.exactOptional().openapi({
+      description:
+        'The labels used in the document being analyzed. Individual labels represent personally identifiable information (PII) entity types.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ContainsPiiEntitiesResponse')
 
 const ContainsPiiEntitiesRequestSchema = z
   .object({
-    Text: StringSchema.and(
-      z.any().openapi({ description: 'A UTF-8 text string. The maximum string size is 100 KB.' }),
-    ),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language of the input documents. Currently, English is the only valid language.',
-        }),
-    ),
+    Text: StringSchema.openapi({
+      description: 'A UTF-8 text string. The maximum string size is 100 KB.',
+    }),
+    LanguageCode: LanguageCodeSchema.openapi({
+      description:
+        'The language of the input documents. Currently, English is the only valid language.',
+    }),
   })
   .openapi({ required: ['Text', 'LanguageCode'], title: 'ContainsPiiEntitiesRequest' })
   .openapi('ContainsPiiEntitiesRequest')
@@ -1320,9 +1032,9 @@ const ComprehendDatasetArnSchema = z
 
 const CreateDatasetResponseSchema = z
   .object({
-    DatasetArn: ComprehendDatasetArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the dataset.' }),
-    ).exactOptional(),
+    DatasetArn: ComprehendDatasetArnSchema.exactOptional().openapi({
+      description: 'The ARN of the dataset.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateDatasetResponse')
@@ -1370,41 +1082,25 @@ const AugmentedManifestsDocumentTypeFormatSchema = z
 
 const DatasetAugmentedManifestsListItemSchema = z
   .object({
-    AttributeNames: AttributeNamesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The JSON attribute that contains the annotations for your training documents. The number of attribute names that you specify depends on whether your augmented manifest file is the output of a single labeling job or a chained labeling job.</p> <p>If your file is the output of a single labeling job, specify the LabelAttributeName key that was used when the job was created in Ground Truth.</p> <p>If your file is the output of a chained labeling job, specify the LabelAttributeName key for one or more jobs in the chain. Each LabelAttributeName key provides the annotations from an individual job.</p>',
-        }),
-    ),
-    S3Uri: S3UriSchema.and(
-      z.any().openapi({ description: 'The Amazon S3 location of the augmented manifest file.' }),
-    ),
-    AnnotationDataS3Uri: S3UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The S3 prefix to the annotation files that are referred in the augmented manifest file.',
-        }),
-    ).exactOptional(),
-    SourceDocumentsS3Uri: S3UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The S3 prefix to the source files (PDFs) that are referred to in the augmented manifest file.',
-        }),
-    ).exactOptional(),
-    DocumentType: AugmentedManifestsDocumentTypeFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The type of augmented manifest. If you don't specify, the default is PlainTextDocument. </p> <p> <code>PLAIN_TEXT_DOCUMENT</code> A document type that represents any unicode text that is encoded in UTF-8.</p>",
-        }),
-    ).exactOptional(),
+    AttributeNames: AttributeNamesListSchema.openapi({
+      description:
+        '<p>The JSON attribute that contains the annotations for your training documents. The number of attribute names that you specify depends on whether your augmented manifest file is the output of a single labeling job or a chained labeling job.</p> <p>If your file is the output of a single labeling job, specify the LabelAttributeName key that was used when the job was created in Ground Truth.</p> <p>If your file is the output of a chained labeling job, specify the LabelAttributeName key for one or more jobs in the chain. Each LabelAttributeName key provides the annotations from an individual job.</p>',
+    }),
+    S3Uri: S3UriSchema.openapi({
+      description: 'The Amazon S3 location of the augmented manifest file.',
+    }),
+    AnnotationDataS3Uri: S3UriSchema.exactOptional().openapi({
+      description:
+        'The S3 prefix to the annotation files that are referred in the augmented manifest file.',
+    }),
+    SourceDocumentsS3Uri: S3UriSchema.exactOptional().openapi({
+      description:
+        'The S3 prefix to the source files (PDFs) that are referred to in the augmented manifest file.',
+    }),
+    DocumentType: AugmentedManifestsDocumentTypeFormatSchema.exactOptional().openapi({
+      description:
+        "<p>The type of augmented manifest. If you don't specify, the default is PlainTextDocument. </p> <p> <code>PLAIN_TEXT_DOCUMENT</code> A document type that represents any unicode text that is encoded in UTF-8.</p>",
+    }),
   })
   .openapi({
     required: ['AttributeNames', 'S3Uri'],
@@ -1429,22 +1125,14 @@ const LabelDelimiterSchema = z
 
 const DatasetDocumentClassifierInputDataConfigSchema = z
   .object({
-    S3Uri: S3UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon S3 URI for the input data. The S3 bucket must be in the same Region as the API endpoint that you are calling. The URI can point to a single input file or it can provide the prefix for a collection of input files.</p> <p>For example, if you use the URI <code>S3://bucketName/prefix</code>, if the prefix is a single file, Amazon Comprehend uses that file as input. If more than one file begins with the prefix, Amazon Comprehend uses all of them as input.</p> <p>This parameter is required if you set <code>DataFormat</code> to <code>COMPREHEND_CSV</code>.</p>',
-        }),
-    ),
-    LabelDelimiter: LabelDelimiterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Indicates the delimiter used to separate each label for training a multi-label classifier. The default delimiter between labels is a pipe (|). You can use a different character as a delimiter (if it's an allowed character) by specifying it under Delimiter for labels. If the training documents use a delimiter other than the default or the delimiter you specify, the labels on that line will be combined to make a single unique label, such as LABELLABELLABEL.",
-        }),
-    ).exactOptional(),
+    S3Uri: S3UriSchema.openapi({
+      description:
+        '<p>The Amazon S3 URI for the input data. The S3 bucket must be in the same Region as the API endpoint that you are calling. The URI can point to a single input file or it can provide the prefix for a collection of input files.</p> <p>For example, if you use the URI <code>S3://bucketName/prefix</code>, if the prefix is a single file, Amazon Comprehend uses that file as input. If more than one file begins with the prefix, Amazon Comprehend uses all of them as input.</p> <p>This parameter is required if you set <code>DataFormat</code> to <code>COMPREHEND_CSV</code>.</p>',
+    }),
+    LabelDelimiter: LabelDelimiterSchema.exactOptional().openapi({
+      description:
+        "Indicates the delimiter used to separate each label for training a multi-label classifier. The default delimiter between labels is a pipe (|). You can use a different character as a delimiter (if it's an allowed character) by specifying it under Delimiter for labels. If the training documents use a delimiter other than the default or the delimiter you specify, the labels on that line will be combined to make a single unique label, such as LABELLABELLABEL.",
+    }),
   })
   .openapi({
     required: ['S3Uri'],
@@ -1455,14 +1143,10 @@ const DatasetDocumentClassifierInputDataConfigSchema = z
 
 const DatasetEntityRecognizerAnnotationsSchema = z
   .object({
-    S3Uri: S3UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies the Amazon S3 location where the training documents for an entity recognizer are located. The URI must be in the same Region as the API endpoint that you are calling.',
-        }),
-    ),
+    S3Uri: S3UriSchema.openapi({
+      description:
+        ' Specifies the Amazon S3 location where the training documents for an entity recognizer are located. The URI must be in the same Region as the API endpoint that you are calling.',
+    }),
   })
   .openapi({
     required: ['S3Uri'],
@@ -1474,22 +1158,14 @@ const InputFormatSchema = z.enum(['ONE_DOC_PER_FILE', 'ONE_DOC_PER_LINE']).opena
 
 const DatasetEntityRecognizerDocumentsSchema = z
   .object({
-    S3Uri: S3UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies the Amazon S3 location where the documents for the dataset are located. ',
-        }),
-    ),
-    InputFormat: InputFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies how the text in an input file should be processed. This is optional, and the default is ONE_DOC_PER_LINE. ONE_DOC_PER_FILE - Each file is considered a separate document. Use this option when you are processing large documents, such as newspaper articles or scientific papers. ONE_DOC_PER_LINE - Each line in a file is considered a separate document. Use this option when you are processing many short documents, such as text messages.',
-        }),
-    ).exactOptional(),
+    S3Uri: S3UriSchema.openapi({
+      description:
+        ' Specifies the Amazon S3 location where the documents for the dataset are located. ',
+    }),
+    InputFormat: InputFormatSchema.exactOptional().openapi({
+      description:
+        ' Specifies how the text in an input file should be processed. This is optional, and the default is ONE_DOC_PER_LINE. ONE_DOC_PER_FILE - Each file is considered a separate document. Use this option when you are processing large documents, such as newspaper articles or scientific papers. ONE_DOC_PER_LINE - Each line in a file is considered a separate document. Use this option when you are processing many short documents, such as text messages.',
+    }),
   })
   .openapi({
     required: ['S3Uri'],
@@ -1499,13 +1175,9 @@ const DatasetEntityRecognizerDocumentsSchema = z
 
 const DatasetEntityRecognizerEntityListSchema = z
   .object({
-    S3Uri: S3UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the Amazon S3 location where the entity list is located.',
-        }),
-    ),
+    S3Uri: S3UriSchema.openapi({
+      description: 'Specifies the Amazon S3 location where the entity list is located.',
+    }),
   })
   .openapi({
     required: ['S3Uri'],
@@ -1516,29 +1188,16 @@ const DatasetEntityRecognizerEntityListSchema = z
 
 const DatasetEntityRecognizerInputDataConfigSchema = z
   .object({
-    Annotations: DatasetEntityRecognizerAnnotationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The S3 location of the annotation documents for your custom entity recognizer.',
-        }),
-    ).exactOptional(),
-    Documents: DatasetEntityRecognizerDocumentsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The format and location of the training documents for your custom entity recognizer.',
-        }),
-    ),
-    EntityList: DatasetEntityRecognizerEntityListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The S3 location of the entity list for your custom entity recognizer.',
-        }),
-    ).exactOptional(),
+    Annotations: DatasetEntityRecognizerAnnotationsSchema.exactOptional().openapi({
+      description: 'The S3 location of the annotation documents for your custom entity recognizer.',
+    }),
+    Documents: DatasetEntityRecognizerDocumentsSchema.openapi({
+      description:
+        'The format and location of the training documents for your custom entity recognizer.',
+    }),
+    EntityList: DatasetEntityRecognizerEntityListSchema.exactOptional().openapi({
+      description: 'The S3 location of the entity list for your custom entity recognizer.',
+    }),
   })
   .openapi({
     required: ['Documents'],
@@ -1549,35 +1208,23 @@ const DatasetEntityRecognizerInputDataConfigSchema = z
 
 const DatasetInputDataConfigSchema = z
   .object({
-    AugmentedManifests: DatasetAugmentedManifestsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of augmented manifest files that provide training data for your custom model. An augmented manifest file is a labeled dataset that is produced by Amazon SageMaker Ground Truth. ',
-        }),
-    ).exactOptional(),
-    DataFormat: DatasetDataFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> <code>COMPREHEND_CSV</code>: The data format is a two-column CSV file, where the first column contains labels and the second column contains documents.</p> <p> <code>AUGMENTED_MANIFEST</code>: The data format </p>',
-        }),
-    ).exactOptional(),
-    DocumentClassifierInputDataConfig: DatasetDocumentClassifierInputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The input properties for training a document classifier model. </p> <p>For more information on how the input file is formatted, see <a href="https://docs.aws.amazon.com/comprehend/latest/dg/prep-classifier-data.html">Preparing training data</a> in the Comprehend Developer Guide. </p>',
-        }),
-    ).exactOptional(),
-    EntityRecognizerInputDataConfig: DatasetEntityRecognizerInputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The input properties for training an entity recognizer model.' }),
-    ).exactOptional(),
+    AugmentedManifests: DatasetAugmentedManifestsListSchema.exactOptional().openapi({
+      description:
+        'A list of augmented manifest files that provide training data for your custom model. An augmented manifest file is a labeled dataset that is produced by Amazon SageMaker Ground Truth. ',
+    }),
+    DataFormat: DatasetDataFormatSchema.exactOptional().openapi({
+      description:
+        '<p> <code>COMPREHEND_CSV</code>: The data format is a two-column CSV file, where the first column contains labels and the second column contains documents.</p> <p> <code>AUGMENTED_MANIFEST</code>: The data format </p>',
+    }),
+    DocumentClassifierInputDataConfig:
+      DatasetDocumentClassifierInputDataConfigSchema.exactOptional().openapi({
+        description:
+          '<p>The input properties for training a document classifier model. </p> <p>For more information on how the input file is formatted, see <a href="https://docs.aws.amazon.com/comprehend/latest/dg/prep-classifier-data.html">Preparing training data</a> in the Comprehend Developer Guide. </p>',
+      }),
+    EntityRecognizerInputDataConfig:
+      DatasetEntityRecognizerInputDataConfigSchema.exactOptional().openapi({
+        description: 'The input properties for training an entity recognizer model.',
+      }),
   })
   .openapi({
     description: 'Specifies the format and location of the input data for the dataset.',
@@ -1598,22 +1245,14 @@ const TagValueSchema = z.string().min(0).max(256).openapi('TagValue')
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The initial part of a key-value pair that forms a tag associated with a given resource. For instance, if you want to show which resources are used by which departments, you might use “Department” as the key portion of the pair, with multiple possible values such as “sales,” “legal,” and “administration.” ',
-        }),
-    ),
-    Value: TagValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The second part of a key-value pair that forms a tag associated with a given resource. For instance, if you want to show which resources are used by which departments, you might use “Department” as the initial (key) portion of the pair, with a value of “sales” to indicate the sales department. ',
-        }),
-    ).exactOptional(),
+    Key: TagKeySchema.openapi({
+      description:
+        'The initial part of a key-value pair that forms a tag associated with a given resource. For instance, if you want to show which resources are used by which departments, you might use “Department” as the key portion of the pair, with multiple possible values such as “sales,” “legal,” and “administration.” ',
+    }),
+    Value: TagValueSchema.exactOptional().openapi({
+      description:
+        ' The second part of a key-value pair that forms a tag associated with a given resource. For instance, if you want to show which resources are used by which departments, you might use “Department” as the initial (key) portion of the pair, with a value of “sales” to indicate the sales department. ',
+    }),
   })
   .openapi({
     required: ['Key'],
@@ -1626,47 +1265,27 @@ const TagListSchema = z.array(TagSchema).openapi('TagList')
 
 const CreateDatasetRequestSchema = z
   .object({
-    FlywheelArn: ComprehendFlywheelArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Number (ARN) of the flywheel of the flywheel to receive the data.',
-        }),
-    ),
-    DatasetName: ComprehendArnNameSchema.and(
-      z.any().openapi({ description: 'Name of the dataset.' }),
-    ),
-    DatasetType: DatasetTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The dataset type. You can specify that the data in a dataset is for training the model or for testing the model.',
-        }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'Description of the dataset.' }),
-    ).exactOptional(),
-    InputDataConfig: DatasetInputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the input data configuration. The type of input data varies based on the format of the input and whether the data is for a classifier model or an entity recognition model.',
-        }),
-    ),
-    ClientRequestToken: ClientRequestTokenStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A unique identifier for the request. If you don't set the client request token, Amazon Comprehend generates one.",
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'Tags for the dataset.' }),
-    ).exactOptional(),
+    FlywheelArn: ComprehendFlywheelArnSchema.openapi({
+      description:
+        'The Amazon Resource Number (ARN) of the flywheel of the flywheel to receive the data.',
+    }),
+    DatasetName: ComprehendArnNameSchema.openapi({ description: 'Name of the dataset.' }),
+    DatasetType: DatasetTypeSchema.exactOptional().openapi({
+      description:
+        'The dataset type. You can specify that the data in a dataset is for training the model or for testing the model.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'Description of the dataset.',
+    }),
+    InputDataConfig: DatasetInputDataConfigSchema.openapi({
+      description:
+        'Information about the input data configuration. The type of input data varies based on the format of the input and whether the data is for a classifier model or an entity recognition model.',
+    }),
+    ClientRequestToken: ClientRequestTokenStringSchema.exactOptional().openapi({
+      description:
+        "A unique identifier for the request. If you don't set the client request token, Amazon Comprehend generates one.",
+    }),
+    Tags: TagListSchema.exactOptional().openapi({ description: 'Tags for the dataset.' }),
   })
   .openapi({
     required: ['FlywheelArn', 'DatasetName', 'InputDataConfig'],
@@ -1694,13 +1313,9 @@ const DocumentClassifierArnSchema = z
 
 const CreateDocumentClassifierResponseSchema = z
   .object({
-    DocumentClassifierArn: DocumentClassifierArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) that identifies the document classifier.',
-        }),
-    ).exactOptional(),
+    DocumentClassifierArn: DocumentClassifierArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) that identifies the document classifier.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateDocumentClassifierResponse')
@@ -1726,49 +1341,29 @@ const SplitSchema = z.enum(['TRAIN', 'TEST']).openapi('Split')
 
 const AugmentedManifestsListItemSchema = z
   .object({
-    S3Uri: S3UriSchema.and(
-      z.any().openapi({ description: 'The Amazon S3 location of the augmented manifest file.' }),
-    ),
-    Split: SplitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The purpose of the data you've provided in the augmented manifest. You can either train or test this data. If you don't specify, the default is train.</p> <p>TRAIN - all of the documents in the manifest will be used for training. If no test documents are provided, Amazon Comprehend will automatically reserve a portion of the training documents for testing.</p> <p> TEST - all of the documents in the manifest will be used for testing.</p>",
-        }),
-    ).exactOptional(),
-    AttributeNames: AttributeNamesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The JSON attribute that contains the annotations for your training documents. The number of attribute names that you specify depends on whether your augmented manifest file is the output of a single labeling job or a chained labeling job.</p> <p>If your file is the output of a single labeling job, specify the LabelAttributeName key that was used when the job was created in Ground Truth.</p> <p>If your file is the output of a chained labeling job, specify the LabelAttributeName key for one or more jobs in the chain. Each LabelAttributeName key provides the annotations from an individual job.</p>',
-        }),
-    ),
-    AnnotationDataS3Uri: S3UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The S3 prefix to the annotation files that are referred in the augmented manifest file.',
-        }),
-    ).exactOptional(),
-    SourceDocumentsS3Uri: S3UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The S3 prefix to the source files (PDFs) that are referred to in the augmented manifest file.',
-        }),
-    ).exactOptional(),
-    DocumentType: AugmentedManifestsDocumentTypeFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The type of augmented manifest. PlainTextDocument or SemiStructuredDocument. If you don't specify, the default is PlainTextDocument. </p> <ul> <li> <p> <code>PLAIN_TEXT_DOCUMENT</code> A document type that represents any unicode text that is encoded in UTF-8.</p> </li> <li> <p> <code>SEMI_STRUCTURED_DOCUMENT</code> A document type with positional and structural context, like a PDF. For training with Amazon Comprehend, only PDFs are supported. For inference, Amazon Comprehend support PDFs, DOCX and TXT.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
+    S3Uri: S3UriSchema.openapi({
+      description: 'The Amazon S3 location of the augmented manifest file.',
+    }),
+    Split: SplitSchema.exactOptional().openapi({
+      description:
+        "<p>The purpose of the data you've provided in the augmented manifest. You can either train or test this data. If you don't specify, the default is train.</p> <p>TRAIN - all of the documents in the manifest will be used for training. If no test documents are provided, Amazon Comprehend will automatically reserve a portion of the training documents for testing.</p> <p> TEST - all of the documents in the manifest will be used for testing.</p>",
+    }),
+    AttributeNames: AttributeNamesListSchema.openapi({
+      description:
+        '<p>The JSON attribute that contains the annotations for your training documents. The number of attribute names that you specify depends on whether your augmented manifest file is the output of a single labeling job or a chained labeling job.</p> <p>If your file is the output of a single labeling job, specify the LabelAttributeName key that was used when the job was created in Ground Truth.</p> <p>If your file is the output of a chained labeling job, specify the LabelAttributeName key for one or more jobs in the chain. Each LabelAttributeName key provides the annotations from an individual job.</p>',
+    }),
+    AnnotationDataS3Uri: S3UriSchema.exactOptional().openapi({
+      description:
+        'The S3 prefix to the annotation files that are referred in the augmented manifest file.',
+    }),
+    SourceDocumentsS3Uri: S3UriSchema.exactOptional().openapi({
+      description:
+        'The S3 prefix to the source files (PDFs) that are referred to in the augmented manifest file.',
+    }),
+    DocumentType: AugmentedManifestsDocumentTypeFormatSchema.exactOptional().openapi({
+      description:
+        "<p>The type of augmented manifest. PlainTextDocument or SemiStructuredDocument. If you don't specify, the default is PlainTextDocument. </p> <ul> <li> <p> <code>PLAIN_TEXT_DOCUMENT</code> A document type that represents any unicode text that is encoded in UTF-8.</p> </li> <li> <p> <code>SEMI_STRUCTURED_DOCUMENT</code> A document type with positional and structural context, like a PDF. For training with Amazon Comprehend, only PDFs are supported. For inference, Amazon Comprehend support PDFs, DOCX and TXT.</p> </li> </ul>",
+    }),
   })
   .openapi({
     required: ['S3Uri', 'AttributeNames'],
@@ -1787,22 +1382,13 @@ const DocumentClassifierDocumentTypeFormatSchema = z
 
 const DocumentClassifierDocumentsSchema = z
   .object({
-    S3Uri: S3UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The S3 URI location of the training documents specified in the S3Uri CSV file.',
-        }),
-    ),
-    TestS3Uri: S3UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The S3 URI location of the test documents included in the TestS3Uri CSV file. This field is not required if you do not specify a test CSV file.',
-        }),
-    ).exactOptional(),
+    S3Uri: S3UriSchema.openapi({
+      description: 'The S3 URI location of the training documents specified in the S3Uri CSV file.',
+    }),
+    TestS3Uri: S3UriSchema.exactOptional().openapi({
+      description:
+        'The S3 URI location of the test documents included in the TestS3Uri CSV file. This field is not required if you do not specify a test CSV file.',
+    }),
   })
   .openapi({
     required: ['S3Uri'],
@@ -1813,62 +1399,34 @@ const DocumentClassifierDocumentsSchema = z
 
 const DocumentClassifierInputDataConfigSchema = z
   .object({
-    DataFormat: DocumentClassifierDataFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The format of your training data:</p> <ul> <li> <p> <code>COMPREHEND_CSV</code>: A two-column CSV file, where labels are provided in the first column, and documents are provided in the second. If you use this value, you must provide the <code>S3Uri</code> parameter in your request.</p> </li> <li> <p> <code>AUGMENTED_MANIFEST</code>: A labeled dataset that is produced by Amazon SageMaker Ground Truth. This file is in JSON lines format. Each line is a complete JSON object that contains a training document and its associated labels. </p> <p>If you use this value, you must provide the <code>AugmentedManifests</code> parameter in your request.</p> </li> </ul> <p>If you don't specify a value, Amazon Comprehend uses <code>COMPREHEND_CSV</code> as the default.</p>",
-        }),
-    ).exactOptional(),
-    S3Uri: S3UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon S3 URI for the input data. The S3 bucket must be in the same Region as the API endpoint that you are calling. The URI can point to a single input file or it can provide the prefix for a collection of input files.</p> <p>For example, if you use the URI <code>S3://bucketName/prefix</code>, if the prefix is a single file, Amazon Comprehend uses that file as input. If more than one file begins with the prefix, Amazon Comprehend uses all of them as input.</p> <p>This parameter is required if you set <code>DataFormat</code> to <code>COMPREHEND_CSV</code>.</p>',
-        }),
-    ).exactOptional(),
-    TestS3Uri: S3UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This specifies the Amazon S3 location where the test annotations for an entity recognizer are located. The URI must be in the same Amazon Web Services Region as the API endpoint that you are calling. ',
-        }),
-    ).exactOptional(),
-    LabelDelimiter: LabelDelimiterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Indicates the delimiter used to separate each label for training a multi-label classifier. The default delimiter between labels is a pipe (|). You can use a different character as a delimiter (if it's an allowed character) by specifying it under Delimiter for labels. If the training documents use a delimiter other than the default or the delimiter you specify, the labels on that line will be combined to make a single unique label, such as LABELLABELLABEL.",
-        }),
-    ).exactOptional(),
-    AugmentedManifests: DocumentClassifierAugmentedManifestsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of augmented manifest files that provide training data for your custom model. An augmented manifest file is a labeled dataset that is produced by Amazon SageMaker Ground Truth.</p> <p>This parameter is required if you set <code>DataFormat</code> to <code>AUGMENTED_MANIFEST</code>.</p>',
-        }),
-    ).exactOptional(),
-    DocumentType: DocumentClassifierDocumentTypeFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of input documents for training the model. Provide plain-text documents to create a plain-text model, and provide semi-structured documents to create a native model.',
-        }),
-    ).exactOptional(),
-    Documents: DocumentClassifierDocumentsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The S3 location of the training documents. This parameter is required in a request to create a native classifier model.',
-        }),
-    ).exactOptional(),
+    DataFormat: DocumentClassifierDataFormatSchema.exactOptional().openapi({
+      description:
+        "<p>The format of your training data:</p> <ul> <li> <p> <code>COMPREHEND_CSV</code>: A two-column CSV file, where labels are provided in the first column, and documents are provided in the second. If you use this value, you must provide the <code>S3Uri</code> parameter in your request.</p> </li> <li> <p> <code>AUGMENTED_MANIFEST</code>: A labeled dataset that is produced by Amazon SageMaker Ground Truth. This file is in JSON lines format. Each line is a complete JSON object that contains a training document and its associated labels. </p> <p>If you use this value, you must provide the <code>AugmentedManifests</code> parameter in your request.</p> </li> </ul> <p>If you don't specify a value, Amazon Comprehend uses <code>COMPREHEND_CSV</code> as the default.</p>",
+    }),
+    S3Uri: S3UriSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon S3 URI for the input data. The S3 bucket must be in the same Region as the API endpoint that you are calling. The URI can point to a single input file or it can provide the prefix for a collection of input files.</p> <p>For example, if you use the URI <code>S3://bucketName/prefix</code>, if the prefix is a single file, Amazon Comprehend uses that file as input. If more than one file begins with the prefix, Amazon Comprehend uses all of them as input.</p> <p>This parameter is required if you set <code>DataFormat</code> to <code>COMPREHEND_CSV</code>.</p>',
+    }),
+    TestS3Uri: S3UriSchema.exactOptional().openapi({
+      description:
+        'This specifies the Amazon S3 location where the test annotations for an entity recognizer are located. The URI must be in the same Amazon Web Services Region as the API endpoint that you are calling. ',
+    }),
+    LabelDelimiter: LabelDelimiterSchema.exactOptional().openapi({
+      description:
+        "Indicates the delimiter used to separate each label for training a multi-label classifier. The default delimiter between labels is a pipe (|). You can use a different character as a delimiter (if it's an allowed character) by specifying it under Delimiter for labels. If the training documents use a delimiter other than the default or the delimiter you specify, the labels on that line will be combined to make a single unique label, such as LABELLABELLABEL.",
+    }),
+    AugmentedManifests: DocumentClassifierAugmentedManifestsListSchema.exactOptional().openapi({
+      description:
+        '<p>A list of augmented manifest files that provide training data for your custom model. An augmented manifest file is a labeled dataset that is produced by Amazon SageMaker Ground Truth.</p> <p>This parameter is required if you set <code>DataFormat</code> to <code>AUGMENTED_MANIFEST</code>.</p>',
+    }),
+    DocumentType: DocumentClassifierDocumentTypeFormatSchema.exactOptional().openapi({
+      description:
+        'The type of input documents for training the model. Provide plain-text documents to create a plain-text model, and provide semi-structured documents to create a native model.',
+    }),
+    Documents: DocumentClassifierDocumentsSchema.exactOptional().openapi({
+      description:
+        'The S3 location of the training documents. This parameter is required in a request to create a native classifier model.',
+    }),
     DocumentReaderConfig: DocumentReaderConfigSchema.exactOptional(),
   })
   .openapi({
@@ -1886,30 +1444,17 @@ const KmsKeyIdSchema = z
 
 const DocumentClassifierOutputDataConfigSchema = z
   .object({
-    S3Uri: S3UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>When you use the <code>OutputDataConfig</code> object while creating a custom classifier, you specify the Amazon S3 location where you want to write the confusion matrix and other output files. The URI must be in the same Region as the API endpoint that you are calling. The location is used as the prefix for the actual location of this output file.</p> <p>When the custom classifier job is finished, the service creates the output file in a directory specific to the job. The <code>S3Uri</code> field contains the location of the output file, called <code>output.tar.gz</code>. It is a compressed archive that contains the confusion matrix.</p>',
-        }),
-    ).exactOptional(),
-    KmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>ID for the Amazon Web Services Key Management Service (KMS) key that Amazon Comprehend uses to encrypt the output results from an analysis job. The KmsKeyId can be one of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>KMS Key Alias: <code>"alias/ExampleAlias"</code> </p> </li> <li> <p>ARN of a KMS Key Alias: <code>"arn:aws:kms:us-west-2:111122223333:alias/ExampleAlias"</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    FlywheelStatsS3Prefix: S3UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon S3 prefix for the data lake location of the flywheel statistics.',
-        }),
-    ).exactOptional(),
+    S3Uri: S3UriSchema.exactOptional().openapi({
+      description:
+        '<p>When you use the <code>OutputDataConfig</code> object while creating a custom classifier, you specify the Amazon S3 location where you want to write the confusion matrix and other output files. The URI must be in the same Region as the API endpoint that you are calling. The location is used as the prefix for the actual location of this output file.</p> <p>When the custom classifier job is finished, the service creates the output file in a directory specific to the job. The <code>S3Uri</code> field contains the location of the output file, called <code>output.tar.gz</code>. It is a compressed archive that contains the confusion matrix.</p>',
+    }),
+    KmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        '<p>ID for the Amazon Web Services Key Management Service (KMS) key that Amazon Comprehend uses to encrypt the output results from an analysis job. The KmsKeyId can be one of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>KMS Key Alias: <code>"alias/ExampleAlias"</code> </p> </li> <li> <p>ARN of a KMS Key Alias: <code>"arn:aws:kms:us-west-2:111122223333:alias/ExampleAlias"</code> </p> </li> </ul>',
+    }),
+    FlywheelStatsS3Prefix: S3UriSchema.exactOptional().openapi({
+      description: 'The Amazon S3 prefix for the data lake location of the flywheel statistics.',
+    }),
   })
   .openapi({
     description:
@@ -1942,22 +1487,14 @@ const SubnetsSchema = z.array(SubnetIdSchema).min(1).max(16).openapi('Subnets')
 
 const VpcConfigSchema = z
   .object({
-    SecurityGroupIds: SecurityGroupIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID number for a security group on an instance of your private VPC. Security groups on your VPC function serve as a virtual firewall to control inbound and outbound traffic and provides security for the resources that you’ll be accessing on the VPC. This ID number is preceded by "sg-", for instance: "sg-03b388029b0a285ea". For more information, see <a href="https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html">Security Groups for your VPC</a>. ',
-        }),
-    ),
-    Subnets: SubnetsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID for each subnet being used in your private VPC. This subnet is a subset of the a range of IPv4 addresses used by the VPC and is specific to a given availability zone in the VPC’s Region. This ID number is preceded by "subnet-", for instance: "subnet-04ccf456919e69055". For more information, see <a href="https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Subnets.html">VPCs and Subnets</a>. ',
-        }),
-    ),
+    SecurityGroupIds: SecurityGroupIdsSchema.openapi({
+      description:
+        'The ID number for a security group on an instance of your private VPC. Security groups on your VPC function serve as a virtual firewall to control inbound and outbound traffic and provides security for the resources that you’ll be accessing on the VPC. This ID number is preceded by "sg-", for instance: "sg-03b388029b0a285ea". For more information, see <a href="https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html">Security Groups for your VPC</a>. ',
+    }),
+    Subnets: SubnetsSchema.openapi({
+      description:
+        'The ID for each subnet being used in your private VPC. This subnet is a subset of the a range of IPv4 addresses used by the VPC and is specific to a given availability zone in the VPC’s Region. This ID number is preceded by "subnet-", for instance: "subnet-04ccf456919e69055". For more information, see <a href="https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Subnets.html">VPCs and Subnets</a>. ',
+    }),
   })
   .openapi({
     required: ['SecurityGroupIds', 'Subnets'],
@@ -1979,104 +1516,56 @@ const PolicySchema = z
 
 const CreateDocumentClassifierRequestSchema = z
   .object({
-    DocumentClassifierName: ComprehendArnNameSchema.and(
-      z.any().openapi({ description: 'The name of the document classifier.' }),
-    ),
-    VersionName: VersionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version name given to the newly created classifier. Version names can have a maximum of 256 characters. Alphanumeric characters, hyphens (-) and underscores (_) are allowed. The version name must be unique among all models with the same classifier name in the Amazon Web Services account/Amazon Web Services Region.',
-        }),
-    ).exactOptional(),
-    DataAccessRoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data.',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Tags to associate with the document classifier. A tag is a key-value pair that adds as a metadata to a resource used by Amazon Comprehend. For example, a tag with "Sales" as the key might be added to a resource to indicate its use by the sales department. ',
-        }),
-    ).exactOptional(),
-    InputDataConfig: DocumentClassifierInputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the format and location of the input data for the job.',
-        }),
-    ),
-    OutputDataConfig: DocumentClassifierOutputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the location for the output files from a custom classifier job. This parameter is required for a request that creates a native classifier model.',
-        }),
-    ).exactOptional(),
-    ClientRequestToken: ClientRequestTokenStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A unique identifier for the request. If you don't set the client request token, Amazon Comprehend generates one.",
-        }),
-    ).exactOptional(),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language of the input documents. You can specify any of the languages supported by Amazon Comprehend. All documents must be in the same language.',
-        }),
-    ),
-    VolumeKmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>ID for the Amazon Web Services Key Management Service (KMS) key that Amazon Comprehend uses to encrypt data on the storage volume attached to the ML compute instance(s) that process the analysis job. The VolumeKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    VpcConfig: VpcConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configuration parameters for an optional private Virtual Private Cloud (VPC) containing the resources you are using for your custom classifier. For more information, see <a href="https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html">Amazon VPC</a>. ',
-        }),
-    ).exactOptional(),
-    Mode: DocumentClassifierModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates the mode in which the classifier will be trained. The classifier can be trained in multi-class mode, which identifies one and only one class for each document, or multi-label mode, which identifies one or more labels for each document. In multi-label mode, multiple labels for an individual document are separated by a delimiter. The default delimiter between labels is a pipe (|).',
-        }),
-    ).exactOptional(),
-    ModelKmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>ID for the KMS key that Amazon Comprehend uses to encrypt trained custom models. The ModelKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ModelPolicy: PolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The resource-based policy to attach to your custom document classifier model. You can use this policy to allow another Amazon Web Services account to import your custom model.</p> <p>Provide your policy as a JSON body that you enter as a UTF-8 encoded string without line breaks. To provide valid JSON, enclose the attribute names and values in double quotes. If the JSON body is also enclosed in double quotes, then you must escape the double quotes that are inside the policy:</p> <p> <code>"{\\"attribute\\": \\"value\\", \\"attribute\\": [\\"value\\"]}"</code> </p> <p>To avoid escaping quotes, you can use single quotes to enclose the policy and double quotes to enclose the JSON names and values:</p> <p> <code>\'{"attribute": "value", "attribute": ["value"]}\'</code> </p>',
-        }),
-    ).exactOptional(),
+    DocumentClassifierName: ComprehendArnNameSchema.openapi({
+      description: 'The name of the document classifier.',
+    }),
+    VersionName: VersionNameSchema.exactOptional().openapi({
+      description:
+        'The version name given to the newly created classifier. Version names can have a maximum of 256 characters. Alphanumeric characters, hyphens (-) and underscores (_) are allowed. The version name must be unique among all models with the same classifier name in the Amazon Web Services account/Amazon Web Services Region.',
+    }),
+    DataAccessRoleArn: IamRoleArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'Tags to associate with the document classifier. A tag is a key-value pair that adds as a metadata to a resource used by Amazon Comprehend. For example, a tag with "Sales" as the key might be added to a resource to indicate its use by the sales department. ',
+    }),
+    InputDataConfig: DocumentClassifierInputDataConfigSchema.openapi({
+      description: 'Specifies the format and location of the input data for the job.',
+    }),
+    OutputDataConfig: DocumentClassifierOutputDataConfigSchema.exactOptional().openapi({
+      description:
+        'Specifies the location for the output files from a custom classifier job. This parameter is required for a request that creates a native classifier model.',
+    }),
+    ClientRequestToken: ClientRequestTokenStringSchema.exactOptional().openapi({
+      description:
+        "A unique identifier for the request. If you don't set the client request token, Amazon Comprehend generates one.",
+    }),
+    LanguageCode: LanguageCodeSchema.openapi({
+      description:
+        'The language of the input documents. You can specify any of the languages supported by Amazon Comprehend. All documents must be in the same language.',
+    }),
+    VolumeKmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        '<p>ID for the Amazon Web Services Key Management Service (KMS) key that Amazon Comprehend uses to encrypt data on the storage volume attached to the ML compute instance(s) that process the analysis job. The VolumeKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
+    }),
+    VpcConfig: VpcConfigSchema.exactOptional().openapi({
+      description:
+        'Configuration parameters for an optional private Virtual Private Cloud (VPC) containing the resources you are using for your custom classifier. For more information, see <a href="https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html">Amazon VPC</a>. ',
+    }),
+    Mode: DocumentClassifierModeSchema.exactOptional().openapi({
+      description:
+        'Indicates the mode in which the classifier will be trained. The classifier can be trained in multi-class mode, which identifies one and only one class for each document, or multi-label mode, which identifies one or more labels for each document. In multi-label mode, multiple labels for an individual document are separated by a delimiter. The default delimiter between labels is a pipe (|).',
+    }),
+    ModelKmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        '<p>ID for the KMS key that Amazon Comprehend uses to encrypt trained custom models. The ModelKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
+    }),
+    ModelPolicy: PolicySchema.exactOptional().openapi({
+      description:
+        '<p>The resource-based policy to attach to your custom document classifier model. You can use this policy to allow another Amazon Web Services account to import your custom model.</p> <p>Provide your policy as a JSON body that you enter as a UTF-8 encoded string without line breaks. To provide valid JSON, enclose the attribute names and values in double quotes. If the JSON body is also enclosed in double quotes, then you must escape the double quotes that are inside the policy:</p> <p> <code>"{\\"attribute\\": \\"value\\", \\"attribute\\": [\\"value\\"]}"</code> </p> <p>To avoid escaping quotes, you can use single quotes to enclose the policy and double quotes to enclose the JSON names and values:</p> <p> <code>\'{"attribute": "value", "attribute": ["value"]}\'</code> </p>',
+    }),
   })
   .openapi({
     required: ['DocumentClassifierName', 'DataAccessRoleArn', 'InputDataConfig', 'LanguageCode'],
@@ -2104,21 +1593,13 @@ const ComprehendModelArnSchema = z
 
 const CreateEndpointResponseSchema = z
   .object({
-    EndpointArn: ComprehendEndpointArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Number (ARN) of the endpoint being created.',
-        }),
-    ).exactOptional(),
-    ModelArn: ComprehendModelArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Number (ARN) of the model to which the endpoint is attached.',
-        }),
-    ).exactOptional(),
+    EndpointArn: ComprehendEndpointArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Number (ARN) of the endpoint being created.',
+    }),
+    ModelArn: ComprehendModelArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Number (ARN) of the model to which the endpoint is attached.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateEndpointResponse')
@@ -2133,62 +1614,34 @@ const InferenceUnitsIntegerSchema = z.int().min(1).openapi('InferenceUnitsIntege
 
 const CreateEndpointRequestSchema = z
   .object({
-    EndpointName: ComprehendEndpointNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This is the descriptive suffix that becomes part of the <code>EndpointArn</code> used for all subsequent requests to this resource. ',
-        }),
-    ),
-    ModelArn: ComprehendModelArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Number (ARN) of the model to which the endpoint will be attached.',
-        }),
-    ).exactOptional(),
-    DesiredInferenceUnits: InferenceUnitsIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The desired number of inference units to be used by the model using this endpoint. Each inference unit represents of a throughput of 100 characters per second.',
-        }),
-    ),
-    ClientRequestToken: ClientRequestTokenStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An idempotency token provided by the customer. If this token matches a previous endpoint creation request, Amazon Comprehend will not return a <code>ResourceInUseException</code>. ',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Tags to associate with the endpoint. A tag is a key-value pair that adds metadata to the endpoint. For example, a tag with "Sales" as the key might be added to an endpoint to indicate its use by the sales department. ',
-        }),
-    ).exactOptional(),
-    DataAccessRoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to trained custom models encrypted with a customer managed key (ModelKmsKeyId).',
-        }),
-    ).exactOptional(),
-    FlywheelArn: ComprehendFlywheelArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Number (ARN) of the flywheel to which the endpoint will be attached.',
-        }),
-    ).exactOptional(),
+    EndpointName: ComprehendEndpointNameSchema.openapi({
+      description:
+        'This is the descriptive suffix that becomes part of the <code>EndpointArn</code> used for all subsequent requests to this resource. ',
+    }),
+    ModelArn: ComprehendModelArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Number (ARN) of the model to which the endpoint will be attached.',
+    }),
+    DesiredInferenceUnits: InferenceUnitsIntegerSchema.openapi({
+      description:
+        ' The desired number of inference units to be used by the model using this endpoint. Each inference unit represents of a throughput of 100 characters per second.',
+    }),
+    ClientRequestToken: ClientRequestTokenStringSchema.exactOptional().openapi({
+      description:
+        'An idempotency token provided by the customer. If this token matches a previous endpoint creation request, Amazon Comprehend will not return a <code>ResourceInUseException</code>. ',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'Tags to associate with the endpoint. A tag is a key-value pair that adds metadata to the endpoint. For example, a tag with "Sales" as the key might be added to an endpoint to indicate its use by the sales department. ',
+    }),
+    DataAccessRoleArn: IamRoleArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to trained custom models encrypted with a customer managed key (ModelKmsKeyId).',
+    }),
+    FlywheelArn: ComprehendFlywheelArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Number (ARN) of the flywheel to which the endpoint will be attached.',
+    }),
   })
   .openapi({ required: ['EndpointName', 'DesiredInferenceUnits'], title: 'CreateEndpointRequest' })
   .openapi('CreateEndpointRequest')
@@ -2203,13 +1656,9 @@ const EntityRecognizerArnSchema = z
 
 const CreateEntityRecognizerResponseSchema = z
   .object({
-    EntityRecognizerArn: EntityRecognizerArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) that identifies the entity recognizer.',
-        }),
-    ).exactOptional(),
+    EntityRecognizerArn: EntityRecognizerArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) that identifies the entity recognizer.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateEntityRecognizerResponse')
@@ -2226,14 +1675,10 @@ const EntityTypeNameSchema = z
 
 const EntityTypesListItemSchema = z
   .object({
-    Type: EntityTypeNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An entity type within a labeled training dataset that Amazon Comprehend uses to train a custom entity recognizer.</p> <p>Entity types must not contain the following invalid characters: \\n (line break), \\\\n (escaped line break, \\r (carriage return), \\\\r (escaped carriage return), \\t (tab), \\\\t (escaped tab), space, and , (comma).</p>',
-        }),
-    ),
+    Type: EntityTypeNameSchema.openapi({
+      description:
+        '<p>An entity type within a labeled training dataset that Amazon Comprehend uses to train a custom entity recognizer.</p> <p>Entity types must not contain the following invalid characters: \\n (line break), \\\\n (escaped line break, \\r (carriage return), \\\\r (escaped carriage return), \\t (tab), \\\\t (escaped tab), space, and , (comma).</p>',
+    }),
   })
   .openapi({
     required: ['Type'],
@@ -2246,30 +1691,18 @@ const EntityTypesListSchema = z.array(EntityTypesListItemSchema).openapi('Entity
 
 const EntityRecognizerDocumentsSchema = z
   .object({
-    S3Uri: S3UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies the Amazon S3 location where the training documents for an entity recognizer are located. The URI must be in the same Region as the API endpoint that you are calling.',
-        }),
-    ),
-    TestS3Uri: S3UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies the Amazon S3 location where the test documents for an entity recognizer are located. The URI must be in the same Amazon Web Services Region as the API endpoint that you are calling.',
-        }),
-    ).exactOptional(),
-    InputFormat: InputFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies how the text in an input file should be processed. This is optional, and the default is ONE_DOC_PER_LINE. ONE_DOC_PER_FILE - Each file is considered a separate document. Use this option when you are processing large documents, such as newspaper articles or scientific papers. ONE_DOC_PER_LINE - Each line in a file is considered a separate document. Use this option when you are processing many short documents, such as text messages.',
-        }),
-    ).exactOptional(),
+    S3Uri: S3UriSchema.openapi({
+      description:
+        ' Specifies the Amazon S3 location where the training documents for an entity recognizer are located. The URI must be in the same Region as the API endpoint that you are calling.',
+    }),
+    TestS3Uri: S3UriSchema.exactOptional().openapi({
+      description:
+        ' Specifies the Amazon S3 location where the test documents for an entity recognizer are located. The URI must be in the same Amazon Web Services Region as the API endpoint that you are calling.',
+    }),
+    InputFormat: InputFormatSchema.exactOptional().openapi({
+      description:
+        ' Specifies how the text in an input file should be processed. This is optional, and the default is ONE_DOC_PER_LINE. ONE_DOC_PER_FILE - Each file is considered a separate document. Use this option when you are processing large documents, such as newspaper articles or scientific papers. ONE_DOC_PER_LINE - Each line in a file is considered a separate document. Use this option when you are processing many short documents, such as text messages.',
+    }),
   })
   .openapi({
     required: ['S3Uri'],
@@ -2279,22 +1712,14 @@ const EntityRecognizerDocumentsSchema = z
 
 const EntityRecognizerAnnotationsSchema = z
   .object({
-    S3Uri: S3UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies the Amazon S3 location where the annotations for an entity recognizer are located. The URI must be in the same Region as the API endpoint that you are calling.',
-        }),
-    ),
-    TestS3Uri: S3UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies the Amazon S3 location where the test annotations for an entity recognizer are located. The URI must be in the same Region as the API endpoint that you are calling.',
-        }),
-    ).exactOptional(),
+    S3Uri: S3UriSchema.openapi({
+      description:
+        ' Specifies the Amazon S3 location where the annotations for an entity recognizer are located. The URI must be in the same Region as the API endpoint that you are calling.',
+    }),
+    TestS3Uri: S3UriSchema.exactOptional().openapi({
+      description:
+        ' Specifies the Amazon S3 location where the test annotations for an entity recognizer are located. The URI must be in the same Region as the API endpoint that you are calling.',
+    }),
   })
   .openapi({
     required: ['S3Uri'],
@@ -2304,14 +1729,10 @@ const EntityRecognizerAnnotationsSchema = z
 
 const EntityRecognizerEntityListSchema = z
   .object({
-    S3Uri: S3UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the Amazon S3 location where the entity list is located. The URI must be in the same Region as the API endpoint that you are calling.',
-        }),
-    ),
+    S3Uri: S3UriSchema.openapi({
+      description:
+        'Specifies the Amazon S3 location where the entity list is located. The URI must be in the same Region as the API endpoint that you are calling.',
+    }),
   })
   .openapi({
     required: ['S3Uri'],
@@ -2325,53 +1746,29 @@ const EntityRecognizerAugmentedManifestsListSchema = z
 
 const EntityRecognizerInputDataConfigSchema = z
   .object({
-    DataFormat: EntityRecognizerDataFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The format of your training data:</p> <ul> <li> <p> <code>COMPREHEND_CSV</code>: A CSV file that supplements your training documents. The CSV file contains information about the custom entities that your trained model will detect. The required format of the file depends on whether you are providing annotations or an entity list.</p> <p>If you use this value, you must provide your CSV file by using either the <code>Annotations</code> or <code>EntityList</code> parameters. You must provide your training documents by using the <code>Documents</code> parameter.</p> </li> <li> <p> <code>AUGMENTED_MANIFEST</code>: A labeled dataset that is produced by Amazon SageMaker Ground Truth. This file is in JSON lines format. Each line is a complete JSON object that contains a training document and its labels. Each label annotates a named entity in the training document. </p> <p>If you use this value, you must provide the <code>AugmentedManifests</code> parameter in your request.</p> </li> </ul> <p>If you don't specify a value, Amazon Comprehend uses <code>COMPREHEND_CSV</code> as the default.</p>",
-        }),
-    ).exactOptional(),
-    EntityTypes: EntityTypesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The entity types in the labeled training data that Amazon Comprehend uses to train the custom entity recognizer. Any entity types that you don't specify are ignored.</p> <p>A maximum of 25 entity types can be used at one time to train an entity recognizer. Entity types must not contain the following invalid characters: \\n (line break), \\\\n (escaped line break), \\r (carriage return), \\\\r (escaped carriage return), \\t (tab), \\\\t (escaped tab), space, and , (comma). </p>",
-        }),
-    ),
-    Documents: EntityRecognizerDocumentsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The S3 location of the folder that contains the training documents for your custom entity recognizer.</p> <p>This parameter is required if you set <code>DataFormat</code> to <code>COMPREHEND_CSV</code>.</p>',
-        }),
-    ).exactOptional(),
-    Annotations: EntityRecognizerAnnotationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The S3 location of the CSV file that annotates your training documents.',
-        }),
-    ).exactOptional(),
-    EntityList: EntityRecognizerEntityListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The S3 location of the CSV file that has the entity list for your custom entity recognizer.',
-        }),
-    ).exactOptional(),
-    AugmentedManifests: EntityRecognizerAugmentedManifestsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of augmented manifest files that provide training data for your custom model. An augmented manifest file is a labeled dataset that is produced by Amazon SageMaker Ground Truth.</p> <p>This parameter is required if you set <code>DataFormat</code> to <code>AUGMENTED_MANIFEST</code>.</p>',
-        }),
-    ).exactOptional(),
+    DataFormat: EntityRecognizerDataFormatSchema.exactOptional().openapi({
+      description:
+        "<p>The format of your training data:</p> <ul> <li> <p> <code>COMPREHEND_CSV</code>: A CSV file that supplements your training documents. The CSV file contains information about the custom entities that your trained model will detect. The required format of the file depends on whether you are providing annotations or an entity list.</p> <p>If you use this value, you must provide your CSV file by using either the <code>Annotations</code> or <code>EntityList</code> parameters. You must provide your training documents by using the <code>Documents</code> parameter.</p> </li> <li> <p> <code>AUGMENTED_MANIFEST</code>: A labeled dataset that is produced by Amazon SageMaker Ground Truth. This file is in JSON lines format. Each line is a complete JSON object that contains a training document and its labels. Each label annotates a named entity in the training document. </p> <p>If you use this value, you must provide the <code>AugmentedManifests</code> parameter in your request.</p> </li> </ul> <p>If you don't specify a value, Amazon Comprehend uses <code>COMPREHEND_CSV</code> as the default.</p>",
+    }),
+    EntityTypes: EntityTypesListSchema.openapi({
+      description:
+        "<p>The entity types in the labeled training data that Amazon Comprehend uses to train the custom entity recognizer. Any entity types that you don't specify are ignored.</p> <p>A maximum of 25 entity types can be used at one time to train an entity recognizer. Entity types must not contain the following invalid characters: \\n (line break), \\\\n (escaped line break), \\r (carriage return), \\\\r (escaped carriage return), \\t (tab), \\\\t (escaped tab), space, and , (comma). </p>",
+    }),
+    Documents: EntityRecognizerDocumentsSchema.exactOptional().openapi({
+      description:
+        '<p>The S3 location of the folder that contains the training documents for your custom entity recognizer.</p> <p>This parameter is required if you set <code>DataFormat</code> to <code>COMPREHEND_CSV</code>.</p>',
+    }),
+    Annotations: EntityRecognizerAnnotationsSchema.exactOptional().openapi({
+      description: 'The S3 location of the CSV file that annotates your training documents.',
+    }),
+    EntityList: EntityRecognizerEntityListSchema.exactOptional().openapi({
+      description:
+        'The S3 location of the CSV file that has the entity list for your custom entity recognizer.',
+    }),
+    AugmentedManifests: EntityRecognizerAugmentedManifestsListSchema.exactOptional().openapi({
+      description:
+        '<p>A list of augmented manifest files that provide training data for your custom model. An augmented manifest file is a labeled dataset that is produced by Amazon SageMaker Ground Truth.</p> <p>This parameter is required if you set <code>DataFormat</code> to <code>AUGMENTED_MANIFEST</code>.</p>',
+    }),
   })
   .openapi({
     required: ['EntityTypes'],
@@ -2381,94 +1778,50 @@ const EntityRecognizerInputDataConfigSchema = z
 
 const CreateEntityRecognizerRequestSchema = z
   .object({
-    RecognizerName: ComprehendArnNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name given to the newly created recognizer. Recognizer names can be a maximum of 256 characters. Alphanumeric characters, hyphens (-) and underscores (_) are allowed. The name must be unique in the account/Region.',
-        }),
-    ),
-    VersionName: VersionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version name given to the newly created recognizer. Version names can be a maximum of 256 characters. Alphanumeric characters, hyphens (-) and underscores (_) are allowed. The version name must be unique among all models with the same recognizer name in the account/Region.',
-        }),
-    ).exactOptional(),
-    DataAccessRoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data.',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Tags to associate with the entity recognizer. A tag is a key-value pair that adds as a metadata to a resource used by Amazon Comprehend. For example, a tag with "Sales" as the key might be added to a resource to indicate its use by the sales department. ',
-        }),
-    ).exactOptional(),
-    InputDataConfig: EntityRecognizerInputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the format and location of the input data. The S3 bucket containing the input data must be located in the same Region as the entity recognizer being created. ',
-        }),
-    ),
-    ClientRequestToken: ClientRequestTokenStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " A unique identifier for the request. If you don't set the client request token, Amazon Comprehend generates one.",
-        }),
-    ).exactOptional(),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' You can specify any of the following languages: English ("en"), Spanish ("es"), French ("fr"), Italian ("it"), German ("de"), or Portuguese ("pt"). If you plan to use this entity recognizer with PDF, Word, or image input files, you must specify English as the language. All training documents must be in the same language.',
-        }),
-    ),
-    VolumeKmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>ID for the Amazon Web Services Key Management Service (KMS) key that Amazon Comprehend uses to encrypt data on the storage volume attached to the ML compute instance(s) that process the analysis job. The VolumeKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    VpcConfig: VpcConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configuration parameters for an optional private Virtual Private Cloud (VPC) containing the resources you are using for your custom entity recognizer. For more information, see <a href="https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html">Amazon VPC</a>. ',
-        }),
-    ).exactOptional(),
-    ModelKmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>ID for the KMS key that Amazon Comprehend uses to encrypt trained custom models. The ModelKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ModelPolicy: PolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The JSON resource-based policy to attach to your custom entity recognizer model. You can use this policy to allow another Amazon Web Services account to import your custom model.</p> <p>Provide your JSON as a UTF-8 encoded string without line breaks. To provide valid JSON for your policy, enclose the attribute names and values in double quotes. If the JSON body is also enclosed in double quotes, then you must escape the double quotes that are inside the policy:</p> <p> <code>"{\\"attribute\\": \\"value\\", \\"attribute\\": [\\"value\\"]}"</code> </p> <p>To avoid escaping quotes, you can use single quotes to enclose the policy and double quotes to enclose the JSON names and values:</p> <p> <code>\'{"attribute": "value", "attribute": ["value"]}\'</code> </p>',
-        }),
-    ).exactOptional(),
+    RecognizerName: ComprehendArnNameSchema.openapi({
+      description:
+        'The name given to the newly created recognizer. Recognizer names can be a maximum of 256 characters. Alphanumeric characters, hyphens (-) and underscores (_) are allowed. The name must be unique in the account/Region.',
+    }),
+    VersionName: VersionNameSchema.exactOptional().openapi({
+      description:
+        'The version name given to the newly created recognizer. Version names can be a maximum of 256 characters. Alphanumeric characters, hyphens (-) and underscores (_) are allowed. The version name must be unique among all models with the same recognizer name in the account/Region.',
+    }),
+    DataAccessRoleArn: IamRoleArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'Tags to associate with the entity recognizer. A tag is a key-value pair that adds as a metadata to a resource used by Amazon Comprehend. For example, a tag with "Sales" as the key might be added to a resource to indicate its use by the sales department. ',
+    }),
+    InputDataConfig: EntityRecognizerInputDataConfigSchema.openapi({
+      description:
+        'Specifies the format and location of the input data. The S3 bucket containing the input data must be located in the same Region as the entity recognizer being created. ',
+    }),
+    ClientRequestToken: ClientRequestTokenStringSchema.exactOptional().openapi({
+      description:
+        " A unique identifier for the request. If you don't set the client request token, Amazon Comprehend generates one.",
+    }),
+    LanguageCode: LanguageCodeSchema.openapi({
+      description:
+        ' You can specify any of the following languages: English ("en"), Spanish ("es"), French ("fr"), Italian ("it"), German ("de"), or Portuguese ("pt"). If you plan to use this entity recognizer with PDF, Word, or image input files, you must specify English as the language. All training documents must be in the same language.',
+    }),
+    VolumeKmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        '<p>ID for the Amazon Web Services Key Management Service (KMS) key that Amazon Comprehend uses to encrypt data on the storage volume attached to the ML compute instance(s) that process the analysis job. The VolumeKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
+    }),
+    VpcConfig: VpcConfigSchema.exactOptional().openapi({
+      description:
+        'Configuration parameters for an optional private Virtual Private Cloud (VPC) containing the resources you are using for your custom entity recognizer. For more information, see <a href="https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html">Amazon VPC</a>. ',
+    }),
+    ModelKmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        '<p>ID for the KMS key that Amazon Comprehend uses to encrypt trained custom models. The ModelKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
+    }),
+    ModelPolicy: PolicySchema.exactOptional().openapi({
+      description:
+        '<p>The JSON resource-based policy to attach to your custom entity recognizer model. You can use this policy to allow another Amazon Web Services account to import your custom model.</p> <p>Provide your JSON as a UTF-8 encoded string without line breaks. To provide valid JSON for your policy, enclose the attribute names and values in double quotes. If the JSON body is also enclosed in double quotes, then you must escape the double quotes that are inside the policy:</p> <p> <code>"{\\"attribute\\": \\"value\\", \\"attribute\\": [\\"value\\"]}"</code> </p> <p>To avoid escaping quotes, you can use single quotes to enclose the policy and double quotes to enclose the JSON names and values:</p> <p> <code>\'{"attribute": "value", "attribute": ["value"]}\'</code> </p>',
+    }),
   })
   .openapi({
     required: ['RecognizerName', 'DataAccessRoleArn', 'InputDataConfig', 'LanguageCode'],
@@ -2478,14 +1831,12 @@ const CreateEntityRecognizerRequestSchema = z
 
 const CreateFlywheelResponseSchema = z
   .object({
-    FlywheelArn: ComprehendFlywheelArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Number (ARN) of the flywheel.' }),
-    ).exactOptional(),
-    ActiveModelArn: ComprehendModelArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Number (ARN) of the active model version.' }),
-    ).exactOptional(),
+    FlywheelArn: ComprehendFlywheelArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Number (ARN) of the flywheel.',
+    }),
+    ActiveModelArn: ComprehendModelArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Number (ARN) of the active model version.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateFlywheelResponse')
@@ -2500,19 +1851,13 @@ const LabelsListSchema = z.array(LabelListItemSchema).max(1000).openapi('LabelsL
 
 const DocumentClassificationConfigSchema = z
   .object({
-    Mode: DocumentClassifierModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Classification mode indicates whether the documents are <code>MULTI_CLASS</code> or <code>MULTI_LABEL</code>.',
-        }),
-    ),
-    Labels: LabelsListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'One or more labels to associate with the custom classifier.' }),
-    ).exactOptional(),
+    Mode: DocumentClassifierModeSchema.openapi({
+      description:
+        'Classification mode indicates whether the documents are <code>MULTI_CLASS</code> or <code>MULTI_LABEL</code>.',
+    }),
+    Labels: LabelsListSchema.exactOptional().openapi({
+      description: 'One or more labels to associate with the custom classifier.',
+    }),
   })
   .openapi({
     required: ['Mode'],
@@ -2522,11 +1867,9 @@ const DocumentClassificationConfigSchema = z
 
 const EntityRecognitionConfigSchema = z
   .object({
-    EntityTypes: EntityTypesListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Up to 25 entity types that the model is trained to recognize.' }),
-    ),
+    EntityTypes: EntityTypesListSchema.openapi({
+      description: 'Up to 25 entity types that the model is trained to recognize.',
+    }),
   })
   .openapi({
     required: ['EntityTypes'],
@@ -2536,15 +1879,15 @@ const EntityRecognitionConfigSchema = z
 
 const TaskConfigSchema = z
   .object({
-    LanguageCode: LanguageCodeSchema.and(
-      z.any().openapi({ description: 'Language code for the language that the model supports.' }),
-    ),
-    DocumentClassificationConfig: DocumentClassificationConfigSchema.and(
-      z.any().openapi({ description: 'Configuration required for a classification model.' }),
-    ).exactOptional(),
-    EntityRecognitionConfig: EntityRecognitionConfigSchema.and(
-      z.any().openapi({ description: 'Configuration required for an entity recognition model.' }),
-    ).exactOptional(),
+    LanguageCode: LanguageCodeSchema.openapi({
+      description: 'Language code for the language that the model supports.',
+    }),
+    DocumentClassificationConfig: DocumentClassificationConfigSchema.exactOptional().openapi({
+      description: 'Configuration required for a classification model.',
+    }),
+    EntityRecognitionConfig: EntityRecognitionConfigSchema.exactOptional().openapi({
+      description: 'Configuration required for an entity recognition model.',
+    }),
   })
   .openapi({
     required: ['LanguageCode'],
@@ -2562,29 +1905,17 @@ const FlywheelS3UriSchema = z
 
 const DataSecurityConfigSchema = z
   .object({
-    ModelKmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>ID for the KMS key that Amazon Comprehend uses to encrypt trained custom models. The ModelKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    VolumeKmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'ID for the KMS key that Amazon Comprehend uses to encrypt the volume.',
-        }),
-    ).exactOptional(),
-    DataLakeKmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'ID for the KMS key that Amazon Comprehend uses to encrypt the data in the data lake.',
-        }),
-    ).exactOptional(),
+    ModelKmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        '<p>ID for the KMS key that Amazon Comprehend uses to encrypt trained custom models. The ModelKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
+    }),
+    VolumeKmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description: 'ID for the KMS key that Amazon Comprehend uses to encrypt the volume.',
+    }),
+    DataLakeKmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        'ID for the KMS key that Amazon Comprehend uses to encrypt the data in the data lake.',
+    }),
     VpcConfig: VpcConfigSchema.exactOptional(),
   })
   .openapi({ description: 'Data security configuration.', required: [] })
@@ -2592,57 +1923,33 @@ const DataSecurityConfigSchema = z
 
 const CreateFlywheelRequestSchema = z
   .object({
-    FlywheelName: ComprehendArnNameSchema.and(
-      z.any().openapi({ description: 'Name for the flywheel.' }),
-    ),
-    ActiveModelArn: ComprehendModelArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'To associate an existing model with the flywheel, specify the Amazon Resource Number (ARN) of the model version.',
-        }),
-    ).exactOptional(),
-    DataAccessRoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend the permissions required to access the flywheel data in the data lake.',
-        }),
-    ),
-    TaskConfig: TaskConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Configuration about the custom classifier associated with the flywheel.',
-        }),
-    ).exactOptional(),
-    ModelType: ModelTypeSchema.and(
-      z.any().openapi({ description: 'The model type.' }),
-    ).exactOptional(),
-    DataLakeS3Uri: FlywheelS3UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Enter the S3 location for the data lake. You can specify a new S3 bucket or a new folder of an existing S3 bucket. The flywheel creates the data lake at this location.',
-        }),
-    ),
-    DataSecurityConfig: DataSecurityConfigSchema.and(
-      z.any().openapi({ description: 'Data security configurations.' }),
-    ).exactOptional(),
-    ClientRequestToken: ClientRequestTokenStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A unique identifier for the request. If you don't set the client request token, Amazon Comprehend generates one.",
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags to associate with this flywheel.' }),
-    ).exactOptional(),
+    FlywheelName: ComprehendArnNameSchema.openapi({ description: 'Name for the flywheel.' }),
+    ActiveModelArn: ComprehendModelArnSchema.exactOptional().openapi({
+      description:
+        'To associate an existing model with the flywheel, specify the Amazon Resource Number (ARN) of the model version.',
+    }),
+    DataAccessRoleArn: IamRoleArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend the permissions required to access the flywheel data in the data lake.',
+    }),
+    TaskConfig: TaskConfigSchema.exactOptional().openapi({
+      description: 'Configuration about the custom classifier associated with the flywheel.',
+    }),
+    ModelType: ModelTypeSchema.exactOptional().openapi({ description: 'The model type.' }),
+    DataLakeS3Uri: FlywheelS3UriSchema.openapi({
+      description:
+        'Enter the S3 location for the data lake. You can specify a new S3 bucket or a new folder of an existing S3 bucket. The flywheel creates the data lake at this location.',
+    }),
+    DataSecurityConfig: DataSecurityConfigSchema.exactOptional().openapi({
+      description: 'Data security configurations.',
+    }),
+    ClientRequestToken: ClientRequestTokenStringSchema.exactOptional().openapi({
+      description:
+        "A unique identifier for the request. If you don't set the client request token, Amazon Comprehend generates one.",
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags to associate with this flywheel.',
+    }),
   })
   .openapi({
     required: ['FlywheelName', 'DataAccessRoleArn', 'DataLakeS3Uri'],
@@ -2651,66 +1958,54 @@ const CreateFlywheelRequestSchema = z
   .openapi('CreateFlywheelRequest')
 
 const DeleteDocumentClassifierResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteDocumentClassifierResponse')
 
 const DeleteDocumentClassifierRequestSchema = z
   .object({
-    DocumentClassifierArn: DocumentClassifierArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) that identifies the document classifier. ',
-        }),
-    ),
+    DocumentClassifierArn: DocumentClassifierArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) that identifies the document classifier. ',
+    }),
   })
   .openapi({ required: ['DocumentClassifierArn'], title: 'DeleteDocumentClassifierRequest' })
   .openapi('DeleteDocumentClassifierRequest')
 
-const DeleteEndpointResponseSchema = z.object({}).openapi('DeleteEndpointResponse')
+const DeleteEndpointResponseSchema = z.looseObject({}).openapi('DeleteEndpointResponse')
 
 const DeleteEndpointRequestSchema = z
   .object({
-    EndpointArn: ComprehendEndpointArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Number (ARN) of the endpoint being deleted.',
-        }),
-    ),
+    EndpointArn: ComprehendEndpointArnSchema.openapi({
+      description: 'The Amazon Resource Number (ARN) of the endpoint being deleted.',
+    }),
   })
   .openapi({ required: ['EndpointArn'], title: 'DeleteEndpointRequest' })
   .openapi('DeleteEndpointRequest')
 
-const DeleteEntityRecognizerResponseSchema = z.object({}).openapi('DeleteEntityRecognizerResponse')
+const DeleteEntityRecognizerResponseSchema = z
+  .looseObject({})
+  .openapi('DeleteEntityRecognizerResponse')
 
 const DeleteEntityRecognizerRequestSchema = z
   .object({
-    EntityRecognizerArn: EntityRecognizerArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) that identifies the entity recognizer.',
-        }),
-    ),
+    EntityRecognizerArn: EntityRecognizerArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) that identifies the entity recognizer.',
+    }),
   })
   .openapi({ required: ['EntityRecognizerArn'], title: 'DeleteEntityRecognizerRequest' })
   .openapi('DeleteEntityRecognizerRequest')
 
-const DeleteFlywheelResponseSchema = z.object({}).openapi('DeleteFlywheelResponse')
+const DeleteFlywheelResponseSchema = z.looseObject({}).openapi('DeleteFlywheelResponse')
 
 const DeleteFlywheelRequestSchema = z
   .object({
-    FlywheelArn: ComprehendFlywheelArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Number (ARN) of the flywheel to delete.' }),
-    ),
+    FlywheelArn: ComprehendFlywheelArnSchema.openapi({
+      description: 'The Amazon Resource Number (ARN) of the flywheel to delete.',
+    }),
   })
   .openapi({ required: ['FlywheelArn'], title: 'DeleteFlywheelRequest' })
   .openapi('DeleteFlywheelRequest')
 
-const DeleteResourcePolicyResponseSchema = z.object({}).openapi('DeleteResourcePolicyResponse')
+const DeleteResourcePolicyResponseSchema = z.looseObject({}).openapi('DeleteResourcePolicyResponse')
 
 const PolicyRevisionIdSchema = z
   .string()
@@ -2720,17 +2015,13 @@ const PolicyRevisionIdSchema = z
 
 const DeleteResourcePolicyRequestSchema = z
   .object({
-    ResourceArn: ComprehendModelArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the custom model version that has the policy to delete.',
-        }),
-    ),
-    PolicyRevisionId: PolicyRevisionIdSchema.and(
-      z.any().openapi({ description: 'The revision ID of the policy to delete.' }),
-    ).exactOptional(),
+    ResourceArn: ComprehendModelArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the custom model version that has the policy to delete.',
+    }),
+    PolicyRevisionId: PolicyRevisionIdSchema.exactOptional().openapi({
+      description: 'The revision ID of the policy to delete.',
+    }),
   })
   .openapi({ required: ['ResourceArn'], title: 'DeleteResourcePolicyRequest' })
   .openapi('DeleteResourcePolicyRequest')
@@ -2745,63 +2036,53 @@ const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
 
 const DatasetPropertiesSchema = z
   .object({
-    DatasetArn: ComprehendDatasetArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the dataset.' }),
-    ).exactOptional(),
-    DatasetName: ComprehendArnNameSchema.and(
-      z.any().openapi({ description: 'The name of the dataset.' }),
-    ).exactOptional(),
-    DatasetType: DatasetTypeSchema.and(
-      z.any().openapi({ description: 'The dataset type (training data or test data).' }),
-    ).exactOptional(),
-    DatasetS3Uri: S3UriSchema.and(
-      z.any().openapi({ description: 'The S3 URI where the dataset is stored.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'Description of the dataset.' }),
-    ).exactOptional(),
-    Status: DatasetStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The dataset status. While the system creates the dataset, the status is <code>CREATING</code>. When the dataset is ready to use, the status changes to <code>COMPLETED</code>. ',
-        }),
-    ).exactOptional(),
-    Message: AnyLengthStringSchema.and(
-      z.any().openapi({ description: 'A description of the status of the dataset.' }),
-    ).exactOptional(),
-    NumberOfDocuments: NumberOfDocumentsSchema.and(
-      z.any().openapi({ description: 'The number of documents in the dataset.' }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'Creation time of the dataset.' }),
-    ).exactOptional(),
-    EndTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Time when the data from the dataset becomes available in the data lake.',
-        }),
-    ).exactOptional(),
+    DatasetArn: ComprehendDatasetArnSchema.exactOptional().openapi({
+      description: 'The ARN of the dataset.',
+    }),
+    DatasetName: ComprehendArnNameSchema.exactOptional().openapi({
+      description: 'The name of the dataset.',
+    }),
+    DatasetType: DatasetTypeSchema.exactOptional().openapi({
+      description: 'The dataset type (training data or test data).',
+    }),
+    DatasetS3Uri: S3UriSchema.exactOptional().openapi({
+      description: 'The S3 URI where the dataset is stored.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'Description of the dataset.',
+    }),
+    Status: DatasetStatusSchema.exactOptional().openapi({
+      description:
+        'The dataset status. While the system creates the dataset, the status is <code>CREATING</code>. When the dataset is ready to use, the status changes to <code>COMPLETED</code>. ',
+    }),
+    Message: AnyLengthStringSchema.exactOptional().openapi({
+      description: 'A description of the status of the dataset.',
+    }),
+    NumberOfDocuments: NumberOfDocumentsSchema.exactOptional().openapi({
+      description: 'The number of documents in the dataset.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'Creation time of the dataset.',
+    }),
+    EndTime: TimestampSchema.exactOptional().openapi({
+      description: 'Time when the data from the dataset becomes available in the data lake.',
+    }),
   })
   .openapi({ description: 'Properties associated with the dataset.', required: [] })
   .openapi('DatasetProperties')
 
 const DescribeDatasetResponseSchema = z
   .object({
-    DatasetProperties: DatasetPropertiesSchema.and(
-      z.any().openapi({ description: 'The dataset properties.' }),
-    ).exactOptional(),
+    DatasetProperties: DatasetPropertiesSchema.exactOptional().openapi({
+      description: 'The dataset properties.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeDatasetResponse')
 
 const DescribeDatasetRequestSchema = z
   .object({
-    DatasetArn: ComprehendDatasetArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the dataset.' }),
-    ),
+    DatasetArn: ComprehendDatasetArnSchema.openapi({ description: 'The ARN of the dataset.' }),
   })
   .openapi({ required: ['DatasetArn'], title: 'DescribeDatasetRequest' })
   .openapi('DescribeDatasetRequest')
@@ -2834,30 +2115,18 @@ const JobStatusSchema = z
 
 const InputDataConfigSchema = z
   .object({
-    S3Uri: S3UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon S3 URI for the input data. The URI must be in same Region as the API endpoint that you are calling. The URI can point to a single input file or it can provide the prefix for a collection of data files. </p> <p>For example, if you use the URI <code>S3://bucketName/prefix</code>, if the prefix is a single file, Amazon Comprehend uses that file as input. If more than one file begins with the prefix, Amazon Comprehend uses all of them as input.</p>',
-        }),
-    ),
-    InputFormat: InputFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies how the text in an input file should be processed:</p> <ul> <li> <p> <code>ONE_DOC_PER_FILE</code> - Each file is considered a separate document. Use this option when you are processing large documents, such as newspaper articles or scientific papers.</p> </li> <li> <p> <code>ONE_DOC_PER_LINE</code> - Each line in a file is considered a separate document. Use this option when you are processing many short documents, such as text messages.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    DocumentReaderConfig: DocumentReaderConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides configuration parameters to override the default actions for extracting text from PDF documents and image files.',
-        }),
-    ).exactOptional(),
+    S3Uri: S3UriSchema.openapi({
+      description:
+        '<p>The Amazon S3 URI for the input data. The URI must be in same Region as the API endpoint that you are calling. The URI can point to a single input file or it can provide the prefix for a collection of data files. </p> <p>For example, if you use the URI <code>S3://bucketName/prefix</code>, if the prefix is a single file, Amazon Comprehend uses that file as input. If more than one file begins with the prefix, Amazon Comprehend uses all of them as input.</p>',
+    }),
+    InputFormat: InputFormatSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies how the text in an input file should be processed:</p> <ul> <li> <p> <code>ONE_DOC_PER_FILE</code> - Each file is considered a separate document. Use this option when you are processing large documents, such as newspaper articles or scientific papers.</p> </li> <li> <p> <code>ONE_DOC_PER_LINE</code> - Each line in a file is considered a separate document. Use this option when you are processing many short documents, such as text messages.</p> </li> </ul>',
+    }),
+    DocumentReaderConfig: DocumentReaderConfigSchema.exactOptional().openapi({
+      description:
+        'Provides configuration parameters to override the default actions for extracting text from PDF documents and image files.',
+    }),
   })
   .openapi({
     required: ['S3Uri'],
@@ -2868,22 +2137,14 @@ const InputDataConfigSchema = z
 
 const OutputDataConfigSchema = z
   .object({
-    S3Uri: S3UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>When you use the <code>OutputDataConfig</code> object with asynchronous operations, you specify the Amazon S3 location where you want to write the output data. The URI must be in the same Region as the API endpoint that you are calling. The location is used as the prefix for the actual location of the output file.</p> <p>When the topic detection job is finished, the service creates an output file in a directory specific to the job. The <code>S3Uri</code> field contains the location of the output file, called <code>output.tar.gz</code>. It is a compressed archive that contains the ouput of the operation.</p> <p> For a PII entity detection job, the output file is plain text, not a compressed archive. The output file name is the same as the input file, with <code>.out</code> appended at the end. </p>',
-        }),
-    ),
-    KmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>ID for the Amazon Web Services Key Management Service (KMS) key that Amazon Comprehend uses to encrypt the output results from an analysis job. The KmsKeyId can be one of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>KMS Key Alias: <code>"alias/ExampleAlias"</code> </p> </li> <li> <p>ARN of a KMS Key Alias: <code>"arn:aws:kms:us-west-2:111122223333:alias/ExampleAlias"</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    S3Uri: S3UriSchema.openapi({
+      description:
+        '<p>When you use the <code>OutputDataConfig</code> object with asynchronous operations, you specify the Amazon S3 location where you want to write the output data. The URI must be in the same Region as the API endpoint that you are calling. The location is used as the prefix for the actual location of the output file.</p> <p>When the topic detection job is finished, the service creates an output file in a directory specific to the job. The <code>S3Uri</code> field contains the location of the output file, called <code>output.tar.gz</code>. It is a compressed archive that contains the ouput of the operation.</p> <p> For a PII entity detection job, the output file is plain text, not a compressed archive. The output file name is the same as the input file, with <code>.out</code> appended at the end. </p>',
+    }),
+    KmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        '<p>ID for the Amazon Web Services Key Management Service (KMS) key that Amazon Comprehend uses to encrypt the output results from an analysis job. The KmsKeyId can be one of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>KMS Key Alias: <code>"alias/ExampleAlias"</code> </p> </li> <li> <p>ARN of a KMS Key Alias: <code>"arn:aws:kms:us-west-2:111122223333:alias/ExampleAlias"</code> </p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['S3Uri'],
@@ -2893,96 +2154,55 @@ const OutputDataConfigSchema = z
 
 const DocumentClassificationJobPropertiesSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The identifier assigned to the document classification job.' }),
-    ).exactOptional(),
-    JobArn: ComprehendArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the document classification job. It is a unique, fully qualified identifier for the job. It includes the Amazon Web Services account, Amazon Web Services Region, and the job ID. The format of the ARN is as follows:</p> <p> <code>arn:&lt;partition&gt;:comprehend:&lt;region&gt;:&lt;account-id&gt;:document-classification-job/&lt;job-id&gt;</code> </p> <p>The following is an example job ARN:</p> <p> <code>arn:aws:comprehend:us-west-2:111122223333:document-classification-job/1234abcd12ab34cd56ef1234567890ab</code> </p>',
-        }),
-    ).exactOptional(),
-    JobName: JobNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name that you assigned to the document classification job.' }),
-    ).exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The current status of the document classification job. If the status is <code>FAILED</code>, the <code>Message</code> field shows the reason for the failure.',
-        }),
-    ).exactOptional(),
-    Message: AnyLengthStringSchema.and(
-      z.any().openapi({ description: 'A description of the status of the job.' }),
-    ).exactOptional(),
-    SubmitTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time that the document classification job was submitted for processing.',
-        }),
-    ).exactOptional(),
-    EndTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time that the document classification job completed.' }),
-    ).exactOptional(),
-    DocumentClassifierArn: DocumentClassifierArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) that identifies the document classifier. ',
-        }),
-    ).exactOptional(),
-    InputDataConfig: InputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The input data configuration that you supplied when you created the document classification job.',
-        }),
-    ).exactOptional(),
-    OutputDataConfig: OutputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The output data configuration that you supplied when you created the document classification job.',
-        }),
-    ).exactOptional(),
-    DataAccessRoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data.',
-        }),
-    ).exactOptional(),
-    VolumeKmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>ID for the Amazon Web Services Key Management Service (KMS) key that Amazon Comprehend uses to encrypt data on the storage volume attached to the ML compute instance(s) that process the analysis job. The VolumeKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    VpcConfig: VpcConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Configuration parameters for a private Virtual Private Cloud (VPC) containing the resources you are using for your document classification job. For more information, see <a href="https://docs.aws.amazon.com/vppc/latest/userguide/what-is-amazon-vpc.html">Amazon VPC</a>. ',
-        }),
-    ).exactOptional(),
-    FlywheelArn: ComprehendFlywheelArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Number (ARN) of the flywheel' }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description: 'The identifier assigned to the document classification job.',
+    }),
+    JobArn: ComprehendArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the document classification job. It is a unique, fully qualified identifier for the job. It includes the Amazon Web Services account, Amazon Web Services Region, and the job ID. The format of the ARN is as follows:</p> <p> <code>arn:&lt;partition&gt;:comprehend:&lt;region&gt;:&lt;account-id&gt;:document-classification-job/&lt;job-id&gt;</code> </p> <p>The following is an example job ARN:</p> <p> <code>arn:aws:comprehend:us-west-2:111122223333:document-classification-job/1234abcd12ab34cd56ef1234567890ab</code> </p>',
+    }),
+    JobName: JobNameSchema.exactOptional().openapi({
+      description: 'The name that you assigned to the document classification job.',
+    }),
+    JobStatus: JobStatusSchema.exactOptional().openapi({
+      description:
+        'The current status of the document classification job. If the status is <code>FAILED</code>, the <code>Message</code> field shows the reason for the failure.',
+    }),
+    Message: AnyLengthStringSchema.exactOptional().openapi({
+      description: 'A description of the status of the job.',
+    }),
+    SubmitTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time that the document classification job was submitted for processing.',
+    }),
+    EndTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time that the document classification job completed.',
+    }),
+    DocumentClassifierArn: DocumentClassifierArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) that identifies the document classifier. ',
+    }),
+    InputDataConfig: InputDataConfigSchema.exactOptional().openapi({
+      description:
+        'The input data configuration that you supplied when you created the document classification job.',
+    }),
+    OutputDataConfig: OutputDataConfigSchema.exactOptional().openapi({
+      description:
+        'The output data configuration that you supplied when you created the document classification job.',
+    }),
+    DataAccessRoleArn: IamRoleArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data.',
+    }),
+    VolumeKmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        '<p>ID for the Amazon Web Services Key Management Service (KMS) key that Amazon Comprehend uses to encrypt data on the storage volume attached to the ML compute instance(s) that process the analysis job. The VolumeKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
+    }),
+    VpcConfig: VpcConfigSchema.exactOptional().openapi({
+      description:
+        ' Configuration parameters for a private Virtual Private Cloud (VPC) containing the resources you are using for your document classification job. For more information, see <a href="https://docs.aws.amazon.com/vppc/latest/userguide/what-is-amazon-vpc.html">Amazon VPC</a>. ',
+    }),
+    FlywheelArn: ComprehendFlywheelArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Number (ARN) of the flywheel',
+    }),
   })
   .openapi({
     description: 'Provides information about a document classification job.',
@@ -2992,28 +2212,21 @@ const DocumentClassificationJobPropertiesSchema = z
 
 const DescribeDocumentClassificationJobResponseSchema = z
   .object({
-    DocumentClassificationJobProperties: DocumentClassificationJobPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that describes the properties associated with the document classification job.',
-        }),
-    ).exactOptional(),
+    DocumentClassificationJobProperties:
+      DocumentClassificationJobPropertiesSchema.exactOptional().openapi({
+        description:
+          'An object that describes the properties associated with the document classification job.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('DescribeDocumentClassificationJobResponse')
 
 const DescribeDocumentClassificationJobRequestSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier that Amazon Comprehend generated for the job. The <code>StartDocumentClassificationJob</code> operation returns this identifier in its response.',
-        }),
-    ),
+    JobId: JobIdSchema.openapi({
+      description:
+        'The identifier that Amazon Comprehend generated for the job. The <code>StartDocumentClassificationJob</code> operation returns this identifier in its response.',
+    }),
   })
   .openapi({ required: ['JobId'], title: 'DescribeDocumentClassificationJobRequest' })
   .openapi('DescribeDocumentClassificationJobRequest')
@@ -3037,70 +2250,38 @@ const DoubleSchema = z.float64().openapi('Double')
 
 const ClassifierEvaluationMetricsSchema = z
   .object({
-    Accuracy: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The fraction of the labels that were correct recognized. It is computed by dividing the number of labels in the test documents that were correctly recognized by the total number of labels in the test documents.',
-        }),
-    ).exactOptional(),
-    Precision: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A measure of the usefulness of the classifier results in the test data. High precision means that the classifier returned substantially more relevant results than irrelevant ones.',
-        }),
-    ).exactOptional(),
-    Recall: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A measure of how complete the classifier results are for the test data. High recall means that the classifier returned most of the relevant results. ',
-        }),
-    ).exactOptional(),
-    F1Score: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A measure of how accurate the classifier results are for the test data. It is derived from the <code>Precision</code> and <code>Recall</code> values. The <code>F1Score</code> is the harmonic average of the two scores. The highest score is 1, and the worst score is 0. ',
-        }),
-    ).exactOptional(),
-    MicroPrecision: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A measure of the usefulness of the recognizer results in the test data. High precision means that the recognizer returned substantially more relevant results than irrelevant ones. Unlike the Precision metric which comes from averaging the precision of all available labels, this is based on the overall score of all precision scores added together.',
-        }),
-    ).exactOptional(),
-    MicroRecall: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A measure of how complete the classifier results are for the test data. High recall means that the classifier returned most of the relevant results. Specifically, this indicates how many of the correct categories in the text that the model can predict. It is a percentage of correct categories in the text that can found. Instead of averaging the recall scores of all labels (as with Recall), micro Recall is based on the overall score of all recall scores added together.',
-        }),
-    ).exactOptional(),
-    MicroF1Score: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A measure of how accurate the classifier results are for the test data. It is a combination of the <code>Micro Precision</code> and <code>Micro Recall</code> values. The <code>Micro F1Score</code> is the harmonic mean of the two scores. The highest score is 1, and the worst score is 0.',
-        }),
-    ).exactOptional(),
-    HammingLoss: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates the fraction of labels that are incorrectly predicted. Also seen as the fraction of wrong labels compared to the total number of labels. Scores closer to zero are better.',
-        }),
-    ).exactOptional(),
+    Accuracy: DoubleSchema.exactOptional().openapi({
+      description:
+        'The fraction of the labels that were correct recognized. It is computed by dividing the number of labels in the test documents that were correctly recognized by the total number of labels in the test documents.',
+    }),
+    Precision: DoubleSchema.exactOptional().openapi({
+      description:
+        'A measure of the usefulness of the classifier results in the test data. High precision means that the classifier returned substantially more relevant results than irrelevant ones.',
+    }),
+    Recall: DoubleSchema.exactOptional().openapi({
+      description:
+        'A measure of how complete the classifier results are for the test data. High recall means that the classifier returned most of the relevant results. ',
+    }),
+    F1Score: DoubleSchema.exactOptional().openapi({
+      description:
+        'A measure of how accurate the classifier results are for the test data. It is derived from the <code>Precision</code> and <code>Recall</code> values. The <code>F1Score</code> is the harmonic average of the two scores. The highest score is 1, and the worst score is 0. ',
+    }),
+    MicroPrecision: DoubleSchema.exactOptional().openapi({
+      description:
+        'A measure of the usefulness of the recognizer results in the test data. High precision means that the recognizer returned substantially more relevant results than irrelevant ones. Unlike the Precision metric which comes from averaging the precision of all available labels, this is based on the overall score of all precision scores added together.',
+    }),
+    MicroRecall: DoubleSchema.exactOptional().openapi({
+      description:
+        'A measure of how complete the classifier results are for the test data. High recall means that the classifier returned most of the relevant results. Specifically, this indicates how many of the correct categories in the text that the model can predict. It is a percentage of correct categories in the text that can found. Instead of averaging the recall scores of all labels (as with Recall), micro Recall is based on the overall score of all recall scores added together.',
+    }),
+    MicroF1Score: DoubleSchema.exactOptional().openapi({
+      description:
+        'A measure of how accurate the classifier results are for the test data. It is a combination of the <code>Micro Precision</code> and <code>Micro Recall</code> values. The <code>Micro F1Score</code> is the harmonic mean of the two scores. The highest score is 1, and the worst score is 0.',
+    }),
+    HammingLoss: DoubleSchema.exactOptional().openapi({
+      description:
+        'Indicates the fraction of labels that are incorrectly predicted. Also seen as the fraction of wrong labels compared to the total number of labels. Scores closer to zero are better.',
+    }),
   })
   .openapi({
     description:
@@ -3111,293 +2292,165 @@ const ClassifierEvaluationMetricsSchema = z
 
 const ClassifierMetadataSchema = z
   .object({
-    NumberOfLabels: IntegerSchema.and(
-      z.any().openapi({ description: 'The number of labels in the input data. ' }),
-    ).exactOptional(),
-    NumberOfTrainedDocuments: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of documents in the input data that were used to train the classifier. Typically this is 80 to 90 percent of the input documents.',
-        }),
-    ).exactOptional(),
-    NumberOfTestDocuments: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of documents in the input data that were used to test the classifier. Typically this is 10 to 20 percent of the input documents, up to 10,000 documents.',
-        }),
-    ).exactOptional(),
-    EvaluationMetrics: ClassifierEvaluationMetricsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Describes the result metrics for the test data associated with an documentation classifier.',
-        }),
-    ).exactOptional(),
+    NumberOfLabels: IntegerSchema.exactOptional().openapi({
+      description: 'The number of labels in the input data. ',
+    }),
+    NumberOfTrainedDocuments: IntegerSchema.exactOptional().openapi({
+      description:
+        'The number of documents in the input data that were used to train the classifier. Typically this is 80 to 90 percent of the input documents.',
+    }),
+    NumberOfTestDocuments: IntegerSchema.exactOptional().openapi({
+      description:
+        'The number of documents in the input data that were used to test the classifier. Typically this is 10 to 20 percent of the input documents, up to 10,000 documents.',
+    }),
+    EvaluationMetrics: ClassifierEvaluationMetricsSchema.exactOptional().openapi({
+      description:
+        ' Describes the result metrics for the test data associated with an documentation classifier.',
+    }),
   })
   .openapi({ description: 'Provides information about a document classifier.', required: [] })
   .openapi('ClassifierMetadata')
 
 const DocumentClassifierPropertiesSchema = z
   .object({
-    DocumentClassifierArn: DocumentClassifierArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) that identifies the document classifier.',
-        }),
-    ).exactOptional(),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language code for the language of the documents that the classifier was trained on.',
-        }),
-    ).exactOptional(),
-    Status: ModelStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The status of the document classifier. If the status is <code>TRAINED</code> the classifier is ready to use. If the status is <code>TRAINED_WITH_WARNINGS</code> the classifier training succeeded, but you should review the warnings returned in the <code>CreateDocumentClassifier</code> response.</p> <p> If the status is <code>FAILED</code> you can see additional information about why the classifier wasn't trained in the <code>Message</code> field.</p>",
-        }),
-    ).exactOptional(),
-    Message: AnyLengthStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Additional information about the status of the classifier.' }),
-    ).exactOptional(),
-    SubmitTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time that the document classifier was submitted for training.',
-        }),
-    ).exactOptional(),
-    EndTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time that training the document classifier completed.' }),
-    ).exactOptional(),
-    TrainingStartTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates the time when the training starts on documentation classifiers. You are billed for the time interval between this time and the value of TrainingEndTime. ',
-        }),
-    ).exactOptional(),
-    TrainingEndTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time that training of the document classifier was completed. Indicates the time when the training completes on documentation classifiers. You are billed for the time interval between this time and the value of TrainingStartTime.',
-        }),
-    ).exactOptional(),
-    InputDataConfig: DocumentClassifierInputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The input data configuration that you supplied when you created the document classifier for training.',
-        }),
-    ).exactOptional(),
-    OutputDataConfig: DocumentClassifierOutputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Provides output results configuration parameters for custom classifier jobs.',
-        }),
-    ).exactOptional(),
-    ClassifierMetadata: ClassifierMetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the document classifier, including the number of documents used for training the classifier, the number of documents used for test the classifier, and an accuracy rating.',
-        }),
-    ).exactOptional(),
-    DataAccessRoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data.',
-        }),
-    ).exactOptional(),
-    VolumeKmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>ID for the Amazon Web Services Key Management Service (KMS) key that Amazon Comprehend uses to encrypt data on the storage volume attached to the ML compute instance(s) that process the analysis job. The VolumeKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    VpcConfig: VpcConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Configuration parameters for a private Virtual Private Cloud (VPC) containing the resources you are using for your custom classifier. For more information, see <a href="https://docs.aws.amazon.com/vppc/latest/userguide/what-is-amazon-vpc.html">Amazon VPC</a>. ',
-        }),
-    ).exactOptional(),
-    Mode: DocumentClassifierModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates the mode in which the specific classifier was trained. This also indicates the format of input documents and the format of the confusion matrix. Each classifier can only be trained in one mode and this cannot be changed once the classifier is trained.',
-        }),
-    ).exactOptional(),
-    ModelKmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>ID for the KMS key that Amazon Comprehend uses to encrypt trained custom models. The ModelKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    VersionName: VersionNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The version name that you assigned to the document classifier.' }),
-    ).exactOptional(),
-    SourceModelArn: DocumentClassifierArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the source model. This model was imported from a different Amazon Web Services account to create the document classifier model in your Amazon Web Services account.',
-        }),
-    ).exactOptional(),
-    FlywheelArn: ComprehendFlywheelArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Number (ARN) of the flywheel' }),
-    ).exactOptional(),
+    DocumentClassifierArn: DocumentClassifierArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) that identifies the document classifier.',
+    }),
+    LanguageCode: LanguageCodeSchema.exactOptional().openapi({
+      description:
+        'The language code for the language of the documents that the classifier was trained on.',
+    }),
+    Status: ModelStatusSchema.exactOptional().openapi({
+      description:
+        "<p>The status of the document classifier. If the status is <code>TRAINED</code> the classifier is ready to use. If the status is <code>TRAINED_WITH_WARNINGS</code> the classifier training succeeded, but you should review the warnings returned in the <code>CreateDocumentClassifier</code> response.</p> <p> If the status is <code>FAILED</code> you can see additional information about why the classifier wasn't trained in the <code>Message</code> field.</p>",
+    }),
+    Message: AnyLengthStringSchema.exactOptional().openapi({
+      description: 'Additional information about the status of the classifier.',
+    }),
+    SubmitTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time that the document classifier was submitted for training.',
+    }),
+    EndTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time that training the document classifier completed.',
+    }),
+    TrainingStartTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'Indicates the time when the training starts on documentation classifiers. You are billed for the time interval between this time and the value of TrainingEndTime. ',
+    }),
+    TrainingEndTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The time that training of the document classifier was completed. Indicates the time when the training completes on documentation classifiers. You are billed for the time interval between this time and the value of TrainingStartTime.',
+    }),
+    InputDataConfig: DocumentClassifierInputDataConfigSchema.exactOptional().openapi({
+      description:
+        'The input data configuration that you supplied when you created the document classifier for training.',
+    }),
+    OutputDataConfig: DocumentClassifierOutputDataConfigSchema.exactOptional().openapi({
+      description: ' Provides output results configuration parameters for custom classifier jobs.',
+    }),
+    ClassifierMetadata: ClassifierMetadataSchema.exactOptional().openapi({
+      description:
+        'Information about the document classifier, including the number of documents used for training the classifier, the number of documents used for test the classifier, and an accuracy rating.',
+    }),
+    DataAccessRoleArn: IamRoleArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data.',
+    }),
+    VolumeKmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        '<p>ID for the Amazon Web Services Key Management Service (KMS) key that Amazon Comprehend uses to encrypt data on the storage volume attached to the ML compute instance(s) that process the analysis job. The VolumeKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
+    }),
+    VpcConfig: VpcConfigSchema.exactOptional().openapi({
+      description:
+        ' Configuration parameters for a private Virtual Private Cloud (VPC) containing the resources you are using for your custom classifier. For more information, see <a href="https://docs.aws.amazon.com/vppc/latest/userguide/what-is-amazon-vpc.html">Amazon VPC</a>. ',
+    }),
+    Mode: DocumentClassifierModeSchema.exactOptional().openapi({
+      description:
+        'Indicates the mode in which the specific classifier was trained. This also indicates the format of input documents and the format of the confusion matrix. Each classifier can only be trained in one mode and this cannot be changed once the classifier is trained.',
+    }),
+    ModelKmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        '<p>ID for the KMS key that Amazon Comprehend uses to encrypt trained custom models. The ModelKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
+    }),
+    VersionName: VersionNameSchema.exactOptional().openapi({
+      description: 'The version name that you assigned to the document classifier.',
+    }),
+    SourceModelArn: DocumentClassifierArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the source model. This model was imported from a different Amazon Web Services account to create the document classifier model in your Amazon Web Services account.',
+    }),
+    FlywheelArn: ComprehendFlywheelArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Number (ARN) of the flywheel',
+    }),
   })
   .openapi({ description: 'Provides information about a document classifier.', required: [] })
   .openapi('DocumentClassifierProperties')
 
 const DescribeDocumentClassifierResponseSchema = z
   .object({
-    DocumentClassifierProperties: DocumentClassifierPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that contains the properties associated with a document classifier.',
-        }),
-    ).exactOptional(),
+    DocumentClassifierProperties: DocumentClassifierPropertiesSchema.exactOptional().openapi({
+      description: 'An object that contains the properties associated with a document classifier.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeDocumentClassifierResponse')
 
 const DescribeDocumentClassifierRequestSchema = z
   .object({
-    DocumentClassifierArn: DocumentClassifierArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) that identifies the document classifier. The <code>CreateDocumentClassifier</code> operation returns this identifier in its response.',
-        }),
-    ),
+    DocumentClassifierArn: DocumentClassifierArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) that identifies the document classifier. The <code>CreateDocumentClassifier</code> operation returns this identifier in its response.',
+    }),
   })
   .openapi({ required: ['DocumentClassifierArn'], title: 'DescribeDocumentClassifierRequest' })
   .openapi('DescribeDocumentClassifierRequest')
 
 const DominantLanguageDetectionJobPropertiesSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier assigned to the dominant language detection job.',
-        }),
-    ).exactOptional(),
-    JobArn: ComprehendArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the dominant language detection job. It is a unique, fully qualified identifier for the job. It includes the Amazon Web Services account, Amazon Web Services Region, and the job ID. The format of the ARN is as follows:</p> <p> <code>arn:&lt;partition&gt;:comprehend:&lt;region&gt;:&lt;account-id&gt;:dominant-language-detection-job/&lt;job-id&gt;</code> </p> <p>The following is an example job ARN:</p> <p> <code>arn:aws:comprehend:us-west-2:111122223333:dominant-language-detection-job/1234abcd12ab34cd56ef1234567890ab</code> </p>',
-        }),
-    ).exactOptional(),
-    JobName: JobNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name that you assigned to the dominant language detection job.',
-        }),
-    ).exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The current status of the dominant language detection job. If the status is <code>FAILED</code>, the <code>Message</code> field shows the reason for the failure.',
-        }),
-    ).exactOptional(),
-    Message: AnyLengthStringSchema.and(
-      z.any().openapi({ description: 'A description for the status of a job.' }),
-    ).exactOptional(),
-    SubmitTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time that the dominant language detection job was submitted for processing.',
-        }),
-    ).exactOptional(),
-    EndTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time that the dominant language detection job completed.' }),
-    ).exactOptional(),
-    InputDataConfig: InputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The input data configuration that you supplied when you created the dominant language detection job.',
-        }),
-    ).exactOptional(),
-    OutputDataConfig: OutputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The output data configuration that you supplied when you created the dominant language detection job.',
-        }),
-    ).exactOptional(),
-    DataAccessRoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data.',
-        }),
-    ).exactOptional(),
-    VolumeKmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>ID for the Amazon Web Services Key Management Service (KMS) key that Amazon Comprehend uses to encrypt data on the storage volume attached to the ML compute instance(s) that process the analysis job. The VolumeKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    VpcConfig: VpcConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Configuration parameters for a private Virtual Private Cloud (VPC) containing the resources you are using for your dominant language detection job. For more information, see <a href="https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html">Amazon VPC</a>. ',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description: 'The identifier assigned to the dominant language detection job.',
+    }),
+    JobArn: ComprehendArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the dominant language detection job. It is a unique, fully qualified identifier for the job. It includes the Amazon Web Services account, Amazon Web Services Region, and the job ID. The format of the ARN is as follows:</p> <p> <code>arn:&lt;partition&gt;:comprehend:&lt;region&gt;:&lt;account-id&gt;:dominant-language-detection-job/&lt;job-id&gt;</code> </p> <p>The following is an example job ARN:</p> <p> <code>arn:aws:comprehend:us-west-2:111122223333:dominant-language-detection-job/1234abcd12ab34cd56ef1234567890ab</code> </p>',
+    }),
+    JobName: JobNameSchema.exactOptional().openapi({
+      description: 'The name that you assigned to the dominant language detection job.',
+    }),
+    JobStatus: JobStatusSchema.exactOptional().openapi({
+      description:
+        'The current status of the dominant language detection job. If the status is <code>FAILED</code>, the <code>Message</code> field shows the reason for the failure.',
+    }),
+    Message: AnyLengthStringSchema.exactOptional().openapi({
+      description: 'A description for the status of a job.',
+    }),
+    SubmitTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The time that the dominant language detection job was submitted for processing.',
+    }),
+    EndTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time that the dominant language detection job completed.',
+    }),
+    InputDataConfig: InputDataConfigSchema.exactOptional().openapi({
+      description:
+        'The input data configuration that you supplied when you created the dominant language detection job.',
+    }),
+    OutputDataConfig: OutputDataConfigSchema.exactOptional().openapi({
+      description:
+        'The output data configuration that you supplied when you created the dominant language detection job.',
+    }),
+    DataAccessRoleArn: IamRoleArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data.',
+    }),
+    VolumeKmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        '<p>ID for the Amazon Web Services Key Management Service (KMS) key that Amazon Comprehend uses to encrypt data on the storage volume attached to the ML compute instance(s) that process the analysis job. The VolumeKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
+    }),
+    VpcConfig: VpcConfigSchema.exactOptional().openapi({
+      description:
+        ' Configuration parameters for a private Virtual Private Cloud (VPC) containing the resources you are using for your dominant language detection job. For more information, see <a href="https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html">Amazon VPC</a>. ',
+    }),
   })
   .openapi({
     description: 'Provides information about a dominant language detection job.',
@@ -3407,28 +2460,21 @@ const DominantLanguageDetectionJobPropertiesSchema = z
 
 const DescribeDominantLanguageDetectionJobResponseSchema = z
   .object({
-    DominantLanguageDetectionJobProperties: DominantLanguageDetectionJobPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that contains the properties associated with a dominant language detection job.',
-        }),
-    ).exactOptional(),
+    DominantLanguageDetectionJobProperties:
+      DominantLanguageDetectionJobPropertiesSchema.exactOptional().openapi({
+        description:
+          'An object that contains the properties associated with a dominant language detection job.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('DescribeDominantLanguageDetectionJobResponse')
 
 const DescribeDominantLanguageDetectionJobRequestSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier that Amazon Comprehend generated for the job. The <code>StartDominantLanguageDetectionJob</code> operation returns this identifier in its response.',
-        }),
-    ),
+    JobId: JobIdSchema.openapi({
+      description:
+        'The identifier that Amazon Comprehend generated for the job. The <code>StartDominantLanguageDetectionJob</code> operation returns this identifier in its response.',
+    }),
   })
   .openapi({ required: ['JobId'], title: 'DescribeDominantLanguageDetectionJobRequest' })
   .openapi('DescribeDominantLanguageDetectionJobRequest')
@@ -3439,81 +2485,48 @@ const EndpointStatusSchema = z
 
 const EndpointPropertiesSchema = z
   .object({
-    EndpointArn: ComprehendEndpointArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Number (ARN) of the endpoint.' }),
-    ).exactOptional(),
-    Status: EndpointStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the status of the endpoint. Because the endpoint updates and creation are asynchronous, so customers will need to wait for the endpoint to be <code>Ready</code> status before making inference requests.',
-        }),
-    ).exactOptional(),
-    Message: AnyLengthStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies a reason for failure in cases of <code>Failed</code> status.',
-        }),
-    ).exactOptional(),
-    ModelArn: ComprehendModelArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Number (ARN) of the model to which the endpoint is attached.',
-        }),
-    ).exactOptional(),
-    DesiredModelArn: ComprehendModelArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'ARN of the new model to use for updating an existing endpoint. This ARN is going to be different from the model ARN when the update is in progress',
-        }),
-    ).exactOptional(),
-    DesiredInferenceUnits: InferenceUnitsIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The desired number of inference units to be used by the model using this endpoint. Each inference unit represents of a throughput of 100 characters per second.',
-        }),
-    ).exactOptional(),
-    CurrentInferenceUnits: InferenceUnitsIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of inference units currently used by the model using this endpoint.',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The creation date and time of the endpoint.' }),
-    ).exactOptional(),
-    LastModifiedTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The date and time that the endpoint was last modified.' }),
-    ).exactOptional(),
-    DataAccessRoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to trained custom models encrypted with a customer managed key (ModelKmsKeyId).',
-        }),
-    ).exactOptional(),
-    DesiredDataAccessRoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Data access role ARN to use in case the new model is encrypted with a customer KMS key.',
-        }),
-    ).exactOptional(),
-    FlywheelArn: ComprehendFlywheelArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Number (ARN) of the flywheel' }),
-    ).exactOptional(),
+    EndpointArn: ComprehendEndpointArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Number (ARN) of the endpoint.',
+    }),
+    Status: EndpointStatusSchema.exactOptional().openapi({
+      description:
+        'Specifies the status of the endpoint. Because the endpoint updates and creation are asynchronous, so customers will need to wait for the endpoint to be <code>Ready</code> status before making inference requests.',
+    }),
+    Message: AnyLengthStringSchema.exactOptional().openapi({
+      description: 'Specifies a reason for failure in cases of <code>Failed</code> status.',
+    }),
+    ModelArn: ComprehendModelArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Number (ARN) of the model to which the endpoint is attached.',
+    }),
+    DesiredModelArn: ComprehendModelArnSchema.exactOptional().openapi({
+      description:
+        'ARN of the new model to use for updating an existing endpoint. This ARN is going to be different from the model ARN when the update is in progress',
+    }),
+    DesiredInferenceUnits: InferenceUnitsIntegerSchema.exactOptional().openapi({
+      description:
+        'The desired number of inference units to be used by the model using this endpoint. Each inference unit represents of a throughput of 100 characters per second.',
+    }),
+    CurrentInferenceUnits: InferenceUnitsIntegerSchema.exactOptional().openapi({
+      description: 'The number of inference units currently used by the model using this endpoint.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'The creation date and time of the endpoint.',
+    }),
+    LastModifiedTime: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time that the endpoint was last modified.',
+    }),
+    DataAccessRoleArn: IamRoleArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to trained custom models encrypted with a customer managed key (ModelKmsKeyId).',
+    }),
+    DesiredDataAccessRoleArn: IamRoleArnSchema.exactOptional().openapi({
+      description:
+        'Data access role ARN to use in case the new model is encrypted with a customer KMS key.',
+    }),
+    FlywheelArn: ComprehendFlywheelArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Number (ARN) of the flywheel',
+    }),
   })
   .openapi({
     description:
@@ -3524,180 +2537,114 @@ const EndpointPropertiesSchema = z
 
 const DescribeEndpointResponseSchema = z
   .object({
-    EndpointProperties: EndpointPropertiesSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Describes information associated with the specific endpoint.' }),
-    ).exactOptional(),
+    EndpointProperties: EndpointPropertiesSchema.exactOptional().openapi({
+      description: 'Describes information associated with the specific endpoint.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeEndpointResponse')
 
 const DescribeEndpointRequestSchema = z
   .object({
-    EndpointArn: ComprehendEndpointArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Number (ARN) of the endpoint being described.',
-        }),
-    ),
+    EndpointArn: ComprehendEndpointArnSchema.openapi({
+      description: 'The Amazon Resource Number (ARN) of the endpoint being described.',
+    }),
   })
   .openapi({ required: ['EndpointArn'], title: 'DescribeEndpointRequest' })
   .openapi('DescribeEndpointRequest')
 
 const EntitiesDetectionJobPropertiesSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z.any().openapi({ description: 'The identifier assigned to the entities detection job.' }),
-    ).exactOptional(),
-    JobArn: ComprehendArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the entities detection job. It is a unique, fully qualified identifier for the job. It includes the Amazon Web Services account, Amazon Web Services Region, and the job ID. The format of the ARN is as follows:</p> <p> <code>arn:&lt;partition&gt;:comprehend:&lt;region&gt;:&lt;account-id&gt;:entities-detection-job/&lt;job-id&gt;</code> </p> <p>The following is an example job ARN:</p> <p> <code>arn:aws:comprehend:us-west-2:111122223333:entities-detection-job/1234abcd12ab34cd56ef1234567890ab</code> </p>',
-        }),
-    ).exactOptional(),
-    JobName: JobNameSchema.and(
-      z.any().openapi({ description: 'The name that you assigned the entities detection job.' }),
-    ).exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The current status of the entities detection job. If the status is <code>FAILED</code>, the <code>Message</code> field shows the reason for the failure.',
-        }),
-    ).exactOptional(),
-    Message: AnyLengthStringSchema.and(
-      z.any().openapi({ description: 'A description of the status of a job.' }),
-    ).exactOptional(),
-    SubmitTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time that the entities detection job was submitted for processing.',
-        }),
-    ).exactOptional(),
-    EndTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time that the entities detection job completed' }),
-    ).exactOptional(),
-    EntityRecognizerArn: EntityRecognizerArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) that identifies the entity recognizer.',
-        }),
-    ).exactOptional(),
-    InputDataConfig: InputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The input data configuration that you supplied when you created the entities detection job.',
-        }),
-    ).exactOptional(),
-    OutputDataConfig: OutputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The output data configuration that you supplied when you created the entities detection job. ',
-        }),
-    ).exactOptional(),
-    LanguageCode: LanguageCodeSchema.and(
-      z.any().openapi({ description: 'The language code of the input documents.' }),
-    ).exactOptional(),
-    DataAccessRoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data.',
-        }),
-    ).exactOptional(),
-    VolumeKmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>ID for the Amazon Web Services Key Management Service (KMS) key that Amazon Comprehend uses to encrypt data on the storage volume attached to the ML compute instance(s) that process the analysis job. The VolumeKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    VpcConfig: VpcConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Configuration parameters for a private Virtual Private Cloud (VPC) containing the resources you are using for your entity detection job. For more information, see <a href="https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html">Amazon VPC</a>. ',
-        }),
-    ).exactOptional(),
-    FlywheelArn: ComprehendFlywheelArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the flywheel associated with this job.',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description: 'The identifier assigned to the entities detection job.',
+    }),
+    JobArn: ComprehendArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the entities detection job. It is a unique, fully qualified identifier for the job. It includes the Amazon Web Services account, Amazon Web Services Region, and the job ID. The format of the ARN is as follows:</p> <p> <code>arn:&lt;partition&gt;:comprehend:&lt;region&gt;:&lt;account-id&gt;:entities-detection-job/&lt;job-id&gt;</code> </p> <p>The following is an example job ARN:</p> <p> <code>arn:aws:comprehend:us-west-2:111122223333:entities-detection-job/1234abcd12ab34cd56ef1234567890ab</code> </p>',
+    }),
+    JobName: JobNameSchema.exactOptional().openapi({
+      description: 'The name that you assigned the entities detection job.',
+    }),
+    JobStatus: JobStatusSchema.exactOptional().openapi({
+      description:
+        'The current status of the entities detection job. If the status is <code>FAILED</code>, the <code>Message</code> field shows the reason for the failure.',
+    }),
+    Message: AnyLengthStringSchema.exactOptional().openapi({
+      description: 'A description of the status of a job.',
+    }),
+    SubmitTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time that the entities detection job was submitted for processing.',
+    }),
+    EndTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time that the entities detection job completed',
+    }),
+    EntityRecognizerArn: EntityRecognizerArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) that identifies the entity recognizer.',
+    }),
+    InputDataConfig: InputDataConfigSchema.exactOptional().openapi({
+      description:
+        'The input data configuration that you supplied when you created the entities detection job.',
+    }),
+    OutputDataConfig: OutputDataConfigSchema.exactOptional().openapi({
+      description:
+        'The output data configuration that you supplied when you created the entities detection job. ',
+    }),
+    LanguageCode: LanguageCodeSchema.exactOptional().openapi({
+      description: 'The language code of the input documents.',
+    }),
+    DataAccessRoleArn: IamRoleArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data.',
+    }),
+    VolumeKmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        '<p>ID for the Amazon Web Services Key Management Service (KMS) key that Amazon Comprehend uses to encrypt data on the storage volume attached to the ML compute instance(s) that process the analysis job. The VolumeKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
+    }),
+    VpcConfig: VpcConfigSchema.exactOptional().openapi({
+      description:
+        ' Configuration parameters for a private Virtual Private Cloud (VPC) containing the resources you are using for your entity detection job. For more information, see <a href="https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html">Amazon VPC</a>. ',
+    }),
+    FlywheelArn: ComprehendFlywheelArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the flywheel associated with this job.',
+    }),
   })
   .openapi({ description: 'Provides information about an entities detection job.', required: [] })
   .openapi('EntitiesDetectionJobProperties')
 
 const DescribeEntitiesDetectionJobResponseSchema = z
   .object({
-    EntitiesDetectionJobProperties: EntitiesDetectionJobPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that contains the properties associated with an entities detection job.',
-        }),
-    ).exactOptional(),
+    EntitiesDetectionJobProperties: EntitiesDetectionJobPropertiesSchema.exactOptional().openapi({
+      description:
+        'An object that contains the properties associated with an entities detection job.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeEntitiesDetectionJobResponse')
 
 const DescribeEntitiesDetectionJobRequestSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier that Amazon Comprehend generated for the job. The <code>StartEntitiesDetectionJob</code> operation returns this identifier in its response.',
-        }),
-    ),
+    JobId: JobIdSchema.openapi({
+      description:
+        'The identifier that Amazon Comprehend generated for the job. The <code>StartEntitiesDetectionJob</code> operation returns this identifier in its response.',
+    }),
   })
   .openapi({ required: ['JobId'], title: 'DescribeEntitiesDetectionJobRequest' })
   .openapi('DescribeEntitiesDetectionJobRequest')
 
 const EntityRecognizerEvaluationMetricsSchema = z
   .object({
-    Precision: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A measure of the usefulness of the recognizer results in the test data. High precision means that the recognizer returned substantially more relevant results than irrelevant ones. ',
-        }),
-    ).exactOptional(),
-    Recall: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A measure of how complete the recognizer results are for the test data. High recall means that the recognizer returned most of the relevant results.',
-        }),
-    ).exactOptional(),
-    F1Score: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A measure of how accurate the recognizer results are for the test data. It is derived from the <code>Precision</code> and <code>Recall</code> values. The <code>F1Score</code> is the harmonic average of the two scores. For plain text entity recognizer models, the range is 0 to 100, where 100 is the best score. For PDF/Word entity recognizer models, the range is 0 to 1, where 1 is the best score. ',
-        }),
-    ).exactOptional(),
+    Precision: DoubleSchema.exactOptional().openapi({
+      description:
+        'A measure of the usefulness of the recognizer results in the test data. High precision means that the recognizer returned substantially more relevant results than irrelevant ones. ',
+    }),
+    Recall: DoubleSchema.exactOptional().openapi({
+      description:
+        'A measure of how complete the recognizer results are for the test data. High recall means that the recognizer returned most of the relevant results.',
+    }),
+    F1Score: DoubleSchema.exactOptional().openapi({
+      description:
+        'A measure of how accurate the recognizer results are for the test data. It is derived from the <code>Precision</code> and <code>Recall</code> values. The <code>F1Score</code> is the harmonic average of the two scores. For plain text entity recognizer models, the range is 0 to 100, where 100 is the best score. For PDF/Word entity recognizer models, the range is 0 to 1, where 1 is the best score. ',
+    }),
   })
   .openapi({
     description: 'Detailed information about the accuracy of an entity recognizer. ',
@@ -3707,30 +2654,18 @@ const EntityRecognizerEvaluationMetricsSchema = z
 
 const EntityTypesEvaluationMetricsSchema = z
   .object({
-    Precision: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A measure of the usefulness of the recognizer results for a specific entity type in the test data. High precision means that the recognizer returned substantially more relevant results than irrelevant ones. ',
-        }),
-    ).exactOptional(),
-    Recall: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A measure of how complete the recognizer results are for a specific entity type in the test data. High recall means that the recognizer returned most of the relevant results.',
-        }),
-    ).exactOptional(),
-    F1Score: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A measure of how accurate the recognizer results are for a specific entity type in the test data. It is derived from the <code>Precision</code> and <code>Recall</code> values. The <code>F1Score</code> is the harmonic average of the two scores. The highest score is 1, and the worst score is 0. ',
-        }),
-    ).exactOptional(),
+    Precision: DoubleSchema.exactOptional().openapi({
+      description:
+        'A measure of the usefulness of the recognizer results for a specific entity type in the test data. High precision means that the recognizer returned substantially more relevant results than irrelevant ones. ',
+    }),
+    Recall: DoubleSchema.exactOptional().openapi({
+      description:
+        'A measure of how complete the recognizer results are for a specific entity type in the test data. High recall means that the recognizer returned most of the relevant results.',
+    }),
+    F1Score: DoubleSchema.exactOptional().openapi({
+      description:
+        'A measure of how accurate the recognizer results are for a specific entity type in the test data. It is derived from the <code>Precision</code> and <code>Recall</code> values. The <code>F1Score</code> is the harmonic average of the two scores. The highest score is 1, and the worst score is 0. ',
+    }),
   })
   .openapi({
     description:
@@ -3741,30 +2676,18 @@ const EntityTypesEvaluationMetricsSchema = z
 
 const EntityRecognizerMetadataEntityTypesListItemSchema = z
   .object({
-    Type: AnyLengthStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Type of entity from the list of entity types in the metadata of an entity recognizer. ',
-        }),
-    ).exactOptional(),
-    EvaluationMetrics: EntityTypesEvaluationMetricsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Detailed information about the accuracy of the entity recognizer for a specific item on the list of entity types. ',
-        }),
-    ).exactOptional(),
-    NumberOfTrainMentions: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates the number of times the given entity type was seen in the training data. ',
-        }),
-    ).exactOptional(),
+    Type: AnyLengthStringSchema.exactOptional().openapi({
+      description:
+        'Type of entity from the list of entity types in the metadata of an entity recognizer. ',
+    }),
+    EvaluationMetrics: EntityTypesEvaluationMetricsSchema.exactOptional().openapi({
+      description:
+        'Detailed information about the accuracy of the entity recognizer for a specific item on the list of entity types. ',
+    }),
+    NumberOfTrainMentions: IntegerSchema.exactOptional().openapi({
+      description:
+        'Indicates the number of times the given entity type was seen in the training data. ',
+    }),
   })
   .openapi({
     description:
@@ -3779,168 +2702,113 @@ const EntityRecognizerMetadataEntityTypesListSchema = z
 
 const EntityRecognizerMetadataSchema = z
   .object({
-    NumberOfTrainedDocuments: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The number of documents in the input data that were used to train the entity recognizer. Typically this is 80 to 90 percent of the input documents.',
-        }),
-    ).exactOptional(),
-    NumberOfTestDocuments: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The number of documents in the input data that were used to test the entity recognizer. Typically this is 10 to 20 percent of the input documents.',
-        }),
-    ).exactOptional(),
-    EvaluationMetrics: EntityRecognizerEvaluationMetricsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Detailed information about the accuracy of an entity recognizer.',
-        }),
-    ).exactOptional(),
-    EntityTypes: EntityRecognizerMetadataEntityTypesListSchema.and(
-      z.any().openapi({ description: 'Entity types from the metadata of an entity recognizer.' }),
-    ).exactOptional(),
+    NumberOfTrainedDocuments: IntegerSchema.exactOptional().openapi({
+      description:
+        ' The number of documents in the input data that were used to train the entity recognizer. Typically this is 80 to 90 percent of the input documents.',
+    }),
+    NumberOfTestDocuments: IntegerSchema.exactOptional().openapi({
+      description:
+        ' The number of documents in the input data that were used to test the entity recognizer. Typically this is 10 to 20 percent of the input documents.',
+    }),
+    EvaluationMetrics: EntityRecognizerEvaluationMetricsSchema.exactOptional().openapi({
+      description: 'Detailed information about the accuracy of an entity recognizer.',
+    }),
+    EntityTypes: EntityRecognizerMetadataEntityTypesListSchema.exactOptional().openapi({
+      description: 'Entity types from the metadata of an entity recognizer.',
+    }),
   })
   .openapi({ description: 'Detailed information about an entity recognizer.', required: [] })
   .openapi('EntityRecognizerMetadata')
 
 const EntityRecognizerOutputDataConfigSchema = z
   .object({
-    FlywheelStatsS3Prefix: S3UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon S3 prefix for the data lake location of the flywheel statistics.',
-        }),
-    ).exactOptional(),
+    FlywheelStatsS3Prefix: S3UriSchema.exactOptional().openapi({
+      description: 'The Amazon S3 prefix for the data lake location of the flywheel statistics.',
+    }),
   })
   .openapi({ description: 'Output data configuration.', required: [] })
   .openapi('EntityRecognizerOutputDataConfig')
 
 const EntityRecognizerPropertiesSchema = z
   .object({
-    EntityRecognizerArn: EntityRecognizerArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) that identifies the entity recognizer.',
-        }),
-    ).exactOptional(),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The language of the input documents. All documents must be in the same language. Only English ("en") is currently supported.',
-        }),
-    ).exactOptional(),
-    Status: ModelStatusSchema.and(
-      z.any().openapi({ description: 'Provides the status of the entity recognizer.' }),
-    ).exactOptional(),
-    Message: AnyLengthStringSchema.and(
-      z.any().openapi({ description: ' A description of the status of the recognizer.' }),
-    ).exactOptional(),
-    SubmitTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time that the recognizer was submitted for processing.' }),
-    ).exactOptional(),
-    EndTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time that the recognizer creation completed.' }),
-    ).exactOptional(),
-    TrainingStartTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time that training of the entity recognizer started.' }),
-    ).exactOptional(),
-    TrainingEndTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time that training of the entity recognizer was completed.' }),
-    ).exactOptional(),
-    InputDataConfig: EntityRecognizerInputDataConfigSchema.and(
-      z.any().openapi({ description: 'The input data properties of an entity recognizer.' }),
-    ).exactOptional(),
-    RecognizerMetadata: EntityRecognizerMetadataSchema.and(
-      z.any().openapi({ description: ' Provides information about an entity recognizer.' }),
-    ).exactOptional(),
-    DataAccessRoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data.',
-        }),
-    ).exactOptional(),
-    VolumeKmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>ID for the Amazon Web Services Key Management Service (KMS) key that Amazon Comprehend uses to encrypt data on the storage volume attached to the ML compute instance(s) that process the analysis job. The VolumeKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    VpcConfig: VpcConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Configuration parameters for a private Virtual Private Cloud (VPC) containing the resources you are using for your custom entity recognizer. For more information, see <a href="https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html">Amazon VPC</a>. ',
-        }),
-    ).exactOptional(),
-    ModelKmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>ID for the KMS key that Amazon Comprehend uses to encrypt trained custom models. The ModelKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    VersionName: VersionNameSchema.and(
-      z.any().openapi({ description: 'The version name you assigned to the entity recognizer.' }),
-    ).exactOptional(),
-    SourceModelArn: EntityRecognizerArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the source model. This model was imported from a different Amazon Web Services account to create the entity recognizer model in your Amazon Web Services account.',
-        }),
-    ).exactOptional(),
-    FlywheelArn: ComprehendFlywheelArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Number (ARN) of the flywheel' }),
-    ).exactOptional(),
-    OutputDataConfig: EntityRecognizerOutputDataConfigSchema.and(
-      z.any().openapi({ description: 'Output data configuration.' }),
-    ).exactOptional(),
+    EntityRecognizerArn: EntityRecognizerArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) that identifies the entity recognizer.',
+    }),
+    LanguageCode: LanguageCodeSchema.exactOptional().openapi({
+      description:
+        ' The language of the input documents. All documents must be in the same language. Only English ("en") is currently supported.',
+    }),
+    Status: ModelStatusSchema.exactOptional().openapi({
+      description: 'Provides the status of the entity recognizer.',
+    }),
+    Message: AnyLengthStringSchema.exactOptional().openapi({
+      description: ' A description of the status of the recognizer.',
+    }),
+    SubmitTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time that the recognizer was submitted for processing.',
+    }),
+    EndTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time that the recognizer creation completed.',
+    }),
+    TrainingStartTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time that training of the entity recognizer started.',
+    }),
+    TrainingEndTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time that training of the entity recognizer was completed.',
+    }),
+    InputDataConfig: EntityRecognizerInputDataConfigSchema.exactOptional().openapi({
+      description: 'The input data properties of an entity recognizer.',
+    }),
+    RecognizerMetadata: EntityRecognizerMetadataSchema.exactOptional().openapi({
+      description: ' Provides information about an entity recognizer.',
+    }),
+    DataAccessRoleArn: IamRoleArnSchema.exactOptional().openapi({
+      description:
+        ' The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data.',
+    }),
+    VolumeKmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        '<p>ID for the Amazon Web Services Key Management Service (KMS) key that Amazon Comprehend uses to encrypt data on the storage volume attached to the ML compute instance(s) that process the analysis job. The VolumeKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
+    }),
+    VpcConfig: VpcConfigSchema.exactOptional().openapi({
+      description:
+        ' Configuration parameters for a private Virtual Private Cloud (VPC) containing the resources you are using for your custom entity recognizer. For more information, see <a href="https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html">Amazon VPC</a>. ',
+    }),
+    ModelKmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        '<p>ID for the KMS key that Amazon Comprehend uses to encrypt trained custom models. The ModelKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
+    }),
+    VersionName: VersionNameSchema.exactOptional().openapi({
+      description: 'The version name you assigned to the entity recognizer.',
+    }),
+    SourceModelArn: EntityRecognizerArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the source model. This model was imported from a different Amazon Web Services account to create the entity recognizer model in your Amazon Web Services account.',
+    }),
+    FlywheelArn: ComprehendFlywheelArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Number (ARN) of the flywheel',
+    }),
+    OutputDataConfig: EntityRecognizerOutputDataConfigSchema.exactOptional().openapi({
+      description: 'Output data configuration.',
+    }),
   })
   .openapi({ description: 'Describes information about an entity recognizer.', required: [] })
   .openapi('EntityRecognizerProperties')
 
 const DescribeEntityRecognizerResponseSchema = z
   .object({
-    EntityRecognizerProperties: EntityRecognizerPropertiesSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Describes information associated with an entity recognizer.' }),
-    ).exactOptional(),
+    EntityRecognizerProperties: EntityRecognizerPropertiesSchema.exactOptional().openapi({
+      description: 'Describes information associated with an entity recognizer.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeEntityRecognizerResponse')
 
 const DescribeEntityRecognizerRequestSchema = z
   .object({
-    EntityRecognizerArn: EntityRecognizerArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) that identifies the entity recognizer.',
-        }),
-    ),
+    EntityRecognizerArn: EntityRecognizerArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) that identifies the entity recognizer.',
+    }),
   })
   .openapi({ required: ['EntityRecognizerArn'], title: 'DescribeEntityRecognizerRequest' })
   .openapi('DescribeEntityRecognizerRequest')
@@ -3956,89 +2824,62 @@ const TargetEventTypesSchema = z.array(EventTypeStringSchema).min(1).openapi('Ta
 
 const EventsDetectionJobPropertiesSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z.any().openapi({ description: 'The identifier assigned to the events detection job.' }),
-    ).exactOptional(),
-    JobArn: ComprehendArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the events detection job. It is a unique, fully qualified identifier for the job. It includes the Amazon Web Services account, Amazon Web Services Region, and the job ID. The format of the ARN is as follows:</p> <p> <code>arn:&lt;partition&gt;:comprehend:&lt;region&gt;:&lt;account-id&gt;:events-detection-job/&lt;job-id&gt;</code> </p> <p>The following is an example job ARN:</p> <p> <code>arn:aws:comprehend:us-west-2:111122223333:events-detection-job/1234abcd12ab34cd56ef1234567890ab</code> </p>',
-        }),
-    ).exactOptional(),
-    JobName: JobNameSchema.and(
-      z.any().openapi({ description: 'The name you assigned the events detection job.' }),
-    ).exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z.any().openapi({ description: 'The current status of the events detection job.' }),
-    ).exactOptional(),
-    Message: AnyLengthStringSchema.and(
-      z.any().openapi({ description: 'A description of the status of the events detection job.' }),
-    ).exactOptional(),
-    SubmitTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time that the events detection job was submitted for processing.',
-        }),
-    ).exactOptional(),
-    EndTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time that the events detection job completed.' }),
-    ).exactOptional(),
-    InputDataConfig: InputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The input data configuration that you supplied when you created the events detection job.',
-        }),
-    ).exactOptional(),
-    OutputDataConfig: OutputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The output data configuration that you supplied when you created the events detection job.',
-        }),
-    ).exactOptional(),
-    LanguageCode: LanguageCodeSchema.and(
-      z.any().openapi({ description: 'The language code of the input documents.' }),
-    ).exactOptional(),
-    DataAccessRoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data.',
-        }),
-    ).exactOptional(),
-    TargetEventTypes: TargetEventTypesSchema.and(
-      z.any().openapi({ description: 'The types of events that are detected by the job.' }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description: 'The identifier assigned to the events detection job.',
+    }),
+    JobArn: ComprehendArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the events detection job. It is a unique, fully qualified identifier for the job. It includes the Amazon Web Services account, Amazon Web Services Region, and the job ID. The format of the ARN is as follows:</p> <p> <code>arn:&lt;partition&gt;:comprehend:&lt;region&gt;:&lt;account-id&gt;:events-detection-job/&lt;job-id&gt;</code> </p> <p>The following is an example job ARN:</p> <p> <code>arn:aws:comprehend:us-west-2:111122223333:events-detection-job/1234abcd12ab34cd56ef1234567890ab</code> </p>',
+    }),
+    JobName: JobNameSchema.exactOptional().openapi({
+      description: 'The name you assigned the events detection job.',
+    }),
+    JobStatus: JobStatusSchema.exactOptional().openapi({
+      description: 'The current status of the events detection job.',
+    }),
+    Message: AnyLengthStringSchema.exactOptional().openapi({
+      description: 'A description of the status of the events detection job.',
+    }),
+    SubmitTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time that the events detection job was submitted for processing.',
+    }),
+    EndTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time that the events detection job completed.',
+    }),
+    InputDataConfig: InputDataConfigSchema.exactOptional().openapi({
+      description:
+        'The input data configuration that you supplied when you created the events detection job.',
+    }),
+    OutputDataConfig: OutputDataConfigSchema.exactOptional().openapi({
+      description:
+        'The output data configuration that you supplied when you created the events detection job.',
+    }),
+    LanguageCode: LanguageCodeSchema.exactOptional().openapi({
+      description: 'The language code of the input documents.',
+    }),
+    DataAccessRoleArn: IamRoleArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data.',
+    }),
+    TargetEventTypes: TargetEventTypesSchema.exactOptional().openapi({
+      description: 'The types of events that are detected by the job.',
+    }),
   })
   .openapi({ description: 'Provides information about an events detection job.', required: [] })
   .openapi('EventsDetectionJobProperties')
 
 const DescribeEventsDetectionJobResponseSchema = z
   .object({
-    EventsDetectionJobProperties: EventsDetectionJobPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that contains the properties associated with an event detection job.',
-        }),
-    ).exactOptional(),
+    EventsDetectionJobProperties: EventsDetectionJobPropertiesSchema.exactOptional().openapi({
+      description: 'An object that contains the properties associated with an event detection job.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeEventsDetectionJobResponse')
 
 const DescribeEventsDetectionJobRequestSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the events detection job.' }),
-    ),
+    JobId: JobIdSchema.openapi({ description: 'The identifier of the events detection job.' }),
   })
   .openapi({ required: ['JobId'], title: 'DescribeEventsDetectionJobRequest' })
   .openapi('DescribeEventsDetectionJobRequest')
@@ -4055,71 +2896,61 @@ const FlywheelIterationIdSchema = z
 
 const FlywheelPropertiesSchema = z
   .object({
-    FlywheelArn: ComprehendFlywheelArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Number (ARN) of the flywheel.' }),
-    ).exactOptional(),
-    ActiveModelArn: ComprehendModelArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Number (ARN) of the active model version.' }),
-    ).exactOptional(),
-    DataAccessRoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend permission to access the flywheel data.',
-        }),
-    ).exactOptional(),
-    TaskConfig: TaskConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Configuration about the custom classifier associated with the flywheel.',
-        }),
-    ).exactOptional(),
-    DataLakeS3Uri: S3UriSchema.and(
-      z.any().openapi({ description: 'Amazon S3 URI of the data lake location. ' }),
-    ).exactOptional(),
-    DataSecurityConfig: DataSecurityConfigSchema.and(
-      z.any().openapi({ description: 'Data security configuration.' }),
-    ).exactOptional(),
-    Status: FlywheelStatusSchema.and(
-      z.any().openapi({ description: 'The status of the flywheel.' }),
-    ).exactOptional(),
-    ModelType: ModelTypeSchema.and(
-      z.any().openapi({ description: "Model type of the flywheel's model." }),
-    ).exactOptional(),
-    Message: AnyLengthStringSchema.and(
-      z.any().openapi({ description: 'A description of the status of the flywheel.' }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'Creation time of the flywheel.' }),
-    ).exactOptional(),
-    LastModifiedTime: TimestampSchema.and(
-      z.any().openapi({ description: 'Last modified time for the flywheel.' }),
-    ).exactOptional(),
-    LatestFlywheelIteration: FlywheelIterationIdSchema.and(
-      z.any().openapi({ description: 'The most recent flywheel iteration.' }),
-    ).exactOptional(),
+    FlywheelArn: ComprehendFlywheelArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Number (ARN) of the flywheel.',
+    }),
+    ActiveModelArn: ComprehendModelArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Number (ARN) of the active model version.',
+    }),
+    DataAccessRoleArn: IamRoleArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend permission to access the flywheel data.',
+    }),
+    TaskConfig: TaskConfigSchema.exactOptional().openapi({
+      description: 'Configuration about the custom classifier associated with the flywheel.',
+    }),
+    DataLakeS3Uri: S3UriSchema.exactOptional().openapi({
+      description: 'Amazon S3 URI of the data lake location. ',
+    }),
+    DataSecurityConfig: DataSecurityConfigSchema.exactOptional().openapi({
+      description: 'Data security configuration.',
+    }),
+    Status: FlywheelStatusSchema.exactOptional().openapi({
+      description: 'The status of the flywheel.',
+    }),
+    ModelType: ModelTypeSchema.exactOptional().openapi({
+      description: "Model type of the flywheel's model.",
+    }),
+    Message: AnyLengthStringSchema.exactOptional().openapi({
+      description: 'A description of the status of the flywheel.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'Creation time of the flywheel.',
+    }),
+    LastModifiedTime: TimestampSchema.exactOptional().openapi({
+      description: 'Last modified time for the flywheel.',
+    }),
+    LatestFlywheelIteration: FlywheelIterationIdSchema.exactOptional().openapi({
+      description: 'The most recent flywheel iteration.',
+    }),
   })
   .openapi({ description: 'The flywheel properties.', required: [] })
   .openapi('FlywheelProperties')
 
 const DescribeFlywheelResponseSchema = z
   .object({
-    FlywheelProperties: FlywheelPropertiesSchema.and(
-      z.any().openapi({ description: 'The flywheel properties.' }),
-    ).exactOptional(),
+    FlywheelProperties: FlywheelPropertiesSchema.exactOptional().openapi({
+      description: 'The flywheel properties.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeFlywheelResponse')
 
 const DescribeFlywheelRequestSchema = z
   .object({
-    FlywheelArn: ComprehendFlywheelArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Number (ARN) of the flywheel.' }),
-    ),
+    FlywheelArn: ComprehendFlywheelArnSchema.openapi({
+      description: 'The Amazon Resource Number (ARN) of the flywheel.',
+    }),
   })
   .openapi({ required: ['FlywheelArn'], title: 'DescribeFlywheelRequest' })
   .openapi('DescribeFlywheelRequest')
@@ -4130,18 +2961,18 @@ const FlywheelIterationStatusSchema = z
 
 const FlywheelModelEvaluationMetricsSchema = z
   .object({
-    AverageF1Score: DoubleSchema.and(
-      z.any().openapi({ description: 'The average F1 score from the evaluation metrics.' }),
-    ).exactOptional(),
-    AveragePrecision: DoubleSchema.and(
-      z.any().openapi({ description: 'Average precision metric for the model.' }),
-    ).exactOptional(),
-    AverageRecall: DoubleSchema.and(
-      z.any().openapi({ description: 'Average recall metric for the model.' }),
-    ).exactOptional(),
-    AverageAccuracy: DoubleSchema.and(
-      z.any().openapi({ description: 'Average accuracy metric for the model.' }),
-    ).exactOptional(),
+    AverageF1Score: DoubleSchema.exactOptional().openapi({
+      description: 'The average F1 score from the evaluation metrics.',
+    }),
+    AveragePrecision: DoubleSchema.exactOptional().openapi({
+      description: 'Average precision metric for the model.',
+    }),
+    AverageRecall: DoubleSchema.exactOptional().openapi({
+      description: 'Average recall metric for the model.',
+    }),
+    AverageAccuracy: DoubleSchema.exactOptional().openapi({
+      description: 'Average accuracy metric for the model.',
+    }),
   })
   .openapi({
     description: 'The evaluation metrics associated with the evaluated model.',
@@ -4151,62 +2982,48 @@ const FlywheelModelEvaluationMetricsSchema = z
 
 const FlywheelIterationPropertiesSchema = z
   .object({
-    FlywheelArn: ComprehendFlywheelArnSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
-    FlywheelIterationId: FlywheelIterationIdSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The creation start time of the flywheel iteration.' }),
-    ).exactOptional(),
-    EndTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The completion time of this flywheel iteration.' }),
-    ).exactOptional(),
-    Status: FlywheelIterationStatusSchema.and(
-      z.any().openapi({ description: 'The status of the flywheel iteration.' }),
-    ).exactOptional(),
-    Message: AnyLengthStringSchema.and(
-      z.any().openapi({ description: 'A description of the status of the flywheel iteration.' }),
-    ).exactOptional(),
-    EvaluatedModelArn: ComprehendModelArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the evaluated model associated with this flywheel iteration.',
-        }),
-    ).exactOptional(),
+    FlywheelArn: ComprehendFlywheelArnSchema.exactOptional().openapi({ description: '<p/>' }),
+    FlywheelIterationId: FlywheelIterationIdSchema.exactOptional().openapi({ description: '<p/>' }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'The creation start time of the flywheel iteration.',
+    }),
+    EndTime: TimestampSchema.exactOptional().openapi({
+      description: 'The completion time of this flywheel iteration.',
+    }),
+    Status: FlywheelIterationStatusSchema.exactOptional().openapi({
+      description: 'The status of the flywheel iteration.',
+    }),
+    Message: AnyLengthStringSchema.exactOptional().openapi({
+      description: 'A description of the status of the flywheel iteration.',
+    }),
+    EvaluatedModelArn: ComprehendModelArnSchema.exactOptional().openapi({
+      description: 'The ARN of the evaluated model associated with this flywheel iteration.',
+    }),
     EvaluatedModelMetrics: FlywheelModelEvaluationMetricsSchema.exactOptional(),
-    TrainedModelArn: ComprehendModelArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the trained model associated with this flywheel iteration.',
-        }),
-    ).exactOptional(),
-    TrainedModelMetrics: FlywheelModelEvaluationMetricsSchema.and(
-      z.any().openapi({ description: 'The metrics associated with the trained model.' }),
-    ).exactOptional(),
-    EvaluationManifestS3Prefix: S3UriSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
+    TrainedModelArn: ComprehendModelArnSchema.exactOptional().openapi({
+      description: 'The ARN of the trained model associated with this flywheel iteration.',
+    }),
+    TrainedModelMetrics: FlywheelModelEvaluationMetricsSchema.exactOptional().openapi({
+      description: 'The metrics associated with the trained model.',
+    }),
+    EvaluationManifestS3Prefix: S3UriSchema.exactOptional().openapi({ description: '<p/>' }),
   })
   .openapi({ description: 'The configuration properties of a flywheel iteration.', required: [] })
   .openapi('FlywheelIterationProperties')
 
 const DescribeFlywheelIterationResponseSchema = z
   .object({
-    FlywheelIterationProperties: FlywheelIterationPropertiesSchema.and(
-      z.any().openapi({ description: 'The configuration properties of a flywheel iteration.' }),
-    ).exactOptional(),
+    FlywheelIterationProperties: FlywheelIterationPropertiesSchema.exactOptional().openapi({
+      description: 'The configuration properties of a flywheel iteration.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeFlywheelIterationResponse')
 
 const DescribeFlywheelIterationRequestSchema = z
   .object({
-    FlywheelArn: ComprehendFlywheelArnSchema.and(z.any().openapi({ description: '<p/>' })),
-    FlywheelIterationId: FlywheelIterationIdSchema.and(z.any().openapi({ description: '<p/>' })),
+    FlywheelArn: ComprehendFlywheelArnSchema.openapi({ description: '<p/>' }),
+    FlywheelIterationId: FlywheelIterationIdSchema.openapi({ description: '<p/>' }),
   })
   .openapi({
     required: ['FlywheelArn', 'FlywheelIterationId'],
@@ -4216,134 +3033,87 @@ const DescribeFlywheelIterationRequestSchema = z
 
 const KeyPhrasesDetectionJobPropertiesSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z.any().openapi({ description: 'The identifier assigned to the key phrases detection job.' }),
-    ).exactOptional(),
-    JobArn: ComprehendArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the key phrases detection job. It is a unique, fully qualified identifier for the job. It includes the Amazon Web Services account, Amazon Web Services Region, and the job ID. The format of the ARN is as follows:</p> <p> <code>arn:&lt;partition&gt;:comprehend:&lt;region&gt;:&lt;account-id&gt;:key-phrases-detection-job/&lt;job-id&gt;</code> </p> <p>The following is an example job ARN:</p> <p> <code>arn:aws:comprehend:us-west-2:111122223333:key-phrases-detection-job/1234abcd12ab34cd56ef1234567890ab</code> </p>',
-        }),
-    ).exactOptional(),
-    JobName: JobNameSchema.and(
-      z.any().openapi({ description: 'The name that you assigned the key phrases detection job.' }),
-    ).exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The current status of the key phrases detection job. If the status is <code>FAILED</code>, the <code>Message</code> field shows the reason for the failure.',
-        }),
-    ).exactOptional(),
-    Message: AnyLengthStringSchema.and(
-      z.any().openapi({ description: 'A description of the status of a job.' }),
-    ).exactOptional(),
-    SubmitTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time that the key phrases detection job was submitted for processing.',
-        }),
-    ).exactOptional(),
-    EndTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time that the key phrases detection job completed.' }),
-    ).exactOptional(),
-    InputDataConfig: InputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The input data configuration that you supplied when you created the key phrases detection job.',
-        }),
-    ).exactOptional(),
-    OutputDataConfig: OutputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The output data configuration that you supplied when you created the key phrases detection job.',
-        }),
-    ).exactOptional(),
-    LanguageCode: LanguageCodeSchema.and(
-      z.any().openapi({ description: 'The language code of the input documents.' }),
-    ).exactOptional(),
-    DataAccessRoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data.',
-        }),
-    ).exactOptional(),
-    VolumeKmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>ID for the KMS key that Amazon Comprehend uses to encrypt data on the storage volume attached to the ML compute instance(s) that process the analysis job. The VolumeKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    VpcConfig: VpcConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Configuration parameters for a private Virtual Private Cloud (VPC) containing the resources you are using for your key phrases detection job. For more information, see <a href="https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html">Amazon VPC</a>. ',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description: 'The identifier assigned to the key phrases detection job.',
+    }),
+    JobArn: ComprehendArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the key phrases detection job. It is a unique, fully qualified identifier for the job. It includes the Amazon Web Services account, Amazon Web Services Region, and the job ID. The format of the ARN is as follows:</p> <p> <code>arn:&lt;partition&gt;:comprehend:&lt;region&gt;:&lt;account-id&gt;:key-phrases-detection-job/&lt;job-id&gt;</code> </p> <p>The following is an example job ARN:</p> <p> <code>arn:aws:comprehend:us-west-2:111122223333:key-phrases-detection-job/1234abcd12ab34cd56ef1234567890ab</code> </p>',
+    }),
+    JobName: JobNameSchema.exactOptional().openapi({
+      description: 'The name that you assigned the key phrases detection job.',
+    }),
+    JobStatus: JobStatusSchema.exactOptional().openapi({
+      description:
+        'The current status of the key phrases detection job. If the status is <code>FAILED</code>, the <code>Message</code> field shows the reason for the failure.',
+    }),
+    Message: AnyLengthStringSchema.exactOptional().openapi({
+      description: 'A description of the status of a job.',
+    }),
+    SubmitTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time that the key phrases detection job was submitted for processing.',
+    }),
+    EndTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time that the key phrases detection job completed.',
+    }),
+    InputDataConfig: InputDataConfigSchema.exactOptional().openapi({
+      description:
+        'The input data configuration that you supplied when you created the key phrases detection job.',
+    }),
+    OutputDataConfig: OutputDataConfigSchema.exactOptional().openapi({
+      description:
+        'The output data configuration that you supplied when you created the key phrases detection job.',
+    }),
+    LanguageCode: LanguageCodeSchema.exactOptional().openapi({
+      description: 'The language code of the input documents.',
+    }),
+    DataAccessRoleArn: IamRoleArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data.',
+    }),
+    VolumeKmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        '<p>ID for the KMS key that Amazon Comprehend uses to encrypt data on the storage volume attached to the ML compute instance(s) that process the analysis job. The VolumeKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
+    }),
+    VpcConfig: VpcConfigSchema.exactOptional().openapi({
+      description:
+        ' Configuration parameters for a private Virtual Private Cloud (VPC) containing the resources you are using for your key phrases detection job. For more information, see <a href="https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html">Amazon VPC</a>. ',
+    }),
   })
   .openapi({ description: 'Provides information about a key phrases detection job.', required: [] })
   .openapi('KeyPhrasesDetectionJobProperties')
 
 const DescribeKeyPhrasesDetectionJobResponseSchema = z
   .object({
-    KeyPhrasesDetectionJobProperties: KeyPhrasesDetectionJobPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that contains the properties associated with a key phrases detection job. ',
-        }),
-    ).exactOptional(),
+    KeyPhrasesDetectionJobProperties:
+      KeyPhrasesDetectionJobPropertiesSchema.exactOptional().openapi({
+        description:
+          'An object that contains the properties associated with a key phrases detection job. ',
+      }),
   })
   .openapi({ required: [] })
   .openapi('DescribeKeyPhrasesDetectionJobResponse')
 
 const DescribeKeyPhrasesDetectionJobRequestSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier that Amazon Comprehend generated for the job. The <code>StartKeyPhrasesDetectionJob</code> operation returns this identifier in its response.',
-        }),
-    ),
+    JobId: JobIdSchema.openapi({
+      description:
+        'The identifier that Amazon Comprehend generated for the job. The <code>StartKeyPhrasesDetectionJob</code> operation returns this identifier in its response.',
+    }),
   })
   .openapi({ required: ['JobId'], title: 'DescribeKeyPhrasesDetectionJobRequest' })
   .openapi('DescribeKeyPhrasesDetectionJobRequest')
 
 const PiiOutputDataConfigSchema = z
   .object({
-    S3Uri: S3UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>When you use the <code>PiiOutputDataConfig</code> object with asynchronous operations, you specify the Amazon S3 location where you want to write the output data. </p> <p> For a PII entity detection job, the output file is plain text, not a compressed archive. The output file name is the same as the input file, with <code>.out</code> appended at the end. </p>',
-        }),
-    ),
-    KmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'ID for the Amazon Web Services Key Management Service (KMS) key that Amazon Comprehend uses to encrypt the output results from an analysis job.',
-        }),
-    ).exactOptional(),
+    S3Uri: S3UriSchema.openapi({
+      description:
+        '<p>When you use the <code>PiiOutputDataConfig</code> object with asynchronous operations, you specify the Amazon S3 location where you want to write the output data. </p> <p> For a PII entity detection job, the output file is plain text, not a compressed archive. The output file name is the same as the input file, with <code>.out</code> appended at the end. </p>',
+    }),
+    KmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        'ID for the Amazon Web Services Key Management Service (KMS) key that Amazon Comprehend uses to encrypt the output results from an analysis job.',
+    }),
   })
   .openapi({
     required: ['S3Uri'],
@@ -4365,29 +3135,17 @@ const MaskCharacterSchema = z
 
 const RedactionConfigSchema = z
   .object({
-    PiiEntityTypes: ListOfPiiEntityTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of the types of PII entities that Amazon Comprehend detects in the input text for your request.',
-        }),
-    ).exactOptional(),
-    MaskMode: PiiEntitiesDetectionMaskModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the PII entity is redacted with the mask character or the entity type.',
-        }),
-    ).exactOptional(),
-    MaskCharacter: MaskCharacterSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A character that replaces each character in the redacted PII entity.',
-        }),
-    ).exactOptional(),
+    PiiEntityTypes: ListOfPiiEntityTypesSchema.exactOptional().openapi({
+      description:
+        'An array of the types of PII entities that Amazon Comprehend detects in the input text for your request.',
+    }),
+    MaskMode: PiiEntitiesDetectionMaskModeSchema.exactOptional().openapi({
+      description:
+        'Specifies whether the PII entity is redacted with the mask character or the entity type.',
+    }),
+    MaskCharacter: MaskCharacterSchema.exactOptional().openapi({
+      description: 'A character that replaces each character in the redacted PII entity.',
+    }),
   })
   .openapi({
     description: 'Provides configuration parameters for PII entity redaction.',
@@ -4401,83 +3159,51 @@ const PiiEntitiesDetectionModeSchema = z
 
 const PiiEntitiesDetectionJobPropertiesSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The identifier assigned to the PII entities detection job.' }),
-    ).exactOptional(),
-    JobArn: ComprehendArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the PII entities detection job. It is a unique, fully qualified identifier for the job. It includes the Amazon Web Services account, Amazon Web Services Region, and the job ID. The format of the ARN is as follows:</p> <p> <code>arn:&lt;partition&gt;:comprehend:&lt;region&gt;:&lt;account-id&gt;:pii-entities-detection-job/&lt;job-id&gt;</code> </p> <p>The following is an example job ARN:</p> <p> <code>arn:aws:comprehend:us-west-2:111122223333:pii-entities-detection-job/1234abcd12ab34cd56ef1234567890ab</code> </p>',
-        }),
-    ).exactOptional(),
-    JobName: JobNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name that you assigned the PII entities detection job.' }),
-    ).exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The current status of the PII entities detection job. If the status is <code>FAILED</code>, the <code>Message</code> field shows the reason for the failure.',
-        }),
-    ).exactOptional(),
-    Message: AnyLengthStringSchema.and(
-      z.any().openapi({ description: 'A description of the status of a job.' }),
-    ).exactOptional(),
-    SubmitTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time that the PII entities detection job was submitted for processing.',
-        }),
-    ).exactOptional(),
-    EndTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time that the PII entities detection job completed.' }),
-    ).exactOptional(),
-    InputDataConfig: InputDataConfigSchema.and(
-      z.any().openapi({ description: 'The input properties for a PII entities detection job.' }),
-    ).exactOptional(),
-    OutputDataConfig: PiiOutputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The output data configuration that you supplied when you created the PII entities detection job.',
-        }),
-    ).exactOptional(),
-    RedactionConfig: RedactionConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Provides configuration parameters for PII entity redaction.</p> <p>This parameter is required if you set the <code>Mode</code> parameter to <code>ONLY_REDACTION</code>. In that case, you must provide a <code>RedactionConfig</code> definition that includes the <code>PiiEntityTypes</code> parameter.</p>',
-        }),
-    ).exactOptional(),
-    LanguageCode: LanguageCodeSchema.and(
-      z.any().openapi({ description: 'The language code of the input documents' }),
-    ).exactOptional(),
-    DataAccessRoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data.',
-        }),
-    ).exactOptional(),
-    Mode: PiiEntitiesDetectionModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the output provides the locations (offsets) of PII entities or a file in which PII entities are redacted.',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description: 'The identifier assigned to the PII entities detection job.',
+    }),
+    JobArn: ComprehendArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the PII entities detection job. It is a unique, fully qualified identifier for the job. It includes the Amazon Web Services account, Amazon Web Services Region, and the job ID. The format of the ARN is as follows:</p> <p> <code>arn:&lt;partition&gt;:comprehend:&lt;region&gt;:&lt;account-id&gt;:pii-entities-detection-job/&lt;job-id&gt;</code> </p> <p>The following is an example job ARN:</p> <p> <code>arn:aws:comprehend:us-west-2:111122223333:pii-entities-detection-job/1234abcd12ab34cd56ef1234567890ab</code> </p>',
+    }),
+    JobName: JobNameSchema.exactOptional().openapi({
+      description: 'The name that you assigned the PII entities detection job.',
+    }),
+    JobStatus: JobStatusSchema.exactOptional().openapi({
+      description:
+        'The current status of the PII entities detection job. If the status is <code>FAILED</code>, the <code>Message</code> field shows the reason for the failure.',
+    }),
+    Message: AnyLengthStringSchema.exactOptional().openapi({
+      description: 'A description of the status of a job.',
+    }),
+    SubmitTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time that the PII entities detection job was submitted for processing.',
+    }),
+    EndTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time that the PII entities detection job completed.',
+    }),
+    InputDataConfig: InputDataConfigSchema.exactOptional().openapi({
+      description: 'The input properties for a PII entities detection job.',
+    }),
+    OutputDataConfig: PiiOutputDataConfigSchema.exactOptional().openapi({
+      description:
+        'The output data configuration that you supplied when you created the PII entities detection job.',
+    }),
+    RedactionConfig: RedactionConfigSchema.exactOptional().openapi({
+      description:
+        '<p>Provides configuration parameters for PII entity redaction.</p> <p>This parameter is required if you set the <code>Mode</code> parameter to <code>ONLY_REDACTION</code>. In that case, you must provide a <code>RedactionConfig</code> definition that includes the <code>PiiEntityTypes</code> parameter.</p>',
+    }),
+    LanguageCode: LanguageCodeSchema.exactOptional().openapi({
+      description: 'The language code of the input documents',
+    }),
+    DataAccessRoleArn: IamRoleArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data.',
+    }),
+    Mode: PiiEntitiesDetectionModeSchema.exactOptional().openapi({
+      description:
+        'Specifies whether the output provides the locations (offsets) of PII entities or a file in which PII entities are redacted.',
+    }),
   })
   .openapi({
     description: 'Provides information about a PII entities detection job.',
@@ -4494,234 +3220,154 @@ const DescribePiiEntitiesDetectionJobResponseSchema = z
 
 const DescribePiiEntitiesDetectionJobRequestSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier that Amazon Comprehend generated for the job. The operation returns this identifier in its response.',
-        }),
-    ),
+    JobId: JobIdSchema.openapi({
+      description:
+        'The identifier that Amazon Comprehend generated for the job. The operation returns this identifier in its response.',
+    }),
   })
   .openapi({ required: ['JobId'], title: 'DescribePiiEntitiesDetectionJobRequest' })
   .openapi('DescribePiiEntitiesDetectionJobRequest')
 
 const DescribeResourcePolicyResponseSchema = z
   .object({
-    ResourcePolicy: PolicySchema.and(
-      z.any().openapi({ description: 'The JSON body of the resource-based policy.' }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time at which the policy was created.' }),
-    ).exactOptional(),
-    LastModifiedTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time at which the policy was last modified.' }),
-    ).exactOptional(),
-    PolicyRevisionId: PolicyRevisionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The revision ID of the policy. Each time you modify a policy, Amazon Comprehend assigns a new revision ID, and it deletes the prior version of the policy.',
-        }),
-    ).exactOptional(),
+    ResourcePolicy: PolicySchema.exactOptional().openapi({
+      description: 'The JSON body of the resource-based policy.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time at which the policy was created.',
+    }),
+    LastModifiedTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time at which the policy was last modified.',
+    }),
+    PolicyRevisionId: PolicyRevisionIdSchema.exactOptional().openapi({
+      description:
+        'The revision ID of the policy. Each time you modify a policy, Amazon Comprehend assigns a new revision ID, and it deletes the prior version of the policy.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeResourcePolicyResponse')
 
 const DescribeResourcePolicyRequestSchema = z
   .object({
-    ResourceArn: ComprehendModelArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the custom model version that has the resource policy.',
-        }),
-    ),
+    ResourceArn: ComprehendModelArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the custom model version that has the resource policy.',
+    }),
   })
   .openapi({ required: ['ResourceArn'], title: 'DescribeResourcePolicyRequest' })
   .openapi('DescribeResourcePolicyRequest')
 
 const SentimentDetectionJobPropertiesSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z.any().openapi({ description: 'The identifier assigned to the sentiment detection job.' }),
-    ).exactOptional(),
-    JobArn: ComprehendArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the sentiment detection job. It is a unique, fully qualified identifier for the job. It includes the Amazon Web Services account, Amazon Web Services Region, and the job ID. The format of the ARN is as follows:</p> <p> <code>arn:&lt;partition&gt;:comprehend:&lt;region&gt;:&lt;account-id&gt;:sentiment-detection-job/&lt;job-id&gt;</code> </p> <p>The following is an example job ARN:</p> <p> <code>arn:aws:comprehend:us-west-2:111122223333:sentiment-detection-job/1234abcd12ab34cd56ef1234567890ab</code> </p>',
-        }),
-    ).exactOptional(),
-    JobName: JobNameSchema.and(
-      z.any().openapi({ description: 'The name that you assigned to the sentiment detection job' }),
-    ).exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The current status of the sentiment detection job. If the status is <code>FAILED</code>, the <code>Messages</code> field shows the reason for the failure.',
-        }),
-    ).exactOptional(),
-    Message: AnyLengthStringSchema.and(
-      z.any().openapi({ description: 'A description of the status of a job.' }),
-    ).exactOptional(),
-    SubmitTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time that the sentiment detection job was submitted for processing.',
-        }),
-    ).exactOptional(),
-    EndTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time that the sentiment detection job ended.' }),
-    ).exactOptional(),
-    InputDataConfig: InputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The input data configuration that you supplied when you created the sentiment detection job.',
-        }),
-    ).exactOptional(),
-    OutputDataConfig: OutputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The output data configuration that you supplied when you created the sentiment detection job.',
-        }),
-    ).exactOptional(),
-    LanguageCode: LanguageCodeSchema.and(
-      z.any().openapi({ description: 'The language code of the input documents.' }),
-    ).exactOptional(),
-    DataAccessRoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data.',
-        }),
-    ).exactOptional(),
-    VolumeKmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>ID for the Amazon Web Services Key Management Service (KMS) key that Amazon Comprehend uses to encrypt data on the storage volume attached to the ML compute instance(s) that process the analysis job. The VolumeKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    VpcConfig: VpcConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Configuration parameters for a private Virtual Private Cloud (VPC) containing the resources you are using for your sentiment detection job. For more information, see <a href="https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html">Amazon VPC</a>. ',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description: 'The identifier assigned to the sentiment detection job.',
+    }),
+    JobArn: ComprehendArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the sentiment detection job. It is a unique, fully qualified identifier for the job. It includes the Amazon Web Services account, Amazon Web Services Region, and the job ID. The format of the ARN is as follows:</p> <p> <code>arn:&lt;partition&gt;:comprehend:&lt;region&gt;:&lt;account-id&gt;:sentiment-detection-job/&lt;job-id&gt;</code> </p> <p>The following is an example job ARN:</p> <p> <code>arn:aws:comprehend:us-west-2:111122223333:sentiment-detection-job/1234abcd12ab34cd56ef1234567890ab</code> </p>',
+    }),
+    JobName: JobNameSchema.exactOptional().openapi({
+      description: 'The name that you assigned to the sentiment detection job',
+    }),
+    JobStatus: JobStatusSchema.exactOptional().openapi({
+      description:
+        'The current status of the sentiment detection job. If the status is <code>FAILED</code>, the <code>Messages</code> field shows the reason for the failure.',
+    }),
+    Message: AnyLengthStringSchema.exactOptional().openapi({
+      description: 'A description of the status of a job.',
+    }),
+    SubmitTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time that the sentiment detection job was submitted for processing.',
+    }),
+    EndTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time that the sentiment detection job ended.',
+    }),
+    InputDataConfig: InputDataConfigSchema.exactOptional().openapi({
+      description:
+        'The input data configuration that you supplied when you created the sentiment detection job.',
+    }),
+    OutputDataConfig: OutputDataConfigSchema.exactOptional().openapi({
+      description:
+        'The output data configuration that you supplied when you created the sentiment detection job.',
+    }),
+    LanguageCode: LanguageCodeSchema.exactOptional().openapi({
+      description: 'The language code of the input documents.',
+    }),
+    DataAccessRoleArn: IamRoleArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data.',
+    }),
+    VolumeKmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        '<p>ID for the Amazon Web Services Key Management Service (KMS) key that Amazon Comprehend uses to encrypt data on the storage volume attached to the ML compute instance(s) that process the analysis job. The VolumeKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
+    }),
+    VpcConfig: VpcConfigSchema.exactOptional().openapi({
+      description:
+        ' Configuration parameters for a private Virtual Private Cloud (VPC) containing the resources you are using for your sentiment detection job. For more information, see <a href="https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html">Amazon VPC</a>. ',
+    }),
   })
   .openapi({ description: 'Provides information about a sentiment detection job.', required: [] })
   .openapi('SentimentDetectionJobProperties')
 
 const DescribeSentimentDetectionJobResponseSchema = z
   .object({
-    SentimentDetectionJobProperties: SentimentDetectionJobPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that contains the properties associated with a sentiment detection job.',
-        }),
-    ).exactOptional(),
+    SentimentDetectionJobProperties: SentimentDetectionJobPropertiesSchema.exactOptional().openapi({
+      description:
+        'An object that contains the properties associated with a sentiment detection job.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeSentimentDetectionJobResponse')
 
 const DescribeSentimentDetectionJobRequestSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier that Amazon Comprehend generated for the job. The operation returns this identifier in its response.',
-        }),
-    ),
+    JobId: JobIdSchema.openapi({
+      description:
+        'The identifier that Amazon Comprehend generated for the job. The operation returns this identifier in its response.',
+    }),
   })
   .openapi({ required: ['JobId'], title: 'DescribeSentimentDetectionJobRequest' })
   .openapi('DescribeSentimentDetectionJobRequest')
 
 const TargetedSentimentDetectionJobPropertiesSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier assigned to the targeted sentiment detection job.',
-        }),
-    ).exactOptional(),
-    JobArn: ComprehendArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the targeted sentiment detection job. It is a unique, fully qualified identifier for the job. It includes the Amazon Web Services account, Amazon Web Services Region, and the job ID. The format of the ARN is as follows:</p> <p> <code>arn:&lt;partition&gt;:comprehend:&lt;region&gt;:&lt;account-id&gt;:targeted-sentiment-detection-job/&lt;job-id&gt;</code> </p> <p>The following is an example job ARN:</p> <p> <code>arn:aws:comprehend:us-west-2:111122223333:targeted-sentiment-detection-job/1234abcd12ab34cd56ef1234567890ab</code> </p>',
-        }),
-    ).exactOptional(),
-    JobName: JobNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name that you assigned to the targeted sentiment detection job.',
-        }),
-    ).exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The current status of the targeted sentiment detection job. If the status is <code>FAILED</code>, the <code>Messages</code> field shows the reason for the failure.',
-        }),
-    ).exactOptional(),
-    Message: AnyLengthStringSchema.and(
-      z.any().openapi({ description: 'A description of the status of a job.' }),
-    ).exactOptional(),
-    SubmitTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time that the targeted sentiment detection job was submitted for processing.',
-        }),
-    ).exactOptional(),
-    EndTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time that the targeted sentiment detection job ended.' }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description: 'The identifier assigned to the targeted sentiment detection job.',
+    }),
+    JobArn: ComprehendArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the targeted sentiment detection job. It is a unique, fully qualified identifier for the job. It includes the Amazon Web Services account, Amazon Web Services Region, and the job ID. The format of the ARN is as follows:</p> <p> <code>arn:&lt;partition&gt;:comprehend:&lt;region&gt;:&lt;account-id&gt;:targeted-sentiment-detection-job/&lt;job-id&gt;</code> </p> <p>The following is an example job ARN:</p> <p> <code>arn:aws:comprehend:us-west-2:111122223333:targeted-sentiment-detection-job/1234abcd12ab34cd56ef1234567890ab</code> </p>',
+    }),
+    JobName: JobNameSchema.exactOptional().openapi({
+      description: 'The name that you assigned to the targeted sentiment detection job.',
+    }),
+    JobStatus: JobStatusSchema.exactOptional().openapi({
+      description:
+        'The current status of the targeted sentiment detection job. If the status is <code>FAILED</code>, the <code>Messages</code> field shows the reason for the failure.',
+    }),
+    Message: AnyLengthStringSchema.exactOptional().openapi({
+      description: 'A description of the status of a job.',
+    }),
+    SubmitTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The time that the targeted sentiment detection job was submitted for processing.',
+    }),
+    EndTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time that the targeted sentiment detection job ended.',
+    }),
     InputDataConfig: InputDataConfigSchema.exactOptional(),
     OutputDataConfig: OutputDataConfigSchema.exactOptional(),
-    LanguageCode: LanguageCodeSchema.and(
-      z.any().openapi({ description: 'The language code of the input documents.' }),
-    ).exactOptional(),
-    DataAccessRoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data.',
-        }),
-    ).exactOptional(),
-    VolumeKmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>ID for the KMS key that Amazon Comprehend uses to encrypt the data on the storage volume attached to the ML compute instance(s) that process the targeted sentiment detection job. The VolumeKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    LanguageCode: LanguageCodeSchema.exactOptional().openapi({
+      description: 'The language code of the input documents.',
+    }),
+    DataAccessRoleArn: IamRoleArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data.',
+    }),
+    VolumeKmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        '<p>ID for the KMS key that Amazon Comprehend uses to encrypt the data on the storage volume attached to the ML compute instance(s) that process the targeted sentiment detection job. The VolumeKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
+    }),
     VpcConfig: VpcConfigSchema.exactOptional(),
   })
   .openapi({
@@ -4732,163 +3378,112 @@ const TargetedSentimentDetectionJobPropertiesSchema = z
 
 const DescribeTargetedSentimentDetectionJobResponseSchema = z
   .object({
-    TargetedSentimentDetectionJobProperties: TargetedSentimentDetectionJobPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that contains the properties associated with a targeted sentiment detection job.',
-        }),
-    ).exactOptional(),
+    TargetedSentimentDetectionJobProperties:
+      TargetedSentimentDetectionJobPropertiesSchema.exactOptional().openapi({
+        description:
+          'An object that contains the properties associated with a targeted sentiment detection job.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('DescribeTargetedSentimentDetectionJobResponse')
 
 const DescribeTargetedSentimentDetectionJobRequestSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier that Amazon Comprehend generated for the job. The <code>StartTargetedSentimentDetectionJob</code> operation returns this identifier in its response.',
-        }),
-    ),
+    JobId: JobIdSchema.openapi({
+      description:
+        'The identifier that Amazon Comprehend generated for the job. The <code>StartTargetedSentimentDetectionJob</code> operation returns this identifier in its response.',
+    }),
   })
   .openapi({ required: ['JobId'], title: 'DescribeTargetedSentimentDetectionJobRequest' })
   .openapi('DescribeTargetedSentimentDetectionJobRequest')
 
 const TopicsDetectionJobPropertiesSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z.any().openapi({ description: 'The identifier assigned to the topic detection job.' }),
-    ).exactOptional(),
-    JobArn: ComprehendArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the topics detection job. It is a unique, fully qualified identifier for the job. It includes the Amazon Web Services account, Amazon Web Services Region, and the job ID. The format of the ARN is as follows:</p> <p> <code>arn:&lt;partition&gt;:comprehend:&lt;region&gt;:&lt;account-id&gt;:topics-detection-job/&lt;job-id&gt;</code> </p> <p>The following is an example job ARN:</p> <p> <code>arn:aws:comprehend:us-west-2:111122223333:topics-detection-job/1234abcd12ab34cd56ef1234567890ab</code> </p>',
-        }),
-    ).exactOptional(),
-    JobName: JobNameSchema.and(
-      z.any().openapi({ description: 'The name of the topic detection job.' }),
-    ).exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The current status of the topic detection job. If the status is <code>Failed</code>, the reason for the failure is shown in the <code>Message</code> field.',
-        }),
-    ).exactOptional(),
-    Message: AnyLengthStringSchema.and(
-      z.any().openapi({ description: 'A description for the status of a job.' }),
-    ).exactOptional(),
-    SubmitTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time that the topic detection job was submitted for processing.',
-        }),
-    ).exactOptional(),
-    EndTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time that the topic detection job was completed.' }),
-    ).exactOptional(),
-    InputDataConfig: InputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The input data configuration supplied when you created the topic detection job.',
-        }),
-    ).exactOptional(),
-    OutputDataConfig: OutputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The output data configuration supplied when you created the topic detection job.',
-        }),
-    ).exactOptional(),
-    NumberOfTopics: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of topics to detect supplied when you created the topic detection job. The default is 10. ',
-        }),
-    ).exactOptional(),
-    DataAccessRoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your job data. ',
-        }),
-    ).exactOptional(),
-    VolumeKmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>ID for the Amazon Web Services Key Management Service (KMS) key that Amazon Comprehend uses to encrypt data on the storage volume attached to the ML compute instance(s) that process the analysis job. The VolumeKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    VpcConfig: VpcConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configuration parameters for a private Virtual Private Cloud (VPC) containing the resources you are using for your topic detection job. For more information, see <a href="https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html">Amazon VPC</a>. ',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description: 'The identifier assigned to the topic detection job.',
+    }),
+    JobArn: ComprehendArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the topics detection job. It is a unique, fully qualified identifier for the job. It includes the Amazon Web Services account, Amazon Web Services Region, and the job ID. The format of the ARN is as follows:</p> <p> <code>arn:&lt;partition&gt;:comprehend:&lt;region&gt;:&lt;account-id&gt;:topics-detection-job/&lt;job-id&gt;</code> </p> <p>The following is an example job ARN:</p> <p> <code>arn:aws:comprehend:us-west-2:111122223333:topics-detection-job/1234abcd12ab34cd56ef1234567890ab</code> </p>',
+    }),
+    JobName: JobNameSchema.exactOptional().openapi({
+      description: 'The name of the topic detection job.',
+    }),
+    JobStatus: JobStatusSchema.exactOptional().openapi({
+      description:
+        'The current status of the topic detection job. If the status is <code>Failed</code>, the reason for the failure is shown in the <code>Message</code> field.',
+    }),
+    Message: AnyLengthStringSchema.exactOptional().openapi({
+      description: 'A description for the status of a job.',
+    }),
+    SubmitTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time that the topic detection job was submitted for processing.',
+    }),
+    EndTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time that the topic detection job was completed.',
+    }),
+    InputDataConfig: InputDataConfigSchema.exactOptional().openapi({
+      description:
+        'The input data configuration supplied when you created the topic detection job.',
+    }),
+    OutputDataConfig: OutputDataConfigSchema.exactOptional().openapi({
+      description:
+        'The output data configuration supplied when you created the topic detection job.',
+    }),
+    NumberOfTopics: IntegerSchema.exactOptional().openapi({
+      description:
+        'The number of topics to detect supplied when you created the topic detection job. The default is 10. ',
+    }),
+    DataAccessRoleArn: IamRoleArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your job data. ',
+    }),
+    VolumeKmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        '<p>ID for the Amazon Web Services Key Management Service (KMS) key that Amazon Comprehend uses to encrypt data on the storage volume attached to the ML compute instance(s) that process the analysis job. The VolumeKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
+    }),
+    VpcConfig: VpcConfigSchema.exactOptional().openapi({
+      description:
+        'Configuration parameters for a private Virtual Private Cloud (VPC) containing the resources you are using for your topic detection job. For more information, see <a href="https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html">Amazon VPC</a>. ',
+    }),
   })
   .openapi({ description: 'Provides information about a topic detection job.', required: [] })
   .openapi('TopicsDetectionJobProperties')
 
 const DescribeTopicsDetectionJobResponseSchema = z
   .object({
-    TopicsDetectionJobProperties: TopicsDetectionJobPropertiesSchema.and(
-      z.any().openapi({ description: 'The list of properties for the requested job.' }),
-    ).exactOptional(),
+    TopicsDetectionJobProperties: TopicsDetectionJobPropertiesSchema.exactOptional().openapi({
+      description: 'The list of properties for the requested job.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeTopicsDetectionJobResponse')
 
 const DescribeTopicsDetectionJobRequestSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z.any().openapi({ description: 'The identifier assigned by the user to the detection job.' }),
-    ),
+    JobId: JobIdSchema.openapi({
+      description: 'The identifier assigned by the user to the detection job.',
+    }),
   })
   .openapi({ required: ['JobId'], title: 'DescribeTopicsDetectionJobRequest' })
   .openapi('DescribeTopicsDetectionJobRequest')
 
 const DetectDominantLanguageResponseSchema = z
   .object({
-    Languages: ListOfDominantLanguagesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Array of languages that Amazon Comprehend detected in the input text. The array is sorted in descending order of the score (the dominant language is always the first element in the array).</p> <p>For each language, the response returns the RFC 5646 language code and the level of confidence that Amazon Comprehend has in the accuracy of its inference. For more information about RFC 5646, see <a href="https://tools.ietf.org/html/rfc5646">Tags for Identifying Languages</a> on the <i>IETF Tools</i> web site.</p>',
-        }),
-    ).exactOptional(),
+    Languages: ListOfDominantLanguagesSchema.exactOptional().openapi({
+      description:
+        '<p>Array of languages that Amazon Comprehend detected in the input text. The array is sorted in descending order of the score (the dominant language is always the first element in the array).</p> <p>For each language, the response returns the RFC 5646 language code and the level of confidence that Amazon Comprehend has in the accuracy of its inference. For more information about RFC 5646, see <a href="https://tools.ietf.org/html/rfc5646">Tags for Identifying Languages</a> on the <i>IETF Tools</i> web site.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DetectDominantLanguageResponse')
 
 const DetectDominantLanguageRequestSchema = z
   .object({
-    Text: CustomerInputStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A UTF-8 text string. The string must contain at least 20 characters. The maximum string size is 100 KB.',
-        }),
-    ),
+    Text: CustomerInputStringSchema.openapi({
+      description:
+        'A UTF-8 text string. The string must contain at least 20 characters. The maximum string size is 100 KB.',
+    }),
   })
   .openapi({ required: ['Text'], title: 'DetectDominantLanguageRequest' })
   .openapi('DetectDominantLanguageRequest')
@@ -4897,38 +3492,20 @@ const BlockTypeSchema = z.enum(['LINE', 'WORD']).openapi('BlockType')
 
 const BoundingBoxSchema = z
   .object({
-    Height: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The height of the bounding box as a ratio of the overall document page height.',
-        }),
-    ).exactOptional(),
-    Left: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The left coordinate of the bounding box as a ratio of overall document page width.',
-        }),
-    ).exactOptional(),
-    Top: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The top coordinate of the bounding box as a ratio of overall document page height.',
-        }),
-    ).exactOptional(),
-    Width: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The width of the bounding box as a ratio of the overall document page width.',
-        }),
-    ).exactOptional(),
+    Height: FloatSchema.exactOptional().openapi({
+      description: 'The height of the bounding box as a ratio of the overall document page height.',
+    }),
+    Left: FloatSchema.exactOptional().openapi({
+      description:
+        'The left coordinate of the bounding box as a ratio of overall document page width.',
+    }),
+    Top: FloatSchema.exactOptional().openapi({
+      description:
+        'The top coordinate of the bounding box as a ratio of overall document page height.',
+    }),
+    Width: FloatSchema.exactOptional().openapi({
+      description: 'The width of the bounding box as a ratio of the overall document page width.',
+    }),
   })
   .openapi({
     description:
@@ -4939,12 +3516,12 @@ const BoundingBoxSchema = z
 
 const PointSchema = z
   .object({
-    X: FloatSchema.and(
-      z.any().openapi({ description: 'The value of the X coordinate for a point on a polygon' }),
-    ).exactOptional(),
-    Y: FloatSchema.and(
-      z.any().openapi({ description: 'The value of the Y coordinate for a point on a polygon' }),
-    ).exactOptional(),
+    X: FloatSchema.exactOptional().openapi({
+      description: 'The value of the X coordinate for a point on a polygon',
+    }),
+    Y: FloatSchema.exactOptional().openapi({
+      description: 'The value of the Y coordinate for a point on a polygon',
+    }),
   })
   .openapi({
     description:
@@ -4957,22 +3534,13 @@ const PolygonSchema = z.array(PointSchema).openapi('Polygon')
 
 const GeometrySchema = z
   .object({
-    BoundingBox: BoundingBoxSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An axis-aligned coarse representation of the location of the recognized item on the document page.',
-        }),
-    ).exactOptional(),
-    Polygon: PolygonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Within the bounding box, a fine-grained polygon around the recognized item.',
-        }),
-    ).exactOptional(),
+    BoundingBox: BoundingBoxSchema.exactOptional().openapi({
+      description:
+        'An axis-aligned coarse representation of the location of the recognized item on the document page.',
+    }),
+    Polygon: PolygonSchema.exactOptional().openapi({
+      description: 'Within the bounding box, a fine-grained polygon around the recognized item.',
+    }),
   })
   .openapi({
     description:
@@ -4987,12 +3555,12 @@ const RelationshipTypeSchema = z.literal('CHILD').openapi('RelationshipType')
 
 const RelationshipsListItemSchema = z
   .object({
-    Ids: StringListSchema.and(
-      z.any().openapi({ description: 'Identifers of the child blocks.' }),
-    ).exactOptional(),
-    Type: RelationshipTypeSchema.and(
-      z.any().openapi({ description: 'Only supported relationship is a child relationship.' }),
-    ).exactOptional(),
+    Ids: StringListSchema.exactOptional().openapi({
+      description: 'Identifers of the child blocks.',
+    }),
+    Type: RelationshipTypeSchema.exactOptional().openapi({
+      description: 'Only supported relationship is a child relationship.',
+    }),
   })
   .openapi({ description: 'List of child blocks for the current block.', required: [] })
   .openapi('RelationshipsListItem')
@@ -5003,38 +3571,24 @@ const ListOfRelationshipsSchema = z
 
 const BlockSchema = z
   .object({
-    Id: StringSchema.and(
-      z.any().openapi({ description: 'Unique identifier for the block.' }),
-    ).exactOptional(),
-    BlockType: BlockTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The block represents a line of text or one word of text.</p> <ul> <li> <p>WORD - A word that's detected on a document page. A word is one or more ISO basic Latin script characters that aren't separated by spaces.</p> </li> <li> <p>LINE - A string of tab-delimited, contiguous words that are detected on a document page</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    Text: StringSchema.and(
-      z.any().openapi({ description: 'The word or line of text extracted from the block.' }),
-    ).exactOptional(),
-    Page: IntegerSchema.and(
-      z.any().openapi({ description: 'Page number where the block appears.' }),
-    ).exactOptional(),
-    Geometry: GeometrySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Co-ordinates of the rectangle or polygon that contains the text.',
-        }),
-    ).exactOptional(),
-    Relationships: ListOfRelationshipsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A list of child blocks of the current block. For example, a LINE object has child blocks for each WORD block that's part of the line of text. ",
-        }),
-    ).exactOptional(),
+    Id: StringSchema.exactOptional().openapi({ description: 'Unique identifier for the block.' }),
+    BlockType: BlockTypeSchema.exactOptional().openapi({
+      description:
+        "<p>The block represents a line of text or one word of text.</p> <ul> <li> <p>WORD - A word that's detected on a document page. A word is one or more ISO basic Latin script characters that aren't separated by spaces.</p> </li> <li> <p>LINE - A string of tab-delimited, contiguous words that are detected on a document page</p> </li> </ul>",
+    }),
+    Text: StringSchema.exactOptional().openapi({
+      description: 'The word or line of text extracted from the block.',
+    }),
+    Page: IntegerSchema.exactOptional().openapi({
+      description: 'Page number where the block appears.',
+    }),
+    Geometry: GeometrySchema.exactOptional().openapi({
+      description: 'Co-ordinates of the rectangle or polygon that contains the text.',
+    }),
+    Relationships: ListOfRelationshipsSchema.exactOptional().openapi({
+      description:
+        "A list of child blocks of the current block. For example, a LINE object has child blocks for each WORD block that's part of the line of text. ",
+    }),
   })
   .openapi({
     description:
@@ -5047,46 +3601,26 @@ const ListOfBlocksSchema = z.array(BlockSchema).openapi('ListOfBlocks')
 
 const DetectEntitiesResponseSchema = z
   .object({
-    Entities: ListOfEntitiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A collection of entities identified in the input text. For each entity, the response provides the entity text, entity type, where the entity text begins and ends, and the level of confidence that Amazon Comprehend has in the detection. </p> <p>If your request uses a custom entity recognition model, Amazon Comprehend detects the entities that the model is trained to recognize. Otherwise, it detects the default entity types. For a list of default entity types, see <a href="https://docs.aws.amazon.com/comprehend/latest/dg/how-entities.html">Entities</a> in the Comprehend Developer Guide. </p>',
-        }),
-    ).exactOptional(),
-    DocumentMetadata: DocumentMetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the document, discovered during text extraction. This field is present in the response only if your request used the <code>Byte</code> parameter. ',
-        }),
-    ).exactOptional(),
-    DocumentType: ListOfDocumentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The document type for each page in the input document. This field is present in the response only if your request used the <code>Byte</code> parameter. ',
-        }),
-    ).exactOptional(),
-    Blocks: ListOfBlocksSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Information about each block of text in the input document. Blocks are nested. A page block contains a block for each line of text, which contains a block for each word. </p> <p>The <code>Block</code> content for a Word input document does not include a <code>Geometry</code> field.</p> <p>The <code>Block</code> field is not present in the response for plain-text inputs.</p>',
-        }),
-    ).exactOptional(),
-    Errors: ListOfErrorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Page-level errors that the system detected while processing the input document. The field is empty if the system encountered no errors.',
-        }),
-    ).exactOptional(),
+    Entities: ListOfEntitiesSchema.exactOptional().openapi({
+      description:
+        '<p>A collection of entities identified in the input text. For each entity, the response provides the entity text, entity type, where the entity text begins and ends, and the level of confidence that Amazon Comprehend has in the detection. </p> <p>If your request uses a custom entity recognition model, Amazon Comprehend detects the entities that the model is trained to recognize. Otherwise, it detects the default entity types. For a list of default entity types, see <a href="https://docs.aws.amazon.com/comprehend/latest/dg/how-entities.html">Entities</a> in the Comprehend Developer Guide. </p>',
+    }),
+    DocumentMetadata: DocumentMetadataSchema.exactOptional().openapi({
+      description:
+        'Information about the document, discovered during text extraction. This field is present in the response only if your request used the <code>Byte</code> parameter. ',
+    }),
+    DocumentType: ListOfDocumentTypeSchema.exactOptional().openapi({
+      description:
+        'The document type for each page in the input document. This field is present in the response only if your request used the <code>Byte</code> parameter. ',
+    }),
+    Blocks: ListOfBlocksSchema.exactOptional().openapi({
+      description:
+        '<p>Information about each block of text in the input document. Blocks are nested. A page block contains a block for each line of text, which contains a block for each word. </p> <p>The <code>Block</code> content for a Word input document does not include a <code>Geometry</code> field.</p> <p>The <code>Block</code> field is not present in the response for plain-text inputs.</p>',
+    }),
+    Errors: ListOfErrorsSchema.exactOptional().openapi({
+      description:
+        'Page-level errors that the system detected while processing the input document. The field is empty if the system encountered no errors.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DetectEntitiesResponse')
@@ -5101,115 +3635,69 @@ const EntityRecognizerEndpointArnSchema = z
 
 const DetectEntitiesRequestSchema = z
   .object({
-    Text: CustomerInputStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A UTF-8 text string. The maximum string size is 100 KB. If you enter text using this parameter, do not use the <code>Bytes</code> parameter.',
-        }),
-    ).exactOptional(),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language of the input documents. You can specify any of the primary languages supported by Amazon Comprehend. If your request includes the endpoint for a custom entity recognition model, Amazon Comprehend uses the language of your custom model, and it ignores any language code that you specify here.</p> <p>All input documents must be in the same language.</p>',
-        }),
-    ).exactOptional(),
-    EndpointArn: EntityRecognizerEndpointArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name of an endpoint that is associated with a custom entity recognition model. Provide an endpoint if you want to detect entities by using your own custom model instead of the default model that is used by Amazon Comprehend.</p> <p>If you specify an endpoint, Amazon Comprehend uses the language of your custom model, and it ignores any language code that you provide in your request.</p> <p>For information about endpoints, see <a href="https://docs.aws.amazon.com/comprehend/latest/dg/manage-endpoints.html">Managing endpoints</a>.</p>',
-        }),
-    ).exactOptional(),
-    Bytes: SemiStructuredDocumentBlobSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>This field applies only when you use a custom entity recognition model that was trained with PDF annotations. For other cases, enter your text input in the <code>Text</code> field.</p> <p> Use the <code>Bytes</code> parameter to input a text, PDF, Word or image file. Using a plain-text file in the <code>Bytes</code> parameter is equivelent to using the <code>Text</code> parameter (the <code>Entities</code> field in the response is identical).</p> <p>You can also use the <code>Bytes</code> parameter to input an Amazon Textract <code>DetectDocumentText</code> or <code>AnalyzeDocument</code> output file.</p> <p>Provide the input document as a sequence of base64-encoded bytes. If your code uses an Amazon Web Services SDK to detect entities, the SDK may encode the document file bytes for you. </p> <p>The maximum length of this field depends on the input document type. For details, see <a href="https://docs.aws.amazon.com/comprehend/latest/dg/idp-inputs-sync.html"> Inputs for real-time custom analysis</a> in the Comprehend Developer Guide. </p> <p>If you use the <code>Bytes</code> parameter, do not use the <code>Text</code> parameter.</p>',
-        }),
-    ).exactOptional(),
-    DocumentReaderConfig: DocumentReaderConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides configuration parameters to override the default actions for extracting text from PDF documents and image files.',
-        }),
-    ).exactOptional(),
+    Text: CustomerInputStringSchema.exactOptional().openapi({
+      description:
+        'A UTF-8 text string. The maximum string size is 100 KB. If you enter text using this parameter, do not use the <code>Bytes</code> parameter.',
+    }),
+    LanguageCode: LanguageCodeSchema.exactOptional().openapi({
+      description:
+        '<p>The language of the input documents. You can specify any of the primary languages supported by Amazon Comprehend. If your request includes the endpoint for a custom entity recognition model, Amazon Comprehend uses the language of your custom model, and it ignores any language code that you specify here.</p> <p>All input documents must be in the same language.</p>',
+    }),
+    EndpointArn: EntityRecognizerEndpointArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name of an endpoint that is associated with a custom entity recognition model. Provide an endpoint if you want to detect entities by using your own custom model instead of the default model that is used by Amazon Comprehend.</p> <p>If you specify an endpoint, Amazon Comprehend uses the language of your custom model, and it ignores any language code that you provide in your request.</p> <p>For information about endpoints, see <a href="https://docs.aws.amazon.com/comprehend/latest/dg/manage-endpoints.html">Managing endpoints</a>.</p>',
+    }),
+    Bytes: SemiStructuredDocumentBlobSchema.exactOptional().openapi({
+      description:
+        '<p>This field applies only when you use a custom entity recognition model that was trained with PDF annotations. For other cases, enter your text input in the <code>Text</code> field.</p> <p> Use the <code>Bytes</code> parameter to input a text, PDF, Word or image file. Using a plain-text file in the <code>Bytes</code> parameter is equivelent to using the <code>Text</code> parameter (the <code>Entities</code> field in the response is identical).</p> <p>You can also use the <code>Bytes</code> parameter to input an Amazon Textract <code>DetectDocumentText</code> or <code>AnalyzeDocument</code> output file.</p> <p>Provide the input document as a sequence of base64-encoded bytes. If your code uses an Amazon Web Services SDK to detect entities, the SDK may encode the document file bytes for you. </p> <p>The maximum length of this field depends on the input document type. For details, see <a href="https://docs.aws.amazon.com/comprehend/latest/dg/idp-inputs-sync.html"> Inputs for real-time custom analysis</a> in the Comprehend Developer Guide. </p> <p>If you use the <code>Bytes</code> parameter, do not use the <code>Text</code> parameter.</p>',
+    }),
+    DocumentReaderConfig: DocumentReaderConfigSchema.exactOptional().openapi({
+      description:
+        'Provides configuration parameters to override the default actions for extracting text from PDF documents and image files.',
+    }),
   })
   .openapi({ title: 'DetectEntitiesRequest', required: [] })
   .openapi('DetectEntitiesRequest')
 
 const DetectKeyPhrasesResponseSchema = z
   .object({
-    KeyPhrases: ListOfKeyPhrasesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A collection of key phrases that Amazon Comprehend identified in the input text. For each key phrase, the response provides the text of the key phrase, where the key phrase begins and ends, and the level of confidence that Amazon Comprehend has in the accuracy of the detection. ',
-        }),
-    ).exactOptional(),
+    KeyPhrases: ListOfKeyPhrasesSchema.exactOptional().openapi({
+      description:
+        'A collection of key phrases that Amazon Comprehend identified in the input text. For each key phrase, the response provides the text of the key phrase, where the key phrase begins and ends, and the level of confidence that Amazon Comprehend has in the accuracy of the detection. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DetectKeyPhrasesResponse')
 
 const DetectKeyPhrasesRequestSchema = z
   .object({
-    Text: CustomerInputStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A UTF-8 text string. The string must contain less than 100 KB of UTF-8 encoded characters.',
-        }),
-    ),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language of the input documents. You can specify any of the primary languages supported by Amazon Comprehend. All documents must be in the same language.',
-        }),
-    ),
+    Text: CustomerInputStringSchema.openapi({
+      description:
+        'A UTF-8 text string. The string must contain less than 100 KB of UTF-8 encoded characters.',
+    }),
+    LanguageCode: LanguageCodeSchema.openapi({
+      description:
+        'The language of the input documents. You can specify any of the primary languages supported by Amazon Comprehend. All documents must be in the same language.',
+    }),
   })
   .openapi({ required: ['Text', 'LanguageCode'], title: 'DetectKeyPhrasesRequest' })
   .openapi('DetectKeyPhrasesRequest')
 
 const PiiEntitySchema = z
   .object({
-    Score: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The level of confidence that Amazon Comprehend has in the accuracy of the detection.',
-        }),
-    ).exactOptional(),
-    Type: PiiEntityTypeSchema.and(
-      z.any().openapi({ description: "The entity's type." }),
-    ).exactOptional(),
-    BeginOffset: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The zero-based offset from the beginning of the source text to the first character in the entity.',
-        }),
-    ).exactOptional(),
-    EndOffset: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The zero-based offset from the beginning of the source text to the last character in the entity.',
-        }),
-    ).exactOptional(),
+    Score: FloatSchema.exactOptional().openapi({
+      description:
+        'The level of confidence that Amazon Comprehend has in the accuracy of the detection.',
+    }),
+    Type: PiiEntityTypeSchema.exactOptional().openapi({ description: "The entity's type." }),
+    BeginOffset: IntegerSchema.exactOptional().openapi({
+      description:
+        'The zero-based offset from the beginning of the source text to the first character in the entity.',
+    }),
+    EndOffset: IntegerSchema.exactOptional().openapi({
+      description:
+        'The zero-based offset from the beginning of the source text to the last character in the entity.',
+    }),
   })
   .openapi({ description: 'Provides information about a PII entity.', required: [] })
   .openapi('PiiEntity')
@@ -5218,196 +3706,134 @@ const ListOfPiiEntitiesSchema = z.array(PiiEntitySchema).openapi('ListOfPiiEntit
 
 const DetectPiiEntitiesResponseSchema = z
   .object({
-    Entities: ListOfPiiEntitiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A collection of PII entities identified in the input text. For each entity, the response provides the entity type, where the entity text begins and ends, and the level of confidence that Amazon Comprehend has in the detection.',
-        }),
-    ).exactOptional(),
+    Entities: ListOfPiiEntitiesSchema.exactOptional().openapi({
+      description:
+        'A collection of PII entities identified in the input text. For each entity, the response provides the entity type, where the entity text begins and ends, and the level of confidence that Amazon Comprehend has in the detection.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DetectPiiEntitiesResponse')
 
 const DetectPiiEntitiesRequestSchema = z
   .object({
-    Text: StringSchema.and(
-      z.any().openapi({ description: 'A UTF-8 text string. The maximum string size is 100 KB.' }),
-    ),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language of the input documents. Currently, English is the only valid language.',
-        }),
-    ),
+    Text: StringSchema.openapi({
+      description: 'A UTF-8 text string. The maximum string size is 100 KB.',
+    }),
+    LanguageCode: LanguageCodeSchema.openapi({
+      description:
+        'The language of the input documents. Currently, English is the only valid language.',
+    }),
   })
   .openapi({ required: ['Text', 'LanguageCode'], title: 'DetectPiiEntitiesRequest' })
   .openapi('DetectPiiEntitiesRequest')
 
 const DetectSentimentResponseSchema = z
   .object({
-    Sentiment: SentimentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The inferred sentiment that Amazon Comprehend has the highest level of confidence in.',
-        }),
-    ).exactOptional(),
-    SentimentScore: SentimentScoreSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that lists the sentiments, and their corresponding confidence levels.',
-        }),
-    ).exactOptional(),
+    Sentiment: SentimentTypeSchema.exactOptional().openapi({
+      description:
+        'The inferred sentiment that Amazon Comprehend has the highest level of confidence in.',
+    }),
+    SentimentScore: SentimentScoreSchema.exactOptional().openapi({
+      description:
+        'An object that lists the sentiments, and their corresponding confidence levels.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DetectSentimentResponse')
 
 const DetectSentimentRequestSchema = z
   .object({
-    Text: CustomerInputStringSchema.and(
-      z.any().openapi({ description: 'A UTF-8 text string. The maximum string size is 5 KB.' }),
-    ),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language of the input documents. You can specify any of the primary languages supported by Amazon Comprehend. All documents must be in the same language.',
-        }),
-    ),
+    Text: CustomerInputStringSchema.openapi({
+      description: 'A UTF-8 text string. The maximum string size is 5 KB.',
+    }),
+    LanguageCode: LanguageCodeSchema.openapi({
+      description:
+        'The language of the input documents. You can specify any of the primary languages supported by Amazon Comprehend. All documents must be in the same language.',
+    }),
   })
   .openapi({ required: ['Text', 'LanguageCode'], title: 'DetectSentimentRequest' })
   .openapi('DetectSentimentRequest')
 
 const DetectSyntaxResponseSchema = z
   .object({
-    SyntaxTokens: ListOfSyntaxTokensSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A collection of syntax tokens describing the text. For each token, the response provides the text, the token type, where the text begins and ends, and the level of confidence that Amazon Comprehend has that the token is correct. For a list of token types, see <a href="https://docs.aws.amazon.com/comprehend/latest/dg/how-syntax.html">Syntax</a> in the Comprehend Developer Guide. ',
-        }),
-    ).exactOptional(),
+    SyntaxTokens: ListOfSyntaxTokensSchema.exactOptional().openapi({
+      description:
+        'A collection of syntax tokens describing the text. For each token, the response provides the text, the token type, where the text begins and ends, and the level of confidence that Amazon Comprehend has that the token is correct. For a list of token types, see <a href="https://docs.aws.amazon.com/comprehend/latest/dg/how-syntax.html">Syntax</a> in the Comprehend Developer Guide. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DetectSyntaxResponse')
 
 const DetectSyntaxRequestSchema = z
   .object({
-    Text: CustomerInputStringSchema.and(
-      z.any().openapi({ description: 'A UTF-8 string. The maximum string size is 5 KB.' }),
-    ),
-    LanguageCode: SyntaxLanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language code of the input documents. You can specify any of the following languages supported by Amazon Comprehend: German ("de"), English ("en"), Spanish ("es"), French ("fr"), Italian ("it"), or Portuguese ("pt").',
-        }),
-    ),
+    Text: CustomerInputStringSchema.openapi({
+      description: 'A UTF-8 string. The maximum string size is 5 KB.',
+    }),
+    LanguageCode: SyntaxLanguageCodeSchema.openapi({
+      description:
+        'The language code of the input documents. You can specify any of the following languages supported by Amazon Comprehend: German ("de"), English ("en"), Spanish ("es"), French ("fr"), Italian ("it"), or Portuguese ("pt").',
+    }),
   })
   .openapi({ required: ['Text', 'LanguageCode'], title: 'DetectSyntaxRequest' })
   .openapi('DetectSyntaxRequest')
 
 const DetectTargetedSentimentResponseSchema = z
   .object({
-    Entities: ListOfTargetedSentimentEntitiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Targeted sentiment analysis for each of the entities identified in the input text.',
-        }),
-    ).exactOptional(),
+    Entities: ListOfTargetedSentimentEntitiesSchema.exactOptional().openapi({
+      description:
+        'Targeted sentiment analysis for each of the entities identified in the input text.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DetectTargetedSentimentResponse')
 
 const DetectTargetedSentimentRequestSchema = z
   .object({
-    Text: CustomerInputStringSchema.and(
-      z.any().openapi({ description: 'A UTF-8 text string. The maximum string length is 5 KB.' }),
-    ),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language of the input documents. Currently, English is the only supported language.',
-        }),
-    ),
+    Text: CustomerInputStringSchema.openapi({
+      description: 'A UTF-8 text string. The maximum string length is 5 KB.',
+    }),
+    LanguageCode: LanguageCodeSchema.openapi({
+      description:
+        'The language of the input documents. Currently, English is the only supported language.',
+    }),
   })
   .openapi({ required: ['Text', 'LanguageCode'], title: 'DetectTargetedSentimentRequest' })
   .openapi('DetectTargetedSentimentRequest')
 
 const ImportModelResponseSchema = z
   .object({
-    ModelArn: ComprehendModelArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the custom model being imported.',
-        }),
-    ).exactOptional(),
+    ModelArn: ComprehendModelArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the custom model being imported.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ImportModelResponse')
 
 const ImportModelRequestSchema = z
   .object({
-    SourceModelArn: ComprehendModelArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the custom model to import.' }),
-    ),
-    ModelName: ComprehendArnNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name to assign to the custom model that is created in Amazon Comprehend by this import.',
-        }),
-    ).exactOptional(),
-    VersionName: VersionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version name given to the custom model that is created by this import. Version names can have a maximum of 256 characters. Alphanumeric characters, hyphens (-) and underscores (_) are allowed. The version name must be unique among all models with the same classifier name in the account/Region.',
-        }),
-    ).exactOptional(),
-    ModelKmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>ID for the KMS key that Amazon Comprehend uses to encrypt trained custom models. The ModelKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    DataAccessRoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend permission to use Amazon Key Management Service (KMS) to encrypt or decrypt the custom model.',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Tags to associate with the custom model that is created by this import. A tag is a key-value pair that adds as a metadata to a resource used by Amazon Comprehend. For example, a tag with "Sales" as the key might be added to a resource to indicate its use by the sales department.',
-        }),
-    ).exactOptional(),
+    SourceModelArn: ComprehendModelArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the custom model to import.',
+    }),
+    ModelName: ComprehendArnNameSchema.exactOptional().openapi({
+      description:
+        'The name to assign to the custom model that is created in Amazon Comprehend by this import.',
+    }),
+    VersionName: VersionNameSchema.exactOptional().openapi({
+      description:
+        'The version name given to the custom model that is created by this import. Version names can have a maximum of 256 characters. Alphanumeric characters, hyphens (-) and underscores (_) are allowed. The version name must be unique among all models with the same classifier name in the account/Region.',
+    }),
+    ModelKmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        '<p>ID for the KMS key that Amazon Comprehend uses to encrypt trained custom models. The ModelKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
+    }),
+    DataAccessRoleArn: IamRoleArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend permission to use Amazon Key Management Service (KMS) to encrypt or decrypt the custom model.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'Tags to associate with the custom model that is created by this import. A tag is a key-value pair that adds as a metadata to a resource used by Amazon Comprehend. For example, a tag with "Sales" as the key might be added to a resource to indicate its use by the sales department.',
+    }),
   })
   .openapi({ required: ['SourceModelArn'], title: 'ImportModelRequest' })
   .openapi('ImportModelRequest')
@@ -5418,38 +3844,30 @@ const DatasetPropertiesListSchema = z
 
 const ListDatasetsResponseSchema = z
   .object({
-    DatasetPropertiesList: DatasetPropertiesListSchema.and(
-      z.any().openapi({ description: 'The dataset properties list.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Identifies the next page of results to return.' }),
-    ).exactOptional(),
+    DatasetPropertiesList: DatasetPropertiesListSchema.exactOptional().openapi({
+      description: 'The dataset properties list.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Identifies the next page of results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDatasetsResponse')
 
 const DatasetFilterSchema = z
   .object({
-    Status: DatasetStatusSchema.and(
-      z.any().openapi({ description: 'Filter the datasets based on the dataset status.' }),
-    ).exactOptional(),
-    DatasetType: DatasetTypeSchema.and(
-      z.any().openapi({ description: 'Filter the datasets based on the dataset type.' }),
-    ).exactOptional(),
-    CreationTimeAfter: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Filter the datasets to include datasets created after the specified time.',
-        }),
-    ).exactOptional(),
-    CreationTimeBefore: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Filter the datasets to include datasets created before the specified time.',
-        }),
-    ).exactOptional(),
+    Status: DatasetStatusSchema.exactOptional().openapi({
+      description: 'Filter the datasets based on the dataset status.',
+    }),
+    DatasetType: DatasetTypeSchema.exactOptional().openapi({
+      description: 'Filter the datasets based on the dataset type.',
+    }),
+    CreationTimeAfter: TimestampSchema.exactOptional().openapi({
+      description: 'Filter the datasets to include datasets created after the specified time.',
+    }),
+    CreationTimeBefore: TimestampSchema.exactOptional().openapi({
+      description: 'Filter the datasets to include datasets created before the specified time.',
+    }),
   })
   .openapi({
     description: 'Filter the datasets based on creation time or dataset status.',
@@ -5461,22 +3879,18 @@ const MaxResultsIntegerSchema = z.int().min(1).max(500).openapi('MaxResultsInteg
 
 const ListDatasetsRequestSchema = z
   .object({
-    FlywheelArn: ComprehendFlywheelArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Number (ARN) of the flywheel.' }),
-    ).exactOptional(),
-    Filter: DatasetFilterSchema.and(
-      z.any().openapi({ description: 'Filters the datasets to be returned in the response.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Identifies the next page of results to return.' }),
-    ).exactOptional(),
-    MaxResults: MaxResultsIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Maximum number of results to return in a response. The default is 100.',
-        }),
-    ).exactOptional(),
+    FlywheelArn: ComprehendFlywheelArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Number (ARN) of the flywheel.',
+    }),
+    Filter: DatasetFilterSchema.exactOptional().openapi({
+      description: 'Filters the datasets to be returned in the response.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Identifies the next page of results to return.',
+    }),
+    MaxResults: MaxResultsIntegerSchema.exactOptional().openapi({
+      description: 'Maximum number of results to return in a response. The default is 100.',
+    }),
   })
   .openapi({ title: 'ListDatasetsRequest', required: [] })
   .openapi('ListDatasetsRequest')
@@ -5489,45 +3903,34 @@ const DocumentClassificationJobPropertiesListSchema = z
 
 const ListDocumentClassificationJobsResponseSchema = z
   .object({
-    DocumentClassificationJobPropertiesList: DocumentClassificationJobPropertiesListSchema.and(
-      z.any().openapi({ description: 'A list containing the properties of each job returned.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Identifies the next page of results to return.' }),
-    ).exactOptional(),
+    DocumentClassificationJobPropertiesList:
+      DocumentClassificationJobPropertiesListSchema.exactOptional().openapi({
+        description: 'A list containing the properties of each job returned.',
+      }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Identifies the next page of results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDocumentClassificationJobsResponse')
 
 const DocumentClassificationJobFilterSchema = z
   .object({
-    JobName: JobNameSchema.and(
-      z.any().openapi({ description: 'Filters on the name of the job.' }),
-    ).exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the list based on job status. Returns only jobs with the specified status.',
-        }),
-    ).exactOptional(),
-    SubmitTimeBefore: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the list of jobs based on the time that the job was submitted for processing. Returns only jobs submitted before the specified time. Jobs are returned in ascending order, oldest to newest.',
-        }),
-    ).exactOptional(),
-    SubmitTimeAfter: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the list of jobs based on the time that the job was submitted for processing. Returns only jobs submitted after the specified time. Jobs are returned in descending order, newest to oldest.',
-        }),
-    ).exactOptional(),
+    JobName: JobNameSchema.exactOptional().openapi({
+      description: 'Filters on the name of the job.',
+    }),
+    JobStatus: JobStatusSchema.exactOptional().openapi({
+      description:
+        'Filters the list based on job status. Returns only jobs with the specified status.',
+    }),
+    SubmitTimeBefore: TimestampSchema.exactOptional().openapi({
+      description:
+        'Filters the list of jobs based on the time that the job was submitted for processing. Returns only jobs submitted before the specified time. Jobs are returned in ascending order, oldest to newest.',
+    }),
+    SubmitTimeAfter: TimestampSchema.exactOptional().openapi({
+      description:
+        'Filters the list of jobs based on the time that the job was submitted for processing. Returns only jobs submitted after the specified time. Jobs are returned in descending order, newest to oldest.',
+    }),
   })
   .openapi({
     description:
@@ -5538,56 +3941,38 @@ const DocumentClassificationJobFilterSchema = z
 
 const ListDocumentClassificationJobsRequestSchema = z
   .object({
-    Filter: DocumentClassificationJobFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the jobs that are returned. You can filter jobs on their names, status, or the date and time that they were submitted. You can only set one filter at a time.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Identifies the next page of results to return.' }),
-    ).exactOptional(),
-    MaxResults: MaxResultsIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of results to return in each page. The default is 100.',
-        }),
-    ).exactOptional(),
+    Filter: DocumentClassificationJobFilterSchema.exactOptional().openapi({
+      description:
+        'Filters the jobs that are returned. You can filter jobs on their names, status, or the date and time that they were submitted. You can only set one filter at a time.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Identifies the next page of results to return.',
+    }),
+    MaxResults: MaxResultsIntegerSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in each page. The default is 100.',
+    }),
   })
   .openapi({ title: 'ListDocumentClassificationJobsRequest', required: [] })
   .openapi('ListDocumentClassificationJobsRequest')
 
 const DocumentClassifierSummarySchema = z
   .object({
-    DocumentClassifierName: ComprehendArnNameSchema.and(
-      z.any().openapi({ description: 'The name that you assigned the document classifier.' }),
-    ).exactOptional(),
-    NumberOfVersions: IntegerSchema.and(
-      z.any().openapi({ description: 'The number of versions you created.' }),
-    ).exactOptional(),
-    LatestVersionCreatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time that the latest document classifier version was submitted for processing.',
-        }),
-    ).exactOptional(),
-    LatestVersionName: VersionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The version name you assigned to the latest document classifier version.',
-        }),
-    ).exactOptional(),
-    LatestVersionStatus: ModelStatusSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Provides the status of the latest document classifier version.' }),
-    ).exactOptional(),
+    DocumentClassifierName: ComprehendArnNameSchema.exactOptional().openapi({
+      description: 'The name that you assigned the document classifier.',
+    }),
+    NumberOfVersions: IntegerSchema.exactOptional().openapi({
+      description: 'The number of versions you created.',
+    }),
+    LatestVersionCreatedAt: TimestampSchema.exactOptional().openapi({
+      description:
+        'The time that the latest document classifier version was submitted for processing.',
+    }),
+    LatestVersionName: VersionNameSchema.exactOptional().openapi({
+      description: 'The version name you assigned to the latest document classifier version.',
+    }),
+    LatestVersionStatus: ModelStatusSchema.exactOptional().openapi({
+      description: 'Provides the status of the latest document classifier version.',
+    }),
   })
   .openapi({
     description: 'Describes information about a document classifier and its versions.',
@@ -5601,28 +3986,24 @@ const DocumentClassifierSummariesListSchema = z
 
 const ListDocumentClassifierSummariesResponseSchema = z
   .object({
-    DocumentClassifierSummariesList: DocumentClassifierSummariesListSchema.and(
-      z.any().openapi({ description: 'The list of summaries of document classifiers.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Identifies the next page of results to return.' }),
-    ).exactOptional(),
+    DocumentClassifierSummariesList: DocumentClassifierSummariesListSchema.exactOptional().openapi({
+      description: 'The list of summaries of document classifiers.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Identifies the next page of results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDocumentClassifierSummariesResponse')
 
 const ListDocumentClassifierSummariesRequestSchema = z
   .object({
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Identifies the next page of results to return.' }),
-    ).exactOptional(),
-    MaxResults: MaxResultsIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of results to return on each page. The default is 100.',
-        }),
-    ).exactOptional(),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Identifies the next page of results to return.',
+    }),
+    MaxResults: MaxResultsIntegerSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return on each page. The default is 100.',
+    }),
   })
   .openapi({ title: 'ListDocumentClassifierSummariesRequest', required: [] })
   .openapi('ListDocumentClassifierSummariesRequest')
@@ -5633,40 +4014,33 @@ const DocumentClassifierPropertiesListSchema = z
 
 const ListDocumentClassifiersResponseSchema = z
   .object({
-    DocumentClassifierPropertiesList: DocumentClassifierPropertiesListSchema.and(
-      z.any().openapi({ description: 'A list containing the properties of each job returned.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Identifies the next page of results to return.' }),
-    ).exactOptional(),
+    DocumentClassifierPropertiesList:
+      DocumentClassifierPropertiesListSchema.exactOptional().openapi({
+        description: 'A list containing the properties of each job returned.',
+      }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Identifies the next page of results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDocumentClassifiersResponse')
 
 const DocumentClassifierFilterSchema = z
   .object({
-    Status: ModelStatusSchema.and(
-      z.any().openapi({ description: 'Filters the list of classifiers based on status.' }),
-    ).exactOptional(),
-    DocumentClassifierName: ComprehendArnNameSchema.and(
-      z.any().openapi({ description: 'The name that you assigned to the document classifier' }),
-    ).exactOptional(),
-    SubmitTimeBefore: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the list of classifiers based on the time that the classifier was submitted for processing. Returns only classifiers submitted before the specified time. Classifiers are returned in ascending order, oldest to newest.',
-        }),
-    ).exactOptional(),
-    SubmitTimeAfter: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the list of classifiers based on the time that the classifier was submitted for processing. Returns only classifiers submitted after the specified time. Classifiers are returned in descending order, newest to oldest.',
-        }),
-    ).exactOptional(),
+    Status: ModelStatusSchema.exactOptional().openapi({
+      description: 'Filters the list of classifiers based on status.',
+    }),
+    DocumentClassifierName: ComprehendArnNameSchema.exactOptional().openapi({
+      description: 'The name that you assigned to the document classifier',
+    }),
+    SubmitTimeBefore: TimestampSchema.exactOptional().openapi({
+      description:
+        'Filters the list of classifiers based on the time that the classifier was submitted for processing. Returns only classifiers submitted before the specified time. Classifiers are returned in ascending order, oldest to newest.',
+    }),
+    SubmitTimeAfter: TimestampSchema.exactOptional().openapi({
+      description:
+        'Filters the list of classifiers based on the time that the classifier was submitted for processing. Returns only classifiers submitted after the specified time. Classifiers are returned in descending order, newest to oldest.',
+    }),
   })
   .openapi({
     description:
@@ -5677,24 +4051,16 @@ const DocumentClassifierFilterSchema = z
 
 const ListDocumentClassifiersRequestSchema = z
   .object({
-    Filter: DocumentClassifierFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the jobs that are returned. You can filter jobs on their name, status, or the date and time that they were submitted. You can only set one filter at a time.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Identifies the next page of results to return.' }),
-    ).exactOptional(),
-    MaxResults: MaxResultsIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of results to return in each page. The default is 100.',
-        }),
-    ).exactOptional(),
+    Filter: DocumentClassifierFilterSchema.exactOptional().openapi({
+      description:
+        'Filters the jobs that are returned. You can filter jobs on their name, status, or the date and time that they were submitted. You can only set one filter at a time.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Identifies the next page of results to return.',
+    }),
+    MaxResults: MaxResultsIntegerSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in each page. The default is 100.',
+    }),
   })
   .openapi({ title: 'ListDocumentClassifiersRequest', required: [] })
   .openapi('ListDocumentClassifiersRequest')
@@ -5706,49 +4072,33 @@ const DominantLanguageDetectionJobPropertiesListSchema = z
 const ListDominantLanguageDetectionJobsResponseSchema = z
   .object({
     DominantLanguageDetectionJobPropertiesList:
-      DominantLanguageDetectionJobPropertiesListSchema.and(
-        z
-          .any()
-          .openapi({
-            description: 'A list containing the properties of each job that is returned.',
-          }),
-      ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Identifies the next page of results to return.' }),
-    ).exactOptional(),
+      DominantLanguageDetectionJobPropertiesListSchema.exactOptional().openapi({
+        description: 'A list containing the properties of each job that is returned.',
+      }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Identifies the next page of results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDominantLanguageDetectionJobsResponse')
 
 const DominantLanguageDetectionJobFilterSchema = z
   .object({
-    JobName: JobNameSchema.and(
-      z.any().openapi({ description: 'Filters on the name of the job.' }),
-    ).exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the list of jobs based on job status. Returns only jobs with the specified status.',
-        }),
-    ).exactOptional(),
-    SubmitTimeBefore: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the list of jobs based on the time that the job was submitted for processing. Returns only jobs submitted before the specified time. Jobs are returned in ascending order, oldest to newest.',
-        }),
-    ).exactOptional(),
-    SubmitTimeAfter: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the list of jobs based on the time that the job was submitted for processing. Returns only jobs submitted after the specified time. Jobs are returned in descending order, newest to oldest.',
-        }),
-    ).exactOptional(),
+    JobName: JobNameSchema.exactOptional().openapi({
+      description: 'Filters on the name of the job.',
+    }),
+    JobStatus: JobStatusSchema.exactOptional().openapi({
+      description:
+        'Filters the list of jobs based on job status. Returns only jobs with the specified status.',
+    }),
+    SubmitTimeBefore: TimestampSchema.exactOptional().openapi({
+      description:
+        'Filters the list of jobs based on the time that the job was submitted for processing. Returns only jobs submitted before the specified time. Jobs are returned in ascending order, oldest to newest.',
+    }),
+    SubmitTimeAfter: TimestampSchema.exactOptional().openapi({
+      description:
+        'Filters the list of jobs based on the time that the job was submitted for processing. Returns only jobs submitted after the specified time. Jobs are returned in descending order, newest to oldest.',
+    }),
   })
   .openapi({
     description:
@@ -5759,24 +4109,16 @@ const DominantLanguageDetectionJobFilterSchema = z
 
 const ListDominantLanguageDetectionJobsRequestSchema = z
   .object({
-    Filter: DominantLanguageDetectionJobFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters that jobs that are returned. You can filter jobs on their name, status, or the date and time that they were submitted. You can only set one filter at a time.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Identifies the next page of results to return.' }),
-    ).exactOptional(),
-    MaxResults: MaxResultsIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of results to return in each page. The default is 100.',
-        }),
-    ).exactOptional(),
+    Filter: DominantLanguageDetectionJobFilterSchema.exactOptional().openapi({
+      description:
+        'Filters that jobs that are returned. You can filter jobs on their name, status, or the date and time that they were submitted. You can only set one filter at a time.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Identifies the next page of results to return.',
+    }),
+    MaxResults: MaxResultsIntegerSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in each page. The default is 100.',
+    }),
   })
   .openapi({ title: 'ListDominantLanguageDetectionJobsRequest', required: [] })
   .openapi('ListDominantLanguageDetectionJobsRequest')
@@ -5787,55 +4129,33 @@ const EndpointPropertiesListSchema = z
 
 const ListEndpointsResponseSchema = z
   .object({
-    EndpointPropertiesList: EndpointPropertiesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Displays a list of endpoint properties being retrieved by the service in response to the request.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Identifies the next page of results to return.' }),
-    ).exactOptional(),
+    EndpointPropertiesList: EndpointPropertiesListSchema.exactOptional().openapi({
+      description:
+        'Displays a list of endpoint properties being retrieved by the service in response to the request.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Identifies the next page of results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListEndpointsResponse')
 
 const EndpointFilterSchema = z
   .object({
-    ModelArn: ComprehendModelArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Number (ARN) of the model to which the endpoint is attached.',
-        }),
-    ).exactOptional(),
-    Status: EndpointStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the status of the endpoint being returned. Possible values are: Creating, Ready, Updating, Deleting, Failed.',
-        }),
-    ).exactOptional(),
-    CreationTimeBefore: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies a date before which the returned endpoint or endpoints were created.',
-        }),
-    ).exactOptional(),
-    CreationTimeAfter: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies a date after which the returned endpoint or endpoints were created.',
-        }),
-    ).exactOptional(),
+    ModelArn: ComprehendModelArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Number (ARN) of the model to which the endpoint is attached.',
+    }),
+    Status: EndpointStatusSchema.exactOptional().openapi({
+      description:
+        'Specifies the status of the endpoint being returned. Possible values are: Creating, Ready, Updating, Deleting, Failed.',
+    }),
+    CreationTimeBefore: TimestampSchema.exactOptional().openapi({
+      description: 'Specifies a date before which the returned endpoint or endpoints were created.',
+    }),
+    CreationTimeAfter: TimestampSchema.exactOptional().openapi({
+      description: 'Specifies a date after which the returned endpoint or endpoints were created.',
+    }),
   })
   .openapi({
     description:
@@ -5846,24 +4166,16 @@ const EndpointFilterSchema = z
 
 const ListEndpointsRequestSchema = z
   .object({
-    Filter: EndpointFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the endpoints that are returned. You can filter endpoints on their name, model, status, or the date and time that they were created. You can only set one filter at a time. ',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Identifies the next page of results to return.' }),
-    ).exactOptional(),
-    MaxResults: MaxResultsIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of results to return in each page. The default is 100.',
-        }),
-    ).exactOptional(),
+    Filter: EndpointFilterSchema.exactOptional().openapi({
+      description:
+        'Filters the endpoints that are returned. You can filter endpoints on their name, model, status, or the date and time that they were created. You can only set one filter at a time. ',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Identifies the next page of results to return.',
+    }),
+    MaxResults: MaxResultsIntegerSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in each page. The default is 100.',
+    }),
   })
   .openapi({ title: 'ListEndpointsRequest', required: [] })
   .openapi('ListEndpointsRequest')
@@ -5874,47 +4186,34 @@ const EntitiesDetectionJobPropertiesListSchema = z
 
 const ListEntitiesDetectionJobsResponseSchema = z
   .object({
-    EntitiesDetectionJobPropertiesList: EntitiesDetectionJobPropertiesListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list containing the properties of each job that is returned.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Identifies the next page of results to return.' }),
-    ).exactOptional(),
+    EntitiesDetectionJobPropertiesList:
+      EntitiesDetectionJobPropertiesListSchema.exactOptional().openapi({
+        description: 'A list containing the properties of each job that is returned.',
+      }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Identifies the next page of results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListEntitiesDetectionJobsResponse')
 
 const EntitiesDetectionJobFilterSchema = z
   .object({
-    JobName: JobNameSchema.and(
-      z.any().openapi({ description: 'Filters on the name of the job.' }),
-    ).exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the list of jobs based on job status. Returns only jobs with the specified status.',
-        }),
-    ).exactOptional(),
-    SubmitTimeBefore: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the list of jobs based on the time that the job was submitted for processing. Returns only jobs submitted before the specified time. Jobs are returned in ascending order, oldest to newest.',
-        }),
-    ).exactOptional(),
-    SubmitTimeAfter: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the list of jobs based on the time that the job was submitted for processing. Returns only jobs submitted after the specified time. Jobs are returned in descending order, newest to oldest.',
-        }),
-    ).exactOptional(),
+    JobName: JobNameSchema.exactOptional().openapi({
+      description: 'Filters on the name of the job.',
+    }),
+    JobStatus: JobStatusSchema.exactOptional().openapi({
+      description:
+        'Filters the list of jobs based on job status. Returns only jobs with the specified status.',
+    }),
+    SubmitTimeBefore: TimestampSchema.exactOptional().openapi({
+      description:
+        'Filters the list of jobs based on the time that the job was submitted for processing. Returns only jobs submitted before the specified time. Jobs are returned in ascending order, oldest to newest.',
+    }),
+    SubmitTimeAfter: TimestampSchema.exactOptional().openapi({
+      description:
+        'Filters the list of jobs based on the time that the job was submitted for processing. Returns only jobs submitted after the specified time. Jobs are returned in descending order, newest to oldest.',
+    }),
   })
   .openapi({
     description:
@@ -5925,56 +4224,38 @@ const EntitiesDetectionJobFilterSchema = z
 
 const ListEntitiesDetectionJobsRequestSchema = z
   .object({
-    Filter: EntitiesDetectionJobFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the jobs that are returned. You can filter jobs on their name, status, or the date and time that they were submitted. You can only set one filter at a time.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Identifies the next page of results to return.' }),
-    ).exactOptional(),
-    MaxResults: MaxResultsIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of results to return in each page. The default is 100.',
-        }),
-    ).exactOptional(),
+    Filter: EntitiesDetectionJobFilterSchema.exactOptional().openapi({
+      description:
+        'Filters the jobs that are returned. You can filter jobs on their name, status, or the date and time that they were submitted. You can only set one filter at a time.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Identifies the next page of results to return.',
+    }),
+    MaxResults: MaxResultsIntegerSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in each page. The default is 100.',
+    }),
   })
   .openapi({ title: 'ListEntitiesDetectionJobsRequest', required: [] })
   .openapi('ListEntitiesDetectionJobsRequest')
 
 const EntityRecognizerSummarySchema = z
   .object({
-    RecognizerName: ComprehendArnNameSchema.and(
-      z.any().openapi({ description: ' The name that you assigned the entity recognizer.' }),
-    ).exactOptional(),
-    NumberOfVersions: IntegerSchema.and(
-      z.any().openapi({ description: ' The number of versions you created.' }),
-    ).exactOptional(),
-    LatestVersionCreatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The time that the latest entity recognizer version was submitted for processing.',
-        }),
-    ).exactOptional(),
-    LatestVersionName: VersionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The version name you assigned to the latest entity recognizer version.',
-        }),
-    ).exactOptional(),
-    LatestVersionStatus: ModelStatusSchema.and(
-      z
-        .any()
-        .openapi({ description: ' Provides the status of the latest entity recognizer version.' }),
-    ).exactOptional(),
+    RecognizerName: ComprehendArnNameSchema.exactOptional().openapi({
+      description: ' The name that you assigned the entity recognizer.',
+    }),
+    NumberOfVersions: IntegerSchema.exactOptional().openapi({
+      description: ' The number of versions you created.',
+    }),
+    LatestVersionCreatedAt: TimestampSchema.exactOptional().openapi({
+      description:
+        ' The time that the latest entity recognizer version was submitted for processing.',
+    }),
+    LatestVersionName: VersionNameSchema.exactOptional().openapi({
+      description: ' The version name you assigned to the latest entity recognizer version.',
+    }),
+    LatestVersionStatus: ModelStatusSchema.exactOptional().openapi({
+      description: ' Provides the status of the latest entity recognizer version.',
+    }),
   })
   .openapi({
     description: ' Describes the information about an entity recognizer and its versions.',
@@ -5988,28 +4269,24 @@ const EntityRecognizerSummariesListSchema = z
 
 const ListEntityRecognizerSummariesResponseSchema = z
   .object({
-    EntityRecognizerSummariesList: EntityRecognizerSummariesListSchema.and(
-      z.any().openapi({ description: 'The list entity recognizer summaries.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Identifies the next page of results to return.' }),
-    ).exactOptional(),
+    EntityRecognizerSummariesList: EntityRecognizerSummariesListSchema.exactOptional().openapi({
+      description: 'The list entity recognizer summaries.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Identifies the next page of results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListEntityRecognizerSummariesResponse')
 
 const ListEntityRecognizerSummariesRequestSchema = z
   .object({
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Identifies the next page of results to return.' }),
-    ).exactOptional(),
-    MaxResults: MaxResultsIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of results to return on each page. The default is 100.',
-        }),
-    ).exactOptional(),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Identifies the next page of results to return.',
+    }),
+    MaxResults: MaxResultsIntegerSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return on each page. The default is 100.',
+    }),
   })
   .openapi({ title: 'ListEntityRecognizerSummariesRequest', required: [] })
   .openapi('ListEntityRecognizerSummariesRequest')
@@ -6020,40 +4297,32 @@ const EntityRecognizerPropertiesListSchema = z
 
 const ListEntityRecognizersResponseSchema = z
   .object({
-    EntityRecognizerPropertiesList: EntityRecognizerPropertiesListSchema.and(
-      z.any().openapi({ description: 'The list of properties of an entity recognizer.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Identifies the next page of results to return.' }),
-    ).exactOptional(),
+    EntityRecognizerPropertiesList: EntityRecognizerPropertiesListSchema.exactOptional().openapi({
+      description: 'The list of properties of an entity recognizer.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Identifies the next page of results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListEntityRecognizersResponse')
 
 const EntityRecognizerFilterSchema = z
   .object({
-    Status: ModelStatusSchema.and(
-      z.any().openapi({ description: 'The status of an entity recognizer.' }),
-    ).exactOptional(),
-    RecognizerName: ComprehendArnNameSchema.and(
-      z.any().openapi({ description: 'The name that you assigned the entity recognizer.' }),
-    ).exactOptional(),
-    SubmitTimeBefore: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the list of entities based on the time that the list was submitted for processing. Returns only jobs submitted before the specified time. Jobs are returned in descending order, newest to oldest.',
-        }),
-    ).exactOptional(),
-    SubmitTimeAfter: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the list of entities based on the time that the list was submitted for processing. Returns only jobs submitted after the specified time. Jobs are returned in ascending order, oldest to newest.',
-        }),
-    ).exactOptional(),
+    Status: ModelStatusSchema.exactOptional().openapi({
+      description: 'The status of an entity recognizer.',
+    }),
+    RecognizerName: ComprehendArnNameSchema.exactOptional().openapi({
+      description: 'The name that you assigned the entity recognizer.',
+    }),
+    SubmitTimeBefore: TimestampSchema.exactOptional().openapi({
+      description:
+        'Filters the list of entities based on the time that the list was submitted for processing. Returns only jobs submitted before the specified time. Jobs are returned in descending order, newest to oldest.',
+    }),
+    SubmitTimeAfter: TimestampSchema.exactOptional().openapi({
+      description:
+        'Filters the list of entities based on the time that the list was submitted for processing. Returns only jobs submitted after the specified time. Jobs are returned in ascending order, oldest to newest.',
+    }),
   })
   .openapi({
     description:
@@ -6064,24 +4333,16 @@ const EntityRecognizerFilterSchema = z
 
 const ListEntityRecognizersRequestSchema = z
   .object({
-    Filter: EntityRecognizerFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the list of entities returned. You can filter on <code>Status</code>, <code>SubmitTimeBefore</code>, or <code>SubmitTimeAfter</code>. You can only set one filter at a time.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Identifies the next page of results to return.' }),
-    ).exactOptional(),
-    MaxResults: MaxResultsIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The maximum number of results to return on each page. The default is 100.',
-        }),
-    ).exactOptional(),
+    Filter: EntityRecognizerFilterSchema.exactOptional().openapi({
+      description:
+        'Filters the list of entities returned. You can filter on <code>Status</code>, <code>SubmitTimeBefore</code>, or <code>SubmitTimeAfter</code>. You can only set one filter at a time.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Identifies the next page of results to return.',
+    }),
+    MaxResults: MaxResultsIntegerSchema.exactOptional().openapi({
+      description: ' The maximum number of results to return on each page. The default is 100.',
+    }),
   })
   .openapi({ title: 'ListEntityRecognizersRequest', required: [] })
   .openapi('ListEntityRecognizersRequest')
@@ -6092,47 +4353,34 @@ const EventsDetectionJobPropertiesListSchema = z
 
 const ListEventsDetectionJobsResponseSchema = z
   .object({
-    EventsDetectionJobPropertiesList: EventsDetectionJobPropertiesListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list containing the properties of each job that is returned.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Identifies the next page of results to return.' }),
-    ).exactOptional(),
+    EventsDetectionJobPropertiesList:
+      EventsDetectionJobPropertiesListSchema.exactOptional().openapi({
+        description: 'A list containing the properties of each job that is returned.',
+      }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Identifies the next page of results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListEventsDetectionJobsResponse')
 
 const EventsDetectionJobFilterSchema = z
   .object({
-    JobName: JobNameSchema.and(
-      z.any().openapi({ description: 'Filters on the name of the events detection job.' }),
-    ).exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the list of jobs based on job status. Returns only jobs with the specified status.',
-        }),
-    ).exactOptional(),
-    SubmitTimeBefore: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the list of jobs based on the time that the job was submitted for processing. Returns only jobs submitted before the specified time. Jobs are returned in ascending order, oldest to newest.',
-        }),
-    ).exactOptional(),
-    SubmitTimeAfter: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the list of jobs based on the time that the job was submitted for processing. Returns only jobs submitted after the specified time. Jobs are returned in descending order, newest to oldest.',
-        }),
-    ).exactOptional(),
+    JobName: JobNameSchema.exactOptional().openapi({
+      description: 'Filters on the name of the events detection job.',
+    }),
+    JobStatus: JobStatusSchema.exactOptional().openapi({
+      description:
+        'Filters the list of jobs based on job status. Returns only jobs with the specified status.',
+    }),
+    SubmitTimeBefore: TimestampSchema.exactOptional().openapi({
+      description:
+        'Filters the list of jobs based on the time that the job was submitted for processing. Returns only jobs submitted before the specified time. Jobs are returned in ascending order, oldest to newest.',
+    }),
+    SubmitTimeAfter: TimestampSchema.exactOptional().openapi({
+      description:
+        'Filters the list of jobs based on the time that the job was submitted for processing. Returns only jobs submitted after the specified time. Jobs are returned in descending order, newest to oldest.',
+    }),
   })
   .openapi({
     description: 'Provides information for filtering a list of event detection jobs.',
@@ -6142,20 +4390,16 @@ const EventsDetectionJobFilterSchema = z
 
 const ListEventsDetectionJobsRequestSchema = z
   .object({
-    Filter: EventsDetectionJobFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the jobs that are returned. You can filter jobs on their name, status, or the date and time that they were submitted. You can only set one filter at a time.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Identifies the next page of results to return.' }),
-    ).exactOptional(),
-    MaxResults: MaxResultsIntegerSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return in each page.' }),
-    ).exactOptional(),
+    Filter: EventsDetectionJobFilterSchema.exactOptional().openapi({
+      description:
+        'Filters the jobs that are returned. You can filter jobs on their name, status, or the date and time that they were submitted. You can only set one filter at a time.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Identifies the next page of results to return.',
+    }),
+    MaxResults: MaxResultsIntegerSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in each page.',
+    }),
   })
   .openapi({ title: 'ListEventsDetectionJobsRequest', required: [] })
   .openapi('ListEventsDetectionJobsRequest')
@@ -6166,83 +4410,71 @@ const FlywheelIterationPropertiesListSchema = z
 
 const ListFlywheelIterationHistoryResponseSchema = z
   .object({
-    FlywheelIterationPropertiesList: FlywheelIterationPropertiesListSchema.and(
-      z.any().openapi({ description: 'List of flywheel iteration properties' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(z.any().openapi({ description: 'Next token' })).exactOptional(),
+    FlywheelIterationPropertiesList: FlywheelIterationPropertiesListSchema.exactOptional().openapi({
+      description: 'List of flywheel iteration properties',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({ description: 'Next token' }),
   })
   .openapi({ required: [] })
   .openapi('ListFlywheelIterationHistoryResponse')
 
 const FlywheelIterationFilterSchema = z
   .object({
-    CreationTimeAfter: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filter the flywheel iterations to include iterations created after the specified time.',
-        }),
-    ).exactOptional(),
-    CreationTimeBefore: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filter the flywheel iterations to include iterations created before the specified time.',
-        }),
-    ).exactOptional(),
+    CreationTimeAfter: TimestampSchema.exactOptional().openapi({
+      description:
+        'Filter the flywheel iterations to include iterations created after the specified time.',
+    }),
+    CreationTimeBefore: TimestampSchema.exactOptional().openapi({
+      description:
+        'Filter the flywheel iterations to include iterations created before the specified time.',
+    }),
   })
   .openapi({ description: 'Filter the flywheel iterations based on creation time.', required: [] })
   .openapi('FlywheelIterationFilter')
 
 const ListFlywheelIterationHistoryRequestSchema = z
   .object({
-    FlywheelArn: ComprehendFlywheelArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the flywheel.' }),
-    ),
-    Filter: FlywheelIterationFilterSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Filter the flywheel iteration history based on creation time.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(z.any().openapi({ description: 'Next token' })).exactOptional(),
-    MaxResults: MaxResultsIntegerSchema.and(
-      z.any().openapi({ description: 'Maximum number of iteration history results to return' }),
-    ).exactOptional(),
+    FlywheelArn: ComprehendFlywheelArnSchema.openapi({ description: 'The ARN of the flywheel.' }),
+    Filter: FlywheelIterationFilterSchema.exactOptional().openapi({
+      description: 'Filter the flywheel iteration history based on creation time.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({ description: 'Next token' }),
+    MaxResults: MaxResultsIntegerSchema.exactOptional().openapi({
+      description: 'Maximum number of iteration history results to return',
+    }),
   })
   .openapi({ required: ['FlywheelArn'], title: 'ListFlywheelIterationHistoryRequest' })
   .openapi('ListFlywheelIterationHistoryRequest')
 
 const FlywheelSummarySchema = z
   .object({
-    FlywheelArn: ComprehendFlywheelArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Number (ARN) of the flywheel' }),
-    ).exactOptional(),
-    ActiveModelArn: ComprehendModelArnSchema.and(
-      z.any().openapi({ description: 'ARN of the active model version for the flywheel.' }),
-    ).exactOptional(),
-    DataLakeS3Uri: S3UriSchema.and(
-      z.any().openapi({ description: 'Amazon S3 URI of the data lake location. ' }),
-    ).exactOptional(),
-    Status: FlywheelStatusSchema.and(
-      z.any().openapi({ description: 'The status of the flywheel.' }),
-    ).exactOptional(),
-    ModelType: ModelTypeSchema.and(
-      z.any().openapi({ description: "Model type of the flywheel's model." }),
-    ).exactOptional(),
-    Message: AnyLengthStringSchema.and(
-      z.any().openapi({ description: 'A description of the status of the flywheel.' }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'Creation time of the flywheel.' }),
-    ).exactOptional(),
-    LastModifiedTime: TimestampSchema.and(
-      z.any().openapi({ description: 'Last modified time for the flywheel.' }),
-    ).exactOptional(),
-    LatestFlywheelIteration: FlywheelIterationIdSchema.and(
-      z.any().openapi({ description: 'The most recent flywheel iteration.' }),
-    ).exactOptional(),
+    FlywheelArn: ComprehendFlywheelArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Number (ARN) of the flywheel',
+    }),
+    ActiveModelArn: ComprehendModelArnSchema.exactOptional().openapi({
+      description: 'ARN of the active model version for the flywheel.',
+    }),
+    DataLakeS3Uri: S3UriSchema.exactOptional().openapi({
+      description: 'Amazon S3 URI of the data lake location. ',
+    }),
+    Status: FlywheelStatusSchema.exactOptional().openapi({
+      description: 'The status of the flywheel.',
+    }),
+    ModelType: ModelTypeSchema.exactOptional().openapi({
+      description: "Model type of the flywheel's model.",
+    }),
+    Message: AnyLengthStringSchema.exactOptional().openapi({
+      description: 'A description of the status of the flywheel.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'Creation time of the flywheel.',
+    }),
+    LastModifiedTime: TimestampSchema.exactOptional().openapi({
+      description: 'Last modified time for the flywheel.',
+    }),
+    LatestFlywheelIteration: FlywheelIterationIdSchema.exactOptional().openapi({
+      description: 'The most recent flywheel iteration.',
+    }),
   })
   .openapi({ description: 'Flywheel summary information.', required: [] })
   .openapi('FlywheelSummary')
@@ -6251,42 +4483,28 @@ const FlywheelSummaryListSchema = z.array(FlywheelSummarySchema).openapi('Flywhe
 
 const ListFlywheelsResponseSchema = z
   .object({
-    FlywheelSummaryList: FlywheelSummaryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of flywheel properties retrieved by the service in response to the request. ',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Identifies the next page of results to return.' }),
-    ).exactOptional(),
+    FlywheelSummaryList: FlywheelSummaryListSchema.exactOptional().openapi({
+      description:
+        'A list of flywheel properties retrieved by the service in response to the request. ',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Identifies the next page of results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListFlywheelsResponse')
 
 const FlywheelFilterSchema = z
   .object({
-    Status: FlywheelStatusSchema.and(
-      z.any().openapi({ description: 'Filter the flywheels based on the flywheel status.' }),
-    ).exactOptional(),
-    CreationTimeAfter: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filter the flywheels to include flywheels created after the specified time.',
-        }),
-    ).exactOptional(),
-    CreationTimeBefore: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filter the flywheels to include flywheels created before the specified time.',
-        }),
-    ).exactOptional(),
+    Status: FlywheelStatusSchema.exactOptional().openapi({
+      description: 'Filter the flywheels based on the flywheel status.',
+    }),
+    CreationTimeAfter: TimestampSchema.exactOptional().openapi({
+      description: 'Filter the flywheels to include flywheels created after the specified time.',
+    }),
+    CreationTimeBefore: TimestampSchema.exactOptional().openapi({
+      description: 'Filter the flywheels to include flywheels created before the specified time.',
+    }),
   })
   .openapi({
     description: 'Filter the flywheels based on creation time or flywheel status.',
@@ -6296,24 +4514,16 @@ const FlywheelFilterSchema = z
 
 const ListFlywheelsRequestSchema = z
   .object({
-    Filter: FlywheelFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the flywheels that are returned. You can filter flywheels on their status, or the date and time that they were submitted. You can only set one filter at a time. ',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Identifies the next page of results to return.' }),
-    ).exactOptional(),
-    MaxResults: MaxResultsIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Maximum number of results to return in a response. The default is 100.',
-        }),
-    ).exactOptional(),
+    Filter: FlywheelFilterSchema.exactOptional().openapi({
+      description:
+        'Filters the flywheels that are returned. You can filter flywheels on their status, or the date and time that they were submitted. You can only set one filter at a time. ',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Identifies the next page of results to return.',
+    }),
+    MaxResults: MaxResultsIntegerSchema.exactOptional().openapi({
+      description: 'Maximum number of results to return in a response. The default is 100.',
+    }),
   })
   .openapi({ title: 'ListFlywheelsRequest', required: [] })
   .openapi('ListFlywheelsRequest')
@@ -6324,47 +4534,34 @@ const KeyPhrasesDetectionJobPropertiesListSchema = z
 
 const ListKeyPhrasesDetectionJobsResponseSchema = z
   .object({
-    KeyPhrasesDetectionJobPropertiesList: KeyPhrasesDetectionJobPropertiesListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list containing the properties of each job that is returned.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Identifies the next page of results to return.' }),
-    ).exactOptional(),
+    KeyPhrasesDetectionJobPropertiesList:
+      KeyPhrasesDetectionJobPropertiesListSchema.exactOptional().openapi({
+        description: 'A list containing the properties of each job that is returned.',
+      }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Identifies the next page of results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListKeyPhrasesDetectionJobsResponse')
 
 const KeyPhrasesDetectionJobFilterSchema = z
   .object({
-    JobName: JobNameSchema.and(
-      z.any().openapi({ description: 'Filters on the name of the job.' }),
-    ).exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the list of jobs based on job status. Returns only jobs with the specified status.',
-        }),
-    ).exactOptional(),
-    SubmitTimeBefore: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the list of jobs based on the time that the job was submitted for processing. Returns only jobs submitted before the specified time. Jobs are returned in ascending order, oldest to newest.',
-        }),
-    ).exactOptional(),
-    SubmitTimeAfter: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the list of jobs based on the time that the job was submitted for processing. Returns only jobs submitted after the specified time. Jobs are returned in descending order, newest to oldest.',
-        }),
-    ).exactOptional(),
+    JobName: JobNameSchema.exactOptional().openapi({
+      description: 'Filters on the name of the job.',
+    }),
+    JobStatus: JobStatusSchema.exactOptional().openapi({
+      description:
+        'Filters the list of jobs based on job status. Returns only jobs with the specified status.',
+    }),
+    SubmitTimeBefore: TimestampSchema.exactOptional().openapi({
+      description:
+        'Filters the list of jobs based on the time that the job was submitted for processing. Returns only jobs submitted before the specified time. Jobs are returned in ascending order, oldest to newest.',
+    }),
+    SubmitTimeAfter: TimestampSchema.exactOptional().openapi({
+      description:
+        'Filters the list of jobs based on the time that the job was submitted for processing. Returns only jobs submitted after the specified time. Jobs are returned in descending order, newest to oldest.',
+    }),
   })
   .openapi({
     description:
@@ -6375,24 +4572,16 @@ const KeyPhrasesDetectionJobFilterSchema = z
 
 const ListKeyPhrasesDetectionJobsRequestSchema = z
   .object({
-    Filter: KeyPhrasesDetectionJobFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the jobs that are returned. You can filter jobs on their name, status, or the date and time that they were submitted. You can only set one filter at a time.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Identifies the next page of results to return.' }),
-    ).exactOptional(),
-    MaxResults: MaxResultsIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of results to return in each page. The default is 100.',
-        }),
-    ).exactOptional(),
+    Filter: KeyPhrasesDetectionJobFilterSchema.exactOptional().openapi({
+      description:
+        'Filters the jobs that are returned. You can filter jobs on their name, status, or the date and time that they were submitted. You can only set one filter at a time.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Identifies the next page of results to return.',
+    }),
+    MaxResults: MaxResultsIntegerSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in each page. The default is 100.',
+    }),
   })
   .openapi({ title: 'ListKeyPhrasesDetectionJobsRequest', required: [] })
   .openapi('ListKeyPhrasesDetectionJobsRequest')
@@ -6403,47 +4592,34 @@ const PiiEntitiesDetectionJobPropertiesListSchema = z
 
 const ListPiiEntitiesDetectionJobsResponseSchema = z
   .object({
-    PiiEntitiesDetectionJobPropertiesList: PiiEntitiesDetectionJobPropertiesListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list containing the properties of each job that is returned.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Identifies the next page of results to return.' }),
-    ).exactOptional(),
+    PiiEntitiesDetectionJobPropertiesList:
+      PiiEntitiesDetectionJobPropertiesListSchema.exactOptional().openapi({
+        description: 'A list containing the properties of each job that is returned.',
+      }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Identifies the next page of results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListPiiEntitiesDetectionJobsResponse')
 
 const PiiEntitiesDetectionJobFilterSchema = z
   .object({
-    JobName: JobNameSchema.and(
-      z.any().openapi({ description: 'Filters on the name of the job.' }),
-    ).exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the list of jobs based on job status. Returns only jobs with the specified status.',
-        }),
-    ).exactOptional(),
-    SubmitTimeBefore: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the list of jobs based on the time that the job was submitted for processing. Returns only jobs submitted before the specified time. Jobs are returned in ascending order, oldest to newest.',
-        }),
-    ).exactOptional(),
-    SubmitTimeAfter: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the list of jobs based on the time that the job was submitted for processing. Returns only jobs submitted after the specified time. Jobs are returned in descending order, newest to oldest.',
-        }),
-    ).exactOptional(),
+    JobName: JobNameSchema.exactOptional().openapi({
+      description: 'Filters on the name of the job.',
+    }),
+    JobStatus: JobStatusSchema.exactOptional().openapi({
+      description:
+        'Filters the list of jobs based on job status. Returns only jobs with the specified status.',
+    }),
+    SubmitTimeBefore: TimestampSchema.exactOptional().openapi({
+      description:
+        'Filters the list of jobs based on the time that the job was submitted for processing. Returns only jobs submitted before the specified time. Jobs are returned in ascending order, oldest to newest.',
+    }),
+    SubmitTimeAfter: TimestampSchema.exactOptional().openapi({
+      description:
+        'Filters the list of jobs based on the time that the job was submitted for processing. Returns only jobs submitted after the specified time. Jobs are returned in descending order, newest to oldest.',
+    }),
   })
   .openapi({
     description: 'Provides information for filtering a list of PII entity detection jobs.',
@@ -6453,20 +4629,16 @@ const PiiEntitiesDetectionJobFilterSchema = z
 
 const ListPiiEntitiesDetectionJobsRequestSchema = z
   .object({
-    Filter: PiiEntitiesDetectionJobFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the jobs that are returned. You can filter jobs on their name, status, or the date and time that they were submitted. You can only set one filter at a time.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Identifies the next page of results to return.' }),
-    ).exactOptional(),
-    MaxResults: MaxResultsIntegerSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return in each page.' }),
-    ).exactOptional(),
+    Filter: PiiEntitiesDetectionJobFilterSchema.exactOptional().openapi({
+      description:
+        'Filters the jobs that are returned. You can filter jobs on their name, status, or the date and time that they were submitted. You can only set one filter at a time.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Identifies the next page of results to return.',
+    }),
+    MaxResults: MaxResultsIntegerSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in each page.',
+    }),
   })
   .openapi({ title: 'ListPiiEntitiesDetectionJobsRequest', required: [] })
   .openapi('ListPiiEntitiesDetectionJobsRequest')
@@ -6477,47 +4649,34 @@ const SentimentDetectionJobPropertiesListSchema = z
 
 const ListSentimentDetectionJobsResponseSchema = z
   .object({
-    SentimentDetectionJobPropertiesList: SentimentDetectionJobPropertiesListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list containing the properties of each job that is returned.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Identifies the next page of results to return.' }),
-    ).exactOptional(),
+    SentimentDetectionJobPropertiesList:
+      SentimentDetectionJobPropertiesListSchema.exactOptional().openapi({
+        description: 'A list containing the properties of each job that is returned.',
+      }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Identifies the next page of results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListSentimentDetectionJobsResponse')
 
 const SentimentDetectionJobFilterSchema = z
   .object({
-    JobName: JobNameSchema.and(
-      z.any().openapi({ description: 'Filters on the name of the job.' }),
-    ).exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the list of jobs based on job status. Returns only jobs with the specified status.',
-        }),
-    ).exactOptional(),
-    SubmitTimeBefore: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the list of jobs based on the time that the job was submitted for processing. Returns only jobs submitted before the specified time. Jobs are returned in ascending order, oldest to newest.',
-        }),
-    ).exactOptional(),
-    SubmitTimeAfter: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the list of jobs based on the time that the job was submitted for processing. Returns only jobs submitted after the specified time. Jobs are returned in descending order, newest to oldest.',
-        }),
-    ).exactOptional(),
+    JobName: JobNameSchema.exactOptional().openapi({
+      description: 'Filters on the name of the job.',
+    }),
+    JobStatus: JobStatusSchema.exactOptional().openapi({
+      description:
+        'Filters the list of jobs based on job status. Returns only jobs with the specified status.',
+    }),
+    SubmitTimeBefore: TimestampSchema.exactOptional().openapi({
+      description:
+        'Filters the list of jobs based on the time that the job was submitted for processing. Returns only jobs submitted before the specified time. Jobs are returned in ascending order, oldest to newest.',
+    }),
+    SubmitTimeAfter: TimestampSchema.exactOptional().openapi({
+      description:
+        'Filters the list of jobs based on the time that the job was submitted for processing. Returns only jobs submitted after the specified time. Jobs are returned in descending order, newest to oldest.',
+    }),
   })
   .openapi({
     description:
@@ -6528,60 +4687,40 @@ const SentimentDetectionJobFilterSchema = z
 
 const ListSentimentDetectionJobsRequestSchema = z
   .object({
-    Filter: SentimentDetectionJobFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the jobs that are returned. You can filter jobs on their name, status, or the date and time that they were submitted. You can only set one filter at a time.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Identifies the next page of results to return.' }),
-    ).exactOptional(),
-    MaxResults: MaxResultsIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of results to return in each page. The default is 100.',
-        }),
-    ).exactOptional(),
+    Filter: SentimentDetectionJobFilterSchema.exactOptional().openapi({
+      description:
+        'Filters the jobs that are returned. You can filter jobs on their name, status, or the date and time that they were submitted. You can only set one filter at a time.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Identifies the next page of results to return.',
+    }),
+    MaxResults: MaxResultsIntegerSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in each page. The default is 100.',
+    }),
   })
   .openapi({ title: 'ListSentimentDetectionJobsRequest', required: [] })
   .openapi('ListSentimentDetectionJobsRequest')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    ResourceArn: ComprehendArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the given Amazon Comprehend resource you are querying.',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Tags associated with the Amazon Comprehend resource being queried. A tag is a key-value pair that adds as a metadata to a resource used by Amazon Comprehend. For example, a tag with "Sales" as the key might be added to a resource to indicate its use by the sales department. ',
-        }),
-    ).exactOptional(),
+    ResourceArn: ComprehendArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the given Amazon Comprehend resource you are querying.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'Tags associated with the Amazon Comprehend resource being queried. A tag is a key-value pair that adds as a metadata to a resource used by Amazon Comprehend. For example, a tag with "Sales" as the key might be added to a resource to indicate its use by the sales department. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
 
 const ListTagsForResourceRequestSchema = z
   .object({
-    ResourceArn: ComprehendArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the given Amazon Comprehend resource you are querying. ',
-        }),
-    ),
+    ResourceArn: ComprehendArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the given Amazon Comprehend resource you are querying. ',
+    }),
   })
   .openapi({ required: ['ResourceArn'], title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
@@ -6593,49 +4732,33 @@ const TargetedSentimentDetectionJobPropertiesListSchema = z
 const ListTargetedSentimentDetectionJobsResponseSchema = z
   .object({
     TargetedSentimentDetectionJobPropertiesList:
-      TargetedSentimentDetectionJobPropertiesListSchema.and(
-        z
-          .any()
-          .openapi({
-            description: 'A list containing the properties of each job that is returned.',
-          }),
-      ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Identifies the next page of results to return.' }),
-    ).exactOptional(),
+      TargetedSentimentDetectionJobPropertiesListSchema.exactOptional().openapi({
+        description: 'A list containing the properties of each job that is returned.',
+      }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Identifies the next page of results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTargetedSentimentDetectionJobsResponse')
 
 const TargetedSentimentDetectionJobFilterSchema = z
   .object({
-    JobName: JobNameSchema.and(
-      z.any().openapi({ description: 'Filters on the name of the job.' }),
-    ).exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the list of jobs based on job status. Returns only jobs with the specified status.',
-        }),
-    ).exactOptional(),
-    SubmitTimeBefore: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the list of jobs based on the time that the job was submitted for processing. Returns only jobs submitted before the specified time. Jobs are returned in ascending order, oldest to newest.',
-        }),
-    ).exactOptional(),
-    SubmitTimeAfter: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the list of jobs based on the time that the job was submitted for processing. Returns only jobs submitted after the specified time. Jobs are returned in descending order, newest to oldest.',
-        }),
-    ).exactOptional(),
+    JobName: JobNameSchema.exactOptional().openapi({
+      description: 'Filters on the name of the job.',
+    }),
+    JobStatus: JobStatusSchema.exactOptional().openapi({
+      description:
+        'Filters the list of jobs based on job status. Returns only jobs with the specified status.',
+    }),
+    SubmitTimeBefore: TimestampSchema.exactOptional().openapi({
+      description:
+        'Filters the list of jobs based on the time that the job was submitted for processing. Returns only jobs submitted before the specified time. Jobs are returned in ascending order, oldest to newest.',
+    }),
+    SubmitTimeAfter: TimestampSchema.exactOptional().openapi({
+      description:
+        'Filters the list of jobs based on the time that the job was submitted for processing. Returns only jobs submitted after the specified time. Jobs are returned in descending order, newest to oldest.',
+    }),
   })
   .openapi({
     description:
@@ -6646,24 +4769,16 @@ const TargetedSentimentDetectionJobFilterSchema = z
 
 const ListTargetedSentimentDetectionJobsRequestSchema = z
   .object({
-    Filter: TargetedSentimentDetectionJobFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the jobs that are returned. You can filter jobs on their name, status, or the date and time that they were submitted. You can only set one filter at a time.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Identifies the next page of results to return.' }),
-    ).exactOptional(),
-    MaxResults: MaxResultsIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of results to return in each page. The default is 100.',
-        }),
-    ).exactOptional(),
+    Filter: TargetedSentimentDetectionJobFilterSchema.exactOptional().openapi({
+      description:
+        'Filters the jobs that are returned. You can filter jobs on their name, status, or the date and time that they were submitted. You can only set one filter at a time.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Identifies the next page of results to return.',
+    }),
+    MaxResults: MaxResultsIntegerSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in each page. The default is 100.',
+    }),
   })
   .openapi({ title: 'ListTargetedSentimentDetectionJobsRequest', required: [] })
   .openapi('ListTargetedSentimentDetectionJobsRequest')
@@ -6674,45 +4789,32 @@ const TopicsDetectionJobPropertiesListSchema = z
 
 const ListTopicsDetectionJobsResponseSchema = z
   .object({
-    TopicsDetectionJobPropertiesList: TopicsDetectionJobPropertiesListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list containing the properties of each job that is returned.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Identifies the next page of results to return.' }),
-    ).exactOptional(),
+    TopicsDetectionJobPropertiesList:
+      TopicsDetectionJobPropertiesListSchema.exactOptional().openapi({
+        description: 'A list containing the properties of each job that is returned.',
+      }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Identifies the next page of results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTopicsDetectionJobsResponse')
 
 const TopicsDetectionJobFilterSchema = z
   .object({
-    JobName: JobNameSchema.and(z.any().openapi({ description: '<p/>' })).exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the list of topic detection jobs based on job status. Returns only jobs with the specified status.',
-        }),
-    ).exactOptional(),
-    SubmitTimeBefore: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the list of jobs based on the time that the job was submitted for processing. Only returns jobs submitted before the specified time. Jobs are returned in descending order, newest to oldest.',
-        }),
-    ).exactOptional(),
-    SubmitTimeAfter: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the list of jobs based on the time that the job was submitted for processing. Only returns jobs submitted after the specified time. Jobs are returned in ascending order, oldest to newest.',
-        }),
-    ).exactOptional(),
+    JobName: JobNameSchema.exactOptional().openapi({ description: '<p/>' }),
+    JobStatus: JobStatusSchema.exactOptional().openapi({
+      description:
+        'Filters the list of topic detection jobs based on job status. Returns only jobs with the specified status.',
+    }),
+    SubmitTimeBefore: TimestampSchema.exactOptional().openapi({
+      description:
+        'Filters the list of jobs based on the time that the job was submitted for processing. Only returns jobs submitted before the specified time. Jobs are returned in descending order, newest to oldest.',
+    }),
+    SubmitTimeAfter: TimestampSchema.exactOptional().openapi({
+      description:
+        'Filters the list of jobs based on the time that the job was submitted for processing. Only returns jobs submitted after the specified time. Jobs are returned in ascending order, oldest to newest.',
+    }),
   })
   .openapi({
     description:
@@ -6723,176 +4825,105 @@ const TopicsDetectionJobFilterSchema = z
 
 const ListTopicsDetectionJobsRequestSchema = z
   .object({
-    Filter: TopicsDetectionJobFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the jobs that are returned. Jobs can be filtered on their name, status, or the date and time that they were submitted. You can set only one filter at a time.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Identifies the next page of results to return.' }),
-    ).exactOptional(),
-    MaxResults: MaxResultsIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of results to return in each page. The default is 100.',
-        }),
-    ).exactOptional(),
+    Filter: TopicsDetectionJobFilterSchema.exactOptional().openapi({
+      description:
+        'Filters the jobs that are returned. Jobs can be filtered on their name, status, or the date and time that they were submitted. You can set only one filter at a time.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Identifies the next page of results to return.',
+    }),
+    MaxResults: MaxResultsIntegerSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in each page. The default is 100.',
+    }),
   })
   .openapi({ title: 'ListTopicsDetectionJobsRequest', required: [] })
   .openapi('ListTopicsDetectionJobsRequest')
 
 const PutResourcePolicyResponseSchema = z
   .object({
-    PolicyRevisionId: PolicyRevisionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The revision ID of the policy. Each time you modify a policy, Amazon Comprehend assigns a new revision ID, and it deletes the prior version of the policy.',
-        }),
-    ).exactOptional(),
+    PolicyRevisionId: PolicyRevisionIdSchema.exactOptional().openapi({
+      description:
+        'The revision ID of the policy. Each time you modify a policy, Amazon Comprehend assigns a new revision ID, and it deletes the prior version of the policy.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutResourcePolicyResponse')
 
 const PutResourcePolicyRequestSchema = z
   .object({
-    ResourceArn: ComprehendModelArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the custom model to attach the policy to.',
-        }),
-    ),
-    ResourcePolicy: PolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The JSON resource-based policy to attach to your custom model. Provide your JSON as a UTF-8 encoded string without line breaks. To provide valid JSON for your policy, enclose the attribute names and values in double quotes. If the JSON body is also enclosed in double quotes, then you must escape the double quotes that are inside the policy:</p> <p> <code>"{\\"attribute\\": \\"value\\", \\"attribute\\": [\\"value\\"]}"</code> </p> <p>To avoid escaping quotes, you can use single quotes to enclose the policy and double quotes to enclose the JSON names and values:</p> <p> <code>\'{"attribute": "value", "attribute": ["value"]}\'</code> </p>',
-        }),
-    ),
-    PolicyRevisionId: PolicyRevisionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The revision ID that Amazon Comprehend assigned to the policy that you are updating. If you are creating a new policy that has no prior version, don't use this parameter. Amazon Comprehend creates the revision ID for you.",
-        }),
-    ).exactOptional(),
+    ResourceArn: ComprehendModelArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the custom model to attach the policy to.',
+    }),
+    ResourcePolicy: PolicySchema.openapi({
+      description:
+        '<p>The JSON resource-based policy to attach to your custom model. Provide your JSON as a UTF-8 encoded string without line breaks. To provide valid JSON for your policy, enclose the attribute names and values in double quotes. If the JSON body is also enclosed in double quotes, then you must escape the double quotes that are inside the policy:</p> <p> <code>"{\\"attribute\\": \\"value\\", \\"attribute\\": [\\"value\\"]}"</code> </p> <p>To avoid escaping quotes, you can use single quotes to enclose the policy and double quotes to enclose the JSON names and values:</p> <p> <code>\'{"attribute": "value", "attribute": ["value"]}\'</code> </p>',
+    }),
+    PolicyRevisionId: PolicyRevisionIdSchema.exactOptional().openapi({
+      description:
+        "The revision ID that Amazon Comprehend assigned to the policy that you are updating. If you are creating a new policy that has no prior version, don't use this parameter. Amazon Comprehend creates the revision ID for you.",
+    }),
   })
   .openapi({ required: ['ResourceArn', 'ResourcePolicy'], title: 'PutResourcePolicyRequest' })
   .openapi('PutResourcePolicyRequest')
 
 const StartDocumentClassificationJobResponseSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier generated for the job. To get the status of the job, use this identifier with the <code>DescribeDocumentClassificationJob</code> operation.',
-        }),
-    ).exactOptional(),
-    JobArn: ComprehendArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the document classification job. It is a unique, fully qualified identifier for the job. It includes the Amazon Web Services account, Amazon Web Services Region, and the job ID. The format of the ARN is as follows:</p> <p> <code>arn:&lt;partition&gt;:comprehend:&lt;region&gt;:&lt;account-id&gt;:document-classification-job/&lt;job-id&gt;</code> </p> <p>The following is an example job ARN:</p> <p> <code>arn:aws:comprehend:us-west-2:111122223333:document-classification-job/1234abcd12ab34cd56ef1234567890ab</code> </p>',
-        }),
-    ).exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the job:</p> <ul> <li> <p>SUBMITTED - The job has been received and queued for processing.</p> </li> <li> <p>IN_PROGRESS - Amazon Comprehend is processing the job.</p> </li> <li> <p>COMPLETED - The job was successfully completed and the output is available.</p> </li> <li> <p>FAILED - The job did not complete. For details, use the <code>DescribeDocumentClassificationJob</code> operation.</p> </li> <li> <p>STOP_REQUESTED - Amazon Comprehend has received a stop request for the job and is processing the request.</p> </li> <li> <p>STOPPED - The job was successfully stopped without completing.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    DocumentClassifierArn: DocumentClassifierArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the custom classification model.' }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description:
+        'The identifier generated for the job. To get the status of the job, use this identifier with the <code>DescribeDocumentClassificationJob</code> operation.',
+    }),
+    JobArn: ComprehendArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the document classification job. It is a unique, fully qualified identifier for the job. It includes the Amazon Web Services account, Amazon Web Services Region, and the job ID. The format of the ARN is as follows:</p> <p> <code>arn:&lt;partition&gt;:comprehend:&lt;region&gt;:&lt;account-id&gt;:document-classification-job/&lt;job-id&gt;</code> </p> <p>The following is an example job ARN:</p> <p> <code>arn:aws:comprehend:us-west-2:111122223333:document-classification-job/1234abcd12ab34cd56ef1234567890ab</code> </p>',
+    }),
+    JobStatus: JobStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the job:</p> <ul> <li> <p>SUBMITTED - The job has been received and queued for processing.</p> </li> <li> <p>IN_PROGRESS - Amazon Comprehend is processing the job.</p> </li> <li> <p>COMPLETED - The job was successfully completed and the output is available.</p> </li> <li> <p>FAILED - The job did not complete. For details, use the <code>DescribeDocumentClassificationJob</code> operation.</p> </li> <li> <p>STOP_REQUESTED - Amazon Comprehend has received a stop request for the job and is processing the request.</p> </li> <li> <p>STOPPED - The job was successfully stopped without completing.</p> </li> </ul>',
+    }),
+    DocumentClassifierArn: DocumentClassifierArnSchema.exactOptional().openapi({
+      description: 'The ARN of the custom classification model.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartDocumentClassificationJobResponse')
 
 const StartDocumentClassificationJobRequestSchema = z
   .object({
-    JobName: JobNameSchema.and(
-      z.any().openapi({ description: 'The identifier of the job.' }),
-    ).exactOptional(),
-    DocumentClassifierArn: DocumentClassifierArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the document classifier to use to process the job.',
-        }),
-    ).exactOptional(),
-    InputDataConfig: InputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the format and location of the input data for the job.',
-        }),
-    ),
-    OutputDataConfig: OutputDataConfigSchema.and(
-      z.any().openapi({ description: 'Specifies where to send the output files.' }),
-    ),
-    DataAccessRoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data.',
-        }),
-    ),
-    ClientRequestToken: ClientRequestTokenStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the request. If you do not set the client request token, Amazon Comprehend generates one.',
-        }),
-    ).exactOptional(),
-    VolumeKmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>ID for the Amazon Web Services Key Management Service (KMS) key that Amazon Comprehend uses to encrypt data on the storage volume attached to the ML compute instance(s) that process the analysis job. The VolumeKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    VpcConfig: VpcConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configuration parameters for an optional private Virtual Private Cloud (VPC) containing the resources you are using for your document classification job. For more information, see <a href="https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html">Amazon VPC</a>. ',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Tags to associate with the document classification job. A tag is a key-value pair that adds metadata to a resource used by Amazon Comprehend. For example, a tag with "Sales" as the key might be added to a resource to indicate its use by the sales department.',
-        }),
-    ).exactOptional(),
-    FlywheelArn: ComprehendFlywheelArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Number (ARN) of the flywheel associated with the model to use.',
-        }),
-    ).exactOptional(),
+    JobName: JobNameSchema.exactOptional().openapi({ description: 'The identifier of the job.' }),
+    DocumentClassifierArn: DocumentClassifierArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the document classifier to use to process the job.',
+    }),
+    InputDataConfig: InputDataConfigSchema.openapi({
+      description: 'Specifies the format and location of the input data for the job.',
+    }),
+    OutputDataConfig: OutputDataConfigSchema.openapi({
+      description: 'Specifies where to send the output files.',
+    }),
+    DataAccessRoleArn: IamRoleArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data.',
+    }),
+    ClientRequestToken: ClientRequestTokenStringSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the request. If you do not set the client request token, Amazon Comprehend generates one.',
+    }),
+    VolumeKmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        '<p>ID for the Amazon Web Services Key Management Service (KMS) key that Amazon Comprehend uses to encrypt data on the storage volume attached to the ML compute instance(s) that process the analysis job. The VolumeKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
+    }),
+    VpcConfig: VpcConfigSchema.exactOptional().openapi({
+      description:
+        'Configuration parameters for an optional private Virtual Private Cloud (VPC) containing the resources you are using for your document classification job. For more information, see <a href="https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html">Amazon VPC</a>. ',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'Tags to associate with the document classification job. A tag is a key-value pair that adds metadata to a resource used by Amazon Comprehend. For example, a tag with "Sales" as the key might be added to a resource to indicate its use by the sales department.',
+    }),
+    FlywheelArn: ComprehendFlywheelArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Number (ARN) of the flywheel associated with the model to use.',
+    }),
   })
   .openapi({
     required: ['InputDataConfig', 'OutputDataConfig', 'DataAccessRoleArn'],
@@ -6902,89 +4933,51 @@ const StartDocumentClassificationJobRequestSchema = z
 
 const StartDominantLanguageDetectionJobResponseSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier generated for the job. To get the status of a job, use this identifier with the operation.',
-        }),
-    ).exactOptional(),
-    JobArn: ComprehendArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the dominant language detection job. It is a unique, fully qualified identifier for the job. It includes the Amazon Web Services account, Amazon Web Services Region, and the job ID. The format of the ARN is as follows:</p> <p> <code>arn:&lt;partition&gt;:comprehend:&lt;region&gt;:&lt;account-id&gt;:dominant-language-detection-job/&lt;job-id&gt;</code> </p> <p>The following is an example job ARN:</p> <p> <code>arn:aws:comprehend:us-west-2:111122223333:dominant-language-detection-job/1234abcd12ab34cd56ef1234567890ab</code> </p>',
-        }),
-    ).exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the job. </p> <ul> <li> <p>SUBMITTED - The job has been received and is queued for processing.</p> </li> <li> <p>IN_PROGRESS - Amazon Comprehend is processing the job.</p> </li> <li> <p>COMPLETED - The job was successfully completed and the output is available.</p> </li> <li> <p>FAILED - The job did not complete. To get details, use the operation.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description:
+        'The identifier generated for the job. To get the status of a job, use this identifier with the operation.',
+    }),
+    JobArn: ComprehendArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the dominant language detection job. It is a unique, fully qualified identifier for the job. It includes the Amazon Web Services account, Amazon Web Services Region, and the job ID. The format of the ARN is as follows:</p> <p> <code>arn:&lt;partition&gt;:comprehend:&lt;region&gt;:&lt;account-id&gt;:dominant-language-detection-job/&lt;job-id&gt;</code> </p> <p>The following is an example job ARN:</p> <p> <code>arn:aws:comprehend:us-west-2:111122223333:dominant-language-detection-job/1234abcd12ab34cd56ef1234567890ab</code> </p>',
+    }),
+    JobStatus: JobStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the job. </p> <ul> <li> <p>SUBMITTED - The job has been received and is queued for processing.</p> </li> <li> <p>IN_PROGRESS - Amazon Comprehend is processing the job.</p> </li> <li> <p>COMPLETED - The job was successfully completed and the output is available.</p> </li> <li> <p>FAILED - The job did not complete. To get details, use the operation.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartDominantLanguageDetectionJobResponse')
 
 const StartDominantLanguageDetectionJobRequestSchema = z
   .object({
-    InputDataConfig: InputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the format and location of the input data for the job.',
-        }),
-    ),
-    OutputDataConfig: OutputDataConfigSchema.and(
-      z.any().openapi({ description: 'Specifies where to send the output files.' }),
-    ),
-    DataAccessRoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data. For more information, see <a href="https://docs.aws.amazon.com/comprehend/latest/dg/security_iam_id-based-policy-examples.html#auth-role-permissions">Role-based permissions</a>.',
-        }),
-    ),
-    JobName: JobNameSchema.and(
-      z.any().openapi({ description: 'An identifier for the job.' }),
-    ).exactOptional(),
-    ClientRequestToken: ClientRequestTokenStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the request. If you do not set the client request token, Amazon Comprehend generates one.',
-        }),
-    ).exactOptional(),
-    VolumeKmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>ID for the Amazon Web Services Key Management Service (KMS) key that Amazon Comprehend uses to encrypt data on the storage volume attached to the ML compute instance(s) that process the analysis job. The VolumeKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    VpcConfig: VpcConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configuration parameters for an optional private Virtual Private Cloud (VPC) containing the resources you are using for your dominant language detection job. For more information, see <a href="https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html">Amazon VPC</a>. ',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Tags to associate with the dominant language detection job. A tag is a key-value pair that adds metadata to a resource used by Amazon Comprehend. For example, a tag with "Sales" as the key might be added to a resource to indicate its use by the sales department.',
-        }),
-    ).exactOptional(),
+    InputDataConfig: InputDataConfigSchema.openapi({
+      description: 'Specifies the format and location of the input data for the job.',
+    }),
+    OutputDataConfig: OutputDataConfigSchema.openapi({
+      description: 'Specifies where to send the output files.',
+    }),
+    DataAccessRoleArn: IamRoleArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data. For more information, see <a href="https://docs.aws.amazon.com/comprehend/latest/dg/security_iam_id-based-policy-examples.html#auth-role-permissions">Role-based permissions</a>.',
+    }),
+    JobName: JobNameSchema.exactOptional().openapi({ description: 'An identifier for the job.' }),
+    ClientRequestToken: ClientRequestTokenStringSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the request. If you do not set the client request token, Amazon Comprehend generates one.',
+    }),
+    VolumeKmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        '<p>ID for the Amazon Web Services Key Management Service (KMS) key that Amazon Comprehend uses to encrypt data on the storage volume attached to the ML compute instance(s) that process the analysis job. The VolumeKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
+    }),
+    VpcConfig: VpcConfigSchema.exactOptional().openapi({
+      description:
+        'Configuration parameters for an optional private Virtual Private Cloud (VPC) containing the resources you are using for your dominant language detection job. For more information, see <a href="https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html">Amazon VPC</a>. ',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'Tags to associate with the dominant language detection job. A tag is a key-value pair that adds metadata to a resource used by Amazon Comprehend. For example, a tag with "Sales" as the key might be added to a resource to indicate its use by the sales department.',
+    }),
   })
   .openapi({
     required: ['InputDataConfig', 'OutputDataConfig', 'DataAccessRoleArn'],
@@ -6994,116 +4987,66 @@ const StartDominantLanguageDetectionJobRequestSchema = z
 
 const StartEntitiesDetectionJobResponseSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier generated for the job. To get the status of job, use this identifier with the operation.',
-        }),
-    ).exactOptional(),
-    JobArn: ComprehendArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the entities detection job. It is a unique, fully qualified identifier for the job. It includes the Amazon Web Services account, Amazon Web Services Region, and the job ID. The format of the ARN is as follows:</p> <p> <code>arn:&lt;partition&gt;:comprehend:&lt;region&gt;:&lt;account-id&gt;:entities-detection-job/&lt;job-id&gt;</code> </p> <p>The following is an example job ARN:</p> <p> <code>arn:aws:comprehend:us-west-2:111122223333:entities-detection-job/1234abcd12ab34cd56ef1234567890ab</code> </p>',
-        }),
-    ).exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the job. </p> <ul> <li> <p>SUBMITTED - The job has been received and is queued for processing.</p> </li> <li> <p>IN_PROGRESS - Amazon Comprehend is processing the job.</p> </li> <li> <p>COMPLETED - The job was successfully completed and the output is available.</p> </li> <li> <p>FAILED - The job did not complete. To get details, use the operation.</p> </li> <li> <p>STOP_REQUESTED - Amazon Comprehend has received a stop request for the job and is processing the request.</p> </li> <li> <p>STOPPED - The job was successfully stopped without completing.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    EntityRecognizerArn: EntityRecognizerArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the custom entity recognition model.' }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description:
+        'The identifier generated for the job. To get the status of job, use this identifier with the operation.',
+    }),
+    JobArn: ComprehendArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the entities detection job. It is a unique, fully qualified identifier for the job. It includes the Amazon Web Services account, Amazon Web Services Region, and the job ID. The format of the ARN is as follows:</p> <p> <code>arn:&lt;partition&gt;:comprehend:&lt;region&gt;:&lt;account-id&gt;:entities-detection-job/&lt;job-id&gt;</code> </p> <p>The following is an example job ARN:</p> <p> <code>arn:aws:comprehend:us-west-2:111122223333:entities-detection-job/1234abcd12ab34cd56ef1234567890ab</code> </p>',
+    }),
+    JobStatus: JobStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the job. </p> <ul> <li> <p>SUBMITTED - The job has been received and is queued for processing.</p> </li> <li> <p>IN_PROGRESS - Amazon Comprehend is processing the job.</p> </li> <li> <p>COMPLETED - The job was successfully completed and the output is available.</p> </li> <li> <p>FAILED - The job did not complete. To get details, use the operation.</p> </li> <li> <p>STOP_REQUESTED - Amazon Comprehend has received a stop request for the job and is processing the request.</p> </li> <li> <p>STOPPED - The job was successfully stopped without completing.</p> </li> </ul>',
+    }),
+    EntityRecognizerArn: EntityRecognizerArnSchema.exactOptional().openapi({
+      description: 'The ARN of the custom entity recognition model.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartEntitiesDetectionJobResponse')
 
 const StartEntitiesDetectionJobRequestSchema = z
   .object({
-    InputDataConfig: InputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the format and location of the input data for the job.',
-        }),
-    ),
-    OutputDataConfig: OutputDataConfigSchema.and(
-      z.any().openapi({ description: 'Specifies where to send the output files.' }),
-    ),
-    DataAccessRoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data. For more information, see <a href="https://docs.aws.amazon.com/comprehend/latest/dg/security_iam_id-based-policy-examples.html#auth-role-permissions">Role-based permissions</a>.',
-        }),
-    ),
-    JobName: JobNameSchema.and(
-      z.any().openapi({ description: 'The identifier of the job.' }),
-    ).exactOptional(),
-    EntityRecognizerArn: EntityRecognizerArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) that identifies the specific entity recognizer to be used by the <code>StartEntitiesDetectionJob</code>. This ARN is optional and is only used for a custom entity recognition job.',
-        }),
-    ).exactOptional(),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language of the input documents. All documents must be in the same language. You can specify any of the languages supported by Amazon Comprehend. If custom entities recognition is used, this parameter is ignored and the language used for training the model is used instead.',
-        }),
-    ),
-    ClientRequestToken: ClientRequestTokenStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A unique identifier for the request. If you don't set the client request token, Amazon Comprehend generates one.",
-        }),
-    ).exactOptional(),
-    VolumeKmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>ID for the Amazon Web Services Key Management Service (KMS) key that Amazon Comprehend uses to encrypt data on the storage volume attached to the ML compute instance(s) that process the analysis job. The VolumeKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    VpcConfig: VpcConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configuration parameters for an optional private Virtual Private Cloud (VPC) containing the resources you are using for your entity detection job. For more information, see <a href="https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html">Amazon VPC</a>. ',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Tags to associate with the entities detection job. A tag is a key-value pair that adds metadata to a resource used by Amazon Comprehend. For example, a tag with "Sales" as the key might be added to a resource to indicate its use by the sales department.',
-        }),
-    ).exactOptional(),
-    FlywheelArn: ComprehendFlywheelArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Number (ARN) of the flywheel associated with the model to use.',
-        }),
-    ).exactOptional(),
+    InputDataConfig: InputDataConfigSchema.openapi({
+      description: 'Specifies the format and location of the input data for the job.',
+    }),
+    OutputDataConfig: OutputDataConfigSchema.openapi({
+      description: 'Specifies where to send the output files.',
+    }),
+    DataAccessRoleArn: IamRoleArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data. For more information, see <a href="https://docs.aws.amazon.com/comprehend/latest/dg/security_iam_id-based-policy-examples.html#auth-role-permissions">Role-based permissions</a>.',
+    }),
+    JobName: JobNameSchema.exactOptional().openapi({ description: 'The identifier of the job.' }),
+    EntityRecognizerArn: EntityRecognizerArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) that identifies the specific entity recognizer to be used by the <code>StartEntitiesDetectionJob</code>. This ARN is optional and is only used for a custom entity recognition job.',
+    }),
+    LanguageCode: LanguageCodeSchema.openapi({
+      description:
+        'The language of the input documents. All documents must be in the same language. You can specify any of the languages supported by Amazon Comprehend. If custom entities recognition is used, this parameter is ignored and the language used for training the model is used instead.',
+    }),
+    ClientRequestToken: ClientRequestTokenStringSchema.exactOptional().openapi({
+      description:
+        "A unique identifier for the request. If you don't set the client request token, Amazon Comprehend generates one.",
+    }),
+    VolumeKmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        '<p>ID for the Amazon Web Services Key Management Service (KMS) key that Amazon Comprehend uses to encrypt data on the storage volume attached to the ML compute instance(s) that process the analysis job. The VolumeKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
+    }),
+    VpcConfig: VpcConfigSchema.exactOptional().openapi({
+      description:
+        'Configuration parameters for an optional private Virtual Private Cloud (VPC) containing the resources you are using for your entity detection job. For more information, see <a href="https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html">Amazon VPC</a>. ',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'Tags to associate with the entities detection job. A tag is a key-value pair that adds metadata to a resource used by Amazon Comprehend. For example, a tag with "Sales" as the key might be added to a resource to indicate its use by the sales department.',
+    }),
+    FlywheelArn: ComprehendFlywheelArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Number (ARN) of the flywheel associated with the model to use.',
+    }),
   })
   .openapi({
     required: ['InputDataConfig', 'OutputDataConfig', 'DataAccessRoleArn', 'LanguageCode'],
@@ -7113,74 +5056,50 @@ const StartEntitiesDetectionJobRequestSchema = z
 
 const StartEventsDetectionJobResponseSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An unique identifier for the request. If you don't set the client request token, Amazon Comprehend generates one.",
-        }),
-    ).exactOptional(),
-    JobArn: ComprehendArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the events detection job. It is a unique, fully qualified identifier for the job. It includes the Amazon Web Services account, Amazon Web Services Region, and the job ID. The format of the ARN is as follows:</p> <p> <code>arn:&lt;partition&gt;:comprehend:&lt;region&gt;:&lt;account-id&gt;:events-detection-job/&lt;job-id&gt;</code> </p> <p>The following is an example job ARN:</p> <p> <code>arn:aws:comprehend:us-west-2:111122223333:events-detection-job/1234abcd12ab34cd56ef1234567890ab</code> </p>',
-        }),
-    ).exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z.any().openapi({ description: 'The status of the events detection job.' }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description:
+        "An unique identifier for the request. If you don't set the client request token, Amazon Comprehend generates one.",
+    }),
+    JobArn: ComprehendArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the events detection job. It is a unique, fully qualified identifier for the job. It includes the Amazon Web Services account, Amazon Web Services Region, and the job ID. The format of the ARN is as follows:</p> <p> <code>arn:&lt;partition&gt;:comprehend:&lt;region&gt;:&lt;account-id&gt;:events-detection-job/&lt;job-id&gt;</code> </p> <p>The following is an example job ARN:</p> <p> <code>arn:aws:comprehend:us-west-2:111122223333:events-detection-job/1234abcd12ab34cd56ef1234567890ab</code> </p>',
+    }),
+    JobStatus: JobStatusSchema.exactOptional().openapi({
+      description: 'The status of the events detection job.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartEventsDetectionJobResponse')
 
 const StartEventsDetectionJobRequestSchema = z
   .object({
-    InputDataConfig: InputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the format and location of the input data for the job.',
-        }),
-    ),
-    OutputDataConfig: OutputDataConfigSchema.and(
-      z.any().openapi({ description: 'Specifies where to send the output files.' }),
-    ),
-    DataAccessRoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data.',
-        }),
-    ),
-    JobName: JobNameSchema.and(
-      z.any().openapi({ description: 'The identifier of the events detection job.' }),
-    ).exactOptional(),
-    LanguageCode: LanguageCodeSchema.and(
-      z.any().openapi({ description: 'The language code of the input documents.' }),
-    ),
-    ClientRequestToken: ClientRequestTokenStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An unique identifier for the request. If you don't set the client request token, Amazon Comprehend generates one.",
-        }),
-    ).exactOptional(),
-    TargetEventTypes: TargetEventTypesSchema.and(
-      z.any().openapi({ description: 'The types of events to detect in the input documents.' }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Tags to associate with the events detection job. A tag is a key-value pair that adds metadata to a resource used by Amazon Comprehend. For example, a tag with "Sales" as the key might be added to a resource to indicate its use by the sales department.',
-        }),
-    ).exactOptional(),
+    InputDataConfig: InputDataConfigSchema.openapi({
+      description: 'Specifies the format and location of the input data for the job.',
+    }),
+    OutputDataConfig: OutputDataConfigSchema.openapi({
+      description: 'Specifies where to send the output files.',
+    }),
+    DataAccessRoleArn: IamRoleArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data.',
+    }),
+    JobName: JobNameSchema.exactOptional().openapi({
+      description: 'The identifier of the events detection job.',
+    }),
+    LanguageCode: LanguageCodeSchema.openapi({
+      description: 'The language code of the input documents.',
+    }),
+    ClientRequestToken: ClientRequestTokenStringSchema.exactOptional().openapi({
+      description:
+        "An unique identifier for the request. If you don't set the client request token, Amazon Comprehend generates one.",
+    }),
+    TargetEventTypes: TargetEventTypesSchema.openapi({
+      description: 'The types of events to detect in the input documents.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'Tags to associate with the events detection job. A tag is a key-value pair that adds metadata to a resource used by Amazon Comprehend. For example, a tag with "Sales" as the key might be added to a resource to indicate its use by the sales department.',
+    }),
   })
   .openapi({
     required: [
@@ -7196,126 +5115,74 @@ const StartEventsDetectionJobRequestSchema = z
 
 const StartFlywheelIterationResponseSchema = z
   .object({
-    FlywheelArn: ComprehendFlywheelArnSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
-    FlywheelIterationId: FlywheelIterationIdSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
+    FlywheelArn: ComprehendFlywheelArnSchema.exactOptional().openapi({ description: '<p/>' }),
+    FlywheelIterationId: FlywheelIterationIdSchema.exactOptional().openapi({ description: '<p/>' }),
   })
   .openapi({ required: [] })
   .openapi('StartFlywheelIterationResponse')
 
 const StartFlywheelIterationRequestSchema = z
   .object({
-    FlywheelArn: ComprehendFlywheelArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the flywheel.' }),
-    ),
-    ClientRequestToken: ClientRequestTokenStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A unique identifier for the request. If you don't set the client request token, Amazon Comprehend generates one.",
-        }),
-    ).exactOptional(),
+    FlywheelArn: ComprehendFlywheelArnSchema.openapi({ description: 'The ARN of the flywheel.' }),
+    ClientRequestToken: ClientRequestTokenStringSchema.exactOptional().openapi({
+      description:
+        "A unique identifier for the request. If you don't set the client request token, Amazon Comprehend generates one.",
+    }),
   })
   .openapi({ required: ['FlywheelArn'], title: 'StartFlywheelIterationRequest' })
   .openapi('StartFlywheelIterationRequest')
 
 const StartKeyPhrasesDetectionJobResponseSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier generated for the job. To get the status of a job, use this identifier with the operation.',
-        }),
-    ).exactOptional(),
-    JobArn: ComprehendArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the key phrase detection job. It is a unique, fully qualified identifier for the job. It includes the Amazon Web Services account, Amazon Web Services Region, and the job ID. The format of the ARN is as follows:</p> <p> <code>arn:&lt;partition&gt;:comprehend:&lt;region&gt;:&lt;account-id&gt;:key-phrases-detection-job/&lt;job-id&gt;</code> </p> <p>The following is an example job ARN:</p> <p> <code>arn:aws:comprehend:us-west-2:111122223333:key-phrases-detection-job/1234abcd12ab34cd56ef1234567890ab</code> </p>',
-        }),
-    ).exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the job. </p> <ul> <li> <p>SUBMITTED - The job has been received and is queued for processing.</p> </li> <li> <p>IN_PROGRESS - Amazon Comprehend is processing the job.</p> </li> <li> <p>COMPLETED - The job was successfully completed and the output is available.</p> </li> <li> <p>FAILED - The job did not complete. To get details, use the operation.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description:
+        'The identifier generated for the job. To get the status of a job, use this identifier with the operation.',
+    }),
+    JobArn: ComprehendArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the key phrase detection job. It is a unique, fully qualified identifier for the job. It includes the Amazon Web Services account, Amazon Web Services Region, and the job ID. The format of the ARN is as follows:</p> <p> <code>arn:&lt;partition&gt;:comprehend:&lt;region&gt;:&lt;account-id&gt;:key-phrases-detection-job/&lt;job-id&gt;</code> </p> <p>The following is an example job ARN:</p> <p> <code>arn:aws:comprehend:us-west-2:111122223333:key-phrases-detection-job/1234abcd12ab34cd56ef1234567890ab</code> </p>',
+    }),
+    JobStatus: JobStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the job. </p> <ul> <li> <p>SUBMITTED - The job has been received and is queued for processing.</p> </li> <li> <p>IN_PROGRESS - Amazon Comprehend is processing the job.</p> </li> <li> <p>COMPLETED - The job was successfully completed and the output is available.</p> </li> <li> <p>FAILED - The job did not complete. To get details, use the operation.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartKeyPhrasesDetectionJobResponse')
 
 const StartKeyPhrasesDetectionJobRequestSchema = z
   .object({
-    InputDataConfig: InputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the format and location of the input data for the job.',
-        }),
-    ),
-    OutputDataConfig: OutputDataConfigSchema.and(
-      z.any().openapi({ description: 'Specifies where to send the output files.' }),
-    ),
-    DataAccessRoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data. For more information, see <a href="https://docs.aws.amazon.com/comprehend/latest/dg/security_iam_id-based-policy-examples.html#auth-role-permissions">Role-based permissions</a>.',
-        }),
-    ),
-    JobName: JobNameSchema.and(
-      z.any().openapi({ description: 'The identifier of the job.' }),
-    ).exactOptional(),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language of the input documents. You can specify any of the primary languages supported by Amazon Comprehend. All documents must be in the same language.',
-        }),
-    ),
-    ClientRequestToken: ClientRequestTokenStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A unique identifier for the request. If you don't set the client request token, Amazon Comprehend generates one.",
-        }),
-    ).exactOptional(),
-    VolumeKmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>ID for the Amazon Web Services Key Management Service (KMS) key that Amazon Comprehend uses to encrypt data on the storage volume attached to the ML compute instance(s) that process the analysis job. The VolumeKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    VpcConfig: VpcConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Configuration parameters for an optional private Virtual Private Cloud (VPC) containing the resources you are using for your key phrases detection job. For more information, see <a href="https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html">Amazon VPC</a>. ',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Tags to associate with the key phrases detection job. A tag is a key-value pair that adds metadata to a resource used by Amazon Comprehend. For example, a tag with "Sales" as the key might be added to a resource to indicate its use by the sales department.',
-        }),
-    ).exactOptional(),
+    InputDataConfig: InputDataConfigSchema.openapi({
+      description: 'Specifies the format and location of the input data for the job.',
+    }),
+    OutputDataConfig: OutputDataConfigSchema.openapi({
+      description: 'Specifies where to send the output files.',
+    }),
+    DataAccessRoleArn: IamRoleArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data. For more information, see <a href="https://docs.aws.amazon.com/comprehend/latest/dg/security_iam_id-based-policy-examples.html#auth-role-permissions">Role-based permissions</a>.',
+    }),
+    JobName: JobNameSchema.exactOptional().openapi({ description: 'The identifier of the job.' }),
+    LanguageCode: LanguageCodeSchema.openapi({
+      description:
+        'The language of the input documents. You can specify any of the primary languages supported by Amazon Comprehend. All documents must be in the same language.',
+    }),
+    ClientRequestToken: ClientRequestTokenStringSchema.exactOptional().openapi({
+      description:
+        "A unique identifier for the request. If you don't set the client request token, Amazon Comprehend generates one.",
+    }),
+    VolumeKmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        '<p>ID for the Amazon Web Services Key Management Service (KMS) key that Amazon Comprehend uses to encrypt data on the storage volume attached to the ML compute instance(s) that process the analysis job. The VolumeKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
+    }),
+    VpcConfig: VpcConfigSchema.exactOptional().openapi({
+      description:
+        ' Configuration parameters for an optional private Virtual Private Cloud (VPC) containing the resources you are using for your key phrases detection job. For more information, see <a href="https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html">Amazon VPC</a>. ',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'Tags to associate with the key phrases detection job. A tag is a key-value pair that adds metadata to a resource used by Amazon Comprehend. For example, a tag with "Sales" as the key might be added to a resource to indicate its use by the sales department.',
+    }),
   })
   .openapi({
     required: ['InputDataConfig', 'OutputDataConfig', 'DataAccessRoleArn', 'LanguageCode'],
@@ -7325,88 +5192,51 @@ const StartKeyPhrasesDetectionJobRequestSchema = z
 
 const StartPiiEntitiesDetectionJobResponseSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z.any().openapi({ description: 'The identifier generated for the job.' }),
-    ).exactOptional(),
-    JobArn: ComprehendArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the PII entity detection job. It is a unique, fully qualified identifier for the job. It includes the Amazon Web Services account, Amazon Web Services Region, and the job ID. The format of the ARN is as follows:</p> <p> <code>arn:&lt;partition&gt;:comprehend:&lt;region&gt;:&lt;account-id&gt;:pii-entities-detection-job/&lt;job-id&gt;</code> </p> <p>The following is an example job ARN:</p> <p> <code>arn:aws:comprehend:us-west-2:111122223333:pii-entities-detection-job/1234abcd12ab34cd56ef1234567890ab</code> </p>',
-        }),
-    ).exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z.any().openapi({ description: 'The status of the job.' }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description: 'The identifier generated for the job.',
+    }),
+    JobArn: ComprehendArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the PII entity detection job. It is a unique, fully qualified identifier for the job. It includes the Amazon Web Services account, Amazon Web Services Region, and the job ID. The format of the ARN is as follows:</p> <p> <code>arn:&lt;partition&gt;:comprehend:&lt;region&gt;:&lt;account-id&gt;:pii-entities-detection-job/&lt;job-id&gt;</code> </p> <p>The following is an example job ARN:</p> <p> <code>arn:aws:comprehend:us-west-2:111122223333:pii-entities-detection-job/1234abcd12ab34cd56ef1234567890ab</code> </p>',
+    }),
+    JobStatus: JobStatusSchema.exactOptional().openapi({ description: 'The status of the job.' }),
   })
   .openapi({ required: [] })
   .openapi('StartPiiEntitiesDetectionJobResponse')
 
 const StartPiiEntitiesDetectionJobRequestSchema = z
   .object({
-    InputDataConfig: InputDataConfigSchema.and(
-      z.any().openapi({ description: 'The input properties for a PII entities detection job.' }),
-    ),
-    OutputDataConfig: OutputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides conﬁguration parameters for the output of PII entity detection jobs.',
-        }),
-    ),
-    Mode: PiiEntitiesDetectionModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the output provides the locations (offsets) of PII entities or a file in which PII entities are redacted.',
-        }),
-    ),
-    RedactionConfig: RedactionConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Provides configuration parameters for PII entity redaction.</p> <p>This parameter is required if you set the <code>Mode</code> parameter to <code>ONLY_REDACTION</code>. In that case, you must provide a <code>RedactionConfig</code> definition that includes the <code>PiiEntityTypes</code> parameter.</p>',
-        }),
-    ).exactOptional(),
-    DataAccessRoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data.',
-        }),
-    ),
-    JobName: JobNameSchema.and(
-      z.any().openapi({ description: 'The identifier of the job.' }),
-    ).exactOptional(),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language of the input documents. Currently, English is the only valid language.',
-        }),
-    ),
-    ClientRequestToken: ClientRequestTokenStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A unique identifier for the request. If you don't set the client request token, Amazon Comprehend generates one.",
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Tags to associate with the PII entities detection job. A tag is a key-value pair that adds metadata to a resource used by Amazon Comprehend. For example, a tag with "Sales" as the key might be added to a resource to indicate its use by the sales department.',
-        }),
-    ).exactOptional(),
+    InputDataConfig: InputDataConfigSchema.openapi({
+      description: 'The input properties for a PII entities detection job.',
+    }),
+    OutputDataConfig: OutputDataConfigSchema.openapi({
+      description: 'Provides conﬁguration parameters for the output of PII entity detection jobs.',
+    }),
+    Mode: PiiEntitiesDetectionModeSchema.openapi({
+      description:
+        'Specifies whether the output provides the locations (offsets) of PII entities or a file in which PII entities are redacted.',
+    }),
+    RedactionConfig: RedactionConfigSchema.exactOptional().openapi({
+      description:
+        '<p>Provides configuration parameters for PII entity redaction.</p> <p>This parameter is required if you set the <code>Mode</code> parameter to <code>ONLY_REDACTION</code>. In that case, you must provide a <code>RedactionConfig</code> definition that includes the <code>PiiEntityTypes</code> parameter.</p>',
+    }),
+    DataAccessRoleArn: IamRoleArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data.',
+    }),
+    JobName: JobNameSchema.exactOptional().openapi({ description: 'The identifier of the job.' }),
+    LanguageCode: LanguageCodeSchema.openapi({
+      description:
+        'The language of the input documents. Currently, English is the only valid language.',
+    }),
+    ClientRequestToken: ClientRequestTokenStringSchema.exactOptional().openapi({
+      description:
+        "A unique identifier for the request. If you don't set the client request token, Amazon Comprehend generates one.",
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'Tags to associate with the PII entities detection job. A tag is a key-value pair that adds metadata to a resource used by Amazon Comprehend. For example, a tag with "Sales" as the key might be added to a resource to indicate its use by the sales department.',
+    }),
   })
   .openapi({
     required: ['InputDataConfig', 'OutputDataConfig', 'Mode', 'DataAccessRoleArn', 'LanguageCode'],
@@ -7416,97 +5246,55 @@ const StartPiiEntitiesDetectionJobRequestSchema = z
 
 const StartSentimentDetectionJobResponseSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier generated for the job. To get the status of a job, use this identifier with the operation.',
-        }),
-    ).exactOptional(),
-    JobArn: ComprehendArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the sentiment detection job. It is a unique, fully qualified identifier for the job. It includes the Amazon Web Services account, Amazon Web Services Region, and the job ID. The format of the ARN is as follows:</p> <p> <code>arn:&lt;partition&gt;:comprehend:&lt;region&gt;:&lt;account-id&gt;:sentiment-detection-job/&lt;job-id&gt;</code> </p> <p>The following is an example job ARN:</p> <p> <code>arn:aws:comprehend:us-west-2:111122223333:sentiment-detection-job/1234abcd12ab34cd56ef1234567890ab</code> </p>',
-        }),
-    ).exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the job. </p> <ul> <li> <p>SUBMITTED - The job has been received and is queued for processing.</p> </li> <li> <p>IN_PROGRESS - Amazon Comprehend is processing the job.</p> </li> <li> <p>COMPLETED - The job was successfully completed and the output is available.</p> </li> <li> <p>FAILED - The job did not complete. To get details, use the operation.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description:
+        'The identifier generated for the job. To get the status of a job, use this identifier with the operation.',
+    }),
+    JobArn: ComprehendArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the sentiment detection job. It is a unique, fully qualified identifier for the job. It includes the Amazon Web Services account, Amazon Web Services Region, and the job ID. The format of the ARN is as follows:</p> <p> <code>arn:&lt;partition&gt;:comprehend:&lt;region&gt;:&lt;account-id&gt;:sentiment-detection-job/&lt;job-id&gt;</code> </p> <p>The following is an example job ARN:</p> <p> <code>arn:aws:comprehend:us-west-2:111122223333:sentiment-detection-job/1234abcd12ab34cd56ef1234567890ab</code> </p>',
+    }),
+    JobStatus: JobStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the job. </p> <ul> <li> <p>SUBMITTED - The job has been received and is queued for processing.</p> </li> <li> <p>IN_PROGRESS - Amazon Comprehend is processing the job.</p> </li> <li> <p>COMPLETED - The job was successfully completed and the output is available.</p> </li> <li> <p>FAILED - The job did not complete. To get details, use the operation.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartSentimentDetectionJobResponse')
 
 const StartSentimentDetectionJobRequestSchema = z
   .object({
-    InputDataConfig: InputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the format and location of the input data for the job.',
-        }),
-    ),
-    OutputDataConfig: OutputDataConfigSchema.and(
-      z.any().openapi({ description: 'Specifies where to send the output files. ' }),
-    ),
-    DataAccessRoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data. For more information, see <a href="https://docs.aws.amazon.com/comprehend/latest/dg/security_iam_id-based-policy-examples.html#auth-role-permissions">Role-based permissions</a>.',
-        }),
-    ),
-    JobName: JobNameSchema.and(
-      z.any().openapi({ description: 'The identifier of the job.' }),
-    ).exactOptional(),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language of the input documents. You can specify any of the primary languages supported by Amazon Comprehend. All documents must be in the same language.',
-        }),
-    ),
-    ClientRequestToken: ClientRequestTokenStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A unique identifier for the request. If you don't set the client request token, Amazon Comprehend generates one.",
-        }),
-    ).exactOptional(),
-    VolumeKmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>ID for the Amazon Web Services Key Management Service (KMS) key that Amazon Comprehend uses to encrypt data on the storage volume attached to the ML compute instance(s) that process the analysis job. The VolumeKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    VpcConfig: VpcConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configuration parameters for an optional private Virtual Private Cloud (VPC) containing the resources you are using for your sentiment detection job. For more information, see <a href="https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html">Amazon VPC</a>. ',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Tags to associate with the sentiment detection job. A tag is a key-value pair that adds metadata to a resource used by Amazon Comprehend. For example, a tag with "Sales" as the key might be added to a resource to indicate its use by the sales department.',
-        }),
-    ).exactOptional(),
+    InputDataConfig: InputDataConfigSchema.openapi({
+      description: 'Specifies the format and location of the input data for the job.',
+    }),
+    OutputDataConfig: OutputDataConfigSchema.openapi({
+      description: 'Specifies where to send the output files. ',
+    }),
+    DataAccessRoleArn: IamRoleArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data. For more information, see <a href="https://docs.aws.amazon.com/comprehend/latest/dg/security_iam_id-based-policy-examples.html#auth-role-permissions">Role-based permissions</a>.',
+    }),
+    JobName: JobNameSchema.exactOptional().openapi({ description: 'The identifier of the job.' }),
+    LanguageCode: LanguageCodeSchema.openapi({
+      description:
+        'The language of the input documents. You can specify any of the primary languages supported by Amazon Comprehend. All documents must be in the same language.',
+    }),
+    ClientRequestToken: ClientRequestTokenStringSchema.exactOptional().openapi({
+      description:
+        "A unique identifier for the request. If you don't set the client request token, Amazon Comprehend generates one.",
+    }),
+    VolumeKmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        '<p>ID for the Amazon Web Services Key Management Service (KMS) key that Amazon Comprehend uses to encrypt data on the storage volume attached to the ML compute instance(s) that process the analysis job. The VolumeKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
+    }),
+    VpcConfig: VpcConfigSchema.exactOptional().openapi({
+      description:
+        'Configuration parameters for an optional private Virtual Private Cloud (VPC) containing the resources you are using for your sentiment detection job. For more information, see <a href="https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html">Amazon VPC</a>. ',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'Tags to associate with the sentiment detection job. A tag is a key-value pair that adds metadata to a resource used by Amazon Comprehend. For example, a tag with "Sales" as the key might be added to a resource to indicate its use by the sales department.',
+    }),
   })
   .openapi({
     required: ['InputDataConfig', 'OutputDataConfig', 'DataAccessRoleArn', 'LanguageCode'],
@@ -7516,30 +5304,18 @@ const StartSentimentDetectionJobRequestSchema = z
 
 const StartTargetedSentimentDetectionJobResponseSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier generated for the job. To get the status of a job, use this identifier with the <code>DescribeTargetedSentimentDetectionJob</code> operation.',
-        }),
-    ).exactOptional(),
-    JobArn: ComprehendArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the targeted sentiment detection job. It is a unique, fully qualified identifier for the job. It includes the Amazon Web Services account, Amazon Web Services Region, and the job ID. The format of the ARN is as follows:</p> <p> <code>arn:&lt;partition&gt;:comprehend:&lt;region&gt;:&lt;account-id&gt;:targeted-sentiment-detection-job/&lt;job-id&gt;</code> </p> <p>The following is an example job ARN:</p> <p> <code>arn:aws:comprehend:us-west-2:111122223333:targeted-sentiment-detection-job/1234abcd12ab34cd56ef1234567890ab</code> </p>',
-        }),
-    ).exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the job. </p> <ul> <li> <p>SUBMITTED - The job has been received and is queued for processing.</p> </li> <li> <p>IN_PROGRESS - Amazon Comprehend is processing the job.</p> </li> <li> <p>COMPLETED - The job was successfully completed and the output is available.</p> </li> <li> <p>FAILED - The job did not complete. To get details, use the <code>DescribeTargetedSentimentDetectionJob</code> operation.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description:
+        'The identifier generated for the job. To get the status of a job, use this identifier with the <code>DescribeTargetedSentimentDetectionJob</code> operation.',
+    }),
+    JobArn: ComprehendArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the targeted sentiment detection job. It is a unique, fully qualified identifier for the job. It includes the Amazon Web Services account, Amazon Web Services Region, and the job ID. The format of the ARN is as follows:</p> <p> <code>arn:&lt;partition&gt;:comprehend:&lt;region&gt;:&lt;account-id&gt;:targeted-sentiment-detection-job/&lt;job-id&gt;</code> </p> <p>The following is an example job ARN:</p> <p> <code>arn:aws:comprehend:us-west-2:111122223333:targeted-sentiment-detection-job/1234abcd12ab34cd56ef1234567890ab</code> </p>',
+    }),
+    JobStatus: JobStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the job. </p> <ul> <li> <p>SUBMITTED - The job has been received and is queued for processing.</p> </li> <li> <p>IN_PROGRESS - Amazon Comprehend is processing the job.</p> </li> <li> <p>COMPLETED - The job was successfully completed and the output is available.</p> </li> <li> <p>FAILED - The job did not complete. To get details, use the <code>DescribeTargetedSentimentDetectionJob</code> operation.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartTargetedSentimentDetectionJobResponse')
@@ -7547,53 +5323,31 @@ const StartTargetedSentimentDetectionJobResponseSchema = z
 const StartTargetedSentimentDetectionJobRequestSchema = z
   .object({
     InputDataConfig: InputDataConfigSchema,
-    OutputDataConfig: OutputDataConfigSchema.and(
-      z.any().openapi({ description: 'Specifies where to send the output files. ' }),
-    ),
-    DataAccessRoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data. For more information, see <a href="https://docs.aws.amazon.com/comprehend/latest/dg/access-control-managing-permissions.html#auth-role-permissions">Role-based permissions</a>.',
-        }),
-    ),
-    JobName: JobNameSchema.and(
-      z.any().openapi({ description: 'The identifier of the job.' }),
-    ).exactOptional(),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language of the input documents. Currently, English is the only supported language.',
-        }),
-    ),
-    ClientRequestToken: ClientRequestTokenStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A unique identifier for the request. If you don't set the client request token, Amazon Comprehend generates one.",
-        }),
-    ).exactOptional(),
-    VolumeKmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>ID for the KMS key that Amazon Comprehend uses to encrypt data on the storage volume attached to the ML compute instance(s) that process the analysis job. The VolumeKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    OutputDataConfig: OutputDataConfigSchema.openapi({
+      description: 'Specifies where to send the output files. ',
+    }),
+    DataAccessRoleArn: IamRoleArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data. For more information, see <a href="https://docs.aws.amazon.com/comprehend/latest/dg/access-control-managing-permissions.html#auth-role-permissions">Role-based permissions</a>.',
+    }),
+    JobName: JobNameSchema.exactOptional().openapi({ description: 'The identifier of the job.' }),
+    LanguageCode: LanguageCodeSchema.openapi({
+      description:
+        'The language of the input documents. Currently, English is the only supported language.',
+    }),
+    ClientRequestToken: ClientRequestTokenStringSchema.exactOptional().openapi({
+      description:
+        "A unique identifier for the request. If you don't set the client request token, Amazon Comprehend generates one.",
+    }),
+    VolumeKmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        '<p>ID for the KMS key that Amazon Comprehend uses to encrypt data on the storage volume attached to the ML compute instance(s) that process the analysis job. The VolumeKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
+    }),
     VpcConfig: VpcConfigSchema.exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Tags to associate with the targeted sentiment detection job. A tag is a key-value pair that adds metadata to a resource used by Amazon Comprehend. For example, a tag with "Sales" as the key might be added to a resource to indicate its use by the sales department.',
-        }),
-    ).exactOptional(),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'Tags to associate with the targeted sentiment detection job. A tag is a key-value pair that adds metadata to a resource used by Amazon Comprehend. For example, a tag with "Sales" as the key might be added to a resource to indicate its use by the sales department.',
+    }),
   })
   .openapi({
     required: ['InputDataConfig', 'OutputDataConfig', 'DataAccessRoleArn', 'LanguageCode'],
@@ -7603,30 +5357,18 @@ const StartTargetedSentimentDetectionJobRequestSchema = z
 
 const StartTopicsDetectionJobResponseSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier generated for the job. To get the status of the job, use this identifier with the <code>DescribeTopicDetectionJob</code> operation.',
-        }),
-    ).exactOptional(),
-    JobArn: ComprehendArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the topics detection job. It is a unique, fully qualified identifier for the job. It includes the Amazon Web Services account, Amazon Web Services Region, and the job ID. The format of the ARN is as follows:</p> <p> <code>arn:&lt;partition&gt;:comprehend:&lt;region&gt;:&lt;account-id&gt;:topics-detection-job/&lt;job-id&gt;</code> </p> <p>The following is an example job ARN:</p> <p> <code>arn:aws:comprehend:us-west-2:111122223333:document-classification-job/1234abcd12ab34cd56ef1234567890ab</code> </p>',
-        }),
-    ).exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the job: </p> <ul> <li> <p>SUBMITTED - The job has been received and is queued for processing.</p> </li> <li> <p>IN_PROGRESS - Amazon Comprehend is processing the job.</p> </li> <li> <p>COMPLETED - The job was successfully completed and the output is available.</p> </li> <li> <p>FAILED - The job did not complete. To get details, use the <code>DescribeTopicDetectionJob</code> operation.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description:
+        'The identifier generated for the job. To get the status of the job, use this identifier with the <code>DescribeTopicDetectionJob</code> operation.',
+    }),
+    JobArn: ComprehendArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the topics detection job. It is a unique, fully qualified identifier for the job. It includes the Amazon Web Services account, Amazon Web Services Region, and the job ID. The format of the ARN is as follows:</p> <p> <code>arn:&lt;partition&gt;:comprehend:&lt;region&gt;:&lt;account-id&gt;:topics-detection-job/&lt;job-id&gt;</code> </p> <p>The following is an example job ARN:</p> <p> <code>arn:aws:comprehend:us-west-2:111122223333:document-classification-job/1234abcd12ab34cd56ef1234567890ab</code> </p>',
+    }),
+    JobStatus: JobStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the job: </p> <ul> <li> <p>SUBMITTED - The job has been received and is queued for processing.</p> </li> <li> <p>IN_PROGRESS - Amazon Comprehend is processing the job.</p> </li> <li> <p>COMPLETED - The job was successfully completed and the output is available.</p> </li> <li> <p>FAILED - The job did not complete. To get details, use the <code>DescribeTopicDetectionJob</code> operation.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartTopicsDetectionJobResponse')
@@ -7635,67 +5377,37 @@ const NumberOfTopicsIntegerSchema = z.int().min(1).max(100).openapi('NumberOfTop
 
 const StartTopicsDetectionJobRequestSchema = z
   .object({
-    InputDataConfig: InputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the format and location of the input data for the job.',
-        }),
-    ),
-    OutputDataConfig: OutputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies where to send the output files. The output is a compressed archive with two files, <code>topic-terms.csv</code> that lists the terms associated with each topic, and <code>doc-topics.csv</code> that lists the documents associated with each topic',
-        }),
-    ),
-    DataAccessRoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data. For more information, see <a href="https://docs.aws.amazon.com/comprehend/latest/dg/security_iam_id-based-policy-examples.html#auth-role-permissions">Role-based permissions</a>.',
-        }),
-    ),
-    JobName: JobNameSchema.and(
-      z.any().openapi({ description: 'The identifier of the job.' }),
-    ).exactOptional(),
-    NumberOfTopics: NumberOfTopicsIntegerSchema.and(
-      z.any().openapi({ description: 'The number of topics to detect.' }),
-    ).exactOptional(),
-    ClientRequestToken: ClientRequestTokenStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the request. If you do not set the client request token, Amazon Comprehend generates one.',
-        }),
-    ).exactOptional(),
-    VolumeKmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>ID for the Amazon Web Services Key Management Service (KMS) key that Amazon Comprehend uses to encrypt data on the storage volume attached to the ML compute instance(s) that process the analysis job. The VolumeKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    VpcConfig: VpcConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configuration parameters for an optional private Virtual Private Cloud (VPC) containing the resources you are using for your topic detection job. For more information, see <a href="https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html">Amazon VPC</a>. ',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Tags to associate with the topics detection job. A tag is a key-value pair that adds metadata to a resource used by Amazon Comprehend. For example, a tag with "Sales" as the key might be added to a resource to indicate its use by the sales department.',
-        }),
-    ).exactOptional(),
+    InputDataConfig: InputDataConfigSchema.openapi({
+      description: 'Specifies the format and location of the input data for the job.',
+    }),
+    OutputDataConfig: OutputDataConfigSchema.openapi({
+      description:
+        'Specifies where to send the output files. The output is a compressed archive with two files, <code>topic-terms.csv</code> that lists the terms associated with each topic, and <code>doc-topics.csv</code> that lists the documents associated with each topic',
+    }),
+    DataAccessRoleArn: IamRoleArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data. For more information, see <a href="https://docs.aws.amazon.com/comprehend/latest/dg/security_iam_id-based-policy-examples.html#auth-role-permissions">Role-based permissions</a>.',
+    }),
+    JobName: JobNameSchema.exactOptional().openapi({ description: 'The identifier of the job.' }),
+    NumberOfTopics: NumberOfTopicsIntegerSchema.exactOptional().openapi({
+      description: 'The number of topics to detect.',
+    }),
+    ClientRequestToken: ClientRequestTokenStringSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the request. If you do not set the client request token, Amazon Comprehend generates one.',
+    }),
+    VolumeKmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        '<p>ID for the Amazon Web Services Key Management Service (KMS) key that Amazon Comprehend uses to encrypt data on the storage volume attached to the ML compute instance(s) that process the analysis job. The VolumeKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
+    }),
+    VpcConfig: VpcConfigSchema.exactOptional().openapi({
+      description:
+        'Configuration parameters for an optional private Virtual Private Cloud (VPC) containing the resources you are using for your topic detection job. For more information, see <a href="https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html">Amazon VPC</a>. ',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'Tags to associate with the topics detection job. A tag is a key-value pair that adds metadata to a resource used by Amazon Comprehend. For example, a tag with "Sales" as the key might be added to a resource to indicate its use by the sales department.',
+    }),
   })
   .openapi({
     required: ['InputDataConfig', 'OutputDataConfig', 'DataAccessRoleArn'],
@@ -7705,272 +5417,216 @@ const StartTopicsDetectionJobRequestSchema = z
 
 const StopDominantLanguageDetectionJobResponseSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The identifier of the dominant language detection job to stop.' }),
-    ).exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Either <code>STOP_REQUESTED</code> if the job is currently running, or <code>STOPPED</code> if the job was previously stopped with the <code>StopDominantLanguageDetectionJob</code> operation.',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description: 'The identifier of the dominant language detection job to stop.',
+    }),
+    JobStatus: JobStatusSchema.exactOptional().openapi({
+      description:
+        'Either <code>STOP_REQUESTED</code> if the job is currently running, or <code>STOPPED</code> if the job was previously stopped with the <code>StopDominantLanguageDetectionJob</code> operation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StopDominantLanguageDetectionJobResponse')
 
 const StopDominantLanguageDetectionJobRequestSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The identifier of the dominant language detection job to stop.' }),
-    ),
+    JobId: JobIdSchema.openapi({
+      description: 'The identifier of the dominant language detection job to stop.',
+    }),
   })
   .openapi({ required: ['JobId'], title: 'StopDominantLanguageDetectionJobRequest' })
   .openapi('StopDominantLanguageDetectionJobRequest')
 
 const StopEntitiesDetectionJobResponseSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the entities detection job to stop.' }),
-    ).exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Either <code>STOP_REQUESTED</code> if the job is currently running, or <code>STOPPED</code> if the job was previously stopped with the <code>StopEntitiesDetectionJob</code> operation.',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description: 'The identifier of the entities detection job to stop.',
+    }),
+    JobStatus: JobStatusSchema.exactOptional().openapi({
+      description:
+        'Either <code>STOP_REQUESTED</code> if the job is currently running, or <code>STOPPED</code> if the job was previously stopped with the <code>StopEntitiesDetectionJob</code> operation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StopEntitiesDetectionJobResponse')
 
 const StopEntitiesDetectionJobRequestSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the entities detection job to stop.' }),
-    ),
+    JobId: JobIdSchema.openapi({
+      description: 'The identifier of the entities detection job to stop.',
+    }),
   })
   .openapi({ required: ['JobId'], title: 'StopEntitiesDetectionJobRequest' })
   .openapi('StopEntitiesDetectionJobRequest')
 
 const StopEventsDetectionJobResponseSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the events detection job to stop.' }),
-    ).exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z.any().openapi({ description: 'The status of the events detection job.' }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description: 'The identifier of the events detection job to stop.',
+    }),
+    JobStatus: JobStatusSchema.exactOptional().openapi({
+      description: 'The status of the events detection job.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StopEventsDetectionJobResponse')
 
 const StopEventsDetectionJobRequestSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the events detection job to stop.' }),
-    ),
+    JobId: JobIdSchema.openapi({
+      description: 'The identifier of the events detection job to stop.',
+    }),
   })
   .openapi({ required: ['JobId'], title: 'StopEventsDetectionJobRequest' })
   .openapi('StopEventsDetectionJobRequest')
 
 const StopKeyPhrasesDetectionJobResponseSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the key phrases detection job to stop.' }),
-    ).exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Either <code>STOP_REQUESTED</code> if the job is currently running, or <code>STOPPED</code> if the job was previously stopped with the <code>StopKeyPhrasesDetectionJob</code> operation.',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description: 'The identifier of the key phrases detection job to stop.',
+    }),
+    JobStatus: JobStatusSchema.exactOptional().openapi({
+      description:
+        'Either <code>STOP_REQUESTED</code> if the job is currently running, or <code>STOPPED</code> if the job was previously stopped with the <code>StopKeyPhrasesDetectionJob</code> operation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StopKeyPhrasesDetectionJobResponse')
 
 const StopKeyPhrasesDetectionJobRequestSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the key phrases detection job to stop.' }),
-    ),
+    JobId: JobIdSchema.openapi({
+      description: 'The identifier of the key phrases detection job to stop.',
+    }),
   })
   .openapi({ required: ['JobId'], title: 'StopKeyPhrasesDetectionJobRequest' })
   .openapi('StopKeyPhrasesDetectionJobRequest')
 
 const StopPiiEntitiesDetectionJobResponseSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the PII entities detection job to stop.' }),
-    ).exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z.any().openapi({ description: 'The status of the PII entities detection job.' }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description: 'The identifier of the PII entities detection job to stop.',
+    }),
+    JobStatus: JobStatusSchema.exactOptional().openapi({
+      description: 'The status of the PII entities detection job.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StopPiiEntitiesDetectionJobResponse')
 
 const StopPiiEntitiesDetectionJobRequestSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the PII entities detection job to stop.' }),
-    ),
+    JobId: JobIdSchema.openapi({
+      description: 'The identifier of the PII entities detection job to stop.',
+    }),
   })
   .openapi({ required: ['JobId'], title: 'StopPiiEntitiesDetectionJobRequest' })
   .openapi('StopPiiEntitiesDetectionJobRequest')
 
 const StopSentimentDetectionJobResponseSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the sentiment detection job to stop.' }),
-    ).exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Either <code>STOP_REQUESTED</code> if the job is currently running, or <code>STOPPED</code> if the job was previously stopped with the <code>StopSentimentDetectionJob</code> operation.',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description: 'The identifier of the sentiment detection job to stop.',
+    }),
+    JobStatus: JobStatusSchema.exactOptional().openapi({
+      description:
+        'Either <code>STOP_REQUESTED</code> if the job is currently running, or <code>STOPPED</code> if the job was previously stopped with the <code>StopSentimentDetectionJob</code> operation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StopSentimentDetectionJobResponse')
 
 const StopSentimentDetectionJobRequestSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the sentiment detection job to stop.' }),
-    ),
+    JobId: JobIdSchema.openapi({
+      description: 'The identifier of the sentiment detection job to stop.',
+    }),
   })
   .openapi({ required: ['JobId'], title: 'StopSentimentDetectionJobRequest' })
   .openapi('StopSentimentDetectionJobRequest')
 
 const StopTargetedSentimentDetectionJobResponseSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the targeted sentiment detection job to stop.',
-        }),
-    ).exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Either <code>STOP_REQUESTED</code> if the job is currently running, or <code>STOPPED</code> if the job was previously stopped with the <code>StopSentimentDetectionJob</code> operation.',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description: 'The identifier of the targeted sentiment detection job to stop.',
+    }),
+    JobStatus: JobStatusSchema.exactOptional().openapi({
+      description:
+        'Either <code>STOP_REQUESTED</code> if the job is currently running, or <code>STOPPED</code> if the job was previously stopped with the <code>StopSentimentDetectionJob</code> operation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StopTargetedSentimentDetectionJobResponse')
 
 const StopTargetedSentimentDetectionJobRequestSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the targeted sentiment detection job to stop.',
-        }),
-    ),
+    JobId: JobIdSchema.openapi({
+      description: 'The identifier of the targeted sentiment detection job to stop.',
+    }),
   })
   .openapi({ required: ['JobId'], title: 'StopTargetedSentimentDetectionJobRequest' })
   .openapi('StopTargetedSentimentDetectionJobRequest')
 
 const StopTrainingDocumentClassifierResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('StopTrainingDocumentClassifierResponse')
 
 const StopTrainingDocumentClassifierRequestSchema = z
   .object({
-    DocumentClassifierArn: DocumentClassifierArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) that identifies the document classifier currently being trained.',
-        }),
-    ),
+    DocumentClassifierArn: DocumentClassifierArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) that identifies the document classifier currently being trained.',
+    }),
   })
   .openapi({ required: ['DocumentClassifierArn'], title: 'StopTrainingDocumentClassifierRequest' })
   .openapi('StopTrainingDocumentClassifierRequest')
 
 const StopTrainingEntityRecognizerResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('StopTrainingEntityRecognizerResponse')
 
 const StopTrainingEntityRecognizerRequestSchema = z
   .object({
-    EntityRecognizerArn: EntityRecognizerArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) that identifies the entity recognizer currently being trained.',
-        }),
-    ),
+    EntityRecognizerArn: EntityRecognizerArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) that identifies the entity recognizer currently being trained.',
+    }),
   })
   .openapi({ required: ['EntityRecognizerArn'], title: 'StopTrainingEntityRecognizerRequest' })
   .openapi('StopTrainingEntityRecognizerRequest')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
 const TagResourceRequestSchema = z
   .object({
-    ResourceArn: ComprehendArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the given Amazon Comprehend resource to which you want to associate the tags. ',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Tags being associated with a specific Amazon Comprehend resource. There can be a maximum of 50 tags (both existing and pending) associated with a specific resource. ',
-        }),
-    ),
+    ResourceArn: ComprehendArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the given Amazon Comprehend resource to which you want to associate the tags. ',
+    }),
+    Tags: TagListSchema.openapi({
+      description:
+        'Tags being associated with a specific Amazon Comprehend resource. There can be a maximum of 50 tags (both existing and pending) associated with a specific resource. ',
+    }),
   })
   .openapi({ required: ['ResourceArn', 'Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const ConcurrentModificationExceptionSchema = z.any().openapi('ConcurrentModificationException')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeyListSchema = z.array(TagKeySchema).openapi('TagKeyList')
 
 const UntagResourceRequestSchema = z
   .object({
-    ResourceArn: ComprehendArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Amazon Resource Name (ARN) of the given Amazon Comprehend resource from which you want to remove the tags. ',
-        }),
-    ),
-    TagKeys: TagKeyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The initial part of a key-value pair that forms a tag being removed from a given resource. For example, a tag with "Sales" as the key might be added to a resource to indicate its use by the sales department. Keys must be unique and cannot be duplicated for a particular resource. ',
-        }),
-    ),
+    ResourceArn: ComprehendArnSchema.openapi({
+      description:
+        ' The Amazon Resource Name (ARN) of the given Amazon Comprehend resource from which you want to remove the tags. ',
+    }),
+    TagKeys: TagKeyListSchema.openapi({
+      description:
+        'The initial part of a key-value pair that forms a tag being removed from a given resource. For example, a tag with "Sales" as the key might be added to a resource to indicate its use by the sales department. Keys must be unique and cannot be duplicated for a particular resource. ',
+    }),
   })
   .openapi({ required: ['ResourceArn', 'TagKeys'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
@@ -7979,78 +5635,54 @@ const TooManyTagKeysExceptionSchema = z.any().openapi('TooManyTagKeysException')
 
 const UpdateEndpointResponseSchema = z
   .object({
-    DesiredModelArn: ComprehendModelArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Number (ARN) of the new model.' }),
-    ).exactOptional(),
+    DesiredModelArn: ComprehendModelArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Number (ARN) of the new model.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateEndpointResponse')
 
 const UpdateEndpointRequestSchema = z
   .object({
-    EndpointArn: ComprehendEndpointArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Number (ARN) of the endpoint being updated.',
-        }),
-    ),
-    DesiredModelArn: ComprehendModelArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the new model to use when updating an existing endpoint.',
-        }),
-    ).exactOptional(),
-    DesiredInferenceUnits: InferenceUnitsIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The desired number of inference units to be used by the model using this endpoint. Each inference unit represents of a throughput of 100 characters per second.',
-        }),
-    ).exactOptional(),
-    DesiredDataAccessRoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Data access role ARN to use in case the new model is encrypted with a customer CMK.',
-        }),
-    ).exactOptional(),
-    FlywheelArn: ComprehendFlywheelArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Number (ARN) of the flywheel' }),
-    ).exactOptional(),
+    EndpointArn: ComprehendEndpointArnSchema.openapi({
+      description: 'The Amazon Resource Number (ARN) of the endpoint being updated.',
+    }),
+    DesiredModelArn: ComprehendModelArnSchema.exactOptional().openapi({
+      description: 'The ARN of the new model to use when updating an existing endpoint.',
+    }),
+    DesiredInferenceUnits: InferenceUnitsIntegerSchema.exactOptional().openapi({
+      description:
+        ' The desired number of inference units to be used by the model using this endpoint. Each inference unit represents of a throughput of 100 characters per second.',
+    }),
+    DesiredDataAccessRoleArn: IamRoleArnSchema.exactOptional().openapi({
+      description:
+        'Data access role ARN to use in case the new model is encrypted with a customer CMK.',
+    }),
+    FlywheelArn: ComprehendFlywheelArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Number (ARN) of the flywheel',
+    }),
   })
   .openapi({ required: ['EndpointArn'], title: 'UpdateEndpointRequest' })
   .openapi('UpdateEndpointRequest')
 
 const UpdateFlywheelResponseSchema = z
   .object({
-    FlywheelProperties: FlywheelPropertiesSchema.and(
-      z.any().openapi({ description: 'The flywheel properties.' }),
-    ).exactOptional(),
+    FlywheelProperties: FlywheelPropertiesSchema.exactOptional().openapi({
+      description: 'The flywheel properties.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateFlywheelResponse')
 
 const UpdateDataSecurityConfigSchema = z
   .object({
-    ModelKmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>ID for the KMS key that Amazon Comprehend uses to encrypt trained custom models. The ModelKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    VolumeKmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'ID for the KMS key that Amazon Comprehend uses to encrypt the volume.',
-        }),
-    ).exactOptional(),
+    ModelKmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        '<p>ID for the KMS key that Amazon Comprehend uses to encrypt trained custom models. The ModelKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>"1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</code> </p> </li> </ul>',
+    }),
+    VolumeKmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description: 'ID for the KMS key that Amazon Comprehend uses to encrypt the volume.',
+    }),
     VpcConfig: VpcConfigSchema.exactOptional(),
   })
   .openapi({ description: 'Data security configuration.', required: [] })
@@ -8058,27 +5690,19 @@ const UpdateDataSecurityConfigSchema = z
 
 const UpdateFlywheelRequestSchema = z
   .object({
-    FlywheelArn: ComprehendFlywheelArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Number (ARN) of the flywheel to update.' }),
-    ),
-    ActiveModelArn: ComprehendModelArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Number (ARN) of the active model version.' }),
-    ).exactOptional(),
-    DataAccessRoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend permission to access the flywheel data.',
-        }),
-    ).exactOptional(),
-    DataSecurityConfig: UpdateDataSecurityConfigSchema.and(
-      z.any().openapi({ description: 'Flywheel data security configuration.' }),
-    ).exactOptional(),
+    FlywheelArn: ComprehendFlywheelArnSchema.openapi({
+      description: 'The Amazon Resource Number (ARN) of the flywheel to update.',
+    }),
+    ActiveModelArn: ComprehendModelArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Number (ARN) of the active model version.',
+    }),
+    DataAccessRoleArn: IamRoleArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend permission to access the flywheel data.',
+    }),
+    DataSecurityConfig: UpdateDataSecurityConfigSchema.exactOptional().openapi({
+      description: 'Flywheel data security configuration.',
+    }),
   })
   .openapi({ required: ['FlywheelArn'], title: 'UpdateFlywheelRequest' })
   .openapi('UpdateFlywheelRequest')

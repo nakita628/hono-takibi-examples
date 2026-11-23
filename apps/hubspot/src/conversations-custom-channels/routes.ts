@@ -689,6 +689,7 @@ const PreResolvedContactSchema = z
             'hs_first_outreach_date',
             'hs_first_subscription_create_date',
             'hs_full_name_or_email',
+            'hs_geocode_mapping_id',
             'hs_geohash_1',
             'hs_geohash_2',
             'hs_geohash_3',
@@ -708,6 +709,7 @@ const PreResolvedContactSchema = z
             'hs_inferred_language_codes',
             'hs_intent_paid_up_to_date',
             'hs_intent_signals_enabled',
+            'hs_internal_normalized_email',
             'hs_ip_timezone',
             'hs_is_contact',
             'hs_is_enriched',
@@ -809,6 +811,10 @@ const PreResolvedContactSchema = z
             'hs_sequences_actively_enrolled_count',
             'hs_sequences_enrolled_count',
             'hs_sequences_is_enrolled',
+            'hs_sms_mobilephone_communication_subscriptions_opted_in',
+            'hs_sms_mobilephone_communication_subscriptions_opted_out',
+            'hs_sms_phone_communication_subscriptions_opted_in',
+            'hs_sms_phone_communication_subscriptions_opted_out',
             'hs_social_facebook_clicks',
             'hs_social_google_plus_clicks',
             'hs_social_last_engagement',
@@ -1297,7 +1303,7 @@ const CollectionResponseWithTotalPublicChannelAccountSchema = z
 const PublicChannelIntegrationChannelSchema = z
   .object({
     capabilities: z
-      .record(z.string(), z.object({}).openapi({ example: null }))
+      .record(z.string(), z.looseObject({}).openapi({ example: null }))
       .openapi({
         description:
           'An object detailing the capabilities of the channel, with additional properties as objects.',
@@ -1573,7 +1579,7 @@ const PublicChannelAccountUpdateRequestSchema = z
 const PublicChannelIntegrationChannelCreateSchema = z
   .object({
     capabilities: z
-      .record(z.string(), z.object({}).openapi({ example: null }))
+      .record(z.string(), z.looseObject({}).openapi({ example: null }))
       .openapi({
         description:
           'An object that defines the capabilities of the channel, with additional properties as key-value pairs.',
@@ -1615,36 +1621,36 @@ const PublicChannelIntegrationChannelCreateSchema = z
 const PublicChannelIntegrationChannelPatchSchema = z
   .object({
     capabilities: z
-      .record(z.string(), z.object({}).openapi({ example: null }))
+      .record(z.string(), z.looseObject({}).openapi({ example: null }))
       .openapi({
         description:
           'An object that defines the capabilities of the channel. This can include various properties that describe what the channel can do.',
         example: null,
       }),
     channelAccountConnectionRedirectUrl: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'An object representing the URL used to redirect for channel account connection.',
         example: null,
       }),
     channelDescription: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object containing the description of the channel.',
         example: null,
       }),
     channelLogoUrl: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: "An object representing the URL of the channel's logo.",
         example: null,
       }),
     name: z
-      .object({})
+      .looseObject({})
       .openapi({ description: 'An object representing the name of the channel.', example: null }),
     webhookUrl: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing the URL for the webhook associated with the channel.',
         example: null,
@@ -2286,11 +2292,11 @@ const Oauth2SecurityScheme = {
       },
     },
   },
+  'x-hubspot-app-availability': {
+    'conversations.custom_channels.read': { portal: ['public', 'private'], developer: false },
+    'conversations.custom_channels.write': { portal: ['public', 'private'], developer: false },
+  },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const getConversationsCustomChannels202609Route = createRoute({
   method: 'get',
@@ -2422,18 +2428,14 @@ export const postConversationsCustomChannels202609Route = createRoute({
         'application/json': { schema: PublicChannelIntegrationChannelSchema, example: null },
       },
       headers: z.object({
-        Location: {
-          description: 'URL of the newly created resource',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'URL of the newly created resource',
-              param: { required: false },
-              example: null,
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'URL of the newly created resource',
+            param: { required: false },
+            example: null,
+          }),
       }),
     },
     default: ErrorResponse,
@@ -2902,18 +2904,14 @@ export const postConversationsCustomChannels202609ChannelIdChannelAccountsRoute 
       description: 'successful operation',
       content: { 'application/json': { schema: PublicChannelAccountSchema, example: null } },
       headers: z.object({
-        Location: {
-          description: 'URL of the newly created resource',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'URL of the newly created resource',
-              param: { required: false },
-              example: null,
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'URL of the newly created resource',
+            param: { required: false },
+            example: null,
+          }),
       }),
     },
     default: ErrorResponse,
@@ -3132,18 +3130,14 @@ export const postConversationsCustomChannels202609ChannelIdMessagesRoute = creat
       description: 'successful operation',
       content: { 'application/json': { schema: PublicConversationsMessageSchema, example: null } },
       headers: z.object({
-        Location: {
-          description: 'URL of the newly created resource',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'URL of the newly created resource',
-              param: { required: false },
-              example: null,
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'URL of the newly created resource',
+            param: { required: false },
+            example: null,
+          }),
       }),
     },
     default: ErrorResponse,

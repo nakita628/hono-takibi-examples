@@ -129,6 +129,18 @@ const AdSchema = z
   .openapi({ description: 'A type that defines the fields for an ad.', required: [] })
   .openapi('Ad')
 
+type AdPagedCollectionResponseType = {
+  ads?: z.infer<typeof AdSchema>[]
+  href?: string
+  limit?: number
+  next?: string
+  offset?: number
+  prev?: string
+  total?: number
+}
+
+type AdsType = { ads?: z.infer<typeof AdSchema>[] }
+
 const AmountSchema = z
   .object({
     currency: z
@@ -152,6 +164,434 @@ const AmountSchema = z
     required: [],
   })
   .openapi('Amount')
+
+const BudgetSchema = z
+  .object({
+    amount: AmountSchema.exactOptional().openapi({
+      description: 'The allocated budget amount for a CPC Promoted Listings campaign.',
+    }),
+    budgetStatus: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The budget status for a CPC Promoted Listings campaign. For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/marketing/types/pls:BudgetStatusEnum'>eBay API documentation</a>",
+      }),
+  })
+  .openapi({
+    description:
+      'A container for the budget details of a Promoted Listings campaign that uses the Cost Per Click (CPC) funding model.<br /><br /><span class="tablenote"><b>Note:</b> This container will only be returned for campaigns using the CPC funding model; it does not apply to the Cost Per Sale (CPS) funding model.</span>',
+    required: [],
+  })
+  .openapi('Budget')
+
+const CampaignBudgetSchema = z
+  .object({
+    daily: BudgetSchema.exactOptional().openapi({
+      description:
+        "The daily budget limit for the Cost Per Click (CPC) Promoted Listings campaign.<br /><br /><i>Required if</i> the campaign's funding model is CPC.<br /><br />This will be a dollar value. All clicks using the keywords defined for the campaign will go towards expending the daily budget. Once the daily budget is exceeded for the campaign, all Promoted Listings under the campaign will be turned off until the next day.<br /><br /><b>Valid Values</b>:<ul><li><code>50.00</code></li><li><code>100.00</code></li></ul>",
+    }),
+  })
+  .openapi({
+    description:
+      'A type that defines the budget details for a Cost Per Click (CPC) Promoted Listings campaign.',
+    required: [],
+  })
+  .openapi('CampaignBudget')
+
+const SelectionRuleSchema = z
+  .object({
+    brands: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'An array of product brands. For more details, see <a href="/api-docs/sell/static/marketing/using-the-selectionrules-container.html ">Using the selectionRules container</a>.',
+      }),
+    categoryIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'This field contains an array of the associated category ID(s).<br><br>For <a href= "/api-docs/sell/static/marketing/using-the-selectionrules-container.html#Promotio ">Item promotions</a>, a single-item array containing the category ID associated with the promotion. Required when used in an Item promotion and either specifying a <b>selectionRules</b> container or when <b>inventoryCriterionType</b> is set to <code>INVENTORY_BY_RULE</code>.<br><br>For <a href= "/api-docs/sell/static/marketing/using-the-selectionrules-container.html#Campaign ">Promoted Listing campaigns</a>, an array of category ID(s) associated with the campaign. <br><br>For information on how to get category IDs, see <a href= "/api-docs/sell/static/marketing/using-the-selectionrules-container.html#eBay ">eBay Marketplace category IDs</a> and <a href= "/api-docs/sell/static/marketing/using-the-selectionrules-container.html#Seller ">Seller store category IDs</a>',
+      }),
+    categoryScope: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This enumerated value indicates if the category ID for the item is an identifier for eBay categories or for a seller\'s eBay store categories. <br><br>For <a href= "/api-docs/sell/static/marketing/using-the-selectionrules-container.html#Campaign ">Promoted Listing campaigns</a>, this field includes the type of the category ID for the item(s) to be included in the campaign.<br><br>For <a href= "/api-docs/sell/static/marketing/using-the-selectionrules-container.html#Promotio ">Item promotions</a>, this field identifies the scope for the corresponding array as eBay categories or for a seller\'s eBay store categories. Required when used in an Item promotion and <b>inventoryCriterionType</b> is set to <code>INVENTORY_BY_RULE</code>.  For implementation help, refer to <a href=\'https://developer.ebay.com/api-docs/sell/marketing/types/pls:CategoryScopeEnum\'>eBay API documentation</a>',
+      }),
+    listingConditionIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'A comma-separated list of unique identifiers for the conditions of listings to be included<br><br>For <a href= "/api-docs/sell/static/marketing/using-the-selectionrules-container.html#Campaign ">Promoted Listing campaigns</a>, refer to <a href= "/api-docs/sell/static/marketing/pl-campaign-flow-pls.html#add-by-rule ">Add items to the PLS campaign</a>. Up to four IDs can be specified.<br><br>For <a href= "/api-docs/sell/static/marketing/using-the-selectionrules-container.html#Promotio ">Item promotions</a>, refer to <a href= "/api-docs/sell/static/metadata/condition-id-values.html ">Item condition ID and name values</a>.',
+      }),
+    maxPrice: AmountSchema.exactOptional().openapi({
+      description:
+        'This container sets the maximum price threshold. For more details, see <a href= "/api-docs/sell/marketing/resources/using-the-selectionrules-container.html ">Using the selectionRules container</a>.',
+    }),
+    minPrice: AmountSchema.exactOptional().openapi({
+      description:
+        'This container sets the minimum price threshold. For more details, see <a href= "/api-docs/sell/marketing/resources/using-the-selectionrules-container.html ">Using the selectionRules container</a>.',
+    }),
+  })
+  .openapi({
+    description:
+      'This type defines all rules/inclusion filters used to add listings to campaigns or promotions. Use of the specific fields is different for campaigns or promotions. See <a href= "/api-docs/sell/static/marketing/using-the-selectionrules-container.html ">Using the selectionRules container</a>.',
+    required: [],
+  })
+  .openapi('SelectionRule')
+
+const CampaignCriterionSchema = z
+  .object({
+    autoSelectFutureInventory: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "A field used to indicate whether listings shall be automatically added to, or removed from, a Promoted Listings campaign based on the rules that have been configured for the campaign.<br /><br />If set to <code>true</code>, eBay adds all listings matching the campaign criterion to the campaign, including any new listings created from the items in a seller's inventory.<br /><br /><b>Default:</b> <code>false</code>",
+      }),
+    criterionType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "This enum defines the criterion (selection rule) types. Currently, the only criterion type supported is <code>INVENTORY_PARTITION</code>, and you must specify this value if you manage your items with the Inventory API and you want to include items based on their inventory reference IDs.  <br><br>Do not include this field if you manage your listings with Trading API/legacy model. For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/marketing/types/pls:CriterionTypeEnum'>eBay API documentation</a>",
+      }),
+    selectionRules: z
+      .array(SelectionRuleSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'This container shows all of the rules/inclusion filters used to add listings to the campaign. For information on using the contained fields, see <a href= "/api-docs/sell/static/marketing/using-the-selectionrules-container.html#Campaign ">Promoted Listing campaigns</a>.',
+      }),
+  })
+  .openapi({
+    description:
+      'This type defines the fields for specifying the criterion (selection rule) settings of an ad campaign. If you populate the campaignCriterion object in your <b>createCampaign</b> request, ads for the campaign are created by rule for the listings that meet the criteria you specify, and these ads are associated with the newly created campaign.',
+    required: [],
+  })
+  .openapi('CampaignCriterion')
+
+const DynamicAdRatePreferenceSchema = z
+  .object({
+    adRateAdjustmentPercent: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The percentage above or below (-) the eBay suggested ad rate that a seller is willing to pay.<br /><br />This specifies the maximum and minimum values to which an ad rate can be dynamically adjusted.',
+      }),
+    adRateCapPercent: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The maximum value (specified as a percentage) to which the eBay suggested ad rate can be adjusted. The adjusted ad rate will never exceed this percentage.',
+      }),
+  })
+  .openapi({
+    description:
+      'A type that defines the ad rate details for a Promoted Listings Standard (PLS) ad campaign.',
+    required: [],
+  })
+  .openapi('DynamicAdRatePreference')
+
+const FundingStrategySchema = z
+  .object({
+    adRateStrategy: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The ad rate strategy that shall be applied to the campaign. For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/marketing/types/pls:AdRateStrategyEnum'>eBay API documentation</a>",
+      }),
+    bidPercentage: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The user-defined <b>bid percentage</b> (also known as the <i>ad rate</i>) sets the level that eBay increases the visibility in search results for the associated listing. The higher the <b>bidPercentage</b> value, the more eBay promotes the listing.  <br><br>The value specified here is also used to calculate the Promoted Listings fee. This percentage value is multiplied by the final sales price to determine the fee. <br><br>The Promoted Listings fee is determined at the time the transaction completes and the seller is assessed the fee only when an item sells through a Promoted Listings ad campaign. <br><br>The <b>bidPercentage</b> is a single precision value that is guided by the following rules: <ul><li>These values are <b>valid</b>:<br>&nbsp;&nbsp;&nbsp;<code>4.1</code>, &nbsp;&nbsp;&nbsp;<code>5.0</code>, &nbsp;&nbsp;&nbsp;<code>5.5</code>, ...</li>  <li>These values are <b>not valid</b>:<br /> &nbsp;&nbsp;&nbsp;<code>0.01</code>, &nbsp;&nbsp;&nbsp;<code>10.75</code>, &nbsp;&nbsp;&nbsp;<code>99.99</code>,<br /> &nbsp;&nbsp;&nbsp;and so on.</li></ul>This is the default bid percentage for the campaigns using the Cost Per Sale (CPS) funding model, and this value will be overridden by any ads in the campaign that have their own set bid percentages.<br /><br />If a bid percentage is not provided for an ad, eBay uses the default bid percentage of the associated campaign.<br /><br /><span class="tablenote"><b>Note:</b>This field is only relevant for campaigns that use the CPS funding model and a fixed ad rate. It is not used for campaigns that use the Cost Per Click (CPC) funding model and should not be provided when the selected adRateStrategy for the campaign is dynamic.</span><br /><b>Minimum value:</b> 2.0 <br><b>Maximum value:</b> 100.0',
+      }),
+    dynamicAdRatePreferences: z
+      .array(DynamicAdRatePreferenceSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A field that indicates whether a single, user-defined bid percentage (also known as the <i>ad rate</i>) should be used, or whether eBay should automatically adjust listings to maintain the daily suggested bid percentage.<br /><br /><span class="tablenote"><span style="color:#004680"><strong>Note:</strong></span> Dynamic adjustment is only applicable when the <b>adRateStrategy</b> is set to <code>DYNAMIC</code>.</span><br /><b>Default:</b> <code>FIXED</code>',
+      }),
+    fundingModel: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Indicates the model that eBay uses to calculate the Promoted Listings fee. <p>For a description of the funding model types, refer to <b>FundingModelTypeEnum</b>. For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/marketing/types/pls:FundingModelEnum'>eBay API documentation</a>",
+      }),
+  })
+  .openapi({
+    description:
+      'This type defines how the Promoted Listings fee is calculated for a Promoted Listings ad campaign.',
+    required: [],
+  })
+  .openapi('FundingStrategy')
+
+const CampaignSchema = z
+  .object({
+    alerts: z
+      .array(AlertSchema)
+      .exactOptional()
+      .openapi({ description: 'This array contains alert messages for the campaign.' }),
+    budget: CampaignBudgetSchema.exactOptional().openapi({
+      description:
+        'The allocated budget for the Cost Per Click (CPC) Promoted Listings campaign.<span class="tablenote"><b>Note:</b> This field will only be returned for campaigns using the CPC funding model; it does not apply to the Cost Per Sale (CPS) funding model.</span>',
+    }),
+    campaignCriterion: CampaignCriterionSchema.exactOptional().openapi({
+      description:
+        'The selection rules (criterion) used to select the listings for a campaign. If you populate the <b>campaignCriterion</b> object in your <b>createCampaign</b> request, ads for the campaign are created by rule for the listings that meet the criteria you specify, and these ads are associated with the campaign.<span class="tablenote"><b>Note:</b> This container is only returned for rules-based campaigns using the Cost Per Sale (CPS) funding model.</span>',
+    }),
+    campaignId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A unique eBay-assigned ID for a campaign. This ID is generated when a campaign is created.',
+      }),
+    campaignName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A seller-defined name for the campaign. This value must be unique for the seller. <p>You can use any alphanumeric characters in the name, except the less than (&lt;) or greater than (&gt;) characters.</p><b>Max length: </b>80 characters',
+      }),
+    campaignStatus: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Indicates the status of the campaign, such as <code>RUNNING</code>, <code>PAUSED</code>, and <code>ENDED</code>. For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/marketing/types/pls:CampaignStatusEnum'>eBay API documentation</a>",
+      }),
+    endDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The date and time the campaign ends, in UTC format (<code>yyyy-MM-ddThh:mm:ssZ</code>). If this field is omitted, the campaign will have no defined end date, and will not end until the seller makes a decision to end the campaign with an <a href="/api-docs/sell/marketing/resources/campaign/methods/endCampaign">endCampaign</a> call, or if they update the campaign at a later time with an end date.',
+      }),
+    fundingStrategy: FundingStrategySchema.exactOptional().openapi({
+      description:
+        'This container shows the funding model used for the campaign, and the default bid percentage for a campaign that uses the Cost Per Sale (CPS) funding model. <p>Currently, the supported funding models are <code>COST_PER_SALE</code> and <code>COST_PER_CLICK</code>.',
+    }),
+    marketplaceId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The ID of the eBay marketplace where the campaign is hosted. For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/marketing/types/ba:MarketplaceIdEnum'>eBay API documentation</a>",
+      }),
+    startDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The date and time the campaign starts, in UTC format (<code>yyyy-MM-ddThh:mm:ssZ</code>). For display purposes, convert this time into the local time of the seller.  <p>On the date specified, the service derives the keywords for each listing in the campaign, creates an ad for each listing, and associates each new ad with the campaign. The campaign starts after this process is completed. The amount of time it takes the service to start the campaign depends on the number of listings in the campaign. Call <a href="/api-docs/sell/marketing/resources/campaign/methods/getCampaign">getCampaign</a> to check the status of the campaign.</p>',
+      }),
+  })
+  .openapi({
+    description: 'This type defines the fields that describe an ad campaign.',
+    required: [],
+  })
+  .openapi('Campaign')
+
+type CampaignPagedCollectionResponseType = {
+  campaigns?: z.infer<typeof CampaignSchema>[]
+  href?: string
+  limit?: number
+  next?: string
+  offset?: number
+  prev?: string
+  total?: number
+}
+
+type CampaignsType = { campaigns?: z.infer<typeof CampaignSchema>[] }
+
+const DiscountBenefitSchema = z
+  .object({
+    amountOffItem: AmountSchema.exactOptional().openapi({
+      description:
+        'The monetary amount that is discounted off an item (or items) when the promotion criteria is met.  <br><br>For <b>threshold promotions</b>, where the buyer triggers the discount, the valid values for this field are:  <br><code> &nbsp; 5, 6, 7, 8, 9, 10, 15, 20, 25, <br> &nbsp; 30, 35, 40, 45, 50, 55, 60, 65, <br> &nbsp; 70, 75, 80, 85, 90, 95, 100, 110, <br> &nbsp; 120, 125, 150, 200, 250</code>  <br><br>For <b>markdown</b> promotions, the range is greater, as outlined below and detailed more precisely <a href="/api-docs/sell/static/marketing/pm-amountoffitems-values.html" target="_blank">here</a>: <ul><li>$1 increments from $5 to $100</li><li>$5 increments from $105 to $1,000</li><li>$100 increments from $1,100 to $15,000</li></ul>',
+    }),
+    amountOffOrder: AmountSchema.exactOptional().openapi({
+      description:
+        "Used for threshold promotions, this is the monetary amount that is discounted off an order when the promotion criteria is met. Because this field is valid only for orders, it's not a valid combination to use with markdown promotions.  <br><br><b>Valid values</b> for the associated <code>amountOffOrder.</code><b>value</b> field:  <br><code> &nbsp; 5, 6, 7, 8, 9, 10, 15, 20, 25, <br> &nbsp; 30, 35, 40, 45, 50, 55, 60, 65, <br> &nbsp; 70, 75, 80, 85, 90, 95, 100, 110, <br> &nbsp; 120, 125, 150, 200, 250</code>",
+    }),
+    percentageOffItem: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The percentage applied to the sales price that is discounted off the promoted item (or items) when the promotion criteria is met.  <br><br>Valid integer values for percentage off: &nbsp;&nbsp;<b>Min:</b> <code>5</code> &nbsp;&nbsp;<b>Max:</b> <code>80</code>',
+      }),
+    percentageOffOrder: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Used for threshold promotions, this is the percentage of the order price that is discounted off the order when the promotion criteria is met. This field is not value for markdown promotions.  <br><br>Valid integer values for ORDER_DISCOUNT promotions: &nbsp;&nbsp;<b>Min:</b> <code>5</code> &nbsp;&nbsp;<b>Max:</b> <code>80</code>  <br><br>For VOLUME_DISCOUNT promotions: Must be set to <code>0</code> for the first discount rule.',
+      }),
+  })
+  .openapi({
+    description:
+      'This container defines the promotional discount as either a monetary amount or a percentage of the sales price.  <p class="tablenote"><b>Important!:</b> You must populate one and only one of the fields in this container: <ul><li><b>amountOffItem</b></li> <li><b>amountOffOrder</b></li> <li><b>percentageOffItem</b></li> <li><b>percentageOffOrder</b></li></ul></p>  <p class="tablenote"><b>Tip:</b> Refer to <a href="/api-docs/sell/static/marketing/pm-specifying-discounts.html">Configuring discounts for threshold promotions</a> for information and examples on how to combine <b>discountBenefit</b> and <b>discountSpecification</b> values to create different types of promotions.</p>',
+    required: [],
+  })
+  .openapi('DiscountBenefit')
+
+const InventoryItemSchema = z
+  .object({
+    inventoryReferenceId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The seller\'s inventory reference ID for a listing. Also known as the "SKU" or "custom label," an inventory reference ID is either the ID of the listing or, if the listing has variations (such as a shirt that\'s available in multiple sizes and colors), the ID of the parent listing.',
+      }),
+  })
+  .openapi({
+    description:
+      'This type defines the fields for the seller inventory reference IDs (also known as an "SKU" or "custom label").',
+    required: [],
+  })
+  .openapi('InventoryItem')
+
+const RuleCriteriaSchema = z
+  .object({
+    excludeInventoryItems: z
+      .array(InventoryItemSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of seller inventory reference IDs to exclude from the promotion.  <br><br><p class="tablenote"><b>Note:</b> The request can have either <b>excludeInventoryItems</b> or <b>excludeListingIds</b> but not both.</p> <b>Maximum:</b> 100 parent items <br><b>Maximum SKU or custom label length:</b> 50 characters',
+      }),
+    excludeListingIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of eBay listing IDs to exclude from the promotion.  <br><br><p class="tablenote"><b>Note:</b> The request can have either <b>excludeInventoryItems</b> or <b>excludeListingIds</b> but not both.</p> <b>Maximum:</b> 100 parent items <br><b>Maximum SKU or custom label length:</b> 50 characters',
+      }),
+    markupInventoryItems: z
+      .array(InventoryItemSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "A list of SKUs to remove from a markdown promotion. The listed SKUs are 'marked up' to their standard price after being part of the markdown promotion.",
+      }),
+    markupListingIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "A list of listing IDs to remove from a markdown promotion. The listed items are 'marked up' to their standard price after being part of the markdown promotion.",
+      }),
+    selectionRules: z
+      .array(SelectionRuleSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The container for the rules that select the items to include in a promotion.  <br><br><i>Required if </i> <b>inventoryCriterionType</b> is set to <code>INVENTORY_BY_RULE</code>. <br><br>For information on using the contained fields, see <a href= "/api-docs/sell/static/marketing/using-the-selectionrules-container.html#Promotio ">Item promotions</a>.',
+      }),
+  })
+  .openapi({
+    description:
+      'This type defines the fields for a set of inventory selection rules.  <br><br><b>Required:</b> When <b>inventoryCriterionType</b> is set to <code>INVENTORY_BY_RULE</code> or <code>INVENTORY_ANY</code>.',
+    required: [],
+  })
+  .openapi('RuleCriteria')
+
+const InventoryCriterionSchema = z
+  .object({
+    inventoryCriterionType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Indicates how the items to include in the promotion are selected. You can include inventory by ID, using rules, or globally include all your inventory.  For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/marketing/types/sme:InventoryCriterionEnum'>eBay API documentation</a>",
+      }),
+    inventoryItems: z
+      .array(InventoryItemSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'An array of containers for the seller\'s inventory reference IDs (also known as an "SKU" or "custom label") to be added to the promotion.  <p class="tablenote"><b>Note:</b> The request can have either <b>inventoryItems</b> or <b>listingIds</b>, but not both.</p>  <br><br><b>Required:</b> All listings in a promotion must offer an electronic payment method.  <br><b>Maximum:</b> 500 parent items  <br><b>Maximum SKU or custom label length:</b> 50 characters <br><br><i>Required if </i> <b>InventoryCriterionType</b> is set to <code>INVENTORY_BY_VALUE</code>, you must specify either <b>inventoryItems</b> or <b>listingIds</b>.',
+      }),
+    listingIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'An array of eBay listing IDs to be added to the promotion.  <p class="tablenote"><b>Note:</b> The request can have either <b>inventoryItems</b> or <b>listingIds</b>, but not both.</p>  <br><br><b>Required:</b> All listings in a promotion must offer an electronic payment method.  <br><b>Maximum:</b> 500 parent items  <br><b>Maximum SKU or custom label length:</b> 50 characters <br><br><i>Required if </i> <b>InventoryCriterionType</b> is set to <code>INVENTORY_BY_VALUE</code>, you must specify either <b>inventoryItems</b> or <b>listingIds</b>.',
+      }),
+    ruleCriteria: RuleCriteriaSchema.exactOptional().openapi({
+      description:
+        'This container defines a set of inventory selection rules for a promotion.  <br><br>When defining rule criteria, you must limit item exclusions to 100 IDs when you choose from live inventory.  <br><br>Required if  <b>InventoryCriterionEnum</b> is set to <code>INVENTORY_BY_RULE</code> or <code>INVENTORY_ANY</code>.',
+    }),
+  })
+  .openapi({
+    description:
+      'This type defines either the selections rules or the list of listing IDs for the promotion. The "listing IDs" are are either the seller\'s item IDs or the eBay listing IDs.',
+    required: [],
+  })
+  .openapi('InventoryCriterion')
+
+const SelectedInventoryDiscountSchema = z
+  .object({
+    discountBenefit: DiscountBenefitSchema.exactOptional().openapi({
+      description:
+        'This container defines the promotional discount as either a monetary amount or a percentage applied to the sales price.',
+    }),
+    discountId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A unique, eBay-generated ID that you can use to identify the discount. This field is ignored in POST and PUT operations.',
+      }),
+    inventoryCriterion: InventoryCriterionSchema.exactOptional().openapi({
+      description:
+        'A container that defines either the listing IDs or the selection rules that specify the items to include in the promotion. Listing IDs can be either eBay listing IDs or a list of the seller\'s inventory reference IDs (know as SKUs or custom labels). See the <b>selectionRules</b> container for the rule criteria you can use to select inventory.  <p class="tablenote"><b>Note:</b> All listings in Promotions Manager promotions must support an electronic payment method.</p>',
+    }),
+    ruleOrder: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'For markdown promotions, this field is reserved for future use. <!--This field specifies the precedence of this set of inventory criteria, which is taken into account if an item is selected for multiple discounts by different sets of criteria. The criteria with the highest priority (lowest ruleOrder value) takes precedence over criteria with a lower precedence.-->',
+      }),
+  })
+  .openapi({
+    description:
+      'This type defines the fields that describe the discounts applied to a set of inventory items and the order in which the selection rules are applied.',
+    required: [],
+  })
+  .openapi('SelectedInventoryDiscount')
+
+type ItemPriceMarkdownType = {
+  applyFreeShipping?: boolean
+  autoSelectFutureInventory?: boolean
+  blockPriceIncreaseInItemRevision?: boolean
+  description?: string
+  endDate?: string
+  marketplaceId?: string
+  name?: string
+  priority?: string
+  promotionImageUrl?: string
+  promotionStatus?: string
+  selectedInventoryDiscounts?: z.infer<typeof SelectedInventoryDiscountSchema>[]
+  startDate?: string
+}
 
 const AdGroupSchema = z
   .object({
@@ -254,7 +694,7 @@ const AdIdsSchema = z
   .openapi({ description: 'This type is a container for a list of ad IDs.', required: [] })
   .openapi('AdIds')
 
-const AdPagedCollectionResponseSchema = z
+const AdPagedCollectionResponseSchema: z.ZodType<AdPagedCollectionResponseType> = z
   .object({
     ads: z
       .array(AdSchema)
@@ -615,7 +1055,7 @@ const AdditionalInfoSchema = z
   })
   .openapi('AdditionalInfo')
 
-const AdsSchema = z
+const AdsSchema: z.ZodType<AdsType> = z
   .object({
     ads: z
       .array(AdSchema)
@@ -642,26 +1082,6 @@ const BaseResponseSchema = z
     required: [],
   })
   .openapi('BaseResponse')
-
-const BudgetSchema = z
-  .object({
-    amount: AmountSchema.exactOptional().openapi({
-      description: 'The allocated budget amount for a CPC Promoted Listings campaign.',
-    }),
-    budgetStatus: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The budget status for a CPC Promoted Listings campaign. For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/marketing/types/pls:BudgetStatusEnum'>eBay API documentation</a>",
-      }),
-  })
-  .openapi({
-    description:
-      'A container for the budget details of a Promoted Listings campaign that uses the Cost Per Click (CPC) funding model.<br /><br /><span class="tablenote"><b>Note:</b> This container will only be returned for campaigns using the CPC funding model; it does not apply to the Cost Per Sale (CPS) funding model.</span>',
-    required: [],
-  })
-  .openapi('Budget')
 
 const BudgetRequestSchema = z
   .object({
@@ -1622,226 +2042,6 @@ const BulkUpdateNegativeKeywordResponseSchema = z
   })
   .openapi('BulkUpdateNegativeKeywordResponse')
 
-const CampaignBudgetSchema = z
-  .object({
-    daily: BudgetSchema.exactOptional().openapi({
-      description:
-        "The daily budget limit for the Cost Per Click (CPC) Promoted Listings campaign.<br /><br /><i>Required if</i> the campaign's funding model is CPC.<br /><br />This will be a dollar value. All clicks using the keywords defined for the campaign will go towards expending the daily budget. Once the daily budget is exceeded for the campaign, all Promoted Listings under the campaign will be turned off until the next day.<br /><br /><b>Valid Values</b>:<ul><li><code>50.00</code></li><li><code>100.00</code></li></ul>",
-    }),
-  })
-  .openapi({
-    description:
-      'A type that defines the budget details for a Cost Per Click (CPC) Promoted Listings campaign.',
-    required: [],
-  })
-  .openapi('CampaignBudget')
-
-const SelectionRuleSchema = z
-  .object({
-    brands: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'An array of product brands. For more details, see <a href="/api-docs/sell/static/marketing/using-the-selectionrules-container.html ">Using the selectionRules container</a>.',
-      }),
-    categoryIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'This field contains an array of the associated category ID(s).<br><br>For <a href= "/api-docs/sell/static/marketing/using-the-selectionrules-container.html#Promotio ">Item promotions</a>, a single-item array containing the category ID associated with the promotion. Required when used in an Item promotion and either specifying a <b>selectionRules</b> container or when <b>inventoryCriterionType</b> is set to <code>INVENTORY_BY_RULE</code>.<br><br>For <a href= "/api-docs/sell/static/marketing/using-the-selectionrules-container.html#Campaign ">Promoted Listing campaigns</a>, an array of category ID(s) associated with the campaign. <br><br>For information on how to get category IDs, see <a href= "/api-docs/sell/static/marketing/using-the-selectionrules-container.html#eBay ">eBay Marketplace category IDs</a> and <a href= "/api-docs/sell/static/marketing/using-the-selectionrules-container.html#Seller ">Seller store category IDs</a>',
-      }),
-    categoryScope: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'This enumerated value indicates if the category ID for the item is an identifier for eBay categories or for a seller\'s eBay store categories. <br><br>For <a href= "/api-docs/sell/static/marketing/using-the-selectionrules-container.html#Campaign ">Promoted Listing campaigns</a>, this field includes the type of the category ID for the item(s) to be included in the campaign.<br><br>For <a href= "/api-docs/sell/static/marketing/using-the-selectionrules-container.html#Promotio ">Item promotions</a>, this field identifies the scope for the corresponding array as eBay categories or for a seller\'s eBay store categories. Required when used in an Item promotion and <b>inventoryCriterionType</b> is set to <code>INVENTORY_BY_RULE</code>.  For implementation help, refer to <a href=\'https://developer.ebay.com/api-docs/sell/marketing/types/pls:CategoryScopeEnum\'>eBay API documentation</a>',
-      }),
-    listingConditionIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'A comma-separated list of unique identifiers for the conditions of listings to be included<br><br>For <a href= "/api-docs/sell/static/marketing/using-the-selectionrules-container.html#Campaign ">Promoted Listing campaigns</a>, refer to <a href= "/api-docs/sell/static/marketing/pl-campaign-flow-pls.html#add-by-rule ">Add items to the PLS campaign</a>. Up to four IDs can be specified.<br><br>For <a href= "/api-docs/sell/static/marketing/using-the-selectionrules-container.html#Promotio ">Item promotions</a>, refer to <a href= "/api-docs/sell/static/metadata/condition-id-values.html ">Item condition ID and name values</a>.',
-      }),
-    maxPrice: AmountSchema.exactOptional().openapi({
-      description:
-        'This container sets the maximum price threshold. For more details, see <a href= "/api-docs/sell/marketing/resources/using-the-selectionrules-container.html ">Using the selectionRules container</a>.',
-    }),
-    minPrice: AmountSchema.exactOptional().openapi({
-      description:
-        'This container sets the minimum price threshold. For more details, see <a href= "/api-docs/sell/marketing/resources/using-the-selectionrules-container.html ">Using the selectionRules container</a>.',
-    }),
-  })
-  .openapi({
-    description:
-      'This type defines all rules/inclusion filters used to add listings to campaigns or promotions. Use of the specific fields is different for campaigns or promotions. See <a href= "/api-docs/sell/static/marketing/using-the-selectionrules-container.html ">Using the selectionRules container</a>.',
-    required: [],
-  })
-  .openapi('SelectionRule')
-
-const CampaignCriterionSchema = z
-  .object({
-    autoSelectFutureInventory: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "A field used to indicate whether listings shall be automatically added to, or removed from, a Promoted Listings campaign based on the rules that have been configured for the campaign.<br /><br />If set to <code>true</code>, eBay adds all listings matching the campaign criterion to the campaign, including any new listings created from the items in a seller's inventory.<br /><br /><b>Default:</b> <code>false</code>",
-      }),
-    criterionType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "This enum defines the criterion (selection rule) types. Currently, the only criterion type supported is <code>INVENTORY_PARTITION</code>, and you must specify this value if you manage your items with the Inventory API and you want to include items based on their inventory reference IDs.  <br><br>Do not include this field if you manage your listings with Trading API/legacy model. For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/marketing/types/pls:CriterionTypeEnum'>eBay API documentation</a>",
-      }),
-    selectionRules: z
-      .array(SelectionRuleSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'This container shows all of the rules/inclusion filters used to add listings to the campaign. For information on using the contained fields, see <a href= "/api-docs/sell/static/marketing/using-the-selectionrules-container.html#Campaign ">Promoted Listing campaigns</a>.',
-      }),
-  })
-  .openapi({
-    description:
-      'This type defines the fields for specifying the criterion (selection rule) settings of an ad campaign. If you populate the campaignCriterion object in your <b>createCampaign</b> request, ads for the campaign are created by rule for the listings that meet the criteria you specify, and these ads are associated with the newly created campaign.',
-    required: [],
-  })
-  .openapi('CampaignCriterion')
-
-const DynamicAdRatePreferenceSchema = z
-  .object({
-    adRateAdjustmentPercent: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The percentage above or below (-) the eBay suggested ad rate that a seller is willing to pay.<br /><br />This specifies the maximum and minimum values to which an ad rate can be dynamically adjusted.',
-      }),
-    adRateCapPercent: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The maximum value (specified as a percentage) to which the eBay suggested ad rate can be adjusted. The adjusted ad rate will never exceed this percentage.',
-      }),
-  })
-  .openapi({
-    description:
-      'A type that defines the ad rate details for a Promoted Listings Standard (PLS) ad campaign.',
-    required: [],
-  })
-  .openapi('DynamicAdRatePreference')
-
-const FundingStrategySchema = z
-  .object({
-    adRateStrategy: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The ad rate strategy that shall be applied to the campaign. For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/marketing/types/pls:AdRateStrategyEnum'>eBay API documentation</a>",
-      }),
-    bidPercentage: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The user-defined <b>bid percentage</b> (also known as the <i>ad rate</i>) sets the level that eBay increases the visibility in search results for the associated listing. The higher the <b>bidPercentage</b> value, the more eBay promotes the listing.  <br><br>The value specified here is also used to calculate the Promoted Listings fee. This percentage value is multiplied by the final sales price to determine the fee. <br><br>The Promoted Listings fee is determined at the time the transaction completes and the seller is assessed the fee only when an item sells through a Promoted Listings ad campaign. <br><br>The <b>bidPercentage</b> is a single precision value that is guided by the following rules: <ul><li>These values are <b>valid</b>:<br>&nbsp;&nbsp;&nbsp;<code>4.1</code>, &nbsp;&nbsp;&nbsp;<code>5.0</code>, &nbsp;&nbsp;&nbsp;<code>5.5</code>, ...</li>  <li>These values are <b>not valid</b>:<br /> &nbsp;&nbsp;&nbsp;<code>0.01</code>, &nbsp;&nbsp;&nbsp;<code>10.75</code>, &nbsp;&nbsp;&nbsp;<code>99.99</code>,<br /> &nbsp;&nbsp;&nbsp;and so on.</li></ul>This is the default bid percentage for the campaigns using the Cost Per Sale (CPS) funding model, and this value will be overridden by any ads in the campaign that have their own set bid percentages.<br /><br />If a bid percentage is not provided for an ad, eBay uses the default bid percentage of the associated campaign.<br /><br /><span class="tablenote"><b>Note:</b>This field is only relevant for campaigns that use the CPS funding model and a fixed ad rate. It is not used for campaigns that use the Cost Per Click (CPC) funding model and should not be provided when the selected adRateStrategy for the campaign is dynamic.</span><br /><b>Minimum value:</b> 2.0 <br><b>Maximum value:</b> 100.0',
-      }),
-    dynamicAdRatePreferences: z
-      .array(DynamicAdRatePreferenceSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'A field that indicates whether a single, user-defined bid percentage (also known as the <i>ad rate</i>) should be used, or whether eBay should automatically adjust listings to maintain the daily suggested bid percentage.<br /><br /><span class="tablenote"><span style="color:#004680"><strong>Note:</strong></span> Dynamic adjustment is only applicable when the <b>adRateStrategy</b> is set to <code>DYNAMIC</code>.</span><br /><b>Default:</b> <code>FIXED</code>',
-      }),
-    fundingModel: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Indicates the model that eBay uses to calculate the Promoted Listings fee. <p>For a description of the funding model types, refer to <b>FundingModelTypeEnum</b>. For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/marketing/types/pls:FundingModelEnum'>eBay API documentation</a>",
-      }),
-  })
-  .openapi({
-    description:
-      'This type defines how the Promoted Listings fee is calculated for a Promoted Listings ad campaign.',
-    required: [],
-  })
-  .openapi('FundingStrategy')
-
-const CampaignSchema = z
-  .object({
-    alerts: z
-      .array(AlertSchema)
-      .exactOptional()
-      .openapi({ description: 'This array contains alert messages for the campaign.' }),
-    budget: CampaignBudgetSchema.exactOptional().openapi({
-      description:
-        'The allocated budget for the Cost Per Click (CPC) Promoted Listings campaign.<span class="tablenote"><b>Note:</b> This field will only be returned for campaigns using the CPC funding model; it does not apply to the Cost Per Sale (CPS) funding model.</span>',
-    }),
-    campaignCriterion: CampaignCriterionSchema.exactOptional().openapi({
-      description:
-        'The selection rules (criterion) used to select the listings for a campaign. If you populate the <b>campaignCriterion</b> object in your <b>createCampaign</b> request, ads for the campaign are created by rule for the listings that meet the criteria you specify, and these ads are associated with the campaign.<span class="tablenote"><b>Note:</b> This container is only returned for rules-based campaigns using the Cost Per Sale (CPS) funding model.</span>',
-    }),
-    campaignId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A unique eBay-assigned ID for a campaign. This ID is generated when a campaign is created.',
-      }),
-    campaignName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A seller-defined name for the campaign. This value must be unique for the seller. <p>You can use any alphanumeric characters in the name, except the less than (&lt;) or greater than (&gt;) characters.</p><b>Max length: </b>80 characters',
-      }),
-    campaignStatus: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Indicates the status of the campaign, such as <code>RUNNING</code>, <code>PAUSED</code>, and <code>ENDED</code>. For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/marketing/types/pls:CampaignStatusEnum'>eBay API documentation</a>",
-      }),
-    endDate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The date and time the campaign ends, in UTC format (<code>yyyy-MM-ddThh:mm:ssZ</code>). If this field is omitted, the campaign will have no defined end date, and will not end until the seller makes a decision to end the campaign with an <a href="/api-docs/sell/marketing/resources/campaign/methods/endCampaign">endCampaign</a> call, or if they update the campaign at a later time with an end date.',
-      }),
-    fundingStrategy: FundingStrategySchema.exactOptional().openapi({
-      description:
-        'This container shows the funding model used for the campaign, and the default bid percentage for a campaign that uses the Cost Per Sale (CPS) funding model. <p>Currently, the supported funding models are <code>COST_PER_SALE</code> and <code>COST_PER_CLICK</code>.',
-    }),
-    marketplaceId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The ID of the eBay marketplace where the campaign is hosted. For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/marketing/types/ba:MarketplaceIdEnum'>eBay API documentation</a>",
-      }),
-    startDate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The date and time the campaign starts, in UTC format (<code>yyyy-MM-ddThh:mm:ssZ</code>). For display purposes, convert this time into the local time of the seller.  <p>On the date specified, the service derives the keywords for each listing in the campaign, creates an ad for each listing, and associates each new ad with the campaign. The campaign starts after this process is completed. The amount of time it takes the service to start the campaign depends on the number of listings in the campaign. Call <a href="/api-docs/sell/marketing/resources/campaign/methods/getCampaign">getCampaign</a> to check the status of the campaign.</p>',
-      }),
-  })
-  .openapi({
-    description: 'This type defines the fields that describe an ad campaign.',
-    required: [],
-  })
-  .openapi('Campaign')
-
 const CampaignBudgetRequestSchema = z
   .object({
     daily: BudgetRequestSchema.exactOptional().openapi({
@@ -1855,7 +2055,7 @@ const CampaignBudgetRequestSchema = z
   })
   .openapi('CampaignBudgetRequest')
 
-const CampaignPagedCollectionResponseSchema = z
+const CampaignPagedCollectionResponseSchema: z.ZodType<CampaignPagedCollectionResponseType> = z
   .object({
     campaigns: z
       .array(CampaignSchema)
@@ -1911,7 +2111,7 @@ const CampaignPagedCollectionResponseSchema = z
   })
   .openapi('CampaignPagedCollectionResponse')
 
-const CampaignsSchema = z
+const CampaignsSchema: z.ZodType<CampaignsType> = z
   .object({
     campaigns: z
       .array(CampaignSchema)
@@ -2260,38 +2460,6 @@ const DimensionMetadataSchema = z
   })
   .openapi('DimensionMetadata')
 
-const DiscountBenefitSchema = z
-  .object({
-    amountOffItem: AmountSchema.exactOptional().openapi({
-      description:
-        'The monetary amount that is discounted off an item (or items) when the promotion criteria is met.  <br><br>For <b>threshold promotions</b>, where the buyer triggers the discount, the valid values for this field are:  <br><code> &nbsp; 5, 6, 7, 8, 9, 10, 15, 20, 25, <br> &nbsp; 30, 35, 40, 45, 50, 55, 60, 65, <br> &nbsp; 70, 75, 80, 85, 90, 95, 100, 110, <br> &nbsp; 120, 125, 150, 200, 250</code>  <br><br>For <b>markdown</b> promotions, the range is greater, as outlined below and detailed more precisely <a href="/api-docs/sell/static/marketing/pm-amountoffitems-values.html" target="_blank">here</a>: <ul><li>$1 increments from $5 to $100</li><li>$5 increments from $105 to $1,000</li><li>$100 increments from $1,100 to $15,000</li></ul>',
-    }),
-    amountOffOrder: AmountSchema.exactOptional().openapi({
-      description:
-        "Used for threshold promotions, this is the monetary amount that is discounted off an order when the promotion criteria is met. Because this field is valid only for orders, it's not a valid combination to use with markdown promotions.  <br><br><b>Valid values</b> for the associated <code>amountOffOrder.</code><b>value</b> field:  <br><code> &nbsp; 5, 6, 7, 8, 9, 10, 15, 20, 25, <br> &nbsp; 30, 35, 40, 45, 50, 55, 60, 65, <br> &nbsp; 70, 75, 80, 85, 90, 95, 100, 110, <br> &nbsp; 120, 125, 150, 200, 250</code>",
-    }),
-    percentageOffItem: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The percentage applied to the sales price that is discounted off the promoted item (or items) when the promotion criteria is met.  <br><br>Valid integer values for percentage off: &nbsp;&nbsp;<b>Min:</b> <code>5</code> &nbsp;&nbsp;<b>Max:</b> <code>80</code>',
-      }),
-    percentageOffOrder: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Used for threshold promotions, this is the percentage of the order price that is discounted off the order when the promotion criteria is met. This field is not value for markdown promotions.  <br><br>Valid integer values for ORDER_DISCOUNT promotions: &nbsp;&nbsp;<b>Min:</b> <code>5</code> &nbsp;&nbsp;<b>Max:</b> <code>80</code>  <br><br>For VOLUME_DISCOUNT promotions: Must be set to <code>0</code> for the first discount rule.',
-      }),
-  })
-  .openapi({
-    description:
-      'This container defines the promotional discount as either a monetary amount or a percentage of the sales price.  <p class="tablenote"><b>Important!:</b> You must populate one and only one of the fields in this container: <ul><li><b>amountOffItem</b></li> <li><b>amountOffOrder</b></li> <li><b>percentageOffItem</b></li> <li><b>percentageOffOrder</b></li></ul></p>  <p class="tablenote"><b>Tip:</b> Refer to <a href="/api-docs/sell/static/marketing/pm-specifying-discounts.html">Configuring discounts for threshold promotions</a> for information and examples on how to combine <b>discountBenefit</b> and <b>discountSpecification</b> values to create different types of promotions.</p>',
-    required: [],
-  })
-  .openapi('DiscountBenefit')
-
 const DiscountSpecificationSchema = z
   .object({
     forEachAmount: AmountSchema.exactOptional().openapi({
@@ -2360,103 +2528,6 @@ const DiscountRuleSchema = z
   })
   .openapi('DiscountRule')
 
-const InventoryItemSchema = z
-  .object({
-    inventoryReferenceId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The seller\'s inventory reference ID for a listing. Also known as the "SKU" or "custom label," an inventory reference ID is either the ID of the listing or, if the listing has variations (such as a shirt that\'s available in multiple sizes and colors), the ID of the parent listing.',
-      }),
-  })
-  .openapi({
-    description:
-      'This type defines the fields for the seller inventory reference IDs (also known as an "SKU" or "custom label").',
-    required: [],
-  })
-  .openapi('InventoryItem')
-
-const RuleCriteriaSchema = z
-  .object({
-    excludeInventoryItems: z
-      .array(InventoryItemSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of seller inventory reference IDs to exclude from the promotion.  <br><br><p class="tablenote"><b>Note:</b> The request can have either <b>excludeInventoryItems</b> or <b>excludeListingIds</b> but not both.</p> <b>Maximum:</b> 100 parent items <br><b>Maximum SKU or custom label length:</b> 50 characters',
-      }),
-    excludeListingIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of eBay listing IDs to exclude from the promotion.  <br><br><p class="tablenote"><b>Note:</b> The request can have either <b>excludeInventoryItems</b> or <b>excludeListingIds</b> but not both.</p> <b>Maximum:</b> 100 parent items <br><b>Maximum SKU or custom label length:</b> 50 characters',
-      }),
-    markupInventoryItems: z
-      .array(InventoryItemSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "A list of SKUs to remove from a markdown promotion. The listed SKUs are 'marked up' to their standard price after being part of the markdown promotion.",
-      }),
-    markupListingIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          "A list of listing IDs to remove from a markdown promotion. The listed items are 'marked up' to their standard price after being part of the markdown promotion.",
-      }),
-    selectionRules: z
-      .array(SelectionRuleSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The container for the rules that select the items to include in a promotion.  <br><br><i>Required if </i> <b>inventoryCriterionType</b> is set to <code>INVENTORY_BY_RULE</code>. <br><br>For information on using the contained fields, see <a href= "/api-docs/sell/static/marketing/using-the-selectionrules-container.html#Promotio ">Item promotions</a>.',
-      }),
-  })
-  .openapi({
-    description:
-      'This type defines the fields for a set of inventory selection rules.  <br><br><b>Required:</b> When <b>inventoryCriterionType</b> is set to <code>INVENTORY_BY_RULE</code> or <code>INVENTORY_ANY</code>.',
-    required: [],
-  })
-  .openapi('RuleCriteria')
-
-const InventoryCriterionSchema = z
-  .object({
-    inventoryCriterionType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Indicates how the items to include in the promotion are selected. You can include inventory by ID, using rules, or globally include all your inventory.  For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/marketing/types/sme:InventoryCriterionEnum'>eBay API documentation</a>",
-      }),
-    inventoryItems: z
-      .array(InventoryItemSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'An array of containers for the seller\'s inventory reference IDs (also known as an "SKU" or "custom label") to be added to the promotion.  <p class="tablenote"><b>Note:</b> The request can have either <b>inventoryItems</b> or <b>listingIds</b>, but not both.</p>  <br><br><b>Required:</b> All listings in a promotion must offer an electronic payment method.  <br><b>Maximum:</b> 500 parent items  <br><b>Maximum SKU or custom label length:</b> 50 characters <br><br><i>Required if </i> <b>InventoryCriterionType</b> is set to <code>INVENTORY_BY_VALUE</code>, you must specify either <b>inventoryItems</b> or <b>listingIds</b>.',
-      }),
-    listingIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'An array of eBay listing IDs to be added to the promotion.  <p class="tablenote"><b>Note:</b> The request can have either <b>inventoryItems</b> or <b>listingIds</b>, but not both.</p>  <br><br><b>Required:</b> All listings in a promotion must offer an electronic payment method.  <br><b>Maximum:</b> 500 parent items  <br><b>Maximum SKU or custom label length:</b> 50 characters <br><br><i>Required if </i> <b>InventoryCriterionType</b> is set to <code>INVENTORY_BY_VALUE</code>, you must specify either <b>inventoryItems</b> or <b>listingIds</b>.',
-      }),
-    ruleCriteria: RuleCriteriaSchema.exactOptional().openapi({
-      description:
-        'This container defines a set of inventory selection rules for a promotion.  <br><br>When defining rule criteria, you must limit item exclusions to 100 IDs when you choose from live inventory.  <br><br>Required if  <b>InventoryCriterionEnum</b> is set to <code>INVENTORY_BY_RULE</code> or <code>INVENTORY_ANY</code>.',
-    }),
-  })
-  .openapi({
-    description:
-      'This type defines either the selections rules or the list of listing IDs for the promotion. The "listing IDs" are are either the seller\'s item IDs or the eBay listing IDs.',
-    required: [],
-  })
-  .openapi('InventoryCriterion')
-
 const ItemBasisSchema = z
   .object({
     estimatedValue: z
@@ -2506,39 +2577,7 @@ const ItemMarkdownStatusSchema = z
   .openapi({ description: 'This type defines the status of a markdown promotion.', required: [] })
   .openapi('ItemMarkdownStatus')
 
-const SelectedInventoryDiscountSchema = z
-  .object({
-    discountBenefit: DiscountBenefitSchema.exactOptional().openapi({
-      description:
-        'This container defines the promotional discount as either a monetary amount or a percentage applied to the sales price.',
-    }),
-    discountId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A unique, eBay-generated ID that you can use to identify the discount. This field is ignored in POST and PUT operations.',
-      }),
-    inventoryCriterion: InventoryCriterionSchema.exactOptional().openapi({
-      description:
-        'A container that defines either the listing IDs or the selection rules that specify the items to include in the promotion. Listing IDs can be either eBay listing IDs or a list of the seller\'s inventory reference IDs (know as SKUs or custom labels). See the <b>selectionRules</b> container for the rule criteria you can use to select inventory.  <p class="tablenote"><b>Note:</b> All listings in Promotions Manager promotions must support an electronic payment method.</p>',
-    }),
-    ruleOrder: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'For markdown promotions, this field is reserved for future use. <!--This field specifies the precedence of this set of inventory criteria, which is taken into account if an item is selected for multiple discounts by different sets of criteria. The criteria with the highest priority (lowest ruleOrder value) takes precedence over criteria with a lower precedence.-->',
-      }),
-  })
-  .openapi({
-    description:
-      'This type defines the fields that describe the discounts applied to a set of inventory items and the order in which the selection rules are applied.',
-    required: [],
-  })
-  .openapi('SelectedInventoryDiscount')
-
-const ItemPriceMarkdownSchema = z
+const ItemPriceMarkdownSchema: z.ZodType<ItemPriceMarkdownType> = z
   .object({
     applyFreeShipping: z
       .boolean()
@@ -4325,18 +4364,16 @@ export const postAdCampaignRoute = createRoute({
   responses: {
     201: {
       description: 'Created',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description:
-                'The <b>location</b> response header contains the <a href="/api-docs/sell/marketing/resources/campaign/methods/getCampaign">getCampaign</a> URI to the newly created campaign. The URL includes the eBay-assigned <code>campaignId</code>, which you can use to reference the campaign.',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description:
+              'The <b>location</b> response header contains the <a href="/api-docs/sell/marketing/resources/campaign/methods/getCampaign">getCampaign</a> URI to the newly created campaign. The URL includes the eBay-assigned <code>campaignId</code>, which you can use to reference the campaign.',
+          }),
       }),
     },
     400: { description: 'Bad Request' },
@@ -4673,18 +4710,16 @@ export const postAdCampaignCampaignIdAdRoute = createRoute({
   responses: {
     201: {
       description: 'Created',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description:
-                'The <b>location</b> response header contains the getAd URI of the newly created ad. The URI includes the newly created <code>adID</code>, which you can use to reference the ad.',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description:
+              'The <b>location</b> response header contains the getAd URI of the newly created ad. The URI includes the newly created <code>adID</code>, which you can use to reference the ad.',
+          }),
       }),
     },
     400: { description: 'Bad Request' },
@@ -4968,18 +5003,16 @@ export const postAdCampaignCampaignIdAdGroupRoute = createRoute({
   responses: {
     201: {
       description: 'Created',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description:
-                'The <b>location</b> response header contains the getAdGroup URL to the newly created ad group. The URL includes the newly assigned <code>adGroupID</code>, which you can use to retrieve the ad group.',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description:
+              'The <b>location</b> response header contains the getAdGroup URL to the newly created ad group. The URL includes the newly assigned <code>adGroupID</code>, which you can use to retrieve the ad group.',
+          }),
       }),
     },
     400: { description: 'Bad Request' },
@@ -5742,18 +5775,16 @@ export const postAdCampaignCampaignIdCloneRoute = createRoute({
   responses: {
     201: {
       description: 'Success',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description:
-                'The <b>location</b> response header contains the <a href="/api-docs/sell/marketing/resources/campaign/methods/getCampaign">getCampaign</a> URI to the retrieve the newly created campaign.',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description:
+              'The <b>location</b> response header contains the <a href="/api-docs/sell/marketing/resources/campaign/methods/getCampaign">getCampaign</a> URI to the retrieve the newly created campaign.',
+          }),
       }),
     },
     400: { description: 'Bad Request' },
@@ -6092,18 +6123,16 @@ export const postAdCampaignCampaignIdKeywordRoute = createRoute({
   responses: {
     201: {
       description: 'Created',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description:
-                'The <b>location</b> response header contains the getKeyword URI of the newly created keyword.  The URI includes the newly created <code>keywordId</code>, which you can use to reference the keyword.',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description:
+              'The <b>location</b> response header contains the getKeyword URI of the newly created keyword.  The URI includes the newly created <code>keywordId</code>, which you can use to reference the keyword.',
+          }),
       }),
     },
     400: { description: 'Bad Request' },
@@ -6527,7 +6556,7 @@ export const getAdReportReportIdRoute = createRoute({
   responses: {
     200: {
       description: 'Success',
-      content: { 'text/tab-separated-values': { schema: z.object({}) } },
+      content: { 'text/tab-separated-values': { schema: z.looseObject({}) } },
     },
     400: { description: 'Bad Request' },
     404: { description: 'Not Found' },
@@ -6840,18 +6869,16 @@ export const postItemPriceMarkdownRoute = createRoute({
   responses: {
     201: {
       description: 'Created',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description:
-                'The <b>location</b> response header contains the URL to the newly created item price markdown promotion. The URL includes the eBay-assigned <code>promotionId</code>, which you can use to reference the promotion.',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description:
+              'The <b>location</b> response header contains the URL to the newly created item price markdown promotion. The URL includes the eBay-assigned <code>promotionId</code>, which you can use to reference the promotion.',
+          }),
       }),
     },
     400: { description: 'Bad Request' },
@@ -6931,7 +6958,7 @@ export const putItemPriceMarkdownPromotionIdRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'Success', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'Success', content: { 'application/json': { schema: z.looseObject({}) } } },
     204: { description: 'Success' },
     400: { description: 'Bad Request' },
     404: { description: 'Not Found' },
@@ -6997,15 +7024,13 @@ export const postItemPromotionRoute = createRoute({
       description: 'Created',
       content: { 'application/json': { schema: BaseResponseSchema } },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'URL location of new item promotion.',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'URL location of new item promotion.',
+          }),
       }),
     },
     400: { description: 'Bad Request' },
@@ -7257,18 +7282,16 @@ export const postNegativeKeywordRoute = createRoute({
   responses: {
     201: {
       description: 'Created',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description:
-                'The <b>location</b> response header contains the URI of the newly created negative keyword. The URI includes the newly created <code>negativeKeywordId</code>, which you can use to reference the negative keyword.',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description:
+              'The <b>location</b> response header contains the URI of the newly created negative keyword. The URI includes the newly created <code>negativeKeywordId</code>, which you can use to reference the negative keyword.',
+          }),
       }),
     },
     400: { description: 'Bad Request' },

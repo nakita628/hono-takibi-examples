@@ -254,7 +254,7 @@ const GoogleCloudPrivatecatalogproducerV1beta1ListVersionsResponseSchema = z
   .openapi('GoogleCloudPrivatecatalogproducerV1beta1ListVersionsResponse')
 
 const GoogleCloudPrivatecatalogproducerV1beta1UndeleteCatalogRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi('GoogleCloudPrivatecatalogproducerV1beta1UndeleteCatalogRequest')
 
 const GoogleCloudPrivatecatalogproducerV1beta1UploadIconRequestSchema = z
@@ -453,7 +453,7 @@ const GoogleIamV1TestIamPermissionsResponseSchema = z
   .openapi('GoogleIamV1TestIamPermissionsResponse')
 
 const GoogleLongrunningCancelOperationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The request message for Operations.CancelOperation.' })
   .openapi('GoogleLongrunningCancelOperationRequest')
 
@@ -568,7 +568,7 @@ const GoogleLongrunningListOperationsResponseSchema = z
   .openapi('GoogleLongrunningListOperationsResponse')
 
 const GoogleProtobufEmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated\nempty messages in your APIs. A typical example is to use it as the request\nor the response type of an API method. For instance:\n\n    service Foo {\n      rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty);\n    }\n\nThe JSON representation for `Empty` is empty JSON object `{}`.',

@@ -349,7 +349,7 @@ const ChartDataAdhocMetricSchemaSchema = z
 const ChartDataAggregateOptionsSchemaSchema = z
   .object({
     aggregates: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -573,7 +573,7 @@ const ChartDataGeohashEncodeOptionsSchemaSchema = z
 const ChartDataPivotOptionsSchemaSchema = z
   .object({
     aggregates: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -632,7 +632,7 @@ const ChartDataPostProcessingOperationSchema = z
       ])
       .openapi({ description: 'Post processing operation type', example: 'aggregate' }),
     options: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -720,7 +720,7 @@ const ChartDataQueryObjectSchema = z
       .exactOptional()
       .openapi({ description: 'Annotation layers to apply to chart' }),
     applied_time_extras: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
@@ -913,7 +913,7 @@ const ChartDataResponseResultSchema = z
       .exactOptional()
       .openapi({ description: 'All requested annotation data' }),
     applied_filters: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .exactOptional()
       .openapi({ description: 'A list with applied filters' }),
     cache_key: z.string().nullable().openapi({ description: 'Unique cache key for query object' }),
@@ -925,12 +925,15 @@ const ChartDataResponseResultSchema = z
           'Cache timeout in following order: custom timeout, datasource timeout, default config timeout.',
       }),
     cached_dttm: z.string().nullable().openapi({ description: 'Cache timestamp' }),
-    data: z.array(z.object({})).exactOptional().openapi({ description: 'A list with results' }),
+    data: z
+      .array(z.looseObject({}))
+      .exactOptional()
+      .openapi({ description: 'A list with results' }),
     error: z.string().nullable().exactOptional().openapi({ description: 'Error' }),
     is_cached: z.boolean().openapi({ description: 'Is the result cached' }),
     query: z.string().openapi({ description: 'The executed query statement' }),
     rejected_filters: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .exactOptional()
       .openapi({ description: 'A list with rejected filters' }),
     rowcount: z.int32().exactOptional().openapi({ description: 'Amount of rows in result set' }),
@@ -998,7 +1001,7 @@ const ChartDataRollingOptionsSchemaSchema = z
         description: 'Type of rolling window. Any numpy function will work.',
         example: 'percentile',
       }),
-    rolling_type_options: z.object({}).exactOptional().openapi({ example: {} }),
+    rolling_type_options: z.looseObject({}).exactOptional().openapi({ example: {} }),
     win_type: z
       .enum([
         'boxcar',
@@ -1042,7 +1045,7 @@ const ChartDataSelectOptionsSchemaSchema = z
       .exactOptional()
       .openapi({ description: 'Columns to exclude from selection.', example: ['my_temp_column'] }),
     rename: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .exactOptional()
       .openapi({
         description:
@@ -1056,7 +1059,7 @@ const ChartDataSelectOptionsSchemaSchema = z
 const ChartDataSortOptionsSchemaSchema = z
   .object({
     aggregates: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -1066,7 +1069,7 @@ const ChartDataSortOptionsSchemaSchema = z
         },
       }),
     columns: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'columns by by which to sort. The key specifies the column name, value specifies if sorting in ascending order.',
@@ -1099,7 +1102,7 @@ const ChartEntityResponseSchemaSchema = z
       .exactOptional()
       .openapi({ description: 'Sanitized HTML version of the chart description.' }),
     form_data: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: "Form data from the Explore controls used to form the chart's data query.",
@@ -1482,9 +1485,9 @@ const DatabaseSchema = z
 const DashboardDatasetSchemaSchema = z
   .object({
     cache_timeout: z.int32().exactOptional(),
-    column_formats: z.object({}).exactOptional(),
+    column_formats: z.looseObject({}).exactOptional(),
     column_types: z.array(z.int32()).exactOptional(),
-    columns: z.array(z.object({})).exactOptional(),
+    columns: z.array(z.looseObject({})).exactOptional(),
     database: DatabaseSchema.exactOptional(),
     datasource_name: z.string().exactOptional(),
     default_endpoint: z.string().exactOptional(),
@@ -1497,7 +1500,7 @@ const DashboardDatasetSchemaSchema = z
     id: z.int32().exactOptional(),
     is_sqllab_view: z.boolean().exactOptional(),
     main_dttm_col: z.string().exactOptional(),
-    metrics: z.array(z.object({})).exactOptional(),
+    metrics: z.array(z.looseObject({})).exactOptional(),
     name: z.string().exactOptional(),
     offset: z.int32().exactOptional(),
     order_by_choices: z.array(z.array(z.string())).exactOptional(),
@@ -1803,7 +1806,7 @@ const DatabaseRelatedChartsSchema = z
 const DatabaseRelatedDashboardSchema = z
   .object({
     id: z.int32().exactOptional(),
-    json_metadata: z.object({}).exactOptional(),
+    json_metadata: z.looseObject({}).exactOptional(),
     slug: z.string().exactOptional(),
     title: z.string().exactOptional(),
   })
@@ -2353,7 +2356,7 @@ const DatasetRelatedChartsSchema = z
 const DatasetRelatedDashboardSchema = z
   .object({
     id: z.int32().exactOptional(),
-    json_metadata: z.object({}).exactOptional(),
+    json_metadata: z.looseObject({}).exactOptional(),
     slug: z.string().exactOptional(),
     title: z.string().exactOptional(),
   })
@@ -3695,8 +3698,8 @@ export const getAnnotationLayerInfoRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              add_columns: z.object({}).exactOptional(),
-              edit_columns: z.object({}).exactOptional(),
+              add_columns: z.looseObject({}).exactOptional(),
+              edit_columns: z.looseObject({}).exactOptional(),
               filters: z
                 .object({
                   column_name: z
@@ -4469,7 +4472,7 @@ export const getAsyncEventIndexRoute = createRoute({
                   z
                     .object({
                       channel_id: z.string().exactOptional(),
-                      errors: z.array(z.object({})).exactOptional(),
+                      errors: z.array(z.looseObject({})).exactOptional(),
                       id: z.string().exactOptional(),
                       job_id: z.string().exactOptional(),
                       result_url: z.string().exactOptional(),
@@ -4740,8 +4743,8 @@ export const getChartInfoRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              add_columns: z.object({}).exactOptional(),
-              edit_columns: z.object({}).exactOptional(),
+              add_columns: z.looseObject({}).exactOptional(),
+              edit_columns: z.looseObject({}).exactOptional(),
               filters: z
                 .object({
                   column_name: z
@@ -5680,8 +5683,8 @@ export const getCssTemplateInfoRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              add_columns: z.object({}).exactOptional(),
-              edit_columns: z.object({}).exactOptional(),
+              add_columns: z.looseObject({}).exactOptional(),
+              edit_columns: z.looseObject({}).exactOptional(),
               filters: z
                 .object({
                   column_name: z
@@ -6194,8 +6197,8 @@ export const getDashboardInfoRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              add_columns: z.object({}).exactOptional(),
-              edit_columns: z.object({}).exactOptional(),
+              add_columns: z.looseObject({}).exactOptional(),
+              edit_columns: z.looseObject({}).exactOptional(),
               filters: z
                 .object({
                   column_name: z
@@ -6896,8 +6899,8 @@ export const getDatabaseInfoRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              add_columns: z.object({}).exactOptional(),
-              edit_columns: z.object({}).exactOptional(),
+              add_columns: z.looseObject({}).exactOptional(),
+              edit_columns: z.looseObject({}).exactOptional(),
               filters: z
                 .object({
                   column_name: z
@@ -6967,7 +6970,7 @@ export const getDatabaseAvailableIndexRoute = createRoute({
                   .openapi({ description: 'Name of the SQLAlchemy engine' }),
                 name: z.string().exactOptional().openapi({ description: 'Name of the database' }),
                 parameters: z
-                  .object({})
+                  .looseObject({})
                   .exactOptional()
                   .openapi({ description: 'JSON schema defining the needed parameters' }),
                 preferred: z
@@ -7899,8 +7902,8 @@ export const getDatasetInfoRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              add_columns: z.object({}).exactOptional(),
-              edit_columns: z.object({}).exactOptional(),
+              add_columns: z.looseObject({}).exactOptional(),
+              edit_columns: z.looseObject({}).exactOptional(),
               filters: z
                 .object({
                   column_name: z
@@ -8815,7 +8818,7 @@ export const getMenuIndexRoute = createRoute({
                 .array(
                   z
                     .object({
-                      childs: z.array(z.object({})).exactOptional(),
+                      childs: z.array(z.looseObject({})).exactOptional(),
                       icon: z
                         .string()
                         .exactOptional()
@@ -8866,7 +8869,7 @@ export const getOpenapiVersionOpenapiRoute = createRoute({
   responses: {
     200: {
       description: 'The OpenAPI spec',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     404: _404Response,
     500: _500Response,
@@ -9414,8 +9417,8 @@ export const getReportInfoRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              add_columns: z.object({}).exactOptional(),
-              edit_columns: z.object({}).exactOptional(),
+              add_columns: z.looseObject({}).exactOptional(),
+              edit_columns: z.looseObject({}).exactOptional(),
               filters: z
                 .object({
                   column_name: z
@@ -10121,8 +10124,8 @@ export const getSavedQueryInfoRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              add_columns: z.object({}).exactOptional(),
-              edit_columns: z.object({}).exactOptional(),
+              add_columns: z.looseObject({}).exactOptional(),
+              edit_columns: z.looseObject({}).exactOptional(),
               filters: z
                 .object({
                   column_name: z
